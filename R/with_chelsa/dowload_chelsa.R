@@ -20,9 +20,17 @@ library(reticulate)
 py_install("chelsa-cmip6", pip=T)
 chelsa_cmip6 <- import('chelsa_cmip6')
 
+NOCA_occ = read_csv(here("output/NOCA_occ.csv"))
+NOCA_plot_info = read_csv(here("output/NOCA_plot_info.csv")) %>%
+  rename(latitude = Latitude, longitude = Longitude) %>%
+  filter(plot_id %in% NOCA_occ$plot_id)
+coords = NOCA_plot_info %>% 
+  rename(lon = longitude, lat = latitude, id = plot_id)%>%
+  select(lon, lat)
+
 #https://gitlabext.wsl.ch/karger/chelsa_cmip6/-/tree/master/
-coords = plots %>% 
-  select(lon, lat, id)
+# coords = plots %>% 
+#   select(lon, lat, id)
 
 coords = as.data.frame(coords)
 
@@ -95,8 +103,8 @@ paleo_coords =
 ## Paleo ----
 tasmin.paleo = getChelsa("tasmin",coords=coords, startdate= c(1, -60), enddate=c(12, 19), freq = "centennial", version = "chelsa_trace21k")
 pre.paleo = getChelsa("pr",coords=coords, startdate= c(1, -60), enddate=c(12, 19), freq = "centennial", version = "chelsa_trace21k")
-write.csv(tasmin.paleo, file = here("output/tasmin.paleo.csv"))
-write.csv(pre.paleo, file = here("output/pre.paleo.csv"))
+write.csv(tasmin.paleo, file = here("output/noca_climate/tasmin.paleo.csv"))
+write.csv(pre.paleo, file = here("output/noca_climate/pre.paleo.csv"))
 
 tasmin.paleo = getChelsa("tasmin",coords=paleo_coords, startdate= c(1, -60), enddate=c(12, 19), freq = "centennial", version = "chelsa_trace21k")
 pre.paleo = getChelsa("pr",coords=paleo_coords, startdate= c(1, -60), enddate=c(12, 19), freq = "centennial", version = "chelsa_trace21k")
@@ -105,12 +113,12 @@ write.csv(pre.paleo, file = here("output/pre.paleo.ponds.csv"))
 
 # GET Present ----
 tasmin.present = getChelsa("tasmin",coords=coords, startdate=as.Date("1981-1-1"), enddate=as.Date("2020-12-31"), freq = "daily")
-write.csv(tasmin.present, file = here("output/tasmin.present.csv"))
+write.csv(tasmin.present, file = here("output/noca_climate/tasmin.present.csv"))
 pre.present = getChelsa("pr",coords=coords, startdate=as.Date("1981-1-1"), enddate=as.Date("2019-12-31"), freq = "daily")
 pre.presentcc = getChelsa("pr",coords=coords, startdate=as.Date("2019-12-31"), enddate=as.Date("2020-1-4"), freq = "daily")
 pre.presentc = getChelsa("pr",coords=coords, startdate=as.Date("2020-1-6"), enddate=as.Date("2020-12-31"), freq = "daily")
 
-write.csv(pre.present, file = here("output/pre.present.csv"))
+write.csv(pre.present, file = here("output/noca_climate/pre.present.csv"))
 
 ## Precipitation ----
 pr = getChelsa('pr',coords=coords, startdate=as.Date("2005-1-1"), enddate=as.Date("2020-1-1"))

@@ -1,3 +1,5 @@
+# Get climate 
+clim_mora = get(load(here("data/plots_climNA.rda")))
 env_present = read_csv("data/anthropocene_coords_climNA_Decade_2011_2019MSY.csv")%>%
   select(-Latitude, -Longitude, -id2)%>%
   group_by(id1)%>%
