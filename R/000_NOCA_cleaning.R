@@ -37,7 +37,8 @@ NOCA_present_splib =
                              present_species_abv == "SAXX" ~ "Salix sp.",
                              present_species_abv == "THPL" ~ "Thuja plicata",
                              .default = species))%>%
-  mutate(species = str_to_sentence(species))
+  mutate(species = str_to_sentence(species))%>%
+  mutate(species = ifelse(species == "Thuja plicata.", "Thuja plicata", species))
 
 NOCA_present = 
   read_excel("data/NOCA/NOCA_vegetation_fromJHRL.xlsx", sheet = "Tree Data") %>%
@@ -358,6 +359,19 @@ if(nrow(special_cases) > 0) {
   cat("No change events detected\n")
 }
 
+NOCA_occ =
+  NOCA_occ %>%
+  mutate(species = ifelse(species == "Chamaecyparis nootkatensis","Callitropsis nootkatensis", species))%>%
+  mutate(species = ifelse(species == "Cornus stolonifera", "Cornus sericea", species))%>%
+  mutate(species = ifelse(species == "Unknown tree.", "unknown", species))%>%
+  mutate(species = ifelse(is.na(species), "unknown", species))%>%
+  rename(occurrence = occurence)
+
+NOCA_occ = distinct(NOCA_occ)
+
+# Check:
+# Populus trichocarpa vs. Populus balsamifera same?
+# 
 # Write all outputs ----
 # To take out: "CARI449" "CARI450" they have the same coordinates!
 write_csv(NOCA_present_occ, file = here("output/NOCA_present_occ.csv"))
@@ -365,3 +379,35 @@ write_csv(NOCA_past_occ, file = here("output/NOCA_past_occ.csv"))
 write_csv(NOCA_plot_info, file = here("output/NOCA_plot_info.csv"))
 write_csv(NOCA_occ, file = here("output/NOCA_occ.csv"))
 write_csv(plot_tracking, file = here("output/NOCA_plot_tracking.csv"))
+
+# Calculate turnover for NOCA data
+noca_turnover_results = calculate_turnover(NOCA_occ)
+
+# Print summary statistics
+print_turnover_summary(noca_turnover_results)
+
+# Create visualizations
+noca_heatmap_plot = create_turnover_heatmap(noca_turnover_results$turnover_data) 
+noca_alluvial_plot = create_alluvial_plot(noca_turnover_results$turnover_data)
+
+# Simple presence in past/present with side-by-side bars
+noca_count_plot = 
+  ggplot(NOCA_occ, aes(species, fill = period))+
+  geom_bar(position = "dodge") +
+  scale_fill_manual(values = c("past" = "#8B4513", "present" = "#228B22")) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(title = "NOCA Species Occurrence by Period",
+       x = "Species", y = "Count")
+
+# Display plots
+
+pdf(file = here("plot/NOCA_dynamics.pdf"), width = 10, height = 8)
+print("NOCA Turnover heatmap...")  
+print(noca_heatmap_plot)
+
+print("NOCA Alluvial flow diagram...")
+print(noca_alluvial_plot)
+
+print("NOCA Species count plot...")
+print(noca_count_plot)
+dev.off()

@@ -31,9 +31,21 @@ library(Rchelsa)
 library(reticulate)
 library(corrplot)
 
-# Python setup for CHELSA
-py_install("chelsa-cmip6", pip = TRUE)
-chelsa_cmip6 = import('chelsa_cmip6')
+source(here("R/functions.R"))
+
+if(!file.exists(here("output/MORA_occ.csv"))){
+  source(here("R/000_MORA_cleaning.R"))
+}
+if(!file.exists(here("output/NOCA_occ.csv"))){
+  source(here("R/000_NOCA_cleaning.R"))
+}
+if(!file.exists(here("output/MORA_plot_info_fire.csv"))){
+  source(here("R/01_get_fire_info.R"))
+}
+if(!file.exists("mount_rainier.png")){
+  source(here("R/02_mountain_rayshader.R"))
+}
+
 
 here()
 conflict_prefer("select", "dplyr")
@@ -42,7 +54,7 @@ conflicts_prefer(rayshader::plot_map)
 conflicts_prefer(base::intersect)
 conflicts_prefer(base::union)
 
-source(here("R/functions.R"))
+
 
 color_era = c("paleo" = "#44AA99",
               "past" = "#88CCEE",
@@ -63,23 +75,23 @@ color_site = c("JayBath" = "#117733",
 color_mt = c("MORA"="#648FFF", "NOCA"="#FE6100")
 
 ## FUNCTIONS ----
-calculate_mess = function(reference_matrix, projection_matrix) {
-  mess_scores = matrix(NA, nrow = nrow(projection_matrix), ncol = ncol(projection_matrix))
-  
-  for(i in 1:ncol(projection_matrix)) {
-    ref_var = reference_matrix[, i]
-    proj_var = projection_matrix[, i]
-    
-    ref_min = min(ref_var, na.rm = TRUE)
-    ref_max = max(ref_var, na.rm = TRUE)
-    ref_range = ref_max - ref_min
-    
-    mess_scores[, i] = ifelse(proj_var < ref_min, 
-                              100 * (proj_var - ref_min) / ref_range,
-                              ifelse(proj_var > ref_max,
-                                     100 * (ref_max - proj_var) / ref_range,
-                                     100))
-  }
-  
-  apply(mess_scores, 1, min, na.rm = TRUE)
-}
+# calculate_mess = function(reference_matrix, projection_matrix) {
+#   mess_scores = matrix(NA, nrow = nrow(projection_matrix), ncol = ncol(projection_matrix))
+#   
+#   for(i in 1:ncol(projection_matrix)) {
+#     ref_var = reference_matrix[, i]
+#     proj_var = projection_matrix[, i]
+#     
+#     ref_min = min(ref_var, na.rm = TRUE)
+#     ref_max = max(ref_var, na.rm = TRUE)
+#     ref_range = ref_max - ref_min
+#     
+#     mess_scores[, i] = ifelse(proj_var < ref_min, 
+#                               100 * (proj_var - ref_min) / ref_range,
+#                               ifelse(proj_var > ref_max,
+#                                      100 * (ref_max - proj_var) / ref_range,
+#                                      100))
+#   }
+#   
+#   apply(mess_scores, 1, min, na.rm = TRUE)
+# }

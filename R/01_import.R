@@ -89,6 +89,7 @@ paleo_terrain_elevations = raster::extract(mora_elevation_raster, paleo_coords_t
 mora_point_colors = ifelse(MORA_plot_info_fire$burnt, "#FF4500", "#edeec9")
 
 ## MORA rayshader ----
+if(!file.exists("mount_rainier.png"))
 {mora_elevation_matrix %>%
     sphere_shade(texture=create_texture("#7CFFC4","#5E6973","#6ABEA7","#5E6973","#9FFFF5")) %>%
     add_shadow(mora_shadow, 0.5) %>%
@@ -172,6 +173,7 @@ terrain_elevations = raster::extract(noca_elevation_raster, noca_coords_transfor
 noca_point_colors = ifelse(NOCA_plot_info_fire$burnt, "#FF4500", "#edeec9")
 
 ## NOCA rayshader ----
+if(!file.exists("northern_cascades.png"))
 {
   noca_elevation_matrix %>%
     sphere_shade(texture=create_texture("#7CFFC4","#5E6973","#6ABEA7","#5E6973","#9FFFF5")) %>%
@@ -230,4 +232,5 @@ dev.off()
 
 write_csv(NOCA_plot_info_fire, file = here("output/NOCA_plot_info_fire.csv"))
 write_csv(MORA_plot_info_fire, file = here("output/MORA_plot_info_fire.csv"))
+
 
