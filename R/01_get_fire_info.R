@@ -1,113 +1,317 @@
-# Load disturbance shapefile
-mora_disturbances = st_read(here("data/MORA_disturbances/MORA_1987_2017_V2_1_UTM.shp"))
-noca_disturbances = st_read(here("data/MORA_disturbances/NOCA_1987_2017_V2_1_UTM.shp"))
+# Anthropocene fire assignments for MORA and NOCA ----------------------------
+suppressPackageStartupMessages({
+  library(here)
+  library(tidyverse)
+  library(sf)
+  library(patchwork)
+  library(maps)
+})
+render_figures = isTRUE(getOption("paleoaces.render_figures", TRUE))
 
-# Get shapefiles
-park_boundary = st_read(here("data/MORA_disturbances/records-2309935/Administrative Boundaries of National Park System Units.shp"))
+SURVEY_START = 1983L
+SURVEY_END = 2015L
+FIELD_VERIFIED_100M = c("HIBR2052", "HIBR2082", "STE2047")
 
-# Get MORA data
-MORA_occ = read_csv(here("output/MORA_occ.csv"))
-MORA_plot_info = read_csv(here("output/MORA_plot_info.csv")) %>% 
-  filter(plot_id %in% MORA_occ$plot_id)
+# MORA: retain the existing LandTrendr fire method ----------------------------
+mora_disturbances = st_read(
+  here("data/MORA_disturbances/MORA_1987_2017_V2_1_UTM.shp"), quiet = TRUE
+)
+MORA_occ = read_csv(here("output/MORA_occ.csv"), show_col_types = FALSE)
+MORA_plot_info = read_csv(here("output/MORA_plot_info.csv"), show_col_types = FALSE) %>%
+  filter(plot_id %in% unique(MORA_occ$plot_id))
 
-# Get NOCA data
-NOCA_occ = read_csv(here("output/NOCA_occ.csv"))
-NOCA_plot_info = read_csv(here("output/NOCA_plot_info.csv")) %>%
-  rename(latitude = Latitude, longitude = Longitude) %>%
-  filter(plot_id %in% NOCA_occ$plot_id)
+mora_points = MORA_plot_info %>%
+  st_as_sf(coords = c("longitude", "latitude"), crs = 4326) %>%
+  st_transform(st_crs(mora_disturbances))
 
-# Get boundaries 
-mount_rainier = park_boundary %>% filter(PARKNAME == "Mount Rainier")
-north_cascades = park_boundary %>% filter(PARKNAME == "North Cascades")
+mora_fire_hits = suppressWarnings(st_intersection(
+  st_buffer(mora_points, dist = 100),
+  mora_disturbances %>% filter(ChangeType == "Fire")
+)) %>%
+  st_drop_geometry() %>%
+  group_by(plot_id) %>%
+  summarise(Dist_year = min(Dist_year, na.rm = TRUE), .groups = "drop")
 
-# Transform boundaries to match disturbance CRS
-mount_rainier_tr = st_transform(mount_rainier, crs = st_crs(mora_disturbances))
-north_cascades_tr = st_transform(north_cascades, crs = st_crs(noca_disturbances))
-
-# MOUNT RAINIER ----
-mora_coords_sf = MORA_plot_info %>%
-  st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
-
-# Project points to disturbances CRS
-mora_coords_dist = st_transform(mora_coords_sf, crs = st_crs(mora_disturbances))
-
-# Create circular buffers of 100m radius
-mora_plots = st_buffer(mora_coords_dist, dist = 100)
-
-# Intersect plots with disturbances
-mora_intersec = st_intersection(mora_plots, mora_disturbances) %>%
-  filter(ChangeType == "Fire") %>%
-  select(plot_id, elevation, Dist_year)
-
-# Create fire dataframe
-mora_fire = mora_intersec %>%
-  left_join(MORA_plot_info, by = "plot_id") %>%
-  select(plot_id, longitude, latitude, Dist_year)
-
-# Add fire information to plot data
 MORA_plot_info_fire = MORA_plot_info %>%
-  left_join(mora_intersec) %>%
-  mutate(burnt = !is.na(Dist_year))%>%
-  st_drop_geometry()%>%
-  select(-geometry)%>%
-  distinct()
+  left_join(mora_fire_hits, by = "plot_id") %>%
+  mutate(burnt = !is.na(Dist_year)) %>%
+  arrange(plot_id)
 
-# NORTH CASCADES -----
-noca_coords_sf = NOCA_plot_info %>%
-  st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
+if (nrow(MORA_plot_info_fire) != n_distinct(MORA_plot_info_fire$plot_id)) {
+  stop("MORA fire assignment produced duplicate plot IDs.")
+}
 
-# Project points to disturbances CRS
-noca_coords_dist = st_transform(noca_coords_sf, crs = st_crs(noca_disturbances))
+# NOCA: Wilson et al. (2024) method on the PaleoACES plot universe ------------
+fire_dir = here("data/MORA_disturbances/fire_mapping_for_Billur")
+NOCA_occ = read_csv(here("output/NOCA_occ.csv"), show_col_types = FALSE)
+noca_ids = sort(unique(str_to_upper(NOCA_occ$plot_id)))
+NOCA_plot_info = read_csv(here("output/NOCA_plot_info.csv"), show_col_types = FALSE) %>%
+  transmute(
+    plot_id = str_to_upper(plot_id),
+    longitude = if_else(Longitude > 0, -Longitude, Longitude),
+    latitude = Latitude,
+    elevation
+  ) %>%
+  filter(plot_id %in% noca_ids) %>%
+  distinct(plot_id, .keep_all = TRUE)
 
-# Create circular buffers of 100m radius
-noca_plots = st_buffer(noca_coords_dist, dist = 100)
+if (!setequal(NOCA_plot_info$plot_id, noca_ids)) {
+  stop("NOCA plot-info IDs do not exactly match NOCA_occ.csv.")
+}
 
-# Intersect plots with disturbances
-noca_intersec = st_intersection(noca_plots, noca_disturbances) %>%
-  filter(ChangeType == "Fire") %>%
-  select(plot_id, elevation, Dist_year)
+wilson_join = read_csv(
+  file.path(fire_dir, "0_All_Plots_Wildfire_Join.csv"), show_col_types = FALSE
+) %>%
+  transmute(
+    plot_id = str_to_upper(str_trim(Name)),
+    wildfire_year = if_else(
+      !is.na(CAL_YEAR) & between(as.integer(CAL_YEAR), SURVEY_START, SURVEY_END),
+      as.integer(CAL_YEAR), NA_integer_
+    ),
+    prescribed_burn_year = if_else(
+      !is.na(Prescribed.burn.year) &
+        between(as.integer(Prescribed.burn.year), SURVEY_START, SURVEY_END),
+      as.integer(Prescribed.burn.year), NA_integer_
+    )
+  )
 
-# Create fire dataframe
-noca_fire = noca_intersec %>%
-  left_join(NOCA_plot_info, by = "plot_id") %>%
-  select(plot_id, longitude, latitude, Dist_year)
+if (anyDuplicated(wilson_join$plot_id)) {
+  stop("The supplied Wilson spatial join contains duplicate plot names.")
+}
 
-# Add fire information to plot data
+wilson_published = read_csv(
+  here("data/NOCA/NOCA_fires_fromWilson.csv"), show_col_types = FALSE
+) %>%
+  filter(Data.Type == "Resurvey") %>%
+  transmute(
+    plot_id = str_to_upper(str_trim(Plot)),
+    wilson_burnt = Fires == "Burned"
+  )
+
+if (nrow(wilson_published) != 369L || anyDuplicated(wilson_published$plot_id)) {
+  stop("Expected 369 unique resurvey plots in NOCA_fires_fromWilson.csv.")
+}
+
+# Reconstruct the published rule independently: polygon membership plus three
+# within-100 m plots whose field notes showed recent fire evidence.
+wilson_reproduced = wilson_published %>%
+  left_join(wilson_join, by = "plot_id") %>%
+  mutate(
+    spatial_join_available = plot_id %in% wilson_join$plot_id,
+    natural_polygon = !is.na(wildfire_year),
+    prescribed_polygon = !is.na(prescribed_burn_year),
+    field_verified_100m = plot_id %in% FIELD_VERIFIED_100M,
+    reproduced_burnt = natural_polygon | prescribed_polygon | field_verified_100m
+  )
+
+missing_join_ids = wilson_reproduced %>%
+  filter(!spatial_join_available) %>% pull(plot_id)
+if (!setequal(missing_join_ids, c("COPP6040", "THOR221", "THOR225")) ||
+    any(wilson_reproduced$wilson_burnt[!wilson_reproduced$spatial_join_available])) {
+  stop("Unexpected Wilson publication plots missing from the supplied spatial join.")
+}
+if (!identical(wilson_reproduced$wilson_burnt,
+               wilson_reproduced$reproduced_burnt)) {
+  bad = wilson_reproduced %>%
+    filter(wilson_burnt != reproduced_burnt) %>% pull(plot_id)
+  stop("Wilson fire reconstruction disagrees for: ", paste(bad, collapse = ", "))
+}
+if (sum(wilson_reproduced$reproduced_burnt) != 38L ||
+    sum(wilson_reproduced$natural_polygon |
+        wilson_reproduced$prescribed_polygon) != 35L) {
+  stop("Wilson fire totals must be 35 polygon plots plus 3 field-verified plots.")
+}
+
 NOCA_plot_info_fire = NOCA_plot_info %>%
-  left_join(noca_intersec) %>%
-  mutate(burnt = !is.na(Dist_year))%>%
-  st_drop_geometry()%>%
-  select(-geometry, -Dist_year)%>%
-  distinct()
+  left_join(wilson_join, by = "plot_id") %>%
+  left_join(wilson_published, by = "plot_id") %>%
+  mutate(
+    natural_polygon = !is.na(wildfire_year),
+    prescribed_polygon = !is.na(prescribed_burn_year),
+    field_verified_100m = plot_id %in% FIELD_VERIFIED_100M,
+    spatial_join_available = plot_id %in% wilson_join$plot_id,
+    reproduced_burnt = natural_polygon | prescribed_polygon | field_verified_100m,
+    burnt = coalesce(wilson_burnt, reproduced_burnt),
+    fire_basis = case_when(
+      !spatial_join_available & !is.na(wilson_burnt) ~
+        "published_unburned_spatial_join_missing",
+      natural_polygon & prescribed_polygon ~ "natural_and_prescribed_polygons",
+      natural_polygon ~ "natural_fire_polygon",
+      prescribed_polygon ~ "prescribed_fire_polygon",
+      field_verified_100m ~ "within_100m_field_verified",
+      TRUE ~ "unburned"
+    ),
+    assignment_source = if_else(
+      is.na(wilson_burnt), "received_spatial_join", "Wilson_2024_published"
+    )
+  ) %>%
+  select(plot_id, longitude, latitude, elevation, burnt,
+         wildfire_year, prescribed_burn_year, fire_basis, assignment_source,
+         spatial_join_available) %>%
+  arrange(plot_id)
 
-# Visualization plots
-ggplot() +
-  geom_sf(data = north_cascades_tr, color = "gray40") +
-  geom_sf(data = noca_disturbances, aes(fill = ChangeType), color = "gray40") +
-  geom_sf(data = noca_coords_dist)+
-  theme_minimal() + 
-  ggtitle("NOCA disturbances by change type and 1000 m² plot buffers")
+if (!setequal(NOCA_plot_info_fire$plot_id, noca_ids) ||
+    nrow(NOCA_plot_info_fire) != 307L ||
+    anyDuplicated(NOCA_plot_info_fire$plot_id)) {
+  stop("NOCA fire output must contain exactly 307 unique modeled plots.")
+}
+if (sum(NOCA_plot_info_fire$burnt) != 32L ||
+    sum(!NOCA_plot_info_fire$burnt) != 275L) {
+  stop("Expected 32 burned and 275 unburned PaleoACES NOCA plots.")
+}
 
-ggplot() +
-  geom_sf(data = mount_rainier_tr, color = "gray40") +
-  geom_sf(data = mora_disturbances, aes(fill = ChangeType), color = "gray40") +
-  geom_sf(data = mora_coords_dist)+
-  theme_minimal() +
-  ggtitle("MORA disturbances by change type and 1000 m² plot buffers")
+# Universe and assignment comparison -----------------------------------------
+study_exclusions = read_csv(here("output/NOCA_study_exclusions.csv"),
+                            show_col_types = FALSE) %>%
+  select(plot_id, study_exclusion_reason = exclusion_reason)
+comparison_ids = union(noca_ids, wilson_published$plot_id)
+NOCA_fire_Wilson2024_comparison = tibble(plot_id = sort(comparison_ids)) %>%
+  left_join(wilson_reproduced %>%
+              select(plot_id, wilson_burnt, reproduced_burnt,
+                     spatial_join_available), by = "plot_id") %>%
+  left_join(NOCA_plot_info_fire %>%
+              select(plot_id, paleoaces_burnt = burnt), by = "plot_id") %>%
+  left_join(study_exclusions, by = "plot_id") %>%
+  mutate(
+    universe_status = case_when(
+      plot_id %in% noca_ids & plot_id %in% wilson_published$plot_id ~ "shared",
+      plot_id %in% noca_ids ~ "PaleoACES_only",
+      TRUE ~ "Wilson_only"
+    ),
+    assignment_discrepancy = case_when(
+      universe_status != "shared" ~ NA,
+      paleoaces_burnt != wilson_burnt ~ TRUE,
+      TRUE ~ FALSE
+    ),
+    discrepancy_reason = case_when(
+      universe_status == "PaleoACES_only" ~ "not in Wilson publication plot universe",
+      universe_status == "Wilson_only" & !is.na(study_exclusion_reason) ~
+        paste0("excluded from PaleoACES: ", study_exclusion_reason),
+      universe_status == "Wilson_only" ~ "not retained in PaleoACES paired-plot universe",
+      assignment_discrepancy ~ "fire assignment differs",
+      !coalesce(spatial_join_available, TRUE) ~
+        "published unburned assignment; supplied spatial-join row missing",
+      TRUE ~ NA_character_
+    )
+  ) %>%
+  select(plot_id, universe_status, paleoaces_burnt, wilson_burnt,
+         reproduced_burnt, spatial_join_available, assignment_discrepancy,
+         study_exclusion_reason, discrepancy_reason)
 
-# Final map
-us_states = ne_states(country = "United States of America", returnclass = "sf")
-washington = us_states %>% filter(name == "Washington")
+universe_counts = count(NOCA_fire_Wilson2024_comparison, universe_status)
+observed_universe_counts = setNames(universe_counts$n, universe_counts$universe_status)
+expected_universe_counts = c(shared = 305L, PaleoACES_only = 2L, Wilson_only = 64L)
+if (!identical(observed_universe_counts[names(expected_universe_counts)],
+               expected_universe_counts)) {
+  stop("Unexpected PaleoACES/Wilson plot-universe comparison counts.")
+}
 
-png(filename = here("plot/study_sites_map.png"), height = 1500, width = 3000, res = 400)
-ggplot() +
-  geom_sf(data = washington, fill = "white", color = "#5E6973", linewidth = 0.5) +
-  geom_sf(data = mount_rainier, fill = "#6ABEA7", color = "#6ABEA7", linewidth = 0.5, alpha = 0.8) +
-  geom_sf(data = north_cascades, fill = "#6ABEA7", color = "#6ABEA7", linewidth = 0.5, alpha = 0.8) +
-  #theme_minimal() +
-  theme(panel.grid = element_blank(), panel.background = element_rect(fill = "white")) +
-  annotation_scale(location = "bl", width_hint = 0.3)
-dev.off()
+write_csv(MORA_plot_info_fire, here("output/MORA_plot_info_fire.csv"))
+write_csv(NOCA_plot_info_fire, here("output/NOCA_plot_info_fire.csv"))
+write_csv(NOCA_plot_info_fire,
+          here("output/NOCA_fire_assignment_audit.csv"))
+write_csv(NOCA_fire_Wilson2024_comparison,
+          here("output/NOCA_fire_Wilson2024_comparison.csv"))
 
-write_csv(NOCA_plot_info_fire, file = here("output/NOCA_plot_info_fire.csv"))
-write_csv(MORA_plot_info_fire, file = here("output/MORA_plot_info_fire.csv"))
+cat("NOCA fire assignments: 307 plots; 32 burned, 275 unburned.\n")
+cat("Wilson comparison: 305 shared, 2 PaleoACES-only, 64 Wilson-only; ",
+    "no shared fire discrepancies.\n", sep = "")
+
+# PaleoACES adaptation of Wilson et al. (2024) Figure 1 ----------------------
+shape_dir = file.path(fire_dir, "shapefiles ")
+wildfires = st_read(file.path(shape_dir, "fires/NOCA_Wildfire_History.shp"),
+                    quiet = TRUE) %>%
+  filter(!is.na(CAL_YEAR), between(as.integer(CAL_YEAR), SURVEY_START, SURVEY_END)) %>%
+  st_make_valid()
+prescribed = st_read(file.path(shape_dir, "fires/Prescribed_burn_history.shp"),
+                     quiet = TRUE) %>%
+  filter(!is.na(CAL_YEAR), between(as.integer(CAL_YEAR), SURVEY_START, SURVEY_END)) %>%
+  st_make_valid()
+treatments = st_read(file.path(shape_dir, "fires/Fire_treatment_history.shp"),
+                     quiet = TRUE) %>%
+  filter(!is.na(TreatYear), between(as.integer(TreatYear), SURVEY_START, SURVEY_END)) %>%
+  st_make_valid()
+park = st_read(file.path(shape_dir, "park/NOCA_Park_boundary.shp"), quiet = TRUE) %>%
+  st_make_valid()
+
+map_crs = "+proj=lcc +lon_0=-95 +lat_1=49 +lat_2=77 +datum=NAD83 +units=m +no_defs"
+wildfires_map = st_transform(wildfires, map_crs)
+prescribed_map = bind_rows(
+  st_transform(prescribed, map_crs) %>% select(geometry),
+  st_transform(treatments, map_crs) %>% select(geometry)
+)
+park_map = st_transform(park, map_crs)
+noca_points_map = NOCA_plot_info_fire %>%
+  mutate(fire_status = if_else(burnt, "Burned", "Unburned")) %>%
+  st_as_sf(coords = c("longitude", "latitude"), crs = 4326, remove = FALSE) %>%
+  st_transform(map_crs)
+
+bb = st_bbox(park_map)
+scale_x0 = unname(bb["xmax"] - 33000)
+scale_y0 = unname(bb["ymax"] - 28000)
+
+p_map = ggplot() +
+  geom_sf(data = park_map, fill = "white", color = "black", linewidth = 0.45) +
+  geom_sf(data = wildfires_map, aes(fill = "Natural fire"),
+          color = "#A9342A", linewidth = 0.25, alpha = 0.55) +
+  geom_sf(data = prescribed_map, aes(fill = "Prescribed fire"),
+          color = "#E88A00", linewidth = 0.25, alpha = 0.45) +
+  geom_sf(data = noca_points_map,
+          aes(shape = fire_status), color = "black", size = 1.65,
+          stroke = 0.75) +
+  scale_fill_manual(values = c("Natural fire" = "#E99989",
+                               "Prescribed fire" = "#F6C667"), name = NULL) +
+  scale_shape_manual(values = c("Burned" = 4, "Unburned" = 1), name = NULL) +
+  annotate("segment", x = scale_x0, xend = scale_x0 + 10000,
+           y = scale_y0, yend = scale_y0, linewidth = 0.7) +
+  annotate("segment", x = c(scale_x0, scale_x0 + 10000),
+           xend = c(scale_x0, scale_x0 + 10000),
+           y = scale_y0 - 900, yend = scale_y0 + 900, linewidth = 0.7) +
+  annotate("text", x = scale_x0 + 5000, y = scale_y0 + 2400,
+           label = "10 km", size = 3) +
+  annotate("segment", x = unname(bb["xmax"] - 5000),
+           xend = unname(bb["xmax"] - 5000),
+           y = unname(bb["ymax"] - 19000),
+           yend = unname(bb["ymax"] - 7000),
+           arrow = arrow(length = unit(0.24, "cm")), linewidth = 0.9) +
+  annotate("text", x = unname(bb["xmax"] - 5000),
+           y = unname(bb["ymax"] - 4500), label = "N",
+           fontface = "bold", size = 4) +
+  coord_sf(crs = map_crs, datum = st_crs(4326), expand = FALSE) +
+  labs(
+    title = "NOCA fire history - 307 PaleoACES plots",
+    caption = str_wrap(paste0(
+      "Wilson et al. (2024) fire method and symbology applied to the 307 retained PaleoACES plots. ",
+      "Natural and prescribed fires shown for 1983-2015; X = burned, circle = unburned."
+    ), width = 105)
+  ) +
+  theme_bw(base_size = 10) +
+  theme(
+    panel.grid.major = element_line(color = "grey75", linetype = "dashed", linewidth = 0.25),
+    panel.background = element_rect(fill = "white"),
+    legend.position = c(0.03, 0.97),
+    legend.justification = c(0, 1),
+    legend.background = element_rect(fill = scales::alpha("white", 0.86), color = "black"),
+    plot.title = element_text(face = "bold", size = 14),
+    plot.caption = element_text(hjust = 0, size = 8)
+  )
+
+world = map_data("world")
+mean_lon = mean(NOCA_plot_info_fire$longitude)
+mean_lat = mean(NOCA_plot_info_fire$latitude)
+p_inset = ggplot(world, aes(long, lat, group = group)) +
+  geom_polygon(fill = "grey82", color = "grey35", linewidth = 0.15) +
+  geom_point(data = data.frame(long = mean_lon, lat = mean_lat, group = 1),
+             aes(long, lat), inherit.aes = FALSE, shape = 8, size = 2.4) +
+  coord_map("ortho", orientation = c(48, -121, 0)) +
+  theme_void() +
+  theme(panel.border = element_rect(fill = NA, color = "black", linewidth = 0.4))
+
+noca_fire_map = p_map + inset_element(
+  p_inset, left = 0.02, bottom = 0.02, right = 0.30, top = 0.29,
+  align_to = "panel"
+)
+if (render_figures) {
+  ggsave(here("plot/test_figures/NOCA_fire_map_Wilson2024_PaleoACES.pdf"),
+         noca_fire_map, width = 7.5, height = 10, bg = "white")
+}

@@ -17,6 +17,8 @@ library(readxl)
 library(viridis)
 library(ggalluvial)
 library(here)
+source(here("R/functions.R"))
+render_figures = isTRUE(getOption("paleoaces.render_figures", TRUE))
 
 # Past (1978) raw sources: seedlings from "Rainier Veg", adults from "rawsizedata"
 MORA_raw_file = here("data/raw/MORA_Cascade Legacy Data_Original1978.xlsx")
@@ -32,6 +34,23 @@ MORA_trees     = read_csv(here("data/MORA/MORA_TreeData_Resurvey_Cleaned.csv"))
 MORA_plot_lib = read_csv(here("data/MORA/MORA_plot_lib.csv"))
 MORA_sp_lib = read_csv(here("data/MORA/MORA_spp_lib.csv"))
 MORA_sp_lib = MORA_sp_lib %>% mutate(past_code = ifelse(past_code == "TSH4", "TSHE", past_code))
+
+# ---- in-memory patch: the legacy Populus code (same pattern as TSH4 above) ---
+# MORA_spp_lib.csv's only Populus row is `past_code = "absent_past" / prst_code =
+# "POPBAL"`, i.e. it asserts Populus was not recorded in 1978. It was: the legacy
+# workbook has POTR in `rawsizedata` (4 plots, 6 stems) and a POTR2 column in
+# `Rainier Veg`. With no past_code == "POTR" row, the past join returns NA and
+# those 4 plots are silently discarded - so MORA read "Populus 0 past / 3
+# present", a false colonisation.
+#
+# Patched HERE and not in the CSV, on purpose: the library file is shared, and
+# this is a code-LINKAGE fix, not a taxonomic one. The taxonomy (balsamifera and
+# trichocarpa are one taxon -> Populus trichocarpa) stays where every other
+# cross-site naming decision lives, in R/000_occurrence_data_consolidate.R.
+stopifnot(sum(MORA_sp_lib$prst_code == "POPBAL", na.rm = TRUE) == 1)
+stopifnot(!"POTR" %in% MORA_sp_lib$past_code)   # no competing row to collide with
+MORA_sp_lib = MORA_sp_lib %>%
+  mutate(past_code = ifelse(prst_code == "POPBAL" & !is.na(prst_code), "POTR", past_code))
 
 # Test function to validate data
 run_tests = function() {
@@ -201,10 +220,14 @@ clean_past = function(mora_veg, mora_size, mora_plot_lib, mora_sp_lib) {
 
   # Join with plot library to get standardized plot_id, then merge seedling +
   # adult into a single presence record per plot-species
+  # `stage` is RETAINED here (it used to be dropped by this distinct()). The
+  # caller collapses it away for MORA_occ.csv and keeps it for
+  # MORA_occ_stage.csv, which is what lets the adult-vs-seedling figure be built
+  # from an output file instead of from this script's in-memory objects.
   past_final = past_filtered %>%
     left_join(mora_plot_lib, by = "Plotno") %>%
     filter(!is.na(plot_id)) %>%
-    distinct(period, year, plot_id, species = final_species, occurrence)
+    distinct(period, year, plot_id, species = final_species, stage, occurrence)
 
   cat("  - Final past data (merged to presence):", nrow(past_final), "records\n")
 
@@ -270,11 +293,12 @@ clean_present = function(mora_seedlings, mora_trees, mora_plot_lib, mora_sp_lib)
 
   # Attach standardized plot_id + survey year, then merge seedling + adult
   # into a single presence record per plot-species
+  # `stage` retained - see the note in clean_past().
   present_final = present_filtered %>%
     left_join(mora_plot_lib %>% select(Plot_ID, plot_id), by = "Plot_ID") %>%
     filter(!is.na(plot_id)) %>%
     left_join(present_year, by = "Plot_ID") %>%
-    distinct(period, year, plot_id, species = final_species, occurrence)
+    distinct(period, year, plot_id, species = final_species, stage, occurrence)
 
   cat("  - Final present data (merged to presence):", nrow(present_final), "records\n")
 
@@ -391,8 +415,18 @@ check_library_matching(MORA_veg, MORA_size, MORA_seedlings, MORA_trees,
 mora_past_clean = clean_past(MORA_veg, MORA_size, MORA_plot_lib, MORA_sp_lib)
 mora_present_clean = clean_present(MORA_seedlings, MORA_trees, MORA_plot_lib, MORA_sp_lib)
 
-# Combine past and present data
+# Combine past and present data.
+# The two cleaners now return one row per plot x species x STAGE. mora_stage
+# keeps that resolution for the adult-vs-seedling figure; mora_occ collapses it
+# back to one presence row per plot x species, which is what it always was -
+# the distinct() below is what makes the seedling/adult merge, so it must not be
+# dropped or every species present at both stages would be counted twice.
+mora_stage = bind_rows(mora_past_clean, mora_present_clean) %>%
+  distinct(period, plot_id, species, stage) %>%
+  arrange(plot_id, species, period, stage)
+
 mora_occ = bind_rows(mora_past_clean, mora_present_clean) %>%
+  distinct(period, year, plot_id, species, occurrence) %>%
   arrange(plot_id, species, period)
 
 cat("Combined dataset created with", nrow(mora_occ), "total records\n")
@@ -449,6 +483,13 @@ cat("- Present records:", sum(mora_occ$period == "present"), "\n")
 
 # Write to CSV (commented out for safety)
 write_csv(mora_occ, file = here("output/MORA_occ.csv"))
+# Stage-resolved companion. Same plots and species as MORA_occ.csv, but one row
+# per stage, so R/000_occurrence_data_consolidate.R can draw the adult vs
+# seedling comparison WITHOUT source()-ing this script (which would rewrite these
+# outputs as a side effect, which was the problem in the removed historical stage diagnostic).
+write_csv(mora_stage, file = here("output/MORA_occ_stage.csv"))
+stopifnot(setequal(paste(mora_stage$plot_id, mora_stage$species, mora_stage$period),
+                   paste(mora_occ$plot_id,   mora_occ$species,   mora_occ$period)))
 load(here("data/MORA_plots.rda"))
 write_csv(plot_info, file = here("output/MORA_plot_info.csv"))
 
@@ -479,12 +520,14 @@ count_plot =
   xlab("")+
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
-pdf(file = here("plot/MORA_dynamics.pdf"), width = 10, height = 8)
-print("Creating turnover heatmap...")
-print(heatmap_plot)
+if (render_figures) {
+  pdf(file = here("plot/test_figures/MORA_dynamics.pdf"), width = 10, height = 8)
+  print("Creating turnover heatmap...")
+  print(heatmap_plot)
 
-print("Creating alluvial flow diagram...")
-print(alluvial_plot)
+  print("Creating alluvial flow diagram...")
+  print(alluvial_plot)
 
-print(count_plot)
-dev.off()
+  print(count_plot)
+  dev.off()
+}

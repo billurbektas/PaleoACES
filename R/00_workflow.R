@@ -1,97 +1,112 @@
-library(here)
-library(tidyverse)
-library(conflicted)
-library(readxl)
-library(lubridate)
-library(TNRS)
-library(splines)
-library(vegan)
-library(ggrepel)
-library(factoextra)
-library(FactoMineR)
-library(betareg)
-library(ggpubr)
-library(gt)
-library(e1071)
-library(DBI)
-library(RSQLite)
-library(visNetwork)
-library(sf)
-library(maptiles)
-library(tidyterra)
-library(khroma)
-library(rayshader)
-library(elevatr)
-library(terra)
-library(rnaturalearth)
-library(rnaturalearthdata)
-library(ggspatial)
-library(devtools)
-library(Rchelsa)
-library(reticulate)
-library(corrplot)
+# PaleoACES active workflow driver -------------------------------------------
+#
+# Standard cached rebuild:
+#   Rscript R/00_workflow.R
+# Offline rebuild from existing climate products:
+#   Rscript R/00_workflow.R --offline
+# Refit the slow Bacon age-depth models first:
+#   Rscript R/00_workflow.R --age-models
+# Optional: --skip-figures, --skip-tests
 
-source(here("R/functions.R"))
+suppressPackageStartupMessages(library(here))
 
-if(!file.exists(here("output/MORA_occ.csv"))){
-  source(here("R/000_MORA_cleaning.R"))
+args = commandArgs(trailingOnly = TRUE)
+offline = "--offline" %in% args
+run_age_models = "--age-models" %in% args
+skip_figures = "--skip-figures" %in% args
+skip_tests = "--skip-tests" %in% args
+unknown = setdiff(args, c("--offline", "--age-models", "--skip-figures", "--skip-tests"))
+if (length(unknown)) stop("Unknown workflow option(s): ", paste(unknown, collapse = ", "))
+
+# Shared by every workflow-owned script that can persist a PDF or PNG. Scripts
+# run directly still render by default; the workflow option suppresses only
+# persistent figure writes, never analytical tables or classifications.
+options(paleoaces.render_figures = !skip_figures)
+
+run_script = function(path, label = basename(path)) {
+  cat("\n", strrep("=", 78), "\n", label, "\n", strrep("=", 78), "\n", sep = "")
+  sys.source(here(path), envir = new.env(parent = globalenv()))
 }
-if(!file.exists(here("output/NOCA_occ.csv"))){
-  source(here("R/000_NOCA_cleaning.R"))
-}
-if(!file.exists(here("output/MORA_plot_info_fire.csv"))){
-  source(here("R/01_get_fire_info.R"))
-}
-if(!file.exists("mount_rainier.png")){
-  source(here("R/02_mountain_rayshader.R"))
+require_outputs = function(paths, reason) {
+  paths = here(paths)
+  missing = paths[!file.exists(paths)]
+  if (length(missing))
+    stop(reason, " Missing: ", paste(missing, collapse = ", "))
 }
 
+# 1. Modern vegetation and Anthropocene fire
+run_script("R/000_MORA_cleaning.R")
+run_script("R/000_NOCA_cleaning.R")
+run_script("R/01_get_fire_info.R")
 
-here()
-conflict_prefer("select", "dplyr")
-conflict_prefer("filter", "dplyr")
-conflicts_prefer(rayshader::plot_map)
-conflicts_prefer(base::intersect)
-conflicts_prefer(base::union)
+# 2. Modern climate. Chunk caches are validated against coordinates/settings.
+if (offline) {
+  require_outputs(c("output/MORA_climate.csv", "output/NOCA_climate.csv"),
+                  "Offline mode requires existing Anthropocene climate outputs.")
+} else {
+  run_script("R/000_MORA_climate.R")
+  run_script("R/000_NOCA_climate.R")
+}
 
+# 3. Paleo age-depth, vegetation, fire, and climate
+if (run_age_models) run_script("R/000_PALEO_a_agedepth.R")
+run_script("R/000_PALEO_b_vegetation.R")
+run_script("R/000_FIRE_cleaning.R")
+run_script("R/000_PALEO_c_fire.R")
 
+if (offline) {
+  require_outputs("output/chelsa_paleo_ponds.csv",
+                  "Offline mode requires the cached paleo pond climate product.")
+} else {
+  run_script("R/000_PALEO_d_climate_download.R")
+}
+run_script("R/000_PALEO_e_climate.R")
 
-color_era = c("paleo" = "#44AA99",
-              "past" = "#88CCEE",
-              "present" = "#CC6677"
-              )
-color_era2 = c("holocene_6000" = "#117733",
-               "holocene_1000" = "#44AA99",
-              "past" = "#88CCEE",
-              "present" = "#CC6677"
-)
-color_era3 = c("holocene" = "#785EF0",
-              "anthropocene" = "#DC267F"
-)
-color_site = c("JayBath" = "#117733",
-               "LogWallow" = "#A8E69A",
-               "ReflectionPond" = "#356F90"
-               )
-color_mt = c("MORA"="#648FFF", "NOCA"="#FE6100")
+# 4. Consolidation and model
+run_script("R/000_occurrence_data_consolidate.R")
+run_script("R/05_cca_model.R")
 
-## FUNCTIONS ----
-# calculate_mess = function(reference_matrix, projection_matrix) {
-#   mess_scores = matrix(NA, nrow = nrow(projection_matrix), ncol = ncol(projection_matrix))
-#   
-#   for(i in 1:ncol(projection_matrix)) {
-#     ref_var = reference_matrix[, i]
-#     proj_var = projection_matrix[, i]
-#     
-#     ref_min = min(ref_var, na.rm = TRUE)
-#     ref_max = max(ref_var, na.rm = TRUE)
-#     ref_range = ref_max - ref_min
-#     
-#     mess_scores[, i] = ifelse(proj_var < ref_min, 
-#                               100 * (proj_var - ref_min) / ref_range,
-#                               ifelse(proj_var > ref_max,
-#                                      100 * (ref_max - proj_var) / ref_range,
-#                                      100))
-#   }
-#   
-#   apply(mess_scores, 1, min, na.rm = TRUE)
-# }
+# 5. Analysis products. These always run, including with --skip-figures.
+# Primary tracking uses 1,000-year bins; the former 500-year framework is an
+# explicitly suffixed sensitivity and runs first so the primary products win.
+run_script("R/09_tracking_metrics_500yr_sensitivity.R")
+run_script("R/09_tracking_metrics.R")
+
+# Assemble source-specific accepted fire events, then independently build the
+# literature-blind unified climate-era/fire classification. Stage 13 creates the
+# frozen era grid required by the main CCA trajectory render.
+run_script("R/12_walsh_fire_reproduction.R")
+run_script("R/13_holocene_climate_fire_eras.R")
+
+# Derived audit/visualization data. Mixed scripts still write their CSV audits
+# under --skip-figures; only their persistent PDF/PNG writes are suppressed.
+run_script("R/05a_cca_figure.R")
+run_script("R/09a_method_example.R")
+run_script("R/12a_fire_event_detection_worked_example.R")
+run_script("R/13a_climate_change_figure.R")
+run_script("R/13b_fire_method_worked_example.R")
+run_script("R/09b_tracking_visualization_data.R")
+run_script("R/09c_tracking_comparison.R")
+run_script("R/14_cca_direction_analysis.R")
+
+# 6. Fast, offline, load-bearing regression gates
+if (!skip_tests) {
+  run_script("R/test_check_vegetation.R")
+  run_script("R/test_NOCA_tree_corrections.R")
+  run_script("R/test_NOCA_fire_assignments.R")
+  run_script("R/test_paleo_climate_age_match.R")
+  run_script("R/test_paleo_split_validation.R")
+  run_script("R/test_bacon_provenance.R")
+  run_script("R/test_cca_tracking_metrics.R")
+  run_script("R/test_cca_tracking_visualizations.R")
+  run_script("R/test_walsh_fire_reproduction.R")
+  run_script("R/test_holocene_climate_fire_eras.R")
+  run_script("R/test_cca_trajectory_figure.R")
+  run_script("R/test_cca_direction_geometry.R")
+  run_script("R/test_cca_direction_analysis.R")
+  run_script("R/test_figure_output_contract.R")
+  run_script("R/test_workflow_contract.R")
+  run_script("R/test_documentation.R")
+}
+
+cat("\nPaleoACES workflow completed successfully.\n")

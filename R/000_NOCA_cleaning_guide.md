@@ -1,165 +1,114 @@
----
-output:
-  pdf_document: default
-  html_document: default
----
-# NOCA Forest Survey Data Processing: Step-by-Step Guide
+# NOCA modern vegetation cleaning guide
 
-## Overview
-This R script processes forest resurvey data from North Cascades National Park (NOCA), comparing historical (1980s) and present (2015) vegetation surveys. The script cleans, merges, and tracks changes in forest plots over time.
+Operational script: [`R/000_NOCA_cleaning.R`](000_NOCA_cleaning.R). This guide
+describes the current 2026 correction and paired-plot contract; it is not an
+executable stage. See the root [workflow](../WORKFLOW.md) for order and commands.
 
-## Key Steps and Decision Points
+## Purpose
 
-### 1. Initial Data Loading and Plot Setup
-**What happens:**
-- Loads plot coordinate data from Wilson's dataset
-- Renames columns for consistency (`2015.Plot.Name` → `plot_id`)
-- Filters out specific problematic plots: "Supp2026", "ROSS4001REF", "Supp5127"
-- Removes plots without GPS coordinates (missing Latitude)
+The cleaner harmonizes the 1983 Agee legacy tree survey with the 2014–2015 JHRL
+tree and seedling resurvey, applies the received corrected-tree workbook as an
+authoritative patch, excludes records that are not supported taxonomic
+identifications, and retains only defensible paired plots.
 
-**Key Decision:** Manual exclusion of 3 specific plots - likely based on data quality issues discovered in prior analysis.
+Presence means a species occurs as either an adult tree or regeneration. The
+separate stage table preserves those strata for diagnostics. NOCA legacy
+regeneration is the 0–3 m height class, whereas resurvey seedlings are 10–140 cm;
+stage-specific temporal comparisons therefore have a measurement caveat.
 
-### 2. Plot Tracking System Initialization
-**What happens:**
-- Creates empty dataframe to track all plot processing decisions
-- Will record: plot_id, period (past/present/both), status (kept/removed), reason
+## Immutable inputs
 
-**Key Decision:** Implementing comprehensive tracking to maintain data provenance and justify all exclusions.
+| Input | Role |
+|---|---|
+| `data/NOCA/AGEEDATA_NEW.xlsx` | Legacy TREE, overview, and species-code sheets. |
+| `data/NOCA/NOCA_vegetation_fromJHRL.xlsx` | Original resurvey trees, seedlings, and species lookup. |
+| `data/NOCA/NOCA_plots_fromWilson.csv` | Resurvey ID mapping and coordinates. |
+| `data/NOCA/OriginalDataFiles_NOCA/2026_corrected_trees_for_Billur.xlsx` | Authoritative 2026 replacement rows. |
+| `notes_from_Rachel/Missing trees.rtf` | Historical-location evidence for one study exclusion. |
+| `notes_from_Rachel/Burned plots.rtf` | Old-clearcut evidence for one study exclusion. |
 
-### 3. Present Period Data Processing (2015 surveys)
+Raw inputs are never edited.
 
-#### Species Library Creation
-**What happens:**
-- Loads species abbreviation lookup table from Excel
-- Maps legacy codes to present codes to species names
-- Handles special cases with manual species name corrections for 9 species (ABPE, THSE, etc.)
+## Authoritative tree patch
 
-**Key Decision:** Manual species name standardization ensures taxonomic consistency across time periods.
+The workbook must contain `Plot`, `Species`, and numeric `DBH`, exactly 2,366
+rows across 54 corrected targets. Plot and species strings are normalized before
+matching. Existing rows at corrected target/source groups are removed first, then
+all valid corrected stems are appended once. This makes the operation idempotent
+and prevents duplicate inflation.
 
-#### Tree Data Processing
-**What happens:**
-- Loads tree measurements (DBH = Diameter at Breast Height)
-- Joins with species library to get full species names
-- Identifies plots with no species data
+The patch explicitly resolves four renamed source IDs and two mixed source groups
+that split into separate corrected plot IDs. Species codes are resolved through
+the existing JHRL crosswalk. Rows lacking a supported taxonomic identification
+are discarded before occurrence and stage construction and are not analytical
+findings or taxa.
 
-#### Plot Quality Control
-**What happens:**
-- Finds plots where ALL records have missing species (100% NA)
-- Removes these "empty" plots from analysis
-- Tracks removal reason: "no species recorded"
+Three corrected targets are not in the retained paired universe:
 
-**Key Decision:** Only removes plots with zero usable species data, not plots with partial missing data.
+| Plot | Reason |
+|---|---|
+| `HB5144` | Missing coordinates. |
+| `ROSS3022` | No matching legacy tree survey. |
+| `MCAL5004` | No matching legacy tree survey. |
 
-### 4. Present Period Summary Statistics
-**What happens:**
-- Creates occurrence matrix (plot × species)
-- Groups by plot and species, counting occurrences
-- Reports final plot count for present period
+The correction changes present-period composition in 50 retained plots. The
+coordinate set remains unchanged, so this data correction does not invalidate
+coordinate-fingerprinted climate caches.
 
-### 5. Historical Data Processing (1980s surveys)
+`CARI449` and `CARI450` have opposite raw longitude signs but normalize to the
+same coordinate (48.51429, −121.21725) despite elevations of 622 and 1,149 m.
+Both are retained pending confirmation from a primary coordinate source. The
+cleaner records this unresolved collision explicitly rather than silently
+changing coordinates or excluding either plot.
 
-#### Data Loading and Joining
-**What happens:**
-- Loads historical tree data, species library, and plot info from Excel sheets
-- Joins historical species codes with present-day species library for consistency
-- Links with GPS coordinates from plot data
+## Paired-plot rules
 
-#### GPS Coordinate Quality Control
-**What happens:**
-- Identifies plots missing Latitude OR Longitude
-- Removes these plots from analysis
-- Tracks removal reason: "missing GPS coordinates"
+Plots must have a valid present ID, valid coordinates, and an eligible legacy
+counterpart. A plot with no supported occurrence in one period is retained with
+an explicit zero placeholder when the other period has vegetation. Plots empty in
+both periods are removed.
 
-**Key Decision:** GPS coordinates essential for spatial analysis - plots without coordinates cannot be used.
+Two otherwise paired plots are excluded at study level:
 
-#### Species Name Standardization
-**What happens:**
-- Additional manual correction for "ACCI" → "Acer circinatum"
-- Handles tree density data across size classes (0-3cm, 3-10cm, >10cm DBH)
-- Converts NA density values to 0 (assumes no trees if not recorded)
+| Plot | Reason and source |
+|---|---|
+| `BAK487` | Old clearcut; removed from Wilson's final analysis (`notes_from_Rachel/Burned plots.rtf`). |
+| `BEAV6061` | Historical location uncertain; elevation was inaccurate and the resurvey landed in an avalanche chute (`notes_from_Rachel/Missing trees.rtf`). |
 
-**Key Decision:** Treating missing density as zero rather than unknown maintains data completeness.
+These are study-design exclusions, not silent cleaning losses.
 
-### 6. Plot Matching and Filtering
+## Verified outputs
 
-#### Temporal Matching
-**What happens:**
-- Finds intersection of plots surveyed in BOTH time periods
-- Identifies three categories:
-  1. Empty in past, trees present now (colonization)
-  2. Trees in past, empty now (extirpation) 
-  3. Trees in both periods (persistence)
-  4. Empty in both periods (removed from analysis)
+| Output | Contract |
+|---|---|
+| `output/NOCA_occ.csv` | 307 paired plots, 1,790 rows, 31 identified taxa; unique plot × taxon × period; occurrence in `{0,1}`. |
+| `output/NOCA_occ_stage.csv` | Adult/regeneration evidence only; no synthetic zero rows and no unsupported labels. |
+| `output/NOCA_present_occ.csv`, `output/NOCA_past_occ.csv` | Period-specific occurrence components. |
+| `output/NOCA_plot_info.csv` | Exactly the 307 paired plot IDs and their coordinates/elevation. |
+| `output/NOCA_coordinate_collision_audit.csv` | Raw and normalized coordinates, elevations, shared-coordinate count, elevation range, and unresolved-retained status for `CARI449`/`CARI450`. |
+| `output/NOCA_plot_tracking.csv` | Kept/removed plot accounting and reasons. |
+| `output/NOCA_tree_correction_audit.csv` | One row per corrected target with removed/added counts, action, final status, and exclusion reason. |
+| `output/NOCA_tree_composition_audit.csv` | Unpatched-versus-corrected present composition for all retained plots; 50 changes. |
+| `output/NOCA_study_exclusions.csv` | The two explicit study exclusions and note provenance. |
 
-**Key Decision:** Only analyzes plots with data from both time periods to enable change detection.
+The 1,790 rows include 18 explicit zero placeholders. Removing unsupported
+identifications upstream adds two placeholders relative to the former downstream-
+only exclusion, so consolidated row count changes while presence content and the
+CCA result do not.
 
-#### Final Plot Selection
-**What happens:**
-- Keeps plots present in both datasets
-- Removes plots empty in both periods (no ecological information)
-- Tracks all decisions in plot_tracking dataframe
+## Validation
 
-### 7. Data Harmonization for Empty Plots
+Run immediately after cleaning:
 
-#### Placeholder Species Addition
-**What happens:**
-- For plots empty in one period, adds dummy "Abies amabilis" record with count = 0
-- Enables creation of complete species occurrence matrices
+```bash
+Rscript R/000_NOCA_cleaning.R
+Rscript R/test_NOCA_tree_corrections.R
+Rscript R/test_check_vegetation.R
+```
 
-**Key Decision:** Technical necessity - creates consistent data structure while preserving information about plot emptiness.
-
-### 8. Final Data Merging
-**What happens:**
-- Combines past and present occurrence data
-- Adds period identifier ("past"/"present")
-- Creates unified dataset for analysis
-
-### 9. Tracking and Visualization
-
-#### Summary Statistics Generation
-**What happens:**
-- Counts plots by status (kept/removed) and reason
-- Identifies colonization vs extirpation events
-- Creates detailed tracking summaries
-
-#### Visualization Creation
-**What happens:**
-- Generates three plots:
-  1. Overall plot status by removal reason
-  2. Plot status breakdown by time period  
-  3. Forest change events (colonization/extirpation)
-- Saves to PDF for documentation
-
-### 10. Data Export
-**What happens:**
-- Writes 5 CSV files:
-  - Present period occurrences
-  - Past period occurrences
-  - Plot location information
-  - Combined occurrence data
-  - Complete plot tracking log
-
-## Critical Decision Points Summary
-
-1. **Manual Plot Exclusions:** Specific plots removed based on known data quality issues
-2. **Species Standardization:** Manual corrections ensure taxonomic consistency across periods
-3. **GPS Requirement:** Plots without coordinates excluded (spatial analysis requirement)
-4. **Missing Data Handling:** NAs converted to zeros for density data
-5. **Temporal Matching:** Only plots from both periods retained for change analysis
-6. **Empty Plot Strategy:** Dummy records maintain data structure while preserving ecological information
-7. **Comprehensive Tracking:** All decisions logged for reproducibility and transparency
-
-## Key Variables Tracked
-- **plot_id:** Present period plot identifier
-- **plot_id_past:** Historical period plot identifier  
-- **species:** Standardized taxonomic names
-- **count/occurrence:** Tree abundance measures
-- **period:** Temporal identifier (past/present)
-- **Latitude/Longitude/elevation:** Spatial coordinates
-
-## Output Deliverables
-- Clean, standardized occurrence matrices for both time periods
-- Comprehensive plot tracking with removal justifications
-- Summary visualizations of data processing decisions
-- Spatial plot information for mapping
-- Combined dataset ready for change analysis
+The focused patch test validates workbook shape, target coverage, exact audit
+accounting, correction exclusions, changed-composition count, unsupported-label
+absence, paired-plot count, uniqueness, study exclusions, and the sole exact
+normalized-coordinate collision. The general
+vegetation gate additionally requires the occurrence and plot-info universes to
+match and both periods to contain the same 307 plots.
