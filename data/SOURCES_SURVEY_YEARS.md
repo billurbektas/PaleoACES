@@ -287,4 +287,4 @@ CHELSA GeoTIFF header (EPSG:4326, 0.008333°). Google Maps reports the same. **N
 reprojection is needed or applied anywhere in this pipeline.**
 
 The full pond series was re-downloaded on the corrected coordinates (462 chunks); the
-pre-correction cache is archived as `output/chelsa_paleo_OLDCOORD_20260813/`.
+pre-correction cache is archived as `output/archive/chelsa_paleo_OLDCOORD_20260813/`.

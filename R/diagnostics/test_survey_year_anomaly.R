@@ -14,7 +14,7 @@
 # rested on 1979-1980 - effectively one complete year after alignment - and a single
 # year sits wherever it happens to sit in the distribution. The legacy windows are now
 # ~10 yr at both sites, so they average over interannual variability by construction
-# and cannot be badly unrepresentative. The test is kept because the PRESENT windows
+# but their representativeness still requires checking. The test is kept because the PRESENT windows
 # are still short (6 yr at NOCA) and because the answer for the old windows is part of
 # the record - see data/SOURCES_SURVEY_YEARS.md.
 #
@@ -36,11 +36,11 @@
 
 library(here)
 suppressMessages({library(dplyr); library(tidyr); library(readr); library(ggplot2)})
-source(here("R/vendor/get_chelsa.R"))
-source(here("R/helpers/get_chelsa_monthly.R"))
-source(here("R/helpers/climate_variables.R"))
-source(here("R/helpers/config.R"))
-source(here("R/helpers/offline_cache.R"))
+source(here("R/vendor/get_chelsa.R"), local = TRUE)
+source(here("R/helpers/get_chelsa_monthly.R"), local = TRUE)
+source(here("R/helpers/climate_variables.R"), local = TRUE)
+source(here("R/helpers/config.R"), local = TRUE)
+source(here("R/helpers/offline_cache.R"), local = TRUE)
 
 CACHE  = here("output/anomaly_parts")
 ALL_YEARS = 1979:2021
@@ -127,7 +127,7 @@ series = env %>% group_by(site, year) %>%
 # 2. vs all rolling windows OF THE SAME LENGTH - like for like. A short window has a
 #    wider sampling distribution than a long one, so comparing a 6-yr window to a
 #    43-yr mean overstates how extreme it is. This matters most for NOCA present
-#    (6 yr); the 11-yr legacy windows are close to the record mean by construction.
+#    (6 yr); legacy-window position still requires the calculation below.
 # 3. vs the DETRENDED series - removes the linear trend first, so this answers
 #    "unusual FOR ITS OWN TIME", which is the question that actually matters.
 rolling_mean = function(v, n) if (n >= length(v)) mean(v) else

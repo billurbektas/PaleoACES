@@ -1,6 +1,6 @@
 # Geometry gate for the implemented species/climate direction stage.
 suppressPackageStartupMessages({library(here); library(tidyverse); library(vegan)})
-source(here("R/stages/05_cca_model.R"))
+source(here("R/stages/05_cca_model.R"), local = TRUE)
 
 TOL = 1e-8
 cosine = function(a, b, tol = TOL) {

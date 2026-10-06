@@ -20,10 +20,10 @@ suppressPackageStartupMessages({
   library(vegan)
   library(patchwork)
 })
-source(here("R/helpers/config.R"))
-source(here("R/helpers/tracking_metrics.R"))
-source(here("R/helpers/figure_style.R"))
-source(here("R/stages/05_cca_model.R"))
+source(here("R/helpers/config.R"), local = TRUE)
+source(here("R/helpers/tracking_metrics.R"), local = TRUE)
+source(here("R/helpers/figure_style.R"), local = TRUE)
+source(here("R/stages/05_cca_model.R"), local = TRUE)
 
 render_figures = isTRUE(getOption("paleoaces.render_figures", TRUE))
 DIRECTION_EPSILON = TRACKING_EPSILON

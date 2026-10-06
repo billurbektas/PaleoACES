@@ -113,7 +113,7 @@
 library(tidyverse)
 library(here)
 library(readxl)
-source(here("R/helpers/config.R"))
+source(here("R/helpers/config.R"), local = TRUE)
 render_figures = isTRUE(getOption("paleoaces.render_figures", TRUE))
 
 VERIFY_AGAINST_RAW = TRUE   # re-derive the two tables above from the raw workbooks
@@ -425,7 +425,7 @@ p_stage = ggplot(stage_counts, aes(species, n_plots, fill = period)) +
        title = "Adults vs regeneration, past vs present",
        subtitle = paste0("Plots per species, past and present side by side within each stage - localises a change to\n",
                          "adults or to regeneration. Consolidated species set (understory taxa removed)."),
-       caption = paste0("Adults are comparable across all four panels. REGENERATION IS NOT: NOCA past uses the ",
+       caption = paste0("Size limits differ: NOCA adults are >3 m in the legacy survey versus >1.4 m in resurveys. NOCA past regeneration uses the ",
                         "legacy 0-3 m\nheight class, whereas MORA (both eras) and NOCA present use 10-140 cm ",
                         "seedling surveys. The NOCA\npast-vs-present regeneration contrast is therefore ",
                         "confounded by band width.")) +

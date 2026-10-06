@@ -27,8 +27,8 @@
 
 library(here)
 library(tidyverse)
-source(here("R/helpers/climate_variables.R"))
-source(here("R/helpers/config.R"))
+source(here("R/helpers/climate_variables.R"), local = TRUE)
+source(here("R/helpers/config.R"), local = TRUE)
 
 CCA_VARS = CCA_VARIABLES
 ALL_VARS = c("MAT", "MSpT", "MST", "MWT", "AP", "SpP", "SP", "WP")

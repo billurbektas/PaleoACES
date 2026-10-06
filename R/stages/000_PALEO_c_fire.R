@@ -126,8 +126,8 @@ paleo_fire = paleo_fire %>%
 # artificially coarsened to the MORA grids. The sites' raw peak counts and
 # magnitudes are never compared directly.
 library(tapas)
-source(here("R/helpers/paleo_ages.R"))
-source(here("R/helpers/fire_detection_functions.R"))
+source(here("R/helpers/paleo_ages.R"), local = TRUE)
+source(here("R/helpers/fire_detection_functions.R"), local = TRUE)
 
 NOCA_YRINTERP_PRIMARY = 12
 NOCA_SMOOTH_PRIMARY   = 500

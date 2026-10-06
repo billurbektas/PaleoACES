@@ -1,0 +1,5 @@
+statistic,n_depths_below_35cm,max_absolute_difference_years,depth_of_max_cm
+min.95,1676,24.0,602.5
+max.95,1676,28.0,495.5
+median,1676,15.0,430.5
+mean,1676,15.0,50.5

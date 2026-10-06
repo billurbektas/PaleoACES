@@ -38,9 +38,9 @@
 
 library(here)
 library(tidyverse)
-source(here("R/helpers/bacon_settings.R"))     # CORE_ARGS, bacon_draws()
-source(here("R/helpers/config.R"))
-source(here("R/helpers/chronology_provenance.R"))
+source(here("R/helpers/bacon_settings.R"), local = TRUE)     # CORE_ARGS, bacon_draws()
+source(here("R/helpers/config.R"), local = TRUE)
+source(here("R/helpers/chronology_provenance.R"), local = TRUE)
 
 # -----------------------------------------------------------------------------
 # Run configuration - all `if (!exists())`, so a caller can sweep any of them
@@ -114,6 +114,23 @@ paleo_age_draws = function(n_draws = N_DRAWS, seed = DRAW_SEED, cache = TRUE) {
   sd_tbl = read_csv(here("output/paleo_sample_depths.csv"), show_col_types = FALSE)
   stopifnot(setequal(sd_tbl$lake, CORES))
 
+  # Bacon(run=FALSE) rewrites the serialized configuration's "Ran on" line.
+  # A posterior read must preserve that provenance, just as bacon_draws()
+  # preserves the stored .out. This guard also restores files on errors.
+  serialized = list.files(here("Cores"), pattern = "[.]bacon$",
+                          recursive = TRUE, full.names = TRUE)
+  serialized_hash = tools::md5sum(serialized)
+  snapshots = tempfile("age-draw-config-protection-")
+  dir.create(snapshots)
+  copies = file.path(snapshots, as.character(seq_along(serialized)))
+  if (!all(file.copy(serialized, copies))) stop("Cannot protect Bacon configuration files.")
+  restore_serialized = function() {
+    if (!all(file.copy(copies, serialized, overwrite = TRUE)) ||
+        !identical(serialized_hash, tools::md5sum(serialized)))
+      stop("Bacon configuration restoration failed.")
+  }
+  on.exit({restore_serialized(); unlink(snapshots, recursive = TRUE)}, add = TRUE)
+
   out = map_dfr(CORES, function(core) {
     d = sd_tbl %>% filter(lake == core) %>% arrange(depth)
     # ssize is part of CORE_ARGS where it matters (PantherPotholes, 10000) - it
@@ -141,6 +158,7 @@ paleo_age_draws = function(n_draws = N_DRAWS, seed = DRAW_SEED, cache = TRUE) {
   # binned figures while still looking present in paleo_occ.
   stopifnot(nrow(out) == n_distinct(sd_tbl$plot_id) * n_draws,
             !any(is.na(out$age)))
+  restore_serialized()
 
   if (cache) saveRDS(list(draws = out, n_draws = n_draws, seed = seed,
                           dependency_signature = dependency_signature), cache_file)

@@ -6,8 +6,8 @@ suppressPackageStartupMessages({
   library(here)
   library(tidyverse)
 })
-source(here("R/helpers/config.R"))
-source(here("R/helpers/tracking_metrics.R"))
+source(here("R/helpers/config.R"), local = TRUE)
+source(here("R/helpers/tracking_metrics.R"), local = TRUE)
 
 # Tracking climate rates and scaling must follow the active fitted CCA exactly.
 stopifnot(identical(CCA_VARIABLES, c("MSpT", "MWT", "SP", "WP")))
@@ -237,7 +237,7 @@ expected_coverage = tribble(
 stopifnot(identical(date_coverage, expected_coverage))
 
 # Re-source the model only for invariants and calibration-reference provenance.
-source(here("R/stages/05_cca_model.R"))
+source(here("R/stages/05_cca_model.R"), local = TRUE)
 expected_scaling = make_climate_scaling(env_past_final, CCA_CLIMATE_VARS)
 stopifnot(identical(cca_scaling, "sites"), !cca_hill,
           nrow(species_past_final) == 620L,

@@ -1,6 +1,6 @@
 # Offline documentation gate: local links, complete companions, and source hashes.
 suppressPackageStartupMessages({library(here); library(stringr)})
-source(here("R/helpers/documentation_config.R"))
+source(here("R/helpers/documentation_config.R"), local = TRUE)
 
 failures = character(0)
 fail = function(x) failures <<- c(failures, x)

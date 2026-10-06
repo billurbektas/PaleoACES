@@ -26,7 +26,7 @@
 
 library(here)
 render_figures = isTRUE(getOption("paleoaces.render_figures", TRUE))
-source(here("R/stages/09_tracking_metrics.R"))
+source(here("R/stages/09_tracking_metrics.R"), local = TRUE)
 library(patchwork)
 
 MET_LAB = c(

@@ -38,10 +38,10 @@
 
 library(here)
 suppressMessages({library(dplyr); library(readr)})
-source(here("R/vendor/get_chelsa.R"))          # vendored; provides .chelsa_prep_coords()
-source(here("R/helpers/get_chelsa_monthly.R"))
-source(here("R/helpers/config.R"))
-source(here("R/helpers/offline_cache.R"))
+source(here("R/vendor/get_chelsa.R"), local = TRUE)          # vendored; provides .chelsa_prep_coords()
+source(here("R/helpers/get_chelsa_monthly.R"), local = TRUE)
+source(here("R/helpers/config.R"), local = TRUE)
+source(here("R/helpers/offline_cache.R"), local = TRUE)
 
 CACHE = here("output/noca_climate_parts")
 OUT   = here("output/NOCA_climate.csv")

@@ -8,7 +8,7 @@
 suppressPackageStartupMessages({
   library(here); library(tidyverse); library(readxl); library(tapas)
 })
-source(here("R/helpers/fire_detection_functions.R"))
+source(here("R/helpers/fire_detection_functions.R"), local = TRUE)
 
 settings = fire_source_settings() |> filter(site == "MORA")
 results = pmap(settings, function(site, lake, input_source, chronology,

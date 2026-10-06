@@ -34,6 +34,8 @@ The [consolidation guide](methods/README_occurrence_consolidation.md) is authori
 
 The occupancy figure retains the former **500-year sensitivity**. It makes site confounding and sparse bins visible; the primary Holocene tracking and climate-era support remains 1,000 years.
 
+Size-class labels do not establish identical sampling: NOCA's legacy regeneration is 0–3 m and adults exceed 3 m, while resurvey seedlings are 10–140 cm and trees exceed 1.4 m. Both strata require this qualification.
+
 ## Chronology and uncertainty
 
 The four primary Bacon models use pinned control points, settings, and seeded stored posteriors. The [master controls](../Cores/CONTROL_POINTS.md) explains ages, slumps and units. Tracking carries 100 whole-chronology draws per core, keeping within-core temporal dependence. The Pb210 error sensitivity contrasts published activity-error values with assumed ±10-year age errors; it does not authorize replacing the primary chronology.
@@ -46,7 +48,7 @@ Report rebuilding validates the stored manifest and hashes controls, posteriors 
 
 ## Climate preparation
 
-Modern plots use CHELSA V2.1 native monthly caches. Paleo records use native CHELSA-TraCE21k series at four pond coordinates, matched to each sample's age; raw TraCE21k is primary and V2.1 anchoring remains a sensitivity. The common seasonal derivation uses mean temperature `(tasmin + tasmax)/2`, and seasonal precipitation sums. Spring is March–May, summer is June–August, winter is December–February. Modern December belongs to the following winter; paleo slice December stays in its own climatology. All three seasonal months are required. Temperature is °C and precipitation is mm per season.
+Modern plots use CHELSA V2.1 native monthly caches. Paleo records use native CHELSA-TraCE21k series at four pond coordinates, matched to each sample's age; raw TraCE21k is primary and V2.1 anchoring remains a sensitivity. The common seasonal derivation uses the midpoint of monthly minimum and maximum temperatures `(tasmin + tasmax)/2`, and seasonal precipitation sums. This temperature proxy is not guaranteed to equal the mean of hourly temperatures. Spring is March–May, summer is June–August, winter is December–February. Modern December belongs to the following winter; paleo slice December stays in its own climatology. All three seasonal months are required. Temperature is °C and precipitation is mm per season.
 
 MORA compares **1979–1989 with 2010–2019**, over **30.5 midpoint years**; NOCA compares **1979–1989 with 2010–2015**, over **28.5 midpoint years**. These are annualized short-window contrasts. Missing January 1979 reduces complete legacy winters to ten, while spring/summer retain eleven years. Vegetation rate denominators use plot resurvey years, so climate windows and vegetation intervals must remain distinct. The possible post-2010 CHELSA precipitation inhomogeneity remains unresolved.
 
@@ -94,7 +96,7 @@ High-fire periods use centered 1,000-year accepted-event frequency, within-core 
 
 ## Community trajectories
 
-The selected display uses one observed WA and one predicted LC centroid per site × CC1–S4 era, connected chronologically as separate trajectories. It keeps the pooled ordination, modern paired arrows, biplot inset and climate/species contribution panels. Era centroids summarize positioned observations; they do not create an additional CCA or make absent early MORA tracking dates valid.
+The selected display uses one observed WA and one predicted LC centroid per site × CC1–S4 era, connected chronologically as separate trajectories. It keeps the pooled ordination, modern site-mean arrows, biplot inset and climate/species contribution panels. NOCA's legacy mean includes 290 positioned plots and its resurvey mean 277; the arrows therefore combine compositional movement with endpoint membership differences. Era centroids summarize positioned observations; they do not create an additional CCA or make absent early MORA tracking dates valid.
 
 {{era_centroids}}
 

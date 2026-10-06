@@ -24,7 +24,7 @@
 library(here)
 if (!exists("extra_exclude")) extra_exclude = character(0)
 if (!exists("cca_suffix"))    cca_suffix    = ""
-source(here("R/stages/05_cca_model.R"))
+source(here("R/stages/05_cca_model.R"), local = TRUE)
 library(ggrepel)
 library(patchwork)
 
@@ -76,16 +76,16 @@ panel_for = function(scaling, subtitle) {
 }
 
 p1 = panel_for("sites",
-               "site scores x eigenvalues; species unscaled\na SAMPLE sits at the weighted centroid of its SPECIES")
+               "site scores x sqrt(eigenvalues); species unscaled\na SAMPLE sits at the weighted centroid of its SPECIES")
 p2 = panel_for("species",
-               "species scores x eigenvalues; sites unscaled\na SPECIES sits at the centroid of the SAMPLES holding it")
+               "species scores x sqrt(eigenvalues); sites unscaled\na SPECIES sits at the centroid of the SAMPLES holding it")
 
 fig = p1 + p2 +
   plot_annotation(
     title = "The same CCA under the two scalings",
     caption = paste0(
       "Black = climate constraints, grey = species. Raw scores, no display multiplier, so relative lengths are as computed. ",
-      "Axes are drawn to each panel's own range;\nnote the x/y tick values differ. Species direction, order and sign along each axis are IDENTICAL in the two panels - only lengths change ",
+      "Axes are drawn to each panel's own range;\nnote the x/y tick values differ. Species order and sign on each axis are preserved; two-axis angles can change with unequal axis scaling ",
       "(species are\nx", round(sqrt(cca_model$CCA$eig[1]), 3), " on CCA1 and x",
       round(sqrt(cca_model$CCA$eig[2]), 3), " on CCA2 in the right panel relative to the left). ",
       "Under scaling 1 the climate arrows shrink by the same factors instead.")) &

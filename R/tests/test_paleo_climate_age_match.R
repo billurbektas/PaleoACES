@@ -24,7 +24,7 @@
 
 library(here)
 suppressMessages({library(dplyr); library(readr)})
-source(here("R/helpers/config.R"))
+source(here("R/helpers/config.R"), local = TRUE)
 
 TOL_YR = 50   # half a TraCE21k slice: the worst a correct nearest-slice join can do
 

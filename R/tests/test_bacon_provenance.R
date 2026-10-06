@@ -4,9 +4,9 @@ suppressPackageStartupMessages({
   library(readr)
 })
 
-source(here("R/helpers/config.R"))
-source(here("R/helpers/bacon_settings.R"))
-source(here("R/helpers/chronology_provenance.R"))
+source(here("R/helpers/config.R"), local = TRUE)
+source(here("R/helpers/bacon_settings.R"), local = TRUE)
+source(here("R/helpers/chronology_provenance.R"), local = TRUE)
 
 manifest_path = here("output/bacon_run_manifest.csv")
 if (!file.exists(manifest_path)) {

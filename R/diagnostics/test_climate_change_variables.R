@@ -46,10 +46,10 @@
 
 library(here)
 library(tidyverse)
-source(here("R/helpers/climate_variables.R"))
+source(here("R/helpers/climate_variables.R"), local = TRUE)
 
 INCLUDE_MINMAX = FALSE
-source(here("R/helpers/config.R"))
+source(here("R/helpers/config.R"), local = TRUE)
 # Which TraCE21k series the analysis uses; the single default is in config.R.
 CORRECTION_IN_USE = if (PALEO_USE_BIAS_CORRECTED) "corrected" else "raw"
 HOLO_BIN       = 500      # yr - former primary resolution, retained as a sensitivity
@@ -394,13 +394,10 @@ p_change = ggplot() +
 # =============================================================================
 # PAGE 2 - correlation between the climate variables, Holocene vs Anthropocene
 # =============================================================================
-# Do the variables carry the same information in the two eras? This matters for
-# The variable decision in two ways:
-#   - a pair correlated near |1| is redundant: two constraints, one gradient
-#   - a pair whose correlation CHANGES SIGN between the eras is worse than
-#     redundant, because the CCA learns the relationship from the Anthropocene
-#     calibration plots and then applies it to Holocene samples where it does not
-#     hold.
+# Compare marginal covariance structures in the two eras. Strong correlations
+# can indicate overlapping information among constraints. Differences can limit
+# transfer, but correlations alone do not test the fitted model's predictive
+# validity or establish that a sign change invalidates its projections.
 # Holocene     = across pond x slice (4 ponds x 111 slices), the location's own
 #                climate through time
 # Anthropocene = across survey plot x period, the spread the CCA is fitted on
@@ -416,7 +413,7 @@ cor_df = bind_rows(as_long(cor_holo, "Holocene  (pond x slice)"),
          era = factor(era, levels = c("Holocene  (pond x slice)",
                                       "Anthropocene  (plot x period)")))
 
-# flag pairs that FLIP SIGN between the eras - the dangerous ones
+# Flag pairs whose marginal correlations change sign between the eras.
 flip = cor_df %>% select(v1, v2, era, r) %>%
   pivot_wider(names_from = era, values_from = r) %>%
   setNames(c("v1", "v2", "holo", "anth")) %>%
@@ -435,12 +432,12 @@ p_cor = ggplot(cor_df, aes(v1, v2, fill = r)) +
   labs(x = NULL, y = NULL,
        title = "Correlation between climate variables, Holocene vs Anthropocene",
        subtitle = paste0("The CCA learns the species-climate relationship from the ANTHROPOCENE plots and applies it to HOLOCENE samples.\n",
-                         "A pair that is redundant (|r| near 1) wastes a constraint; a pair that FLIPS SIGN between the panels breaks the transfer."),
-       caption = if (nrow(flip))
+                         "Contrasting covariance structures can limit transfer; correlations alone do not test predictive validity."),
+       caption = stringr::str_wrap(if (nrow(flip))
          paste0("Sign flips with |r| > 0.2 in both eras: ",
                 paste(sprintf("%s~%s (%.2f vs %.2f)", flip$v1, flip$v2, flip$holo, flip$anth),
                       collapse = ";  "))
-         else "No pair flips sign with |r| > 0.2 in both eras.") +
+         else "No pair flips sign with |r| > 0.2 in both eras.", width = 120)) +
   theme_minimal(base_size = 11) +
   theme(plot.title = element_text(face = "bold"),
         plot.caption = element_text(hjust = 0, colour = "grey25"),

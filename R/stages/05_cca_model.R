@@ -32,7 +32,7 @@ library(here)
 library(tidyverse)
 library(vegan)
 conflicted::conflicts_prefer(dplyr::select, dplyr::filter, dplyr::lag, .quiet = TRUE)
-source(here("R/helpers/config.R"))
+source(here("R/helpers/config.R"), local = TRUE)
 
 # Run configuration ----------------------------------------------------------
 # EVERY knob for this model is here, and every one is `if (!exists())`, so a
@@ -80,7 +80,8 @@ if (!exists("cca_suffix"))    cca_suffix    = ""
 # which was wrong.) The 2026 NOCA tree correction raised Abies grandis from 19
 # to 22 NOCA-present plots, so it now legitimately survives threshold 20.
 #
-# ⚠ Constrained inertia will RISE going 10 -> 20 (13.4% -> 16.3%). That is NOT
+# Historical threshold comparison: constrained inertia rose from 13.4% to 16.3%.
+# These are historical diagnostics, not the current fit's summary. That is NOT
 # the justification and must not be quoted as one: it rises mechanically as
 # species are removed, because there is less total inertia left to explain. The
 # justification is the one above - which species, and whether they exist in both
@@ -99,6 +100,8 @@ if (!exists("cca_suffix"))    cca_suffix    = ""
 if (!exists("count.thr")) count.thr = CCA_COUNT_THRESHOLD
 
 # ⚠ WHAT KEEPING IT COSTS - to be reported, not fixed:
+# The following numbers record the historical threshold decision; current
+# coordinates and inertia must be read from the rebuilt model/report.
 #   occurrences  MORA 0 paleo / 0 past / 2 present | NOCA 0 paleo / 20 past / 7 present
 #   position     CCA1 3.57, CCA2 4.39 - the extreme of BOTH axes; the next most
 #                extreme are Abies lasiocarpa (1.80) and Pinus contorta (2.75)
@@ -118,12 +121,12 @@ if (!exists("count.thr")) count.thr = CCA_COUNT_THRESHOLD
 # scaling in which Euclidean distance among samples represents their chi-square
 # distance. Under "none"/"species" (0/2) sites are in standard coordinates, where
 # each axis carries equal metric weight regardless of its eigenvalue - so CCA2
-# (5.2% of inertia) would count as much per unit of displacement as CCA1 (11%).
+# would count as much per unit of displacement as CCA1 despite different inertia.
 #
 # Nothing is lost on the species side: with scaling 1 the species scores are
 # left unscaled, i.e. bit-identical to scaling 0, and species rank order and sign
-# along each axis are identical under ALL scalings. Species direction along the
-# axes is therefore scaling-invariant.
+# along each axis are identical under these positive scalings. Two-axis angles
+# are not invariant to unequal axis scaling; all metrics use the selected scaling.
 #
 # Set cca_scaling = "sites" with hill = TRUE to express site scores in SD units
 # of species turnover instead (gradient lengths CCA1 3.28 SD, CCA2 3.96 SD).
@@ -241,7 +244,7 @@ fire_summary = bind_rows(
 # before it). derive_climate_vars() turns them into the CCA variables and is the
 # SAME function 000_PALEO_e_climate.R uses, so a season cannot mean one thing in
 # the Holocene arm and another in the Anthropocene arm.
-source(here("R/helpers/climate_variables.R"))
+source(here("R/helpers/climate_variables.R"), local = TRUE)
 
 climate_monthly = bind_rows(
   read_csv(here("output/MORA_climate.csv"), show_col_types = FALSE),

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: 62da01f92f545e21ce530f773effb13e -->
+<!-- paleoaces-source-md5: dbb687a2f2846fbf40dae3d4b37d1dda -->
 
 <html>
 
@@ -1539,6 +1539,7 @@ Rscript R/stages/14_cca_direction_analysis.R
 
 # Focused offline gates
 Rscript R/tests/test_cca_tracking_metrics.R
+Rscript R/tests/test_review_edge_cases.R
 Rscript R/tests/test_cca_tracking_visualizations.R
 Rscript R/tests/test_walsh_fire_reproduction.R
 Rscript R/tests/test_holocene_climate_fire_eras.R
@@ -2010,6 +2011,13 @@ lost draws/offsets, missing 500-year sensitivity, aggregation-order or
 CCA-scaling drift</td>
 </tr>
 <tr class="even">
+<td><code>test_review_edge_cases.R</code></td>
+<td>Automatic independent review gate</td>
+<td>Known geometric values and invariances, unequal elapsed times,
+missing turnover classes, invalid monthly values/keys/caches, and
+climate/fire coverage gaps</td>
+</tr>
+<tr class="odd">
 <td><code>test_cca_tracking_visualizations.R</code></td>
 <td>Automatic data/render gate</td>
 <td>Missing site dates/plots, wrong fixed-site era/state × fire
@@ -2017,21 +2025,21 @@ statistics, wrong stationary/angle-valid counts, incoherent metric
 labels or encodings, loss of the centered 75%-width scatter contract,
 or—when rendering—missing/split output</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>test_walsh_fire_reproduction.R</code></td>
 <td>Automatic scientific/provenance gate</td>
 <td>Any non-tapas primary event, wrong settings/counts, lost
 sensitivity/catalog, modified protected outputs, stale manifest, or—when
 rendering—missing audit figures</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>test_holocene_climate_fire_eras.R</code></td>
 <td>Automatic unified-era gate</td>
 <td>Wrong scaling, threshold arithmetic, phase support, era sequence,
 composite, fire aggregation/threshold, audit, protected hashes, or—when
 rendering—missing figures</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>test_cca_trajectory_figure.R</code></td>
 <td>Automatic trajectory data/render gate</td>
 <td>Changed scaling/Hill/axes, incorrect CC1–S4 centroids, missing A–D
@@ -2040,14 +2048,14 @@ incorrect named anchors, unfaded predicted annotations, non-arrow legend
 glyphs, boxed series labels, retired duplicate artifacts, or missing
 main outputs</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>test_cca_direction_geometry.R</code></td>
 <td>Automatic geometry gate</td>
 <td>Species/climate cosines use mismatched scores, fail zero guards or
 allowed rigid-transform/common-arrow invariance, or ignore
 unequal-axis-scaling sensitivity</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>test_cca_direction_analysis.R</code></td>
 <td>Automatic data/render gate after stage 14</td>
 <td>Wrong paired subtraction or row counts, invalid cosine/difference
@@ -2055,55 +2063,55 @@ bounds or NA guards, lost modern or Holocene groups, ranking fields,
 modified upstream artifacts, forbidden inference fields, or—when
 rendering—missing main/audit figures</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>test_figure_output_contract.R</code></td>
 <td>Automatic publication-output gate</td>
 <td>Root <code>plot/</code> differs from the four approved PDF/PNG
 stems, diagnostic PNGs exist, a main PDF is multipage, or retired
 trajectory artifacts return</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>test_workflow_contract.R</code></td>
 <td>Automatic structural gate</td>
 <td>Producer/consumer order drifts, analysis is placed behind
 <code>--skip-figures</code>, a required gate disappears, or a plotting
 stage ignores the shared render option</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>test_cca_scaling_comparison.R</code></td>
 <td>Offline model diagnostic</td>
 <td>Reassesses site/scaling-1 geometry after model/species changes</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>test_climate_change_variables.R</code></td>
 <td>Offline decision diagnostic</td>
 <td>Reassesses units/redundancy and the four active constraints</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>test_species_through_time.R</code></td>
 <td>Offline sensitivity</td>
 <td>Quantifies site confounding and threshold effects</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>test_survey_year_anomaly.R</code></td>
 <td>Cached/network sensitivity</td>
 <td>Reassesses modern survey windows when universe or dates change</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>test_chelsa_coverage.R</code>,
 <code>test_chelsa_cruts_vs_present.R</code>,
 <code>test_trace21k_vs_v21.R</code></td>
 <td>Optional network diagnostics</td>
 <td>Product coverage and cross-product bias decisions</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>test_paleo_surface_years.R</code>,
 <code>test_paleo_anthro_climate_match.R</code></td>
 <td>Offline unresolved sensitivities</td>
 <td>Surface coverage and product/geography bias; raw TraCE21k remains
 current without closing the question</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>test_documentation.R</code></td>
 <td>Automatic final gate</td>
 <td>Broken links/inline paths, stale HTML/source hashes, missing
@@ -2142,53 +2150,59 @@ sensitivities</td>
 for Figures 2–5</td>
 </tr>
 <tr class="even">
+<td><a href="REVIEW_AUDIT.html">Science, mathematics, and code
+audit</a></td>
+<td>Findings, independent evidence, validation, and decisions awaiting
+the author</td>
+</tr>
+<tr class="odd">
 <td><a href="methods/cca_tracking_metrics.pdf">Tracking metrics</a></td>
 <td>Mathematical working specification</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="references/Holocene_period_choices_MORA_NOCA_summary.pdf">Holocene
 evidence summary</a></td>
 <td>Literature/context source review retained outside the classification
 stage</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="CLAUDE.html">Claude redirect</a></td>
 <td>Redirect to maintained authorities</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="../Cores/CONTROL_POINTS.html">Bacon controls</a></td>
 <td>Age controls and chronology interpretation</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="../Cores/SOURCES_MORA.html">MORA core sources</a></td>
 <td>MORA chronology provenance</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="../data/NOCA/NOCA_paleo/SOURCES.html">NOCA paleo
 sources</a></td>
 <td>Panther Potholes vegetation/fire provenance</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="../data/SOURCES_SURVEY_YEARS.html">Survey-year
 sources</a></td>
 <td>Modern survey and climate-window provenance</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="methods/000_NOCA_cleaning_guide.html">NOCA cleaning
 guide</a></td>
 <td>Tree patch, exclusions, and outputs</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="methods/README_occurrence_consolidation.html">Occurrence
 consolidation</a></td>
 <td>Taxonomy and retention decisions</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="../data/MORA/README_data_raw.html">MORA raw-data
 reference</a></td>
 <td>Reference-only upstream package description</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="../data/README_outputs_MORA_AT.html">MORA output
 reference</a></td>
 <td>Reference-only upstream outputs</td>

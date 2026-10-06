@@ -9,7 +9,7 @@ suppressPackageStartupMessages({
   library(here); library(tidyverse); library(readxl); library(CharAnalysis)
   library(tapas); library(patchwork)
 })
-source(here("R/helpers/walsh_fire_functions.R"))
+source(here("R/helpers/walsh_fire_functions.R"), local = TRUE)
 render_figures = isTRUE(getOption("paleoaces.render_figures", TRUE))
 
 FROZEN_FIRE_PATHS = here("output", c("fire_walsh.csv", "paleo_fire.csv"))

@@ -1,0 +1,100 @@
+PaleoACES review validation — 2026-10-06
+Preserved checkpoint: 3cf1acae65101c6732206c8a7cd5376096acbe6b
+All commands below completed with exit status 0.
+Full logs were retained locally; SHA-256 values are recorded in VALIDATION_RESULTS.json.
+
+baseline_workflow: Rscript R/workflow.R --offline --report (preserved checkpoint source)
+    all checks passed
+  Bacon provenance checks passed for four primary models and the +-10-year 210Pb sensitivity.
+  Bacon provenance checks passed for four primary models and the +-10-year 210Pb sensitivity.
+  MORA: 331 paired plots, 23 species; 0 plot-info rows outside the paired universe; checks passed.
+  NOCA: 307 paired plots, 31 species; 0 plot-info rows outside the paired universe; checks passed.
+  NOCA tree correction checks passed: 2,366 stems, 54 corrected plots, 307 retained plots, and only the unresolved CARI449/CARI450 coordinate collision.
+  NOCA fire checks passed: 307 plots; 32 burned; no discrepancy on 305 shared plots.
+  Paleo vegetation/fire semantic checks passed; chronology identity is covered by the Bacon manifest.
+  Bacon provenance checks passed for four primary models and the +-10-year 210Pb sensitivity.
+  PASS: harmonized-fire tracking data, boxes, and one unfaceted angle-by-ratio scatter.
+  PASS: all-tapas primary catalogs and separate official Walsh audit, including detector/audit figures.
+  PASS: unified climate eras, independent fire periods, and protected artifacts, including figures.
+  PASS: publication CCA figure uses eight named CC1-S4 WA/LC paths and A-D panels, including PDF/PNG outputs.
+  PASS: taxon/climate directions use one scaling-1 CCA geometry.
+  PASS: paired community-direction differences, hierarchy, groups, and scope.
+  Documentation checks passed for 16 maintained Markdown/HTML pairs.
+  Report integrity passed: links, hashes, synchronized self-contained HTML, figures 2–5, and readable previews.
+  Report integrity passed: links, hashes, synchronized self-contained HTML, figures 2–5, and readable previews.
+  Published fresh analysis review and regenerated all derived documentation assets.
+  Report integrity passed: links, hashes, synchronized self-contained HTML, figures 2–5, and readable previews.
+  Documentation checks passed for 17 maintained Markdown/HTML pairs.
+  PaleoACES workflow completed successfully.
+
+corrected_workflow: Rscript R/workflow.R --offline --report
+    all checks passed
+  Bacon provenance checks passed for four primary models and the +-10-year 210Pb sensitivity.
+  Bacon provenance checks passed for four primary models and the +-10-year 210Pb sensitivity.
+  MORA: 331 paired plots, 23 species; 0 plot-info rows outside the paired universe; checks passed.
+  NOCA: 307 paired plots, 31 species; 0 plot-info rows outside the paired universe; checks passed.
+  NOCA tree correction checks passed: 2,366 stems, 54 corrected plots, 307 retained plots, and only the unresolved CARI449/CARI450 coordinate collision.
+  NOCA fire checks passed: 307 plots; 32 burned; no discrepancy on 305 shared plots.
+  Paleo vegetation/fire semantic checks passed; chronology identity is covered by the Bacon manifest.
+  Bacon provenance checks passed for four primary models and the +-10-year 210Pb sensitivity.
+  PASS: harmonized-fire tracking data, boxes, and one unfaceted angle-by-ratio scatter.
+  PASS: all-tapas primary catalogs and separate official Walsh audit, including detector/audit figures.
+  PASS: unified climate eras, independent fire periods, and protected artifacts, including figures.
+  PASS: publication CCA figure uses eight named CC1-S4 WA/LC paths and A-D panels, including PDF/PNG outputs.
+  PASS: taxon/climate directions use one scaling-1 CCA geometry.
+  PASS: paired community-direction differences, hierarchy, groups, and scope.
+  Documentation checks passed for 17 maintained Markdown/HTML pairs.
+  Report integrity passed: links, hashes, synchronized self-contained HTML, figures 2–5, and readable previews.
+  Report integrity passed: links, hashes, synchronized self-contained HTML, figures 2–5, and readable previews.
+  Published fresh analysis review and regenerated all derived documentation assets.
+  Report integrity passed: links, hashes, synchronized self-contained HTML, figures 2–5, and readable previews.
+  Documentation checks passed for 18 maintained Markdown/HTML pairs.
+  PaleoACES workflow completed successfully.
+
+independent_calculations: Rscript tools/audit_current_method.R
+  522 independent current-method checks passed. Evidence: /private/tmp/paleoaces-audit-work-gbkeamj9/output/review_audit 
+
+failure_probes: python3 tools/verify_review_failures.py --isolated
+  PASS posterior-read failure restores serialized configurations and age cache
+  PASS actual modern consumer rejects value=Inf
+  PASS actual modern consumer rejects source=NA
+  PASS actual modern consumer rejects lon=-120
+  PASS actual native paleo consumer rejects Inf
+  PASS producer ledger cannot borrow an existing unrecorded output
+  PASS changed captured cache rejects report publication
+  PASS corrupt preview is rejected
+  All failure probes passed; altered files restored.
+
+offline_guards: python3 tools/verify_offline_report_guards.py
+  PASS R/stages/000_MORA_climate.R: Offline MORA climate
+  PASS R/stages/000_NOCA_climate.R: Offline NOCA climate
+  PASS R/stages/000_PALEO_d_climate_download.R: Offline TraCE21k climate
+  PASS R/diagnostics/test_survey_year_anomaly.R: Offline survey-window climate
+  PASS R/stages/000_MORA_climate.R: Offline MORA climate
+  PASS R/stages/000_MORA_climate.R: Offline MORA climate
+  Offline missing/invalid-cache and changed-coordinate checks passed; files restored.
+
+stage_isolation: python3 tools/verify_stage_isolation.py --isolated
+  PASS fresh primary: unchanged scientific products; no global model/suffix
+  PASS fresh existing sensitivity: unchanged scientific products; no global model/suffix
+  PASS primary then sensitivity: unchanged scientific products; no global model/suffix
+  PASS sensitivity then primary: unchanged scientific products; no global model/suffix
+
+scientific_comparison: python3 tools/compare_audit_results.py --baseline-root ORIGINAL --updated-root ISOLATED --manifest docs/review/CHECKPOINT_HASHES.csv --destination ISOLATED/output/review_audit
+
+root_report_validation: python3 tools/build_analysis_review.py --validate
+  Report integrity passed: links, hashes, synchronized self-contained HTML, figures 2–5, and readable previews.
+
+portable_analysis_report: python3 tools/verify_review_portability.py
+  Report integrity passed: links, hashes, synchronized self-contained HTML, figures 2–5, and readable previews.
+  PASS: 261 Git-eligible files exported; report links, previews, tables, and self-contained HTML work without raw data/caches/results.
+
+portable_audit_documentation: Git-eligible temporary export; HTMLParser checks actual resource attributes, Markdown local links and source-md5 for audit/index/workflow
+  PASS: audit, index, workflow links and synchronized HTML work in a Git-eligible export without local inputs/results.
+
+documentation_pairs: Rscript R/tests/test_documentation.R
+  Documentation checks passed for 18 maintained Markdown/HTML pairs.
+
+R_parse: Parse all R tree files, tools/*.R and docs/review/00_main_analysis_review.R
+  101 R files parse
+

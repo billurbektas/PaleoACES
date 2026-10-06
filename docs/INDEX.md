@@ -8,6 +8,7 @@ The [analysis review](ANALYSIS_REVIEW.md) connects current results to intermedia
 | [REPOSITORY_INVENTORY](REPOSITORY_INVENTORY.md) | File roles, active producers/consumers, duplicates, and relocations |
 | [OUTPUTS](OUTPUTS.md) | Active result tables |
 | [ANALYSIS_REVIEW](ANALYSIS_REVIEW.md) | Scientific review with diagnostics |
+| [REVIEW_AUDIT](REVIEW_AUDIT.md) | Independent science, mathematics, code findings and validation |
 | [WORKFLOW](WORKFLOW.md) | Executable order, commands, and checks |
 | [SCIENTIFIC_DECISIONS](SCIENTIFIC_DECISIONS.md) | Scientific rationale and open questions |
 | [FIGURE_CAPTIONS](FIGURE_CAPTIONS.md) | Manuscript Figures 2–5 captions |

@@ -14,7 +14,7 @@
 # Output: one row per unit x period x time with
 #   MAT_min  MSpT_min  MST_min  MWT_min     from tasmin  (what the old pipeline used)
 #   MAT_max  MSpT_max  MST_max  MWT_max     from tasmax  (newly available)
-#   MAT      MSpT      MST      MWT         from (tasmin+tasmax)/2, a true mean
+#   MAT      MSpT      MST      MWT         from the midpoint (tasmin+tasmax)/2
 #   AP       SpP       SP       WP          precipitation sums
 #
 # ⚠ THE OLD PIPELINE'S MWT/MST WERE MINIMUM TEMPERATURES, not means - only tasmin
@@ -31,7 +31,7 @@
 
 suppressMessages({library(dplyr); library(tidyr)})
 
-# "mean" = (tasmin + tasmax)/2, a TRUE mean temperature - decided 2026-08-12, now
+# "mean" = (tasmin + tasmax)/2, a mean-extrema proxy - decided 2026-08-12, now
 # that tasmax is downloaded. "min" reproduces the old pipeline, whose MWT/MST were
 # really mean winter/summer MINIMUM temperature because only tasmin was ever fetched.
 # Keep "min" available for the old-vs-new comparison, but "mean" is the analysis.
@@ -47,6 +47,19 @@ derive_climate_vars <- function(x, winter_shift = TRUE, temp_source = TEMP_SOURC
   miss <- setdiff(need, names(x))
   if (length(miss)) stop("derive_climate_vars(): missing column(s): ",
                          paste(miss, collapse = ", "))
+  keys <- c("unit", "period", "variable", "time", "month")
+  if (anyNA(x[keys]) || anyDuplicated(x[keys]))
+    stop("derive_climate_vars(): monthly keys must be nonmissing and unique")
+  if (!is.numeric(x$value) || any(!is.finite(x$value)))
+    stop("derive_climate_vars(): monthly values must be finite; omit unavailable months")
+  if (!is.numeric(x$month) || any(!x$month %in% 1:12) ||
+      !is.numeric(x$time) || any(!is.finite(x$time)))
+    stop("derive_climate_vars(): invalid month or time")
+  if (!all(c("tasmin", "tasmax") %in% x$variable) ||
+      any(!x$variable %in% c("tasmin", "tasmax", "pr")))
+    stop("derive_climate_vars(): expected tasmin/tasmax and optional pr")
+  if (length(temp_source) != 1L || !temp_source %in% c("mean", "min", "max"))
+    stop("derive_climate_vars(): invalid temperature source")
 
   # --- ALIGN THE VARIABLES: keep only months present for ALL of them ----------
   # Done HERE, not in the callers, so it cannot be forgotten. Without it a month

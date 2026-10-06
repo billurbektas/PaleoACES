@@ -33,7 +33,7 @@
 
 library(here)
 library(tidyverse)
-source(here("R/helpers/config.R"))
+source(here("R/helpers/config.R"), local = TRUE)
 
 HOLO_BIN = 500
 OFFSETS  = seq(0, HOLO_BIN - 100, by = 100)

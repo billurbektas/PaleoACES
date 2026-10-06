@@ -1,5 +1,10 @@
 # Function to calculate colonization and extinction for each plot
 calculate_turnover = function(mora_occ) {
+  ensure_change_columns = function(x) {
+    for (column in c("persistent", "extinct", "colonized"))
+      if (!column %in% names(x)) x[[column]] = 0L
+    x
+  }
   
   cat("Calculating species turnover by plot...\n")
   
@@ -38,6 +43,7 @@ calculate_turnover = function(mora_occ) {
   plot_turnover = turnover_data %>%
     count(plot_id, change_type) %>%
     pivot_wider(names_from = change_type, values_from = n, values_fill = 0) %>%
+    ensure_change_columns() %>%
     mutate(
       total_past = persistent + extinct,
       total_present = persistent + colonized,
@@ -50,6 +56,7 @@ calculate_turnover = function(mora_occ) {
   species_turnover = turnover_data %>%
     count(species, change_type) %>%
     pivot_wider(names_from = change_type, values_from = n, values_fill = 0) %>%
+    ensure_change_columns() %>%
     mutate(
       total_occurrences = persistent + extinct + colonized,
       colonization_rate = colonized / total_occurrences,

@@ -31,7 +31,7 @@ library(tidyverse)
 library(here)
 library(readxl)     # DunwiddieMacrofossils.xlsx
 
-source(here("R/helpers/paleo_ages.R"))
+source(here("R/helpers/paleo_ages.R"), local = TRUE)
 
 # -----------------------------------------------------------------------------
 # MORA: Dunwiddie macrofossils -> harmonised species

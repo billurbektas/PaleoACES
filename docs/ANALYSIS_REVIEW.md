@@ -2,7 +2,7 @@
 title: "PaleoACES analysis review"
 ---
 
-**Fresh validated analysis run. Report built 2026-10-05T13:54:11Z. Run identifier: `20261005T135004Z`. All included current figures and tables were regenerated in this run; chronology was redrawn from protected stored posteriors.
+**Fresh validated analysis run. Report built 2026-10-06T11:21:11Z. Run identifier: `20261006T111644Z`. All included current figures and tables were regenerated in this run; chronology was redrawn from protected stored posteriors.
 
 This review follows the sequential analysis from inputs to manuscript Figures 2–5. It connects prepared data, diagnostic evidence, and result tables for scientific review. [Scientific decisions](SCIENTIFIC_DECISIONS.md) records authoritative rationale and unresolved choices; [figure captions](FIGURE_CAPTIONS.md) remains the publication-caption authority. The [workflow](WORKFLOW.md), [documentation index](INDEX.md), [repository inventory](REPOSITORY_INVENTORY.md), and [output inventory](OUTPUTS.md) provide operational detail. The [combined reading copy](review/00_main_analysis_review.R) contains the 25 analysis stages in workflow order, without test scripts; its concatenated form does not reproduce the driver's conditional branches or isolated environments.
 
@@ -124,6 +124,8 @@ Producer: [test_species_through_time.R](../R/diagnostics/test_species_through_ti
 
 The occupancy figure retains the former **500-year sensitivity**. It makes site confounding and sparse bins visible; the primary Holocene tracking and climate-era support remains 1,000 years.
 
+Size-class labels do not establish identical sampling: NOCA's legacy regeneration is 0–3 m and adults exceed 3 m, while resurvey seedlings are 10–140 cm and trees exceed 1.4 m. Both strata require this qualification.
+
 ## Chronology and uncertainty
 
 The four primary Bacon models use pinned control points, settings, and seeded stored posteriors. The [master controls](../Cores/CONTROL_POINTS.md) explains ages, slumps and units. Tracking carries 100 whole-chronology draws per core, keeping within-core temporal dependence. The Pb210 error sensitivity contrasts published activity-error values with assumed ±10-year age errors; it does not authorize replacing the primary chronology.
@@ -162,7 +164,7 @@ Report rebuilding validates the stored manifest and hashes controls, posteriors 
 
 ## Climate preparation
 
-Modern plots use CHELSA V2.1 native monthly caches. Paleo records use native CHELSA-TraCE21k series at four pond coordinates, matched to each sample's age; raw TraCE21k is primary and V2.1 anchoring remains a sensitivity. The common seasonal derivation uses mean temperature `(tasmin + tasmax)/2`, and seasonal precipitation sums. Spring is March–May, summer is June–August, winter is December–February. Modern December belongs to the following winter; paleo slice December stays in its own climatology. All three seasonal months are required. Temperature is °C and precipitation is mm per season.
+Modern plots use CHELSA V2.1 native monthly caches. Paleo records use native CHELSA-TraCE21k series at four pond coordinates, matched to each sample's age; raw TraCE21k is primary and V2.1 anchoring remains a sensitivity. The common seasonal derivation uses the midpoint of monthly minimum and maximum temperatures `(tasmin + tasmax)/2`, and seasonal precipitation sums. This temperature proxy is not guaranteed to equal the mean of hourly temperatures. Spring is March–May, summer is June–August, winter is December–February. Modern December belongs to the following winter; paleo slice December stays in its own climatology. All three seasonal months are required. Temperature is °C and precipitation is mm per season.
 
 MORA compares **1979–1989 with 2010–2019**, over **30.5 midpoint years**; NOCA compares **1979–1989 with 2010–2015**, over **28.5 midpoint years**. These are annualized short-window contrasts. Missing January 1979 reduces complete legacy winters to ten, while spring/summer retain eleven years. Vegetation rate denominators use plot resurvey years, so climate windows and vegetation intervals must remain distinct. The possible post-2010 CHELSA precipitation inhomogeneity remains unresolved.
 
@@ -220,7 +222,7 @@ One pooled legacy CCA is constrained by MSpT, MWT, SP, and WP. Modern resurveys 
 | count_threshold | 20 |
 | scaling | sites |
 | hill | FALSE |
-| constraints | — |
+| constraints | MSpT;MWT;SP;WP |
 | total_inertia | 3.04 |
 | constrained_inertia | 0.5012 |
 | constrained_percent | 16.48 |
@@ -376,7 +378,7 @@ Producer: [13b_fire_method_worked_example.R](../R/stages/13b_fire_method_worked_
 
 ## Community trajectories
 
-The selected display uses one observed WA and one predicted LC centroid per site × CC1–S4 era, connected chronologically as separate trajectories. It keeps the pooled ordination, modern paired arrows, biplot inset and climate/species contribution panels. Era centroids summarize positioned observations; they do not create an additional CCA or make absent early MORA tracking dates valid.
+The selected display uses one observed WA and one predicted LC centroid per site × CC1–S4 era, connected chronologically as separate trajectories. It keeps the pooled ordination, modern site-mean arrows, biplot inset and climate/species contribution panels. NOCA's legacy mean includes 290 positioned plots and its resurvey mean 277; the arrows therefore combine compositional movement with endpoint membership differences. Era centroids summarize positioned observations; they do not create an additional CCA or make absent early MORA tracking dates valid.
 
 
 | Site | Era | Positioned dates | Observed CCA1 | Observed CCA2 | Predicted CCA1 | Predicted CCA2 |
@@ -428,9 +430,17 @@ Producer: [09a_method_example.R](../R/stages/09a_method_example.R). [Complete PD
 | Site | Metric | Resolution | Dates | Median | Median samples/bin |
 | --- | --- | --- | --- | --- | --- |
 | MORA | angle_degrees | 1000 years (primary) | 54 | 37.22 | 11.5 |
+| MORA | lag_rate_per_century | 1000 years (primary) | 54 | -0.005323 | 11.5 |
+| MORA | rate_tracking_ratio | 1000 years (primary) | 54 | 5.384 | 11.5 |
 | NOCA | angle_degrees | 1000 years (primary) | 83 | 80.47 | 57.5 |
+| NOCA | lag_rate_per_century | 1000 years (primary) | 83 | -0.01402 | 57.5 |
+| NOCA | rate_tracking_ratio | 1000 years (primary) | 83 | 3.688 | 57.5 |
 | MORA | angle_degrees | 500 years (sensitivity) | 64 | 76.56 | 6 |
+| MORA | lag_rate_per_century | 500 years (sensitivity) | 64 | -0.004464 | 6 |
+| MORA | rate_tracking_ratio | 500 years (sensitivity) | 64 | 2.983 | 6 |
 | NOCA | angle_degrees | 500 years (sensitivity) | 98 | 91.39 | 30 |
+| NOCA | lag_rate_per_century | 500 years (sensitivity) | 98 | 0.001149 | 30 |
+| NOCA | rate_tracking_ratio | 500 years (sensitivity) | 98 | 2.892 | 30 |
 
 [Full curated resolution audit table](assets/analysis/tables/resolution_audit.csv).
 
@@ -462,12 +472,26 @@ Producer: [09a_method_example.R](../R/stages/09a_method_example.R). [Complete PD
 | Site | Era | Fire | Metric | Total | Valid | Median | Q25 | Q75 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | MORA | Holocene | No fire | angle_degrees | 38 | 38 | 37.57 | 34.88 | 65.84 |
+| MORA | Holocene | No fire | lag_rate_per_century | 38 | 38 | -0.006724 | -0.01081 | 0.0002452 |
+| MORA | Holocene | No fire | rate_tracking_ratio | 38 | 38 | 6.296 | 2.07 | 7.156 |
 | MORA | Holocene | Fire | angle_degrees | 16 | 16 | 34.8 | 28.14 | 42.51 |
+| MORA | Holocene | Fire | lag_rate_per_century | 16 | 16 | -0.00234 | -0.01622 | 0.003214 |
+| MORA | Holocene | Fire | rate_tracking_ratio | 16 | 16 | 4.153 | 3.067 | 5.376 |
 | MORA | Anthropocene | No fire | angle_degrees | 328 | 250 | 100.6 | 30.41 | 157.1 |
+| MORA | Anthropocene | No fire | lag_rate_per_century | 328 | 328 | 0.5273 | -0.2754 | 1.218 |
+| MORA | Anthropocene | No fire | rate_tracking_ratio | 328 | 328 | 0.6552 | 0.1999 | 1.126 |
 | NOCA | Holocene | No fire | angle_degrees | 69 | 69 | 88.88 | 50.09 | 134 |
+| NOCA | Holocene | No fire | lag_rate_per_century | 69 | 69 | -0.008842 | -0.02578 | 0.01276 |
+| NOCA | Holocene | No fire | rate_tracking_ratio | 69 | 69 | 3.263 | 2.478 | 5.453 |
 | NOCA | Holocene | Fire | angle_degrees | 14 | 14 | 68.95 | 30.73 | 80.47 |
+| NOCA | Holocene | Fire | lag_rate_per_century | 14 | 14 | -0.03419 | -0.03584 | -0.01633 |
+| NOCA | Holocene | Fire | rate_tracking_ratio | 14 | 14 | 4.972 | 2.86 | 6.4 |
 | NOCA | Anthropocene | No fire | angle_degrees | 254 | 190 | 93.71 | 41.81 | 146.3 |
+| NOCA | Anthropocene | No fire | lag_rate_per_century | 254 | 254 | 0.01551 | -0.8189 | 0.9208 |
+| NOCA | Anthropocene | No fire | rate_tracking_ratio | 254 | 254 | 2.343 | 0.104 | 4.202 |
 | NOCA | Anthropocene | Fire | angle_degrees | 23 | 12 | 31.52 | 13.45 | 85.19 |
+| NOCA | Anthropocene | Fire | lag_rate_per_century | 23 | 23 | -0.2587 | -0.5315 | 0.5742 |
+| NOCA | Anthropocene | Fire | rate_tracking_ratio | 23 | 23 | 1.322 | 0 | 5.056 |
 
 [Full curated tracking summary table](assets/analysis/tables/tracking_summary.csv).
 
@@ -542,7 +566,7 @@ The unresolved-question register below is generated from [SCIENTIFIC_DECISIONS.m
 
 Chronology precision differs among records, paleo occupancy retains site confounding, and MORA/NOCA fire proxies have different spatial support. Climate and fire classifications are independent and aligned descriptively. Overlapping bins, dates, draws and phases are correlated. Product geography, resolution and continuity can affect contrasts. These limitations remain part of interpretation.
 
-All 16 automatic gates passed; protected chronology validated before and after redraw. The report builder checked source availability, PDF page selections, artifact hashes and local links. The chronology manifest was validated, and the four main stems/PDF-only diagnostic contract were checked.
+All 17 automatic gates passed, including independent review regressions; protected chronology validated before and after redraw. The report builder checked source availability, PDF page selections, artifact hashes and local links. The chronology manifest was validated, and the four main stems/PDF-only diagnostic contract were checked.
 
 For validation commands and contracts, see [workflow checks](WORKFLOW.md#tests-and-decisions) and the [baseline log](reorganization/baseline-gates.log).
 

@@ -116,6 +116,12 @@ def validate(root=ROOT):
         if p.startswith('../output/'): raise ValueError('Report depends on ignored local results: '+p)
     for n in range(2,6):
         if text.count(f'### Figure {n}.') != 1: raise ValueError('Manuscript numbering drift.')
+    fitted = {r['field']: r['value'] for r in rows(root/ASSETS/'tables/cca_summary.csv')}
+    if fitted.get('constraints') != 'MSpT;MWT;SP;WP':
+        raise ValueError('Report is missing the current fitted CCA constraints.')
+    for metric in ['lag_rate_per_century', 'rate_tracking_ratio', 'angle_degrees']:
+        if text.count('| '+metric+' |') < 2:
+            raise ValueError('Report omitted a tracking or resolution summary: '+metric)
     meta = json.loads((root/ASSETS/'build.json').read_text())
     expected = {a['artifact'] for a in rows(root/ASSETS/'artifacts.csv')}
     actual = {p.relative_to(root).as_posix() for p in (root/ASSETS).rglob('*') if p.is_file()}
@@ -190,8 +196,8 @@ def build(mode):
         table_blocks={}
         for name,cols in COLUMNS.items():
             data=tables[name]
-            if name=='resolution_audit': data=[r for r in data if r['record_type']=='timeseries summary' and r['metric'] in ['lag_per_century','tracking_ratio','angle_degrees']]
-            if name=='tracking_summary': data=[r for r in data if r['summary_level']=='macro era x fire' and r['metric'] in ['lag_per_century','tracking_ratio','angle_degrees']]
+            if name=='resolution_audit': data=[r for r in data if r['record_type']=='timeseries summary' and r['metric'] in ['lag_rate_per_century','rate_tracking_ratio','angle_degrees']]
+            if name=='tracking_summary': data=[r for r in data if r['summary_level']=='macro era x fire' and r['metric'] in ['lag_rate_per_century','rate_tracking_ratio','angle_degrees']]
             if data and any(key not in data[0] for key,_ in cols):
                 missing=[key for key,_ in cols if key not in data[0]]
                 raise ValueError('Unexpected authoritative table schema '+name+': '+str(missing))

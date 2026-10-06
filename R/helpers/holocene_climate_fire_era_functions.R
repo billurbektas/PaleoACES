@@ -192,7 +192,9 @@ classify_climate_era_union = function(site_cells, calibration_scaling,
     dplyr::arrange(dplyr::desc(.data$t)) |>
     dplyr::mutate(
       run_id = cumsum(.data$era_class != dplyr::lag(.data$era_class,
-        default = dplyr::first(.data$era_class))) + 1L)
+        default = dplyr::first(.data$era_class)) |
+        dplyr::lag(.data$t, default = dplyr::first(.data$t) + cell_years) -
+          .data$t != cell_years) + 1L)
 
   catalog = era_grid |>
     dplyr::group_by(.data$run_id, .data$era_class) |>
@@ -427,7 +429,9 @@ calculate_fire_frequency = function(events, continuous, window_years = 1000L,
     dplyr::arrange(.data$site, .data$cal_bp) |>
     dplyr::group_by(.data$site) |>
     dplyr::mutate(run_id = cumsum(.data$high_fire != dplyr::lag(
-      .data$high_fire, default = dplyr::first(.data$high_fire))) + 1L) |>
+      .data$high_fire, default = dplyr::first(.data$high_fire)) |
+      .data$cal_bp - dplyr::lag(.data$cal_bp,
+        default = dplyr::first(.data$cal_bp) - grid_step) != grid_step) + 1L) |>
     dplyr::filter(.data$high_fire) |>
     dplyr::group_by(.data$site, .data$run_id) |>
     dplyr::summarise(

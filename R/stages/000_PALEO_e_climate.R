@@ -37,8 +37,8 @@
 
 library(here)
 suppressMessages({library(dplyr); library(tidyr); library(readr)})
-source(here("R/helpers/climate_variables.R"))
-source(here("R/helpers/config.R"))
+source(here("R/helpers/climate_variables.R"), local = TRUE)
+source(here("R/helpers/config.R"), local = TRUE)
 
 if (!exists("USE_CORRECTED")) USE_CORRECTED = PALEO_USE_BIAS_CORRECTED
 

@@ -32,8 +32,8 @@
 
 library(here)
 suppressMessages({library(dplyr); library(tidyr); library(readr)})
-source(here("R/vendor/get_chelsa.R"))
-source(here("R/helpers/get_chelsa_monthly.R"))
+source(here("R/vendor/get_chelsa.R"), local = TRUE)
+source(here("R/helpers/get_chelsa_monthly.R"), local = TRUE)
 
 QUICK  = TRUE
 MONTHS = if (QUICK) c(1, 7) else 1:12

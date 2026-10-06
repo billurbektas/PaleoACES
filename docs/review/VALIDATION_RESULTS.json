@@ -1,0 +1,324 @@
+{
+  "status": "completed validation; scientific decisions remain unresolved",
+  "date": "2026-10-06",
+  "baseline_checkpoint": "3cf1acae65101c6732206c8a7cd5376096acbe6b",
+  "review_branch": "review/science-maths-code-2026-10-06",
+  "merge_to_main": false,
+  "baseline_manifest": {
+    "path": "docs/review/CHECKPOINT_HASHES.csv",
+    "files": 1464,
+    "sha256": "42e412dd528432cae80d862246481d8530f7ef90694a28c0bfc078d0ab74531d"
+  },
+  "isolated_copy": {
+    "separate_mutable_files": true,
+    "no_hardlinks": true,
+    "inputs_caches_posteriors_copied": true,
+    "analysis_not_run_in_original": true,
+    "chronology_refitted": false
+  },
+  "coverage": {
+    "analysis stage": 25,
+    "helper": 17,
+    "regression gate": 18,
+    "optional diagnostic": 10,
+    "vendor": 2,
+    "historical archive": 23,
+    "reporting/audit tool": 8,
+    "entrypoint": 3
+  },
+  "findings": 30,
+  "full_workflow": {
+    "status": "passed",
+    "automatic_gates": 17,
+    "additional_portable_report_gate": 1,
+    "maintained_document_pairs": 18,
+    "report": {
+      "mode": "fresh",
+      "built_at_utc": "2026-10-06T11:21:11Z",
+      "run_id": "20261006T111644Z",
+      "input_manifest_sha256": "5579f832cebac91c657969d5a3586fea58553c732839022b42f379181abd85b9",
+      "source_manifest_sha256": "55821433e14d3dfb31401cf9c3e134c5c8211a0b3819c5c3df401ac520639e2a",
+      "result_manifest_sha256": "292e291d146dace3f76dc4b594100815bd0c890619a5b5b0051e13da30e41b2b",
+      "publication": "staged and validated before replacement",
+      "chronology": "validated stored posteriors; no MCMC in reporting"
+    }
+  },
+  "independent_checks": {
+    "checks": 522,
+    "status": "all passed",
+    "maximum_absolute_error": 2.0486208866452027e-10,
+    "comparison_tolerance": "1e-8 times max(1, absolute independently expected value), identical NA/nonfinite masks",
+    "note": "Largest absolute difference is floating-point rounding in angle degrees; checks use independently derived formulas, workbook sets, weighted QR/SVD and base-R hierarchical summaries."
+  },
+  "result_comparison": {
+    "compared_results": 117,
+    "byte_identical": 110,
+    "provenance_only": 7,
+    "changed_scientific_values": 0,
+    "protected_input_cache_chronology_files": 1262,
+    "protected_chronology_files": 51,
+    "documented_provenance_fields": {
+      "holocene_era_protected_hash_audit.csv": [
+        "file"
+      ],
+      "holocene_fire_tapas_manifest.csv": [
+        "file"
+      ],
+      "walsh_active_fire_hash_audit.csv": [
+        "file"
+      ],
+      "walsh_charanalysis_input_audit.csv": [
+        "data_file",
+        "parameter_file"
+      ],
+      "walsh_charanalysis_manifest.csv": [
+        "file"
+      ],
+      "walsh_charanalysis_settings.csv": [
+        "input"
+      ]
+    },
+    "rds_provenance_field": "dependency_signature"
+  },
+  "scientific_configuration": {
+    "shared_constants_byte_identical": true,
+    "protected_sources_sha256": {
+      "R/stages/000_PALEO_a_agedepth.R": "90bf42324e5123611cb5f490daed379948000b2f921a4d380ece1d156ee5d2cb",
+      "R/helpers/bacon_settings.R": "8a47c7c9d2c26e14679813ba93b1f707ec6f182076a4c6ae4a921d852e1575c3"
+    },
+    "axes_scaling_geometry_thresholds_coordinates_era_boundaries_fire_detector_settings_unchanged": true
+  },
+  "failure_probes": [
+    {
+      "check": "posterior-read failure restores serialized configurations and age cache",
+      "status": "passed",
+      "protected_products_unchanged": true,
+      "mcmc_executed": false
+    },
+    {
+      "check": "actual modern consumer rejects value=Inf",
+      "status": "passed",
+      "expected_rejection": "Offline MORA climate",
+      "protected_products_unchanged": true
+    },
+    {
+      "check": "actual modern consumer rejects source=NA",
+      "status": "passed",
+      "expected_rejection": "Offline MORA climate",
+      "protected_products_unchanged": true
+    },
+    {
+      "check": "actual modern consumer rejects lon=-120",
+      "status": "passed",
+      "expected_rejection": "Offline MORA climate",
+      "protected_products_unchanged": true
+    },
+    {
+      "check": "actual native paleo consumer rejects Inf",
+      "status": "passed",
+      "expected_rejection": "Offline TraCE21k climate",
+      "protected_products_unchanged": true
+    },
+    {
+      "check": "producer ledger cannot borrow an existing unrecorded output",
+      "status": "passed",
+      "expected_rejection": "Fresh report lacks a regenerated, unchanged producer output: plot/test_figures/MORA_dynamics.pdf",
+      "protected_products_unchanged": true
+    },
+    {
+      "check": "changed captured cache rejects report publication",
+      "status": "passed",
+      "expected_rejection": "Report inputs or code changed during the run",
+      "protected_products_unchanged": true
+    },
+    {
+      "check": "corrupt preview is rejected",
+      "status": "passed",
+      "expected_rejection": "Missing/stale report artifact",
+      "protected_products_unchanged": true
+    }
+  ],
+  "offline_guards": {
+    "cases": 6,
+    "status": "all passed",
+    "files_restored": true,
+    "cases_exercised": [
+      "missing MORA chunk",
+      "missing NOCA chunk",
+      "missing TraCE21k native chunk",
+      "missing survey-window chunk",
+      "NA in modern cache",
+      "changed authoritative plot coordinates"
+    ]
+  },
+  "stage_isolation": [
+    {
+      "check": "fresh primary",
+      "status": "passed",
+      "result_files_compared": 113,
+      "changed_files": [],
+      "no_global_model_or_suffix": true
+    },
+    {
+      "check": "fresh existing sensitivity",
+      "status": "passed",
+      "result_files_compared": 113,
+      "changed_files": [],
+      "no_global_model_or_suffix": true
+    },
+    {
+      "check": "primary then sensitivity",
+      "status": "passed",
+      "result_files_compared": 113,
+      "changed_files": [],
+      "no_global_model_or_suffix": true
+    },
+    {
+      "check": "sensitivity then primary",
+      "status": "passed",
+      "result_files_compared": 113,
+      "changed_files": [],
+      "no_global_model_or_suffix": true
+    }
+  ],
+  "deliberately_removed_products": {
+    "paths": [
+      "docs/assets/analysis/scaling-p1.png",
+      "docs/assets/analysis/tables/cca_summary.csv",
+      "output/paleo_age_draws.rds"
+    ],
+    "all_regenerated": true,
+    "age_draws_identical": true,
+    "protected_serialized_configurations_preserved": true
+  },
+  "figures": {
+    "main_pngs_byte_identical_to_checkpoint": true,
+    "main_stems_preserved": true,
+    "diagnostic_contract": "PDF-only under plot/test_figures; 21 selected raster pages under docs/assets/analysis",
+    "all_selected_previews_visually_inspected": true,
+    "changed_previews": [
+      "climate correlation caption wrapping/qualification",
+      "scaling caption correction",
+      "adult/regeneration caption correction",
+      "climate-era worked-example legend layout only (9,862 pixels; all differences in rows 3327\u20133365 of 3400)"
+    ]
+  },
+  "portability": {
+    "git_eligible_export_files": 261,
+    "no_local_inputs_caches_posteriors_or_results": true,
+    "analysis_report_links_hashes_previews_tables_html_passed": true,
+    "audit_index_workflow_links_html_passed": true
+  },
+  "parsing": {
+    "all_R_files": 101,
+    "current_nonarchive_nonvendor_including_generated_review": 76,
+    "python_tools": 6,
+    "all_passed": true
+  },
+  "logs": [
+    {
+      "check": "baseline_workflow",
+      "status": "passed",
+      "exit_code": 0,
+      "command": "Rscript R/workflow.R --offline --report (preserved checkpoint source)",
+      "log_file": "paleoaces-audit-baseline-workflow.log",
+      "log_sha256": "38f6accb3f6eeccee38aedf8eb1a964114bcc97387069801c3c3557793c07825"
+    },
+    {
+      "check": "corrected_workflow",
+      "status": "passed",
+      "exit_code": 0,
+      "command": "Rscript R/workflow.R --offline --report",
+      "log_file": "paleoaces-audit-publication-workflow.log",
+      "log_sha256": "884733fbc159f310ff30407034f71bcb68594f4c8b4891afa458d00ea4f24585"
+    },
+    {
+      "check": "independent_calculations",
+      "status": "passed",
+      "exit_code": 0,
+      "command": "Rscript tools/audit_current_method.R",
+      "log_file": "paleoaces-audit-publication-independent.log",
+      "log_sha256": "cb9b866ad3588bda5cdb706446576ccade76eeea441cbab7b91fa417f3d9afe4"
+    },
+    {
+      "check": "failure_probes",
+      "status": "passed",
+      "exit_code": 0,
+      "command": "python3 tools/verify_review_failures.py --isolated",
+      "log_file": "paleoaces-audit-publication-failures.log",
+      "log_sha256": "91069f8cec6fa4c97857e46d57e83ad273d9b3a3c87925d858deb3a7b684430d"
+    },
+    {
+      "check": "offline_guards",
+      "status": "passed",
+      "exit_code": 0,
+      "command": "python3 tools/verify_offline_report_guards.py",
+      "log_file": "paleoaces-audit-publication-cache.log",
+      "log_sha256": "c12ed046585ea7c93e1697344d2ed0e7d20e1620a23138b5b759907234ba4c37"
+    },
+    {
+      "check": "stage_isolation",
+      "status": "passed",
+      "exit_code": 0,
+      "command": "python3 tools/verify_stage_isolation.py --isolated",
+      "log_file": "paleoaces-audit-isolation-final.log",
+      "log_sha256": "34929187c8aae6c52ab88672f70bd9c6a9eb6e94d149d81fa154a5031674863b"
+    },
+    {
+      "check": "scientific_comparison",
+      "status": "passed",
+      "exit_code": 0,
+      "command": "python3 tools/compare_audit_results.py --baseline-root ORIGINAL --updated-root ISOLATED --manifest docs/review/CHECKPOINT_HASHES.csv --destination ISOLATED/output/review_audit",
+      "log_file": "paleoaces-audit-publication-comparison.log",
+      "log_sha256": "f14f8e480043fd69342860e5a4ab1a656036fe8c16145e864d4952aa59540adf"
+    },
+    {
+      "check": "root_report_validation",
+      "status": "passed",
+      "exit_code": 0,
+      "command": "python3 tools/build_analysis_review.py --validate",
+      "log_file": "paleoaces-audit-publication-root-report.log",
+      "log_sha256": "f2480a50e29019ceb8696b686b23606eaa430896718d484270764b20704e9e4d"
+    },
+    {
+      "check": "portable_analysis_report",
+      "status": "passed",
+      "exit_code": 0,
+      "command": "python3 tools/verify_review_portability.py",
+      "log_file": "paleoaces-audit-publication-portability.log",
+      "log_sha256": "dafc10b5e62c61c25930379faff43c484f8523c8a2f114ee6725c2fb282ab33b"
+    },
+    {
+      "check": "portable_audit_documentation",
+      "status": "passed",
+      "exit_code": 0,
+      "command": "Git-eligible temporary export; HTMLParser checks actual resource attributes, Markdown local links and source-md5 for audit/index/workflow",
+      "log_file": "paleoaces-audit-publication-audit-portability.log",
+      "log_sha256": "cda62603be2231114e16297e1024b870d3334412d7af335a724e2fdfdb965cf2"
+    },
+    {
+      "check": "documentation_pairs",
+      "status": "passed",
+      "exit_code": 0,
+      "command": "Rscript R/tests/test_documentation.R",
+      "log_file": "paleoaces-audit-publication-documents.log",
+      "log_sha256": "fb23af341aa0c887ee0ebdae694d53c9539bef4787d0ad8b4ad923a20b7076cd"
+    },
+    {
+      "check": "R_parse",
+      "status": "passed",
+      "exit_code": 0,
+      "command": "Parse all R tree files, tools/*.R and docs/review/00_main_analysis_review.R",
+      "log_file": "paleoaces-audit-publication-parse.log",
+      "log_sha256": "8388565db41083a1b58712e4fe00a7175b92430ac519bcb3cd6e40e081d25506"
+    }
+  ],
+  "evidence_limits": [
+    "Laboratory CRS age-error calculation and original correspondence are unavailable.",
+    "Original legacy MORA survey-date provenance and CARI coordinate collision remain unverified.",
+    "No new climate anchoring sensitivity, threshold choice, calibration change, or chronology refit was performed.",
+    "Predictive validity, joint calibration-domain support and causal claims are not established by numerical agreement.",
+    "Some optional diagnostics were inspected rather than rerun; archived scripts support provenance rather than current results.",
+    "The supplied complete offline copy is necessary to reproduce the scientific checks; a portable checkout is sufficient to read the report."
+  ]
+}

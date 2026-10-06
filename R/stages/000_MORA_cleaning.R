@@ -17,7 +17,7 @@ library(readxl)
 library(viridis)
 library(ggalluvial)
 library(here)
-source(here("R/helpers/functions.R"))
+source(here("R/helpers/functions.R"), local = TRUE)
 render_figures = isTRUE(getOption("paleoaces.render_figures", TRUE))
 
 # Past (1978) raw sources: seedlings from "Rainier Veg", adults from "rawsizedata"

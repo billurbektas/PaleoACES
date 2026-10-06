@@ -1,7 +1,7 @@
 # Offline gate for the official Walsh source-method reproduction.
 suppressPackageStartupMessages({library(here); library(tidyverse)})
 render_figures = isTRUE(getOption("paleoaces.render_figures", TRUE))
-source(here("R/helpers/walsh_fire_functions.R"))
+source(here("R/helpers/walsh_fire_functions.R"), local = TRUE)
 stopifnot(requireNamespace("CharAnalysis", quietly = TRUE),
           as.character(packageVersion("CharAnalysis")) == "2.0.3")
 

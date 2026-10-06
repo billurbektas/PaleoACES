@@ -41,6 +41,7 @@ Rscript R/stages/14_cca_direction_analysis.R
 
 # Focused offline gates
 Rscript R/tests/test_cca_tracking_metrics.R
+Rscript R/tests/test_review_edge_cases.R
 Rscript R/tests/test_cca_tracking_visualizations.R
 Rscript R/tests/test_walsh_fire_reproduction.R
 Rscript R/tests/test_holocene_climate_fire_eras.R
@@ -178,6 +179,7 @@ legacy only. Scripts under `R/archive/` are not active stages.
 | `test_bacon_provenance.R` | Automatic provenance gate | Seed/settings/control/version/posterior/age or chronology-code fingerprint drift; exact path-only relocations are accepted through verified historical source snapshots. Other whole-script differences require the explicit figure-output-only revision recorded in the manifest. |
 | `test_paleo_climate_age_match.R` | Automatic offline climate gate | Missing/orphan climate, NA constraints, clamping, or >50-year nearest-slice error |
 | `test_cca_tracking_metrics.R` | Automatic offline gate after tracking | Formula/unit/zero-guard errors, wrong lag denominator, boundary duplication, loss of the expected 54 MORA/83 NOCA full-offset dates, lost draws/offsets, missing 500-year sensitivity, aggregation-order or CCA-scaling drift |
+| `test_review_edge_cases.R` | Automatic independent review gate | Known geometric values and invariances, unequal elapsed times, missing turnover classes, invalid monthly values/keys/caches, and climate/fire coverage gaps |
 | `test_cca_tracking_visualizations.R` | Automatic data/render gate | Missing site dates/plots, wrong fixed-site era/state × fire statistics, wrong stationary/angle-valid counts, incoherent metric labels or encodings, loss of the centered 75%-width scatter contract, or—when rendering—missing/split output |
 | `test_walsh_fire_reproduction.R` | Automatic scientific/provenance gate | Any non-tapas primary event, wrong settings/counts, lost sensitivity/catalog, modified protected outputs, stale manifest, or—when rendering—missing audit figures |
 | `test_holocene_climate_fire_eras.R` | Automatic unified-era gate | Wrong scaling, threshold arithmetic, phase support, era sequence, composite, fire aggregation/threshold, audit, protected hashes, or—when rendering—missing figures |
@@ -201,6 +203,7 @@ legacy only. Scripts under `R/archive/` are not active stages.
 | [README](../README.md) | Project landing page and principal outputs |
 | [Scientific decisions](SCIENTIFIC_DECISIONS.md) | Current rationale, results, caveats, and unresolved sensitivities |
 | [Figure captions](FIGURE_CAPTIONS.md) | Separate method summaries, previews, and publication-ready captions for Figures 2–5 |
+| [Science, mathematics, and code audit](REVIEW_AUDIT.md) | Findings, independent evidence, validation, and decisions awaiting the author |
 | [Tracking metrics](methods/cca_tracking_metrics.pdf) | Mathematical working specification |
 | [Holocene evidence summary](references/Holocene_period_choices_MORA_NOCA_summary.pdf) | Literature/context source review retained outside the classification stage |
 | [Claude redirect](CLAUDE.md) | Redirect to maintained authorities |

@@ -65,7 +65,7 @@ report_export_cca = function(model_env) {
 report_redraw_chronology = function() {
   gate = function() sys.source(here::here("R/tests/test_bacon_provenance.R"), envir = new.env(parent = globalenv()))
   gate()
-  protected = c(list.files(here::here("Cores"), pattern = "[.](csv|out|txt)$", full.names = TRUE, recursive = TRUE),
+  protected = c(list.files(here::here("Cores"), pattern = "[.](csv|out|txt|bacon)$", full.names = TRUE, recursive = TRUE),
     here::here(c("R/stages/000_PALEO_a_agedepth.R", "R/helpers/bacon_settings.R", "R/helpers/config.R", "output/bacon_run_manifest.csv")))
   before = tools::md5sum(protected)
   snapshots = tempfile("report-chronology-protection-")
@@ -112,7 +112,7 @@ report_redraw_chronology = function() {
 }
 report_finish = function(state) {
   jsonlite::write_json(list(run_id = state$run_id, started = state$started,
-    validation = "All 16 automatic gates passed; protected chronology validated before and after redraw.",
+    validation = "All 17 automatic gates passed, including independent review regressions; protected chronology validated before and after redraw.",
     records = unname(state$records)), here::here("output/report/run.json"), pretty = TRUE, auto_unbox = TRUE)
   report_python("--fresh")
 }

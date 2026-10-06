@@ -34,7 +34,7 @@
 
 library(here)
 suppressMessages({library(dplyr); library(tidyr); library(readr); library(ggplot2)})
-source(here("R/vendor/get_chelsa.R"))
+source(here("R/vendor/get_chelsa.R"), local = TRUE)
 
 # --- what to test ------------------------------------------------------------
 # Years where both products exist AND that we actually need (NOCA legacy window

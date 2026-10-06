@@ -128,6 +128,7 @@ if (!skip_tests) {
   run_script("R/tests/test_paleo_split_validation.R")
   run_script("R/tests/test_bacon_provenance.R")
   run_script("R/tests/test_cca_tracking_metrics.R")
+  run_script("R/tests/test_review_edge_cases.R")
   run_script("R/tests/test_cca_tracking_visualizations.R")
   run_script("R/tests/test_walsh_fire_reproduction.R")
   run_script("R/tests/test_holocene_climate_fire_eras.R")

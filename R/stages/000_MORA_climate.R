@@ -32,10 +32,10 @@
 
 library(here)
 suppressMessages({library(dplyr); library(readr)})
-source(here("R/vendor/get_chelsa.R"))
-source(here("R/helpers/get_chelsa_monthly.R"))
-source(here("R/helpers/config.R"))
-source(here("R/helpers/offline_cache.R"))
+source(here("R/vendor/get_chelsa.R"), local = TRUE)
+source(here("R/helpers/get_chelsa_monthly.R"), local = TRUE)
+source(here("R/helpers/config.R"), local = TRUE)
+source(here("R/helpers/offline_cache.R"), local = TRUE)
 
 CACHE = here("output/mora_climate_parts")
 OUT   = here("output/MORA_climate.csv")

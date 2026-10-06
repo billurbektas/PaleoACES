@@ -30,10 +30,10 @@ if (identical(TRACKING_OUTPUT_SUFFIX, "_500yr")) {
   HOLO_BIN = 1000
   OFFSETS = seq(0, 900, by = 100)
 }
-source(here("R/stages/05_cca_model.R"))
-source(here("R/helpers/paleo_runs.R"))
-source(here("R/helpers/climate_variables.R"))
-source(here("R/helpers/tracking_metrics.R"))
+source(here("R/stages/05_cca_model.R"), local = TRUE)
+source(here("R/helpers/paleo_runs.R"), local = TRUE)
+source(here("R/helpers/climate_variables.R"), local = TRUE)
+source(here("R/helpers/tracking_metrics.R"), local = TRUE)
 
 if (!exists("USE_CORRECTED")) USE_CORRECTED = PALEO_USE_BIAS_CORRECTED
 if (!exists("TRACKING_EPS")) TRACKING_EPS = TRACKING_EPSILON

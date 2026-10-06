@@ -1,7 +1,7 @@
 # Offline gate for the unified, literature-blind climate-era/fire analysis.
 suppressPackageStartupMessages({library(here); library(tidyverse)})
 render_figures = isTRUE(getOption("paleoaces.render_figures", TRUE))
-source(here("R/helpers/holocene_climate_fire_era_functions.R"))
+source(here("R/helpers/holocene_climate_fire_era_functions.R"), local = TRUE)
 
 thresholds = read_csv(here("output/holocene_era_climate_variable_thresholds.csv"),
   show_col_types = FALSE)

@@ -8,9 +8,9 @@
 suppressPackageStartupMessages({
   library(here); library(tidyverse); library(patchwork)
 })
-source(here("R/helpers/config.R"))
-source(here("R/helpers/climate_variables.R"))
-source(here("R/helpers/holocene_climate_fire_era_functions.R"))
+source(here("R/helpers/config.R"), local = TRUE)
+source(here("R/helpers/climate_variables.R"), local = TRUE)
+source(here("R/helpers/holocene_climate_fire_era_functions.R"), local = TRUE)
 render_figures = isTRUE(getOption("paleoaces.render_figures", TRUE))
 
 CLIMATE_INPUT = here("output/chelsa_paleo_ponds.csv")

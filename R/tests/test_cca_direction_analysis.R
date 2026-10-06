@@ -4,8 +4,8 @@ suppressPackageStartupMessages({
   library(tidyverse)
   library(vegan)
 })
-source(here("R/helpers/config.R"))
-source(here("R/helpers/tracking_metrics.R"))
+source(here("R/helpers/config.R"), local = TRUE)
+source(here("R/helpers/tracking_metrics.R"), local = TRUE)
 
 near = function(x, y, tolerance = 1e-12) {
   isTRUE(all.equal(as.numeric(x), as.numeric(y), tolerance = tolerance,
@@ -157,7 +157,7 @@ stopifnot(
 )
 
 # Independently reconstruct one fitted-geometry association.
-source(here("R/stages/05_cca_model.R"))
+source(here("R/stages/05_cca_model.R"), local = TRUE)
 tracking_anth = read_csv(here("output/cca_tracking_anthropocene_plot.csv"),
                          show_col_types = FALSE)
 example = slice(tracking_anth, 1)

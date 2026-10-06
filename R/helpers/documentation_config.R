@@ -6,6 +6,7 @@ PALEOACES_DOCS = c(
   "docs/REPOSITORY_INVENTORY.md",
   "docs/OUTPUTS.md",
   "docs/ANALYSIS_REVIEW.md",
+  "docs/REVIEW_AUDIT.md",
   "docs/WORKFLOW.md",
   "docs/SCIENTIFIC_DECISIONS.md",
   "docs/FIGURE_CAPTIONS.md",

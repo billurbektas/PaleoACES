@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: 9a89f304f22fb5daa991a18cc2864d7c -->
+<!-- paleoaces-source-md5: 00063e713c5d5e56b96e7a2a8eb3b39c -->
 
 <html>
 
@@ -1640,13 +1640,18 @@ all 16 successful automatic gates before changes. Generated products can
 change when rerendered; archived inputs and third-party source retain
 their recorded checksums.</p>
 <p>The age-depth stage now lives in <code>R/stages/</code>; Bacon
-settings and shared config live in <code>R/helpers/</code>. Config is
-byte-identical; the age-depth script and Bacon settings change only
-literal file references, including comments. The <a href="reorganization/chronology_relocation.json">chronology relocation
-record</a> contains those exact replacements and hashes of <a href="reorganization/chronology_sources_before_move/000_PALEO_a_agedepth.R.txt">the
+settings and shared config live in <code>R/helpers/</code>. At the
+preserved reorganization checkpoint, config was byte-identical and the
+age-depth script and Bacon settings changed only literal file
+references, including comments. The review branch subsequently
+strengthened config’s climate-cache validation without changing
+scientific constants; the age-depth script and Bacon settings remain
+identical to that checkpoint. The <a href="reorganization/chronology_relocation.json">chronology relocation
+record</a> contains the exact relocations and hashes of <a href="reorganization/chronology_sources_before_move/000_PALEO_a_agedepth.R.txt">the
 original age-depth source</a>, <a href="reorganization/chronology_sources_before_move/bacon_settings.R.txt">Bacon
 settings</a>, and <a href="reorganization/chronology_sources_before_move/config.R.txt">shared
-config</a>.</p>
+config</a>. See the <a href="REVIEW_AUDIT.html">audit</a> for subsequent
+technical corrections.</p>
 <p>The provenance gate accepts historical hashes only when the current
 source exactly equals its verified snapshot after these replacements.
 Age-draw cache fingerprints use the historical settings identity under

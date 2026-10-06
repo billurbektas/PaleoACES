@@ -26,10 +26,10 @@ render_figures = isTRUE(getOption("paleoaces.render_figures", TRUE))
 # stratum) and Pinus ponderosa by the analysis exclusion there, so the former
 # "_subset" run IS the model - there is no longer a pair of runs to distinguish.
 # 05_cca_model.R defaults extra_exclude to character(0) and cca_suffix to "".
-source(here("R/stages/05_cca_model.R"))
+source(here("R/stages/05_cca_model.R"), local = TRUE)
 library(ggrepel)
 library(patchwork)
-source(here("R/helpers/figure_style.R"))
+source(here("R/helpers/figure_style.R"), local = TRUE)
 
 # The reviewed frozen CC/S-era centroid display is the sole main trajectory
 # product. Both publication formats are written when rendering is enabled.
@@ -44,7 +44,7 @@ write_cca_png = TRUE
 # so this figure and the tracking metrics cannot disagree about what a bin is.
 HOLO_BIN = 1000
 OFFSETS = seq(0, HOLO_BIN - 100, by = 100)
-source(here("R/helpers/paleo_runs.R"))
+source(here("R/helpers/paleo_runs.R"), local = TRUE)
 
 # A bin_mid is kept only if it is occupied in at least this fraction of the age
 # DRAWS. Each bin_mid belongs to exactly one offset, so the denominator is

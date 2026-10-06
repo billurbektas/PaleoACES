@@ -53,7 +53,7 @@ library(readxl)
 library(viridis)
 library(ggalluvial)
 library(here)
-source(here("R/helpers/functions.R"))
+source(here("R/helpers/functions.R"), local = TRUE)
 render_figures = isTRUE(getOption("paleoaces.render_figures", TRUE))
 
 # Past (1978) raw sources: seedlings from "Rainier Veg", adults from "rawsizedata"
@@ -578,7 +578,7 @@ suppressPackageStartupMessages({
   library(readxl)
   library(ggalluvial)
 })
-source(here("R/helpers/functions.R"))
+source(here("R/helpers/functions.R"), local = TRUE)
 render_figures = isTRUE(getOption("paleoaces.render_figures", TRUE))
 
 # Get overstory ----
@@ -1221,7 +1221,8 @@ if (sum(NOCA_tree_composition_audit$present_composition_changed) != 50L) {
 #   present regeneration = the JHRL Seedlings tallies (10-140 cm);
 #           adult        = the Tree Data stems (DBH, i.e. >1.4 m)
 # So "past regeneration" is a coarser, taller band (up to 3 m) than "present
-# regeneration" (up to 1.4 m). Adults are comparable; regeneration is a proxy.
+# regeneration" (up to 1.4 m). Adult size limits also differ (>3 m vs >1.4 m),
+# so neither label establishes identical size-class sampling across periods.
 SEED = "Seedling / regeneration"; ADULT = "Adult"
 fix_noca_sp = normalize_noca_species
 NOCA_stage = bind_rows(
@@ -1736,10 +1737,10 @@ if (render_figures) {
 
 library(here)
 suppressMessages({library(dplyr); library(readr)})
-source(here("R/vendor/get_chelsa.R"))
-source(here("R/helpers/get_chelsa_monthly.R"))
-source(here("R/helpers/config.R"))
-source(here("R/helpers/offline_cache.R"))
+source(here("R/vendor/get_chelsa.R"), local = TRUE)
+source(here("R/helpers/get_chelsa_monthly.R"), local = TRUE)
+source(here("R/helpers/config.R"), local = TRUE)
+source(here("R/helpers/offline_cache.R"), local = TRUE)
 
 CACHE = here("output/mora_climate_parts")
 OUT   = here("output/MORA_climate.csv")
@@ -2018,10 +2019,10 @@ cat("\nwritten: ", OUT, "\n", sep = "")
 
 library(here)
 suppressMessages({library(dplyr); library(readr)})
-source(here("R/vendor/get_chelsa.R"))          # vendored; provides .chelsa_prep_coords()
-source(here("R/helpers/get_chelsa_monthly.R"))
-source(here("R/helpers/config.R"))
-source(here("R/helpers/offline_cache.R"))
+source(here("R/vendor/get_chelsa.R"), local = TRUE)          # vendored; provides .chelsa_prep_coords()
+source(here("R/helpers/get_chelsa_monthly.R"), local = TRUE)
+source(here("R/helpers/config.R"), local = TRUE)
+source(here("R/helpers/offline_cache.R"), local = TRUE)
 
 CACHE = here("output/noca_climate_parts")
 OUT   = here("output/NOCA_climate.csv")
@@ -2863,7 +2864,7 @@ library(tidyverse)
 library(here)
 library(readxl)     # DunwiddieMacrofossils.xlsx
 
-source(here("R/helpers/paleo_ages.R"))
+source(here("R/helpers/paleo_ages.R"), local = TRUE)
 
 # -----------------------------------------------------------------------------
 # MORA: Dunwiddie macrofossils -> harmonised species
@@ -3093,7 +3094,7 @@ cat("paleo_sample_depths.csv: ", nrow(sample_depths), " depths for ",
 suppressPackageStartupMessages({
   library(here); library(tidyverse); library(readxl); library(tapas)
 })
-source(here("R/helpers/fire_detection_functions.R"))
+source(here("R/helpers/fire_detection_functions.R"), local = TRUE)
 
 settings = fire_source_settings() |> filter(site == "MORA")
 results = pmap(settings, function(site, lake, input_source, chronology,
@@ -3258,8 +3259,8 @@ paleo_fire = paleo_fire %>%
 # artificially coarsened to the MORA grids. The sites' raw peak counts and
 # magnitudes are never compared directly.
 library(tapas)
-source(here("R/helpers/paleo_ages.R"))
-source(here("R/helpers/fire_detection_functions.R"))
+source(here("R/helpers/paleo_ages.R"), local = TRUE)
+source(here("R/helpers/fire_detection_functions.R"), local = TRUE)
 
 NOCA_YRINTERP_PRIMARY = 12
 NOCA_SMOOTH_PRIMARY   = 500
@@ -3397,10 +3398,10 @@ cat("\nNOTE: MORA rows carry Dunwiddie's charcoal_fragments / needle_concentrati
 
 library(here)
 suppressMessages({library(dplyr); library(tidyr); library(readr)})
-source(here("R/vendor/get_chelsa.R"))          # vendored, commit 3d410b8
-source(here("R/helpers/get_chelsa_monthly.R"))  # V2.1 monthly, for the bias anchor
-source(here("R/helpers/config.R"))
-source(here("R/helpers/offline_cache.R"))
+source(here("R/vendor/get_chelsa.R"), local = TRUE)          # vendored, commit 3d410b8
+source(here("R/helpers/get_chelsa_monthly.R"), local = TRUE)  # V2.1 monthly, for the bias anchor
+source(here("R/helpers/config.R"), local = TRUE)
+source(here("R/helpers/offline_cache.R"), local = TRUE)
 
 CACHE        = here("output/chelsa_paleo")
 OUT          = here("output/chelsa_paleo_ponds.csv")
@@ -3501,11 +3502,15 @@ paleo_cache_valid = function(path, variable, slice) {
   x = tryCatch(read_csv(path, show_col_types = FALSE), error = function(e) NULL)
   required = c("id", "lon", "lat", "source", "variable", "month", "slice", "value")
   if (is.null(x) || !all(required %in% names(x)) || nrow(x) != EXPECT ||
-      anyNA(x$value) || !all(x$source == "paleo") ||
+      anyNA(x[required]) || !is.numeric(x$value) ||
+      !is.numeric(x$lon) || !is.numeric(x$lat) ||
+      any(!is.finite(x$value) | !is.finite(x$lon) | !is.finite(x$lat)) ||
+      !all(x$source == "paleo") ||
       !all(x$variable == variable) || !all(x$slice == slice) ||
       anyDuplicated(x[c("id", "month")]) ||
       !setequal(x$month, 1:12) || !setequal(x$id, ponds$ID)) return(FALSE)
   got = unique(x[c("id", "lon", "lat")])
+  if (anyDuplicated(got$id)) return(FALSE)
   got = got[match(ponds$ID, got$id), ]
   all(abs(got$lon - ponds$lon) < 1e-8 & abs(got$lat - ponds$lat) < 1e-8)
 }
@@ -3711,8 +3716,8 @@ cat("\nwritten: ", OUT, "  (", nrow(out), " rows)\n",
 
 library(here)
 suppressMessages({library(dplyr); library(tidyr); library(readr)})
-source(here("R/helpers/climate_variables.R"))
-source(here("R/helpers/config.R"))
+source(here("R/helpers/climate_variables.R"), local = TRUE)
+source(here("R/helpers/config.R"), local = TRUE)
 
 if (!exists("USE_CORRECTED")) USE_CORRECTED = PALEO_USE_BIAS_CORRECTED
 
@@ -3895,7 +3900,7 @@ cat("\nwritten: output/paleo_env.csv\n")
 library(tidyverse)
 library(here)
 library(readxl)
-source(here("R/helpers/config.R"))
+source(here("R/helpers/config.R"), local = TRUE)
 render_figures = isTRUE(getOption("paleoaces.render_figures", TRUE))
 
 VERIFY_AGAINST_RAW = TRUE   # re-derive the two tables above from the raw workbooks
@@ -4207,7 +4212,7 @@ p_stage = ggplot(stage_counts, aes(species, n_plots, fill = period)) +
        title = "Adults vs regeneration, past vs present",
        subtitle = paste0("Plots per species, past and present side by side within each stage - localises a change to\n",
                          "adults or to regeneration. Consolidated species set (understory taxa removed)."),
-       caption = paste0("Adults are comparable across all four panels. REGENERATION IS NOT: NOCA past uses the ",
+       caption = paste0("Size limits differ: NOCA adults are >3 m in the legacy survey versus >1.4 m in resurveys. NOCA past regeneration uses the ",
                         "legacy 0-3 m\nheight class, whereas MORA (both eras) and NOCA present use 10-140 cm ",
                         "seedling surveys. The NOCA\npast-vs-present regeneration contrast is therefore ",
                         "confounded by band width.")) +
@@ -4321,7 +4326,7 @@ library(here)
 library(tidyverse)
 library(vegan)
 conflicted::conflicts_prefer(dplyr::select, dplyr::filter, dplyr::lag, .quiet = TRUE)
-source(here("R/helpers/config.R"))
+source(here("R/helpers/config.R"), local = TRUE)
 
 # Run configuration ----------------------------------------------------------
 # EVERY knob for this model is here, and every one is `if (!exists())`, so a
@@ -4369,7 +4374,8 @@ if (!exists("cca_suffix"))    cca_suffix    = ""
 # which was wrong.) The 2026 NOCA tree correction raised Abies grandis from 19
 # to 22 NOCA-present plots, so it now legitimately survives threshold 20.
 #
-# ⚠ Constrained inertia will RISE going 10 -> 20 (13.4% -> 16.3%). That is NOT
+# Historical threshold comparison: constrained inertia rose from 13.4% to 16.3%.
+# These are historical diagnostics, not the current fit's summary. That is NOT
 # the justification and must not be quoted as one: it rises mechanically as
 # species are removed, because there is less total inertia left to explain. The
 # justification is the one above - which species, and whether they exist in both
@@ -4388,6 +4394,8 @@ if (!exists("cca_suffix"))    cca_suffix    = ""
 if (!exists("count.thr")) count.thr = CCA_COUNT_THRESHOLD
 
 # ⚠ WHAT KEEPING IT COSTS - to be reported, not fixed:
+# The following numbers record the historical threshold decision; current
+# coordinates and inertia must be read from the rebuilt model/report.
 #   occurrences  MORA 0 paleo / 0 past / 2 present | NOCA 0 paleo / 20 past / 7 present
 #   position     CCA1 3.57, CCA2 4.39 - the extreme of BOTH axes; the next most
 #                extreme are Abies lasiocarpa (1.80) and Pinus contorta (2.75)
@@ -4407,12 +4415,12 @@ if (!exists("count.thr")) count.thr = CCA_COUNT_THRESHOLD
 # scaling in which Euclidean distance among samples represents their chi-square
 # distance. Under "none"/"species" (0/2) sites are in standard coordinates, where
 # each axis carries equal metric weight regardless of its eigenvalue - so CCA2
-# (5.2% of inertia) would count as much per unit of displacement as CCA1 (11%).
+# would count as much per unit of displacement as CCA1 despite different inertia.
 #
 # Nothing is lost on the species side: with scaling 1 the species scores are
 # left unscaled, i.e. bit-identical to scaling 0, and species rank order and sign
-# along each axis are identical under ALL scalings. Species direction along the
-# axes is therefore scaling-invariant.
+# along each axis are identical under these positive scalings. Two-axis angles
+# are not invariant to unequal axis scaling; all metrics use the selected scaling.
 #
 # Set cca_scaling = "sites" with hill = TRUE to express site scores in SD units
 # of species turnover instead (gradient lengths CCA1 3.28 SD, CCA2 3.96 SD).
@@ -4530,7 +4538,7 @@ fire_summary = bind_rows(
 # before it). derive_climate_vars() turns them into the CCA variables and is the
 # SAME function 000_PALEO_e_climate.R uses, so a season cannot mean one thing in
 # the Holocene arm and another in the Anthropocene arm.
-source(here("R/helpers/climate_variables.R"))
+source(here("R/helpers/climate_variables.R"), local = TRUE)
 
 climate_monthly = bind_rows(
   read_csv(here("output/MORA_climate.csv"), show_col_types = FALSE),
@@ -4807,10 +4815,10 @@ if (identical(TRACKING_OUTPUT_SUFFIX, "_500yr")) {
   HOLO_BIN = 1000
   OFFSETS = seq(0, 900, by = 100)
 }
-source(here("R/stages/05_cca_model.R"))
-source(here("R/helpers/paleo_runs.R"))
-source(here("R/helpers/climate_variables.R"))
-source(here("R/helpers/tracking_metrics.R"))
+source(here("R/stages/05_cca_model.R"), local = TRUE)
+source(here("R/helpers/paleo_runs.R"), local = TRUE)
+source(here("R/helpers/climate_variables.R"), local = TRUE)
+source(here("R/helpers/tracking_metrics.R"), local = TRUE)
 
 if (!exists("USE_CORRECTED")) USE_CORRECTED = PALEO_USE_BIAS_CORRECTED
 if (!exists("TRACKING_EPS")) TRACKING_EPS = TRACKING_EPSILON
@@ -5178,7 +5186,7 @@ suppressPackageStartupMessages({
   library(here); library(tidyverse); library(readxl); library(CharAnalysis)
   library(tapas); library(patchwork)
 })
-source(here("R/helpers/walsh_fire_functions.R"))
+source(here("R/helpers/walsh_fire_functions.R"), local = TRUE)
 render_figures = isTRUE(getOption("paleoaces.render_figures", TRUE))
 
 FROZEN_FIRE_PATHS = here("output", c("fire_walsh.csv", "paleo_fire.csv"))
@@ -5375,9 +5383,9 @@ cat("Wrote source series and accepted events for the independent era stage.\n")
 suppressPackageStartupMessages({
   library(here); library(tidyverse); library(patchwork)
 })
-source(here("R/helpers/config.R"))
-source(here("R/helpers/climate_variables.R"))
-source(here("R/helpers/holocene_climate_fire_era_functions.R"))
+source(here("R/helpers/config.R"), local = TRUE)
+source(here("R/helpers/climate_variables.R"), local = TRUE)
+source(here("R/helpers/holocene_climate_fire_era_functions.R"), local = TRUE)
 render_figures = isTRUE(getOption("paleoaces.render_figures", TRUE))
 
 CLIMATE_INPUT = here("output/chelsa_paleo_ponds.csv")
@@ -5746,10 +5754,10 @@ render_figures = isTRUE(getOption("paleoaces.render_figures", TRUE))
 # stratum) and Pinus ponderosa by the analysis exclusion there, so the former
 # "_subset" run IS the model - there is no longer a pair of runs to distinguish.
 # 05_cca_model.R defaults extra_exclude to character(0) and cca_suffix to "".
-source(here("R/stages/05_cca_model.R"))
+source(here("R/stages/05_cca_model.R"), local = TRUE)
 library(ggrepel)
 library(patchwork)
-source(here("R/helpers/figure_style.R"))
+source(here("R/helpers/figure_style.R"), local = TRUE)
 
 # The reviewed frozen CC/S-era centroid display is the sole main trajectory
 # product. Both publication formats are written when rendering is enabled.
@@ -5764,7 +5772,7 @@ write_cca_png = TRUE
 # so this figure and the tracking metrics cannot disagree about what a bin is.
 HOLO_BIN = 1000
 OFFSETS = seq(0, HOLO_BIN - 100, by = 100)
-source(here("R/helpers/paleo_runs.R"))
+source(here("R/helpers/paleo_runs.R"), local = TRUE)
 
 # A bin_mid is kept only if it is occupied in at least this fraction of the age
 # DRAWS. Each bin_mid belongs to exactly one offset, so the denominator is
@@ -6580,7 +6588,7 @@ if (render_figures) {
 
 library(here)
 render_figures = isTRUE(getOption("paleoaces.render_figures", TRUE))
-source(here("R/stages/09_tracking_metrics.R"))
+source(here("R/stages/09_tracking_metrics.R"), local = TRUE)
 library(patchwork)
 
 MET_LAB = c(
@@ -7170,7 +7178,7 @@ if (render_figures) {
 suppressPackageStartupMessages({
   library(here); library(tidyverse); library(patchwork); library(grid)
 })
-source(here("R/helpers/figure_style.R"))
+source(here("R/helpers/figure_style.R"), local = TRUE)
 render_figures = isTRUE(getOption("paleoaces.render_figures", TRUE))
 
 required = c(
@@ -7957,7 +7965,7 @@ cat("Written site-level figure and resolution audits:\n",
 suppressPackageStartupMessages({
   library(here); library(tidyverse); library(patchwork); library(ggrepel)
 })
-source(here("R/helpers/figure_style.R"))
+source(here("R/helpers/figure_style.R"), local = TRUE)
 render_figures = isTRUE(getOption("paleoaces.render_figures", TRUE))
 
 input_path = here("output/cca_tracking_visualization_points.csv")
@@ -8314,10 +8322,10 @@ suppressPackageStartupMessages({
   library(vegan)
   library(patchwork)
 })
-source(here("R/helpers/config.R"))
-source(here("R/helpers/tracking_metrics.R"))
-source(here("R/helpers/figure_style.R"))
-source(here("R/stages/05_cca_model.R"))
+source(here("R/helpers/config.R"), local = TRUE)
+source(here("R/helpers/tracking_metrics.R"), local = TRUE)
+source(here("R/helpers/figure_style.R"), local = TRUE)
+source(here("R/stages/05_cca_model.R"), local = TRUE)
 
 render_figures = isTRUE(getOption("paleoaces.render_figures", TRUE))
 DIRECTION_EPSILON = TRACKING_EPSILON

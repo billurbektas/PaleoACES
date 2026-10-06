@@ -4,7 +4,7 @@ suppressPackageStartupMessages({
   library(readxl)
   library(ggalluvial)
 })
-source(here("R/helpers/functions.R"))
+source(here("R/helpers/functions.R"), local = TRUE)
 render_figures = isTRUE(getOption("paleoaces.render_figures", TRUE))
 
 # Get overstory ----
@@ -647,7 +647,8 @@ if (sum(NOCA_tree_composition_audit$present_composition_changed) != 50L) {
 #   present regeneration = the JHRL Seedlings tallies (10-140 cm);
 #           adult        = the Tree Data stems (DBH, i.e. >1.4 m)
 # So "past regeneration" is a coarser, taller band (up to 3 m) than "present
-# regeneration" (up to 1.4 m). Adults are comparable; regeneration is a proxy.
+# regeneration" (up to 1.4 m). Adult size limits also differ (>3 m vs >1.4 m),
+# so neither label establishes identical size-class sampling across periods.
 SEED = "Seedling / regeneration"; ADULT = "Adult"
 fix_noca_sp = normalize_noca_species
 NOCA_stage = bind_rows(

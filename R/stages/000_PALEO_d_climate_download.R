@@ -31,10 +31,10 @@
 
 library(here)
 suppressMessages({library(dplyr); library(tidyr); library(readr)})
-source(here("R/vendor/get_chelsa.R"))          # vendored, commit 3d410b8
-source(here("R/helpers/get_chelsa_monthly.R"))  # V2.1 monthly, for the bias anchor
-source(here("R/helpers/config.R"))
-source(here("R/helpers/offline_cache.R"))
+source(here("R/vendor/get_chelsa.R"), local = TRUE)          # vendored, commit 3d410b8
+source(here("R/helpers/get_chelsa_monthly.R"), local = TRUE)  # V2.1 monthly, for the bias anchor
+source(here("R/helpers/config.R"), local = TRUE)
+source(here("R/helpers/offline_cache.R"), local = TRUE)
 
 CACHE        = here("output/chelsa_paleo")
 OUT          = here("output/chelsa_paleo_ponds.csv")
@@ -135,11 +135,15 @@ paleo_cache_valid = function(path, variable, slice) {
   x = tryCatch(read_csv(path, show_col_types = FALSE), error = function(e) NULL)
   required = c("id", "lon", "lat", "source", "variable", "month", "slice", "value")
   if (is.null(x) || !all(required %in% names(x)) || nrow(x) != EXPECT ||
-      anyNA(x$value) || !all(x$source == "paleo") ||
+      anyNA(x[required]) || !is.numeric(x$value) ||
+      !is.numeric(x$lon) || !is.numeric(x$lat) ||
+      any(!is.finite(x$value) | !is.finite(x$lon) | !is.finite(x$lat)) ||
+      !all(x$source == "paleo") ||
       !all(x$variable == variable) || !all(x$slice == slice) ||
       anyDuplicated(x[c("id", "month")]) ||
       !setequal(x$month, 1:12) || !setequal(x$id, ponds$ID)) return(FALSE)
   got = unique(x[c("id", "lon", "lat")])
+  if (anyDuplicated(got$id)) return(FALSE)
   got = got[match(ponds$ID, got$id), ]
   all(abs(got$lon - ponds$lon) < 1e-8 & abs(got$lat - ponds$lat) < 1e-8)
 }

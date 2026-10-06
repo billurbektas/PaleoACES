@@ -7,7 +7,7 @@
 suppressPackageStartupMessages({
   library(here); library(tidyverse); library(patchwork); library(ggrepel)
 })
-source(here("R/helpers/figure_style.R"))
+source(here("R/helpers/figure_style.R"), local = TRUE)
 render_figures = isTRUE(getOption("paleoaces.render_figures", TRUE))
 
 input_path = here("output/cca_tracking_visualization_points.csv")
