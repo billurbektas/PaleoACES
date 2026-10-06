@@ -1,0 +1,12 @@
+# Explicit snapshot builder. A fresh report is built by R/workflow.R --report.
+suppressPackageStartupMessages(library(here))
+source(here("R/helpers/analysis_report.R"))
+args = commandArgs(trailingOnly = TRUE)
+if (!identical(args, "--snapshot")) stop("Usage: Rscript R/render_analysis_review.R --snapshot\nFor a fresh run: Rscript R/workflow.R --offline --report")
+sys.source(here("R/tests/test_bacon_provenance.R"), envir = new.env(parent = globalenv()))
+sys.source(here("R/tests/test_figure_output_contract.R"), envir = new.env(parent = globalenv()))
+dir.create(here("output/report"), recursive = TRUE, showWarnings = FALSE)
+e = new.env(parent = globalenv())
+sys.source(here("R/stages/05_cca_model.R"), envir = e)
+report_export_cca(e)
+report_python("--snapshot")

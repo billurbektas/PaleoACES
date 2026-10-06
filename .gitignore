@@ -39,11 +39,46 @@ vignettes/*.pdf
 # R Environment Variables
 .Renviron
 
-# pkgdown site
-docs/
 
 # translation temp files
 po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+# Local research data, caches, large results, and historical products
+/data/**
+!/data/**/
+!/data/MORA/README_data_raw.md
+!/data/MORA/README_data_raw.html
+!/data/NOCA/NOCA_paleo/SOURCES.md
+!/data/NOCA/NOCA_paleo/SOURCES.html
+!/data/README_outputs_MORA_AT.md
+!/data/README_outputs_MORA_AT.html
+!/data/SOURCES_SURVEY_YEARS.md
+!/data/SOURCES_SURVEY_YEARS.html
+/Cores/**
+!/Cores/**/
+!/Cores/CONTROL_POINTS.md
+!/Cores/CONTROL_POINTS.html
+!/Cores/SOURCES_MORA.md
+!/Cores/SOURCES_MORA.html
+/output/
+/archive/
+/plot/archive/
+/R/archive/
+/docs/archive/
+/related_publications/
+/notes_from_Rachel/
+/PaleoNeoCommunity Shifts Mt. Rainier.pdf
+.DS_Store
+*.log.tmp
+/docs/.analysis-review-*/
+
+# Local assistant/cloud settings and Python bytecode
+/.claude/
+/.codex/
+/.agents/
+/.aws/
+__pycache__/
+*.pyc

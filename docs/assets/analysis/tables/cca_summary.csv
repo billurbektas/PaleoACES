@@ -1,0 +1,12 @@
+field,value
+calibration_plots,620
+retained_species,13
+count_threshold,20
+scaling,sites
+hill,FALSE
+constraints,
+total_inertia,3.04046868797211
+constrained_inertia,0.501167165213433
+constrained_percent,16.4832207348827
+projection_candidates,1583
+positioned_samples,1514

@@ -1,0 +1,349 @@
+{
+  "diagnostics": [
+    {
+      "id": "noca_cleaning",
+      "section": "vegetation",
+      "pdf": "plot/test_figures/NOCA_cleaning.pdf",
+      "pages": [
+        1
+      ],
+      "producer": "R/stages/000_NOCA_cleaning.R",
+      "purpose": "Account for the corrected paired-plot cleaning universe.",
+      "interpretation": "The retained cleaning universe is broader than the final modeled pairs. Empty-period records and study exclusions remain explicit.",
+      "status": "current"
+    },
+    {
+      "id": "mora_dynamics",
+      "section": "vegetation",
+      "pdf": "plot/test_figures/MORA_dynamics.pdf",
+      "pages": [
+        3
+      ],
+      "producer": "R/stages/000_MORA_cleaning.R",
+      "purpose": "Show species counts before model taxon selection.",
+      "interpretation": "Counts reflect adult-or-regeneration presence in cleaned survey plots; they do not measure abundance.",
+      "status": "current"
+    },
+    {
+      "id": "noca_dynamics",
+      "section": "vegetation",
+      "pdf": "plot/test_figures/NOCA_dynamics.pdf",
+      "pages": [
+        3
+      ],
+      "producer": "R/stages/000_NOCA_cleaning.R",
+      "purpose": "Compare corrected legacy and resurvey species counts.",
+      "interpretation": "Species differences describe cleaned surveys before cross-site harmonization and the CCA threshold.",
+      "status": "current"
+    },
+    {
+      "id": "species_counts",
+      "section": "taxonomy",
+      "pdf": "plot/test_figures/species_counts_consolidated.pdf",
+      "pages": [
+        1
+      ],
+      "producer": "R/stages/000_occurrence_data_consolidate.R",
+      "purpose": "Inspect consolidated occurrence counts in each site-period group.",
+      "interpretation": "Retention requires at least 20 plots or samples in one group. The threshold is not required in every group.",
+      "status": "current"
+    },
+    {
+      "id": "stage_comparison",
+      "section": "taxonomy",
+      "pdf": "plot/test_figures/stage_adult_seedling_past_present.pdf",
+      "pages": [
+        1
+      ],
+      "producer": "R/stages/000_occurrence_data_consolidate.R",
+      "purpose": "Expose adult versus regeneration support for presence.",
+      "interpretation": "Adult and regeneration sources contribute to presence; stem counts and macrofossil percentages are not combined as abundance.",
+      "status": "current"
+    },
+    {
+      "id": "occupancy",
+      "section": "taxonomy",
+      "pdf": "plot/test_figures/species_through_time.pdf",
+      "pages": [
+        1
+      ],
+      "producer": "R/diagnostics/test_species_through_time.R",
+      "purpose": "Inspect taxon site confounding and temporal occupancy.",
+      "interpretation": "This explicitly retains the 500-year occupancy sensitivity. Sparse sampling is shown; the primary tracking analysis uses 1,000 years.",
+      "status": "500-year sensitivity"
+    },
+    {
+      "id": "chronology",
+      "section": "chronology",
+      "pdf": "plot/test_figures/fig_bacon_agedepth_slump.pdf",
+      "pages": [
+        1
+      ],
+      "producer": "R/stages/000_PALEO_a_agedepth.R",
+      "purpose": "Inspect four fitted age-depth models and slump treatment.",
+      "interpretation": "A report rebuild executes only the existing figure section from stored validated posteriors. Chronology products and controls are hash-protected.",
+      "status": "current"
+    },
+    {
+      "id": "pb210",
+      "section": "chronology",
+      "pdf": "plot/test_figures/fig_bacon_pb210_sensitivity.pdf",
+      "pages": [
+        1
+      ],
+      "producer": "R/stages/000_PALEO_a_agedepth.R",
+      "purpose": "Compare published activity errors with assumed \u00b110-year age uncertainty.",
+      "interpretation": "The sensitivity concerns the upper 35\u201340 cm of Panther Potholes; uncertainty in published fire chronologies is not equivalent across sites.",
+      "status": "chronology sensitivity"
+    },
+    {
+      "id": "survey_window",
+      "section": "climate",
+      "pdf": "plot/test_figures/test_survey_year_anomaly.pdf",
+      "pages": [
+        1
+      ],
+      "producer": "R/diagnostics/test_survey_year_anomaly.R",
+      "purpose": "Compare selected survey windows with the full 1979\u20132021 record.",
+      "interpretation": "Detrending does not resolve CHELSA product continuity. Apparent precipitation anomalies remain a scientific limitation.",
+      "status": "current"
+    },
+    {
+      "id": "climate_correlation",
+      "section": "climate",
+      "pdf": "plot/test_figures/climate_holocene_timeseries.pdf",
+      "pages": [
+        2
+      ],
+      "producer": "R/diagnostics/test_climate_change_variables.R",
+      "purpose": "Inspect redundancy among candidate climate variables.",
+      "interpretation": "Only page 2 (correlations) is inline. Page 1 and associated pace tables retain the former 500-year sensitivity and are not primary rate evidence.",
+      "status": "correlation diagnostic; full PDF includes 500-year sensitivity"
+    },
+    {
+      "id": "scaling",
+      "section": "cca",
+      "pdf": "plot/test_figures/fig_cca_scaling_comparison.pdf",
+      "pages": [
+        1
+      ],
+      "producer": "R/diagnostics/test_cca_scaling_comparison.R",
+      "purpose": "Compare scaling 1 and 2 of the same fitted CCA.",
+      "interpretation": "The primary geometry stays scaling=\"sites\", Hill off, CCA1\u2013CCA2. Raw target directions, without display multipliers, enter metrics.",
+      "status": "current"
+    },
+    {
+      "id": "fire_map",
+      "section": "fire",
+      "pdf": "plot/test_figures/NOCA_fire_map_Wilson2024_PaleoACES.pdf",
+      "pages": [
+        1
+      ],
+      "producer": "R/stages/01_get_fire_info.R",
+      "purpose": "Audit NOCA modern fire assignment against Wilson reference plots.",
+      "interpretation": "The 305 shared plots agree. The cleaned 307-plot universe is retained; the reference is not substituted for it.",
+      "status": "current"
+    },
+    {
+      "id": "fire_detection",
+      "section": "fire",
+      "pdf": "plot/test_figures/fig_fire_event_detection_workflow.pdf",
+      "pages": [
+        1,
+        2,
+        5
+      ],
+      "producer": "R/stages/12a_fire_event_detection_worked_example.R",
+      "purpose": "Follow interpolation, background, local noise threshold, and count screening.",
+      "interpretation": "Pages 1, 2, and 5 show common settings, Sunrise, and Panther Potholes. Core-specific temporal settings remain explicit; accepted events precede high-fire classification.",
+      "status": "current"
+    },
+    {
+      "id": "walsh_audit",
+      "section": "fire",
+      "pdf": "plot/test_figures/fig_walsh_charanalysis_reproduction.pdf",
+      "pages": [
+        3
+      ],
+      "producer": "R/stages/12_walsh_fire_reproduction.R",
+      "purpose": "Compare official CharAnalysis results with published Walsh totals.",
+      "interpretation": "The discrepancy is retained without tuning; this software audit does not overwrite the primary all-tapas event catalog.",
+      "status": "current"
+    },
+    {
+      "id": "climate_era_example",
+      "section": "fire",
+      "pdf": "plot/test_figures/fig_holocene_climate_period_method_worked_example.pdf",
+      "pages": [
+        1
+      ],
+      "producer": "R/stages/13_holocene_climate_fire_eras.R",
+      "purpose": "Expose signed changes, phase support, and era construction.",
+      "interpretation": "Any qualifying variable creates a climate-change cell. Only adjacent cells merge; the unsigned composite is context.",
+      "status": "current"
+    },
+    {
+      "id": "high_fire_example",
+      "section": "fire",
+      "pdf": "plot/test_figures/fig_holocene_fire_method_worked_example.pdf",
+      "pages": [
+        1
+      ],
+      "producer": "R/stages/13b_fire_method_worked_example.R",
+      "purpose": "Work through centered event frequencies at 2,300 cal BP.",
+      "interpretation": "Within-core normalization and site-specific robust thresholds yield MORA high fire and NOCA no high fire for the worked date.",
+      "status": "current"
+    },
+    {
+      "id": "tracking_example",
+      "section": "tracking",
+      "pdf": "plot/test_figures/fig_method_worked_example.pdf",
+      "pages": [
+        1
+      ],
+      "producer": "R/stages/09a_method_example.R",
+      "purpose": "Work through WA/LC movement, lag, ratio, and angle.",
+      "interpretation": "Lag change is endpoint mismatch at t2 minus t1; a stationary observed movement has no defined direction.",
+      "status": "current"
+    },
+    {
+      "id": "direction_audit",
+      "section": "direction",
+      "pdf": "plot/test_figures/fig_cca_direction_differences_audit.pdf",
+      "pages": [
+        1,
+        2
+      ],
+      "producer": "R/stages/14_cca_direction_analysis.R",
+      "purpose": "Inspect distributions and support beneath the Figure 5 heatmap.",
+      "interpretation": "The paired target discrepancy uses each trajectory's own origin. Quartiles are descriptive; small groups are retained rather than interpreted as precise estimates.",
+      "status": "current"
+    },
+    {
+      "id": "historical_chelsa",
+      "section": "historical",
+      "pdf": "plot/test_figures/test_chelsa_cruts_vs_present.pdf",
+      "pages": [],
+      "producer": "R/diagnostics/test_chelsa_cruts_vs_present.R",
+      "purpose": "Retain the older product-comparison reference outside current results.",
+      "interpretation": "This historical comparison used older product/window assumptions. It is excluded from current evidence and never refreshed by --report.",
+      "status": "historical reference"
+    }
+  ],
+  "main_figures": [
+    {
+      "number": 2,
+      "stem": "fig_standardized_climate_change_eras_fire",
+      "section": "fire",
+      "producer": "R/stages/13a_climate_change_figure.R"
+    },
+    {
+      "number": 3,
+      "stem": "fig_cca_trajectories",
+      "section": "trajectories",
+      "producer": "R/stages/05a_cca_figure.R"
+    },
+    {
+      "number": 4,
+      "stem": "fig_tracking_comparison",
+      "section": "tracking",
+      "producer": "R/stages/09c_tracking_comparison.R"
+    },
+    {
+      "number": 5,
+      "stem": "fig_cca_direction_differences",
+      "section": "direction",
+      "producer": "R/stages/14_cca_direction_analysis.R"
+    }
+  ],
+  "tables": {
+    "bacon_manifest": {
+      "source": "output/bacon_run_manifest.csv",
+      "producer": "R/stages/000_PALEO_a_agedepth.R"
+    },
+    "era_catalog": {
+      "source": "output/holocene_era_catalog.csv",
+      "producer": "R/stages/13_holocene_climate_fire_eras.R"
+    },
+    "fire_settings": {
+      "source": "output/holocene_fire_source_settings.csv",
+      "producer": "R/stages/12_walsh_fire_reproduction.R"
+    },
+    "event_audit": {
+      "source": "output/fire_event_detection_lake_audit.csv",
+      "producer": "R/stages/12a_fire_event_detection_worked_example.R"
+    },
+    "walsh_audit": {
+      "source": "output/walsh_charanalysis_table3_audit.csv",
+      "producer": "R/stages/12_walsh_fire_reproduction.R"
+    },
+    "raw_climate_rates": {
+      "source": "output/holocene_anthropocene_raw_climate_rate_comparison.csv",
+      "producer": "R/stages/13a_climate_change_figure.R"
+    },
+    "era_centroids": {
+      "source": "output/cca_trajectory_era_centroids.csv",
+      "producer": "R/stages/05a_cca_figure.R"
+    },
+    "resolution_audit": {
+      "source": "output/cca_tracking_interval_resolution_audit.csv",
+      "producer": "R/stages/09b_tracking_visualization_data.R"
+    },
+    "era_coverage": {
+      "source": "output/cca_tracking_holocene_era_coverage.csv",
+      "producer": "R/stages/09b_tracking_visualization_data.R"
+    },
+    "tracking_summary": {
+      "source": "output/cca_tracking_comparison_summary.csv",
+      "producer": "R/stages/09c_tracking_comparison.R"
+    },
+    "direction_summary": {
+      "source": "output/cca_direction_group_summaries.csv",
+      "producer": "R/stages/14_cca_direction_analysis.R"
+    },
+    "correction_audit": {
+      "source": "output/NOCA_tree_correction_audit.csv",
+      "producer": "R/stages/000_NOCA_cleaning.R"
+    },
+    "study_exclusions": {
+      "source": "output/NOCA_study_exclusions.csv",
+      "producer": "R/stages/000_NOCA_cleaning.R"
+    },
+    "coordinate_collision": {
+      "source": "output/NOCA_coordinate_collision_audit.csv",
+      "producer": "R/stages/000_NOCA_cleaning.R"
+    },
+    "survey_anomaly": {
+      "source": "output/test_survey_year_anomaly.csv",
+      "producer": "R/diagnostics/test_survey_year_anomaly.R"
+    },
+    "species_occupancy": {
+      "source": "output/test_species_occupancy.csv",
+      "producer": "R/diagnostics/test_species_through_time.R"
+    },
+    "cca_summary": {
+      "source": "output/report/cca_summary.csv",
+      "producer": "R/stages/05_cca_model.R"
+    },
+    "cca_axes": {
+      "source": "output/report/cca_axes.csv",
+      "producer": "R/stages/05_cca_model.R"
+    },
+    "cca_taxa": {
+      "source": "output/report/cca_taxa.csv",
+      "producer": "R/stages/05_cca_model.R"
+    },
+    "cca_counts": {
+      "source": "output/report/cca_counts.csv",
+      "producer": "R/stages/05_cca_model.R"
+    },
+    "climate_windows": {
+      "source": "output/report/climate_windows.csv",
+      "producer": "R/stages/05_cca_model.R"
+    },
+    "cleaning_summary": {
+      "source": "output/report/cleaning_summary.csv",
+      "producer": "R/stages/05_cca_model.R"
+    }
+  }
+}

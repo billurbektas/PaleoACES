@@ -1,0 +1,19 @@
+{
+  "original_path": "R/00_workflow.R",
+  "current_path": "R/workflow.R",
+  "driver_changes": "only self-references in comments; parsed execution logic is identical",
+  "unchanged_scientific_results_caches": 113,
+  "unchanged_chronology_files": 28,
+  "unchanged_chronology_config_code": 3,
+  "changed_protected_files": [],
+  "report_build": {
+    "mode": "fresh",
+    "built_at_utc": "2026-10-05T13:54:11Z",
+    "run_id": "20261005T135004Z",
+    "input_manifest_sha256": "578128bdf683e1824655ce6c03f47b0ecb6ca2c031dde9f4d16a5a9ba826fcac",
+    "source_manifest_sha256": "a229d18e621f45d4108ac34e63236fafc852bd8965ab094f76a4bf5808972973",
+    "result_manifest_sha256": "45069e169b32e054d60adadb2d2512365d5bbbbb8aaebcd518ed1d0718fa8120",
+    "publication": "staged and validated before replacement",
+    "chronology": "validated stored posteriors; no MCMC in reporting"
+  }
+}

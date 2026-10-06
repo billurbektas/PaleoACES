@@ -1,0 +1,7 @@
+PASS R/stages/000_MORA_climate.R: Offline MORA climate
+PASS R/stages/000_NOCA_climate.R: Offline NOCA climate
+PASS R/stages/000_PALEO_d_climate_download.R: Offline TraCE21k climate
+PASS R/diagnostics/test_survey_year_anomaly.R: Offline survey-window climate
+PASS R/stages/000_MORA_climate.R: Offline MORA climate
+PASS R/stages/000_MORA_climate.R: Offline MORA climate
+Offline missing/invalid-cache and changed-coordinate checks passed; files restored.
