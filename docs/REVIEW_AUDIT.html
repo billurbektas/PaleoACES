@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: 957b3c2095213f318ebc407bb9198b5b -->
+<!-- paleoaces-source-md5: a1898553f497dae09f8263427f1ca96e -->
 
 <html>
 
@@ -1506,13 +1506,16 @@ to <a href="https://github.com/billurbektas/PaleoACES/tree/review/science-maths-
 they have not been merged into <code>main</code>. Review date:
 2026-10-06.</p>
 <p>The most consequential concerns are scientific interpretation and
-provenance: Panther Potholes’ primary chronology uses five activity
-uncertainties as age uncertainties; tephra bracket widths do not
+provenance: Panther Potholes’ primary chronology deliberately retains
+five inherited activity uncertainties in the age-error field to
+reproduce the published chronology; tephra bracket widths do not
 establish statistical age errors; the plotted two-axis CCA explains
 15.34% of total inertia; and some descriptive groups contain only two
-units. These concerns remain visible and require the author’s
-methodological decisions. No chronology was refitted and no scientific
-settings were changed.</p>
+units. The ²¹⁰Pb issue and the assumed-error sensitivity were already
+documented before this audit; the review confirms that known limitation
+and preserves the existing reproduction decision. Remaining
+methodological questions are recorded for the author. No chronology was
+refitted and no scientific settings were changed.</p>
 <p>Confirmed technical corrections address nested script environments,
 missing CCA constraint metadata, omitted report summaries, invalid
 climate values/coordinates, and coverage gaps that could be bridged into
@@ -1597,14 +1600,22 @@ already-calendar ages must not be calibrated again. These controls and
 the adopted settings remain unchanged. <a href="https://doi.org/10.2307/1938503">Dunwiddie (1986)</a>, <a href="https://doi.org/10.1016/j.quascirev.2017.10.032">Walsh et
 al. (2017)</a>, and the colocated <a href="../Cores/CONTROL_POINTS.html">control register</a> document the
 source trail.</p>
-<p><strong>Confirmed dimensional problem, retained pending a scientific
-decision:</strong> Prichard (2009), Table 1c, states that the errors
-3.47, 1.15, 0.72, 0.74, and 0.77 are in DPM/g. They are activity errors,
-not years. The primary Panther Potholes controls reproduce those values
-in Bacon’s age-error field. The existing ±10-year sensitivity is an
-assumed replacement, not a recovered CRS age uncertainty. Its existence
-does not validate the primary age-error units. No new sensitivity or
-refit was performed. <a href="https://doi.org/10.1016/j.yqres.2009.03.008">Prichard et
+<p><strong>Previously discussed units limitation, deliberately retained
+for reproduction:</strong> Prichard (2009), Table 1c, states that the
+errors 3.47, 1.15, 0.72, 0.74, and 0.77 are in DPM/g. They are activity
+errors, not years. This was already identified in the <a href="../data/NOCA/NOCA_paleo/SOURCES.html">NOCA paleo source notes</a>,
+the <a href="../Cores/CONTROL_POINTS.html">control-point register</a>, and
+the chronology script’s sensitivity discussion. The earlier decision was
+to reproduce Gavin’s primary chronology unchanged and retain a
+separately labelled, assumed ±10-year sensitivity. The source notes also
+record earlier proportional and ±15/±20-year comparisons and the
+rationale for keeping a constant assumption. The audit did not discover
+an unnoticed new programming error or supersede that decision. It
+confirms the dimensional limitation: the assumed sensitivity does not
+recover laboratory CRS age uncertainty or validate the primary error
+units. The <a href="SCIENTIFIC_DECISIONS.html">scientific-decision
+summary</a> now makes this history explicit. No new sensitivity or refit
+was performed. <a href="https://doi.org/10.1016/j.yqres.2009.03.008">Prichard et
 al. (2009)</a>.</p>
 <p>The existing sensitivity figure’s subtitle says the models are
 identical below 35 cm. A comparison of the <strong>stored</strong>

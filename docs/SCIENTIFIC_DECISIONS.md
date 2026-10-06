@@ -18,6 +18,44 @@ order and file dependencies are authoritative in [WORKFLOW.md](WORKFLOW.md).
   in at least one site-period group of 20 plots or samples. The consolidated
   table has 13,672 rows, 21 taxa, and 1,601 samples.
 
+## Chronology and the previously discussed ²¹⁰Pb uncertainty
+
+The Panther Potholes ²¹⁰Pb error units were discussed and documented before the
+2026-10-06 audit. The detailed record is in the [NOCA paleo source notes](../data/NOCA/NOCA_paleo/SOURCES.md)
+and the [control-point register](../Cores/CONTROL_POINTS.md).
+The audit confirms a known inherited limitation; retaining the primary values
+is an explicit reproduction decision.
+
+- **Known units issue.** Prichard (2009), Table 1c, reports the five errors
+  3.47, 1.15, 0.72, 0.74, and 0.77 in DPM/g, on ²¹⁰Pb activity. They are
+  numerically identical to the values in Gavin's age-error column. Activity
+  uncertainty cannot be interpreted directly as uncertainty in years.
+- **Primary decision.** Keep Gavin's control values and chronology settings
+  to reproduce the published chronology. This preserves provenance without
+  treating the inherited activity errors as justified CRS age uncertainties.
+- **Existing sensitivity.** `PantherPotholes_pb210err` substitutes one flat
+  **±10-year assumed age error** for the five controls. It remains a sensitivity,
+  labelled **assumed**, rather than a corrected or recovered laboratory error.
+  The source notes record earlier comparisons with proportional and ±15/±20-year
+  assumptions; those historical runs were not repeated by the audit.
+- **Reason for the constant.** The earlier comparisons addressed how assumed
+  errors affect the near-surface uncertainty envelope. The constant retained
+  the simplest explicit assumption for that question. Those comparisons do
+  not determine the true CRS age uncertainty or remove the units limitation.
+- **Effect and interpretation.** The documented comparisons widened the typical
+  top-35-cm 95% age range from approximately 7 years to 30–46 years, with modest
+  deeper changes. The audit's comparison of stored primary and ±10-year tables
+  found maximum differences below 35 cm of 15 years in median age and 24/28 years
+  in the lower/upper 95% bounds. Describe deeper chronologies as similar, rather
+  than identical; these are age-table comparisons, not proof that every downstream
+  uncertainty summary is insensitive. See the [stored comparison](review/PB210_STORED_SENSITIVITY_COMPARISON.csv)
+  and [audit chronology discussion](REVIEW_AUDIT.md#chronology).
+- **Remaining evidence gap.** Supported ²¹⁰Pb and the laboratory information
+  needed for CRS uncertainty propagation are unavailable in Table 1c. The
+  earlier discussion identified the Flett Research report or Prichard's thesis
+  as possible sources. Recovering and validating age uncertainties would require
+  a separate decision before replacing controls or refitting the chronology.
+
 ## Climate and CCA
 
 - Modern plots use CHELSA V2.1. Paleo samples use native CHELSA-TraCE21k pond
