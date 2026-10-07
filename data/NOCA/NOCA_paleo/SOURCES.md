@@ -170,8 +170,7 @@ harder to defend. All four assumptions were run:
 | constant ±20 | **46** | 438 | 418 |
 
 **The result is the range, not any single value: 7 → 30–46 yr in the ²¹⁰Pb section,
-and nothing below 35 cm moves under any assumption.** Medians differ by ≤11 yr
-between shapes. That bounded statement is what should be reported — it does not
+with similar deeper chronologies.** Earlier shape comparisons reported median differences of ≤11 yr; the stored primary versus ±10-year comparison finds a maximum deeper median difference of 15 yr and lower/upper-bound differences of 24/28 yr. That bounded statement is what should be reported — it does not
 depend on choosing a number, which is exactly why the simplest assumption is the
 right one to carry.
 
@@ -186,8 +185,9 @@ knowledge of the true value that we do not have.
 **Scope.** Only the `PantherPotholes_pb210err` run. The primary run keeps Gavin's
 published values, so the reproduction claim is untouched.
 
-So the published chronology is **over-confident at the top, not wrong**, and the
-error does not propagate downcore. Figure:
+The assumed-error sensitivity widens near-surface age uncertainty; the deeper
+chronologies remain similar rather than identical. It does not recover the true
+CRS age uncertainty. Figure:
 `plot/test_figures/fig_bacon_pb210_sensitivity.pdf`.
 
 ## Figures
@@ -195,7 +195,7 @@ error does not propagate downcore. Figure:
 | figure | what it shows |
 |---|---|
 | `plot/test_figures/fig_bacon_agedepth_slump.pdf` | rbacon `agedepth()` output for all four cores (JayBath, LogWallow, ReflectionPond, PantherPotholes), 2 × 2 |
-| `plot/test_figures/fig_bacon_pb210_sensitivity.pdf` | published vs **assumed** ²¹⁰Pb errors — whole core (identical) and a top-40 cm zoom (where the difference is) |
+| `plot/test_figures/fig_bacon_pb210_sensitivity.pdf` | published vs **assumed** ²¹⁰Pb errors — whole core (similar deeper chronologies) and a top-40 cm zoom |
 
 Both are produced by `R/stages/000_PALEO_a_agedepth.R`. Its figure section redraws from
 the **stored** runs and never

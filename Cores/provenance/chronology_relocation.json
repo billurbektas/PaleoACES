@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "date": "2026-10-05",
-  "purpose": "Exact path-only source equivalence for historical chronology hashes and cached age-draw dependencies. Scientific edits must invalidate equivalence.",
+  "purpose": "Exact recorded path substitutions and the authorized figure-caption correction for historical chronology hashes and cached age-draw dependencies. Scientific edits must invalidate equivalence.",
   "files": [
     {
       "original_path": "R/000_PALEO_a_agedepth.R",
       "current_path": "R/stages/000_PALEO_a_agedepth.R",
-      "snapshot": "docs/reorganization/chronology_sources_before_move/000_PALEO_a_agedepth.R.txt",
+      "snapshot": "Cores/provenance/chronology_sources_before_move/000_PALEO_a_agedepth.R.txt",
       "original_bytes": 32134,
       "original_sha256": "7655c4a1f6d53f76155e72aadc6d4f0d94c31ca5847375c57a40fad5cab5fe79",
       "original_md5": "6c071a0147cbf8b453ddb3bce1ce1b96",
@@ -38,6 +38,13 @@
         {
           "old": "R/config.R",
           "new": "R/helpers/config.R"
+        },
+        {
+          "old": "Whole core: identical below 35 cm",
+          "new": "Whole core: similar below 35 cm",
+          "role": "figure-caption-only",
+          "authorized_on": "2026-10-06",
+          "evidence": "docs/review/PB210_STORED_SENSITIVITY_COMPARISON.csv"
         }
       ],
       "relocated_sha256": "90bf42324e5123611cb5f490daed379948000b2f921a4d380ece1d156ee5d2cb"
@@ -45,7 +52,7 @@
     {
       "original_path": "R/bacon_settings.R",
       "current_path": "R/helpers/bacon_settings.R",
-      "snapshot": "docs/reorganization/chronology_sources_before_move/bacon_settings.R.txt",
+      "snapshot": "Cores/provenance/chronology_sources_before_move/bacon_settings.R.txt",
       "original_bytes": 5003,
       "original_sha256": "5c4bba29be40e324f10d5854647fc854dfee75d8b50dd73b6604130cfc6c6196",
       "original_md5": "8390c1bab0471723797ac6733c40602e",
@@ -68,7 +75,7 @@
     {
       "original_path": "R/config.R",
       "current_path": "R/helpers/config.R",
-      "snapshot": "docs/reorganization/chronology_sources_before_move/config.R.txt",
+      "snapshot": "Cores/provenance/chronology_sources_before_move/config.R.txt",
       "original_bytes": 2874,
       "original_sha256": "2201936ef50fa153a414686705657d52a9b9700485297a767c36e6190810d62d",
       "original_md5": "7afa1a9cbb398dc7dca66c9e03427f81",

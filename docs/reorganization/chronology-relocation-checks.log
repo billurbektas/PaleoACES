@@ -1,2 +1,0 @@
-Recorded path replacements validate; changes to accumulation priors and the Pb210 assumption lose historical equivalence.
-Existing 96300 cached age draws returned without calling the posterior reader; cache is byte-identical.

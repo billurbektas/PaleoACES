@@ -50,7 +50,7 @@ sets = split(present$plot_id, interaction(present$species, present$site,
 counts = lengths(lapply(sets, unique))
 independent = tapply(counts, sub("\\.(MORA|NOCA)\\..*$", "", names(counts)), max)
 selected = names(independent)[independent >= 20]
-stopifnot(setequal(selected, e$keep_species), nrow(y) == 620L, ncol(y) == 13L)
+stopifnot(setequal(selected, e$keep_species), nrow(y) == 618L, ncol(y) == 13L)
 record("binary occurrence keys and independent threshold selection", nrow(occ))
 
 # Original metadata provides an independent check of the stratum distinction.

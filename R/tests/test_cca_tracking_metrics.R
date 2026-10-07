@@ -135,8 +135,8 @@ timeseries = read_csv(paths[6], show_col_types = FALSE)
 
 stopifnot(setequal(scaling$variable, CCA_CLIMATE_VARS),
           all(scaling$sd > 0),
-          nrow(anth) == 607L,
-          all(table(anth$site)[c("MORA", "NOCA")] == c(330L, 277L)),
+          nrow(anth) == 605L,
+          all(table(anth$site)[c("MORA", "NOCA")] == c(330L, 275L)),
           !anyDuplicated(anth$plot_id),
           !anyNA(anth$vegetation_t2_year),
           identical(range(anth$vegetation_t2_year[anth$site == "MORA"]),
@@ -240,11 +240,45 @@ stopifnot(identical(date_coverage, expected_coverage))
 source(here("R/stages/05_cca_model.R"), local = TRUE)
 expected_scaling = make_climate_scaling(env_past_final, CCA_CLIMATE_VARS)
 stopifnot(identical(cca_scaling, "sites"), !cca_hill,
-          nrow(species_past_final) == 620L,
+          nrow(species_past_final) == 618L,
           ncol(species_past_final) == 13L,
           near(scaling$mean, expected_scaling$mean),
           near(scaling$sd, expected_scaling$sd))
 
-cat("CCA tracking metric tests passed: synthetic formulas, 607 plots, ",
+# One shared membership mask BEFORE predictions: both dates and both score types.
+stopifnot(setequal(present_pairs, anth$plot_id),
+          identical(rownames(species_past_paired), rownames(species_present_final)),
+          identical(rownames(env_past_paired), rownames(env_present_final)),
+          identical(rownames(projected_present), rownames(predicted_present)),
+          identical(rownames(projected_paleo), rownames(predicted_paleo)),
+          all(is.finite(projected_present)), all(is.finite(predicted_present)),
+          all(is.finite(projected_paleo)), all(is.finite(predicted_paleo)),
+          nrow(species_past_paired) == 605L, nrow(species_paleo) == 907L,
+          all(cca_eligibility_counts$input_units ==
+                cca_eligibility_counts$excluded_units + cca_eligibility_counts$included_units))
+for (i in seq_len(nrow(cca_eligibility_counts))) {
+  row = cca_eligibility_counts[i, ]
+  excluded = cca_exclusion_summary %>%
+    filter(era == row$era, site == row$site, use == row$use)
+  stopifnot(sum(excluded$excluded_units) == row$excluded_units)
+}
+# Independently reconcile recorded absence from the cleaned CSV, and paired
+# eligibility from retained-species presence sets (not the classification code).
+cleaned_noca = read_csv(here("output/NOCA_occ.csv"), show_col_types = FALSE)
+consolidated_noca = read_csv(here("output/occ_consolidated.csv"), show_col_types = FALSE) %>%
+  filter(site == "NOCA", occurrence == 1, species %in% keep_species)
+ids_at = function(period_name) unique(consolidated_noca$plot_id[
+  consolidated_noca$period == period_name])
+stopifnot(setequal(intersect(ids_at("past"), ids_at("present")),
+                    cca_pair_eligibility$plot_id[cca_pair_eligibility$site == "NOCA" &
+                                                 cca_pair_eligibility$comparison_included]))
+empty_at_legacy = setdiff(unique(cleaned_noca$plot_id), unique(cleaned_noca$plot_id[
+  cleaned_noca$period == "past" & cleaned_noca$occurrence == 1]))
+stopifnot(length(empty_at_legacy) == 6L,
+          setequal(empty_at_legacy, cca_sample_eligibility$plot_id[
+            cca_sample_eligibility$site == "NOCA" & cca_sample_eligibility$period == "past" &
+            cca_sample_eligibility$reason_code == "no_recorded_taxa"]))
+
+cat("CCA tracking metric tests passed: synthetic formulas, 605 plots, ",
     format(nrow(holo), big.mark = ","), " Holocene realizations, draw-first summaries, ",
     "and fixed model/scaling.\n", sep = "")

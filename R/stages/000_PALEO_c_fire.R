@@ -1,7 +1,7 @@
 # =============================================================================
 # 000_PALEO_c_fire.R - charcoal and charred needles per paleo sample
 # =============================================================================
-# Fire portion of R/archive/000b_paleo_cleaning.R; see docs/WORKFLOW.md.
+# Paleo fire preparation; see docs/WORKFLOW.md.
 #
 # RUN AFTER 000_PALEO_b_vegetation.R. It reads output/paleo_macrofossil_long.csv,
 # which b writes: the harmonised MORA long table with Percentage and the three

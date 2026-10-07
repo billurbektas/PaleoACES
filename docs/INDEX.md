@@ -5,14 +5,13 @@ The [analysis review](ANALYSIS_REVIEW.md) connects current results to intermedia
 | Document | Role |
 |---|---|
 | [README](../README.md) | Project entrypoint |
-| [REPOSITORY_INVENTORY](REPOSITORY_INVENTORY.md) | File roles, active producers/consumers, duplicates, and relocations |
+| [REPOSITORY_INVENTORY](REPOSITORY_INVENTORY.md) | Current file roles and authoritative inputs |
 | [OUTPUTS](OUTPUTS.md) | Active result tables |
 | [ANALYSIS_REVIEW](ANALYSIS_REVIEW.md) | Scientific review with diagnostics |
-| [REVIEW_AUDIT](REVIEW_AUDIT.md) | Independent science, mathematics, code findings and validation |
+| [NOCA_GPS_EXCLUSION](review/NOCA_GPS_EXCLUSION.md) | Rachel source review and the resolved CARI449/CARI450 GPS exclusion |
 | [WORKFLOW](WORKFLOW.md) | Executable order, commands, and checks |
 | [SCIENTIFIC_DECISIONS](SCIENTIFIC_DECISIONS.md) | Scientific rationale and open questions |
 | [FIGURE_CAPTIONS](FIGURE_CAPTIONS.md) | Manuscript Figures 2–5 captions |
-| [CLAUDE](CLAUDE.md) | Historical-plan redirect |
 | [CONTROL_POINTS](../Cores/CONTROL_POINTS.md) | Methods or input provenance |
 | [SOURCES_MORA](../Cores/SOURCES_MORA.md) | Methods or input provenance |
 | [000_NOCA_cleaning_guide](methods/000_NOCA_cleaning_guide.md) | Methods or input provenance |
@@ -24,4 +23,6 @@ The [analysis review](ANALYSIS_REVIEW.md) connects current results to intermedia
 
 Additional reading: [tracking specification](methods/cca_tracking_metrics.pdf), [Holocene context](references/Holocene_period_choices_MORA_NOCA_summary.pdf), [combined analysis copy](review/00_main_analysis_review.R), and [report template](report/analysis_review_template.md).
 
-[Reorganization and report acceptance record](reorganization/VALIDATION.md) connects the completed verification to its logs and checksums.
+Scientific limitations and adopted audit decisions are consolidated in
+[SCIENTIFIC_DECISIONS](SCIENTIFIC_DECISIONS.md). Stored chronology verification
+records live beside the cores in `Cores/provenance/`.

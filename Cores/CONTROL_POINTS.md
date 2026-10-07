@@ -68,13 +68,14 @@ validation of the `slump =` approach used here.
 ### The errors, though, are published nowhere
 
 **No source gives an error on a tephra layer age** — not Mullineaux, not Yamaguchi, not
-Walsh. Bacon needs `age ± σ`, so σ must be **derived from the dates that bracket the
-layer**, or assumed. Labels used in the error column:
+Walsh. Bacon needs an age-error input, so the current controls adopt bracket
+half-widths or explicit assumptions. A bracket half-width is not a verified
+statistical standard deviation. Historical labels used in the error column:
 
 | label | meaning |
 |---|---|
-| **DERIVED** | recovered from bracketing ¹⁴C dates; the coded value matches |
-| **PADDED** | the source is *more* precise than the coded error — conservative, harmless |
+| **DERIVED** | calculated from a dating bracket; it remains an assumed statistical error |
+| **PADDED** | wider than the source's dating precision; its probability interpretation is assumed |
 | **UNPUBLISHED** | no source gives a ±, and no clean bracket is available to derive one |
 
 ```
@@ -183,7 +184,7 @@ SOURCES file.
 ### Sensitivity variant `PantherPotholes_pb210err`
 Identical, except the five ²¹⁰Pb errors → a flat **±10 yr** (`PB210_ASSUMED_ERROR`). Because
 Table 1c's `Error (1σ)` is on ²¹⁰Pb **activity in DPM/g**, and those numbers were entered as
-if they were years. Result: top 35 cm widens 7 → 30 yr, nothing below 35 cm moves.
+if they were years. Result: top 35 cm widens 7 → 30 yr; deeper chronologies remain similar, with stored maximum median-age differences of 15 yr.
 
 ---
 
@@ -202,7 +203,8 @@ errors turn out to be **recoverable** from bracketing dates rather than merely a
   (W-2549 ±250→**±50**, W-1752 ±250→**±80**, W-2677 ±250→**±50**) — read only M74 and these
   tephras look far vaguer than they are. Do **not** widen.
 - `Tephra_W ±10` — **PADDED, keep it.** Wn is tree-ring dated to the year, so the honest
-  error is ~±2. ±10 is conservative and harmless.
+  error is ~±2. The retained ±10 is assumed padding, not a verified statistical
+  age error or evidence that uncertainty is complete.
 - `Tephra_C ±100` and `Tephra_F ±100` — **UNPUBLISHED but defensible, leave them.**
   An earlier version of this file called C "too tight" (its M74 bracket implies ±190) and
   proposed re-centring it to 2190 ± 190. **That has been withdrawn**: Walsh et al. 2017

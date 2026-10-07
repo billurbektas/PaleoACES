@@ -28,8 +28,8 @@
 # 1941+) but alignment drops it, since precipitation has no 1978 - so winter 1979
 # is lost and the record runs 1980-1989, 10 complete winters.
 #
-# Replaces the NOCA half of the archived 02_get_climate_data.R. climate_summary.csv
-# is retired; 05_cca_model.R binds NOCA_climate.csv with MORA_climate.csv the same
+# The former fixed-window climate summary is retired; 05_cca_model.R binds
+# NOCA_climate.csv with MORA_climate.csv the same
 # way it already binds NOCA_occ / MORA_occ.
 #
 # Cost: 11 yr x 3 vars = 33 chunks of 12 files = 396 reads, ~40 min. The number of

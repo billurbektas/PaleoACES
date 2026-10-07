@@ -51,16 +51,16 @@ scope = read_csv(paths[6], show_col_types = FALSE)
 
 expected_targets = c("taxon" = 13L, "climate" = 4L)
 stopifnot(
-  nrow(anth) == 10319L,
+  nrow(anth) == 10285L,
   nrow(holo) == 259590L,
   nrow(by_offset) == 2635L,
   nrow(timeseries) == 2329L,
   nrow(summaries) == 204L,
   identical(as.integer(table(anth$target_type)[names(expected_targets)] /
-                         607L), unname(expected_targets)),
+                         605L), unname(expected_targets)),
   identical(as.integer(table(holo$target_type)[names(expected_targets)] /
                          15270L), unname(expected_targets)),
-  n_distinct(anth$plot_id) == 607L,
+  n_distinct(anth$plot_id) == 605L,
   n_distinct(holo$run_id) == 1000L
 )
 
@@ -125,7 +125,7 @@ expected_anth_support = tribble(
   ~site, ~burned, ~n,
   "MORA", FALSE, 328L,
   "MORA", TRUE,    2L,
-  "NOCA", FALSE, 254L,
+  "NOCA", FALSE, 252L,
   "NOCA", TRUE,   23L)
 stopifnot(identical(anth_support, expected_anth_support))
 

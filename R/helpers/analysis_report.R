@@ -43,7 +43,9 @@ report_export_cca = function(model_env) {
       e$cca_scaling, e$cca_hill, paste(e$CCA_VARIABLES, collapse = ";"),
       e$cca_model$tot.chi, e$cca_model$CCA$tot.chi,
       100 * e$cca_model$CCA$tot.chi / e$cca_model$tot.chi,
-      nrow(e$species_present_final) + nrow(e$species_paleo), nrow(e$comparison_df))), "cca_summary")
+      sum(e$cca_eligibility_counts$input_units[
+        e$cca_eligibility_counts$use != "Legacy calibration"]),
+      nrow(e$comparison_df))), "cca_summary")
   eig = e$cca_model$CCA$eig
   write(data.frame(axis = names(eig), eigenvalue = as.numeric(eig),
     percent_total_inertia = 100 * eig / e$cca_model$tot.chi,

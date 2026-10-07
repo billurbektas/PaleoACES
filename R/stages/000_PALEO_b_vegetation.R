@@ -1,7 +1,7 @@
 # =============================================================================
 # 000_PALEO_b_vegetation.R - paleo macrofossil occurrences
 # =============================================================================
-# Vegetation portion of R/archive/000b_paleo_cleaning.R; see docs/WORKFLOW.md.
+# Paleo vegetation preparation; see docs/WORKFLOW.md.
 # The fire third is now 000_PALEO_c_fire.R; the climate third was NOT split out -
 # The downstream climate-match stage replaces its former embedded implementation.
 #

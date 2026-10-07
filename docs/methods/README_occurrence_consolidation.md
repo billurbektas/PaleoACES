@@ -308,6 +308,11 @@ The rule there: a species is dropped only if it is below the threshold in **ever
 site × period group, so the comparison is against each species' **largest** group
 count (`max_group` in the printed table).
 
+The table below records the historical sweep before the 2026-10-06 GPS
+exclusion of CARI449/CARI450; alternative thresholds have not been rerun.
+The current threshold-20 model has 618 calibration plots and 1,512 positioned
+samples. See the [analysis review](../ANALYSIS_REVIEW.md) for its current fit.
+
 | `count.thr` | species | calib plots | positioned | CCA1 | CCA2 | constrained |
 |---|---|---|---|---|---|---|
 | 10 | 15 | 629 | 1522 | 7.6% | 5.0% | 13.6% |
@@ -326,7 +331,7 @@ Three things worth noting when choosing:
   calibration plots and eight positioned samples, because rarer species keep otherwise
   empty plots in the model.
 - The 2026 NOCA tree correction raised *Abies grandis* from 19 to 22
-  NOCA-present plots. It now crosses the threshold of 20, increasing the active
+  NOCA-present plots before the GPS exclusions. It crossed the threshold of 20, increasing the then-active
   model from 12 to 13 species and from 619 to 620 calibration plots after the
   `BAK487`/`BEAV6061` study exclusions.
 - **30 drops *Picea engelmannii***, present in both sites, both eras and both paleo
@@ -337,7 +342,7 @@ Three things worth noting when choosing:
 It was dropped by hand in `05_cca_model.R` at every threshold from the first version
 of this analysis. **It is now kept** (2026-08-13), on three grounds:
 
-1. **It was never justified.** `R/archive/05_cca_paleo.R` carries the bare line with
+1. **It was never justified.** The original model, preserved in Git history, carries the bare line with
    no comment; the former species-count diagnostic also recorded that the
    exclusion was undocumented. The "range truncation, HilleRisLambers et al.
    2015 Appendix B" note previously in `05_cca_model.R` was reconstructed after the

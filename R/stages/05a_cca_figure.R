@@ -74,25 +74,29 @@ full_name = function(x) unname(ifelse(x %in% names(clim_full), clim_full[x], x))
 # -----------------------------------------------------------------------------
 # Trajectory points: observed (WA) and predicted (LC) centroids through time
 # -----------------------------------------------------------------------------
-# Anthropocene: the legacy (calibration) plots and their resurvey, as a site mean.
-past_pred = predict(cca_model, newdata = env_past_final,     type = "lc",
+# Anthropocene: identical valid pairs at BOTH dates, prepared in 05_cca_model.R.
+# The full legacy calibration cloud remains in the model/background display.
+past_pred = predict(cca_model, newdata = env_past_paired,     type = "lc",
                     scaling = cca_scaling, hill = cca_hill)
-past_proj = predict(cca_model, newdata = species_past_final, type = "wa",
+past_proj = predict(cca_model, newdata = species_past_paired, type = "wa",
                     scaling = cca_scaling, hill = cca_hill)
 
 anth_pts = bind_rows(
-  tibble(plot_id = rownames(species_past_final), t = "legacy",
+  tibble(plot_id = rownames(species_past_paired), t = "legacy",
          o1 = past_proj[, 1], o2 = past_proj[, 2],
          p1 = past_pred[, 1], p2 = past_pred[, 2]),
   tibble(plot_id = rownames(species_present_final), t = "resurvey",
          o1 = projected_present[, 1], o2 = projected_present[, 2],
          p1 = predicted_present[, 1], p2 = predicted_present[, 2])
 ) %>%
-  filter(!is.nan(o1), !is.na(p1)) %>%
   left_join(site_lookup, by = "plot_id") %>%
   group_by(site, era = "anthropocene", t) %>%
   summarize(across(c(o1, o2, p1, p2), mean), n = n(), .groups = "drop") %>%
   mutate(order = if_else(t == "legacy", 1, 2), lab = t)
+stopifnot(identical(rownames(species_past_paired), rownames(species_present_final)),
+          all(is.finite(unlist(select(anth_pts, o1, o2, p1, p2)))))
+# Persist the exact paired site means so report claims and Figure 3 are auditable.
+write_csv(anth_pts, here("output/cca_trajectory_anthropocene_centroids.csv"))
 
 # Holocene: the 1,000-yr MOVING WINDOW, median across runs.
 #
@@ -455,7 +459,10 @@ p_inset = ggplot() +
 # visually comparable. Splitting it per site would also be informative (the two
 # sites' plots occupy different parts of the space) but would change what the grey
 # means between panels, which is the wrong trade for a headline figure.
-calib = tibble(o1 = past_proj[, 1], o2 = past_proj[, 2]) %>% filter(!is.nan(o1))
+calib_proj = predict(cca_model, newdata = species_past_final, type = "wa",
+                     scaling = cca_scaling, hill = cca_hill)
+calib = tibble(o1 = calib_proj[, 1], o2 = calib_proj[, 2])
+stopifnot(nrow(calib) == nrow(species_past_final), all(is.finite(as.matrix(calib))))
 
 # Observed vs predicted is carried by OPACITY, not line type: at these path
 # lengths a dashed line reads as a broken line rather than as a second series.

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: ad108044becb577fb4e95dd56d447a15 -->
+<!-- paleoaces-source-md5: 8ceed1578f385e033c0008dc61c67d82 -->
 
 <html>
 
@@ -1707,9 +1707,10 @@ here.</p>
 <div id="the-errors-though-are-published-nowhere" class="section level3">
 <h3>The errors, though, are published nowhere</h3>
 <p><strong>No source gives an error on a tephra layer age</strong> — not
-Mullineaux, not Yamaguchi, not Walsh. Bacon needs <code>age ± σ</code>,
-so σ must be <strong>derived from the dates that bracket the
-layer</strong>, or assumed. Labels used in the error column:</p>
+Mullineaux, not Yamaguchi, not Walsh. Bacon needs an age-error input, so
+the current controls adopt bracket half-widths or explicit assumptions.
+A bracket half-width is not a verified statistical standard deviation.
+Historical labels used in the error column:</p>
 <table>
 <colgroup>
 <col width="50%" />
@@ -1724,12 +1725,13 @@ layer</strong>, or assumed. Labels used in the error column:</p>
 <tbody>
 <tr class="odd">
 <td><strong>DERIVED</strong></td>
-<td>recovered from bracketing ¹⁴C dates; the coded value matches</td>
+<td>calculated from a dating bracket; it remains an assumed statistical
+error</td>
 </tr>
 <tr class="even">
 <td><strong>PADDED</strong></td>
-<td>the source is <em>more</em> precise than the coded error —
-conservative, harmless</td>
+<td>wider than the source’s dating precision; its probability
+interpretation is assumed</td>
 </tr>
 <tr class="odd">
 <td><strong>UNPUBLISHED</strong></td>
@@ -2304,7 +2306,8 @@ SOURCES file.</p>
 yr</strong> (<code>PB210_ASSUMED_ERROR</code>). Because Table 1c’s
 <code>Error (1σ)</code> is on ²¹⁰Pb <strong>activity in DPM/g</strong>,
 and those numbers were entered as if they were years. Result: top 35 cm
-widens 7 → 30 yr, nothing below 35 cm moves.</p>
+widens 7 → 30 yr; deeper chronologies remain similar, with stored
+maximum median-age differences of 15 yr.</p>
 <hr />
 </div>
 </div>
@@ -2328,8 +2331,9 @@ downward from M74 (W-2549 ±250→<strong>±50</strong>, W-1752
 M74 and these tephras look far vaguer than they are. Do
 <strong>not</strong> widen.</li>
 <li><code>Tephra_W ±10</code> — <strong>PADDED, keep it.</strong> Wn is
-tree-ring dated to the year, so the honest error is ~±2. ±10 is
-conservative and harmless.</li>
+tree-ring dated to the year, so the honest error is ~±2. The retained
+±10 is assumed padding, not a verified statistical age error or evidence
+that uncertainty is complete.</li>
 <li><code>Tephra_C ±100</code> and <code>Tephra_F ±100</code> —
 <strong>UNPUBLISHED but defensible, leave them.</strong> An earlier
 version of this file called C “too tight” (its M74 bracket implies ±190)

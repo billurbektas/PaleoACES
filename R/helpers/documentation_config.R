@@ -6,11 +6,10 @@ PALEOACES_DOCS = c(
   "docs/REPOSITORY_INVENTORY.md",
   "docs/OUTPUTS.md",
   "docs/ANALYSIS_REVIEW.md",
-  "docs/REVIEW_AUDIT.md",
+  "docs/review/NOCA_GPS_EXCLUSION.md",
   "docs/WORKFLOW.md",
   "docs/SCIENTIFIC_DECISIONS.md",
   "docs/FIGURE_CAPTIONS.md",
-  "docs/CLAUDE.md",
   "Cores/CONTROL_POINTS.md",
   "Cores/SOURCES_MORA.md",
   "docs/methods/000_NOCA_cleaning_guide.md",
@@ -23,6 +22,6 @@ PALEOACES_DOCS = c(
 
 PALEOACES_AUTHORITY_DOCS = c(
   "README.md", "docs/WORKFLOW.md", "docs/SCIENTIFIC_DECISIONS.md",
-  "docs/FIGURE_CAPTIONS.md", "docs/CLAUDE.md",
+  "docs/FIGURE_CAPTIONS.md",
   "docs/methods/000_NOCA_cleaning_guide.md", "docs/methods/README_occurrence_consolidation.md"
 )

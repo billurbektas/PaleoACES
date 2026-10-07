@@ -9,7 +9,7 @@ separate from the publication-ready captions.
 **Method summary.** Adjacent 1,000-year changes in spring temperature, winter
 temperature, summer precipitation, and winter precipitation were evaluated at
 ten 100-year phases and standardized by the corresponding standard deviations
-among the 620 legacy CCA calibration plots. The three MORA lake trajectories
+among the 618 legacy CCA calibration plots. The three MORA lake trajectories
 were averaged before MORA and NOCA received equal regional weight. A variable
 qualified when its absolute median regional change reached 50% of its maximum
 and at least eight phases supported its direction; any qualifying variable
@@ -47,12 +47,14 @@ high fire. Ages are calibrated years before present (cal BP; present = 1950).
 ## Figure 3 — Observed and climate-predicted CCA trajectories
 
 **Method summary.** A common canonical correspondence analysis (CCA) was fit to
-13 retained taxa and four seasonal climate constraints in 620 legacy plots.
+13 retained taxa and four seasonal climate constraints in 618 legacy plots.
 Observed communities were represented by weighted-average (WA) scores and
 climate-predicted communities by linear-combination (LC) scores in the unchanged
 CCA1–CCA2, scaling-1 (`scaling = "sites"`), Hill-off geometry. Holocene positions
 are MORA and NOCA centroids within each frozen CC1–S4 era; Anthropocene positions
-are site means for the legacy and resurvey periods. Climate bars quantify each
+are site means of the same 330 MORA and 275 NOCA valid paired plots at both
+legacy and resurvey dates, for both WA and LC. All-zero retained-taxon rows are
+excluded from both sides of these comparisons. Climate bars quantify each
 constraint's unique marginal loss of constrained inertia, whereas species bars
 partition constrained inertia among taxa.
 
@@ -64,16 +66,17 @@ partition constrained inertia among taxa.
 community trajectories in the common CCA space. **A.** Observed WA and
 climate-predicted LC trajectories for MORA and NOCA. Holocene paths connect
 site-level centroids chronologically from CC1 through S4; Anthropocene arrows
-connect legacy and resurvey site means. Predicted paths and annotations are
+connect legacy and resurvey means from identical valid pairs at both dates
+(330 MORA, 275 NOCA). Predicted paths and annotations are
 shown with reduced opacity. The grey points are legacy calibration plots; the
-panel is cropped to the trajectories, with 276 of 620 calibration plots outside
-the displayed extent but retained in the model. **B.** CCA biplot showing the
+panel is cropped to the trajectories; calibration plots outside
+the displayed extent remain in the model. **B.** CCA biplot showing the
 four climate vectors and species scores; all taxa are plotted, while names are
 shown only for species vectors at least 25% as long as the longest species
 vector. **C.** Unique marginal effect of each climate constraint, expressed as a
 percentage of total constrained inertia. These values are not additive because
 the constraints share explanatory variation. **D.** Taxon-specific partition
-of constrained inertia; shading indicates occurrence in the 620 calibration
+of constrained inertia; shading indicates occurrence in the 618 calibration
 plots.
 
 ## Figure 4 — Community tracking comparison
@@ -102,7 +105,7 @@ physical widths and show descriptive distributions; annotations report medians
 and valid sample sizes. Neutral and red outlines distinguish no-fire/unburned
 and high-fire/burned groups. The two burned MORA plot pairs are excluded from
 this comparison and retained in its scope audit. **D.** Tracking ratio versus
-turnover angle for all 589 direction-valid observations. Circles and triangles
+turnover angle for all 587 direction-valid observations. Circles and triangles
 identify MORA and NOCA, red outlines identify fire evidence, and fill represents
 signed lag. Labelled points are macro-era, climate/fire, and NOCA burn-status
 medians. Reference lines mark a tracking ratio of 1 and an angle of 90°. The 153

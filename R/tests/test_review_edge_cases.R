@@ -11,6 +11,59 @@ must_fail = function(expr) stopifnot(inherits(tryCatch(
 equal = function(x, y) stopifnot(isTRUE(all.equal(x, y, tolerance = 1e-10,
                                                 check.attributes = FALSE)))
 
+# CCA eligibility: analytically specified plots, without fitting a model or
+# reading local data. Extract only the two pure preparation functions.
+cca_functions = parse(here("R/stages/05_cca_model.R"))
+for (name in c("cca_classify_samples", "cca_pair_samples")) {
+  definition = Filter(function(x) is.call(x) && is.symbol(x[[1]]) &&
+    as.character(x[[1]]) %in% c("=", "<-") && identical(x[[2]], as.name(name)),
+    as.list(cca_functions))
+  stopifnot(length(definition) == 1L)
+  eval(definition[[1]])
+}
+raw = tibble::tribble(
+  ~plot_id, ~period, ~species, ~occurrence,
+  "valid", "past", "SP1", 1, "valid", "present", "SP1", 1,
+  "empty_legacy", "past", "SP1", 0, "empty_legacy", "present", "SP1", 1,
+  "lost_presence", "past", "SP1", 1, "lost_presence", "present", "SP1", 0,
+  "consolidation", "past", "UNDERSTORY", 1, "consolidation", "present", "SP1", 1,
+  "threshold", "past", "RARE", 1, "threshold", "present", "SP1", 1,
+  "resurvey_threshold", "past", "SP1", 1, "resurvey_threshold", "present", "RARE", 1,
+  "novel", "past", "SP1", 1, "novel", "present", "NOVEL", 1,
+  "bad_climate", "past", "SP1", 1, "bad_climate", "present", "SP1", 1,
+  "missing_climate", "past", "SP1", 1, "missing_climate", "present", "SP1", 1,
+  "unmatched", "past", "SP1", 1,
+  "paleo_valid", "paleo", "SP1", 1, "paleo_empty", "paleo", "SP1", 0,
+  "paleo_rare", "paleo", "RARE", 1, "paleo_consolidation", "paleo", "UNDERSTORY", 1
+) %>% mutate(site = "TEST", era = if_else(period == "paleo", "holocene", "anthropocene"))
+con = raw %>% filter(species != "UNDERSTORY")
+clim = raw %>% distinct(site, era, period, plot_id) %>% mutate(MSpT = 1) %>%
+  mutate(MSpT = if_else(plot_id == "bad_climate" & period == "present", Inf, MSpT)) %>%
+  filter(!(plot_id == "missing_climate" & period == "present")) %>%
+  bind_rows(tibble(site = "TEST", era = "holocene", period = "paleo",
+                   plot_id = "unrecorded", MSpT = 1))
+classify = function(cleaned = raw, climate = clim) cca_classify_samples(
+  cleaned, con, c("SP1", "NOVEL"), "SP1", climate, "MSpT")
+classified = classify()
+paired = cca_pair_samples(classified)
+stopifnot(identical(paired$plot_id[paired$comparison_included], "valid"),
+          identical(classified$plot_id[classified$period == "paleo" & classified$eligible], "paleo_valid"))
+expected = c(empty_legacy = "no_recorded_taxa", lost_presence = "no_recorded_taxa",
+             consolidation = "consolidation", threshold = "species_selection",
+             resurvey_threshold = "species_selection", novel = "no_calibration_taxa",
+             bad_climate = "climate", missing_climate = "climate", unmatched = "missing_period")
+stopifnot(identical(paired$reason_code[match(names(expected), paired$plot_id)], unname(expected)),
+          paired$reason[paired$plot_id == "lost_presence"] ==
+            "Loss of all recorded tree-taxon presence at resurvey",
+          classified$reason_code[classified$plot_id == "unrecorded"] == "missing_occurrence")
+stopifnot(identical(classify(bind_rows(raw, raw[1, ])), classified))
+must_fail(classify(climate = bind_rows(clim, clim[1, ])))
+bad_occurrence = raw; bad_occurrence$occurrence[1] = NA_real_
+must_fail(classify(cleaned = bad_occurrence))
+nan_climate = clim; nan_climate$MSpT[nan_climate$plot_id == "bad_climate"] = NaN
+stopifnot(!any(classify(climate = nan_climate)$eligible[
+  classify(climate = nan_climate)$plot_id == "bad_climate"]))
+
 # Missing change classes have zero counts, including entirely persistent groups.
 for (periods in list(c("past", "present"), "past", "present")) {
   turnover = calculate_turnover(tibble::tibble(plot_id = "A", species = "SP1",

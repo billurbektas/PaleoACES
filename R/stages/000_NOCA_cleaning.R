@@ -270,9 +270,11 @@ NOCA_plot_info = NOCA_past %>%
 
 # CARI449 and CARI450 have opposite raw longitude signs but collapse to the
 # same normalized coordinate after the positive longitude is corrected to
-# west. Both plots remain in the analytical universe pending confirmation from
-# the primary source. This audit makes that unresolved decision explicit and
-# causes the regression gate to fail if the collision changes or disappears.
+# west, despite a 527 m elevation difference. Rachel's September 2024 email
+# warns against the 2014 workbook GPS sheet and identifies the paper's coordinate
+# CSV as authoritative. That CSV retains this collision; her other notes supply
+# no correction. At the author's request, exclude BOTH dates upstream under the
+# study-level policy below. Keep raw coordinates in this audit for provenance.
 NOCA_coordinate_collision_audit = NOCA_plots %>%
   transmute(
     plot_id,
@@ -290,7 +292,7 @@ NOCA_coordinate_collision_audit = NOCA_plots %>%
   ) %>%
   filter(shared_coordinate_count > 1L) %>%
   ungroup() %>%
-  mutate(status = "unresolved—retained pending source confirmation") %>%
+  mutate(status = "excluded—GPS problem; no verified coordinate correction") %>%
   arrange(normalized_latitude, normalized_longitude, plot_id)
 NOCA_past = NOCA_past %>% filter(is_supported_noca_taxon(species))
 
@@ -348,16 +350,22 @@ plots_to_keep = setdiff(plots_to_keep, plots_empty_both_periods)
 # BAK487 is an old clearcut removed from Wilson's final analysis; BEAV6061's
 # historical location could not be identified reliably because its elevation was
 # inaccurate and the resurvey landed in an avalanche chute.
+# CARI449/CARI450 share unresolved coordinates in the authoritative CSV; the
+# author elected to exclude both rather than assign an unsupported replacement.
 NOCA_study_exclusions = tribble(
   ~plot_id,   ~exclusion_reason, ~source_note,
   "BAK487",  "old clearcut; removed from Wilson final analysis",
               "notes_from_Rachel/Burned plots.rtf",
   "BEAV6061", "historic plot location uncertain; resurvey is an avalanche chute",
-              "notes_from_Rachel/Missing trees.rtf"
+              "notes_from_Rachel/Missing trees.rtf",
+  "CARI449", "GPS problem; shared coordinates conflict with elevations; no verified correction",
+              "data/NOCA/Correspondance_Kavya&Rachel_September2024.pdf (page 2); docs/review/NOCA_GPS_EXCLUSION.md",
+  "CARI450", "GPS problem; shared coordinates conflict with elevations; no verified correction",
+              "data/NOCA/Correspondance_Kavya&Rachel_September2024.pdf (page 2); docs/review/NOCA_GPS_EXCLUSION.md"
 )
 study_exclusion_ids = intersect(plots_to_keep, NOCA_study_exclusions$plot_id)
 if (!setequal(study_exclusion_ids, NOCA_study_exclusions$plot_id)) {
-  stop("Expected study-exclusion plots were not both otherwise eligible: ",
+  stop("Expected study-exclusion plots were not all otherwise eligible: ",
        paste(setdiff(NOCA_study_exclusions$plot_id, study_exclusion_ids), collapse = ", "))
 }
 plots_to_keep = setdiff(plots_to_keep, study_exclusion_ids)

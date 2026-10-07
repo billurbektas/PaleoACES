@@ -3,7 +3,10 @@
 Companion to `data/NOCA/NOCA_paleo/SOURCES.md`, which covers Panther Potholes.
 Control points are entered in `R/stages/000_PALEO_a_agedepth.R`, sections 1–3.
 
-## Publications (all in `related_publications/`)
+## Publications
+
+The four original references below are in `related_publications/`. Later geological
+references are linked in the [basal-lahar reconsideration](#basal-lahar-reconsideration-2026-10-06).
 
 | ref | what it supplies |
 |---|---|
@@ -62,17 +65,18 @@ from core depth** before age-modelling, validating the `slump =` approach used h
 ## 🔶 The error values — no source publishes one
 
 **No tephra source gives an error on a layer age** — not Mullineaux, not Yamaguchi, not
-Walsh. Bacon needs `age ± σ`, so σ must be derived from bracketing dates or assumed. This
-is the same class of gap as the NOCA ²¹⁰Pb errors and belongs in the methods.
+Walsh. The current Bacon controls use bracket half-widths or explicit age-error
+assumptions. These are not verified statistical standard deviations. This
+qualification belongs in the methods; the controls were retained on 2026-10-06.
 
 | control | error | assessment |
 |---|---|---|
-| `Tephra_W` | ±10 | **Right.** Tree-ring dated to the year — see below. |
-| `Tephra_Y` | ±100 | **Right.** Matches the 1996-revised bracket almost exactly — see below. |
-| `Tephra_C` | ±100 | Fine. W17 adopts 2250 unchanged; the ±190 its M74 bracket implies rests on errors M96 showed to be inflated 3–5×. |
+| `Tephra_W` | ±10 | Assumed padding around a tree-ring-dated age; not a published statistical error. |
+| `Tephra_Y` | ±100 | Approximately the half-width of the 1996-revised bracket; assumed as an age error. |
+| `Tephra_C` | ±100 | Adopted assumption. W17 corroborates 2250; M96 revised the underlying M74 radiocarbon errors downward. |
 | `Tephra_F` | ±100 | One-sided bracket only (C71 gives a maximum age, no minimum), so no ± can be derived. Age corroborated by W17. |
-| `Basal_lahar` | ±400 | **Derived** — half-range of Crandell p.63's 5,800–6,600. Applied. |
-| `Surface` | ±10 | **Resolved** — cored 1981–82, so −31.5 cal BP; ±10 covers interface recovery. See below. |
+| `Basal_lahar` | ±400 | Converted Crandell bracket half-width; probability interpretation and core correlation remain assumed. |
+| `Surface` | ±10 | Coring year is resolved at 1981–82; ±10 is an adopted interface-recovery assumption. |
 
 ### ⚠ Use Mullineaux **1996** errors, not 1974 — they were revised sharply downward
 
@@ -126,9 +130,9 @@ bracket from which to derive an error. F's **age** is now corroborated from thre
 directions (M74's 5,000 ¹⁴C, W17's adoption of 5740, Crandell's underlying date); its
 **error** remains unpublished.
 
-## Questions raised during the audit — both now resolved
+## Earlier control decisions and their source trail
 
-**1. ✅ RESOLVED — Crandell's ages are already calibrated, and the lahar is 6180 ± 400.**
+**1. ✅ APPLIED — the adopted Crandell-based lahar control is 6180 ± 400.**
 
 I previously suspected Dunwiddie's *"6000-yr-old Paradise lahar"* was a raw ¹⁴C age, which
 would have made it ~6845 cal BP. **That was wrong.** Crandell 1971 p.11:
@@ -151,10 +155,13 @@ His actual figure, p.63:
 
 → **5780–6580 cal BP**, i.e. midpoint **6180**, half-range **400**.
 
-**APPLIED.** The old `6000 ± 600` (Dunwiddie's rounded "6000-yr-old") spanned 5400–6600 and
-so covered the truth, but sat ~180 yr low with a wider error than the source needs. Now
-`6180 ± 400`. Reflection Pond is the only core affected — and the only one with no
-radiocarbon at all, so it leans hardest on this control.
+**APPLIED.** The old `6000 ± 600` (Dunwiddie's rounded "6000-yr-old") spanned 5400–6600,
+overlapping Crandell's bracket. The adopted `6180 ± 400` uses the converted bracket's
+midpoint and half-width; that half-width is an assumption, not a verified statistical
+standard deviation. Reflection Pond is the only core with this basal control and has
+no radiocarbon dates. The later source reconsideration below records why the author
+retains this control for the current analysis without treating its age or error as
+independently validated.
 
 Measured effect (with the surface fix, against the pre-change run):
 
@@ -168,8 +175,8 @@ Measured effect (with the surface fix, against the pre-change run):
   median |age change| 7 yr, max 42 yr
 ```
 
-i.e. the top is corrected, the base moves 32 yr toward the sourced age and tightens, and
-the middle of the core is untouched.
+In that recorded comparison the top is corrected, the base moves 32 yr toward
+the adopted age, and middle-core ages change modestly.
 
 **2. ✅ RESOLVED — the cores were taken in 1981–1982.**
 Confirmed with Dunwiddie directly. Neither published paper states it: the 1986 Methods
@@ -184,18 +191,52 @@ So the core top is **1950 − 1981.5 = −31.5 cal BP**, not 0. The entry was
 
 The error is 10, not 5, because the coring year is now known to ~1 yr and the residual
 uncertainty is whether the sediment–water interface survived extrusion. At these cores'
-accumulation rates (~23–50 yr/cm) even 0.5 cm of lost floc is 15–25 yr, so ±10 is the
-honest floor; it spans A.D. 1972–1992.
+accumulation rates (~23–50 yr/cm) even 0.5 cm of lost floc corresponds to roughly
+12–25 yr. The ±10-year input is an adopted assumption, not a measured recovery
+error; the age plus or minus that value spans A.D. 1972–1992.
 
 Measured effect: core tops move to −32 / −33 / −32 as intended, and the median absolute
-change **below 40 cm is 3 / 5 / 1 yr** — i.e. nothing. The value matters for consistency
-with NOCA (core top derived as −49 cal BP = A.D. 1999), not because it moves a result.
+change **below 40 cm is 3 / 5 / 1 yr**. These are small median shifts in the
+recorded comparison, not proof that every downstream result is unaffected.
+The surface convention also aligns with NOCA (core top −49 cal BP = A.D. 1999).
 
 **3. `Tephra_C` and `Tephra_F` were calibrated by different methods.**
 C follows Mullineaux's 1974 bristlecone calendar column (2250, exact); F follows a
 modern IntCal-style calibration (5740, exact). Individually defensible, but mixed.
 Using IntCal20 throughout would move C from 2250 to ~2190 — a 60 yr shift, well
 inside any sensible error, so this is tidiness rather than a correction.
+
+## Basal-lahar reconsideration (2026-10-06)
+
+**Author decision: retain the current chronology and Bacon controls for this
+analysis.** Reflection Pond's `Basal_lahar` remains **6180 ± 400 cal BP at 90 cm,
+`cc = 0`**. No chronology refit, replacement control, or new sensitivity was
+authorized. This is a settled choice for the current analysis; the evidence gaps
+below remain limitations rather than outstanding requests for a decision.
+
+| Evidence | What it supports |
+|---|---|
+| [Dunwiddie (1986)](https://doi.org/10.2307/1938503), pp.59–60 | Identifies all three ponds as depressions on the approximately 6000-year-old Paradise lahar, citing Crandell. Reflection Pond 1 is the easternmost pond in the Reflection Lakes group. This anchors the original deposit identification. |
+| [Crandell (1971)](https://pubs.usgs.gov/pp/0677/report.pdf), p.63 | Gives the Paradise lahar a 5800–6600-year bracket. The earlier source interpretation and calendar conversion above produced the retained 6180 ± 400 control. |
+| [Pringle (2008), *Roadside geology of Mount Rainier National Park and vicinity*, Information Circular 107](https://cdn.serc.carleton.edu/files/sage2yc/workshops/june2017/geologic_road_guide_mount.pdf), Leg B, Reflection Lakes stop | Explicitly describes the deposit beneath Reflection Lakes as previously interpreted as Paradise and subsequently interpreted as an older lahar, citing USGS geologist James W. Vallance's 2002 interpretation. This strengthens the relevance of the later geology to the study area. |
+| [Vallance, J.W., and Sisson, T.W. (2022), *Geologic field-trip guide to volcanism and its interaction with snow and ice at Mount Rainier, Washington*](https://doi.org/10.3133/sir20175022A), printed p.60 | Distinguishes the Reflection Lakes lahar, **7250–7000 cal BP**, from the younger Paradise lahar, approximately **5700 cal BP**. Publication year is **2022**; “2017–5022–A” is the report number. |
+
+The later references give a substantive reason to reconsider the older deposit
+identification. They do not establish the identity and depth of the basal horizon
+in this particular core. Dunwiddie's Figure 5 (p.64) ends around 88–90 cm but does
+not explicitly label a lahar contact at 90 cm. A future revision would require
+confirming the core-to-deposit correlation and contact depth before adopting a
+replacement age and uncertainty model.
+
+**Bacon interpretation.** The current script passes `Basal_lahar` as an ordinary
+age/error row. Its name and maximum-age comment do not implement a one-sided age
+limit. A lahar beneath lake sediment would constrain the sediment to be younger
+than the deposit; it would not automatically date that sediment to the eruption.
+The retained ±400 is an adopted bracket half-width, and posterior draws express
+uncertainty conditional on the existing controls and Bacon model. Retention does
+not resolve these probability or source-correlation limitations. See the
+[scientific decision record](../docs/SCIENTIFIC_DECISIONS.md#mora-basal-lahar-reconsideration-2026-10-06)
+and the unchanged control in `R/stages/000_PALEO_a_agedepth.R`, section 3.
 
 ## Not an issue
 

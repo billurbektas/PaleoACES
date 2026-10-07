@@ -63,6 +63,11 @@ rsconnect/
 !/Cores/CONTROL_POINTS.html
 !/Cores/SOURCES_MORA.md
 !/Cores/SOURCES_MORA.html
+!/Cores/provenance/chronology_relocation.json
+!/Cores/provenance/chronology_sources_before_move/000_PALEO_a_agedepth.R.txt
+!/Cores/provenance/chronology_sources_before_move/bacon_settings.R.txt
+!/Cores/provenance/chronology_sources_before_move/config.R.txt
+!/Cores/provenance/pb210_caption_revision.json
 /output/
 /archive/
 /plot/archive/

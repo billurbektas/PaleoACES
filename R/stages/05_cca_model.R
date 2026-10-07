@@ -1,10 +1,8 @@
 # =============================================================================
 # 05_cca_model.R - the pooled CCA and everything derived from it. NO FIGURES.
 # =============================================================================
-# Split out of R/archive/05_cca_paleo.R, which
-# mixed the model with ~700 lines of figures and so could not be sourced without
-# writing a dozen PDFs. This file is the single definition of the ordination and
-# is sourced by everything downstream.
+# This file defines the ordination without rendering figures and is sourced by
+# the downstream analysis and figure stages.
 #
 # THE MODEL: one pooled CCA trained on the MORA + NOCA "past" plots, constrained
 # by MSpT + MWT + SP + WP. "present" and "paleo" samples are projected into it -
@@ -18,14 +16,16 @@
 #   comparison_df   per-sample predicted (LC) + observed (WA) positions, all eras
 #   lag_std         comparison_df + the OLD position-based metric and clim_dist
 #   env, species_complete, site_lookup, keep_species
+#   cca_sample_eligibility / cca_pair_eligibility  exclusion reasons and membership
+#   cca_eligibility_counts / cca_exclusion_summary  report tables, before fitting
+#   species_past_paired / env_past_paired  legacy endpoints of valid modern pairs
 #   color_mt, color_site_era, color_era_pp
 #
 # Note on the old metric: euclidean_dist_2D / lag_per_climdist in comparison_df
 # and lag_std are the SUPERSEDED position-based lag. They remain computable only
 # for historical or interactive compatibility; no maintained workflow output
 # consumes them. Current work uses the vector metric specification calculated by
-# R/stages/09_tracking_metrics.R. The earlier framing is preserved in
-# R/archive/06_lag_common.R.
+# R/stages/09_tracking_metrics.R. The earlier framing remains in Git history.
 # =============================================================================
 
 library(here)
@@ -139,6 +139,104 @@ color_site_era = c("MORA.anthropocene" = "#648FFF", "NOCA.anthropocene" = "#FE61
 color_era_pp   = c("anthropocene" = "#DC267F", "holocene" = "#785EF0")
 
 # -----------------------------------------------------------------------------
+# CCA ELIGIBILITY POLICY: resolve absence BEFORE fitting or projecting
+# -----------------------------------------------------------------------------
+# Species selection remains here, with the configured >= count.thr rule.
+# An all-zero retained-taxon row has no observed WA position (0/0), including
+# genuine recorded absence. Never assign it the ordination origin or keep its
+# climate prediction in a paired WA/LC comparison.
+#
+# The preparation section below applies this policy after climate and species
+# matrices exist, but BEFORE cca(). It distinguishes cleaned recorded absence,
+# consolidation exclusions, frequency exclusions, and unavailable climate.
+# Legacy calibration retains every eligible legacy plot. Modern comparisons
+# use the SAME valid plot IDs at both dates; paleo WA and LC use the SAME samples.
+# Recorded loss at resurvey is absence of the study's recorded tree taxa, not
+# proof of biological extinction. A zero macrofossil sample is non-detection.
+# Counts are unique plots/samples, not species records, age draws or time bins.
+cca_classify_samples = function(cleaned, consolidated, selected_taxa,
+                                calibration_taxa, climate, variables) {
+  keys = c("site", "era", "period", "plot_id")
+  if (anyDuplicated(climate[keys])) stop("Duplicate climate sample keys in CCA eligibility.")
+  for (x in list(cleaned, consolidated)) {
+    if (anyNA(x[c(keys, "species", "occurrence")]) ||
+        any(!x$occurrence %in% 0:1)) stop("CCA eligibility requires identified binary occurrence records.")
+  }
+  count_taxa = function(x, name, taxa = unique(x$species)) {
+    x %>% filter(occurrence == 1, species %in% taxa) %>%
+      group_by(across(all_of(keys))) %>%
+      summarize(!!name := n_distinct(species), .groups = "drop")
+  }
+  out = bind_rows(cleaned %>% distinct(across(all_of(keys))),
+                  climate %>% distinct(across(all_of(keys)))) %>% distinct() %>%
+    left_join(cleaned %>% distinct(across(all_of(keys))) %>%
+                mutate(has_occurrence_record = TRUE), by = keys) %>%
+    left_join(count_taxa(cleaned, "cleaned_taxa"), by = keys) %>%
+    left_join(count_taxa(consolidated, "consolidated_taxa"), by = keys) %>%
+    left_join(count_taxa(consolidated, "selected_taxa", selected_taxa), by = keys) %>%
+    left_join(count_taxa(consolidated, "calibration_taxa", calibration_taxa), by = keys) %>%
+    left_join(climate %>% select(all_of(c(keys, variables))) %>%
+                mutate(climate_complete = if_all(all_of(variables), is.finite)) %>%
+                select(all_of(keys), climate_complete), by = keys) %>%
+    mutate(across(ends_with("_taxa"), ~ replace_na(.x, 0L)),
+           has_occurrence_record = replace_na(has_occurrence_record, FALSE),
+           climate_complete = replace_na(climate_complete, FALSE))
+  legacy = out %>% filter(period == "past") %>%
+    select(site, plot_id, legacy_cleaned_taxa = cleaned_taxa)
+  out %>% left_join(legacy, by = c("site", "plot_id")) %>%
+    mutate(
+      reason_code = case_when(
+        !has_occurrence_record ~ "missing_occurrence",
+        cleaned_taxa == 0 ~ "no_recorded_taxa",
+        consolidated_taxa == 0 ~ "consolidation",
+        selected_taxa == 0 ~ "species_selection",
+        calibration_taxa == 0 ~ "no_calibration_taxa",
+        !climate_complete ~ "climate",
+        TRUE ~ "included"),
+      reason = case_when(
+        reason_code == "missing_occurrence" ~ "No cleaned occurrence record",
+        reason_code == "no_recorded_taxa" & period == "past" ~ "No tree taxa recorded at legacy",
+        reason_code == "no_recorded_taxa" & period == "present" &
+          coalesce(legacy_cleaned_taxa, 0L) > 0 ~ "Loss of all recorded tree-taxon presence at resurvey",
+        reason_code == "no_recorded_taxa" & period == "present" ~ "No tree taxa recorded at resurvey",
+        reason_code == "no_recorded_taxa" ~ "No tree taxa detected in paleo sample",
+        reason_code == "consolidation" ~ "Only taxa excluded during consolidation",
+        reason_code == "species_selection" ~ "Only taxa excluded by CCA species selection",
+        reason_code == "no_calibration_taxa" ~ "Only taxa absent from legacy calibration",
+        reason_code == "climate" ~ "Missing or nonfinite CCA climate constraints",
+        TRUE ~ "Included"),
+      eligible = reason_code == "included") %>%
+    arrange(era, site, plot_id, period)
+}
+
+cca_pair_samples = function(samples) {
+  past = samples %>% filter(period == "past") %>%
+    select(site, plot_id, legacy_eligible = eligible,
+           legacy_reason_code = reason_code, legacy_reason = reason)
+  present = samples %>% filter(period == "present") %>%
+    select(site, plot_id, resurvey_eligible = eligible,
+           resurvey_reason_code = reason_code, resurvey_reason = reason)
+  full_join(past, present, by = c("site", "plot_id")) %>%
+    mutate(
+      calibration_included = coalesce(legacy_eligible, FALSE),
+      comparison_included = coalesce(legacy_eligible & resurvey_eligible, FALSE),
+      # One primary reason per excluded pair: legacy first, then resurvey.
+      # The sample audit keeps BOTH dates' local reasons and taxon counts.
+      exclusion_period = case_when(is.na(legacy_eligible) | !legacy_eligible ~ "past",
+                                    is.na(resurvey_eligible) | !resurvey_eligible ~ "present",
+                                    TRUE ~ NA_character_),
+      reason_code = case_when(is.na(legacy_eligible) | is.na(resurvey_eligible) ~ "missing_period",
+                              !legacy_eligible ~ legacy_reason_code,
+                              !resurvey_eligible ~ resurvey_reason_code,
+                              TRUE ~ "included"),
+      reason = case_when(is.na(legacy_eligible) ~ "No matched legacy observation",
+                         is.na(resurvey_eligible) ~ "No matched resurvey observation",
+                         !legacy_eligible ~ legacy_reason,
+                         !resurvey_eligible ~ resurvey_reason,
+                         TRUE ~ "Included")) %>% arrange(site, plot_id)
+}
+
+# -----------------------------------------------------------------------------
 # Occurrence data
 # -----------------------------------------------------------------------------
 # ONE input, already consolidated. R/stages/000_occurrence_data_consolidate.R binds the
@@ -151,8 +249,9 @@ color_era_pp   = c("anthropocene" = "#DC267F", "holocene" = "#785EF0")
 # The ad-hoc filter that used to live on this line
 #     filter(!species %in% c("unknown", "Abies sp.", "Salix sp."))
 # is now part of that script, where it is justified rather than asserted.
-occ = read_csv(here("output/occ_consolidated.csv"), show_col_types = FALSE) %>%
+occ_consolidated = read_csv(here("output/occ_consolidated.csv"), show_col_types = FALSE) %>%
   select(period, plot_id, species, occurrence, site, era)
+occ = occ_consolidated
 
 # Species selection: drop species occurring in fewer than count.thr plots in
 # every site x period, plus any run-specific exclusions.
@@ -160,8 +259,8 @@ occ = read_csv(here("output/occ_consolidated.csv"), show_col_types = FALSE) %>%
 # TSUGA HETEROPHYLLA IS NOW KEPT (decided 2026-08-13). It had been dropped by
 # hand since the earliest version of this analysis. Three reasons for reversing:
 #
-# 1. The exclusion was never justified. R/archive/05_cca_paleo.R has the bare
-#    line with no comment; a removed historical species-count diagnostic also
+# 1. The exclusion was never justified. The original model had the bare
+#    line with no comment; a historical species-count diagnostic also
 #    recorded that its exclusion was undocumented. The "range truncation, see
 #    HilleRisLambers et al. 2015 Appendix B" note that used to sit here was
 #    reconstructed after the fact, not carried over from the original author.
@@ -234,8 +333,8 @@ fire_summary = bind_rows(
 # -----------------------------------------------------------------------------
 # Anthropocene climate: raw monthly -> CCA variables -> one value per survey window
 # -----------------------------------------------------------------------------
-# Replaces output/archive/legacy/climate_summary.csv, which came from the archived
-# 02_get_climate_data.R and carried a FIXED 1981-86 "past" climatology that
+# Replaces the retired climate summary, which carried a FIXED 1981-86
+# "past" climatology that
 # post-dated MORA's survey by ~8 yr and NOCA's by ~2 - unequally, between the two
 # sites the whole study differences against each other.
 #
@@ -332,10 +431,10 @@ make_env = function(per) {
     select(plot_id, all_of(CCA_VARIABLES)) %>%
     distinct() %>%
     column_to_rownames("plot_id")
-  ok = complete.cases(e)
+  ok = rowSums(!is.finite(as.matrix(e))) == 0L
   if (any(!ok))
     message("make_env('", per, "'): DROPPED ", sum(!ok), " of ", nrow(e),
-            " plots with incomplete climate - ",
+            " plots with missing/nonfinite climate - ",
             paste(head(rownames(e)[!ok], 5), collapse = ", "),
             if (sum(!ok) > 5) ", ..." else "")
   e[ok, , drop = FALSE]
@@ -346,22 +445,98 @@ species_present = make_wide("present"); env_present = make_env("present")
 species_paleo = make_wide("paleo");   env_paleo = make_env("paleo")
 
 # -----------------------------------------------------------------------------
-# Fit the pooled CCA
+# Prepare eligible calibration, paired modern comparisons and paleo projections
 # -----------------------------------------------------------------------------
-# Training set: past plots with both species and climate, holding >= 1 species.
+# Determine model taxa from eligible legacy rows, without changing calibration.
+# The whole cleaned universe is kept for the exclusion audit, including plots
+# that disappear entirely from the consolidated occurrence table.
 common_past = intersect(rownames(species_past), rownames(env_past))
 common_past = common_past[rowSums(species_past[common_past, , drop = FALSE]) > 0]
-
 species_past_final = species_past[common_past, , drop = FALSE]
 species_past_final = species_past_final[, colSums(species_past_final) > 0, drop = FALSE]
 keep_species       = colnames(species_past_final)
 env_past_final     = env_past[common_past, CCA_VARIABLES, drop = FALSE]
 
+cleaned_occ = bind_rows(
+  read_csv(here("output/MORA_occ.csv"), show_col_types = FALSE) %>%
+    mutate(site = "MORA", era = "anthropocene"),
+  read_csv(here("output/NOCA_occ.csv"), show_col_types = FALSE) %>%
+    mutate(site = "NOCA", era = "anthropocene"),
+  read_csv(here("output/paleo_occ.csv"), show_col_types = FALSE)
+) %>% select(site, era, period, plot_id, species, occurrence)
+
+cca_sample_eligibility = cca_classify_samples(
+  cleaned_occ, occ_consolidated, unique(occ$species), keep_species,
+  env, CCA_VARIABLES)
+cca_pair_eligibility = cca_pair_samples(cca_sample_eligibility)
+present_pairs = cca_pair_eligibility %>% filter(comparison_included) %>% pull(plot_id)
+# Preserve the prepared-matrix order, so unchanged projections retain their
+# original row order as well as their coordinates.
+present_pairs = rownames(species_present)[rownames(species_present) %in% present_pairs]
+common_paleo = cca_sample_eligibility %>%
+  filter(period == "paleo", eligible) %>% pull(plot_id)
+common_paleo = rownames(species_paleo)[rownames(species_paleo) %in% common_paleo]
+stopifnot(setequal(common_past, cca_sample_eligibility %>%
+                    filter(period == "past", eligible) %>% pull(plot_id)),
+          !anyDuplicated(present_pairs), !anyDuplicated(common_paleo))
+
+# Use these matrices for BOTH observed and predicted modern endpoints. The
+# larger species_past_final/env_past_final remain the calibration reference.
+species_past_paired = species_past_final[present_pairs, , drop = FALSE]
+env_past_paired = env_past_final[present_pairs, , drop = FALSE]
+species_present_final = species_present[present_pairs, keep_species, drop = FALSE]
+env_present_final = env_present[present_pairs, CCA_VARIABLES, drop = FALSE]
+species_paleo = species_paleo[common_paleo, keep_species, drop = FALSE]
+env_paleo = env_paleo[common_paleo, CCA_VARIABLES, drop = FALSE]
+
+cca_sample_eligibility = cca_sample_eligibility %>%
+  left_join(cca_pair_eligibility %>%
+              select(site, plot_id, pair_included = comparison_included,
+                     pair_exclusion_period = exclusion_period,
+                     pair_reason = reason), by = c("site", "plot_id")) %>%
+  mutate(calibration_included = period == "past" & eligible,
+         comparison_included = if_else(period == "paleo", eligible,
+                                       coalesce(pair_included, FALSE)),
+         comparison_reason = if_else(period == "paleo", reason, pair_reason))
+
+cca_eligibility_units = bind_rows(
+  cca_sample_eligibility %>% filter(period == "past") %>%
+    transmute(era, site, use = "Legacy calibration", plot_id,
+              exclusion_period = period, reason_code, reason, included = eligible),
+  cca_pair_eligibility %>%
+    transmute(era = "anthropocene", site, use = "Modern paired comparison",
+              plot_id, exclusion_period, reason_code, reason,
+              included = comparison_included),
+  cca_sample_eligibility %>% filter(period == "paleo") %>%
+    transmute(era, site, use = "Paleo projection", plot_id,
+              exclusion_period = period, reason_code, reason, included = eligible))
+cca_eligibility_counts = cca_eligibility_units %>%
+  group_by(era, site, use) %>%
+  summarize(input_units = n(), excluded_units = sum(!included),
+            included_units = sum(included), .groups = "drop")
+cca_exclusion_summary = cca_eligibility_units %>% filter(!included) %>%
+  count(era, site, use, exclusion_period, reason_code, reason, name = "excluded_units")
+cat("\nCCA eligibility BEFORE fitting/projection (unique plots or paleo samples):\n")
+print(as.data.frame(cca_eligibility_counts), row.names = FALSE)
+cat("\nExclusion reasons (each plot/sample counted once within each use):\n")
+print(as.data.frame(cca_exclusion_summary %>% select(-reason_code)), row.names = FALSE)
+# Every primary model invocation regenerates these tables. Threshold variants
+# retain their own in-memory audit and cannot overwrite the primary report.
+if (count.thr == CCA_COUNT_THRESHOLD && !length(extra_exclude) && !nzchar(cca_suffix)) {
+  write_csv(cca_sample_eligibility, here("output/cca_sample_eligibility.csv"))
+  write_csv(cca_pair_eligibility, here("output/cca_pair_eligibility.csv"))
+  write_csv(cca_eligibility_counts, here("output/cca_eligibility_counts.csv"))
+  write_csv(cca_exclusion_summary, here("output/cca_exclusion_summary.csv"))
+}
+
+# -----------------------------------------------------------------------------
+# Fit the pooled CCA ONLY after resolving and reporting eligibility
+# -----------------------------------------------------------------------------
 cca_formula = reformulate(CCA_VARIABLES, response = "species_past_final")
 cca_model = cca(cca_formula, data = env_past_final)
 
 # Projection helper. Rows are matched by plot_id, not by position: the former
-# R/archive/05_cca_paleo.R:145 reused the `valid_plots` logical built from the PAST
+# model reused the `valid_plots` logical built from the PAST
 # matrices to subset the PRESENT matrices, which is correct only while the two
 # intersections happen to come out in the same order.
 project_period = function(sp, en, era_label) {
@@ -373,28 +548,22 @@ project_period = function(sp, en, era_label) {
   list(plot_id = cc, pred = pred, proj = proj, era = era_label)
 }
 
-# Anthropocene resurvey: keep only plots present at BOTH times, so past->present
-# is a matched pair (this is what the positional subset achieved implicitly).
-present_pairs = intersect(intersect(rownames(species_present), rownames(env_present)),
-                          common_past)
-species_present_final = species_present[present_pairs, , drop = FALSE]
-env_present_final     = env_present[present_pairs, CCA_VARIABLES, drop = FALSE]
-
+# All projection inputs are already eligible: never filter WA and LC separately.
 predicted_present = predict(cca_model, newdata = env_present_final, type = "lc", scaling = cca_scaling, hill = cca_hill)
-projected_present = predict(cca_model, newdata = species_present_final[, keep_species, drop = FALSE],
+projected_present = predict(cca_model, newdata = species_present_final,
                             type = "wa", scaling = cca_scaling, hill = cca_hill)
-
-common_paleo  = intersect(rownames(species_paleo), rownames(env_paleo))
-species_paleo = species_paleo[common_paleo, , drop = FALSE]
-env_paleo     = env_paleo[common_paleo, , drop = FALSE]
 
 predicted_paleo = predict(cca_model, newdata = env_paleo[, CCA_VARIABLES, drop = FALSE],
                           type = "lc", scaling = cca_scaling, hill = cca_hill)
 projected_paleo = predict(cca_model, newdata = species_paleo[, keep_species, drop = FALSE],
                           type = "wa", scaling = cca_scaling, hill = cca_hill)
+stopifnot(identical(rownames(predicted_present), rownames(projected_present)),
+          identical(rownames(predicted_paleo), rownames(projected_paleo)),
+          all(is.finite(predicted_present)), all(is.finite(projected_present)),
+          all(is.finite(predicted_paleo)), all(is.finite(projected_paleo)))
 
 # -----------------------------------------------------------------------------
-# Scores and plotting frames (used by the archived figures and by 06c)
+# Scores and plotting frames shared by the maintained figure stages
 # -----------------------------------------------------------------------------
 past_sites     = scores(cca_model, display = "sites",   choices = 1:3, scaling = cca_scaling, hill = cca_hill)
 species_scores = scores(cca_model, display = "species", choices = 1:3, scaling = cca_scaling, hill = cca_hill)
@@ -426,7 +595,6 @@ comparison_df = bind_rows(
          projected_CCA1 = projected_present[, 1], projected_CCA2 = projected_present[, 2],
          projected_CCA3 = projected_present[, 3]) %>%
     left_join(site_fire_info_present, by = "plot_id") %>%
-    filter(!is.nan(projected_CCA1)) %>%
     mutate(era = "anthropocene"),
   tibble(plot_id = rownames(species_paleo),
          predicted_CCA1 = predicted_paleo[, 1], predicted_CCA2 = predicted_paleo[, 2],
@@ -434,18 +602,14 @@ comparison_df = bind_rows(
          projected_CCA1 = projected_paleo[, 1], projected_CCA2 = projected_paleo[, 2],
          projected_CCA3 = projected_paleo[, 3]) %>%
     left_join(site_fire_info_paleo, by = "plot_id") %>%
-    filter(!is.nan(projected_CCA1)) %>%
     mutate(era = "holocene")
 ) %>%
   # OLD position-based metric - superseded, kept for the S2 comparison only.
-  # filter(!is.nan(projected_CCA1)) above removes samples holding NONE of the
-  # keep_species: a WA score is a species-weighted average, so an all-zero row has
-  # no position. That is correct, but it must not be invisible - a paleo sample
-  # whose taxa are all absent from the modern survey list disappears here.
+  # Every row now passed the common WA/LC eligibility section before projection.
   {cat("\ncomparison_df: ", nrow(.), " of ",
        nrow(species_present_final) + nrow(species_paleo),
-       " samples positioned (rest hold none of the ", length(keep_species),
-       " retained species)\n", sep = ""); .} %>%
+       " eligible samples positioned; exclusions are in cca_exclusion_summary.\n",
+       sep = ""); .} %>%
   mutate(diff_CCA1 = abs(projected_CCA1 - predicted_CCA1),
          diff_CCA2 = abs(projected_CCA2 - predicted_CCA2),
          diff_CCA3 = abs(projected_CCA3 - predicted_CCA3),

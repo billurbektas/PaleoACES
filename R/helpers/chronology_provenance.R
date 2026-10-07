@@ -1,4 +1,5 @@
-# Resolve historical chronology hashes only for the recorded path substitutions.
+# Resolve historical chronology hashes only for the exact recorded substitutions
+# (relocated paths and the authorized figure-caption correction).
 # Any other source edit uses the physical file identity and invalidates old caches.
 chronology_source_identity = function(path, actual_path = here::here(path)) {
   physical_md5 = unname(tools::md5sum(actual_path))
@@ -6,7 +7,7 @@ chronology_source_identity = function(path, actual_path = here::here(path)) {
                 md5 = physical_md5, historical_path = NULL,
                 historical_md5 = NULL, historical_source = NULL)
   bridge = jsonlite::fromJSON(
-    here::here("docs/reorganization/chronology_relocation.json"),
+    here::here("Cores/provenance/chronology_relocation.json"),
     simplifyVector = FALSE)
   entries = Filter(function(x) identical(x$current_path, path), bridge$files)
   if (length(entries) != 1L) stop("Missing chronology relocation record: ", path)

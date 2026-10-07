@@ -33,18 +33,18 @@ stopifnot(
   setequal(composition_audit$plot_id, occ$plot_id),
   setequal(audit$plot_id[audit$final_status == "excluded"],
            c("HB5144", "MCAL5004", "ROSS3022")),
-  n_distinct(occ$plot_id) == 307L,
-  nrow(occ) == 1790L,
+  n_distinct(occ$plot_id) == 305L,
+  nrow(occ) == 1775L,
   n_distinct(occ$species) == 31L,
   !any(occ$species %in% c("unknown", "Unknown tree.", "Abies sp.", "Salix sp.")),
-  setequal(study_exclusions$plot_id, c("BAK487", "BEAV6061")),
-  !any(c("BAK487", "BEAV6061") %in% occ$plot_id),
+  setequal(study_exclusions$plot_id, c("BAK487", "BEAV6061", "CARI449", "CARI450")),
+  !any(study_exclusions$plot_id %in% occ$plot_id),
+  !any(study_exclusions$plot_id %in% plot_info$plot_id),
   !anyDuplicated(occ[c("plot_id", "species", "period")]),
   all(occ$occurrence %in% c(0, 1)),
   nrow(coordinate_audit) == 2L,
   setequal(coordinate_audit$plot_id, c("CARI449", "CARI450")),
-  setequal(coordinate_collisions$plot_id, c("CARI449", "CARI450")),
-  nrow(coordinate_collisions) == 2L,
+  nrow(coordinate_collisions) == 0L,
   all(coordinate_audit$raw_latitude == 48.51429),
   setequal(coordinate_audit$raw_longitude, c(121.21725, -121.21725)),
   all(coordinate_audit$normalized_latitude == 48.51429),
@@ -53,9 +53,20 @@ stopifnot(
   all(coordinate_audit$shared_coordinate_count == 2L),
   all(coordinate_audit$elevation_range_m == 527),
   all(coordinate_audit$status ==
-        "unresolved—retained pending source confirmation")
+        "excluded—GPS problem; no verified coordinate correction"),
+  all(grepl("GPS problem", study_exclusions$exclusion_reason[
+    study_exclusions$plot_id %in% c("CARI449", "CARI450")]))
 )
+# Both dates, stage records and kept-plot accounting must share this exclusion.
+for (name in c("NOCA_present_occ", "NOCA_past_occ", "NOCA_occ_stage")) {
+  x = read_csv(here("output", paste0(name, ".csv")), show_col_types = FALSE)
+  stopifnot(!any(c("CARI449", "CARI450") %in% x$plot_id))
+}
+tracking = read_csv(here("output/NOCA_plot_tracking.csv"), show_col_types = FALSE)
+gps = tracking %>% filter(plot_id %in% c("CARI449", "CARI450"))
+stopifnot(nrow(gps) == 2L, all(gps$period == "both"),
+          all(gps$status == "removed"), all(grepl("GPS problem", gps$reason)))
 cat(paste0(
   "NOCA tree correction checks passed: 2,366 stems, 54 corrected plots, ",
-  "307 retained plots, and only the unresolved CARI449/CARI450 coordinate collision.\n"
+  "305 retained plots; CARI449/CARI450 excluded at both dates for GPS problems.\n"
 ))

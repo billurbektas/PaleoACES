@@ -27,7 +27,7 @@ fire = read_csv(data_paths[8], show_col_types = FALSE)
 dates = timeseries |> distinct(site, t) |> count(site, name = "n")
 stopifnot(identical(dates,
   tibble(site = c("MORA", "NOCA"), n = c(54L, 83L))),
-  all(timeseries$n_offsets == 10L), nrow(anth) == 607L)
+  all(timeseries$n_offsets == 10L), nrow(anth) == 605L)
 
 holo = points |> filter(point_class == "holocene_site_interval") |>
   left_join(fire |> select(site, t = cal_bp, high_fire), by = c("site", "t")) |>
@@ -46,7 +46,7 @@ modern = modern_all |> filter(included) |>
 raw = bind_rows(holo, modern)
 
 stopifnot(nrow(holo) == 137L, !anyNA(holo$high_fire),
-  nrow(modern_all) == 607L, nrow(modern) == 605L,
+  nrow(modern_all) == 605L, nrow(modern) == 603L,
   sum(!scope$included) == 2L,
   setequal(scope$plot_id[!scope$included], c("JAME-295", "OHAN-013")),
   sum(modern$site == "NOCA" & modern$burnt) == 23L)
@@ -129,7 +129,7 @@ stopifnot(nrow(box_spec) == 6L,
   scatter_spec$panel == "D",
   scatter_spec$x_reference == 90, scatter_spec$y_reference == 1,
   scatter_spec$n_background == nrow(background),
-  scatter_spec$n_background == 589L,
+  scatter_spec$n_background == 587L,
   scatter_spec$n_macro == 4L, scatter_spec$n_detail == 8L,
   scatter_spec$n_noca_fire == 2L,
   scatter_spec$n_stationary_angle_undefined == 153L,

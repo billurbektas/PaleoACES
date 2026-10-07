@@ -151,13 +151,13 @@ NOCA_plot_info_fire = NOCA_plot_info %>%
   arrange(plot_id)
 
 if (!setequal(NOCA_plot_info_fire$plot_id, noca_ids) ||
-    nrow(NOCA_plot_info_fire) != 307L ||
+    nrow(NOCA_plot_info_fire) != 305L ||
     anyDuplicated(NOCA_plot_info_fire$plot_id)) {
-  stop("NOCA fire output must contain exactly 307 unique modeled plots.")
+  stop("NOCA fire output must contain exactly 305 unique modeled plots.")
 }
 if (sum(NOCA_plot_info_fire$burnt) != 32L ||
-    sum(!NOCA_plot_info_fire$burnt) != 275L) {
-  stop("Expected 32 burned and 275 unburned PaleoACES NOCA plots.")
+    sum(!NOCA_plot_info_fire$burnt) != 273L) {
+  stop("Expected 32 burned and 273 unburned PaleoACES NOCA plots.")
 }
 
 # Universe and assignment comparison -----------------------------------------
@@ -200,7 +200,7 @@ NOCA_fire_Wilson2024_comparison = tibble(plot_id = sort(comparison_ids)) %>%
 
 universe_counts = count(NOCA_fire_Wilson2024_comparison, universe_status)
 observed_universe_counts = setNames(universe_counts$n, universe_counts$universe_status)
-expected_universe_counts = c(shared = 305L, PaleoACES_only = 2L, Wilson_only = 64L)
+expected_universe_counts = c(shared = 303L, PaleoACES_only = 2L, Wilson_only = 66L)
 if (!identical(observed_universe_counts[names(expected_universe_counts)],
                expected_universe_counts)) {
   stop("Unexpected PaleoACES/Wilson plot-universe comparison counts.")
@@ -213,8 +213,8 @@ write_csv(NOCA_plot_info_fire,
 write_csv(NOCA_fire_Wilson2024_comparison,
           here("output/NOCA_fire_Wilson2024_comparison.csv"))
 
-cat("NOCA fire assignments: 307 plots; 32 burned, 275 unburned.\n")
-cat("Wilson comparison: 305 shared, 2 PaleoACES-only, 64 Wilson-only; ",
+cat("NOCA fire assignments: 305 plots; 32 burned, 273 unburned.\n")
+cat("Wilson comparison: 303 shared, 2 PaleoACES-only, 66 Wilson-only; ",
     "no shared fire discrepancies.\n", sep = "")
 
 # PaleoACES adaptation of Wilson et al. (2024) Figure 1 ----------------------
@@ -279,9 +279,9 @@ p_map = ggplot() +
            fontface = "bold", size = 4) +
   coord_sf(crs = map_crs, datum = st_crs(4326), expand = FALSE) +
   labs(
-    title = "NOCA fire history - 307 PaleoACES plots",
+    title = "NOCA fire history - 305 PaleoACES plots",
     caption = str_wrap(paste0(
-      "Wilson et al. (2024) fire method and symbology applied to the 307 retained PaleoACES plots. ",
+      "Wilson et al. (2024) fire method and symbology applied to the 305 retained PaleoACES plots. ",
       "Natural and prescribed fires shown for 1983-2015; X = burned, circle = unburned."
     ), width = 105)
   ) +

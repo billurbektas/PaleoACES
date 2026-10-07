@@ -534,7 +534,7 @@ if (dir.exists(file.path(coredir, "PantherPotholes_pb210err"))) {
   sens = (base(env) +
       annotate("rect", xmin = 0, xmax = 35, ymin = -Inf, ymax = Inf,
                fill = NA, colour = "grey35", linewidth = .3, linetype = "22") +
-      labs(subtitle = "Whole core: identical below 35 cm")) +
+      labs(subtitle = "Whole core: similar below 35 cm")) +
     (base(env %>% filter(depth <= 40)) +
       geom_linerange(data = pb, inherit.aes = FALSE,
         aes(x = depth - .45, ymin = age - e_pub, ymax = age + e_pub),

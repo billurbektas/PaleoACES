@@ -81,7 +81,7 @@
       ],
       "producer": "R/stages/000_PALEO_a_agedepth.R",
       "purpose": "Inspect four fitted age-depth models and slump treatment.",
-      "interpretation": "A report rebuild executes only the existing figure section from stored validated posteriors. Chronology products and controls are hash-protected.",
+      "interpretation": "The four age-depth curves show sediment accumulation, removed instantaneous layers and modeled age ranges. Those ranges are conditional on the adopted controls and Bacon settings.",
       "status": "current"
     },
     {
@@ -98,7 +98,7 @@
     },
     {
       "id": "survey_window",
-      "section": "climate",
+      "section": "modern_climate",
       "pdf": "plot/test_figures/test_survey_year_anomaly.pdf",
       "pages": [
         1
@@ -110,7 +110,7 @@
     },
     {
       "id": "climate_correlation",
-      "section": "climate",
+      "section": "paleo_climate",
       "pdf": "plot/test_figures/climate_holocene_timeseries.pdf",
       "pages": [
         2
@@ -129,24 +129,24 @@
       ],
       "producer": "R/diagnostics/test_cca_scaling_comparison.R",
       "purpose": "Compare scaling 1 and 2 of the same fitted CCA.",
-      "interpretation": "The primary geometry stays scaling=\"sites\", Hill off, CCA1\u2013CCA2. Raw target directions, without display multipliers, enter metrics.",
+      "interpretation": "Site scaling (1), Hill off and CCA1\u2013CCA2 define the primary geometry. Unequal rescaling of axes changes distances and angles; display arrow multipliers are excluded from the calculations.",
       "status": "current"
     },
     {
       "id": "fire_map",
-      "section": "fire",
+      "section": "modern_fire",
       "pdf": "plot/test_figures/NOCA_fire_map_Wilson2024_PaleoACES.pdf",
       "pages": [
         1
       ],
       "producer": "R/stages/01_get_fire_info.R",
       "purpose": "Audit NOCA modern fire assignment against Wilson reference plots.",
-      "interpretation": "The 305 shared plots agree. The cleaned 307-plot universe is retained; the reference is not substituted for it.",
+      "interpretation": "The 303 shared plots agree. The cleaned 305-plot universe excludes CARI449/CARI450 for GPS problems; the Wilson reference is not substituted for it.",
       "status": "current"
     },
     {
       "id": "fire_detection",
-      "section": "fire",
+      "section": "fire_detection",
       "pdf": "plot/test_figures/fig_fire_event_detection_workflow.pdf",
       "pages": [
         1,
@@ -160,19 +160,19 @@
     },
     {
       "id": "walsh_audit",
-      "section": "fire",
+      "section": "fire_audit",
       "pdf": "plot/test_figures/fig_walsh_charanalysis_reproduction.pdf",
       "pages": [
         3
       ],
       "producer": "R/stages/12_walsh_fire_reproduction.R",
       "purpose": "Compare official CharAnalysis results with published Walsh totals.",
-      "interpretation": "The discrepancy is retained without tuning; this software audit does not overwrite the primary all-tapas event catalog.",
+      "interpretation": "The official CharAnalysis implementation and Walsh publication give different event totals. This comparison is separate from the primary tapas event catalog, whose thresholds were not tuned to force agreement.",
       "status": "current"
     },
     {
       "id": "climate_era_example",
-      "section": "fire",
+      "section": "fire_eras",
       "pdf": "plot/test_figures/fig_holocene_climate_period_method_worked_example.pdf",
       "pages": [
         1
@@ -184,7 +184,7 @@
     },
     {
       "id": "high_fire_example",
-      "section": "fire",
+      "section": "fire_eras",
       "pdf": "plot/test_figures/fig_holocene_fire_method_worked_example.pdf",
       "pages": [
         1
@@ -344,6 +344,26 @@
     "cleaning_summary": {
       "source": "output/report/cleaning_summary.csv",
       "producer": "R/stages/05_cca_model.R"
+    },
+    "cca_sample_eligibility": {
+      "source": "output/cca_sample_eligibility.csv",
+      "producer": "R/stages/05_cca_model.R"
+    },
+    "cca_pair_eligibility": {
+      "source": "output/cca_pair_eligibility.csv",
+      "producer": "R/stages/05_cca_model.R"
+    },
+    "cca_eligibility_counts": {
+      "source": "output/cca_eligibility_counts.csv",
+      "producer": "R/stages/05_cca_model.R"
+    },
+    "cca_exclusion_summary": {
+      "source": "output/cca_exclusion_summary.csv",
+      "producer": "R/stages/05_cca_model.R"
+    },
+    "modern_centroids": {
+      "source": "output/cca_trajectory_anthropocene_centroids.csv",
+      "producer": "R/stages/05a_cca_figure.R"
     }
   }
 }

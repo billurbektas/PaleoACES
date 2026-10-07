@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: 8fba001ae8a22f391f1bc892823d9d65 -->
+<!-- paleoaces-source-md5: 9582663bd17a4652530ab90df738c5a9 -->
 
 <html>
 
@@ -1537,8 +1537,8 @@ change</td>
 </tr>
 <tr class="odd">
 <td><code>NOCA_coordinate_collision_audit.csv</code></td>
-<td>Raw/normalized coordinates and unresolved-retained status for the
-sole exact collision, <code>CARI449</code>/<code>CARI450</code></td>
+<td>Raw/normalized coordinates and excluded status for GPS problems for
+the sole exact collision, <code>CARI449</code>/<code>CARI450</code></td>
 </tr>
 <tr class="even">
 <td><code>*_plot_info_fire.csv</code></td>
@@ -1560,6 +1560,20 @@ sole exact collision, <code>CARI449</code>/<code>CARI450</code></td>
 <tr class="even">
 <td><code>occ_consolidated.csv</code></td>
 <td>Harmonized occurrence table used by the model</td>
+</tr>
+<tr class="odd">
+<td><code>cca_sample_eligibility.csv</code>,
+<code>cca_pair_eligibility.csv</code></td>
+<td>CCA-stage per-observation and paired-plot audits: recorded presence,
+taxon filtering, climate validity, local reasons, calibration membership
+and shared WA/LC comparison membership</td>
+</tr>
+<tr class="even">
+<td><code>cca_eligibility_counts.csv</code>,
+<code>cca_exclusion_summary.csv</code></td>
+<td>Generated pre-fit totals and mutually exclusive exclusion reasons
+for each site, era and use; reproduced near the beginning of the
+analysis review</td>
 </tr>
 <tr class="odd">
 <td><code>cca_tracking_anthropocene_*.csv</code></td>
@@ -1601,7 +1615,7 @@ displayed metrics</td>
 </tr>
 <tr class="even">
 <td><code>cca_tracking_anthropocene_fire_scope_audit.csv</code></td>
-<td>All 607 modern pairs with burned status, inclusion decision, and
+<td>All 605 modern pairs with burned status, inclusion decision, and
 explicit exclusion of the two burned MORA pairs</td>
 </tr>
 <tr class="odd">
@@ -1615,7 +1629,7 @@ fill limits, and panel-width fractions</td>
 <tr class="even">
 <td><code>cca_direction_anthropocene_realizations.csv</code>,
 <code>cca_direction_holocene_realizations.csv.gz</code></td>
-<td>All 10,319 modern and 259,590 primary Holocene unit × taxon/climate
+<td>All 10,285 modern and 259,590 primary Holocene unit × taxon/climate
 paired rows, with predicted and observed cosines,
 predicted-minus-observed contrasts, direct movement angle/cosine, and
 explicit validity flags</td>
@@ -1744,6 +1758,11 @@ and an arrow-only observed/predicted legend</td>
 selected trajectories</td>
 </tr>
 <tr class="odd">
+<td><code>cca_trajectory_anthropocene_centroids.csv</code></td>
+<td>Exact legacy/resurvey WA and LC site means from identical valid
+paired plots at both dates, plus pair counts</td>
+</tr>
+<tr class="even">
 <td><code>plot/fig_cca_direction_differences.*</code></td>
 <td>Main-paper PDF/PNG with A. Climate and B. Species median heatmaps of
 target-alignment discrepancy (predicted minus observed); display labels
@@ -1751,12 +1770,12 @@ use climate stability, species names are italicized, and neutral era
 labels highlight only high fire/burned status in red within MORA/NOCA
 facets</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>plot/test_figures/fig_cca_direction_differences_audit.pdf</code></td>
 <td>Three-page complete taxon/climate boxplot audit retaining individual
 valid units, distributions, and explicit two-unit groups</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>bacon_run_manifest.csv</code></td>
 <td>Seed, versions, settings/control/output hashes, the historical
 whole-script hash used for five chronology runs, and a separately

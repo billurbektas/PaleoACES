@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: dbb687a2f2846fbf40dae3d4b37d1dda -->
+<!-- paleoaces-source-md5: ed972384f473e3e3c542a546a4c60c9c -->
 
 <html>
 
@@ -1641,8 +1641,8 @@ duplicates, source reconciliation</td>
 <td>Required 2026 tree patch and study exclusions</td>
 <td>Agee/JHRL data, corrected workbook, Wilson plots, Rachel notes</td>
 <td><code>NOCA_occ.csv</code>, stage/plot tables and audits, including
-the unresolved <code>CARI449</code>/<code>CARI450</code>
-normalized-coordinate collision; 307 plots, 1,790 rows, 31 taxa</td>
+excluded <code>CARI449</code>/<code>CARI450</code> GPS-collision
+evidence; 305 plots, 1,775 rows, 31 taxa</td>
 </tr>
 <tr class="odd">
 <td align="right">2</td>
@@ -1650,8 +1650,8 @@ normalized-coordinate collision; 307 plots, 1,790 rows, 31 taxa</td>
 <td>Required Anthropocene fire assignment</td>
 <td>Clean plot tables, MORA disturbances, Wilson fire
 package/reference</td>
-<td>MORA/NOCA fire tables and map; NOCA 307/32/275 and zero disagreement
-among 305 common plots</td>
+<td>MORA/NOCA fire tables and map; NOCA 305/32/273 and zero disagreement
+among 303 common plots</td>
 </tr>
 <tr class="even">
 <td align="right">3a</td>
@@ -1733,7 +1733,7 @@ samples</td>
 <td><code>R/stages/05_cca_model.R</code></td>
 <td>Required pooled calibration/projection</td>
 <td>Consolidated occurrence, modern/paleo climate and fire</td>
-<td>In-memory CCA/model scores; 20 threshold, scaling 1, 13 species, 620
+<td>In-memory CCA/model scores; 20 threshold, scaling 1, 13 species, 618
 calibration plots</td>
 </tr>
 <tr class="even">
@@ -1826,7 +1826,7 @@ audit under <code>plot/test_figures/</code></td>
 <td align="right">10j</td>
 <td><code>R/stages/09b_tracking_visualization_data.R</code></td>
 <td>Site/era point and resolution audit</td>
-<td>Primary and 500-year site series, 607 modern plots, frozen CC/S
+<td>Primary and 500-year site series, 605 modern plots, frozen CC/S
 grid</td>
 <td>Visualization-point, era-coverage, and interval-resolution audit
 CSVs</td>
@@ -1835,7 +1835,7 @@ CSVs</td>
 <td align="right">10k</td>
 <td><code>R/stages/09c_tracking_comparison.R</code></td>
 <td>Integrated descriptive tracking/fire summaries and render</td>
-<td>Complete 137 Holocene site-dates; all 607 modern pairs; modern and
+<td>Complete 137 Holocene site-dates; all 605 modern pairs; modern and
 Holocene fire audits</td>
 <td>Summary/specification/audit CSVs plus, when rendering, main-paper
 <code>fig_tracking_comparison.pdf/.png</code></td>
@@ -1846,7 +1846,7 @@ Holocene fire audits</td>
 <td>Final descriptive predicted-minus-observed target-alignment
 discrepancy analysis</td>
 <td>Scaling-1/Hill-off CCA scores; taxon targets use initial LC→species
-for prediction and initial WA→species for observation; all 607 modern
+for prediction and initial WA→species for observation; all 605 modern
 pairs, all 15,270 primary Holocene realizations, frozen climate state
 and fire classifications</td>
 <td>Paired unit × target discrepancies, draw-within-offset, site-date,
@@ -1859,6 +1859,16 @@ PDF-only three-page audit</td>
 climate downloads can take hours on a fresh cache. Bacon is the only
 intentionally slow offline regeneration. The official Walsh stage takes
 seconds once its pinned R package is installed.</p>
+<p>The CCA stage prints and writes eligibility totals and exclusion
+reasons before fitting or projection.
+<code>cca_sample_eligibility.csv</code> and
+<code>cca_pair_eligibility.csv</code> retain individual decisions;
+<code>cca_eligibility_counts.csv</code> and
+<code>cca_exclusion_summary.csv</code> are reproduced in the analysis
+review. All-zero retained-taxon rows are excluded from both WA and LC
+comparisons. Modern comparison endpoints share one valid paired set,
+while the full eligible legacy set remains the calibration
+reference.</p>
 </div>
 <div id="shared-helpers-and-settings" class="section level2">
 <h2>Shared helpers and settings</h2>
@@ -1930,9 +1940,9 @@ signed-gradient colors</td>
 </tr>
 <tr class="even">
 <td><code>R/helpers/chronology_provenance.R</code></td>
-<td>Verified path-only source equivalence for historical chronology
-hashes and age-draw cache dependencies; any other source edit
-invalidates that equivalence</td>
+<td>Verified recorded path/caption substitutions for historical
+chronology hashes and age-draw cache dependencies; unrecorded source
+changes invalidate that equivalence</td>
 </tr>
 <tr class="odd">
 <td><code>data/holocene_period_candidates.csv</code></td>
@@ -1941,9 +1951,12 @@ input</td>
 </tr>
 </tbody>
 </table>
-<p><code>R/archive/08_climate_trends_cca_vars.R</code> and the retired
-<code>Rchelsa</code> helper are legacy only. Scripts under
-<code>R/archive/</code> are not active stages.</p>
+<p>Retired analysis scripts are preserved in Git history and are not
+active stages.</p>
+<p>Required chronology source snapshots and the exact substitution
+record are kept in <code>Cores/provenance/</code>. Removing old
+reorganization logs does not remove the verification needed to use the
+existing posteriors.</p>
 </div>
 <div id="tests-and-decisions" class="section level2">
 <h2>Tests and decisions</h2>
@@ -1971,10 +1984,10 @@ plot/species sets; establishes paired-plot integrity</td>
 <td><code>test_NOCA_tree_corrections.R</code></td>
 <td>Automatic offline gate after NOCA cleaning</td>
 <td>Wrong workbook/target/audit totals, unsupported labels, duplicate
-inflation, wrong 307-plot universe, any normalized-coordinate collision
-other than <code>CARI449</code>/<code>CARI450</code>, changed
-622/1,149-m elevations, or disappearance of the unresolved-retained
-audit</td>
+inflation, wrong 305-plot universe, any active normalized-coordinate
+collision, inclusion of <code>CARI449</code>/<code>CARI450</code> at
+either date, changed 622/1,149-m source elevations, or disappearance of
+the GPS-excluded audit</td>
 </tr>
 <tr class="odd">
 <td><code>test_NOCA_fire_assignments.R</code></td>
@@ -2150,24 +2163,14 @@ sensitivities</td>
 for Figures 2–5</td>
 </tr>
 <tr class="even">
-<td><a href="REVIEW_AUDIT.html">Science, mathematics, and code
-audit</a></td>
-<td>Findings, independent evidence, validation, and decisions awaiting
-the author</td>
-</tr>
-<tr class="odd">
 <td><a href="methods/cca_tracking_metrics.pdf">Tracking metrics</a></td>
 <td>Mathematical working specification</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="references/Holocene_period_choices_MORA_NOCA_summary.pdf">Holocene
 evidence summary</a></td>
 <td>Literature/context source review retained outside the classification
 stage</td>
-</tr>
-<tr class="odd">
-<td><a href="CLAUDE.html">Claude redirect</a></td>
-<td>Redirect to maintained authorities</td>
 </tr>
 <tr class="even">
 <td><a href="../Cores/CONTROL_POINTS.html">Bacon controls</a></td>
@@ -2239,6 +2242,16 @@ clearly labeled snapshot from verified existing outputs, without
 claiming a fresh analysis run. A fresh report is produced by the
 workflow command above. <a href="report/analysis_review_template.html">Report template</a>, <a href="REPOSITORY_INVENTORY.html">repository inventory</a>, <a href="OUTPUTS.html">outputs</a>, and <a href="INDEX.html">documentation
 index</a> describe the review and its provenance.</p>
+</div>
+<div id="report-verification-records" class="section level2">
+<h2>Report verification records</h2>
+<p>The <a href="assets/analysis/artifacts.csv">artifact ledger</a>
+records report inputs, producing scripts, selected PDF pages and output
+hashes. The <a href="assets/analysis/inputs.csv">input</a>, <a href="assets/analysis/sources.csv">source</a> and <a href="assets/analysis/results.csv">result</a> records and <a href="assets/analysis/build.json">build metadata</a> keep these checks
+available separately from the scientific narrative.</p>
+<p>Reusable independent checks and portable-report validation remain
+under <code>tools/</code>; failure tests that alter inputs run only in
+an isolated copy.</p>
 </div>
 </div>
 

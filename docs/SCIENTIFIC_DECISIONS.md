@@ -6,17 +6,60 @@ order and file dependencies are authoritative in [WORKFLOW.md](WORKFLOW.md).
 ## Study universes and vegetation
 
 - Modern vegetation is paired within plot. MORA has 330 modeled pairs and NOCA
-  has 277 after excluding `BAK487` (old clearcut) and `BEAV6061` (uncertain
-  relocation into an avalanche chute).
+  has 275 after excluding `BAK487` (old clearcut), `BEAV6061` (uncertain
+  relocation into an avalanche chute), and `CARI449`/`CARI450` (GPS problem).
 - The corrected NOCA workbook is authoritative for its 2,366 received stem
   rows. Unsupported labels are discarded before occurrence construction. The
-  verified cleaned result is 307 plots, 1,790 rows, and 31 identified taxa.
+  verified cleaned result is 305 plots, 1,775 rows, and 31 identified taxa.
 - NOCA fire comparisons use Wilson et al. as a regression reference, not as the
-  PaleoACES universe. All 305 common plots have the same assignment. The active
-  PaleoACES result is 32 burned and 275 unburned plots.
+  PaleoACES universe. All 303 common plots have the same assignment. The active
+  PaleoACES result is 32 burned and 273 unburned plots.
 - Presence is adult or regeneration presence. Species are retained when present
   in at least one site-period group of 20 plots or samples. The consolidated
-  table has 13,672 rows, 21 taxa, and 1,601 samples.
+  table has 13,658 rows, 21 taxa, and 1,599 samples.
+
+Both CARI plots are excluded at both dates before CCA and climate preparation.
+Rachel's notes and the coordinate CSV provide no verified replacement location.
+Their shared normalized location conflicts with elevations of 622 and 1,149 m;
+the author elected to exclude them for a GPS problem. This is an upstream study
+exclusion, separate from all-zero CCA eligibility. See the
+[GPS source review and decision](review/NOCA_GPS_EXCLUSION.md).
+
+## CCA sample eligibility and paired comparisons
+
+The species-frequency exclusion remains in `R/stages/05_cca_model.R`. Its
+eligibility section reports all cases before fitting or projection, using
+the cleaned occurrences, consolidated occurrences, selected taxa and valid
+climate constraints. All-zero retained-taxon rows have no observed WA position;
+they are excluded from both observed and climate-predicted comparisons.
+
+- Legacy calibration retains 618 eligible plots: 331 MORA and 287 NOCA. Modern
+  comparisons and Figure 3's two endpoints use exactly the same 330 MORA and
+  275 NOCA pairs. Restricting comparison membership does not remove the other
+  eligible legacy plots from the fitted calibration or its climate-SD reference.
+- Of NOCA's 305 cleaned pairs, legacy eligibility excludes 6 with no recorded
+  tree taxa, 1 holding only taxa excluded in consolidation, and 11 holding only
+  taxa excluded by CCA selection. Among the remaining 287 plots, resurvey
+  eligibility excludes 9 with loss of all recorded tree-taxon presence, 1
+  holding only consolidation-excluded taxa and 2 holding only selection-excluded
+  taxa. MORA's additional resurvey exclusion holds only selection-excluded taxa.
+- Holocene projections retain 117 MORA and 790 NOCA samples. The 56 excluded
+  NOCA samples have no tree taxa detected in the prepared macrofossil data.
+  Observed and predicted Holocene positions use exactly the same samples.
+- Recorded resurvey absence is limited to the sampled tree taxa and strata;
+  it does not establish biological extinction. Paleo non-detection does not
+  establish absence of forest. Taxon-filter exclusions are reported separately.
+  The cleaned data preserve all these observations, while CCA tracking describes
+  composition among observations with retained taxa.
+- Modern pair reasons are counted once, against the first failing endpoint
+  (legacy first). The sample audit retains both local reasons. Calibration and
+  comparison counts overlap and must not be summed. Paleo counts precede
+  chronology draws and binning. Missing/nonfinite climate and unmatched survey
+  endpoints receive explicit reasons if encountered.
+
+Generated totals, reasons and linked per-observation audits are in the
+[analysis review](ANALYSIS_REVIEW.md#cca-sample-eligibility-and-exclusions).
+Figure 3's previously unequal endpoint membership is corrected by this decision.
 
 ## Chronology and the previously discussed ²¹⁰Pb uncertainty
 
@@ -49,12 +92,44 @@ is an explicit reproduction decision.
   in the lower/upper 95% bounds. Describe deeper chronologies as similar, rather
   than identical; these are age-table comparisons, not proof that every downstream
   uncertainty summary is insensitive. See the [stored comparison](review/PB210_STORED_SENSITIVITY_COMPARISON.csv)
-  and [audit chronology discussion](REVIEW_AUDIT.md#chronology).
+  and [control-point register](../Cores/CONTROL_POINTS.md#sensitivity-variant-pantherpotholes_pb210err).
 - **Remaining evidence gap.** Supported ²¹⁰Pb and the laboratory information
   needed for CRS uncertainty propagation are unavailable in Table 1c. The
   earlier discussion identified the Flett Research report or Prichard's thesis
   as possible sources. Recovering and validating age uncertainties would require
   a separate decision before replacing controls or refitting the chronology.
+- **Adopted uncertainty interpretation (2026-10-06).** Retain the current
+  chronology controls, Bacon settings and stored posteriors for this analysis.
+  Tephra age-bracket half-widths and
+  maximum-age assumptions are not verified statistical standard deviations.
+  The age draws describe uncertainty conditional on the adopted controls and
+  model; they do not establish that all dating uncertainty is represented.
+  Retention does not justify describing assumed errors as "correct" or
+  "harmless". Source-supported replacements would require a separate future
+  decision before refitting; no refit or new sensitivity is authorized now.
+
+### MORA basal-lahar reconsideration (2026-10-06)
+
+**Decision: retain Reflection Pond's existing `Basal_lahar` control at 90 cm,
+6180 ± 400 cal BP (`cc = 0`), and the current chronology.** The author reconsidered
+the later geological evidence and elected to keep the current analysis unchanged.
+
+The original choice follows Dunwiddie (1986), pp.59–60, and Crandell (1971), p.63.
+Pringle (2008) subsequently describes the deposit beneath Reflection Lakes as
+formerly interpreted as Paradise and reinterpreted as an older lahar. Vallance
+and Sisson's **2022** USGS report, printed p.60, distinguishes the Reflection Lakes
+lahar (**7250–7000 cal BP**) from Paradise (approximately **5700 cal BP**).
+These sources support reconsideration of the regional identification. The exact
+core-to-deposit correlation and a lahar contact at the coded 90 cm depth remain
+unverified; Dunwiddie's Figure 5 does not explicitly identify that contact.
+
+The current Bacon input treats this control as an ordinary age/error row, not
+an enforced one-sided maximum. Its ±400 is an adopted bracket half-width, not
+a published statistical standard deviation. These limitations remain explicit
+while the retained choice is settled for the current analysis. Any future
+replacement requires validated correlation, depth and probability assumptions.
+The detailed evidence and publication links are in the
+[MORA source reconsideration](../Cores/SOURCES_MORA.md#basal-lahar-reconsideration-2026-10-06).
 
 ## Climate and CCA
 
@@ -65,12 +140,22 @@ is an explicit reproduction decision.
   (`MWT`), summer precipitation (`SP`), and winter precipitation (`WP`). They are
   seasonal correlates of growing energy, freezing exposure, summer dryness, and
   snowpack—not direct GDD, FDD, fire, soil-moisture, or snowpack measurements.
-- The pooled CCA is calibrated on 620 legacy plots and 13 retained species.
+- The pooled CCA is calibrated on 618 legacy plots and 13 retained species.
   Vegan site/scaling 1 is retained because downstream metrics use Euclidean
-  sample-score distances. The model positions 1,514 of 1,583 modern and paleo
+  sample-score distances. The model positions 1,512 of 1,599 modern and paleo
   samples.
 - Climate constraints are collinear. Their marginal contributions must not be
   interpreted as additive shares of constrained inertia.
+- Binary presence retains CCA's chi-square row and taxon weighting; it does not
+  make plots or taxa equally weighted. The CCA1–CCA2 plane represents only part
+  of total community inertia. The current axis percentages are reported in the
+  [analysis review](ANALYSIS_REVIEW.md#cca-calibration-and-geometry).
+- Resurvey and paleo observations do not fit the ordination, but their species
+  counts influence the cross-group retention rule. This is a descriptive
+  calibration/projection design, not an independent predictive validation.
+- Being inside each climate variable's legacy range does not establish support
+  within the joint multivariate calibration domain. LC positions are
+  climate-predicted ordination scores, not independently validated forecasts.
 
 ## Vegetation tracking
 
@@ -139,7 +224,7 @@ is an explicit reproduction decision.
   remain in non-angle summaries; their counts are labelled rather than assigning
   a false 0° direction. Median-point fill is signed raw lag on one symmetric
   blue–neutral–vermillion scale centered at zero and labelled `Lag`. All 137
-  Holocene site-dates and all 607 modern source pairs enter the scope audit;
+  Holocene site-dates and all 605 modern source pairs enter the scope audit;
   605 modern pairs remain after the explicit MORA fire exclusion.
 
 ## Unified 1,000-year climate eras
@@ -153,7 +238,7 @@ is an explicit reproduction decision.
   legacy CCA calibration SDs. MORA's three lakes are averaged first; the MORA
   and NOCA site trajectories then receive equal regional weight.
 - **Standardization sensitivity to discuss later.** The active denominator
-  remains each variable's SD across the 620 pooled MORA/NOCA legacy calibration
+  remains each variable's SD across the 618 pooled MORA/NOCA legacy calibration
   plots. This fixed, model-calibration reference is independent of the
   Holocene and Anthropocene records being evaluated. A future sensitivity could
   instead calculate one SD per variable across all available climate values,
@@ -308,7 +393,7 @@ is an explicit reproduction decision.
   Nonlinear realization values precede draw/offset summaries. Translation,
   rotation, reflection, and a common arrow multiplier must leave results
   unchanged; unequal axis scaling intentionally does not and is forbidden.
-- The stage retains 10,319 paired target contrasts from all 607 Anthropocene
+- The stage retains 10,285 paired target contrasts from all 605 Anthropocene
   pairs and 259,590 from all 15,270 primary Holocene realizations. Its
   draw-within-offset and complete-ten-offset hierarchy yields 2,329 site-date
   contrasts and 204 final group summaries. The 153 near-zero observed modern
@@ -324,17 +409,38 @@ is an explicit reproduction decision.
 
 ## Remaining scientific questions
 
+CCA sample eligibility, balanced observed/predicted exclusions and paired
+Figure 3 endpoints are resolved and require no further decision. The survey-year
+and climate-window choices are also settled. The four
+questions below remain; the SD-reference and target-origin alternatives are
+optional sensitivities. The CARI449/CARI450 GPS exclusion is resolved. Unequal modern climate-window lengths are an accepted trade-off;
+the precipitation-continuity concern is separate from that settled choice.
+
+The chronology controls and adopted uncertainty assumptions were reconsidered
+and retained on 2026-10-06. They no longer require a decision for the current
+analysis. Conditional uncertainty, assumed errors and the unverified basal-lahar
+correlation remain interpretation limits documented above and in the MORA source
+notes; any future chronology revision is separate work.
+
 | Question | Current choice | Consequence | Evidence needed to resolve it |
 |---|---|---|---|
 | Raw versus V2.1-anchored TraCE21k climate | The active Holocene analysis uses raw TraCE21k values; the V2.1 anchoring diagnostic is not authoritative. | Absolute Holocene climate levels and cross-product comparisons may retain product bias, although the active within-series change calculations are internally consistent. | A validated overlap-period comparison showing whether anchoring reduces bias without introducing a discontinuity or changing the intended anomaly interpretation. |
-| Legacy-calibration versus full-record climate SDs | Changes are divided by SDs from the 620 pooled legacy CCA calibration plots. | The reference is tied to the fitted model. A full-record SD would change displayed standardized magnitudes, cross-variable weighting, the unthresholded composite, and standardized climate rates, but not CC/S boundaries under the current variable-specific 50%-of-own-maximum rule. | A prespecified full-record sensitivity with explicit temporal/site weighting and a scientific choice between calibration-relative and dataset-relative effect sizes. |
-| Anthropocene precipitation windows and CHELSA continuity | The exact MORA and NOCA windows remain 1979–1989 to 2010–2019 and 1979–1989 to 2010–2015, respectively; the MORA precipitation contrast is flagged. | Site contrasts use unequal resurvey windows, and the apparent post-2010 MORA precipitation shift may partly reflect CHELSA inhomogeneity rather than climate. | Independent station/reanalysis validation, alternate endpoint-window sensitivities, and a documented decision on whether post-2010 MORA precipitation is usable. |
-| Primary provenance for MORA survey dates | The current plot-year and climate-window conventions are retained, but the cited primary MORA survey-date source is not available in the repository. | Exact modern rate denominators are operationally fixed but not fully traceable to a primary source package. | The original survey metadata or publication supplement linking plots to legacy/resurvey years and confirming the aggregation windows. |
-| `CARI449`/`CARI450` coordinate collision | Both plots remain in the 307-plot universe. Their raw longitudes have opposite signs but normalize to the same coordinate; elevations remain 622 and 1,149 m. | Climate extraction assigns the same horizontal location to two strongly separated elevations, and silently excluding or moving either plot would alter the validated universe. | Primary field/GPS records or source-author confirmation identifying the correct longitude/latitude for each plot or supporting a documented exclusion. |
+| Legacy-calibration versus full-record climate SDs | Changes are divided by SDs from the 618 pooled legacy CCA calibration plots. | The reference is tied to the fitted model. A full-record SD would change displayed standardized magnitudes, cross-variable weighting, the unthresholded composite, and standardized climate rates, but not CC/S boundaries under the current variable-specific 50%-of-own-maximum rule. | A prespecified full-record sensitivity with explicit temporal/site weighting and a scientific choice between calibration-relative and dataset-relative effect sizes. |
+| Anthropocene precipitation continuity | The agreed MORA and NOCA windows remain 1979–1989 to 2010–2019 and 1979–1989 to 2010–2015, respectively; unequal resurvey-window lengths are accepted. The MORA precipitation contrast is flagged. | The apparent post-2010 MORA precipitation shift may partly reflect CHELSA inhomogeneity rather than climate. | Independent station/reanalysis validation and a documented decision on whether post-2010 MORA precipitation is usable. The agreed years are not a pending decision. |
 | Own-origin versus common-origin taxon target geometry | The primary target-alignment analysis uses LC₁→species for predicted movement and WA₁→species for observed movement. | The two cosines answer alignment relative to each trajectory's own starting community; part of their difference can arise because LC₁ and WA₁ differ. | A prespecified common-origin sensitivity and an ecological decision about whether the estimand should condition on each starting state or hold the target vector fixed across observed and predicted movement. |
 
 ## Inference limits
 
+- NOCA size classes differ between surveys: legacy regeneration spans 0–3 m
+  and adults exceed 3 m; resurvey seedlings span 10–140 cm and trees exceed
+  1.4 m. Neither stratum is an identical size-class measurement across dates.
+- **Primary provenance for MORA survey dates:** the analysis-year choice is
+  resolved. MORA vegetation rates use 1977.5 as the legacy reference and each
+  plot's recorded resurvey year; the modeled resurveys span 2014–2019. Climate
+  windows remain 1979–1989 and 2010–2019. The original Torres draft and primary
+  legacy-date records are not filed in the repository, so their historical
+  verification remains a provenance limitation, not an undecided analysis
+  setting. See [survey-year sources](../data/SOURCES_SURVEY_YEARS.md).
 - Climate and fire are classified independently and merely aligned in the
   integrated figure; neither evidence stream defines the other. Literature is
   not part of this stage and cannot change a boundary.
@@ -343,6 +449,19 @@ is an explicit reproduction decision.
   uncertain.
 - Paleo species occupancy remains partly site-confounded, and MORA/NOCA fire
   proxies are not equivalent. These limitations remain explicit in inference.
+- MORA's mapped disturbance record covers 1987–2017, not the entire interval
+  after the 1977.5 legacy reference. "Unburned" means no mapped fire evidence
+  under that coverage, not verified absence of fire throughout the interval.
+- Holocene fire categories use fixed median event chronologies; event-timing
+  uncertainty is not propagated into the category assignments. The harmonized
+  Gaussian-mixture detector also differs from Prichard's original noise
+  description, so its published settings do not imply an exact reproduction of
+  every original algorithmic detail.
+- Overlapping dates, chronology draws, offsets and taxa are not independent
+  ecological replicates. Sparse groups remain descriptive: MORA burned has two
+  plots, and NOCA relative-stability/high-fire has two supported dates.
+- Native climate caches identify the reviewed local values, but cannot recover
+  an immutable historical remote raster release on their own.
 
 ## Related maintained documentation
 
@@ -359,4 +478,3 @@ is an explicit reproduction decision.
 - [Occurrence consolidation](methods/README_occurrence_consolidation.md)
 - [MORA raw-data reference](../data/MORA/README_data_raw.md)
 - [MORA output reference](../data/README_outputs_MORA_AT.md)
-- [Claude redirect](CLAUDE.md)

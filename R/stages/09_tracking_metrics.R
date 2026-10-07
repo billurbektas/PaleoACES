@@ -260,16 +260,16 @@ write_csv(by_offset, holo_output("offset_timeseries_by_offset"))
 # NEW: ANTHROPOCENE PLOT-LEVEL ENDPOINTS AND METRICS
 # =============================================================================
 past_scores = tibble(
-  plot_id = rownames(species_past_final),
-  o1 = predict(cca_model, newdata = species_past_final, type = "wa",
+  plot_id = rownames(species_past_paired),
+  o1 = predict(cca_model, newdata = species_past_paired, type = "wa",
                scaling = cca_scaling, hill = cca_hill)[, 1],
-  o2 = predict(cca_model, newdata = species_past_final, type = "wa",
+  o2 = predict(cca_model, newdata = species_past_paired, type = "wa",
                scaling = cca_scaling, hill = cca_hill)[, 2],
-  p1 = predict(cca_model, newdata = env_past_final, type = "lc",
+  p1 = predict(cca_model, newdata = env_past_paired, type = "lc",
                scaling = cca_scaling, hill = cca_hill)[, 1],
-  p2 = predict(cca_model, newdata = env_past_final, type = "lc",
+  p2 = predict(cca_model, newdata = env_past_paired, type = "lc",
                scaling = cca_scaling, hill = cca_hill)[, 2]
-) %>% bind_cols(as_tibble(env_past_final) %>% select(all_of(CLIM_VARS)))
+) %>% bind_cols(as_tibble(env_past_paired) %>% select(all_of(CLIM_VARS)))
 
 present_scores = tibble(
   plot_id = rownames(species_present_final),
@@ -311,11 +311,11 @@ resurvey_years = bind_rows(mora_years, noca_years)
 if (anyDuplicated(resurvey_years %>% select(site, plot_id)))
   stop("Resurvey-year lookup is not unique by site and plot_id")
 
+# Membership and finite WA/LC positions were resolved once in the CCA stage.
 anth = tibble(plot_id = present_pairs) %>%
   left_join(past_scores, by = "plot_id") %>%
   left_join(present_scores, by = "plot_id") %>%
   left_join(site_lookup, by = "plot_id") %>%
-  filter(!is.nan(o1), !is.nan(o1_2)) %>%
   left_join(resurvey_years, by = c("site", "plot_id")) %>%
   mutate(
     vegetation_t1_year = if_else(site == "MORA", 1977.5, 1983),

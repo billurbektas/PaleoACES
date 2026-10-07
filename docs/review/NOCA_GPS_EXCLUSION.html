@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: 8d035b566f2d6fc3a1a8ecbb970f5a40 -->
+<!-- paleoaces-source-md5: c0e9175b36db424763012099ec000b47 -->
 
 <html>
 
@@ -12,7 +12,7 @@
 
 
 
-<title>CLAUDE</title>
+<title>NOCA_GPS_EXCLUSION</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -1498,18 +1498,98 @@ border-radius: 0px;
 </div>
 
 
-<div id="paleoaces-documentation-redirect" class="section level1">
-<h1>PaleoACES documentation redirect</h1>
-<p>The former long analysis plan is historical and no longer
-authoritative.</p>
+<div id="noca-gps-exclusions-cari449-and-cari450" class="section level1">
+<h1>NOCA GPS exclusions: CARI449 and CARI450</h1>
+<p>Decision date: 2026-10-06. The author requested exclusion of both
+plots if Rachel’s notes did not provide a satisfactory coordinate
+correction.</p>
+<div id="source-review" class="section level2">
+<h2>Source review</h2>
 <ul>
-<li>Start with <a href="../README.html">README.md</a>.</li>
-<li>Run and troubleshoot the analysis with <a href="WORKFLOW.html">WORKFLOW.md</a>.</li>
-<li>Read current rationale and open scientific limitations in <a href="SCIENTIFIC_DECISIONS.html">SCIENTIFIC_DECISIONS.md</a>.</li>
-<li>The preserved former plan is
-<code>docs/archive/CLAUDE_analysis_plan_2026-08-13.md</code> (local
-historical material).</li>
+<li>The three files in <code>notes_from_Rachel/</code>
+(<code>Missing trees.rtf</code>, <code>Burned plots.rtf</code> and
+<code>Review of tree species.rtf</code>) contain no correction for
+either plot.</li>
+<li>Rachel’s email of 24 September 2024, on page 2 of
+<code>data/NOCA/Correspondance_Kavya&amp;Rachel_September2024.pdf</code>,
+warns of a sorting problem in the 2014 master workbook’s GPS sheet and
+directs readers to the paper repository’s latitude/longitude CSV
+instead.</li>
+<li>The received <code>data/NOCA/NOCA_plots_fromWilson.csv</code> and
+the local paper-repository copy
+<code>data/NOCA/rachelnorawilson-cascades-shifts-4b7fd12/data/0_Lat.Long.csv</code>
+both retain the conflicting entries below. Their agreement does not
+supply a corrected location. The suspicious-data checklist contains no
+correction.</li>
 </ul>
+<table style="width:100%;">
+<colgroup>
+<col width="16%" />
+<col width="16%" />
+<col width="16%" />
+<col width="16%" />
+<col width="16%" />
+<col width="16%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Plot</th>
+<th>Legacy ID</th>
+<th>Latitude</th>
+<th>Raw longitude</th>
+<th>Normalized longitude</th>
+<th>Elevation (m)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>CARI449</td>
+<td>7077</td>
+<td>48.51429</td>
+<td>121.21725</td>
+<td>-121.21725</td>
+<td>622</td>
+</tr>
+<tr class="even">
+<td>CARI450</td>
+<td>7078</td>
+<td>48.51429</td>
+<td>-121.21725</td>
+<td>-121.21725</td>
+<td>1149</td>
+</tr>
+</tbody>
+</table>
+<p>Correcting the longitude sign places the plots at the same horizontal
+location, despite a 527 m elevation difference. Neither plot can be
+assigned a verified replacement coordinate from the reviewed sources.
+This documents a GPS problem; it does not establish which original entry
+is wrong.</p>
+</div>
+<div id="implemented-decision" class="section level2">
+<h2>Implemented decision</h2>
+<p>Both plots are excluded at both dates in <a href="../../R/stages/000_NOCA_cleaning.R"><code>000_NOCA_cleaning.R</code></a>,
+before occurrence, stage, coordinate, climate, fire, calibration or
+projection outputs are built. The reason is <strong>GPS problem; shared
+coordinates conflict with elevations; no verified correction</strong>.
+Raw inputs and native climate caches remain intact.</p>
+<p><code>NOCA_study_exclusions.csv</code> and
+<code>NOCA_plot_tracking.csv</code> record the exclusion;
+<code>NOCA_coordinate_collision_audit.csv</code> preserves the original
+coordinate evidence with an excluded status. This is a study-level GPS
+exclusion, separate from CCA taxon eligibility and all-zero-row
+exclusions.</p>
+<p>The NOCA cleaning universe changes from 307 to 305 paired plots
+(1,790 to 1,775 occurrence rows). Legacy calibration changes from 620 to
+618 plots, and modern CCA comparisons from 607 to 605 pairs (330 MORA,
+275 NOCA). The CCA is refitted with the same species rule, constraints
+and geometry. Consequently, downstream coordinates and metrics for
+retained observations may also change. Chronology controls and stored
+posteriors are not refitted.</p>
+<p>The <a href="../ANALYSIS_REVIEW.html">analysis review</a> contains
+current tables and figures; the <a href="../SCIENTIFIC_DECISIONS.html#study-universes-and-vegetation">scientific
+decisions</a> records the adopted exclusion and its consequences.</p>
+</div>
 </div>
 
 

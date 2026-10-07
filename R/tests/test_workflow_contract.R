@@ -5,11 +5,11 @@ workflow_path = here("R/workflow.R")
 workflow_lines = readLines(workflow_path, warn = FALSE, encoding = "UTF-8")
 workflow = paste(workflow_lines, collapse = "\n")
 
-# The retired climate-trend diagnostic is archived and must not return as an
-# active top-level stage.
+# The retired climate-trend diagnostic must not return as an active stage.
+# Its source is preserved in Git history; local archive files are unnecessary.
 stopifnot(
-  file.exists(here("R/archive/08_climate_trends_cca_vars.R")),
   !file.exists(here("R/08_climate_trends_cca_vars.R")),
+  !file.exists(here("R/stages/08_climate_trends_cca_vars.R")),
   !grepl("08_climate_trends_cca_vars.R", workflow, fixed = TRUE))
 
 call_lines = grep('^[[:space:]]*run_script\\("R/', workflow_lines, value = TRUE)

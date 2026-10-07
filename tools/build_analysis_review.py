@@ -29,7 +29,7 @@ def relative(path): return path.relative_to(ROOT).as_posix()
 
 def input_files():
     files = []
-    for directory in ['R', 'tools', 'data', 'Cores']:
+    for directory in ['R', 'tools', 'data', 'Cores', 'notes_from_Rachel']:
         for path in (ROOT / directory).rglob('*'):
             if not path.is_file() or path.name == '.DS_Store': continue
             if directory == 'R' and 'archive' in path.parts: continue
@@ -39,9 +39,9 @@ def input_files():
     for directory in ['mora_climate_parts', 'noca_climate_parts', 'chelsa_paleo', 'anomaly_parts', '_reference']:
         files.extend((ROOT / 'output' / directory).glob('*.csv'))
     files += [REGISTRY, TEMPLATE, ROOT / 'R/helpers/bacon_settings.R', ROOT / 'output/bacon_run_manifest.csv']
-    files += [ROOT / 'docs/reorganization/chronology_relocation.json']
-    files += list((ROOT / 'docs/reorganization/chronology_sources_before_move').glob('*.txt'))
-    files += [ROOT/p for p in ['docs/SCIENTIFIC_DECISIONS.md', 'docs/FIGURE_CAPTIONS.md', 'docs/methods/000_NOCA_cleaning_guide.md', 'docs/methods/README_occurrence_consolidation.md']]
+    files += list((ROOT / 'Cores/provenance').glob('*.json'))
+    files += list((ROOT / 'Cores/provenance/chronology_sources_before_move').glob('*.txt'))
+    files += [ROOT/p for p in ['docs/SCIENTIFIC_DECISIONS.md', 'docs/FIGURE_CAPTIONS.md', 'docs/methods/000_NOCA_cleaning_guide.md', 'docs/methods/README_occurrence_consolidation.md', 'docs/review/NOCA_GPS_EXCLUSION.md']]
     return sorted(set(files))
 
 def manifest(files): return [dict(path=relative(p), bytes=p.stat().st_size, sha256=sha(p)) for p in files]
@@ -70,6 +70,9 @@ COLUMNS = {
  'cca_summary': [('field','Fitted model quantity'),('value','Value')],
  'cca_axes': [('axis','Axis'),('eigenvalue','Eigenvalue'),('percent_total_inertia','% total inertia'),('percent_constrained_inertia','% constrained inertia')],
  'cca_counts': [('site','Site'),('period','Period'),('input_samples','Prepared climate samples'),('calibration_samples','Calibrated'),('positioned_samples','Positioned projection')],
+ 'cca_eligibility_counts': [('era','Era'),('site','Site'),('use','Use'),('input_units','Prepared plots/samples'),('excluded_units','Excluded'),('included_units','Included')],
+ 'cca_exclusion_summary': [('era','Era'),('site','Site'),('use','Use'),('exclusion_period','Excluded at'),('reason','Reason'),('excluded_units','Count')],
+ 'modern_centroids': [('site','Site'),('t','Survey'),('n','Same paired plots'),('o1','Observed CCA1'),('o2','Observed CCA2'),('p1','Predicted CCA1'),('p2','Predicted CCA2')],
  'cca_taxa': [('species','Taxon'),('MORA_past','MORA legacy'),('MORA_present','MORA resurvey'),('MORA_paleo','MORA paleo'),('NOCA_past','NOCA legacy'),('NOCA_present','NOCA resurvey'),('NOCA_paleo','NOCA paleo'),('retained','CCA retained')],
  'climate_windows': [('site','Site'),('period','Period'),('plots','Plots'),('n_MSpT','Spring years'),('n_MWT','Winter years'),('n_SP','Summer years'),('n_WP','Winter precipitation years')],
  'bacon_manifest': [('model','Model'),('role','Role'),('seed','Seed'),('rbacon_version','rbacon'),('posterior_bytes','Posterior bytes'),('generated_at_utc','Chronology generation UTC')],
@@ -84,19 +87,52 @@ COLUMNS = {
  'tracking_summary': [('site','Site'),('macro_era','Era'),('fire_class','Fire'),('metric','Metric'),('n_total','Total'),('n_valid','Valid'),('median','Median'),('q25','Q25'),('q75','Q75')]
 }
 
-def combined_review():
+def workflow_stages():
     workflow = (ROOT / 'R/workflow.R').read_text()
     paths = re.findall(r'run_script\("(R/[^\"]+[.]R)"', workflow)
     paths = [p for p in paths if p.startswith('R/stages/')]
     if len(paths) != 25 or len(set(paths)) != 25: raise ValueError('Expected exactly 25 ordered workflow analysis stages.')
-    text = '# GENERATED REVIEW COPY — DO NOT EXECUTE AS THE WORKFLOW\n# Rebuild: Rscript R/workflow.R --offline --report\n# Bodies are copied verbatim in workflow order; automatic and optional tests are excluded.\n# The driver provides conditional execution and isolated environments that concatenation does not preserve.\n# Retained helper sources refer to the actual shared definitions.\n# Historical chronology source hashes are preserved in docs/reorganization/chronology_relocation.json.\n#\n'
-    text += ''.join(f'# {i:02d}. {p}\n' for i,p in enumerate(paths,1)) + '\n'
+    return paths
+
+def combined_review():
+    paths = workflow_stages()
+    text = '# GENERATED REVIEW COPY — DO NOT EXECUTE AS THE WORKFLOW\n# Rebuild: Rscript R/workflow.R --offline --report\n# Bodies are copied verbatim in workflow order; automatic and optional tests are excluded.\n# The driver provides conditional execution and isolated environments that concatenation does not preserve.\n# Retained helper sources refer to the actual shared definitions.\n# Historical chronology source hashes are preserved in Cores/provenance/chronology_relocation.json.\n#\n'
+    text += ''.join(f'# {i:02d}. {p}' + (' [OPTIONAL: --age-models; control generation and MCMC]' if p.endswith('/000_PALEO_a_agedepth.R') else '') + '\n' for i,p in enumerate(paths,1)) + '\n'
     for p in paths:
         text += '# ' + '='*76 + '\n# BEGIN '+p+'\n# '+ '='*76+'\n'
+        if p.endswith('/000_PALEO_a_agedepth.R'):
+            text += '# OPTIONAL WORKFLOW STAGE: runs only with --age-models.\n# Do not run this review copy to inspect stored chronology figures.\n'
         text += (ROOT/p).read_text()
         if not text.endswith('\n'): text += '\n'
         text += '# END '+p+'\n\n'
     return text
+
+def script_map():
+    groups = [
+        ('Modern vegetation and fire', 3), ('Modern climate', 2),
+        ('Chronology (optional refit)', 1), ('Paleo vegetation and fire', 3),
+        ('Paleo climate', 2), ('Taxonomy consolidation', 1),
+        ('CCA eligibility and calibration', 1), ('Tracking and 500-year sensitivity', 2),
+        ('Fire catalog and climate eras', 2), ('Community trajectories: Figure 3', 1),
+        ('Tracking and fire-detection examples', 2), ('Climate/fire display: Figure 2 and example', 2),
+        ('Tracking comparison: Figure 4', 2), ('Direction discrepancies: Figure 5', 1)]
+    paths = workflow_stages(); index = 0; data = []
+    for part,count in groups:
+        selected = paths[index:index+count]
+        scripts = '; '.join(f'[{Path(p).name}](../{p})' for p in selected)
+        data.append(dict(order=str(index+1) if count == 1 else f'{index+1}–{index+count}',part=part,scripts=scripts))
+        index += count
+    if index != len(paths): raise ValueError('Workflow script map is incomplete.')
+    return mdtable(data,[('order','Order'),('part','Analysis step'),('scripts','Scripts')])
+
+METRIC_LABELS = {'lag_rate_per_century': 'Δlag per century',
+                 'rate_tracking_ratio': 'Tracking rate ratio', 'angle_degrees': 'Movement angle (°)'}
+CCA_LABELS = {'calibration_plots': 'Legacy calibration plots', 'retained_species': 'Retained taxa',
+              'count_threshold': 'Minimum occupancy in one site × period', 'scaling': 'CCA score scaling',
+              'hill': 'Hill scaling', 'constraints': 'Climate variables', 'total_inertia': 'Total inertia',
+              'constrained_inertia': 'Climate-constrained inertia', 'constrained_percent': 'Constrained inertia (%)',
+              'projection_candidates': 'Modern plots and paleo samples before eligibility',
+              'positioned_samples': 'Eligible modern pairs and paleo samples'}
 
 def local_links(text):
     for target in re.findall(r'\[[^\]]*\]\(([^)]+)\)', text):
@@ -119,9 +155,38 @@ def validate(root=ROOT):
     fitted = {r['field']: r['value'] for r in rows(root/ASSETS/'tables/cca_summary.csv')}
     if fitted.get('constraints') != 'MSpT;MWT;SP;WP':
         raise ValueError('Report is missing the current fitted CCA constraints.')
+    eligibility = rows(root/ASSETS/'tables/cca_eligibility_counts.csv')
+    exclusions = rows(root/ASSETS/'tables/cca_exclusion_summary.csv')
+    for r in eligibility:
+        key = (r['era'], r['site'], r['use'])
+        excluded = sum(int(x['excluded_units']) for x in exclusions
+                       if (x['era'], x['site'], x['use']) == key)
+        if int(r['excluded_units']) != excluded or int(r['input_units']) != excluded + int(r['included_units']):
+            raise ValueError('CCA exclusion counts do not reconcile: '+str(key))
+    pairs = rows(root/ASSETS/'tables/cca_pair_eligibility.csv')
+    samples = rows(root/ASSETS/'tables/cca_sample_eligibility.csv')
+    true = lambda x: x.upper() == 'TRUE'
+    for site in sorted({x['site'] for x in pairs}):
+        valid = {x['plot_id'] for x in pairs if x['site'] == site and true(x['comparison_included'])}
+        for period in ['past', 'present']:
+            ids = {x['plot_id'] for x in samples if x['site'] == site and x['period'] == period and true(x['comparison_included'])}
+            if ids != valid: raise ValueError('Unbalanced modern CCA membership: '+site+' '+period)
+        centroids = [x for x in rows(root/ASSETS/'tables/modern_centroids.csv') if x['site'] == site]
+        if len(centroids) != 2 or {x['t'] for x in centroids} != {'legacy','resurvey'} or any(int(x['n']) != len(valid) for x in centroids):
+            raise ValueError('Figure 3 does not use the valid paired CCA set: '+site)
+    if '## CCA sample eligibility and exclusions' not in text or 'Loss of all recorded tree-taxon presence at resurvey' not in text:
+        raise ValueError('Report omitted the CCA exclusion explanation/table.')
     for metric in ['lag_rate_per_century', 'rate_tracking_ratio', 'angle_degrees']:
-        if text.count('| '+metric+' |') < 2:
+        if text.count('| '+METRIC_LABELS[metric]+' |') < 2:
             raise ValueError('Report omitted a tracking or resolution summary: '+metric)
+    stages = workflow_stages()
+    if any(f'../{p})' not in text for p in stages): raise ValueError('Report script map omits an active workflow stage.')
+    review = root/'docs/review/00_main_analysis_review.R'
+    if review.read_text() != combined_review(): raise ValueError('Combined analysis review differs from current workflow sources.')
+    headings = re.findall(r'^## (.+)$',text,re.M)
+    eligibility_heading = headings.index('CCA sample eligibility and exclusions')
+    if headings[eligibility_heading+1] != 'CCA calibration and geometry':
+        raise ValueError('CCA eligibility must immediately precede calibration.')
     meta = json.loads((root/ASSETS/'build.json').read_text())
     expected = {a['artifact'] for a in rows(root/ASSETS/'artifacts.csv')}
     actual = {p.relative_to(root).as_posix() for p in (root/ASSETS).rglob('*') if p.is_file()}
@@ -168,10 +233,13 @@ def build(mode):
             (work/'docs'/p.name).symlink_to(p, target_is_directory=p.is_dir())
         for p in (ROOT/'docs/report').iterdir(): (work/'docs/report'/p.name).symlink_to(p)
         (work/'docs/review').mkdir()
+        for p in (ROOT/'docs/review').iterdir():
+            if p.name != '00_main_analysis_review.R':
+                (work/'docs/review'/p.name).symlink_to(p, target_is_directory=p.is_dir())
         review_path = work/'docs/review/00_main_analysis_review.R'
         review_path.write_text(combined_review())
         input_manifest=manifest(input_files()); write_csv(out/'inputs.csv',input_manifest)
-        sources=manifest([p for p in input_files() if p.suffix in ['.R','.py','.md'] or p == REGISTRY or 'reorganization' in p.parts])
+        sources=manifest([p for p in input_files() if p.suffix in ['.R','.py','.md'] or p == REGISTRY or 'provenance' in p.parts])
         write_csv(out/'sources.csv',sources)
         result_files=[p for p in (ROOT/'output').iterdir() if p.is_file() and p.suffix in ['.csv','.gz','.rds']]
         result_files += [ROOT/x['pdf'] for x in registry['diagnostics']] + [ROOT/'plot'/(x['stem']+'.'+e) for x in registry['main_figures'] for e in ['pdf','png']]
@@ -198,15 +266,20 @@ def build(mode):
             data=tables[name]
             if name=='resolution_audit': data=[r for r in data if r['record_type']=='timeseries summary' and r['metric'] in ['lag_rate_per_century','rate_tracking_ratio','angle_degrees']]
             if name=='tracking_summary': data=[r for r in data if r['summary_level']=='macro era x fire' and r['metric'] in ['lag_rate_per_century','rate_tracking_ratio','angle_degrees']]
+            if name in ['resolution_audit','tracking_summary']:
+                data=[dict(r,metric=METRIC_LABELS[r['metric']]) for r in data]
+            if name=='cca_summary':
+                data=[dict(r,field=CCA_LABELS[r['field']],value={'sites':'Site scaling (1)','FALSE':'Off'}.get(r['value'],r['value'])) for r in data]
             if data and any(key not in data[0] for key,_ in cols):
                 missing=[key for key,_ in cols if key not in data[0]]
                 raise ValueError('Unexpected authoritative table schema '+name+': '+str(missing))
             table_blocks[name]=mdtable(data,cols) if data else ''
-            table_blocks[name]+=f'[Full curated {name.replace("_"," ")} table](assets/analysis/tables/{name}.csv).\n'
+            label=name.replace('_',' ').replace('cca','CCA')
+            table_blocks[name]+=f'[Full {label} table](assets/analysis/tables/{name}.csv).\n'
         corrections=tables['correction_audit']; statuses={}
         for r in corrections: statuses[r['final_status']]=statuses.get(r['final_status'],0)+1
         correction_rows=[dict(status=k,plots=v) for k,v in sorted(statuses.items())]
-        table_blocks['correction_summary']=mdtable(correction_rows,[('status','Patch audit status'),('plots','Affected plot IDs')])+f'[Complete correction audit](assets/analysis/tables/correction_audit.csv), [study exclusions](assets/analysis/tables/study_exclusions.csv), and [unresolved coordinate collision](assets/analysis/tables/coordinate_collision.csv).\n'
+        table_blocks['correction_summary']=mdtable(correction_rows,[('status','Patch audit status'),('plots','Affected plot IDs')])+mdtable(tables['study_exclusions'],[('plot_id','Study-excluded plot'),('exclusion_reason','Reason')])+f'[Complete correction audit](assets/analysis/tables/correction_audit.csv), [study exclusions](assets/analysis/tables/study_exclusions.csv), and [excluded GPS-coordinate collision](assets/analysis/tables/coordinate_collision.csv).\n'
         groups={}
         for r in tables['direction_summary']:
             key=tuple(r[k] for k in ['period','site','climate_state','high_fire','burned'])
@@ -223,7 +296,8 @@ def build(mode):
             if not x['pages'] or max(x['pages'])<=page_count: pass
             else: raise ValueError('Requested PDF page is absent: '+x['pdf'])
             status=x['status']; section=x['section']
-            block=f'### {x["purpose"]}\n\n{x["interpretation"]}\n\nProducer: [{Path(x["producer"]).name}](../{x["producer"]}). [Complete PDF](../{x["pdf"]}); {page_count} page(s). Evidence status: **{status}**.\n\n'
+            qualifier=f' **{status[0].upper()+status[1:]}**.' if status != 'current' else ''
+            block=f'### {x["purpose"].rstrip(".")}\n\n{x["interpretation"]}{qualifier}\n\nScript: [{Path(x["producer"]).name}](../{x["producer"]}). [Complete PDF](../{x["pdf"]}) ({page_count} pages).\n\n'
             record(source,x['producer'],x['pdf'],status=status,origin='historical reference' if section=='historical' else mode)
             for page in x['pages']:
                 stem=x['id']+f'-p{page}'; dest=out/(stem+'.png')
@@ -238,28 +312,29 @@ def build(mode):
             src=ROOT/'plot'/(x['stem']+'.png'); dest=out/f'figure-{x["number"]}.png'; shutil.copyfile(src,dest)
             record(dest,x['producer'],relative(src),status='manuscript figure')
             record(ROOT/'plot'/(x['stem']+'.pdf'),x['producer'],'plot/'+x['stem']+'.pdf',status='manuscript PDF')
-            fig_blocks['figure_'+str(x['number'])]=f'### Figure {x["number"]}. {titles[x["number"]]}\n\n![Figure {x["number"]}. {x["stem"].replace("_"," ")}](assets/analysis/figure-{x["number"]}.png)\n\n[Full PDF](../plot/{x["stem"]}.pdf). Producer: [{Path(x["producer"]).name}](../{x["producer"]}). [Authoritative method and publication caption](FIGURE_CAPTIONS.md).\n'
+            fig_blocks['figure_'+str(x['number'])]=f'### Figure {x["number"]}. {titles[x["number"]]}\n\n![Figure {x["number"]}. {x["stem"].replace("_"," ")}](assets/analysis/figure-{x["number"]}.png)\n\n[Full PDF](../plot/{x["stem"]}.pdf) · [Figure script](../{x["producer"]}) · [Publication captions](FIGURE_CAPTIONS.md).\n'
         command(['Rscript',ROOT/'tools/render_review_diagram.R',out/'dependencies.png'])
         record(out/'dependencies.png','tools/render_review_diagram.R',status='documentation diagram')
         decisions=(ROOT/'docs/SCIENTIFIC_DECISIONS.md').read_text()
-        questions=decisions.split('## Remaining scientific questions\n',1)[1].split('## Inference limits',1)[0].strip()
+        question_section=decisions.split('## Remaining scientific questions\n',1)[1].split('## Inference limits',1)[0]
+        questions='\n'.join(line for line in question_section.splitlines() if line.startswith('|'))
+        if not questions: raise ValueError('Scientific decision register has no remaining-question table.')
         write_csv(out/'artifacts.csv',artifacts)
         meta=dict(mode=mode,built_at_utc=stamp,run_id=run.get('run_id','snapshot-'+stamp),input_manifest_sha256=ih,source_manifest_sha256=sh,result_manifest_sha256=rh,
             publication='staged and validated before replacement',chronology='validated stored posteriors; no MCMC in reporting')
         (out/'build.json').write_text(json.dumps(meta,indent=2)+'\n')
-        validation=run.get('validation','The initial snapshot uses verified existing outputs. All 16 existing automatic gates passed before relocation; this snapshot does not assert that its existing figures were regenerated in a fresh analysis run.')
-        validation+=' The report builder checked source availability, PDF page selections, artifact hashes and local links. The chronology manifest was validated, and the four main stems/PDF-only diagnostic contract were checked.\n'
-        validation+='\nFor validation commands and contracts, see [workflow checks](WORKFLOW.md#tests-and-decisions) and the [baseline log](reorganization/baseline-gates.log).\n'
-        status=f'**{"Fresh validated analysis run" if fresh else "Snapshot of verified existing outputs"}. Report built {stamp}. '
-        status+=f'Run identifier: `{meta["run_id"]}`. '+('All included current figures and tables were regenerated in this run; chronology was redrawn from protected stored posteriors.' if fresh else 'Existing figures/tables are a review snapshot; only current-model reporting summaries were exported for this build. These outputs are not claimed to come from a fresh run.')
-        values=dict(table_blocks,**fig_blocks,build_status=status,questions=questions,validation=validation,
-            diagnostic_inventory=mdtable(inventory,[('diagnostic','Full diagnostic PDF'),('purpose','Purpose'),('producer','Producer'),('pages','Inline PDF pages'),('interpretation','Interpretation'),('status','Status')]),
-            provenance='[Artifact ledger](assets/analysis/artifacts.csv) records producer/source/output SHA-256 hashes, selected PDF pages, build mode and provenance status. [Input fingerprints](assets/analysis/inputs.csv), [source fingerprints](assets/analysis/sources.csv), [result fingerprints](assets/analysis/results.csv), and [build metadata](assets/analysis/build.json) preserve the evidence snapshot without publishing raw research files. Original paths and relocation hashes are in the [relocation map](reorganization/relocation_map.csv). Each fresh producer output is checked against this workflow run; the builder accepts no missing or stale current output. The historical CHELSA comparison is separately labeled and stored chronology provenance remains unchanged.\n')
-        for sec in ['vegetation','taxonomy','chronology','climate','cca','fire','tracking','direction']: values[sec+'_diagnostics']=diagnostic_blocks[sec]
+        validation=('The analysis checks passed, including paired exclusions, chronology, climate matching, tracking arithmetic and figure outputs. Stored chronologies were unchanged.' if fresh else 'This snapshot uses verified existing outputs; it does not represent a new analysis run.')
+        validation+=' [Checks and rebuilding instructions](WORKFLOW.md#tests-and-decisions).\n'
+        status=f'**{"Rebuilt analysis" if fresh else "Snapshot of existing outputs"} · {stamp[:10]}.** '
+        status+=('Current results and diagnostics were refreshed; chronology figures use the existing stored models.' if fresh else 'Figures and tables are existing results; current CCA summaries were exported for this review.')
+        values=dict(table_blocks,**fig_blocks,build_status=status,questions=questions,validation=validation,workflow_scripts=script_map(),
+            diagnostic_inventory=mdtable(inventory,[('diagnostic','Diagnostic PDF'),('purpose','Purpose'),('producer','Script'),('pages','Shown pages'),('status','Analysis or sensitivity')]))
+        for sec,block in diagnostic_blocks.items(): values[sec+'_diagnostics']=block
         text=TEMPLATE.read_text()
         for key,val in values.items(): text=text.replace('{{'+key+'}}',val)
         unresolved=re.findall(r'{{[^}]+}}',text)
         if unresolved: raise ValueError('Unresolved narrative template fields: '+str(unresolved))
+        text=re.sub(r'\n{3,}', '\n\n', text)
         md=work/'docs/ANALYSIS_REVIEW.md'; md.write_text(text)
         command(['Rscript',ROOT/'R/render_docs.R',md])
         validate(work)

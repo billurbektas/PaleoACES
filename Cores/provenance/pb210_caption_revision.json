@@ -1,0 +1,72 @@
+{
+  "authorized_on": "2026-10-06",
+  "kind": "figure-caption-only",
+  "rendered_at_utc": "2026-10-06T17:18:25Z",
+  "old_subtitle": "Whole core: identical below 35 cm",
+  "new_subtitle": "Whole core: similar below 35 cm",
+  "producer": "R/stages/000_PALEO_a_agedepth.R",
+  "producer_sha256_before": "90bf42324e5123611cb5f490daed379948000b2f921a4d380ece1d156ee5d2cb",
+  "producer_sha256_after": "2eee60a35fe5620ba792c756106f70f8290d9d557b4f39e3bbfb6eedc0709182",
+  "render": "Existing figure section only, from validated stored posteriors; no control generation or MCMC.",
+  "protected_files": {
+    "Cores/JayBath/JayBath.csv": "b9966e0ae2f37ad23911baaaee7595148f72fe9a60336c0f077c2779b50e784b",
+    "Cores/JayBath/JayBath_28.bacon": "24169b2b17dd74b88cba248991b9a1f54d68578235632d624f4babf2b126242c",
+    "Cores/JayBath/JayBath_28.out": "17aed1ba7e3be8e991c5231328315054e76514725670626d37f37c017bf311c6",
+    "Cores/JayBath/JayBath_28_ages.txt": "b786e8e07eef7464e50404b246e99c5fe2937f3c2b24752e07eb7bb8c763ca9e",
+    "Cores/JayBath/JayBath_settings.txt": "86d4eaa3117c4a1c8e97363208ccff8880af14aafef309ac7f50ef1000bd1818",
+    "Cores/LogWallow/LogWallow.csv": "90fbb7a3f163a628035155df22e062128738924fb4e017e6ee774c88c2e09593",
+    "Cores/LogWallow/LogWallow_17.bacon": "f78641ab97290ba7fbba55fb92be19b8a3dd952c6d9b220082191a95e74d969b",
+    "Cores/LogWallow/LogWallow_17.out": "50b0811f5a45f6505eacc071c5ffa8355d32fe4ddabb69c1a97cfd82990e35a1",
+    "Cores/LogWallow/LogWallow_17_ages.txt": "d0393621301faff4d09029d9247ebf46d9e706f745470e3285d877463f03aa2b",
+    "Cores/LogWallow/LogWallow_settings.txt": "17f871c37b6a8f1c0850062b5aea3f9d90e78c86da9753b8144f0ebb4f13f674",
+    "Cores/PantherPotholes/PantherPotholes.csv": "2d5aca59d2ca362e2c8867e4fe7e093ecb2af8a069c39f71410ba3b6328ff2ab",
+    "Cores/PantherPotholes/PantherPotholes_169.bacon": "93571a0fa9814ed35589b047197111e7e6d402211b1b698c4aea949e8f3fa285",
+    "Cores/PantherPotholes/PantherPotholes_169.out": "c51efb5614a88f3fa9b151ae641a057ec84b8ae04f3d80aec5afc2579461127d",
+    "Cores/PantherPotholes/PantherPotholes_169_ages.txt": "416b8e6dec691a10964b6710bf6519c6818140a528d4692ba5a12185330efcd0",
+    "Cores/PantherPotholes/PantherPotholes_settings.txt": "89340077b4a78dda5b37ec636f7e67bcec9a8cdc19b919f09f74bbc4ae99b9cb",
+    "Cores/PantherPotholes_pb210err/PantherPotholes_pb210err.csv": "e715d0c2fc14cfd4f74911a112c581c2ccb654220dae6ab9e98bdf9beb6f1b04",
+    "Cores/PantherPotholes_pb210err/PantherPotholes_pb210err_169.bacon": "b11cf915a17fcde53a4c17c55c0ccea41f6d4da86092b37126d27422df76eb0a",
+    "Cores/PantherPotholes_pb210err/PantherPotholes_pb210err_169.out": "391e0b97bc13e7060b2ccb56318f6c28879703ac31c861b2445e4984ba856442",
+    "Cores/PantherPotholes_pb210err/PantherPotholes_pb210err_169_ages.txt": "de6fea9cb1040d691c2da0c777adc9a55d6f2b7ef2ab33b8c0b138b3ee407d62",
+    "Cores/PantherPotholes_pb210err/PantherPotholes_pb210err_settings.txt": "89340077b4a78dda5b37ec636f7e67bcec9a8cdc19b919f09f74bbc4ae99b9cb",
+    "Cores/PantherPotholes_pbconst15/PantherPotholes_pbconst15.csv": "f785318f3c2e264ffba60cfb3c100f30355a83022b9474069faaae6573541931",
+    "Cores/PantherPotholes_pbconst15/PantherPotholes_pbconst15_169.bacon": "9fc59448e7e23fdf13e1eeea6c4c62019c32fb1429d217f989cc8e670ae8d573",
+    "Cores/PantherPotholes_pbconst15/PantherPotholes_pbconst15_169.out": "81729c9ac803279bfdcf5915f9df5cbca320eed3198ef172fe5580f48fa9baca",
+    "Cores/PantherPotholes_pbconst15/PantherPotholes_pbconst15_169_ages.txt": "90b154e7516ff51bc9019a6d3aff4a360ebc86fcea042e8208fa25ad32ceeb93",
+    "Cores/PantherPotholes_pbconst15/PantherPotholes_pbconst15_settings.txt": "89340077b4a78dda5b37ec636f7e67bcec9a8cdc19b919f09f74bbc4ae99b9cb",
+    "Cores/PantherPotholes_pbconst20/PantherPotholes_pbconst20.csv": "e2c267391eee6235230a7b182467b0ef8a1e6fe674e43205c538cf541ce7a423",
+    "Cores/PantherPotholes_pbconst20/PantherPotholes_pbconst20_169.bacon": "17eba76d07c3d49f00665812a9331d4da6c42b2d3a5de61f10d5fb4014a48c95",
+    "Cores/PantherPotholes_pbconst20/PantherPotholes_pbconst20_169.out": "a1515140c2656a1b81172b24e046e698be2cc2c6a5745b8b36958f62555528d2",
+    "Cores/PantherPotholes_pbconst20/PantherPotholes_pbconst20_169_ages.txt": "f2ea6b8970cb7c195256eb725c1f349156fbccc4fe21331a534ddb9e9677b033",
+    "Cores/PantherPotholes_pbconst20/PantherPotholes_pbconst20_settings.txt": "89340077b4a78dda5b37ec636f7e67bcec9a8cdc19b919f09f74bbc4ae99b9cb",
+    "Cores/ReflectionPond/ReflectionPond.csv": "065fc95b9669a2a499c80993ad2691366c4cd4bffdd1f6af78381b4e218d101d",
+    "Cores/ReflectionPond/ReflectionPond_15.bacon": "141204743c0d46c561e7fee41c14bf15b3263c37c45174effd41368e5bff588f",
+    "Cores/ReflectionPond/ReflectionPond_15.out": "697bbec213b519cbc4cad7bfe1cb5bec101832bf8b0b4c9899b3cd5b1e64fc52",
+    "Cores/ReflectionPond/ReflectionPond_15_ages.txt": "af04c8305bc7ae06982a77c74195fdd800c2dc444458bd904ab61020b3779039",
+    "Cores/ReflectionPond/ReflectionPond_settings.txt": "f278b551740dd07a9fc208a1c38976ae46c0827c3e02a66efc7fc6dc49997dd1",
+    "R/helpers/bacon_settings.R": "8a47c7c9d2c26e14679813ba93b1f707ec6f182076a4c6ae4a921d852e1575c3",
+    "R/helpers/config.R": "bf51816e9ee2d2bbefcc9776ea58245578c4bf0920a15cc9bc6e5058badfcf65",
+    "output/bacon_run_manifest.csv": "40b431524048bb727c7de6634e2110311622d347807a1d7d6cf23194c21d85b5"
+  },
+  "protected_files_unchanged": true,
+  "scientific_source_unchanged": true,
+  "evidence": "docs/review/PB210_STORED_SENSITIVITY_COMPARISON.csv",
+  "max_deeper_differences_years": {
+    "median": 15,
+    "lower_95": 24,
+    "upper_95": 28
+  },
+  "artifacts": [
+    {
+      "path": "plot/test_figures/fig_bacon_pb210_sensitivity.pdf",
+      "sha256_before": "e63829165082e45766d465285ca964614364dcdcdb758b2b6ee44244c1df559b",
+      "sha256_after": "49da5b9e5d92597cf39d3e7040e11596201ffbc1b7bd59757dc67e64b850e9aa"
+    },
+    {
+      "path": "docs/assets/analysis/pb210-p1.png",
+      "sha256_before": "1468112c9bb784211fd07ea0943ac2b1383bdc2662154bec6499c5a38c79600c",
+      "sha256_after": "49ccf5c373bc69a0cdcb0ee7d1974bb2035ff176b1e2cef22aada3dd1ee56997"
+    }
+  ],
+  "provenance": "Original analysis run, input/source/result manifests and chronology-generation dates are retained. Only the subsequent caption PDF/preview and matching producer identities were refreshed; this is not a fresh analysis run."
+}

@@ -40,7 +40,7 @@ raw_results = vector("list", nrow(settings))
 
 # CharAnalysis 2.0.3 draws its complete internal diagnostic suite as a side
 # effect of fitting. Capture those plots on a temporary device so an accidental
-# root-level plot/archive/root_graphics/Rplots.pdf is not created; the maintained audit figure below is
+# root-level Rplots.pdf is not created; the maintained audit figure below is
 # built explicitly from the returned numerical objects.
 capture_internal_graphics = function(expression) {
   temporary_plot = tempfile("charanalysis_internal_", fileext = ".pdf")

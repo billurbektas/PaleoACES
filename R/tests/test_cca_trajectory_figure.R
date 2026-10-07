@@ -10,6 +10,21 @@ if (render_figures)
   stopifnot(all(file.exists(figure_files)), all(file.info(figure_files)$size > 5000))
 
 centroids = read_csv(centroid_path, show_col_types = FALSE)
+modern = read_csv(here("output/cca_trajectory_anthropocene_centroids.csv"), show_col_types = FALSE)
+tracking_pairs = read_csv(here("output/cca_tracking_anthropocene_plot.csv"), show_col_types = FALSE)
+stopifnot(nrow(modern) == 4L, !anyDuplicated(modern[c("site", "t")]),
+          all(is.finite(unlist(select(modern, o1, o2, p1, p2)))))
+# Independent means of the actual tracking endpoints must reproduce Figure 3;
+# balanced counts alone could conceal a different pair membership.
+for (site_name in c("MORA", "NOCA")) for (survey in c("legacy", "resurvey")) {
+  x = tracking_pairs %>% filter(site == site_name)
+  row = modern %>% filter(site == site_name, t == survey)
+  fields = if (survey == "legacy") c("o1", "o2", "p1", "p2") else
+    c("o1_2", "o2_2", "p1_2", "p2_2")
+  stopifnot(nrow(row) == 1L, row$n == nrow(x),
+            max(abs(as.numeric(row[c("o1", "o2", "p1", "p2")]) -
+                      vapply(x[fields], mean, numeric(1)))) < 1e-12)
+}
 eras = c("CC1", "S1", "CC2", "S2", "CC3", "S3", "CC4", "S4")
 stopifnot(
   setequal(centroids$site, c("MORA", "NOCA")),

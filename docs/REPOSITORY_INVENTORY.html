@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: 00063e713c5d5e56b96e7a2a8eb3b39c -->
+<!-- paleoaces-source-md5: 21394d06caa2bd05ff70a0184de282a0 -->
 
 <html>
 
@@ -1500,10 +1500,9 @@ border-radius: 0px;
 
 <div id="repository-inventory" class="section level1">
 <h1>Repository inventory</h1>
-<p>The reorganization preserves the sequential workflow, stage names and
-order, isolated environments, scientific calculations, and all active
-data/cache/result paths. A full local backup was made before relocation
-on 2026-10-05; no commit or push is part of this change.</p>
+<p>PaleoACES uses the sequential <a href="WORKFLOW.html">workflow</a>.
+This inventory identifies the maintained code, scientific documents and
+authoritative local inputs.</p>
 <table>
 <colgroup>
 <col width="50%" />
@@ -1512,160 +1511,110 @@ on 2026-10-05; no commit or push is part of this change.</p>
 <thead>
 <tr class="header">
 <th>Area</th>
-<th>Role and active producers/consumers</th>
+<th>Role</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td>Root</td>
-<td>README and RStudio project; input/reference directories retain their
-names.</td>
+<td>Project README, RStudio project and reference material.</td>
 </tr>
 <tr class="even">
-<td><code>R/workflow.R</code></td>
-<td>Sequential analysis and automatic checks; optional report
-refresh.</td>
-</tr>
-<tr class="odd">
 <td><code>R/</code></td>
-<td>Workflow and documentation/report rendering entrypoints.</td>
+<td>Workflow and documentation/report entrypoints.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>R/stages/</code></td>
-<td>All 25 ordered analysis stages, including the conditional age-depth
-stage, consumed by the driver and downstream stages.</td>
+<td>The 25 analysis stages, in the workflow’s execution order;
+chronology fitting is optional.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>R/helpers/</code></td>
-<td>Shared config and Bacon settings, plus climate, chronology, fire,
-geometry, styling, documentation, and report functions.</td>
+<td>Shared settings and functions for vegetation, climate, chronology,
+fire, CCA metrics, figures and reporting.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>R/tests/</code></td>
-<td>The 16 existing automatic gates; an additional report integrity
-gate.</td>
+<td>The 17 automatic analysis gates and an additional report check.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>R/diagnostics/</code></td>
-<td>Optional scientific diagnostics; four are refreshed by report runs.
-Filenames are retained.</td>
+<td>Scientific diagnostics and optional sensitivities; four diagnostics
+are refreshed with the report.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>R/vendor/</code></td>
-<td>CHELSA downloader and Torres reference script; source contents
-preserved.</td>
-</tr>
-<tr class="odd">
-<td><code>R/archive/</code></td>
-<td>Existing historical code, preserved and excluded from active
-checks.</td>
+<td>Preserved CHELSA downloader and Torres reference script.</td>
 </tr>
 <tr class="even">
+<td><code>tools/</code></td>
+<td>Report construction, dependency diagram and reusable independent
+verification tools.</td>
+</tr>
+<tr class="odd">
 <td><code>data/</code>, <code>notes_from_Rachel/</code></td>
-<td>Authoritative local inputs; colocated provenance is linked in the
-documentation index.</td>
+<td>Local study inputs and source correspondence.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>Cores/</code></td>
-<td>Protected chronology controls, posteriors, ages and their
-provenance. Historical sensitivity models already here stay in place
-because age-draw signatures include all posterior files.</td>
-</tr>
-<tr class="even">
-<td><code>archive/chronology/</code></td>
-<td>Former <code>Cores_pre_slump/</code>, outside the active chronology
-tree.</td>
+<td>Controls, settings, stored posteriors and ages; existing sensitivity
+models are retained.</td>
 </tr>
 <tr class="odd">
-<td><code>output/</code></td>
-<td>Active scientific results, native climate chunks, age draws, and
-source/software manifests. Stage producers are listed in the workflow;
-model and figure consumers use these unchanged paths.</td>
+<td><code>Cores/provenance/</code></td>
+<td>Original chronology source snapshots and records needed to verify
+unchanged stored models.</td>
 </tr>
 <tr class="even">
-<td><code>output/archive/</code></td>
-<td>Verified unused legacy aggregates, organized-climate CSVs,
-old-coordinate products, and retired monthly directories. Historical
-consumers remain in the R archive.</td>
+<td><code>output/</code></td>
+<td>Active tables, native climate caches, age draws and model/report
+summaries.</td>
 </tr>
 <tr class="odd">
 <td><code>plot/</code></td>
-<td>Four main figure stems, each PDF and PNG; producers 05a, 09c, 13a,
-14.</td>
+<td>Manuscript Figures 2–5, each as a PDF and PNG.</td>
 </tr>
 <tr class="even">
 <td><code>plot/test_figures/</code></td>
-<td>Diagnostic PDFs; no persistent PNGs.</td>
+<td>Diagnostic PDFs.</td>
 </tr>
 <tr class="odd">
-<td><code>plot/archive/</code></td>
-<td>Former <code>plot/archieve/</code> and unused root graphics,
-preserved.</td>
-</tr>
-<tr class="even">
 <td><code>docs/</code></td>
-<td>Maintained operational/scientific documents, review Markdown and
-self-contained HTML.</td>
+<td>Scientific review, decisions, captions, workflow, indexes and HTML
+companions.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>docs/methods/</code>, <code>docs/references/</code></td>
-<td>Detailed methods and context; publication decisions remain in
-SCIENTIFIC_DECISIONS and FIGURE_CAPTIONS.</td>
-</tr>
-<tr class="even">
-<td><code>docs/review/</code></td>
-<td>Generated combined reading copy; tests excluded, workflow order
-retained.</td>
+<td>Detailed cleaning, consolidation, metric methods and literature
+context.</td>
 </tr>
 <tr class="odd">
-<td><code>docs/report/</code>, <code>docs/assets/analysis/</code></td>
-<td>Authored narrative template, diagnostic selection registry,
-generated previews, curated summaries, and provenance.</td>
+<td><code>docs/review/</code></td>
+<td>Combined analysis reading copy, GPS source note, stored Pb210
+comparison and TraCE21k–V2.1 appendix.</td>
 </tr>
 <tr class="even">
+<td><code>docs/report/</code>, <code>docs/assets/analysis/</code></td>
+<td>Review template and figure selection; generated previews, curated
+tables and verification metadata.</td>
+</tr>
+<tr class="odd">
 <td><code>related_publications/</code></td>
-<td>Local reference literature; does not define climate eras or fire
-classifications.</td>
+<td>Local reference papers.</td>
 </tr>
 </tbody>
 </table>
-<div id="relocation-and-preservation-records" class="section level2">
-<h2>Relocation and preservation records</h2>
-<p>The <a href="reorganization/relocation_map.csv">relocation map</a>
-records original/new paths, original byte counts, and SHA-256 checksums.
-The <a href="reorganization/baseline_inventory.csv">baseline
-inventory</a> lists every pre-change research file, original and current
-locations, and literal active-code references. The <a href="reorganization/baseline-gates.log">baseline check log</a> records
-all 16 successful automatic gates before changes. Generated products can
-change when rerendered; archived inputs and third-party source retain
-their recorded checksums.</p>
-<p>The age-depth stage now lives in <code>R/stages/</code>; Bacon
-settings and shared config live in <code>R/helpers/</code>. At the
-preserved reorganization checkpoint, config was byte-identical and the
-age-depth script and Bacon settings changed only literal file
-references, including comments. The review branch subsequently
-strengthened config’s climate-cache validation without changing
-scientific constants; the age-depth script and Bacon settings remain
-identical to that checkpoint. The <a href="reorganization/chronology_relocation.json">chronology relocation
-record</a> contains the exact relocations and hashes of <a href="reorganization/chronology_sources_before_move/000_PALEO_a_agedepth.R.txt">the
-original age-depth source</a>, <a href="reorganization/chronology_sources_before_move/bacon_settings.R.txt">Bacon
-settings</a>, and <a href="reorganization/chronology_sources_before_move/config.R.txt">shared
-config</a>. See the <a href="REVIEW_AUDIT.html">audit</a> for subsequent
-technical corrections.</p>
-<p>The provenance gate accepts historical hashes only when the current
-source exactly equals its verified snapshot after these replacements.
-Age-draw cache fingerprints use the historical settings identity under
-the same condition. Any other code or settings edit loses that
-equivalence; model-setting checks and cache invalidation still apply.
-Existing posterior files, chronology manifests, and cached draws are
-preserved. Future chronology runs record the actual current source
-hashes. All active script comments use current locations.</p>
-</div>
+<p>Raw inputs, large results, native caches, stored posteriors and local
+settings remain excluded from Git. The review, required source notes,
+curated tables and linked figures are available in a checkout without
+those research inputs. Retired scripts remain recoverable from Git
+history, including commit
+<code>513febb95a965a3437db8f69e2fc795b938f6989</code>; local archive
+directories have been removed.</p>
 <div id="raw-duplicates-and-authority" class="section level2">
 <h2>Raw duplicates and authority</h2>
-<p>Raw duplicates are retained. The cleaner’s actual read path
-identifies authority; duplicates are never automatically
-substituted.</p>
+<p>The cleaners’ actual input paths identify the authoritative copies.
+Raw duplicates are retained and are not substituted automatically.</p>
 <table>
 <colgroup>
 <col width="50%" />
@@ -1674,52 +1623,41 @@ substituted.</p>
 <thead>
 <tr class="header">
 <th>Authoritative input</th>
-<th>Retained duplicate/context</th>
+<th>Retained duplicate or context</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>data/raw/MORA_Cascade Legacy Data_Original1978.xlsx</code>
-(MORA cleaner)</td>
-<td>Same workbook under <code>data/NOCA/</code>; retained historical
+<td><code>data/raw/MORA_Cascade Legacy Data_Original1978.xlsx</code></td>
+<td>The workbook under <code>data/NOCA/</code> is a historical
 copy.</td>
 </tr>
 <tr class="even">
-<td><code>data/NOCA/AGEEDATA_NEW.xlsx</code> (NOCA cleaner)</td>
-<td><code>data/raw/AGEEDATA_NEW.xlsx</code>; retained identical
-copy.</td>
+<td><code>data/NOCA/AGEEDATA_NEW.xlsx</code></td>
+<td>An identical copy remains under <code>data/raw/</code>.</td>
 </tr>
 <tr class="odd">
-<td><code>data/NOCA/NOCA_plots_fromWilson.csv</code> (NOCA
-metadata/fire)</td>
-<td>Received coordinate CSV under MORA disturbance package and vendored
-Wilson raw data; retained.</td>
+<td><code>data/NOCA/NOCA_plots_fromWilson.csv</code></td>
+<td>Received coordinate and Wilson paper-repository copies support
+source comparison.</td>
 </tr>
 <tr class="even">
-<td>MORA original 1978 workbook plus cleaned resurvey tree/seedling
+<td>Original MORA legacy workbook and cleaned resurvey tree/seedling
 CSVs</td>
-<td>Master2018 workbook copies retain context; they do not replace the
-original legacy input.</td>
+<td>Master2018 copies provide context and do not replace the original
+legacy input.</td>
 </tr>
 <tr class="odd">
 <td>Received NOCA fire spatial join and Wilson reference in
 <code>data/NOCA/</code></td>
-<td>External Wilson package copies remain for source comparison.</td>
+<td>External Wilson package copies support comparison.</td>
 </tr>
 </tbody>
 </table>
-<p>The input documents in the <a href="INDEX.html">index</a> describe
-corrections and provenance. The <a href="OUTPUTS.html">output
-inventory</a> and <a href="WORKFLOW.html">workflow</a> give detailed table
-roles and producer/consumer order.</p>
-</div>
-<div id="verification" class="section level2">
-<h2>Verification</h2>
-<p>The <a href="reorganization/VALIDATION.html">acceptance record</a>
-reports scientific-table equivalence, protected chronology and archive
-checksums, complete workflow checks, deliberate deletion recovery,
-offline cache rejection, stale-evidence rejection, and portability
-without raw data.</p>
+<p>The <a href="INDEX.html">documentation index</a> links the detailed
+source notes. <a href="OUTPUTS.html">OUTPUTS</a> identifies result tables
+and their producers; <a href="WORKFLOW.html">WORKFLOW</a> gives script
+order, dependencies and verification commands.</p>
 </div>
 </div>
 

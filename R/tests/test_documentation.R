@@ -126,8 +126,7 @@ remaining_questions = c(
   "## Remaining scientific questions",
   "Raw versus V2.1-anchored TraCE21k climate",
   "Legacy-calibration versus full-record climate SDs",
-  "Anthropocene precipitation windows and CHELSA continuity",
-  "Primary provenance for MORA survey dates",
+  "Anthropocene precipitation continuity",
   "CARI449",
   "CARI450",
   "Own-origin versus common-origin taxon target geometry"
@@ -199,8 +198,8 @@ banned = c(
 present = banned[vapply(banned, function(x) grepl(x, active_text, fixed = TRUE), logical(1))]
 if (length(present)) fail(paste("stale active terminology:", paste(present, collapse = ", ")))
 
-# Active script comments must point to maintained authorities, not numbered
-# sections in the archived CLAUDE plan.
+# Active script comments must point to maintained authorities, rather than
+# retired assistant planning documents.
 active_scripts = list.files(here("R"), pattern = "\\.R$", full.names = TRUE, recursive = TRUE)
 active_scripts = active_scripts[!grepl("/(archive|vendor)/", active_scripts)]
 script_comments = lapply(active_scripts, function(path) {
@@ -211,7 +210,7 @@ stale_script_refs = vapply(script_comments, function(comments) {
   any(grepl("CLAUDE\\.md", comments))
 }, logical(1))
 if (any(stale_script_refs))
-  fail(paste("active script comments cite archived CLAUDE plan:",
+  fail(paste("active script comments cite retired assistant plan:",
              paste(basename(active_scripts[stale_script_refs]), collapse = ", ")))
 
 stale_action_phrases = c(

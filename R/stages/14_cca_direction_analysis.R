@@ -135,15 +135,15 @@ modern_fire = bind_rows(
 anth = anth |>
   mutate(plot_id = str_to_upper(plot_id)) |>
   left_join(modern_fire, by = c("site", "plot_id"))
-if (nrow(anth) != 607L || anyNA(anth$burned) ||
+if (nrow(anth) != 605L || anyNA(anth$burned) ||
     !identical(as.integer(table(anth$site)[c("MORA", "NOCA")]),
-               c(330L, 277L)))
-  stop("Anthropocene direction scope must contain all 607 fire-classified pairs.")
+               c(330L, 275L)))
+  stop("Anthropocene direction scope must contain all 605 fire-classified pairs.")
 
 anth_keys = c("site", "plot_id", "burned")
 anth_direction = build_direction_contrasts(anth, anth_keys) |>
   mutate(period = "Anthropocene", .before = site)
-if (nrow(anth_direction) != 10319L)
+if (nrow(anth_direction) != 10285L)
   stop("Unexpected Anthropocene paired direction-row count.")
 write_csv(anth_direction,
           here("output/cca_direction_anthropocene_realizations.csv"))

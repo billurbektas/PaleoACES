@@ -57,9 +57,12 @@ coordinate-fingerprinted climate caches.
 
 `CARI449` and `CARI450` have opposite raw longitude signs but normalize to the
 same coordinate (48.51429, −121.21725) despite elevations of 622 and 1,149 m.
-Both are retained pending confirmation from a primary coordinate source. The
-cleaner records this unresolved collision explicitly rather than silently
-changing coordinates or excluding either plot.
+Rachel's September 2024 email warns against the 2014 GPS worksheet and points
+to the paper's coordinate CSV, which still contains this collision. Her other
+notes provide no correction. The author requested exclusion of both plots for
+a **GPS problem**. The cleaner removes both dates before downstream outputs
+and preserves raw coordinates in the collision audit with an excluded status.
+See the [source review and decision](../review/NOCA_GPS_EXCLUSION.md).
 
 ## Paired-plot rules
 
@@ -68,12 +71,14 @@ counterpart. A plot with no supported occurrence in one period is retained with
 an explicit zero placeholder when the other period has vegetation. Plots empty in
 both periods are removed.
 
-Two otherwise paired plots are excluded at study level:
+Four otherwise paired plots are excluded at study level:
 
 | Plot | Reason and source |
 |---|---|
 | `BAK487` | Old clearcut; removed from Wilson's final analysis (`notes_from_Rachel/Burned plots.rtf`). |
 | `BEAV6061` | Historical location uncertain; elevation was inaccurate and the resurvey landed in an avalanche chute (`notes_from_Rachel/Missing trees.rtf`). |
+| `CARI449` | GPS problem; shares coordinates with CARI450 despite different elevation, with no verified replacement ([source review](../review/NOCA_GPS_EXCLUSION.md)). |
+| `CARI450` | GPS problem; shares coordinates with CARI449 despite different elevation, with no verified replacement ([source review](../review/NOCA_GPS_EXCLUSION.md)). |
 
 These are study-design exclusions, not silent cleaning losses.
 
@@ -81,17 +86,17 @@ These are study-design exclusions, not silent cleaning losses.
 
 | Output | Contract |
 |---|---|
-| `output/NOCA_occ.csv` | 307 paired plots, 1,790 rows, 31 identified taxa; unique plot × taxon × period; occurrence in `{0,1}`. |
+| `output/NOCA_occ.csv` | 305 paired plots, 1,775 rows, 31 identified taxa; unique plot × taxon × period; occurrence in `{0,1}`. |
 | `output/NOCA_occ_stage.csv` | Adult/regeneration evidence only; no synthetic zero rows and no unsupported labels. |
 | `output/NOCA_present_occ.csv`, `output/NOCA_past_occ.csv` | Period-specific occurrence components. |
-| `output/NOCA_plot_info.csv` | Exactly the 307 paired plot IDs and their coordinates/elevation. |
-| `output/NOCA_coordinate_collision_audit.csv` | Raw and normalized coordinates, elevations, shared-coordinate count, elevation range, and unresolved-retained status for `CARI449`/`CARI450`. |
+| `output/NOCA_plot_info.csv` | Exactly the 305 paired plot IDs and their coordinates/elevation. |
+| `output/NOCA_coordinate_collision_audit.csv` | Raw and normalized coordinates, elevations, shared-coordinate count, elevation range, and GPS-excluded status for `CARI449`/`CARI450`; no exact coordinate collision remains in the active plot table. |
 | `output/NOCA_plot_tracking.csv` | Kept/removed plot accounting and reasons. |
 | `output/NOCA_tree_correction_audit.csv` | One row per corrected target with removed/added counts, action, final status, and exclusion reason. |
 | `output/NOCA_tree_composition_audit.csv` | Unpatched-versus-corrected present composition for all retained plots; 50 changes. |
-| `output/NOCA_study_exclusions.csv` | The two explicit study exclusions and note provenance. |
+| `output/NOCA_study_exclusions.csv` | The four explicit study exclusions and source/decision provenance. |
 
-The 1,790 rows include 18 explicit zero placeholders. Removing unsupported
+The 1,775 rows include 18 explicit zero placeholders. Removing unsupported
 identifications upstream adds two placeholders relative to the former downstream-
 only exclusion, so consolidated row count changes while presence content and the
 CCA result do not.
@@ -108,7 +113,7 @@ Rscript R/tests/test_check_vegetation.R
 
 The focused patch test validates workbook shape, target coverage, exact audit
 accounting, correction exclusions, changed-composition count, unsupported-label
-absence, paired-plot count, uniqueness, study exclusions, and the sole exact
-normalized-coordinate collision. The general
+absence, paired-plot count, uniqueness, study exclusions, and the preserved
+GPS evidence for the excluded collision. The general
 vegetation gate additionally requires the occurrence and plot-info universes to
-match and both periods to contain the same 307 plots.
+match and both periods to contain the same 305 plots.

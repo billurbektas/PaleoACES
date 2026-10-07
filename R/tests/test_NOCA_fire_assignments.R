@@ -6,13 +6,13 @@ occ = read_csv(here("output/NOCA_occ.csv"), show_col_types = FALSE)
 cmp = read_csv(here("output/NOCA_fire_Wilson2024_comparison.csv"), show_col_types = FALSE)
 
 stopifnot(
-  nrow(fire) == 307L,
+  nrow(fire) == 305L,
   !anyDuplicated(fire$plot_id),
   setequal(fire$plot_id, occ$plot_id),
   sum(fire$burnt) == 32L,
-  sum(!fire$burnt) == 275L,
+  sum(!fire$burnt) == 273L,
   identical(as.integer(table(cmp$universe_status)[c("shared", "PaleoACES_only", "Wilson_only")]),
-            c(305L, 2L, 64L)),
+            c(303L, 2L, 66L)),
   !any(cmp$assignment_discrepancy %in% TRUE, na.rm = TRUE),
   setequal(cmp$plot_id[cmp$universe_status == "PaleoACES_only"],
            c("THOR223", "BAK494")),
@@ -21,4 +21,4 @@ stopifnot(
   all(c("BAK487", "BEAV6061") %in%
         cmp$plot_id[cmp$universe_status == "Wilson_only"])
 )
-cat("NOCA fire checks passed: 307 plots; 32 burned; no discrepancy on 305 shared plots.\n")
+cat("NOCA fire checks passed: 305 plots; 32 burned; no discrepancy on 303 shared plots.\n")

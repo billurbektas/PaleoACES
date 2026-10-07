@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: dd08983f8c8ee30bd2b3e59810282fe6 -->
+<!-- paleoaces-source-md5: 568d0e845a2e876210016d23bb7aa7a3 -->
 
 <html>
 
@@ -2060,6 +2060,11 @@ sweep:</p>
 threshold in <strong>every</strong> site × period group, so the
 comparison is against each species’ <strong>largest</strong> group count
 (<code>max_group</code> in the printed table).</p>
+<p>The table below records the historical sweep before the 2026-10-06
+GPS exclusion of CARI449/CARI450; alternative thresholds have not been
+rerun. The current threshold-20 model has 618 calibration plots and
+1,512 positioned samples. See the <a href="../ANALYSIS_REVIEW.html">analysis review</a> for its current
+fit.</p>
 <table style="width:100%;">
 <colgroup>
 <col width="14%" />
@@ -2139,10 +2144,10 @@ distribution is lumpy, so only a few values are real decisions. Relative
 to 20, 10/15 adds nine calibration plots and eight positioned samples,
 because rarer species keep otherwise empty plots in the model.</li>
 <li>The 2026 NOCA tree correction raised <em>Abies grandis</em> from 19
-to 22 NOCA-present plots. It now crosses the threshold of 20, increasing
-the active model from 12 to 13 species and from 619 to 620 calibration
-plots after the <code>BAK487</code>/<code>BEAV6061</code> study
-exclusions.</li>
+to 22 NOCA-present plots before the GPS exclusions. It crossed the
+threshold of 20, increasing the then-active model from 12 to 13 species
+and from 619 to 620 calibration plots after the
+<code>BAK487</code>/<code>BEAV6061</code> study exclusions.</li>
 <li><strong>30 drops <em>Picea engelmannii</em></strong>, present in
 both sites, both eras and both paleo records. That is a genuine
 cross-site species and losing it costs more than it saves.</li>
@@ -2154,11 +2159,11 @@ reversed</h3>
 threshold from the first version of this analysis. <strong>It is now
 kept</strong> (2026-08-13), on three grounds:</p>
 <ol style="list-style-type: decimal">
-<li><p><strong>It was never justified.</strong>
-<code>R/archive/05_cca_paleo.R</code> carries the bare line with no
-comment; the former species-count diagnostic also recorded that the
-exclusion was undocumented. The “range truncation, HilleRisLambers et
-al. 2015 Appendix B” note previously in <code>05_cca_model.R</code> was
+<li><p><strong>It was never justified.</strong> The original model,
+preserved in Git history, carries the bare line with no comment; the
+former species-count diagnostic also recorded that the exclusion was
+undocumented. The “range truncation, HilleRisLambers et al. 2015
+Appendix B” note previously in <code>05_cca_model.R</code> was
 reconstructed after the fact, not inherited from the original
 author.</p></li>
 <li><p><strong>The citation does not single it out.</strong>
