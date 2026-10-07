@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: 21394d06caa2bd05ff70a0184de282a0 -->
+<!-- paleoaces-source-md5: 852f5e82b590b477149991b8195150a1 -->
 
 <html>
 
@@ -1595,8 +1595,9 @@ comparison and TraCE21k–V2.1 appendix.</td>
 </tr>
 <tr class="even">
 <td><code>docs/report/</code>, <code>docs/assets/analysis/</code></td>
-<td>Review template and figure selection; generated previews, curated
-tables and verification metadata.</td>
+<td>Review template, figure selection and dated survey-decision
+baseline; generated previews, curated tables and verification
+metadata.</td>
 </tr>
 <tr class="odd">
 <td><code>related_publications/</code></td>
@@ -1658,6 +1659,12 @@ legacy input.</td>
 source notes. <a href="OUTPUTS.html">OUTPUTS</a> identifies result tables
 and their producers; <a href="WORKFLOW.html">WORKFLOW</a> gives script
 order, dependencies and verification commands.</p>
+<p>The two small versioned MORA reference CSVs record vetted
+seedling-to-adult visit mappings and the source-year discrepancy audit.
+They supplement the received inputs without editing them.
+<code>R/helpers/survey_years.R</code> applies the date rule;
+<code>R/helpers/survey_decision_effects.R</code> compares its results
+with the dated baseline.</p>
 </div>
 </div>
 

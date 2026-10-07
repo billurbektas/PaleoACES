@@ -42,6 +42,24 @@ workbook and cleaned resurvey tree and seedling files. NOCA applies the received
 corrected-tree workbook before building occurrences; unsupported identification
 labels are discarded. Both cleaners retain matched survey plots.
 
+**MORA's adult resurvey date is authoritative (decision 2026-10-07).** Seedling
+records are assigned to their corresponding adult visit before presence is
+constructed. For the 13 plots visited in multiple years, only the latest adult
+visit and its matching seedlings are retained; visits tied within a year remain
+pooled. This replaces pooling across years and using the earliest tree/seedling
+year. The received CSVs are preserved.
+
+The source-year audit identifies 95 supplied plot names, including 48 analyzed
+pairs. That total includes `PRAC-1`, a practice plot without a standardized ID;
+94 have standardized IDs. Conflicting years already occur in the original CSVs
+and pass unchanged through their upstream cleaner. The earlier export process
+is unknown. The [95-plot source table](assets/analysis/tables/year_source_discrepancies.csv)
+records the conflicting years, adult dates, treatment and evidence locations;
+[survey-year notes](../data/SOURCES_SURVEY_YEARS.md) give the rationale.
+
+{{mora_repeat_visits}}
+
+
 NOCA excludes `BAK487` for its old clearcut, `BEAV6061` for uncertain relocation,
 and `CARI449`/`CARI450` for GPS problems. The latter share coordinates despite
 conflicting elevations, and Rachel's notes supply no verified correction.
@@ -75,16 +93,28 @@ Spring is March–May, summer June–August and winter December–February. Mode
 December belongs to the following winter. All three months are required;
 temperatures are in °C and precipitation in mm per season.
 
-MORA compares **1979–1989 with 2010–2019** over **30.5 midpoint years**; NOCA
-compares **1979–1989 with 2010–2015** over **28.5 years**. Missing January 1979
-leaves ten complete legacy winters. These are annualized contrasts between
-survey windows, rather than instantaneous trends. The windows are settled;
-the possible post-2010 MORA precipitation discontinuity remains a limitation.
-Vegetation rates use each plot's survey interval separately. The
-[survey-year notes](../data/SOURCES_SURVEY_YEARS.md) explain those references and
-identify the missing original MORA date-source records.
+**Climate-year selection.** Historical climate remains **1979–1989** at both
+sites. Each modern plot uses its adult resurvey year **Y** and the five preceding
+years: **Y−5 through Y, inclusive**. We average these six years to represent the
+interannual climate dynamics that the community experienced before and during
+the survey. A 2014 resurvey therefore uses 2009–2014, with December 2008 included
+in winter 2009. Every modern constraint requires six complete season-years.
+
+Climate rates use the interval from the historical midpoint **1984** to the
+plot-specific modern midpoint **Y−2.5**: **27.5–32.5 years at MORA** and
+**27.5–28.5 years at NOCA**. Vegetation rates use the selected adult year and
+legacy references of 1977.5 (MORA) or 1983 (NOCA). Missing January 1979 leaves ten
+complete legacy winters; spring and summer retain eleven years. The historical
+window choice remains settled, and possible MORA precipitation inhomogeneity
+remains a limitation.
 
 {{climate_windows}}
+
+The following cohorts and diagnostic use the final paired comparison plots.
+The annual lines show those same plots; separate colored bands show each cohort's
+window without hiding overlapping windows. MORA is blue and NOCA orange.
+
+{{survey_climate_windows}}
 
 {{modern_climate_diagnostics}}
 
@@ -325,11 +355,27 @@ chronology draws, offsets and overlapping dates are not independent replication.
 
 Figure 4 omits the two burned MORA pairs from its descriptive comparison and
 retains 603 modern pairs across the displayed groups. All 137 supported Holocene
-site-dates remain. Its scatter has 587 direction-valid observations; stationary
+site-dates remain. Its scatter has 589 direction-valid observations; stationary
 modern compositions remain in the non-angle summaries. Quartiles and offset/draw
 spread describe variation, not inferential confidence intervals.
 
 {{figure_4}}
+
+### Effects of the 2026-10-07 survey-date decision
+
+The comparison below isolates the update from the preserved pre-update analysis.
+Legacy occurrences and climate, the 618-plot CCA fit, its 13 taxa, and all Holocene
+results are unchanged. Latest-visit selection removes earlier-only presence from
+seven cleaned MORA plots; one loss is a taxon already excluded during
+consolidation, so six modeled observed positions change. Modern climate changes for all 330 MORA plots and the 50 NOCA plots surveyed in
+2014. Climate elapsed time changes for 319 MORA plots and those same 50 NOCA
+plots; 2017 MORA resurveys retain the former 30.5-year midpoint interval.
+The 225 NOCA plots surveyed in 2015 retain their former 2010–2015 window.
+Figures 2–5 and the tracking/direction summaries use the updated inputs.
+
+{{latest_visit_composition_effects}}
+
+{{survey_decision_effects}}
 
 ## Direction discrepancies and support
 

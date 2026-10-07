@@ -23,7 +23,7 @@ def write_csv(path, data, fields=None):
     path.parent.mkdir(parents=True, exist_ok=True)
     if fields is None: fields = list(data[0]) if data else []
     with path.open('w', newline='', encoding='utf-8') as f:
-        w = csv.DictWriter(f, fieldnames=fields); w.writeheader(); w.writerows(data)
+        w = csv.DictWriter(f, fieldnames=fields, lineterminator="\n"); w.writeheader(); w.writerows(data)
 
 def relative(path): return path.relative_to(ROOT).as_posix()
 
@@ -38,6 +38,8 @@ def input_files():
             files.append(path)
     for directory in ['mora_climate_parts', 'noca_climate_parts', 'chelsa_paleo', 'anomaly_parts', '_reference']:
         files.extend((ROOT / 'output' / directory).glob('*.csv'))
+    files += list((ROOT / "docs/report").glob("*.csv"))
+    files += list((ROOT / "docs/report").glob("*.json"))
     files += [REGISTRY, TEMPLATE, ROOT / 'R/helpers/bacon_settings.R', ROOT / 'output/bacon_run_manifest.csv']
     files += list((ROOT / 'Cores/provenance').glob('*.json'))
     files += list((ROOT / 'Cores/provenance/chronology_sources_before_move').glob('*.txt'))
@@ -74,6 +76,10 @@ COLUMNS = {
  'cca_exclusion_summary': [('era','Era'),('site','Site'),('use','Use'),('exclusion_period','Excluded at'),('reason','Reason'),('excluded_units','Count')],
  'modern_centroids': [('site','Site'),('t','Survey'),('n','Same paired plots'),('o1','Observed CCA1'),('o2','Observed CCA2'),('p1','Predicted CCA1'),('p2','Predicted CCA2')],
  'cca_taxa': [('species','Taxon'),('MORA_past','MORA legacy'),('MORA_present','MORA resurvey'),('MORA_paleo','MORA paleo'),('NOCA_past','NOCA legacy'),('NOCA_present','NOCA resurvey'),('NOCA_paleo','NOCA paleo'),('retained','CCA retained')],
+ 'mora_repeat_visits': [('plot_id','Plot'),('adult_years','Adult visits'),('selected_year','Selected year'),('visit_date','Selected date'),('adults_kept','Adult records kept'),('adults_discarded','Earlier records removed')],
+ 'survey_climate_windows': [('site','Site'),('period','Survey'),('survey_year','Adult resurvey year'),('climate_start','First climate year'),('climate_end','Last climate year'),('analyzed_plots','Analyzed plots')],
+ 'survey_decision_effects': [('site','Site'),('metric','Quantity'),('changed_plots','Changed plots'),('before_median','Before median'),('after_median','After median')],
+ 'latest_visit_composition_effects': [('plot_id','Plot'),('species','Presence removed from pooled resurvey')],
  'climate_windows': [('site','Site'),('period','Period'),('plots','Plots'),('n_MSpT','Spring years'),('n_MWT','Winter years'),('n_SP','Summer years'),('n_WP','Winter precipitation years')],
  'bacon_manifest': [('model','Model'),('role','Role'),('seed','Seed'),('rbacon_version','rbacon'),('posterior_bytes','Posterior bytes'),('generated_at_utc','Chronology generation UTC')],
  'era_catalog': [('era_id','Era'),('era_class','Class'),('older_cal_bp','Older cal BP'),('younger_cal_bp','Younger cal BP'),('duration_years','Duration years')],
@@ -268,6 +274,10 @@ def build(mode):
             if name=='tracking_summary': data=[r for r in data if r['summary_level']=='macro era x fire' and r['metric'] in ['lag_rate_per_century','rate_tracking_ratio','angle_degrees']]
             if name in ['resolution_audit','tracking_summary']:
                 data=[dict(r,metric=METRIC_LABELS[r['metric']]) for r in data]
+            if name=='survey_decision_effects':
+                data=[r for r in data if r['metric'] in ['vegetation_t2_year','climate_dt_years','observed_vegetation_displacement','predicted_vegetation_displacement','rate_tracking_ratio','change_in_lag','lag_rate_per_century']]
+                labels={'vegetation_t2_year':'Adult resurvey year','climate_dt_years':'Climate interval (years)','observed_vegetation_displacement':'Observed displacement (CCA units)','predicted_vegetation_displacement':'Predicted displacement (CCA units)','rate_tracking_ratio':'Rate tracking ratio','change_in_lag':'Change in lag (CCA units)','lag_rate_per_century':'Lag rate (CCA units/century)'}
+                data=[dict(r,metric=labels[r['metric']]) for r in data]
             if name=='cca_summary':
                 data=[dict(r,field=CCA_LABELS[r['field']],value={'sites':'Site scaling (1)','FALSE':'Off'}.get(r['value'],r['value'])) for r in data]
             if data and any(key not in data[0] for key,_ in cols):
@@ -297,7 +307,7 @@ def build(mode):
             else: raise ValueError('Requested PDF page is absent: '+x['pdf'])
             status=x['status']; section=x['section']
             qualifier=f' **{status[0].upper()+status[1:]}**.' if status != 'current' else ''
-            block=f'### {x["purpose"].rstrip(".")}\n\n{x["interpretation"]}{qualifier}\n\nScript: [{Path(x["producer"]).name}](../{x["producer"]}). [Complete PDF](../{x["pdf"]}) ({page_count} pages).\n\n'
+            block=f'### {x["purpose"].rstrip(".")}\n\n{x["interpretation"]}{qualifier}\n\nScript: [{Path(x["producer"]).name}](../{x["producer"]}). [Complete PDF](../{x["pdf"]}) ({page_count} {"page" if page_count == 1 else "pages"}).\n\n'
             record(source,x['producer'],x['pdf'],status=status,origin='historical reference' if section=='historical' else mode)
             for page in x['pages']:
                 stem=x['id']+f'-p{page}'; dest=out/(stem+'.png')

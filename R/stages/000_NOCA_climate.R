@@ -1,40 +1,13 @@
-# =============================================================================
-# 000_NOCA_climate.R - CHELSA V2.1 monthly climate for the NOCA survey plots
-# =============================================================================
-# RESUMABLE. One CSV per (variable, year) is written to output/noca_climate_parts/
-# as soon as it lands, and anything already there is skipped. Re-run after an
-# interrupt and it continues. Chunks are written to .tmp and renamed, so a kill
-# mid-write cannot leave a half-written file that reads back as complete.
-#
-# Windows (decided 2026-08-13 - see the long rationale in R/stages/000_MORA_climate.R):
-#   past    = earliest available -> 1989      = 1979-1989  (IDENTICAL at both sites)
-#   present = 2010 -> last vegetation survey  = 2010-2015  (max survey year 2015)
-# Survey years from Wilson et al. 2024 ONLY - see data/SOURCES_SURVEY_YEARS.md.
-#
-# The short version: the previous rule (survey year + the 5 before it) gave MORA
-# ONE usable legacy year, because V2.1 has no precipitation before 1979 and
-# month-level alignment then pinned temperature to 1979 as well. A single year is
-# one draw from a distribution, not a climate. Running from the earliest available
-# year to a common 1989 end gives ~10 usable years at BOTH sites and actually
-# samples INTERANNUAL VARIABILITY, on the assumption that variability in 1979-1989
-# resembles that of the unmeasurable years before 1978.
-#
-# ⚠ This ABANDONS the antecedent-only rule: 1979-1989 runs 6 yr past NOCA's 1983
-# survey. Accepted - the alternative is estimating a site's climate from one year.
-#
-# COVERAGE: V2.1 monthly starts 1979-01, and there is no V2.1 precipitation at all
-# before then, so the window cannot start earlier while precipitation is a CCA
-# constraint. The 1978 lead-in December is fetched for temperature (daily product,
-# 1941+) but alignment drops it, since precipitation has no 1978 - so winter 1979
-# is lost and the record runs 1980-1989, 10 complete winters.
-#
-# The former fixed-window climate summary is retired; 05_cca_model.R binds
-# NOCA_climate.csv with MORA_climate.csv the same
-# way it already binds NOCA_occ / MORA_occ.
-#
-# Cost: 11 yr x 3 vars = 33 chunks of 12 files = 396 reads, ~40 min. The number of
-# PLOTS does not affect it - each file is read once and extracted at every point.
-# =============================================================================
+# CHELSA V2.1 for paired survey plots. Decision 2026-10-07:
+# legacy climate remains 1979-1989; each modern plot uses adult year Y-5 through
+# Y inclusive (six season-years). Winter Y includes December Y-1. Adult dates
+# and windows come from the same table used in cleaning and tracking.
+# Native chunks remain resumable and coordinate/source validated. Missing chunks
+# may be restored from the validated full-record diagnostic cache before the
+# offline guard; an invalid existing chunk still fails before any download.
+# Historical January 1979 temperature and pre-1979 precipitation are unavailable:
+# retain the established 10 complete legacy winters and 11 springs/summers.
+# Full rationale and source evidence: data/SOURCES_SURVEY_YEARS.md.
 
 library(here)
 suppressMessages({library(dplyr); library(readr)})
@@ -42,23 +15,18 @@ source(here("R/vendor/get_chelsa.R"), local = TRUE)          # vendored; provide
 source(here("R/helpers/get_chelsa_monthly.R"), local = TRUE)
 source(here("R/helpers/config.R"), local = TRUE)
 source(here("R/helpers/offline_cache.R"), local = TRUE)
+source(here("R/helpers/survey_years.R"), local = TRUE)
 
 CACHE = here("output/noca_climate_parts")
 OUT   = here("output/NOCA_climate.csv")
 
-# past = earliest available -> 1989; present = 2010 -> last survey year.
-# PAST_START/PAST_END are deliberately identical to 000_MORA_climate.R: the legacy
-# climate must describe the same period at the two sites being differenced.
-PAST_START    = 1979     # V2.1 monthly begins 1979-01; no V2.1 pr exists earlier
-PAST_END      = 1989
-PRESENT_START = 2010
-SURVEY_MAX    = 2015     # NOCA last vegetation survey year (Wilson et al. 2024)
-
-WINDOWS = list(past    = PAST_START:PAST_END,
-               present = PRESENT_START:SURVEY_MAX)
-# Winter Y = Dec(Y-1) + Jan(Y) + Feb(Y), so the first winter of a window needs the
-# December BEFORE it. Fetch one extra year at the start and keep only its December,
-# otherwise every window yields one fewer winter than summer.
+plot_years = read_plot_years("NOCA")
+PAST_START = 1979
+PAST_END = 1989
+WINDOWS = list(past = PAST_START:PAST_END,
+  present = min(plot_years$climate_start):max(plot_years$climate_end))
+# The union is fetched once; each plot is subsequently restricted to its own
+# six-year window and its preceding December.
 WINDOWS_FETCH = lapply(WINDOWS, function(y) c(min(y) - 1L, y))
 
 VARS  = c("tasmin", "tasmax", "pr")
@@ -92,6 +60,7 @@ todo$key  = sprintf("%s_%s_%d", todo$period, todo$var, todo$year)
 todo$path = file.path(CACHE, paste0(todo$key, ".csv"))
 todo$expected_source = ifelse(todo$route == "monthly", "v21_monthly",
                               "v21_daily_agg")
+reuse_survey_diagnostic_cache(todo, pts)
 todo$cache_valid = mapply(climate_cache_valid, todo$path,
                           MoreArgs = list(points = pts, allow_point_superset = TRUE),
                           variable = todo$var, year = todo$year,
@@ -182,31 +151,14 @@ clim = bind_rows(lapply(got, read_csv, show_col_types = FALSE, progress = FALSE)
 
 stopifnot(!any(is.na(clim$value)))
 
-# --- keep only DECEMBER of the lead-in year -----------------------------------
-lead_in = data.frame(period = names(WINDOWS),
-                     lead_year = sapply(WINDOWS, function(y) min(y) - 1L))
-before_lead = nrow(clim)
-clim = clim %>% left_join(lead_in, by = "period") %>%
-  filter(year != lead_year | month == 12) %>% select(-lead_year)
-cat("lead-in year: kept December only, dropped ", before_lead - nrow(clim), " rows\n", sep = "")
-
-# --- ALIGN THE VARIABLES: keep only months present for ALL THREE ---------------
-# Decided 2026-08-12. If precipitation does not exist before 1979 then temperature
-# must not either, or MWT would describe a different span from WP and
-# the two would not be estimates of the same period. The intersection is taken at
-# MONTH level, not year, because CHELSA is also missing tasmin/tasmax for January
-# 1979 - so that month goes for precipitation too.
-avail = clim %>% distinct(period, year, month, variable) %>%
-  count(period, year, month, name = "n_var")
-keep = avail %>% filter(n_var == length(VARS)) %>% select(period, year, month)
-dropped_mo = avail %>% filter(n_var < length(VARS))
-before = nrow(clim)
-clim = clim %>% semi_join(keep, by = c("period", "year", "month"))
-if (nrow(dropped_mo))
-  cat("\ndropped ", nrow(dropped_mo), " month(s) not present for all ", length(VARS),
-      " variables:\n  ", paste(sprintf("%s %d-%02d", dropped_mo$period, dropped_mo$year,
-      dropped_mo$month), collapse = ", "), "\n  (", before - nrow(clim),
-      " rows removed so every variable covers the same months)\n", sep = "")
+# Preserve the historical all-variable intersection; modern coverage is strict
+# for every plot, including December preceding that plot's first winter.
+clim = restrict_modern_months(clim, plot_years)
+avail = clim %>% distinct(plot_id, period, year, month, variable) %>%
+  count(plot_id, period, year, month, name = "n_var")
+keep = avail %>% filter(n_var == length(VARS)) %>% select(plot_id, period, year, month)
+clim = clim %>% semi_join(keep, by = c("plot_id", "period", "year", "month"))
+clim = restrict_modern_months(clim, plot_years)
 
 cat("\nrows: ", nrow(clim), "  plots: ", n_distinct(clim$plot_id), "\n", sep = "")
 coverage = clim %>% group_by(period, variable) %>%
@@ -214,7 +166,7 @@ coverage = clim %>% group_by(period, variable) %>%
             n_months = n_distinct(paste(year, month)),
             years = paste(range(year), collapse = "-"),
             n = n(), mean = mean(value), .groups = "drop")
-cat("\n--- coverage achieved (past 1979-1989; present 2010-2015; ",
+cat("\n--- coverage achieved (past 1979-1989; present plot-specific six-year windows; ",
     "lead-in December retained when available) ---\n", sep = "")
 print(as.data.frame(coverage), digits = 4)
 month_balance = coverage %>% count(period, n_months, name = "n_variables")
@@ -224,11 +176,12 @@ if (any(month_balance$n_variables != length(VARS)))
 write_csv(clim, OUT)
 saveRDS(list(
   signature = object_fingerprint(list(points = pts, windows = WINDOWS,
+                                      plot_years = plot_years,
                                       variables = VARS,
                                       backfill_daily_temp = BACKFILL_DAILY_TEMP,
                                       source_routes = todo[c("period", "var", "year", "route")],
                                       client = "CHELSA_V2.1")),
-  points = pts, windows = WINDOWS, variables = VARS,
+  points = pts, windows = WINDOWS, plot_years = plot_years, variables = VARS,
   source_routes = todo[c("period", "var", "year", "route")]
 ), file.path(CACHE, "_cache_fingerprint.rds"))
 cat("\nwritten: ", OUT, "\n", sep = "")

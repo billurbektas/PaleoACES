@@ -527,9 +527,9 @@ cat("\ninset check: ", nrow(hidden), " trajectory points and ", nrow(hidden_lab)
 #
 # The colour mapping differs BY DESIGN and each panel carries its own legend: in A
 # colour must encode site AND era (4 series in one space); in B site is the facet,
-# so spending colour on it again would be redundant - and the site x era scheme
-# gives each site two shades of one hue (MORA #648FFF vs #394e82), exactly the
-# comparison hardest to make by eye. Built by one function so the two panels
+# so panel B uses its era legend. Panel A keeps the same MORA blue and NOCA
+# orange across eras; endpoint shapes and labels identify the modern comparison.
+# Built by one function so the two panels
 # cannot drift apart in anything except the mapping.
 traj_panel = function(colour_var, pal, tag, facet = FALSE, title = NULL,
                       subtitle = NULL, caption = NULL) {

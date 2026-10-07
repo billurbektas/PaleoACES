@@ -107,9 +107,9 @@ for (nm in c("median", "q25", "q75", "whisker_low", "whisker_high"))
                      cmp[[paste0(nm, "_recorded")]])))
 
 stationary = modern |> filter(observed_vegetation_displacement <= 1e-8)
-stopifnot(nrow(stationary) == 153L, all(is.na(stationary$angle_degrees)),
+stopifnot(nrow(stationary) == 151L, all(is.na(stationary$angle_degrees)),
   identical(stationary |> count(site),
-    tibble(site = c("MORA", "NOCA"), n = c(78L, 75L))))
+    tibble(site = c("MORA", "NOCA"), n = c(76L, 75L))))
 background = raw |> filter(is.finite(angle_degrees),
                             is.finite(rate_tracking_ratio))
 box_spec = filter(spec, record_type == "box")
@@ -129,10 +129,10 @@ stopifnot(nrow(box_spec) == 6L,
   scatter_spec$panel == "D",
   scatter_spec$x_reference == 90, scatter_spec$y_reference == 1,
   scatter_spec$n_background == nrow(background),
-  scatter_spec$n_background == 587L,
+  scatter_spec$n_background == 589L,
   scatter_spec$n_macro == 4L, scatter_spec$n_detail == 8L,
   scatter_spec$n_noca_fire == 2L,
-  scatter_spec$n_stationary_angle_undefined == 153L,
+  scatter_spec$n_stationary_angle_undefined == 151L,
   scatter_spec$metric == "angle_degrees x rate_tracking_ratio",
   scatter_spec$grouping_contract ==
     "site=shape;lag=fill;fire=categorical outline;era=label",

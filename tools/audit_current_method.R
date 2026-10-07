@@ -90,6 +90,46 @@ record("independent raw NOCA erroneous-group stem reconciliation", length(mappin
 # Base-R monthly aggregation independently checks variable alignment, DJF year
 # assignment, seasonal sums, and means on every current modern climate row.
 monthly = rbind(read("MORA_climate"), read("NOCA_climate"))
+# Independently derive dates/windows from adult raw data, without the shared
+# date helper or seedling Year column. Check every plot, endpoint and denominator.
+adult_dates = read_csv(here("data/MORA/MORA_TreeData_Resurvey_Cleaned.csv"), show_col_types = FALSE)
+library_ids = read_csv(here("data/MORA/MORA_plot_lib.csv"), show_col_types = FALSE)
+latest = tapply(adult_dates$Year, adult_dates$Plot_ID, max)
+modern = read("cca_tracking_anthropocene_plot")
+mi = modern$site == "MORA"
+supplied = library_ids$Plot_ID[match(modern$plot_id[mi], library_ids$plot_id)]
+same(modern$vegetation_t2_year[mi], as.numeric(latest[supplied]), "independent latest adult MORA dates")
+wilson = read_csv(here("data/NOCA/NOCA_plots_fromWilson.csv"), show_col_types = FALSE)
+ni = !mi
+same(modern$vegetation_t2_year[ni], wilson$Resurvey.Year[
+  match(modern$plot_id[ni], toupper(trimws(wilson$`2015.Plot.Name`)))], "independent Wilson NOCA dates")
+same(modern$climate_t1_midyear, rep(1984, nrow(modern)), "historical climate midpoint retained")
+same(modern$climate_t2_midyear, modern$vegetation_t2_year - 2.5, "independent six-year modern midpoints")
+same(modern$climate_dt_years, modern$vegetation_t2_year - 1986.5, "independent plot-specific climate intervals")
+for (i in seq_len(nrow(modern))) {
+  x = monthly[monthly$plot_id == modern$plot_id[i] & monthly$period == "present", ]
+  Y = modern$vegetation_t2_year[i]
+  expected = expand.grid(variable = c("tasmin", "tasmax", "pr"), year = (Y-5):Y, month = 1:12)
+  expected = rbind(expected, data.frame(variable = c("tasmin", "tasmax", "pr"), year = Y-6, month = 12))
+  key = function(z) paste(z$variable, z$year, z$month)
+  stopifnot(nrow(x) == 219L, !anyDuplicated(key(x)), setequal(key(x), key(expected)))
+}
+record("independent full monthly windows including lead-in December", nrow(modern))
+
+# Optional pre-update fitted-object snapshot for the authorized before/after check.
+baseline_arg = commandArgs(TRUE)
+if (length(baseline_arg)) {
+  before = readRDS(baseline_arg[1])
+  stopifnot(identical(before$species_past_final, e$species_past_final),
+    identical(before$env_past_final, e$env_past_final), identical(before$keep_species, e$keep_species))
+  for (component in c("tot.chi", "grand.total", "rowsum", "colsum", "Ybar", "pCCA", "CCA", "CA"))
+    stopifnot(isTRUE(all.equal(before$cca_model[[component]], e$cca_model[[component]])))
+  stopifnot(identical(before$climate_summary[before$climate_summary$period == "past", ],
+    e$climate_summary[e$climate_summary$period == "past", ]),
+    identical(before$comparison_df[before$comparison_df$era == "holocene", ],
+      e$comparison_df[e$comparison_df$era == "holocene", ]))
+  record("pre-update calibration, retained taxa and complete numerical CCA fit unchanged", nrow(e$species_past_final))
+}
 monthly$key = paste(monthly$plot_id, monthly$site, monthly$period,
                     monthly$year, monthly$month, sep = "::")
 parts = split(monthly, monthly$variable)

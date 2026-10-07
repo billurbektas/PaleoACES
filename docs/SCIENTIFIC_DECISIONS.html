@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: d881ae8da702dea47c297d875eb24f23 -->
+<!-- paleoaces-source-md5: e39c1410cd89c6ec1face38966fec8ec -->
 
 <html>
 
@@ -1572,6 +1572,50 @@ the <a href="ANALYSIS_REVIEW.html#cca-sample-eligibility-and-exclusions">analysi
 review</a>. Figure 3’s previously unequal endpoint membership is
 corrected by this decision.</p>
 </div>
+<div id="adult-resurvey-dates-and-plot-specific-climate-decided-2026-10-07" class="section level2">
+<h2>Adult resurvey dates and plot-specific climate — decided
+2026-10-07</h2>
+<p><strong>Decision.</strong> Keep historical climate at
+<strong>1979–1989</strong>. For every modern plot, use its adult
+resurvey year <strong>Y</strong> and average <strong>Y−5 through Y,
+inclusive</strong>. The six years represent the interannual climate
+dynamics experienced before and during the survey. A 2014 visit uses
+2009–2014, including December 2008 for winter 2009. All modern
+constraints require six complete season-years.</p>
+<p><strong>Before:</strong> shared modern windows were 2010–2019 at MORA
+and 2010–2015 at NOCA; MORA modern presence pooled visits and used the
+minimum tree/seedling year. <strong>After:</strong> MORA seedling dates
+are assigned to their corresponding adult visit before selection; the
+latest adult year and matching seedlings are retained for the 13
+multi-year plots. Same-year records keep their existing pooling. NOCA
+retains Wilson’s plot-specific adult dates. The received CSVs are
+preserved; corrections are applied in the cleaner and audited row by
+row.</p>
+<p><strong>Source discrepancy.</strong> Original and cleaned MORA CSVs
+disagree with Master2019 and dated plot notes for <strong>95 supplied
+plot names, including 48 baseline analyzed pairs</strong>. The 95
+comprise 94 standardized IDs and the unassigned practice plot
+<code>PRAC-1</code>. Seedling and understory discrepancies overlap but
+are audited separately. The inconsistency already exists in the upstream
+original CSVs; <code>01_CleanMORA.R</code> passes their Year columns
+unchanged. The earlier CSV export process is unavailable, so its cause
+is unknown. Understory is evidence for dates, not an input to tree
+presence. Original visit names and verified mappings resolve mislabeled
+repeat visits, especially RAMP-505/RAMP-506, before filtering.</p>
+<p>Climate intervals are calculated per plot from <strong>1984</strong>
+to <strong>Y−2.5</strong>; vegetation intervals use 1977.5 (MORA) or
+1983 (NOCA) to Y. These dates feed climate summaries, CCA projections,
+community trajectories, tracking and direction results. CCA settings and
+the species rule are unchanged; legacy calibration and Holocene results
+must remain unchanged.</p>
+<p><a href="../data/SOURCES_SURVEY_YEARS.html">Date evidence and
+rationale</a>, <a href="../data/MORA/resurvey_year_source_discrepancies.csv">95-plot
+discrepancy table</a>, <a href="assets/analysis/tables/mora_repeat_visits.csv">13 latest
+visits</a>, <a href="../data/MORA/resurvey_seedling_visit_mapping.csv">seedling visit
+mapping</a> and <a href="ANALYSIS_REVIEW.html#effects-of-the-2026-10-07-survey-date-decision">measured
+effects</a> record the adopted treatment. The chronology decisions below
+remain settled.</p>
+</div>
 <div id="chronology-and-the-previously-discussed-²¹⁰pb-uncertainty" class="section level2">
 <h2>Chronology and the previously discussed ²¹⁰Pb uncertainty</h2>
 <p>The Panther Potholes ²¹⁰Pb error units were discussed and documented
@@ -1702,8 +1746,8 @@ four constraints. Its combined standardized magnitude is the Euclidean
 norm after scaling by pooled legacy-calibration SDs.</li>
 <li>Anthropocene vegetation rates use each plot’s resurvey year: MORA
 relative to 1977.5 and NOCA relative to 1983. Climate-predicted and
-physical-climate rates use 30.5-year MORA and 28.5-year NOCA
-window-midpoint intervals.</li>
+physical-climate rates use each plot’s interval from 1984 to Y−2.5 (MORA
+27.5–32.5 years; NOCA 27.5–28.5 years).</li>
 <li>Primary Holocene tracking uses consecutive 1,000-year bins, ten
 100-year offsets, and all 100 whole-chronology Bacon draws. Metrics are
 calculated for every MORA/NOCA site × offset × draw × interval
@@ -1733,14 +1777,14 @@ provide the prespecified sampling-density sensitivity.</li>
 <li>Endpoint lag is <code>||LC-WA||</code>; the displayed signed lag is
 <code>lag_t2-lag_t1</code>. Positive values mean mismatch opened and
 negative values mean it closed. Lag per century uses the climate
-interval denominator: 1,000 years for Holocene, 30.5 years for MORA
-Anthropocene, and 28.5 years for NOCA.</li>
+interval denominator: 1,000 years for Holocene and (Y−2.5)−1984 for each
+Anthropocene plot.</li>
 <li>The integrated tracking figure uses MORA/NOCA site-date summaries,
 not individual lakes. Every boxplot has fixed-scale MORA and NOCA
 facets, with Holocene/Anthropocene or Holocene climate-state groups on
 the x-axis and fire status explicitly dodged within each group. The two
 burned MORA pairs are omitted and recorded in a scope audit; the NOCA
-Anthropocene boxes retain and distinguish 254 unburned and 23 burned
+Anthropocene boxes retain and distinguish 252 unburned and 23 burned
 pairs. The Holocene details compare Holocene climate change and Holocene
 climate stability, then split each state by high-fire status. Every box
 retains the same physical width even when its category contains only one
@@ -1759,13 +1803,13 @@ climate/fire context, and each pooled climate-state label lists the
 exact numbered eras represented in that site × state × fire group. The
 scatter is centered at 75% of the unchanged A–C row width to avoid
 giving this descriptive panel disproportionate visual weight. Site is
-shape; fire evidence is the only categorical red encoding. The 153
-stationary Anthropocene plots (78 MORA, 75 NOCA) remain in non-angle
+shape; fire evidence is the only categorical red encoding. The 151
+stationary Anthropocene plots (76 MORA, 75 NOCA) remain in non-angle
 summaries; their counts are labelled rather than assigning a false 0°
 direction. Median-point fill is signed raw lag on one symmetric
 blue–neutral–vermillion scale centered at zero and labelled
 <code>Lag</code>. All 137 Holocene site-dates and all 605 modern source
-pairs enter the scope audit; 605 modern pairs remain after the explicit
+pairs enter the scope audit; 603 modern pairs remain after the explicit
 MORA fire exclusion.</li>
 </ul>
 </div>
@@ -1836,12 +1880,12 @@ Holocene climate, MORA and NOCA raw 1,000-year changes receive equal
 weight within each offset, are divided by ten, summarized by the median
 across offsets at each date, and then selected as the maximum-absolute
 regional median while retaining sign and age. Anthropocene entries are
-annualized short-window contrasts: MORA compares 1979–1989 with
-2010–2019 over 30.5 midpoint years, and NOCA compares 1979–1989 with
-2010–2015 over 28.5 midpoint years. The table shows site-specific
-medians of plot-level physical rates; standardized scores are not used.
-The MORA precipitation contrast carries the possible post-2010 CHELSA
-inhomogeneity caveat documented in
+annualized short-window contrasts: MORA compares 1979–1989 with each
+adult year Y−5 through Y, using plot-specific midpoint intervals of
+27.5–32.5 years at MORA and 27.5–28.5 years at NOCA. The table shows
+site-specific medians of plot-level physical rates; standardized scores
+are not used. The MORA precipitation contrast carries the possible
+post-2010 CHELSA inhomogeneity caveat documented in
 <code>data/SOURCES_SURVEY_YEARS.md</code>.</li>
 <li>Climate classification does not read fire, literature, archaeology,
 vegetation, or tracking. The maintained literature table remains a
@@ -1972,7 +2016,7 @@ scaling intentionally does not and is forbidden.</li>
 <li>The stage retains 10,285 paired target contrasts from all 605
 Anthropocene pairs and 259,590 from all 15,270 primary Holocene
 realizations. Its draw-within-offset and complete-ten-offset hierarchy
-yields 2,329 site-date contrasts and 204 final group summaries. The 153
+yields 2,329 site-date contrasts and 204 final group summaries. The 151
 near-zero observed modern movements have <code>NA</code> paired
 contrasts, while their independently valid predicted associations remain
 available for audit.</li>
@@ -2044,9 +2088,9 @@ dataset-relative effect sizes.</td>
 </tr>
 <tr class="odd">
 <td>Anthropocene precipitation continuity</td>
-<td>The agreed MORA and NOCA windows remain 1979–1989 to 2010–2019 and
-1979–1989 to 2010–2015, respectively; unequal resurvey-window lengths
-are accepted. The MORA precipitation contrast is flagged.</td>
+<td>Historical climate remains 1979–1989; modern climate uses adult Y−5
+through Y at both sites (2026-10-07 decision). The MORA precipitation
+contrast is flagged.</td>
 <td>The apparent post-2010 MORA precipitation shift may partly reflect
 CHELSA inhomogeneity rather than climate.</td>
 <td>Independent station/reanalysis validation and a documented decision
@@ -2077,11 +2121,13 @@ exceed 1.4 m. Neither stratum is an identical size-class measurement
 across dates.</li>
 <li><strong>Primary provenance for MORA survey dates:</strong> the
 analysis-year choice is resolved. MORA vegetation rates use 1977.5 as
-the legacy reference and each plot’s recorded resurvey year; the modeled
-resurveys span 2014–2019. Climate windows remain 1979–1989 and
-2010–2019. The original Torres draft and primary legacy-date records are
-not filed in the repository, so their historical verification remains a
-provenance limitation, not an undecided analysis setting. See <a href="../data/SOURCES_SURVEY_YEARS.html">survey-year sources</a>.</li>
+the legacy reference and each plot’s selected adult resurvey year; the
+modeled resurveys span 2014–2019. Historical climate remains 1979–1989;
+modern climate uses Y−5 through Y. The original Torres draft and primary
+legacy-date records are not filed in the repository, so their historical
+verification remains a provenance limitation, not an undecided analysis
+setting. See <a href="../data/SOURCES_SURVEY_YEARS.html">survey-year
+sources</a>.</li>
 <li>Climate and fire are classified independently and merely aligned in
 the integrated figure; neither evidence stream defines the other.
 Literature is not part of this stage and cannot change a boundary.</li>

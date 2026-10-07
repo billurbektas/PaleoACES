@@ -22,7 +22,7 @@ the maintained code, scientific documents and authoritative local inputs.
 | `docs/` | Scientific review, decisions, captions, workflow, indexes and HTML companions. |
 | `docs/methods/`, `docs/references/` | Detailed cleaning, consolidation, metric methods and literature context. |
 | `docs/review/` | Combined analysis reading copy, GPS source note, stored Pb210 comparison and TraCE21k–V2.1 appendix. |
-| `docs/report/`, `docs/assets/analysis/` | Review template and figure selection; generated previews, curated tables and verification metadata. |
+| `docs/report/`, `docs/assets/analysis/` | Review template, figure selection and dated survey-decision baseline; generated previews, curated tables and verification metadata. |
 | `related_publications/` | Local reference papers. |
 
 Raw inputs, large results, native caches, stored posteriors and local settings
@@ -47,3 +47,8 @@ duplicates are retained and are not substituted automatically.
 The [documentation index](INDEX.md) links the detailed source notes.
 [OUTPUTS](OUTPUTS.md) identifies result tables and their producers;
 [WORKFLOW](WORKFLOW.md) gives script order, dependencies and verification commands.
+
+The two small versioned MORA reference CSVs record vetted seedling-to-adult visit
+mappings and the source-year discrepancy audit. They supplement the received
+inputs without editing them. `R/helpers/survey_years.R` applies the date rule;
+`R/helpers/survey_decision_effects.R` compares its results with the dated baseline.

@@ -100,18 +100,18 @@ stopifnot(
   all(holo$direct_angle_degrees[is.finite(holo$direct_angle_degrees)] <= 180)
 )
 
-# The 153 unchanged modern assemblages have undefined observed direction but
+# The 151 unchanged modern assemblages have undefined observed direction but
 # retain every independently valid predicted association.
 stationary = anth |>
   filter(observed_small_movement) |>
   distinct(site, plot_id)
-stopifnot(nrow(stationary) == 153L,
+stopifnot(nrow(stationary) == 151L,
           !any(holo$observed_small_movement),
           !any(holo$predicted_small_movement),
           !any(anth$predicted_small_movement))
 predicted_stationary = anth |>
   semi_join(stationary, by = c("site", "plot_id"))
-stopifnot(nrow(predicted_stationary) == 153L * 17L,
+stopifnot(nrow(predicted_stationary) == 151L * 17L,
           all(predicted_stationary$predicted_association_valid),
           !any(predicted_stationary$observed_association_valid),
           !any(predicted_stationary$contrast_valid),

@@ -1,3 +1,5 @@
+PAPER_SITE_COLORS = c(MORA = "#648FFF", NOCA = "#FE6100")
+
 # Shared publication styling for the four main PaleoACES figures.
 
 PAPER_BASE_SIZE = 13

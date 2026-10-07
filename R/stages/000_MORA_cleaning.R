@@ -18,6 +18,7 @@ library(viridis)
 library(ggalluvial)
 library(here)
 source(here("R/helpers/functions.R"), local = TRUE)
+source(here("R/helpers/survey_years.R"), local = TRUE)
 render_figures = isTRUE(getOption("paleoaces.render_figures", TRUE))
 
 # Past (1978) raw sources: seedlings from "Rainier Veg", adults from "rawsizedata"
@@ -34,6 +35,19 @@ MORA_trees     = read_csv(here("data/MORA/MORA_TreeData_Resurvey_Cleaned.csv"))
 MORA_plot_lib = read_csv(here("data/MORA/MORA_plot_lib.csv"))
 MORA_sp_lib = read_csv(here("data/MORA/MORA_spp_lib.csv"))
 MORA_sp_lib = MORA_sp_lib %>% mutate(past_code = ifelse(past_code == "TSH4", "TSHE", past_code))
+
+# Resolve survey visits BEFORE coding modern species presence. Adult dates are
+# authoritative. Match seedlings to their original adult visit first (including
+# the verified mislabeled repeat visits), then retain the latest adult year.
+# Records from visits tied within that year remain pooled. Received CSVs are
+# preserved; assigned dates and every discarded row are exported for review.
+MORA_visits = resolve_mora_resurveys(MORA_trees, MORA_seedlings, MORA_plot_lib,
+  read_csv(here("data/MORA/resurvey_seedling_visit_mapping.csv"), show_col_types = FALSE))
+MORA_trees = MORA_visits$trees
+MORA_seedlings = MORA_visits$seedlings
+write_csv(MORA_visits$audit, here("output/MORA_resurvey_record_audit.csv"))
+write_csv(MORA_visits$visits, here("output/MORA_resurvey_visit_audit.csv"))
+write_csv(MORA_visits$years, here("output/MORA_plot_years.csv"))
 
 # ---- in-memory patch: the legacy Populus code (same pattern as TSH4 above) ---
 # MORA_spp_lib.csv's only Populus row is `past_code = "absent_past" / prst_code =
@@ -264,14 +278,12 @@ clean_present = function(mora_seedlings, mora_trees, mora_plot_lib, mora_sp_lib)
 
   cat("  - Adult records (resurvey tree survey):", nrow(present_adults), "\n")
 
-  # Survey year per plot (resurvey spans 2014-2020; the seedling and tree
-  # surveys of a plot can fall in different years, so a single representative
-  # year per plot is used to keep the seedling/adult merge clean)
-  present_year = bind_rows(mora_seedlings %>% select(Plot_ID, Year),
-                           mora_trees %>% select(Plot_ID, Year)) %>%
-    filter(!is.na(Year)) %>%
+  # Both inputs already represent the selected adult visit, with seedling years
+  # assigned to that visit. A second year here would be an unresolved join error.
+  present_year = mora_trees %>% select(Plot_ID, Year) %>%
     group_by(Plot_ID) %>%
-    summarize(year = min(Year), .groups = "drop")
+    summarize(year = unique(Year), .groups = "drop")
+  stopifnot(!anyDuplicated(present_year$Plot_ID))
 
   # Combine seedling and adult occurrences
   present_long = bind_rows(present_seedlings, present_adults) %>%

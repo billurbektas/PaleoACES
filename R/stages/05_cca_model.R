@@ -135,7 +135,7 @@ if (!exists("cca_hill"))    cca_hill    = FALSE
 
 color_mt       = c("MORA" = "#648FFF", "NOCA" = "#FE6100")
 color_site_era = c("MORA.anthropocene" = "#648FFF", "NOCA.anthropocene" = "#FE6100",
-                   "MORA.holocene"     = "#394e82", "NOCA.holocene"     = "#8C3B00")
+                   "MORA.holocene"     = "#648FFF", "NOCA.holocene"     = "#FE6100")
 color_era_pp   = c("anthropocene" = "#DC267F", "holocene" = "#785EF0")
 
 # -----------------------------------------------------------------------------
@@ -344,11 +344,13 @@ fire_summary = bind_rows(
 # SAME function 000_PALEO_e_climate.R uses, so a season cannot mean one thing in
 # the Holocene arm and another in the Anthropocene arm.
 source(here("R/helpers/climate_variables.R"), local = TRUE)
+source(here("R/helpers/survey_years.R"), local = TRUE)
+plot_years = read_plot_years()
 
 climate_monthly = bind_rows(
   read_csv(here("output/MORA_climate.csv"), show_col_types = FALSE),
   read_csv(here("output/NOCA_climate.csv"), show_col_types = FALSE)
-)
+) %>% restrict_modern_months(plot_years)
 
 # site is folded into the grouping key because derive_climate_vars() groups by
 # unit x period, and "past" means a different set of years at the two sites.
@@ -356,8 +358,10 @@ climate_annual = climate_monthly %>%
   transmute(unit = plot_id, period = paste(site, period, sep = "."),
             variable, time = year, month, value) %>%
   derive_climate_vars(winter_shift = TRUE) %>%
+  restrict_modern_seasons(plot_years) %>%
   # winter_shift moves each December into the FOLLOWING winter, so the last
-  # December of a window opens a trailing year that holds nothing else. Dropping
+  # December of a window opens a trailing year that holds nothing else. Restricting
+  # to the plot-specific season-years removes it. Dropping
   # rows where every CCA variable is NA removes it, and removes the lead-in year
   # for the same reason, without hardcoding the windows a third time.
   filter(if_any(all_of(CCA_VARIABLES), ~ !is.na(.x)))
@@ -379,6 +383,10 @@ climate_summary = climate_annual %>%
   separate_wider_delim(period, ".", names = c("site", "period")) %>%
   rename(plot_id = unit) %>%
   mutate(era = "anthropocene")
+
+if (any(as.matrix(climate_summary %>% filter(period == "present") %>%
+      select(starts_with("n_"))) != 6L))
+  stop("Every modern CCA climate constraint requires six complete season-years.")
 
 cat("\nAnthropocene climate - complete season-years per window:\n")
 print(as.data.frame(climate_summary %>% group_by(site, period) %>%

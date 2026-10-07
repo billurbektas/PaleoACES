@@ -41,7 +41,7 @@ variable_colors = c(MSpT = "#EE6677", MWT = "#4477AA",
                     SP = "#CCBB44", WP = "#228833")
 # The aligned MORA/NOCA lanes carry the site distinction. High-fire observations
 # use the same restrained red as burned/high-fire groups in every main figure.
-site_colors = c(MORA = "grey20", NOCA = "grey20")
+site_colors = PAPER_SITE_COLORS
 era_colors = c(`climate change` = "#D3D3D6",
                `relative stability` = "#EEEEF0")
 time_limits = c(10500, 0)

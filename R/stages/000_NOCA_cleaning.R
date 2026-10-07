@@ -5,6 +5,7 @@ suppressPackageStartupMessages({
   library(ggalluvial)
 })
 source(here("R/helpers/functions.R"), local = TRUE)
+source(here("R/helpers/survey_years.R"), local = TRUE)
 render_figures = isTRUE(getOption("paleoaces.render_figures", TRUE))
 
 # Get overstory ----
@@ -689,6 +690,20 @@ write_csv(NOCA_plot_info, file = here("output/NOCA_plot_info.csv"))
 write_csv(NOCA_coordinate_collision_audit,
           file = here("output/NOCA_coordinate_collision_audit.csv"))
 write_csv(NOCA_occ, file = here("output/NOCA_occ.csv"))
+# Wilson's plot-specific adult resurvey dates remain authoritative for NOCA.
+# One shared table now feeds both sites' climate windows and rate denominators.
+NOCA_plot_years = read_csv(here("data/NOCA/NOCA_plots_fromWilson.csv"),
+  show_col_types = FALSE) %>%
+  transmute(site = "NOCA", plot_id = toupper(trimws(`2015.Plot.Name`)),
+    vegetation_t2_year = as.numeric(Resurvey.Year)) %>%
+  filter(plot_id %in% NOCA_occ$plot_id) %>% survey_windows()
+write_csv(NOCA_plot_years, here("output/NOCA_plot_years.csv"))
+modern_plot_years = bind_rows(
+  read_csv(here("output/MORA_plot_years.csv"), show_col_types = FALSE) %>%
+    filter(plot_id %in% read_csv(here("output/MORA_occ.csv"),
+      show_col_types = FALSE)$plot_id), NOCA_plot_years)
+write_csv(modern_plot_years, here("output/modern_plot_years.csv"))
+saveRDS(plot_year_input_hashes(), here("output/modern_plot_years_sources.rds"))
 write_csv(plot_tracking, file = here("output/NOCA_plot_tracking.csv"))
 write_csv(NOCA_study_exclusions,
           file = here("output/NOCA_study_exclusions.csv"))

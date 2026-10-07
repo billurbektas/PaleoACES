@@ -116,18 +116,18 @@ flowchart TD
 
 | Order | Script | Status and purpose | Inputs | Outputs and validation |
 |---:|---|---|---|---|
-| 1a | `R/stages/000_MORA_cleaning.R` | Required modern vegetation cleaning | Original 1978 workbook, resurvey tree/seedling files, plot/species libraries | `MORA_occ.csv`, stage and plot tables; paired plots, duplicates, source reconciliation |
+| 1a | `R/stages/000_MORA_cleaning.R` | Required modern vegetation cleaning | Original 1978 workbook, resurvey tree/seedling files, plot/species libraries | `MORA_occ.csv`, stage/plot tables and adult-visit audits; latest adult year with matching seedlings; `MORA_plot_years.csv` |
 | 1b | `R/stages/000_NOCA_cleaning.R` | Required 2026 tree patch and study exclusions | Agee/JHRL data, corrected workbook, Wilson plots, Rachel notes | `NOCA_occ.csv`, stage/plot tables and audits, including excluded `CARI449`/`CARI450` GPS-collision evidence; 305 plots, 1,775 rows, 31 taxa |
 | 2 | `R/stages/01_get_fire_info.R` | Required Anthropocene fire assignment | Clean plot tables, MORA disturbances, Wilson fire package/reference | MORA/NOCA fire tables and map; NOCA 305/32/273 and zero disagreement among 303 common plots |
-| 3a | `R/stages/000_MORA_climate.R` | Required modern CHELSA V2.1 extraction | MORA IDs/coordinates and monthly service/cache | `MORA_climate.csv`; coordinate/variable/year/value fingerprints |
-| 3b | `R/stages/000_NOCA_climate.R` | Required NOCA equivalent | NOCA IDs/coordinates and monthly service/cache | `NOCA_climate.csv`; same cache validation |
+| 3a | `R/stages/000_MORA_climate.R` | Required modern CHELSA V2.1 extraction | MORA IDs/coordinates, shared adult-year table and monthly service/cache | `MORA_climate.csv`; coordinate/variable/year/value fingerprints |
+| 3b | `R/stages/000_NOCA_climate.R` | Required NOCA equivalent | NOCA IDs/coordinates, shared adult-year table and monthly service/cache | `NOCA_climate.csv`; same cache validation |
 | 4 | `R/stages/000_PALEO_a_agedepth.R` | Manual/conditional seeded Bacon refit | Core controls and `R/helpers/bacon_settings.R` | Four primary models, ±10-year sensitivity, figures, manifest; about 15–30 min |
 | 5 | `R/stages/000_PALEO_b_vegetation.R` | Required plant-macrofossil preparation | MORA workbook, NOCA Neotoma 52207, Bacon outputs | `paleo_occ.csv`, macrofossil long table, sample depths |
 | 6a | `R/stages/000_FIRE_cleaning.R` | Required harmonized MORA `tapas` catalogs | Three MORA charcoal workbooks | `fire_walsh.csv` plus MORA tapas series/events/settings; 17 Sunrise, 14 Shadow, and 13 Little Sunrise accepted events |
 | 6b | `R/stages/000_PALEO_c_fire.R` | Required harmonized NOCA `tapas` catalog and combined sample fire | Paleo vegetation, MORA catalog, NOCA Neotoma charcoal/Bacon ages | NOCA series/events/settings, `fire_noca_peaks.csv`, `paleo_fire.csv`; 12/500/99 primary with 66 peaks and 12.5-year interpolation sensitivity |
 | 7a | `R/stages/000_PALEO_d_climate_download.R` | Validated native-cache aggregation; download only in online mode | Four pond coordinates and CHELSA services | `chelsa_paleo_ponds.csv`, chunks and bias anchor; atomic complete-cache validation |
 | 7b | `R/stages/000_PALEO_e_climate.R` | Required seasonal derivation and age match | Cached pond climate and paleo samples | `paleo_env.csv`; complete nearest-slice match within tolerance |
-| 8 | `R/stages/000_occurrence_data_consolidate.R` | Required taxonomy and occurrence consolidation | Three occurrence tables and stage data | `occ_consolidated.csv`; 13,672 rows, 21 taxa, 1,601 samples |
+| 8 | `R/stages/000_occurrence_data_consolidate.R` | Required taxonomy and occurrence consolidation | Three occurrence tables and stage data | `occ_consolidated.csv`; 13,647 rows, 21 taxa, 1,599 plots/samples |
 | 9 | `R/stages/05_cca_model.R` | Required pooled calibration/projection | Consolidated occurrence, modern/paleo climate and fire | In-memory CCA/model scores; 20 threshold, scaling 1, 13 species, 618 calibration plots |
 | 10a | `R/stages/09_tracking_metrics_500yr_sensitivity.R` | Explicit former-framework sensitivity | Model, all Bacon draws, native pond climate | All Holocene metric tables with `_500yr` suffix; five offsets |
 | 10b | `R/stages/09_tracking_metrics.R` | Authoritative 1,000-year site tracking | Same inputs | Unsuffixed MORA/NOCA realization, by-offset and half-open-mapped time-series tables; ten offsets, all draws, lag and lag/century, sparse-bin flags and `nmin2` sensitivity |
@@ -136,7 +136,7 @@ flowchart TD
 | 10e | `R/stages/05a_cca_figure.R` | Selected CCA trajectory data and main render | Model, positioned Holocene samples, stage-13 frozen CC/S grid | `cca_trajectory_era_centroids.csv` and, when rendering, main-paper `fig_cca_trajectories.pdf/.png` |
 | 10f | `R/stages/09a_method_example.R` | Worked metric illustration | Authoritative tracking/model objects | PDF-only worked example under `plot/test_figures/` when rendering |
 | 10g | `R/stages/12a_fire_event_detection_worked_example.R` | Step-by-step accepted-event detection for all four cores | All-`tapas` source series with local thresholds, candidate/count-screen flags, and accepted events | `fire_event_detection_lake_audit.csv` and, when rendering, PDF-only six-page audit under `plot/test_figures/` |
-| 10h | `R/stages/13a_climate_change_figure.R` | Climate/subphase/fire display data and render | Stage-13 directional cells, eras, subphases, fire frequency and thresholds; annualized Anthropocene plot-level contrasts for MORA 1979–1989 to 2010–2019 (30.5 midpoint years) and NOCA 1979–1989 to 2010–2015 (28.5 midpoint years) | Fire-ratio and raw-rate comparison tables, including the maximum-absolute Holocene regional median after ten-offset aggregation, plus the main-paper PDF/PNG when rendering |
+| 10h | `R/stages/13a_climate_change_figure.R` | Climate/subphase/fire display data and render | Stage-13 directional cells, eras, subphases, fire frequency and thresholds; annualized Anthropocene plot-level contrasts for historical 1979–1989 and plot-specific modern Y−5 through Y (MORA 27.5–32.5 midpoint years; NOCA 27.5–28.5) | Fire-ratio and raw-rate comparison tables, including the maximum-absolute Holocene regional median after ten-offset aggregation, plus the main-paper PDF/PNG when rendering |
 | 10i | `R/stages/13b_fire_method_worked_example.R` | Fire-classification arithmetic audit and illustration | Stage-12 accepted events and stage-13 core/site fire-frequency tables | `holocene_fire_method_worked_example.csv` and a PDF-only audit under `plot/test_figures/` |
 | 10j | `R/stages/09b_tracking_visualization_data.R` | Site/era point and resolution audit | Primary and 500-year site series, 605 modern plots, frozen CC/S grid | Visualization-point, era-coverage, and interval-resolution audit CSVs |
 | 10k | `R/stages/09c_tracking_comparison.R` | Integrated descriptive tracking/fire summaries and render | Complete 137 Holocene site-dates; all 605 modern pairs; modern and Holocene fire audits | Summary/specification/audit CSVs plus, when rendering, main-paper `fig_tracking_comparison.pdf/.png` |
@@ -246,3 +246,9 @@ keep these checks available separately from the scientific narrative.
 
 Reusable independent checks and portable-report validation remain under
 `tools/`; failure tests that alter inputs run only in an isolated copy.
+
+Modern climate aggregates are rebuilt from validated native chunks even in offline
+mode. `output/modern_plot_years.csv` is produced after both cleaners; it supplies
+adult Y, six-year modern windows Y−5 through Y, and per-plot vegetation/climate
+elapsed times. A changed date input requires cleaning again before projections.
+The MORA record and visit audits preserve the assignment and selection evidence.

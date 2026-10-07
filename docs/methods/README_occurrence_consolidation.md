@@ -428,9 +428,9 @@ is printed on the figure caption, not left to the reader.
 
 ## 9. ⚠ The Anthropocene part is presence-only
 
-The current `output/occ_consolidated.csv` has 13,672 rows because it combines two
+The current `output/occ_consolidated.csv` has 13,647 rows because it combines two
 representations: the Holocene input is a complete 9,590-row sample × species grid,
-whereas the Anthropocene part has **4,082 rows against 25,520 possible plot ×
+whereas the Anthropocene part has **4,057 rows against 25,440 possible plot ×
 species × period combinations**. In the Anthropocene part an absence is normally a
 **missing row**, not a zero; its 18 `occurrence == 0` rows are synthetic markers
 for plots empty in one period.

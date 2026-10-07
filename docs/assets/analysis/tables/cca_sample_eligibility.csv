@@ -310,11 +310,11 @@ MORA,anthropocene,present,LONG-044,TRUE,3,3,3,3,TRUE,4,included,Included,TRUE,TR
 MORA,anthropocene,past,LONG-056,TRUE,3,3,3,3,TRUE,3,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 MORA,anthropocene,present,LONG-056,TRUE,6,6,5,5,TRUE,3,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 MORA,anthropocene,past,LONG-356,TRUE,5,5,3,3,TRUE,5,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
-MORA,anthropocene,present,LONG-356,TRUE,8,7,5,5,TRUE,5,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
+MORA,anthropocene,present,LONG-356,TRUE,7,6,4,4,TRUE,5,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 MORA,anthropocene,past,LOUI-325,TRUE,3,3,3,3,TRUE,3,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 MORA,anthropocene,present,LOUI-325,TRUE,5,5,5,5,TRUE,3,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 MORA,anthropocene,past,LOWE-045,TRUE,3,3,3,3,TRUE,3,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
-MORA,anthropocene,present,LOWE-045,TRUE,4,3,3,3,TRUE,3,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
+MORA,anthropocene,present,LOWE-045,TRUE,3,3,3,3,TRUE,3,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 MORA,anthropocene,past,LOWE-132,TRUE,4,4,4,4,TRUE,4,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 MORA,anthropocene,present,LOWE-132,TRUE,6,5,3,3,TRUE,4,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 MORA,anthropocene,past,LOWE-133,TRUE,4,4,4,4,TRUE,4,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
@@ -472,7 +472,7 @@ MORA,anthropocene,present,RAMP-503,TRUE,5,5,5,5,TRUE,4,included,Included,TRUE,TR
 MORA,anthropocene,past,RAMP-504,TRUE,5,5,5,5,TRUE,5,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 MORA,anthropocene,present,RAMP-504,TRUE,3,3,3,3,TRUE,5,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 MORA,anthropocene,past,RAMP-505,TRUE,4,4,4,4,TRUE,4,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
-MORA,anthropocene,present,RAMP-505,TRUE,9,8,8,8,TRUE,4,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
+MORA,anthropocene,present,RAMP-505,TRUE,5,4,4,4,TRUE,4,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 MORA,anthropocene,past,RAMP-506,TRUE,6,6,6,6,TRUE,6,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 MORA,anthropocene,present,RAMP-506,TRUE,3,3,3,3,TRUE,6,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 MORA,anthropocene,past,RAMP-507,TRUE,4,4,4,4,TRUE,4,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
@@ -516,7 +516,7 @@ MORA,anthropocene,present,SMO-181,TRUE,6,5,4,4,TRUE,4,included,Included,TRUE,TRU
 MORA,anthropocene,past,SMO-182,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 MORA,anthropocene,present,SMO-182,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 MORA,anthropocene,past,SMO-364,TRUE,3,3,3,3,TRUE,3,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
-MORA,anthropocene,present,SMO-364,TRUE,3,3,3,3,TRUE,3,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
+MORA,anthropocene,present,SMO-364,TRUE,2,2,2,2,TRUE,3,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 MORA,anthropocene,past,SMO-366,TRUE,4,4,4,4,TRUE,4,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 MORA,anthropocene,present,SMO-366,TRUE,3,3,3,3,TRUE,4,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 MORA,anthropocene,past,SMO-464,TRUE,3,3,3,3,TRUE,3,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
@@ -570,7 +570,7 @@ MORA,anthropocene,present,SUNR-368,TRUE,4,4,4,4,TRUE,6,included,Included,TRUE,TR
 MORA,anthropocene,past,SUNR-371,TRUE,6,6,6,6,TRUE,6,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 MORA,anthropocene,present,SUNR-371,TRUE,4,4,4,4,TRUE,6,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 MORA,anthropocene,past,SUNS-046,TRUE,3,3,3,3,TRUE,3,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
-MORA,anthropocene,present,SUNS-046,TRUE,4,3,3,3,TRUE,3,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
+MORA,anthropocene,present,SUNS-046,TRUE,3,2,2,2,TRUE,3,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 MORA,anthropocene,past,SUNS-360,TRUE,3,3,3,3,TRUE,3,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 MORA,anthropocene,present,SUNS-360,TRUE,5,3,3,3,TRUE,3,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 MORA,anthropocene,past,SUNS-361,TRUE,3,3,3,3,TRUE,3,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
@@ -658,9 +658,9 @@ MORA,anthropocene,present,WHIT-205,TRUE,4,4,4,4,TRUE,4,included,Included,TRUE,TR
 MORA,anthropocene,past,WHIT-265,TRUE,4,4,4,4,TRUE,4,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 MORA,anthropocene,present,WHIT-265,TRUE,4,3,3,3,TRUE,4,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 MORA,anthropocene,past,WHIT-273,TRUE,5,5,5,5,TRUE,5,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
-MORA,anthropocene,present,WHIT-273,TRUE,8,8,5,5,TRUE,5,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
+MORA,anthropocene,present,WHIT-273,TRUE,5,5,4,4,TRUE,5,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 MORA,anthropocene,past,WHIT-307,TRUE,7,7,7,7,TRUE,7,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
-MORA,anthropocene,present,WHIT-307,TRUE,5,5,5,5,TRUE,7,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
+MORA,anthropocene,present,WHIT-307,TRUE,4,4,4,4,TRUE,7,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 NOCA,anthropocene,past,ANNE263,TRUE,1,1,0,0,TRUE,1,species_selection,Only taxa excluded by CCA species selection,FALSE,FALSE,past,Only taxa excluded by CCA species selection,FALSE,FALSE,Only taxa excluded by CCA species selection
 NOCA,anthropocene,present,ANNE263,TRUE,4,4,3,3,TRUE,1,included,Included,TRUE,FALSE,past,Only taxa excluded by CCA species selection,FALSE,FALSE,Only taxa excluded by CCA species selection
 NOCA,anthropocene,past,ANNE264,TRUE,0,0,0,0,TRUE,0,no_recorded_taxa,No tree taxa recorded at legacy,FALSE,FALSE,past,No tree taxa recorded at legacy,FALSE,FALSE,No tree taxa recorded at legacy

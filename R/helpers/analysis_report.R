@@ -57,6 +57,22 @@ report_export_cca = function(model_env) {
   write(counts |> dplyr::left_join(calibrated, by = c("site", "period")) |> dplyr::left_join(positioned, by = c("site", "period")), "cca_counts")
   write(e$climate_summary |> dplyr::group_by(site, period) |>
     dplyr::summarize(plots = dplyr::n(), dplyr::across(dplyr::starts_with("n_"), max), .groups = "drop"), "climate_windows")
+  write(readr::read_csv(here::here("data/MORA/resurvey_year_source_discrepancies.csv"),
+    show_col_types = FALSE), "year_source_discrepancies")
+  visits = readr::read_csv(here::here("output/MORA_resurvey_visit_audit.csv"), show_col_types = FALSE)
+  mapping = readr::read_csv(here::here("data/MORA/resurvey_seedling_visit_mapping.csv"), show_col_types = FALSE)
+  write(mapping, "seedling_visit_mapping")
+  repeat_visits = visits |> dplyr::filter(stage == "adult") |>
+    dplyr::group_by(Plot_ID, plot_id) |> dplyr::filter(dplyr::n_distinct(assigned_year) > 1L) |>
+    dplyr::summarise(adult_years = paste(sort(unique(assigned_year)), collapse = "; "),
+      selected_year = unique(selected_year), adults_kept = sum(records[selected]),
+      adults_discarded = sum(records[!selected]), .groups = "drop") |>
+    dplyr::left_join(mapping |> dplyr::filter(adult_year == ave(adult_year, Plot_ID, FUN = max)) |>
+      dplyr::distinct(Plot_ID, selected_year = adult_year, visit_date, evidence),
+      by = c("Plot_ID", "selected_year"))
+  if (nrow(repeat_visits) != 13L || anyNA(repeat_visits$visit_date))
+    stop("The 13 repeat MORA plots require documented latest adult visits.")
+  write(repeat_visits, "mora_repeat_visits")
   cleaning = lapply(c("MORA", "NOCA", "paleo"), function(name) {
     x = readr::read_csv(here::here("output", paste0(name, "_occ.csv")), show_col_types = FALSE)
     data.frame(source = name, rows = nrow(x), plot_or_sample_ids = dplyr::n_distinct(x$plot_id), taxa = dplyr::n_distinct(x$species))

@@ -129,6 +129,25 @@ if (!all(file.exists(paths)))
 
 scaling = read_csv(paths[1], show_col_types = FALSE)
 anth = read_csv(paths[2], show_col_types = FALSE)
+source(here("R/helpers/survey_years.R"), local = TRUE)
+plot_years = read_plot_years()
+expected_years = plot_years[match(anth$plot_id, plot_years$plot_id), ]
+stopifnot(identical(anth$vegetation_t2_year, expected_years$vegetation_t2_year),
+  near(anth$climate_t1_midyear, rep(1984, nrow(anth))),
+  near(anth$climate_t2_midyear, anth$vegetation_t2_year - 2.5),
+  near(anth$climate_dt_years, anth$vegetation_t2_year - 1986.5))
+# Independently recover selected dates from adults alone, never seedlings.
+trees = read_csv(here("data/MORA/MORA_TreeData_Resurvey_Cleaned.csv"), show_col_types = FALSE)
+library_map = read_csv(here("data/MORA/MORA_plot_lib.csv"), show_col_types = FALSE)
+latest = tapply(trees$Year, trees$Plot_ID, max)
+mi = anth$site == "MORA"
+supplied_ids = library_map$Plot_ID[match(anth$plot_id[mi], library_map$plot_id)]
+stopifnot(near(anth$vegetation_t2_year[mi], latest[supplied_ids]))
+record_audit = read_csv(here("output/MORA_resurvey_record_audit.csv"), show_col_types = FALSE)
+stopifnot(sum(record_audit$year_corrected[record_audit$stage == "seedling"]) == 93L,
+  sum(!record_audit$selected[record_audit$stage == "adult"]) == 698L,
+  sum(!record_audit$selected[record_audit$stage == "seedling"]) == 22L,
+  all(record_audit$assigned_year[record_audit$selected] == record_audit$selected_year[record_audit$selected]))
 holo = read_csv(paths[4], show_col_types = FALSE)
 by_offset = read_csv(paths[5], show_col_types = FALSE)
 timeseries = read_csv(paths[6], show_col_types = FALSE)

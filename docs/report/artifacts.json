@@ -364,6 +364,34 @@
     "modern_centroids": {
       "source": "output/cca_trajectory_anthropocene_centroids.csv",
       "producer": "R/stages/05a_cca_figure.R"
+    },
+    "year_source_discrepancies": {
+      "source": "output/report/year_source_discrepancies.csv",
+      "producer": "R/stages/05_cca_model.R"
+    },
+    "mora_repeat_visits": {
+      "source": "output/report/mora_repeat_visits.csv",
+      "producer": "R/stages/05_cca_model.R"
+    },
+    "survey_climate_windows": {
+      "source": "output/survey_climate_windows.csv",
+      "producer": "R/diagnostics/test_survey_year_anomaly.R"
+    },
+    "survey_decision_effects": {
+      "source": "output/survey_window_decision_effects.csv",
+      "producer": "R/stages/09_tracking_metrics.R"
+    },
+    "latest_visit_composition_effects": {
+      "source": "output/MORA_latest_visit_composition_effects.csv",
+      "producer": "R/stages/09_tracking_metrics.R"
+    },
+    "plot_years": {
+      "source": "output/modern_plot_years.csv",
+      "producer": "R/stages/000_NOCA_cleaning.R"
+    },
+    "seedling_visit_mapping": {
+      "source": "output/report/seedling_visit_mapping.csv",
+      "producer": "R/stages/05_cca_model.R"
     }
   }
 }

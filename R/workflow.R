@@ -58,13 +58,10 @@ run_script("R/stages/000_NOCA_cleaning.R")
 run_script("R/stages/01_get_fire_info.R")
 
 # 2. Modern climate. Chunk caches are validated against coordinates/settings.
-if (offline && !build_report) {
-  require_outputs(c("output/MORA_climate.csv", "output/NOCA_climate.csv"),
-                  "Offline mode requires existing Anthropocene climate outputs.")
-} else {
-  run_script("R/stages/000_MORA_climate.R")
-  run_script("R/stages/000_NOCA_climate.R")
-}
+# Always rebuild modern aggregates from validated native chunks. This prevents
+# a changed adult year/window from reusing a stale monthly aggregate offline.
+run_script("R/stages/000_MORA_climate.R")
+run_script("R/stages/000_NOCA_climate.R")
 
 # 3. Paleo age-depth, vegetation, fire, and climate
 if (run_age_models) run_script("R/stages/000_PALEO_a_agedepth.R")

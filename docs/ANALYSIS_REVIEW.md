@@ -50,10 +50,10 @@ verbatim for reading. Run the workflow for an analysis rebuild.
 
 | Prepared input | Rows | Plot/sample IDs | Taxa |
 | --- | --- | --- | --- |
-| MORA | 2502 | 331 | 23 |
+| MORA | 2490 | 331 | 23 |
 | NOCA | 1775 | 305 | 31 |
 | paleo | 9590 | 963 | 12 |
-| consolidated | 13658 | 1599 | 21 |
+| consolidated | 13647 | 1599 | 21 |
 
 [Full cleaning summary table](assets/analysis/tables/cleaning_summary.csv).
 
@@ -63,6 +63,39 @@ Presence means an adult **or** regeneration record. MORA uses the original legac
 workbook and cleaned resurvey tree and seedling files. NOCA applies the received
 corrected-tree workbook before building occurrences; unsupported identification
 labels are discarded. Both cleaners retain matched survey plots.
+
+**MORA's adult resurvey date is authoritative (decision 2026-10-07).** Seedling
+records are assigned to their corresponding adult visit before presence is
+constructed. For the 13 plots visited in multiple years, only the latest adult
+visit and its matching seedlings are retained; visits tied within a year remain
+pooled. This replaces pooling across years and using the earliest tree/seedling
+year. The received CSVs are preserved.
+
+The source-year audit identifies 95 supplied plot names, including 48 analyzed
+pairs. That total includes `PRAC-1`, a practice plot without a standardized ID;
+94 have standardized IDs. Conflicting years already occur in the original CSVs
+and pass unchanged through their upstream cleaner. The earlier export process
+is unknown. The [95-plot source table](assets/analysis/tables/year_source_discrepancies.csv)
+records the conflicting years, adult dates, treatment and evidence locations;
+[survey-year notes](../data/SOURCES_SURVEY_YEARS.md) give the rationale.
+
+| Plot | Adult visits | Selected year | Selected date | Adult records kept | Earlier records removed |
+| --- | --- | --- | --- | --- | --- |
+| CHIN-084 | 2014; 2015 | 2015 | 8/27/15 | 44 | 56 |
+| GOAT-468 | 2014; 2016 | 2016 | 6/30/16 | 14 | 48 |
+| LONG-356 | 2015; 2016 | 2016 | 6/21/16 | 25 | 36 |
+| LOWE-045 | 2015; 2016 | 2016 | 6/22/16 | 10 | 19 |
+| RAMP-093 | 2015; 2016 | 2016 | 6/23/16 | 23 | 36 |
+| RAMP-505 | 2018; 2019 | 2019 | 7/11/19 | 40 | 85 |
+| RAMP-506 | 2018; 2019 | 2019 | 7/11/19 | 75 | 103 |
+| SMO-364 | 2016; 2019 | 2019 | 8/22/19 | 47 | 55 |
+| SUNS-046 | 2015; 2016 | 2016 | 6/22/16 | 10 | 22 |
+| TAHO-003 | 2014; 2016 | 2016 | 6/24/16 | 21 | 18 |
+| WHIT-071 | 2014; 2016 | 2016 | 6/30/16 | 22 | 66 |
+| WHIT-273 | 2014; 2016 | 2016 | 6/28/16 | 82 | 121 |
+| WHIT-307 | 2015; 2016 | 2016 | 6/29/16 | 20 | 33 |
+
+[Full mora repeat visits table](assets/analysis/tables/mora_repeat_visits.csv).
 
 NOCA excludes `BAK487` for its old clearcut, `BEAV6061` for uncertain relocation,
 and `CARI449`/`CARI450` for GPS problems. The latter share coordinates despite
@@ -121,7 +154,7 @@ the full survey interval.
 
 The 303 shared plots agree. The cleaned 305-plot universe excludes CARI449/CARI450 for GPS problems; the Wilson reference is not substituted for it.
 
-Script: [01_get_fire_info.R](../R/stages/01_get_fire_info.R). [Complete PDF](../plot/test_figures/NOCA_fire_map_Wilson2024_PaleoACES.pdf) (1 pages).
+Script: [01_get_fire_info.R](../R/stages/01_get_fire_info.R). [Complete PDF](../plot/test_figures/NOCA_fire_map_Wilson2024_PaleoACES.pdf) (1 page).
 
 ![Audit NOCA modern fire assignment against Wilson reference plots. — PDF page 1](assets/analysis/fire_map-p1.png)
 
@@ -137,29 +170,54 @@ Spring is March–May, summer June–August and winter December–February. Mode
 December belongs to the following winter. All three months are required;
 temperatures are in °C and precipitation in mm per season.
 
-MORA compares **1979–1989 with 2010–2019** over **30.5 midpoint years**; NOCA
-compares **1979–1989 with 2010–2015** over **28.5 years**. Missing January 1979
-leaves ten complete legacy winters. These are annualized contrasts between
-survey windows, rather than instantaneous trends. The windows are settled;
-the possible post-2010 MORA precipitation discontinuity remains a limitation.
-Vegetation rates use each plot's survey interval separately. The
-[survey-year notes](../data/SOURCES_SURVEY_YEARS.md) explain those references and
-identify the missing original MORA date-source records.
+**Climate-year selection.** Historical climate remains **1979–1989** at both
+sites. Each modern plot uses its adult resurvey year **Y** and the five preceding
+years: **Y−5 through Y, inclusive**. We average these six years to represent the
+interannual climate dynamics that the community experienced before and during
+the survey. A 2014 resurvey therefore uses 2009–2014, with December 2008 included
+in winter 2009. Every modern constraint requires six complete season-years.
+
+Climate rates use the interval from the historical midpoint **1984** to the
+plot-specific modern midpoint **Y−2.5**: **27.5–32.5 years at MORA** and
+**27.5–28.5 years at NOCA**. Vegetation rates use the selected adult year and
+legacy references of 1977.5 (MORA) or 1983 (NOCA). Missing January 1979 leaves ten
+complete legacy winters; spring and summer retain eleven years. The historical
+window choice remains settled, and possible MORA precipitation inhomogeneity
+remains a limitation.
 
 | Site | Period | Plots | Spring years | Winter years | Summer years | Winter precipitation years |
 | --- | --- | --- | --- | --- | --- | --- |
 | MORA | past | 331 | 11 | 10 | 11 | 10 |
-| MORA | present | 331 | 10 | 10 | 10 | 10 |
+| MORA | present | 331 | 6 | 6 | 6 | 6 |
 | NOCA | past | 305 | 11 | 10 | 11 | 10 |
 | NOCA | present | 305 | 6 | 6 | 6 | 6 |
 
 [Full climate windows table](assets/analysis/tables/climate_windows.csv).
 
+The following cohorts and diagnostic use the final paired comparison plots.
+The annual lines show those same plots; separate colored bands show each cohort's
+window without hiding overlapping windows. MORA is blue and NOCA orange.
+
+| Site | Survey | Adult resurvey year | First climate year | Last climate year | Analyzed plots |
+| --- | --- | --- | --- | --- | --- |
+| MORA | past | — | 1979 | 1989 | 330 |
+| MORA | present | 2014 | 2009 | 2014 | 50 |
+| MORA | present | 2015 | 2010 | 2015 | 174 |
+| MORA | present | 2016 | 2011 | 2016 | 47 |
+| MORA | present | 2017 | 2012 | 2017 | 11 |
+| MORA | present | 2018 | 2013 | 2018 | 7 |
+| MORA | present | 2019 | 2014 | 2019 | 41 |
+| NOCA | past | — | 1979 | 1989 | 275 |
+| NOCA | present | 2014 | 2009 | 2014 | 50 |
+| NOCA | present | 2015 | 2010 | 2015 | 225 |
+
+[Full survey climate windows table](assets/analysis/tables/survey_climate_windows.csv).
+
 ### Compare selected survey windows with the full 1979–2021 record
 
 Detrending does not resolve CHELSA product continuity. Apparent precipitation anomalies remain a scientific limitation.
 
-Script: [test_survey_year_anomaly.R](../R/diagnostics/test_survey_year_anomaly.R). [Complete PDF](../plot/test_figures/test_survey_year_anomaly.pdf) (1 pages).
+Script: [test_survey_year_anomaly.R](../R/diagnostics/test_survey_year_anomaly.R). [Complete PDF](../plot/test_figures/test_survey_year_anomaly.pdf) (1 page).
 
 ![Compare selected survey windows with the full 1979–2021 record. — PDF page 1](assets/analysis/survey_window-p1.png)
 
@@ -192,7 +250,7 @@ earlier discussion. This report uses stored chronologies; no model is refitted.
 
 The four age-depth curves show sediment accumulation, removed instantaneous layers and modeled age ranges. Those ranges are conditional on the adopted controls and Bacon settings.
 
-Script: [000_PALEO_a_agedepth.R](../R/stages/000_PALEO_a_agedepth.R). [Complete PDF](../plot/test_figures/fig_bacon_agedepth_slump.pdf) (1 pages).
+Script: [000_PALEO_a_agedepth.R](../R/stages/000_PALEO_a_agedepth.R). [Complete PDF](../plot/test_figures/fig_bacon_agedepth_slump.pdf) (1 page).
 
 ![Inspect four fitted age-depth models and slump treatment. — PDF page 1](assets/analysis/chronology-p1.png)
 
@@ -200,7 +258,7 @@ Script: [000_PALEO_a_agedepth.R](../R/stages/000_PALEO_a_agedepth.R). [Complete 
 
 The sensitivity concerns the upper 35–40 cm of Panther Potholes; uncertainty in published fire chronologies is not equivalent across sites. **Chronology sensitivity**.
 
-Script: [000_PALEO_a_agedepth.R](../R/stages/000_PALEO_a_agedepth.R). [Complete PDF](../plot/test_figures/fig_bacon_pb210_sensitivity.pdf) (1 pages).
+Script: [000_PALEO_a_agedepth.R](../R/stages/000_PALEO_a_agedepth.R). [Complete PDF](../plot/test_figures/fig_bacon_pb210_sensitivity.pdf) (1 page).
 
 ![Compare published activity errors with assumed ±10-year age uncertainty. — PDF page 1](assets/analysis/pb210-p1.png)
 
@@ -255,21 +313,21 @@ though those observations do not calibrate the CCA.
 
 | Taxon | MORA legacy | MORA resurvey | MORA paleo | NOCA legacy | NOCA resurvey | NOCA paleo | CCA retained |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Abies amabilis | 290 | 289 | 117 | 113 | 128 | 0 | TRUE |
-| Abies lasiocarpa | 34 | 32 | 92 | 63 | 76 | 468 | TRUE |
+| Abies amabilis | 290 | 288 | 117 | 113 | 128 | 0 | TRUE |
+| Abies lasiocarpa | 34 | 31 | 92 | 63 | 76 | 468 | TRUE |
 | Abies procera | 68 | 50 | 43 | 0 | 0 | 0 | TRUE |
 | Callitropsis nootkatensis | 106 | 101 | 78 | 37 | 44 | 38 | TRUE |
 | Picea engelmannii | 12 | 9 | 5 | 26 | 22 | 12 | TRUE |
 | Pinus contorta | 2 | 1 | 31 | 32 | 28 | 285 | TRUE |
-| Pinus monticola | 42 | 15 | 90 | 28 | 25 | 489 | TRUE |
+| Pinus monticola | 42 | 14 | 90 | 28 | 25 | 489 | TRUE |
 | Pseudotsuga menziesii | 181 | 147 | 40 | 157 | 147 | 594 | TRUE |
 | Tsuga heterophylla | 281 | 283 | 54 | 88 | 121 | 179 | TRUE |
-| Tsuga mertensiana | 88 | 77 | 108 | 89 | 76 | 39 | TRUE |
-| Abies grandis | 8 | 8 | 0 | 11 | 20 | 0 | TRUE |
-| Alnus rubra | 15 | 16 | 0 | 11 | 18 | 0 | FALSE |
-| Picea sitchensis | 2 | 1 | 0 | 0 | 0 | 0 | FALSE |
+| Tsuga mertensiana | 88 | 75 | 108 | 89 | 76 | 39 | TRUE |
+| Abies grandis | 8 | 7 | 0 | 11 | 20 | 0 | TRUE |
+| Alnus rubra | 15 | 15 | 0 | 11 | 18 | 0 | FALSE |
+| Picea sitchensis | 2 | 0 | 0 | 0 | 0 | 0 | FALSE |
 | Populus trichocarpa | 3 | 3 | 0 | 8 | 3 | 0 | FALSE |
-| Thuja plicata | 111 | 113 | 0 | 95 | 101 | 159 | TRUE |
+| Thuja plicata | 111 | 110 | 0 | 95 | 101 | 159 | TRUE |
 | Acer macrophyllum | 0 | 4 | 0 | 17 | 18 | 0 | FALSE |
 | Malus fusca | 0 | 1 | 0 | 0 | 0 | 0 | FALSE |
 | Pinus albicaulis | 0 | 2 | 0 | 20 | 7 | 0 | TRUE |
@@ -287,7 +345,7 @@ These strata are not identical measurements across surveys.
 
 Retention requires at least 20 plots or samples in one group. The threshold is not required in every group.
 
-Script: [000_occurrence_data_consolidate.R](../R/stages/000_occurrence_data_consolidate.R). [Complete PDF](../plot/test_figures/species_counts_consolidated.pdf) (1 pages).
+Script: [000_occurrence_data_consolidate.R](../R/stages/000_occurrence_data_consolidate.R). [Complete PDF](../plot/test_figures/species_counts_consolidated.pdf) (1 page).
 
 ![Inspect consolidated occurrence counts in each site-period group. — PDF page 1](assets/analysis/species_counts-p1.png)
 
@@ -295,7 +353,7 @@ Script: [000_occurrence_data_consolidate.R](../R/stages/000_occurrence_data_cons
 
 Adult and regeneration sources contribute to presence; stem counts and macrofossil percentages are not combined as abundance.
 
-Script: [000_occurrence_data_consolidate.R](../R/stages/000_occurrence_data_consolidate.R). [Complete PDF](../plot/test_figures/stage_adult_seedling_past_present.pdf) (1 pages).
+Script: [000_occurrence_data_consolidate.R](../R/stages/000_occurrence_data_consolidate.R). [Complete PDF](../plot/test_figures/stage_adult_seedling_past_present.pdf) (1 page).
 
 ![Expose adult versus regeneration support for presence. — PDF page 1](assets/analysis/stage_comparison-p1.png)
 
@@ -303,7 +361,7 @@ Script: [000_occurrence_data_consolidate.R](../R/stages/000_occurrence_data_cons
 
 This explicitly retains the 500-year occupancy sensitivity. Sparse sampling is shown; the primary tracking analysis uses 1,000 years. **500-year sensitivity**.
 
-Script: [test_species_through_time.R](../R/diagnostics/test_species_through_time.R). [Complete PDF](../plot/test_figures/species_through_time.pdf) (1 pages).
+Script: [test_species_through_time.R](../R/diagnostics/test_species_through_time.R). [Complete PDF](../plot/test_figures/species_through_time.pdf) (1 page).
 
 ![Inspect taxon site confounding and temporal occupancy. — PDF page 1](assets/analysis/occupancy-p1.png)
 
@@ -417,7 +475,7 @@ descriptive scores rather than independently validated forecasts.
 
 Site scaling (1), Hill off and CCA1–CCA2 define the primary geometry. Unequal rescaling of axes changes distances and angles; display arrow multipliers are excluded from the calculations.
 
-Script: [test_cca_scaling_comparison.R](../R/diagnostics/test_cca_scaling_comparison.R). [Complete PDF](../plot/test_figures/fig_cca_scaling_comparison.pdf) (1 pages).
+Script: [test_cca_scaling_comparison.R](../R/diagnostics/test_cca_scaling_comparison.R). [Complete PDF](../plot/test_figures/fig_cca_scaling_comparison.pdf) (1 page).
 
 ![Compare scaling 1 and 2 of the same fitted CCA. — PDF page 1](assets/analysis/scaling-p1.png)
 
@@ -541,9 +599,9 @@ while the broader legacy calibration remains the fitting reference.
 | Site | Survey | Same paired plots | Observed CCA1 | Observed CCA2 | Predicted CCA1 | Predicted CCA2 |
 | --- | --- | --- | --- | --- | --- | --- |
 | MORA | legacy | 330 | -0.06778 | -0.2735 | -0.05547 | -0.275 |
-| MORA | resurvey | 330 | -0.0832 | -0.3088 | -0.3354 | 0.01053 |
+| MORA | resurvey | 330 | -0.08433 | -0.3114 | -0.3819 | -0.1097 |
 | NOCA | legacy | 275 | 0.005739 | 0.4424 | 0.02131 | 0.4578 |
-| NOCA | resurvey | 275 | -0.06695 | 0.3476 | -0.113 | 0.5041 |
+| NOCA | resurvey | 275 | -0.06695 | 0.3476 | -0.09181 | 0.502 |
 
 [Full modern centroids table](assets/analysis/tables/modern_centroids.csv).
 
@@ -584,7 +642,7 @@ events from the subsequent classification of high-fire periods.
 
 Lag change is endpoint mismatch at t2 minus t1; a stationary observed movement has no defined direction.
 
-Script: [09a_method_example.R](../R/stages/09a_method_example.R). [Complete PDF](../plot/test_figures/fig_method_worked_example.pdf) (1 pages).
+Script: [09a_method_example.R](../R/stages/09a_method_example.R). [Complete PDF](../plot/test_figures/fig_method_worked_example.pdf) (1 page).
 
 ![Work through WA/LC movement, lag, ratio, and angle. — PDF page 1](assets/analysis/tracking_example-p1.png)
 
@@ -606,10 +664,10 @@ in mm/century. Modern rates describe the agreed survey-window contrasts.
 
 | Constraint | Units | Holocene regional signed maximum | Peak cal BP | MORA modern median | NOCA modern median |
 | --- | --- | --- | --- | --- | --- |
-| Spring temperature | deg C / century | 0.04175 | 7500 | 2.41 | 1.416 |
-| Winter temperature | deg C / century | 0.05504 | 9500 | 1.833 | 1.411 |
-| Summer precipitation | mm / century | -1.087 | 8900 | -152.4 | 104.6 |
-| Winter precipitation | mm / century | 2.338 | 8100 | -732 | -422.6 |
+| Spring temperature | deg C / century | 0.04175 | 7500 | 1.288 | 0.7691 |
+| Winter temperature | deg C / century | 0.05504 | 9500 | 3.271 | 1.359 |
+| Summer precipitation | mm / century | -1.087 | 8900 | -142.6 | 103.5 |
+| Winter precipitation | mm / century | 2.338 | 8100 | -937.2 | -411.2 |
 
 [Full raw climate rates table](assets/analysis/tables/raw_climate_rates.csv).
 
@@ -623,7 +681,7 @@ in mm/century. Modern rates describe the agreed survey-window contrasts.
 
 Any qualifying variable creates a climate-change cell. Only adjacent cells merge; the unsigned composite is context.
 
-Script: [13_holocene_climate_fire_eras.R](../R/stages/13_holocene_climate_fire_eras.R). [Complete PDF](../plot/test_figures/fig_holocene_climate_period_method_worked_example.pdf) (1 pages).
+Script: [13_holocene_climate_fire_eras.R](../R/stages/13_holocene_climate_fire_eras.R). [Complete PDF](../plot/test_figures/fig_holocene_climate_period_method_worked_example.pdf) (1 page).
 
 ![Expose signed changes, phase support, and era construction. — PDF page 1](assets/analysis/climate_era_example-p1.png)
 
@@ -631,7 +689,7 @@ Script: [13_holocene_climate_fire_eras.R](../R/stages/13_holocene_climate_fire_e
 
 Within-core normalization and site-specific robust thresholds yield MORA high fire and NOCA no high fire for the worked date.
 
-Script: [13b_fire_method_worked_example.R](../R/stages/13b_fire_method_worked_example.R). [Complete PDF](../plot/test_figures/fig_holocene_fire_method_worked_example.pdf) (1 pages).
+Script: [13b_fire_method_worked_example.R](../R/stages/13b_fire_method_worked_example.R). [Complete PDF](../plot/test_figures/fig_holocene_fire_method_worked_example.pdf) (1 page).
 
 ![Work through centered event frequencies at 2,300 cal BP. — PDF page 1](assets/analysis/high_fire_example-p1.png)
 
@@ -671,18 +729,18 @@ chronology draws, offsets and overlapping dates are not independent replication.
 | MORA | Holocene | Fire | Movement angle (°) | 16 | 16 | 34.9 | 27.93 | 42.3 |
 | MORA | Holocene | Fire | Δlag per century | 16 | 16 | -0.002413 | -0.01617 | 0.003181 |
 | MORA | Holocene | Fire | Tracking rate ratio | 16 | 16 | 4.166 | 3.079 | 5.369 |
-| MORA | Anthropocene | No fire | Movement angle (°) | 328 | 250 | 100.7 | 30.56 | 156.7 |
-| MORA | Anthropocene | No fire | Δlag per century | 328 | 328 | 0.5389 | -0.2711 | 1.221 |
-| MORA | Anthropocene | No fire | Tracking rate ratio | 328 | 328 | 0.6559 | 0.1985 | 1.123 |
+| MORA | Anthropocene | No fire | Movement angle (°) | 328 | 252 | 92.27 | 33.2 | 142.5 |
+| MORA | Anthropocene | No fire | Δlag per century | 328 | 328 | 0.4276 | -0.3423 | 1.245 |
+| MORA | Anthropocene | No fire | Tracking rate ratio | 328 | 328 | 0.6097 | 0.1898 | 1.091 |
 | NOCA | Holocene | No fire | Movement angle (°) | 69 | 69 | 88.9 | 49.83 | 134.3 |
 | NOCA | Holocene | No fire | Δlag per century | 69 | 69 | -0.009041 | -0.02581 | 0.01265 |
 | NOCA | Holocene | No fire | Tracking rate ratio | 69 | 69 | 3.276 | 2.475 | 5.436 |
 | NOCA | Holocene | Fire | Movement angle (°) | 14 | 14 | 68.86 | 30.79 | 80.43 |
 | NOCA | Holocene | Fire | Δlag per century | 14 | 14 | -0.03407 | -0.03571 | -0.01623 |
 | NOCA | Holocene | Fire | Tracking rate ratio | 14 | 14 | 4.948 | 2.846 | 6.377 |
-| NOCA | Anthropocene | No fire | Movement angle (°) | 252 | 188 | 94.87 | 42.93 | 146.4 |
-| NOCA | Anthropocene | No fire | Δlag per century | 252 | 252 | 0.002744 | -0.8702 | 0.8718 |
-| NOCA | Anthropocene | No fire | Tracking rate ratio | 252 | 252 | 2.285 | 0 | 4.048 |
+| NOCA | Anthropocene | No fire | Movement angle (°) | 252 | 188 | 91.31 | 42.94 | 144.5 |
+| NOCA | Anthropocene | No fire | Δlag per century | 252 | 252 | 0.04841 | -0.8749 | 0.8649 |
+| NOCA | Anthropocene | No fire | Tracking rate ratio | 252 | 252 | 2.492 | 0 | 4.988 |
 | NOCA | Anthropocene | Fire | Movement angle (°) | 23 | 12 | 28.46 | 11.14 | 87.3 |
 | NOCA | Anthropocene | Fire | Δlag per century | 23 | 23 | -0.234 | -0.5432 | 0.6238 |
 | NOCA | Anthropocene | Fire | Tracking rate ratio | 23 | 23 | 1.245 | 0 | 4.852 |
@@ -691,7 +749,7 @@ chronology draws, offsets and overlapping dates are not independent replication.
 
 Figure 4 omits the two burned MORA pairs from its descriptive comparison and
 retains 603 modern pairs across the displayed groups. All 137 supported Holocene
-site-dates remain. Its scatter has 587 direction-valid observations; stationary
+site-dates remain. Its scatter has 589 direction-valid observations; stationary
 modern compositions remain in the non-angle summaries. Quartiles and offset/draw
 spread describe variation, not inferential confidence intervals.
 
@@ -700,6 +758,54 @@ spread describe variation, not inferential confidence intervals.
 ![Figure 4. fig tracking comparison](assets/analysis/figure-4.png)
 
 [Full PDF](../plot/fig_tracking_comparison.pdf) · [Figure script](../R/stages/09c_tracking_comparison.R) · [Publication captions](FIGURE_CAPTIONS.md).
+
+### Effects of the 2026-10-07 survey-date decision
+
+The comparison below isolates the update from the preserved pre-update analysis.
+Legacy occurrences and climate, the 618-plot CCA fit, its 13 taxa, and all Holocene
+results are unchanged. Latest-visit selection removes earlier-only presence from
+seven cleaned MORA plots; one loss is a taxon already excluded during
+consolidation, so six modeled observed positions change. Modern climate changes for all 330 MORA plots and the 50 NOCA plots surveyed in
+2014. Climate elapsed time changes for 319 MORA plots and those same 50 NOCA
+plots; 2017 MORA resurveys retain the former 30.5-year midpoint interval.
+The 225 NOCA plots surveyed in 2015 retain their former 2010–2015 window.
+Figures 2–5 and the tracking/direction summaries use the updated inputs.
+
+| Plot | Presence removed from pooled resurvey |
+| --- | --- |
+| LONG-356 | Thuja plicata |
+| LOWE-045 | Acer circinatum |
+| RAMP-505 | Abies amabilis |
+| RAMP-505 | Abies grandis |
+| RAMP-505 | Pinus monticola |
+| RAMP-505 | Thuja plicata |
+| SMO-364 | Tsuga mertensiana |
+| SUNS-046 | Thuja plicata |
+| WHIT-273 | Abies lasiocarpa |
+| WHIT-273 | Alnus rubra |
+| WHIT-273 | Picea sitchensis |
+| WHIT-307 | Tsuga mertensiana |
+
+[Full latest visit composition effects table](assets/analysis/tables/latest_visit_composition_effects.csv).
+
+| Site | Quantity | Changed plots | Before median | After median |
+| --- | --- | --- | --- | --- |
+| MORA | Adult resurvey year | 50 | 2015 | 2015 |
+| MORA | Climate interval (years) | 319 | 30.5 | 28.5 |
+| MORA | Observed displacement (CCA units) | 6 | 0.3168 | 0.3182 |
+| MORA | Predicted displacement (CCA units) | 330 | 0.4074 | 0.3809 |
+| MORA | Rate tracking ratio | 254 | 0.6559 | 0.6124 |
+| MORA | Change in lag (CCA units) | 330 | 0.1644 | 0.1189 |
+| MORA | Lag rate (CCA units/century) | 330 | 0.5389 | 0.4171 |
+| NOCA | Adult resurvey year | 0 | 2015 | 2015 |
+| NOCA | Climate interval (years) | 50 | 28.5 | 28.5 |
+| NOCA | Observed displacement (CCA units) | 0 | 0.5205 | 0.5205 |
+| NOCA | Predicted displacement (CCA units) | 50 | 0.2114 | 0.204 |
+| NOCA | Rate tracking ratio | 40 | 2.263 | 2.436 |
+| NOCA | Change in lag (CCA units) | 50 | -0.002621 | 0.005775 |
+| NOCA | Lag rate (CCA units/century) | 50 | -0.009197 | 0.021 |
+
+[Full survey decision effects table](assets/analysis/tables/survey_decision_effects.csv).
 
 ## Direction discrepancies and support
 
@@ -718,7 +824,7 @@ two burned MORA plots, and 15,270 primary Holocene realizations.
 
 | Period | Site | Climate state | Burned/high fire | Units | Min valid targets | Max valid targets |
 | --- | --- | --- | --- | --- | --- | --- |
-| Anthropocene | MORA | — | FALSE | 328 | 248 | 250 |
+| Anthropocene | MORA | — | FALSE | 328 | 250 | 252 |
 | Anthropocene | MORA | — | TRUE | 2 | 2 | 2 |
 | Anthropocene | NOCA | — | FALSE | 252 | 177 | 188 |
 | Anthropocene | NOCA | — | TRUE | 23 | 11 | 12 |
@@ -770,7 +876,7 @@ They distinguish planned or optional sensitivities from decisions already made.
 |---|---|---|---|
 | Raw versus V2.1-anchored TraCE21k climate | The active Holocene analysis uses raw TraCE21k values; the V2.1 anchoring diagnostic is not authoritative. | Absolute Holocene climate levels and cross-product comparisons may retain product bias, although the active within-series change calculations are internally consistent. | A validated overlap-period comparison showing whether anchoring reduces bias without introducing a discontinuity or changing the intended anomaly interpretation. |
 | Legacy-calibration versus full-record climate SDs | Changes are divided by SDs from the 618 pooled legacy CCA calibration plots. | The reference is tied to the fitted model. A full-record SD would change displayed standardized magnitudes, cross-variable weighting, the unthresholded composite, and standardized climate rates, but not CC/S boundaries under the current variable-specific 50%-of-own-maximum rule. | A prespecified full-record sensitivity with explicit temporal/site weighting and a scientific choice between calibration-relative and dataset-relative effect sizes. |
-| Anthropocene precipitation continuity | The agreed MORA and NOCA windows remain 1979–1989 to 2010–2019 and 1979–1989 to 2010–2015, respectively; unequal resurvey-window lengths are accepted. The MORA precipitation contrast is flagged. | The apparent post-2010 MORA precipitation shift may partly reflect CHELSA inhomogeneity rather than climate. | Independent station/reanalysis validation and a documented decision on whether post-2010 MORA precipitation is usable. The agreed years are not a pending decision. |
+| Anthropocene precipitation continuity | Historical climate remains 1979–1989; modern climate uses adult Y−5 through Y at both sites (2026-10-07 decision). The MORA precipitation contrast is flagged. | The apparent post-2010 MORA precipitation shift may partly reflect CHELSA inhomogeneity rather than climate. | Independent station/reanalysis validation and a documented decision on whether post-2010 MORA precipitation is usable. The agreed years are not a pending decision. |
 | Own-origin versus common-origin taxon target geometry | The primary target-alignment analysis uses LC₁→species for predicted movement and WA₁→species for observed movement. | The two cosines answer alignment relative to each trajectory's own starting community; part of their difference can arise because LC₁ and WA₁ differ. | A prespecified common-origin sensitivity and an ecological decision about whether the estimand should condition on each starting state or hold the target vector fixed across observed and predicted movement. |
 
 The analysis checks passed, including paired exclusions, chronology, climate matching, tracking arithmetic and figure outputs. Stored chronologies were unchanged. [Checks and rebuilding instructions](WORKFLOW.md#tests-and-decisions).

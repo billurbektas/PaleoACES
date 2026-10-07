@@ -169,4 +169,51 @@ events = data.frame(site = "MORA", lake = c("A", "A", "B", "C"),
 f = calculate_fire_frequency(events, continuous, grid_step = 1000)
 stopifnot(nrow(f$periods) == 2L, all(f$periods$duration_years == 1000),
           is.na(f$site_grid$normalized_frequency[f$site_grid$cal_bp == 5000]))
-cat("Review regressions passed: independent geometry, unequal time supports, seasons, invalid caches, coverage gaps.\n")
+source(here("R/helpers/survey_years.R"), local = TRUE)
+# Swapped seedling labels must be assigned to their original adult visit BEFORE
+# latest-year filtering. Tied adult records retain their existing pooling.
+adult = tibble::tribble(~Plot_ID, ~Plot.ID, ~Year,
+  "P1", "P1-FIELD", 2018, "P1", "P1-FIELD-2", 2019,
+  "P1", "P1-FIELD-2", 2019, "P2", "P2", 2014)
+seed = tibble::tribble(~Plot_ID, ~Plot.ID, ~Year,
+  "P1", "P1-FIELD", 2019, "P1", "P1-FIELD-2", 2018,
+  "P2", "P2", 2018)
+map = tibble::tribble(~Plot_ID, ~visit_name, ~source_year, ~adult_year,
+  "P1", "P1-FIELD", 2019, 2018, "P1", "P1-FIELD-2", 2018, 2019)
+lib = tibble::tibble(Plot_ID = c("P1", "P2"), plot_id = c("P1", "P2"))
+resolved = resolve_mora_resurveys(adult, seed, lib, map)
+stopifnot(nrow(resolved$trees) == 3L, nrow(resolved$seedlings) == 2L,
+  resolved$seedlings$Year[resolved$seedlings$Plot_ID == "P1"] == 2019,
+  resolved$seedlings$Year[resolved$seedlings$Plot_ID == "P2"] == 2014,
+  all(resolved$audit$assigned_year[resolved$audit$Plot.ID == "P1-FIELD"] == 2018))
+bad = adult; bad$Year[1] = NA_real_; must_fail(resolve_mora_resurveys(bad, seed, lib, map))
+must_fail(resolve_mora_resurveys(adult, seed, lib, map[0, ]))
+must_fail(resolve_mora_resurveys(adult, seed, lib, dplyr::bind_rows(map, map[1, ])))
+must_fail(survey_windows(tibble::tibble(site = "MORA", plot_id = "x", vegetation_t2_year = NA_real_)))
+must_fail(survey_windows(tibble::tibble(site = "MORA", plot_id = "x", vegetation_t2_year = 2014.5)))
+equal(resolved$years$climate_t2_midyear, resolved$years$vegetation_t2_year - 2.5)
+equal(resolved$years$climate_dt_years, resolved$years$vegetation_t2_year - 1986.5)
+
+# Winter 2009 includes December 2008. Exactly six complete season-years survive,
+# including 2014 and excluding the trailing partial winter 2015.
+w = survey_windows(tibble::tibble(site = "MORA", plot_id = "x", vegetation_t2_year = 2014))
+monthly = tidyr::expand_grid(site = "MORA", plot_id = "x", period = "present",
+  year = 2008:2014, month = 1:12, variable = c("tasmin", "tasmax", "pr")) |>
+  dplyr::mutate(value = dplyr::case_when(variable == "tasmin" ~ 1,
+    variable == "tasmax" ~ 3, year == 2008 & month == 12 ~ 40, TRUE ~ 10))
+bounded = restrict_modern_months(monthly, w)
+stopifnot(nrow(bounded) == 219L, min(bounded$year) == 2008,
+  all(bounded$month[bounded$year == 2008] == 12L))
+annual = bounded |>
+  dplyr::transmute(unit = plot_id, period = paste(site, period, sep = "."),
+    time = year, month, variable, value) |>
+  derive_climate_vars(winter_shift = TRUE) |> restrict_modern_seasons(w)
+equal(annual$time, 2009:2014)
+stopifnot(all(is.finite(as.matrix(annual[, c("MSpT", "MWT", "SP", "WP")]))))
+equal(annual$WP, c(60, 30, 30, 30, 30, 30))
+equal(annual$MWT, rep(2, 6))
+must_fail(restrict_modern_months(bounded[-1, ], w))
+must_fail(restrict_modern_months(dplyr::filter(bounded, !(year == 2008 & variable == "pr")), w))
+must_fail(restrict_modern_months(dplyr::bind_rows(bounded, bounded[1, ]), w))
+bad = bounded; bad$value[1] = Inf; must_fail(restrict_modern_months(bad, w))
+cat("Review regressions passed: geometry, time supports, seasons, invalid caches, coverage gaps, adult visits and six-year windows.\n")

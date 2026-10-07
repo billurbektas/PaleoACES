@@ -1,0 +1,14 @@
+Plot_ID,plot_id,adult_years,selected_year,adults_kept,adults_discarded,visit_date,evidence
+CHIN-084,CHIN-084,2014; 2015,2015,44,56,8/27/15,MORA_PlotNames.csv line 31: 8/27/15; adult TreeData Year; verified 2026-10-07
+GOAT-468,GOAT-468,2014; 2016,2016,14,48,6/30/16,MORA_PlotNames.csv line 101: 6/30/16; adult TreeData Year; verified 2026-10-07
+LONG-356,LONG-356,2015; 2016,2016,25,36,6/21/16,MORA_PlotNames.csv line 166: 6/21/16; adult TreeData Year; verified 2026-10-07
+LOWE-045,LOWE-045,2015; 2016,2016,10,19,6/22/16,MORA_PlotNames.csv line 174: 6/22/16; adult TreeData Year; verified 2026-10-07
+RAMP-093,RAMP-093,2015; 2016,2016,23,36,6/23/16,MORA_PlotNames.csv line 280: 6/23/16; adult TreeData Year; verified 2026-10-07
+RAMP-505,RAMP-505,2018; 2019,2019,40,85,7/11/19,MORA_PlotNames.csv line 276: 7/11/19; adult TreeData Year; verified 2026-10-07
+RAMP-506,RAMP-506,2018; 2019,2019,75,103,7/11/19,MORA_PlotNames.csv line 278: 7/11/19; adult TreeData Year; verified 2026-10-07
+SMO-364,SMO-364,2016; 2019,2019,47,55,8/22/19,MORA_PlotNames.csv line 319: 8/22/19; adult TreeData Year; verified 2026-10-07
+SUNS-046,SUNS-046,2015; 2016,2016,10,22,6/22/16,MORA_PlotNames.csv line 353: 6/22/16; adult TreeData Year; verified 2026-10-07
+TAHO-003,TAHO-003,2014; 2016,2016,21,18,6/24/16,MORA_PlotNames.csv line 360: 6/24/16; adult TreeData Year; verified 2026-10-07
+WHIT-071,WHIT-071,2014; 2016,2016,22,66,6/30/16,MORA_PlotNames.csv line 402: 6/30/16; adult TreeData Year; verified 2026-10-07
+WHIT-273,WHIT-273,2014; 2016,2016,82,121,6/28/16,MORA_PlotNames.csv line 398: 6/28/16; adult TreeData Year; verified 2026-10-07
+WHIT-307,WHIT-307,2015; 2016,2016,20,33,6/29/16,MORA_PlotNames.csv line 399: 6/29/16; adult TreeData Year; verified 2026-10-07

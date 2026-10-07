@@ -11,6 +11,7 @@ suppressPackageStartupMessages({
 source(here("R/helpers/config.R"), local = TRUE)
 source(here("R/helpers/climate_variables.R"), local = TRUE)
 source(here("R/helpers/holocene_climate_fire_era_functions.R"), local = TRUE)
+source(here("R/helpers/figure_style.R"), local = TRUE)
 render_figures = isTRUE(getOption("paleoaces.render_figures", TRUE))
 
 CLIMATE_INPUT = here("output/chelsa_paleo_ponds.csv")
@@ -189,7 +190,7 @@ write_csv(tribble(
 # =============================================================================
 # SINGLE-PAGE INTEGRATED FIGURE
 # =============================================================================
-site_cols = c(MORA = "#1769AA", NOCA = "#D56B22")
+site_cols = PAPER_SITE_COLORS
 variable_cols = c(MSpT = "#D73027", MWT = "#4575B4",
                   SP = "#E6AB02", WP = "#1B9E77")
 direction_cols = c(increasing = "#C84335", decreasing = "#2675B8",

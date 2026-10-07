@@ -1,5 +1,5 @@
 period,site,climate_state,fire,n_units,valid_min,valid_max
-Anthropocene,MORA,NA,FALSE,328,248,250
+Anthropocene,MORA,NA,FALSE,328,250,252
 Anthropocene,MORA,NA,TRUE,2,2,2
 Anthropocene,NOCA,NA,FALSE,252,177,188
 Anthropocene,NOCA,NA,TRUE,23,11,12

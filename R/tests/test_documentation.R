@@ -19,6 +19,13 @@ extract_inline_paths = function(text) {
 }
 
 docs_to_check = PALEOACES_DOCS
+report_pending = isTRUE(getOption("paleoaces.report_pending", FALSE))
+pending_tables = character()
+if (report_pending) {
+  registry = jsonlite::fromJSON(here("docs/report/artifacts.json"), simplifyVector = FALSE)
+  pending_tables = normalizePath(here("docs/assets/analysis/tables",
+    paste0(names(registry$tables), ".csv")), mustWork = FALSE)
+}
 # During a report rebuild the new report is validated in staging before publication.
 # Its prior assets may have been deliberately removed; all other documentation
 # still passes this prepublication gate. The workflow checks every pair afterward.
@@ -45,7 +52,13 @@ for (rel in docs_to_check) {
     target = sub("#.*$", "", target)
     if (!nzchar(target)) next
     resolved = normalizePath(file.path(dirname(src), target), mustWork = FALSE)
-    if (!file.exists(resolved)) fail(paste(rel, "has broken local link", target))
+    # For a not-yet-generated file, normalize its existing parent as well;
+    # normalizePath(..., mustWork=FALSE) alone can leave a literal data/../docs.
+    resolved = file.path(normalizePath(dirname(resolved), mustWork = FALSE), basename(resolved))
+    # Registered report tables are validated in staging and checked again after
+    # publication. This permits rebuilding a deliberately removed derived CSV.
+    if (!file.exists(resolved) && !resolved %in% pending_tables)
+      fail(paste(rel, "has broken local link", target))
   }
 
   for (target in extract_inline_paths(md)) {
@@ -97,10 +110,9 @@ if (file.exists(caption_path)) {
                   logical(1))))
     fail("docs/FIGURE_CAPTIONS.md does not link every publication PDF")
   figure2_contract = c(
-    "1979–1989 with 2010–2019",
-    "1979–1989 with 2010–2015",
-    "30.5 midpoint years",
-    "28.5 midpoint years",
+    "Y−5 through Y",
+    "27.5–32.5 midpoint years",
+    "27.5–28.5 midpoint years",
     "annualized short-window contrasts",
     "maximum-absolute Holocene regional median",
     "post-2010 CHELSA inhomogeneity"

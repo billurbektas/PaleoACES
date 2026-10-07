@@ -16,8 +16,9 @@ and at least eight phases supported its direction; any qualifying variable
 defined climate change. High-fire periods were classified independently from
 accepted charcoal-event frequencies normalized within core and aggregated by
 site, using a threshold of the site median plus `1.4826 × MAD`. Anthropocene
-climate contrasts compare 1979–1989 with 2010–2019 at MORA and with 2010–2015
-at NOCA, using midpoint intervals of 30.5 and 28.5 years, respectively.
+climate contrasts compare 1979–1989 with six season-years Y−5 through Y for
+each plot, where Y is the selected adult resurvey year. Midpoint intervals run
+from 1984 to Y−2.5: 27.5–32.5 years at MORA and 27.5–28.5 years at NOCA.
 
 [Open the publication PDF](../plot/fig_standardized_climate_change_eras_fire.pdf)
 
@@ -36,8 +37,8 @@ the variable-specific standardized stability ranges. The inset compares the
 maximum-absolute Holocene regional median after ten-offset aggregation with
 median Anthropocene plot-level rates in physical units per century. The
 Anthropocene entries are annualized short-window contrasts: MORA compares
-1979–1989 with 2010–2019 over 30.5 midpoint years, and NOCA compares 1979–1989
-with 2010–2015 over 28.5 midpoint years. The MORA precipitation contrast should
+1979–1989 with each plot’s adult-year window Y−5 through Y over
+27.5–32.5 midpoint years; NOCA uses the same rule over 27.5–28.5 midpoint years. The MORA precipitation contrast should
 be interpreted with the documented possible post-2010 CHELSA inhomogeneity.
 **B.** Site-specific charcoal
 event-frequency ratios relative to the robust high-fire threshold. The dashed
@@ -53,7 +54,9 @@ climate-predicted communities by linear-combination (LC) scores in the unchanged
 CCA1–CCA2, scaling-1 (`scaling = "sites"`), Hill-off geometry. Holocene positions
 are MORA and NOCA centroids within each frozen CC1–S4 era; Anthropocene positions
 are site means of the same 330 MORA and 275 NOCA valid paired plots at both
-legacy and resurvey dates, for both WA and LC. All-zero retained-taxon rows are
+legacy and resurvey dates, for both WA and LC. MORA uses the latest adult
+visit and its matching seedlings; modern climate uses Y−5 through Y for
+each selected adult survey year Y. All-zero retained-taxon rows are
 excluded from both sides of these comparisons. Climate bars quantify each
 constraint's unique marginal loss of constrained inertia, whereas species bars
 partition constrained inertia among taxa.
@@ -105,10 +108,10 @@ physical widths and show descriptive distributions; annotations report medians
 and valid sample sizes. Neutral and red outlines distinguish no-fire/unburned
 and high-fire/burned groups. The two burned MORA plot pairs are excluded from
 this comparison and retained in its scope audit. **D.** Tracking ratio versus
-turnover angle for all 587 direction-valid observations. Circles and triangles
+turnover angle for all 589 direction-valid observations. Circles and triangles
 identify MORA and NOCA, red outlines identify fire evidence, and fill represents
 signed lag. Labelled points are macro-era, climate/fire, and NOCA burn-status
-medians. Reference lines mark a tracking ratio of 1 and an angle of 90°. The 153
+medians. Reference lines mark a tracking ratio of 1 and an angle of 90°. The 151
 Anthropocene plots with stationary observed composition have undefined angles
 and are reported separately in the panel.
 

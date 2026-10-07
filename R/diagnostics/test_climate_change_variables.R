@@ -32,7 +32,7 @@
 #
 # 2. LEVELS ARE NOT COMPARABLE ACROSS ERAS, DIFFERENCES ARE. The Anthropocene
 #    arm is CHELSA V2.1 (downscaled reanalysis); the Holocene arm is CHELSA-
-#    TraCE21k (a downscaled CCSM3 simulation), bias-corrected onto V2.1. A
+#    TraCE21k (a downscaled CCSM3 simulation), with raw TraCE21k selected in the primary analysis. A
 #    constant product offset cancels when two time points of the SAME arm are
 #    differenced, which is all this script does. Never compare a Holocene LEVEL
 #    to an Anthropocene LEVEL here.
@@ -47,6 +47,9 @@
 library(here)
 library(tidyverse)
 source(here("R/helpers/climate_variables.R"), local = TRUE)
+source(here("R/helpers/survey_years.R"), local = TRUE)
+source(here("R/helpers/figure_style.R"), local = TRUE)
+plot_years = read_plot_years()
 
 INCLUDE_MINMAX = FALSE
 source(here("R/helpers/config.R"), local = TRUE)
@@ -77,6 +80,7 @@ anth_annual = monthly %>%
   transmute(unit = plot_id, period = paste(site, period, sep = "."),
             variable, time = year, month, value) %>%
   derive_climate_vars(winter_shift = TRUE) %>%
+  restrict_modern_seasons(plot_years) %>%
   filter(if_any(all_of(VARS), ~ !is.na(.x)))
 
 anth_plot = anth_annual %>%
@@ -90,21 +94,15 @@ anth_delta = anth_plot %>%
   pivot_longer(all_of(VARS), names_to = "variable", values_to = "value") %>%
   pivot_wider(names_from = period, values_from = value) %>%
   filter(!is.na(past), !is.na(present)) %>%
-  mutate(delta = present - past, era = "anthropocene")
+  mutate(delta = present - past, era = "anthropocene") %>%
+  left_join(plot_years %>% rename(unit = plot_id), by = c("site", "unit"))
 
-# Interval lengths, STATED and never divided by.
-# ⚠ Two different intervals exist here and they are no longer the same thing:
-#   VEG_DT  the interval the VEGETATION change spans - survey midpoint to resurvey
-#           midpoint. This is what a "change between the two surveys" is over.
-#   CLIM_DT the interval the CLIMATE windows span - window midpoint to midpoint.
-# Under the old rule (window anchored to each survey) these nearly coincided.
-# Under the 2026-08-13 rule (past = 1979-1989 at both sites, present = 2010 ->
-# last survey) the climate windows are wider than, and offset from, the surveys.
-# Report the VEGETATION interval when describing the change, and keep CLIM_DT
-# visible so the mismatch is never silent.
-VEG_DT  = c(MORA = 2016.5 - 1977.5, NOCA = 2014.5 - 1983)     # ~39, ~32 yr
-CLIM_DT = c(MORA = 2014.5 - 1984,   NOCA = 2012.5 - 1984)     # ~30.5, ~28.5 yr
-ANTH_DT = VEG_DT
+# Report ranges; rates always divide each plot's change by its own interval.
+interval_support = anth_delta %>% group_by(site) %>% summarise(
+  vegetation_dt_min = min(vegetation_dt_years), vegetation_dt_max = max(vegetation_dt_years),
+  climate_dt_min = min(climate_dt_years), climate_dt_max = max(climate_dt_years), .groups = "drop")
+ANTH_INTERVAL = setNames(paste0(interval_support$climate_dt_min, "–",
+  interval_support$climate_dt_max, " climate yr"), interval_support$site)
 
 # -----------------------------------------------------------------------------
 # HOLOCENE - per lake, consecutive 500-yr bins, forward in time
@@ -194,8 +192,7 @@ summ = bind_rows(
 ) %>%
   mutate(unit = UNIT(variable),
          interval = case_when(era == "holocene"            ~ paste0(HOLO_BIN, " yr"),
-                              site == "MORA"               ~ paste0(round(ANTH_DT["MORA"]), " yr"),
-                              TRUE                         ~ paste0(round(ANTH_DT["NOCA"]), " yr")),
+                              TRUE                         ~ ANTH_INTERVAL[site]),
          variable = factor(variable, levels = VARS)) %>%
   arrange(variable, site, era)
 
@@ -292,13 +289,13 @@ mw_raw = holo_mw %>% filter(correction != CORRECTION_IN_USE)
 # numbers are directly comparable:
 #     Holocene      delta is the change over HOLO_BIN = 500 yr
 #                   delta / 500 * 100  ->  per century
-#     Anthropocene  delta is the change over CLIM_DT yr (MORA 30.5, NOCA 28.5)
+#     Anthropocene  delta is the change over CLIM_DT yr (plot-specific 27.5–32.5)
 #                   delta / CLIM_DT * 100  ->  per century
 # ⚠ Numerically comparable is not the same as equivalent in meaning: a rate
 # averaged over 500 yr suppresses everything faster than 500 yr, so the Holocene
 # value is a FLOOR on how fast climate actually moved. The comparison is
 # therefore conservative against the Holocene and generous to the Anthropocene.
-stopifnot(HOLO_BIN == 500, all(CLIM_DT > 20), all(CLIM_DT < 40))
+stopifnot(HOLO_BIN == 500, all(anth_delta$climate_dt_years > 20), all(anth_delta$climate_dt_years < 40))
 # min / mean / max of the SIGNED pace, per century, for every pond and every
 # site. Signed rather than absolute on purpose: the Holocene mean sits at ~0
 # because the record oscillates without net drift, while the Anthropocene mean is
@@ -324,7 +321,7 @@ pace_pond = holo_delta %>%
   group_by(variable) %>% mutate(row = as.integer(factor(lake))) %>% ungroup()
 
 pace_site = anth_delta %>%
-  mutate(rate = delta / CLIM_DT[site] * 100) %>%
+  mutate(rate = delta / climate_dt_years * 100) %>%
   group_by(variable, site) %>%
   summarize(min = min(rate), mean = mean(rate), max = max(rate), .groups = "drop") %>%
   mutate(variable = factor(variable, levels = VARS),
@@ -371,7 +368,7 @@ p_change = ggplot() +
                   labels = c("10000", "7500", "5000", "2500", "0", "MORA", "NOCA"),
                   expand = expansion(mult = c(0.02, 0.04))) +
   scale_colour_brewer(palette = "Dark2", name = "Pond (Holocene)") +
-  scale_fill_manual(values = c(MORA = "grey30", NOCA = "grey70"),
+  scale_fill_manual(values = PAPER_SITE_COLORS,
                     name = "Site (Anthropocene)") +
   labs(x = "cal BP  (time runs left to right)  |  Anthropocene",
        y = "Change over the interval  (degC or mm)",
@@ -473,7 +470,7 @@ stopifnot(all(chk$max_abs_diff[!chk$variable %in% PREC_VARS] < 1e-9))
 #
 #   Holocene      delta / 500 yr, pooled over all moving-window offsets
 #   Anthropocene  delta / the gap between the two CLIMATE window midpoints
-#                 (MORA 1984 -> 2014.5 = 30.5 yr, NOCA 1984 -> 2012.5 = 28.5 yr),
+#                 (1984 -> adult year Y minus 2.5),
 #                 because the change is between two window AVERAGES, not between
 #                 two instants.
 #
@@ -491,23 +488,25 @@ pace_holo = holo_delta %>%
             median = median(rate, na.rm = TRUE),
             max = max(rate, na.rm = TRUE),
             median_abs = median(abs(rate), na.rm = TRUE), .groups = "drop") %>%
-  mutate(era = "holocene", interval_yr = HOLO_BIN)
+  mutate(era = "holocene", interval_yr = HOLO_BIN, interval_min = HOLO_BIN, interval_max = HOLO_BIN)
 
 pace_anth = anth_delta %>%
-  mutate(rate = delta / CLIM_DT[site] * 100) %>%
+  mutate(rate = delta / climate_dt_years * 100) %>%
   group_by(lake = site, site, variable) %>%
   summarize(n_int = n(),
+            interval_min = min(climate_dt_years), interval_max = max(climate_dt_years),
+            interval_yr = median(climate_dt_years),
             min = min(rate, na.rm = TRUE),
             median = median(rate, na.rm = TRUE),
             max = max(rate, na.rm = TRUE),
             median_abs = median(abs(rate), na.rm = TRUE), .groups = "drop") %>%
-  mutate(era = "anthropocene", interval_yr = round(CLIM_DT[site], 1))
+  mutate(era = "anthropocene")
 
 pace = bind_rows(pace_holo, pace_anth) %>%
   mutate(unit = paste0(UNIT(variable), "/century"),
          variable = factor(variable, levels = VARS)) %>%
   arrange(variable, era, site, lake) %>%
-  select(variable, unit, era, site, lake, interval_yr, n_int, min, median, max, median_abs)
+  select(variable, unit, era, site, lake, interval_yr, interval_min, interval_max, n_int, min, median, max, median_abs)
 
 cat("\n\n=== PACE OF CHANGE, per century ===\n")
 cat("  Holocene    : one value per consecutive ", HOLO_BIN,
@@ -555,15 +554,17 @@ if (all(dir.exists(here("output", parts_dir)))) {
 
   # window years in full, plus December of the lead-in year only - the pipeline's
   # rule. MUST match R/stages/000_MORA_climate.R and R/stages/000_NOCA_climate.R.
-  WIN = list(MORA.past = 1979:1989, MORA.present = 2010:2019,
-             NOCA.past = 1979:1989, NOCA.present = 2010:2015)
-  cache = cache %>% mutate(key = paste(site, period, sep = ".")) %>%
-    filter(pmap_lgl(list(key, year, month), function(k, y, mo) {
-      w = WIN[[k]]; y %in% w || (y == min(w) - 1L && mo == 12) }))
+  cache = cache %>% filter(id %in% plot_years$plot_id) %>%
+    left_join(plot_years %>% select(site, id = plot_id, climate_start, climate_end),
+      by = c("site", "id")) %>%
+    mutate(key = paste(site, period, sep = ".")) %>%
+    filter(if_else(period == "past", year >= 1979 & year <= 1989,
+      (year >= climate_start & year <= climate_end) |
+        (year == climate_start - 1L & month == 12)))
 
   build = function(dat) {
     dat %>% transmute(unit = id, period = key, variable, time = year, month, value) %>%
-      derive_climate_vars(winter_shift = TRUE) %>%
+      derive_climate_vars(winter_shift = TRUE) %>% restrict_modern_seasons(plot_years) %>%
       separate_wider_delim(period, ".", names = c("site", "period"))
   }
   with_pr = build(cache)

@@ -57,6 +57,8 @@ rsconnect/
 !/data/README_outputs_MORA_AT.html
 !/data/SOURCES_SURVEY_YEARS.md
 !/data/SOURCES_SURVEY_YEARS.html
+!/data/MORA/resurvey_seedling_visit_mapping.csv
+!/data/MORA/resurvey_year_source_discrepancies.csv
 /Cores/**
 !/Cores/**/
 !/Cores/CONTROL_POINTS.md

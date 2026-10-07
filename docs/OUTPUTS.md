@@ -52,3 +52,24 @@ Active data and cache locations are preserved. See [repository inventory](REPOSI
 | `plot/fig_cca_direction_differences.*` | Main-paper PDF/PNG with A. Climate and B. Species median heatmaps of target-alignment discrepancy (predicted minus observed); display labels use climate stability, species names are italicized, and neutral era labels highlight only high fire/burned status in red within MORA/NOCA facets |
 | `plot/test_figures/fig_cca_direction_differences_audit.pdf` | Three-page complete taxon/climate boxplot audit retaining individual valid units, distributions, and explicit two-unit groups |
 | `bacon_run_manifest.csv` | Seed, versions, settings/control/output hashes, the historical whole-script hash used for five chronology runs, and a separately checked chronology-code fingerprint; the recorded post-run revision is limited to PDF location and PNG persistence |
+
+## Adult survey dates and the 2026-10-07 climate update
+
+The cleaners produce `output/modern_plot_years.csv`, shared by climate preparation,
+CCA projections and tracking. MORA also exports `MORA_resurvey_record_audit.csv`
+(assigned dates and selected/discarded raw rows) and `MORA_resurvey_visit_audit.csv`
+(visit counts). The received data remain unchanged.
+
+The review includes the [95-plot source discrepancies](assets/analysis/tables/year_source_discrepancies.csv),
+[13 repeat-visit selections](assets/analysis/tables/mora_repeat_visits.csv),
+[actual window/count table](assets/analysis/tables/survey_climate_windows.csv) and
+[before/after effects](assets/analysis/tables/survey_decision_effects.csv).
+Full per-plot effects remain in `output/survey_window_plot_effects.csv`.
+The fixed pre-update reference in `docs/report/survey_window_baseline.csv` makes
+that dated comparison reproducible; it is not a second active analysis.
+
+The dated [whole-output comparison](review/SURVEY_WINDOW_OUTPUT_CHANGES.csv)
+accounts for all 115 pre-update scientific CSVs: 88 are byte-identical, six have
+only provenance or ordering changes, and 21 change scientifically. It records
+matching keys, added/removed rows, changed fields and before/after checksums.
+Historical climate and Holocene values remain unchanged in the mixed tables.

@@ -8,6 +8,7 @@ suppressPackageStartupMessages({
   library(tidyverse)
   library(patchwork)
 })
+source(here("R/helpers/figure_style.R"), local = TRUE)
 render_figures = isTRUE(getOption("paleoaces.render_figures", TRUE))
 
 paths = c(
@@ -26,7 +27,7 @@ WINDOW_YOUNGER = EXAMPLE_AGE - 500
 WINDOW_OLDER = EXAMPLE_AGE + 500
 LAKE_LEVELS = c("Little Sunrise Lake", "Shadow Lake", "Sunrise Lake",
                 "PantherPotholes")
-site_colors = c(MORA = "#4477AA", NOCA = "#CC6677")
+site_colors = PAPER_SITE_COLORS
 fire_colors = c(`High fire` = "#9E2A2B", `Not high fire` = "grey55")
 
 example_core = core %>%

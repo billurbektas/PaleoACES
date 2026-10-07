@@ -117,6 +117,13 @@ def main():
         csv_mutation(paleo, lambda data: data[0].update(value='Inf')),
         execute, 'Offline TraCE21k climate'))
 
+    date_input = ROOT / 'data/MORA/MORA_TreeData_Resurvey_Cleaned.csv'
+    execute = ['Rscript', '-e', 'options(paleoaces.offline=TRUE); sys.source('
+               '"R/stages/000_MORA_climate.R", envir=new.env(parent=globalenv()))']
+    results.append(rejected('changed adult date rejects stale plot-year table', date_input,
+        csv_mutation(date_input, lambda data: data[0].update(Year='2015')),
+        execute, 'Survey-date inputs changed'))
+
     fresh = ['python3', 'tools/build_analysis_review.py', '--fresh']
     ledger = ROOT / 'output/report/run.json'
     run = json.loads(ledger.read_text())

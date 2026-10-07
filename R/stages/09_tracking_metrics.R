@@ -55,9 +55,6 @@ write_csv(climate_scaling, here("output/cca_tracking_climate_scaling.csv"))
 # Nominal climate-window midpoints. The four constraints share one LC endpoint,
 # so its rate uses the documented window midpoint rather than variable-specific
 # effective-year adjustments.
-ANTH_CLIM_MID_T1 = c(MORA = 1984.0, NOCA = 1984.0)  # midpoint, 1979-1989
-ANTH_CLIM_MID_T2 = c(MORA = 2014.5, NOCA = 2012.5)  # 2010-2019 / 2010-2015
-ANTH_CLIM_DT = ANTH_CLIM_MID_T2 - ANTH_CLIM_MID_T1
 
 # =============================================================================
 # NEW: HOLOCENE ENDPOINTS AND REALIZATION-LEVEL METRICS
@@ -281,49 +278,17 @@ present_scores = tibble(
     rename_with(~ paste0(.x, "_2"))
 )
 
-# Use the same representative-year rule as the vegetation cleaner: the minimum
-# available tree/seedling resurvey year for a MORA plot. NOCA supplies one
-# Wilson resurvey year per plot. Every modeled pair must match exactly once.
-mora_years = bind_rows(
-  read_csv(here("data/MORA/MORA_TreeData_Resurvey_Cleaned.csv"),
-           show_col_types = FALSE) %>% select(Plot_ID, Year),
-  read_csv(here("data/MORA/MORA_Seedlings_Resurvey_Cleaned.csv"),
-           show_col_types = FALSE) %>% select(Plot_ID, Year)
-) %>%
-  filter(!is.na(Year)) %>%
-  group_by(Plot_ID) %>%
-  summarize(vegetation_t2_year = min(Year), .groups = "drop") %>%
-  inner_join(
-    read_csv(here("data/MORA/MORA_plot_lib.csv"), show_col_types = FALSE) %>%
-      select(Plot_ID, plot_id),
-    by = "Plot_ID"
-  ) %>%
-  transmute(site = "MORA", plot_id, vegetation_t2_year)
-
-noca_years = read_csv(here("data/NOCA/NOCA_plots_fromWilson.csv"),
-                      show_col_types = FALSE) %>%
-  transmute(site = "NOCA",
-            plot_id = str_to_upper(str_trim(as.character(`2015.Plot.Name`))),
-            vegetation_t2_year = as.numeric(Resurvey.Year)) %>%
-  distinct()
-
-resurvey_years = bind_rows(mora_years, noca_years)
-if (anyDuplicated(resurvey_years %>% select(site, plot_id)))
-  stop("Resurvey-year lookup is not unique by site and plot_id")
+# The cleaners resolved adult visits once. Climate windows and both elapsed
+# times come from that same plot-year table; no seedling minima or site means.
+source(here("R/helpers/survey_years.R"), local = TRUE)
+resurvey_years = read_plot_years()
 
 # Membership and finite WA/LC positions were resolved once in the CCA stage.
 anth = tibble(plot_id = present_pairs) %>%
   left_join(past_scores, by = "plot_id") %>%
   left_join(present_scores, by = "plot_id") %>%
   left_join(site_lookup, by = "plot_id") %>%
-  left_join(resurvey_years, by = c("site", "plot_id")) %>%
-  mutate(
-    vegetation_t1_year = if_else(site == "MORA", 1977.5, 1983),
-    vegetation_dt_years = vegetation_t2_year - vegetation_t1_year,
-    climate_t1_midyear = ANTH_CLIM_MID_T1[site],
-    climate_t2_midyear = ANTH_CLIM_MID_T2[site],
-    climate_dt_years = ANTH_CLIM_DT[site]
-  )
+  left_join(resurvey_years, by = c("site", "plot_id"))
 
 if (anyNA(anth$vegetation_t2_year) ||
     any(!is.finite(anth$vegetation_dt_years) | anth$vegetation_dt_years <= 0))
@@ -338,6 +303,10 @@ cat("\nAnthropocene tracking pairs:\n")
 print(as.data.frame(anth %>% count(site, name = "n_pairs")), row.names = FALSE)
 
 write_csv(anth, here("output/cca_tracking_anthropocene_plot.csv"))
+if (!nzchar(TRACKING_OUTPUT_SUFFIX)) {
+  source(here("R/helpers/survey_decision_effects.R"), local = TRUE)
+  export_survey_decision_effects(anth)
+}
 
 anth_support = anth %>%
   group_by(site) %>%
@@ -347,7 +316,9 @@ anth_support = anth %>%
     n_small_observed = sum(small_observed_movement),
     vegetation_dt_min = min(vegetation_dt_years),
     vegetation_dt_max = max(vegetation_dt_years),
-    climate_dt_years = unique(climate_dt_years),
+    climate_dt_min = min(climate_dt_years),
+    climate_dt_max = max(climate_dt_years),
+    climate_dt_median = median(climate_dt_years),
     .groups = "drop"
   )
 anth_site = summarize_metric_distribution(

@@ -1,0 +1,7 @@
+{
+  "decision_date": "2026-10-07",
+  "before_checkpoint": "37a888b",
+  "description": "Before adult-year authority/latest visits and plot-specific six-year modern climate windows. Legacy climate 1979-1989; old modern MORA 2010-2019, NOCA 2010-2015.",
+  "tracking_source_sha256": "13ea45b394bac1a2c2824c8b47063e96f86a02e931341dd9755ef9f39768839e",
+  "repeat_presence_source_sha256": "d3918242c6d6c86dd6b89e1e67dde73be33fc5f4373acbab069d819a83ce6133"
+}

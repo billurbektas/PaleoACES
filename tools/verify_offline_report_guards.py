@@ -27,7 +27,19 @@ for stage,directory,label in [
     files=sorted((ROOT/'output'/directory).glob('*.csv'))
     if directory=='chelsa_paleo': files=[p for p in files if not p.name.startswith('v21_')]
     p=files[0]; original=p.read_bytes()
-    rejected(stage,label,lambda:p.unlink(),lambda:p.write_bytes(original))
+    # Modern consumers can restore absent chunks from the validated diagnostic
+    # cache. Absence from BOTH caches must still fail before any download.
+    alternate=None
+    if directory in ['mora_climate_parts','noca_climate_parts']:
+        parts=p.stem.split('_'); alternate=ROOT/'output/anomaly_parts'/('_'.join(parts[-2:])+'.csv')
+    alternate_bytes=alternate.read_bytes() if alternate and alternate.exists() else None
+    def remove():
+        p.unlink()
+        if alternate_bytes is not None: alternate.unlink()
+    def replace():
+        p.write_bytes(original)
+        if alternate_bytes is not None: alternate.write_bytes(alternate_bytes)
+    rejected(stage,label,remove,replace)
 # Invalid values must not be removed to make room for a download.
 p=sorted((ROOT/'output/mora_climate_parts').glob('*.csv'))[0]; original=p.read_bytes()
 import csv,io
