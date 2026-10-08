@@ -47,6 +47,7 @@ classify = function(cleaned = raw, climate = clim) cca_classify_samples(
 classified = classify()
 paired = cca_pair_samples(classified)
 stopifnot(identical(paired$plot_id[paired$comparison_included], "valid"),
+          identical(paired$plot_id[paired$calibration_included], "valid"),
           identical(classified$plot_id[classified$period == "paleo" & classified$eligible], "paleo_valid"))
 expected = c(empty_legacy = "no_recorded_taxa", lost_presence = "no_recorded_taxa",
              consolidation = "consolidation", threshold = "species_selection",

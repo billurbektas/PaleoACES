@@ -207,7 +207,7 @@ MORA,anthropocene,past,GREE-134,TRUE,3,3,3,3,TRUE,3,included,Included,TRUE,TRUE,
 MORA,anthropocene,present,GREE-134,TRUE,4,3,3,3,TRUE,3,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 MORA,anthropocene,past,GREE-137,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 MORA,anthropocene,present,GREE-137,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
-MORA,anthropocene,past,GROV-026,TRUE,3,3,2,2,TRUE,3,included,Included,TRUE,FALSE,present,Only taxa excluded by CCA species selection,TRUE,FALSE,Only taxa excluded by CCA species selection
+MORA,anthropocene,past,GROV-026,TRUE,3,3,2,2,TRUE,3,included,Included,TRUE,FALSE,present,Only taxa excluded by CCA species selection,FALSE,FALSE,Only taxa excluded by CCA species selection
 MORA,anthropocene,present,GROV-026,TRUE,2,1,0,0,TRUE,3,species_selection,Only taxa excluded by CCA species selection,FALSE,FALSE,present,Only taxa excluded by CCA species selection,FALSE,FALSE,Only taxa excluded by CCA species selection
 MORA,anthropocene,past,GROV-482,TRUE,3,3,2,2,TRUE,3,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 MORA,anthropocene,present,GROV-482,TRUE,5,4,4,4,TRUE,3,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
@@ -398,7 +398,7 @@ MORA,anthropocene,present,NORT-218,TRUE,3,3,3,3,TRUE,3,included,Included,TRUE,TR
 MORA,anthropocene,past,NORT-220,TRUE,5,5,5,5,TRUE,5,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 MORA,anthropocene,present,NORT-220,TRUE,4,4,4,4,TRUE,5,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 MORA,anthropocene,past,NORT-456,TRUE,3,3,3,3,TRUE,3,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
-MORA,anthropocene,present,NORT-456,TRUE,6,4,4,4,TRUE,3,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
+MORA,anthropocene,present,NORT-456,TRUE,6,5,5,5,TRUE,3,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 MORA,anthropocene,past,NPU-359,TRUE,4,4,4,4,TRUE,4,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 MORA,anthropocene,present,NPU-359,TRUE,4,3,3,3,TRUE,4,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 MORA,anthropocene,past,OHAN-007,TRUE,5,5,5,5,TRUE,5,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
@@ -707,7 +707,7 @@ NOCA,anthropocene,past,BEAV6067,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,
 NOCA,anthropocene,present,BEAV6067,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 NOCA,anthropocene,past,BRCR5126,TRUE,3,3,2,2,TRUE,3,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 NOCA,anthropocene,present,BRCR5126,TRUE,3,3,2,2,TRUE,3,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
-NOCA,anthropocene,past,BRCR5128,TRUE,2,1,1,1,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
+NOCA,anthropocene,past,BRCR5128,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 NOCA,anthropocene,present,BRCR5128,TRUE,1,1,1,1,TRUE,2,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 NOCA,anthropocene,past,BRCR5142,TRUE,1,1,1,1,TRUE,1,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 NOCA,anthropocene,present,BRCR5142,TRUE,2,1,1,1,TRUE,1,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
@@ -773,7 +773,7 @@ NOCA,anthropocene,past,COPP6042,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,
 NOCA,anthropocene,present,COPP6042,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 NOCA,anthropocene,past,COT5141,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 NOCA,anthropocene,present,COT5141,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
-NOCA,anthropocene,past,COT5143,TRUE,3,3,2,2,TRUE,3,included,Included,TRUE,FALSE,present,Only taxa excluded by CCA species selection,TRUE,FALSE,Only taxa excluded by CCA species selection
+NOCA,anthropocene,past,COT5143,TRUE,3,3,2,2,TRUE,3,included,Included,TRUE,FALSE,present,Only taxa excluded by CCA species selection,FALSE,FALSE,Only taxa excluded by CCA species selection
 NOCA,anthropocene,present,COT5143,TRUE,1,1,0,0,TRUE,3,species_selection,Only taxa excluded by CCA species selection,FALSE,FALSE,present,Only taxa excluded by CCA species selection,FALSE,FALSE,Only taxa excluded by CCA species selection
 NOCA,anthropocene,past,COT5145,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 NOCA,anthropocene,present,COT5145,TRUE,1,1,1,1,TRUE,2,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
@@ -809,7 +809,7 @@ NOCA,anthropocene,past,EASY454,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,N
 NOCA,anthropocene,present,EASY454,TRUE,4,3,3,3,TRUE,2,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 NOCA,anthropocene,past,EASY456,TRUE,4,4,3,3,TRUE,4,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 NOCA,anthropocene,present,EASY456,TRUE,2,2,1,1,TRUE,4,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
-NOCA,anthropocene,past,EASY457,TRUE,1,1,1,1,TRUE,1,included,Included,TRUE,FALSE,present,Loss of all recorded tree-taxon presence at resurvey,TRUE,FALSE,Loss of all recorded tree-taxon presence at resurvey
+NOCA,anthropocene,past,EASY457,TRUE,1,1,1,1,TRUE,1,included,Included,TRUE,FALSE,present,Loss of all recorded tree-taxon presence at resurvey,FALSE,FALSE,Loss of all recorded tree-taxon presence at resurvey
 NOCA,anthropocene,present,EASY457,TRUE,0,0,0,0,TRUE,1,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey,FALSE,FALSE,present,Loss of all recorded tree-taxon presence at resurvey,FALSE,FALSE,Loss of all recorded tree-taxon presence at resurvey
 NOCA,anthropocene,past,EASY458,TRUE,0,0,0,0,TRUE,0,no_recorded_taxa,No tree taxa recorded at legacy,FALSE,FALSE,past,No tree taxa recorded at legacy,FALSE,FALSE,No tree taxa recorded at legacy
 NOCA,anthropocene,present,EASY458,TRUE,2,2,2,2,TRUE,0,included,Included,TRUE,FALSE,past,No tree taxa recorded at legacy,FALSE,FALSE,No tree taxa recorded at legacy
@@ -819,7 +819,7 @@ NOCA,anthropocene,past,EASY461,TRUE,3,3,3,3,TRUE,3,included,Included,TRUE,TRUE,N
 NOCA,anthropocene,present,EASY461,TRUE,1,1,1,1,TRUE,3,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 NOCA,anthropocene,past,EASY462,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 NOCA,anthropocene,present,EASY462,TRUE,5,5,5,5,TRUE,2,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
-NOCA,anthropocene,past,EASY463,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,FALSE,present,Loss of all recorded tree-taxon presence at resurvey,TRUE,FALSE,Loss of all recorded tree-taxon presence at resurvey
+NOCA,anthropocene,past,EASY463,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,FALSE,present,Loss of all recorded tree-taxon presence at resurvey,FALSE,FALSE,Loss of all recorded tree-taxon presence at resurvey
 NOCA,anthropocene,present,EASY463,TRUE,0,0,0,0,TRUE,2,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey,FALSE,FALSE,present,Loss of all recorded tree-taxon presence at resurvey,FALSE,FALSE,Loss of all recorded tree-taxon presence at resurvey
 NOCA,anthropocene,past,EASY464,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 NOCA,anthropocene,present,EASY464,TRUE,3,3,3,3,TRUE,2,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
@@ -841,8 +841,8 @@ NOCA,anthropocene,past,GRAN478,TRUE,5,5,5,5,TRUE,5,included,Included,TRUE,TRUE,N
 NOCA,anthropocene,present,GRAN478,TRUE,2,2,2,2,TRUE,5,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 NOCA,anthropocene,past,GRAN479,TRUE,6,6,6,6,TRUE,6,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 NOCA,anthropocene,present,GRAN479,TRUE,7,7,7,7,TRUE,6,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
-NOCA,anthropocene,past,HB2064,TRUE,3,2,2,2,TRUE,3,included,Included,TRUE,FALSE,present,Only taxa excluded during consolidation,TRUE,FALSE,Only taxa excluded during consolidation
-NOCA,anthropocene,present,HB2064,TRUE,1,0,0,0,TRUE,3,consolidation,Only taxa excluded during consolidation,FALSE,FALSE,present,Only taxa excluded during consolidation,FALSE,FALSE,Only taxa excluded during consolidation
+NOCA,anthropocene,past,HB2064,TRUE,3,3,3,3,TRUE,3,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
+NOCA,anthropocene,present,HB2064,TRUE,1,1,1,1,TRUE,3,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 NOCA,anthropocene,past,HB2066,TRUE,3,3,3,3,TRUE,3,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 NOCA,anthropocene,present,HB2066,TRUE,1,1,1,1,TRUE,3,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 NOCA,anthropocene,past,HB2068,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
@@ -853,9 +853,9 @@ NOCA,anthropocene,past,HB5148,TRUE,3,3,3,3,TRUE,3,included,Included,TRUE,TRUE,NA
 NOCA,anthropocene,present,HB5148,TRUE,2,2,2,2,TRUE,3,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 NOCA,anthropocene,past,HB5158,TRUE,5,5,5,5,TRUE,5,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 NOCA,anthropocene,present,HB5158,TRUE,3,3,3,3,TRUE,5,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
-NOCA,anthropocene,past,HIBR2052,TRUE,2,1,1,1,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
-NOCA,anthropocene,present,HIBR2052,TRUE,2,1,1,1,TRUE,2,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
-NOCA,anthropocene,past,HIBR5160,TRUE,2,1,1,1,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
+NOCA,anthropocene,past,HIBR2052,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
+NOCA,anthropocene,present,HIBR2052,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
+NOCA,anthropocene,past,HIBR5160,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 NOCA,anthropocene,present,HIBR5160,TRUE,5,4,3,3,TRUE,2,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 NOCA,anthropocene,past,HOZO132,TRUE,3,3,3,3,TRUE,3,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 NOCA,anthropocene,present,HOZO132,TRUE,4,4,4,4,TRUE,3,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
@@ -969,7 +969,7 @@ NOCA,anthropocene,past,RARI5015,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,
 NOCA,anthropocene,present,RARI5015,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 NOCA,anthropocene,past,RARI5018,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 NOCA,anthropocene,present,RARI5018,TRUE,3,3,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
-NOCA,anthropocene,past,RARI5019,TRUE,3,3,2,2,TRUE,3,included,Included,TRUE,FALSE,present,Only taxa excluded by CCA species selection,TRUE,FALSE,Only taxa excluded by CCA species selection
+NOCA,anthropocene,past,RARI5019,TRUE,3,3,2,2,TRUE,3,included,Included,TRUE,FALSE,present,Only taxa excluded by CCA species selection,FALSE,FALSE,Only taxa excluded by CCA species selection
 NOCA,anthropocene,present,RARI5019,TRUE,1,1,0,0,TRUE,3,species_selection,Only taxa excluded by CCA species selection,FALSE,FALSE,present,Only taxa excluded by CCA species selection,FALSE,FALSE,Only taxa excluded by CCA species selection
 NOCA,anthropocene,past,RARI5021,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 NOCA,anthropocene,present,RARI5021,TRUE,3,3,3,3,TRUE,2,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
@@ -995,7 +995,7 @@ NOCA,anthropocene,past,ROSS3020,TRUE,4,4,4,4,TRUE,4,included,Included,TRUE,TRUE,
 NOCA,anthropocene,present,ROSS3020,TRUE,4,4,4,4,TRUE,4,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 NOCA,anthropocene,past,ROSS3021,TRUE,2,2,0,0,TRUE,2,species_selection,Only taxa excluded by CCA species selection,FALSE,FALSE,past,Only taxa excluded by CCA species selection,FALSE,FALSE,Only taxa excluded by CCA species selection
 NOCA,anthropocene,present,ROSS3021,TRUE,3,3,1,1,TRUE,2,included,Included,TRUE,FALSE,past,Only taxa excluded by CCA species selection,FALSE,FALSE,Only taxa excluded by CCA species selection
-NOCA,anthropocene,past,ROSS3023,TRUE,3,2,1,1,TRUE,3,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
+NOCA,anthropocene,past,ROSS3023,TRUE,3,3,2,2,TRUE,3,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 NOCA,anthropocene,present,ROSS3023,TRUE,2,2,2,2,TRUE,3,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 NOCA,anthropocene,past,ROSS3024,TRUE,1,1,1,1,TRUE,1,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 NOCA,anthropocene,present,ROSS3024,TRUE,3,3,3,3,TRUE,1,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
@@ -1005,7 +1005,7 @@ NOCA,anthropocene,past,ROSS3027,TRUE,1,1,1,1,TRUE,1,included,Included,TRUE,TRUE,
 NOCA,anthropocene,present,ROSS3027,TRUE,1,1,1,1,TRUE,1,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 NOCA,anthropocene,past,ROSS3029,TRUE,1,1,1,1,TRUE,1,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 NOCA,anthropocene,present,ROSS3029,TRUE,3,3,3,3,TRUE,1,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
-NOCA,anthropocene,past,ROSS3031,TRUE,3,2,2,2,TRUE,3,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
+NOCA,anthropocene,past,ROSS3031,TRUE,3,3,3,3,TRUE,3,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 NOCA,anthropocene,present,ROSS3031,TRUE,1,1,1,1,TRUE,3,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 NOCA,anthropocene,past,ROSS3035,TRUE,3,3,3,3,TRUE,3,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 NOCA,anthropocene,present,ROSS3035,TRUE,3,3,3,3,TRUE,3,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
@@ -1087,9 +1087,9 @@ NOCA,anthropocene,past,SOUR4035,TRUE,3,3,3,3,TRUE,3,included,Included,TRUE,TRUE,
 NOCA,anthropocene,present,SOUR4035,TRUE,3,3,3,3,TRUE,3,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 NOCA,anthropocene,past,STE2001,TRUE,1,1,0,0,TRUE,1,species_selection,Only taxa excluded by CCA species selection,FALSE,FALSE,past,Only taxa excluded by CCA species selection,FALSE,FALSE,Only taxa excluded by CCA species selection
 NOCA,anthropocene,present,STE2001,TRUE,0,0,0,0,TRUE,1,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey,FALSE,FALSE,past,Only taxa excluded by CCA species selection,FALSE,FALSE,Only taxa excluded by CCA species selection
-NOCA,anthropocene,past,STE2002,TRUE,2,1,1,1,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
-NOCA,anthropocene,present,STE2002,TRUE,2,1,1,1,TRUE,2,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
-NOCA,anthropocene,past,STE2003,TRUE,2,1,1,1,TRUE,2,included,Included,TRUE,FALSE,present,Loss of all recorded tree-taxon presence at resurvey,TRUE,FALSE,Loss of all recorded tree-taxon presence at resurvey
+NOCA,anthropocene,past,STE2002,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
+NOCA,anthropocene,present,STE2002,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
+NOCA,anthropocene,past,STE2003,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,FALSE,present,Loss of all recorded tree-taxon presence at resurvey,FALSE,FALSE,Loss of all recorded tree-taxon presence at resurvey
 NOCA,anthropocene,present,STE2003,TRUE,0,0,0,0,TRUE,2,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey,FALSE,FALSE,present,Loss of all recorded tree-taxon presence at resurvey,FALSE,FALSE,Loss of all recorded tree-taxon presence at resurvey
 NOCA,anthropocene,past,STE2005,TRUE,4,4,4,4,TRUE,4,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 NOCA,anthropocene,present,STE2005,TRUE,1,1,1,1,TRUE,4,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
@@ -1113,16 +1113,16 @@ NOCA,anthropocene,past,STE2016,TRUE,1,1,1,1,TRUE,1,included,Included,TRUE,TRUE,N
 NOCA,anthropocene,present,STE2016,TRUE,1,1,1,1,TRUE,1,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 NOCA,anthropocene,past,STE2017,TRUE,4,4,4,4,TRUE,4,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 NOCA,anthropocene,present,STE2017,TRUE,4,4,4,4,TRUE,4,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
-NOCA,anthropocene,past,STE2020,TRUE,2,1,1,1,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
+NOCA,anthropocene,past,STE2020,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 NOCA,anthropocene,present,STE2020,TRUE,1,1,1,1,TRUE,2,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 NOCA,anthropocene,past,STE2021,TRUE,1,1,1,1,TRUE,1,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 NOCA,anthropocene,present,STE2021,TRUE,3,3,3,3,TRUE,1,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
-NOCA,anthropocene,past,STE2022,TRUE,2,1,1,1,TRUE,2,included,Included,TRUE,FALSE,present,Loss of all recorded tree-taxon presence at resurvey,TRUE,FALSE,Loss of all recorded tree-taxon presence at resurvey
+NOCA,anthropocene,past,STE2022,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,FALSE,present,Loss of all recorded tree-taxon presence at resurvey,FALSE,FALSE,Loss of all recorded tree-taxon presence at resurvey
 NOCA,anthropocene,present,STE2022,TRUE,0,0,0,0,TRUE,2,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey,FALSE,FALSE,present,Loss of all recorded tree-taxon presence at resurvey,FALSE,FALSE,Loss of all recorded tree-taxon presence at resurvey
 NOCA,anthropocene,past,STE2025,TRUE,5,5,4,4,TRUE,5,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 NOCA,anthropocene,present,STE2025,TRUE,4,4,3,3,TRUE,5,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
-NOCA,anthropocene,past,STE2026,TRUE,2,1,1,1,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
-NOCA,anthropocene,present,STE2026,TRUE,3,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
+NOCA,anthropocene,past,STE2026,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
+NOCA,anthropocene,present,STE2026,TRUE,3,3,3,3,TRUE,2,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 NOCA,anthropocene,past,STE2027,TRUE,3,3,3,3,TRUE,3,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 NOCA,anthropocene,present,STE2027,TRUE,3,3,3,3,TRUE,3,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 NOCA,anthropocene,past,STE2028,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
@@ -1135,57 +1135,57 @@ NOCA,anthropocene,past,STE2031,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,N
 NOCA,anthropocene,present,STE2031,TRUE,3,3,3,3,TRUE,2,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 NOCA,anthropocene,past,STE2032,TRUE,3,3,3,3,TRUE,3,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 NOCA,anthropocene,present,STE2032,TRUE,3,3,3,3,TRUE,3,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
-NOCA,anthropocene,past,STE2035,TRUE,3,3,3,3,TRUE,3,included,Included,TRUE,FALSE,present,Loss of all recorded tree-taxon presence at resurvey,TRUE,FALSE,Loss of all recorded tree-taxon presence at resurvey
+NOCA,anthropocene,past,STE2035,TRUE,3,3,3,3,TRUE,3,included,Included,TRUE,FALSE,present,Loss of all recorded tree-taxon presence at resurvey,FALSE,FALSE,Loss of all recorded tree-taxon presence at resurvey
 NOCA,anthropocene,present,STE2035,TRUE,0,0,0,0,TRUE,3,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey,FALSE,FALSE,present,Loss of all recorded tree-taxon presence at resurvey,FALSE,FALSE,Loss of all recorded tree-taxon presence at resurvey
-NOCA,anthropocene,past,STE2036,TRUE,3,2,1,1,TRUE,3,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
+NOCA,anthropocene,past,STE2036,TRUE,3,3,2,2,TRUE,3,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 NOCA,anthropocene,present,STE2036,TRUE,2,2,1,1,TRUE,3,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 NOCA,anthropocene,past,STE2037,TRUE,3,3,2,2,TRUE,3,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 NOCA,anthropocene,present,STE2037,TRUE,1,1,1,1,TRUE,3,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
-NOCA,anthropocene,past,STE2038,TRUE,2,1,1,1,TRUE,2,included,Included,TRUE,FALSE,present,Loss of all recorded tree-taxon presence at resurvey,TRUE,FALSE,Loss of all recorded tree-taxon presence at resurvey
+NOCA,anthropocene,past,STE2038,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,FALSE,present,Loss of all recorded tree-taxon presence at resurvey,FALSE,FALSE,Loss of all recorded tree-taxon presence at resurvey
 NOCA,anthropocene,present,STE2038,TRUE,0,0,0,0,TRUE,2,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey,FALSE,FALSE,present,Loss of all recorded tree-taxon presence at resurvey,FALSE,FALSE,Loss of all recorded tree-taxon presence at resurvey
-NOCA,anthropocene,past,STE2039,TRUE,2,1,1,1,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
-NOCA,anthropocene,present,STE2039,TRUE,2,1,1,1,TRUE,2,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
-NOCA,anthropocene,past,STE2040,TRUE,3,1,1,1,TRUE,3,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
-NOCA,anthropocene,present,STE2040,TRUE,2,1,1,1,TRUE,3,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
-NOCA,anthropocene,past,STE2041,TRUE,2,1,1,1,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
-NOCA,anthropocene,present,STE2041,TRUE,2,1,1,1,TRUE,2,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
-NOCA,anthropocene,past,STE2042,TRUE,2,1,1,1,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
+NOCA,anthropocene,past,STE2039,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
+NOCA,anthropocene,present,STE2039,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
+NOCA,anthropocene,past,STE2040,TRUE,3,2,2,2,TRUE,3,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
+NOCA,anthropocene,present,STE2040,TRUE,2,2,2,2,TRUE,3,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
+NOCA,anthropocene,past,STE2041,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
+NOCA,anthropocene,present,STE2041,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
+NOCA,anthropocene,past,STE2042,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 NOCA,anthropocene,present,STE2042,TRUE,1,1,1,1,TRUE,2,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 NOCA,anthropocene,past,STE2043,TRUE,1,1,0,0,TRUE,1,species_selection,Only taxa excluded by CCA species selection,FALSE,FALSE,past,Only taxa excluded by CCA species selection,FALSE,FALSE,Only taxa excluded by CCA species selection
-NOCA,anthropocene,present,STE2043,TRUE,2,1,1,1,TRUE,1,included,Included,TRUE,FALSE,past,Only taxa excluded by CCA species selection,FALSE,FALSE,Only taxa excluded by CCA species selection
-NOCA,anthropocene,past,STE2044,TRUE,1,0,0,0,TRUE,1,consolidation,Only taxa excluded during consolidation,FALSE,FALSE,past,Only taxa excluded during consolidation,FALSE,FALSE,Only taxa excluded during consolidation
-NOCA,anthropocene,present,STE2044,TRUE,1,1,1,1,TRUE,1,included,Included,TRUE,FALSE,past,Only taxa excluded during consolidation,FALSE,FALSE,Only taxa excluded during consolidation
-NOCA,anthropocene,past,STE2045,TRUE,2,1,1,1,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
-NOCA,anthropocene,present,STE2045,TRUE,2,1,1,1,TRUE,2,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
-NOCA,anthropocene,past,STE2046,TRUE,2,1,1,1,TRUE,2,included,Included,TRUE,FALSE,present,Loss of all recorded tree-taxon presence at resurvey,TRUE,FALSE,Loss of all recorded tree-taxon presence at resurvey
+NOCA,anthropocene,present,STE2043,TRUE,2,2,2,2,TRUE,1,included,Included,TRUE,FALSE,past,Only taxa excluded by CCA species selection,FALSE,FALSE,Only taxa excluded by CCA species selection
+NOCA,anthropocene,past,STE2044,TRUE,1,1,1,1,TRUE,1,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
+NOCA,anthropocene,present,STE2044,TRUE,1,1,1,1,TRUE,1,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
+NOCA,anthropocene,past,STE2045,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
+NOCA,anthropocene,present,STE2045,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
+NOCA,anthropocene,past,STE2046,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,FALSE,present,Loss of all recorded tree-taxon presence at resurvey,FALSE,FALSE,Loss of all recorded tree-taxon presence at resurvey
 NOCA,anthropocene,present,STE2046,TRUE,0,0,0,0,TRUE,2,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey,FALSE,FALSE,present,Loss of all recorded tree-taxon presence at resurvey,FALSE,FALSE,Loss of all recorded tree-taxon presence at resurvey
 NOCA,anthropocene,past,STE2047,TRUE,3,3,0,0,TRUE,3,species_selection,Only taxa excluded by CCA species selection,FALSE,FALSE,past,Only taxa excluded by CCA species selection,FALSE,FALSE,Only taxa excluded by CCA species selection
-NOCA,anthropocene,present,STE2047,TRUE,2,1,1,1,TRUE,3,included,Included,TRUE,FALSE,past,Only taxa excluded by CCA species selection,FALSE,FALSE,Only taxa excluded by CCA species selection
-NOCA,anthropocene,past,STE2049,TRUE,2,1,1,1,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
+NOCA,anthropocene,present,STE2047,TRUE,2,2,2,2,TRUE,3,included,Included,TRUE,FALSE,past,Only taxa excluded by CCA species selection,FALSE,FALSE,Only taxa excluded by CCA species selection
+NOCA,anthropocene,past,STE2049,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 NOCA,anthropocene,present,STE2049,TRUE,3,2,1,1,TRUE,2,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 NOCA,anthropocene,past,STE2050,TRUE,1,1,1,1,TRUE,1,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
-NOCA,anthropocene,present,STE2050,TRUE,2,1,1,1,TRUE,1,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
-NOCA,anthropocene,past,STE2054,TRUE,2,1,1,1,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
+NOCA,anthropocene,present,STE2050,TRUE,2,2,2,2,TRUE,1,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
+NOCA,anthropocene,past,STE2054,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 NOCA,anthropocene,present,STE2054,TRUE,1,1,1,1,TRUE,2,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 NOCA,anthropocene,past,STE2058,TRUE,1,1,1,1,TRUE,1,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 NOCA,anthropocene,present,STE2058,TRUE,1,1,1,1,TRUE,1,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
-NOCA,anthropocene,past,STE2060,TRUE,2,1,1,1,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
-NOCA,anthropocene,present,STE2060,TRUE,2,1,1,1,TRUE,2,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
+NOCA,anthropocene,past,STE2060,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
+NOCA,anthropocene,present,STE2060,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 NOCA,anthropocene,past,STE2062,TRUE,1,1,1,1,TRUE,1,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
-NOCA,anthropocene,present,STE2062,TRUE,2,1,1,1,TRUE,1,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
-NOCA,anthropocene,past,STE2070,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,FALSE,present,Loss of all recorded tree-taxon presence at resurvey,TRUE,FALSE,Loss of all recorded tree-taxon presence at resurvey
+NOCA,anthropocene,present,STE2062,TRUE,2,2,2,2,TRUE,1,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
+NOCA,anthropocene,past,STE2070,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,FALSE,present,Loss of all recorded tree-taxon presence at resurvey,FALSE,FALSE,Loss of all recorded tree-taxon presence at resurvey
 NOCA,anthropocene,present,STE2070,TRUE,0,0,0,0,TRUE,2,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey,FALSE,FALSE,present,Loss of all recorded tree-taxon presence at resurvey,FALSE,FALSE,Loss of all recorded tree-taxon presence at resurvey
 NOCA,anthropocene,past,STE2072,TRUE,7,7,7,7,TRUE,7,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 NOCA,anthropocene,present,STE2072,TRUE,4,3,2,2,TRUE,7,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
-NOCA,anthropocene,past,STE2078,TRUE,2,1,1,1,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
-NOCA,anthropocene,present,STE2078,TRUE,2,1,1,1,TRUE,2,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
+NOCA,anthropocene,past,STE2078,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
+NOCA,anthropocene,present,STE2078,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 NOCA,anthropocene,past,STE2080,TRUE,1,1,0,0,TRUE,1,species_selection,Only taxa excluded by CCA species selection,FALSE,FALSE,past,Only taxa excluded by CCA species selection,FALSE,FALSE,Only taxa excluded by CCA species selection
 NOCA,anthropocene,present,STE2080,TRUE,3,3,2,2,TRUE,1,included,Included,TRUE,FALSE,past,Only taxa excluded by CCA species selection,FALSE,FALSE,Only taxa excluded by CCA species selection
 NOCA,anthropocene,past,STE2088,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
-NOCA,anthropocene,present,STE2088,TRUE,2,1,1,1,TRUE,2,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
-NOCA,anthropocene,past,STE2090,TRUE,2,1,1,1,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
-NOCA,anthropocene,present,STE2090,TRUE,2,1,1,1,TRUE,2,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
-NOCA,anthropocene,past,STE2094,TRUE,2,1,1,1,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
+NOCA,anthropocene,present,STE2088,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
+NOCA,anthropocene,past,STE2090,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
+NOCA,anthropocene,present,STE2090,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
+NOCA,anthropocene,past,STE2094,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 NOCA,anthropocene,present,STE2094,TRUE,1,1,1,1,TRUE,2,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 NOCA,anthropocene,past,STE2096,TRUE,6,3,0,0,TRUE,6,species_selection,Only taxa excluded by CCA species selection,FALSE,FALSE,past,Only taxa excluded by CCA species selection,FALSE,FALSE,Only taxa excluded by CCA species selection
 NOCA,anthropocene,present,STE2096,TRUE,3,2,1,1,TRUE,6,included,Included,TRUE,FALSE,past,Only taxa excluded by CCA species selection,FALSE,FALSE,Only taxa excluded by CCA species selection
@@ -1255,7 +1255,7 @@ NOCA,anthropocene,past,WHAT6015,TRUE,3,3,3,3,TRUE,3,included,Included,TRUE,TRUE,
 NOCA,anthropocene,present,WHAT6015,TRUE,4,4,4,4,TRUE,3,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
 NOCA,anthropocene,past,WHAT6017,TRUE,3,3,3,3,TRUE,3,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 NOCA,anthropocene,present,WHAT6017,TRUE,3,3,3,3,TRUE,3,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included
-NOCA,anthropocene,past,WHAT6019,TRUE,1,1,1,1,TRUE,1,included,Included,TRUE,FALSE,present,Loss of all recorded tree-taxon presence at resurvey,TRUE,FALSE,Loss of all recorded tree-taxon presence at resurvey
+NOCA,anthropocene,past,WHAT6019,TRUE,1,1,1,1,TRUE,1,included,Included,TRUE,FALSE,present,Loss of all recorded tree-taxon presence at resurvey,FALSE,FALSE,Loss of all recorded tree-taxon presence at resurvey
 NOCA,anthropocene,present,WHAT6019,TRUE,0,0,0,0,TRUE,1,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey,FALSE,FALSE,present,Loss of all recorded tree-taxon presence at resurvey,FALSE,FALSE,Loss of all recorded tree-taxon presence at resurvey
 NOCA,anthropocene,past,WHAT6021,TRUE,2,2,2,2,TRUE,2,included,Included,TRUE,TRUE,NA,Included,TRUE,TRUE,Included
 NOCA,anthropocene,present,WHAT6021,TRUE,3,3,3,3,TRUE,2,included,Included,TRUE,TRUE,NA,Included,FALSE,TRUE,Included

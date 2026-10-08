@@ -1,7 +1,7 @@
 era,site,use,input_units,excluded_units,included_units
-anthropocene,MORA,Legacy calibration,331,0,331
+anthropocene,MORA,Legacy calibration,331,1,330
 anthropocene,MORA,Modern paired comparison,331,1,330
-anthropocene,NOCA,Legacy calibration,305,18,287
-anthropocene,NOCA,Modern paired comparison,305,30,275
+anthropocene,NOCA,Legacy calibration,305,28,277
+anthropocene,NOCA,Modern paired comparison,305,28,277
 holocene,MORA,Paleo projection,117,0,117
 holocene,NOCA,Paleo projection,846,56,790

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: c3ef8d951f9e686185b98fd78c6eb2bc -->
+<!-- paleoaces-source-md5: 2acdcfe9bae55177d8cdcb757402e068 -->
 
 <html>
 
@@ -1736,8 +1736,8 @@ plots/samples</td>
 <td><code>R/stages/05_cca_model.R</code></td>
 <td>Required pooled calibration/projection</td>
 <td>Consolidated occurrence, modern/paleo climate and fire</td>
-<td>In-memory CCA/model scores; 20 threshold, scaling 1, 13 species, 618
-calibration plots</td>
+<td>In-memory CCA/model scores; 20 threshold, scaling 1, 14 species, 607
+matched calibration plots</td>
 </tr>
 <tr class="even">
 <td align="right">10a</td>
@@ -1797,12 +1797,12 @@ rendering</td>
 <tr class="even">
 <td align="right">10g</td>
 <td><code>R/stages/12a_fire_event_detection_worked_example.R</code></td>
-<td>Step-by-step accepted-event detection for all four cores</td>
+<td>Accepted-event detection for all four cores</td>
 <td>All-<code>tapas</code> source series with local thresholds,
 candidate/count-screen flags, and accepted events</td>
 <td><code>fire_event_detection_lake_audit.csv</code> and, when
-rendering, PDF-only six-page audit under
-<code>plot/test_figures/</code></td>
+rendering, a PDF with all four residual/threshold plots on one page,
+alongside settings and the software comparison</td>
 </tr>
 <tr class="odd">
 <td align="right">10h</td>
@@ -1829,7 +1829,7 @@ audit under <code>plot/test_figures/</code></td>
 <td align="right">10j</td>
 <td><code>R/stages/09b_tracking_visualization_data.R</code></td>
 <td>Site/era point and resolution audit</td>
-<td>Primary and 500-year site series, 605 modern plots, frozen CC/S
+<td>Primary and 500-year site series, 607 modern plots, frozen CC/S
 grid</td>
 <td>Visualization-point, era-coverage, and interval-resolution audit
 CSVs</td>
@@ -1838,7 +1838,7 @@ CSVs</td>
 <td align="right">10k</td>
 <td><code>R/stages/09c_tracking_comparison.R</code></td>
 <td>Integrated descriptive tracking/fire summaries and render</td>
-<td>Complete 137 Holocene site-dates; all 605 modern pairs; modern and
+<td>Complete 137 Holocene site-dates; all 607 modern pairs; modern and
 Holocene fire audits</td>
 <td>Summary/specification/audit CSVs plus, when rendering, main-paper
 <code>fig_tracking_comparison.pdf/.png</code></td>
@@ -1849,7 +1849,7 @@ Holocene fire audits</td>
 <td>Final descriptive predicted-minus-observed target-alignment
 discrepancy analysis</td>
 <td>Scaling-1/Hill-off CCA scores; taxon targets use initial LC→species
-for prediction and initial WA→species for observation; all 605 modern
+for prediction and initial WA→species for observation; all 607 modern
 pairs, all 15,270 primary Holocene realizations, frozen climate state
 and fire classifications</td>
 <td>Paired unit × target discrepancies, draw-within-offset, site-date,
@@ -1869,9 +1869,9 @@ reasons before fitting or projection.
 <code>cca_eligibility_counts.csv</code> and
 <code>cca_exclusion_summary.csv</code> are reproduced in the analysis
 review. All-zero retained-taxon rows are excluded from both WA and LC
-comparisons. Modern comparison endpoints share one valid paired set,
-while the full eligible legacy set remains the calibration
-reference.</p>
+comparisons. Modern comparison endpoints and the legacy calibration
+share one valid matched set. Both dates must pass eligibility before the
+legacy observation enters fitting.</p>
 </div>
 <div id="shared-helpers-and-settings" class="section level2">
 <h2>Shared helpers and settings</h2>
@@ -2221,13 +2221,14 @@ and uses HTML-adjusted local links.</p>
 </div>
 <div id="review-reporting" class="section level2">
 <h2>Review reporting</h2>
-<p><code>--report</code> refreshes scaling, species occupancy,
-climate-variable and survey-window diagnostics in separate environments,
-exports summaries from the current fitted CCA, redraws chronology
-figures from validated stored posteriors without executing control
-generation or MCMC, runs all gates, and rebuilds the <a href="ANALYSIS_REVIEW.html">review</a>. Offline report runs reaggregate
-modern and paleo climate from validated native chunks. Missing or
-invalid chunks fail before download or removal. Ordinary
+<p><code>--report</code> refreshes the plot/sample selection diagram,
+scaling, species occupancy, climate-variable and survey-window
+diagnostics in separate environments, exports summaries from the current
+fitted CCA, redraws chronology figures from validated stored posteriors
+without executing control generation or MCMC, runs all gates, and
+rebuilds the <a href="ANALYSIS_REVIEW.html">review</a>. Offline report
+runs reaggregate modern and paleo climate from validated native chunks.
+Missing or invalid chunks fail before download or removal. Ordinary
 <code>--offline</code> retains the existing aggregate-based
 behavior.</p>
 <p><code>--report</code> cannot be combined with

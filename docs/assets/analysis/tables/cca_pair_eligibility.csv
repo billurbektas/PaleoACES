@@ -103,7 +103,7 @@ MORA,GRAN-311,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,include
 MORA,GRAN-312,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 MORA,GREE-134,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 MORA,GREE-137,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
-MORA,GROV-026,TRUE,included,Included,FALSE,species_selection,Only taxa excluded by CCA species selection,TRUE,FALSE,present,species_selection,Only taxa excluded by CCA species selection
+MORA,GROV-026,TRUE,included,Included,FALSE,species_selection,Only taxa excluded by CCA species selection,FALSE,FALSE,present,species_selection,Only taxa excluded by CCA species selection
 MORA,GROV-482,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 MORA,HUCK-102,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 MORA,HUCK-103,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
@@ -386,7 +386,7 @@ NOCA,COPP6038,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,include
 NOCA,COPP6040,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 NOCA,COPP6042,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 NOCA,COT5141,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
-NOCA,COT5143,TRUE,included,Included,FALSE,species_selection,Only taxa excluded by CCA species selection,TRUE,FALSE,present,species_selection,Only taxa excluded by CCA species selection
+NOCA,COT5143,TRUE,included,Included,FALSE,species_selection,Only taxa excluded by CCA species selection,FALSE,FALSE,present,species_selection,Only taxa excluded by CCA species selection
 NOCA,COT5145,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 NOCA,DIA1,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 NOCA,DIA2,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
@@ -404,12 +404,12 @@ NOCA,EASY452,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included
 NOCA,EASY453,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 NOCA,EASY454,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 NOCA,EASY456,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
-NOCA,EASY457,TRUE,included,Included,FALSE,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey,TRUE,FALSE,present,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey
+NOCA,EASY457,TRUE,included,Included,FALSE,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey,FALSE,FALSE,present,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey
 NOCA,EASY458,FALSE,no_recorded_taxa,No tree taxa recorded at legacy,TRUE,included,Included,FALSE,FALSE,past,no_recorded_taxa,No tree taxa recorded at legacy
 NOCA,EASY459,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 NOCA,EASY461,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 NOCA,EASY462,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
-NOCA,EASY463,TRUE,included,Included,FALSE,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey,TRUE,FALSE,present,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey
+NOCA,EASY463,TRUE,included,Included,FALSE,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey,FALSE,FALSE,present,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey
 NOCA,EASY464,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 NOCA,EASY465,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 NOCA,GOODE5132,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
@@ -420,7 +420,7 @@ NOCA,GOR481,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,
 NOCA,GOR482,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 NOCA,GRAN478,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 NOCA,GRAN479,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
-NOCA,HB2064,TRUE,included,Included,FALSE,consolidation,Only taxa excluded during consolidation,TRUE,FALSE,present,consolidation,Only taxa excluded during consolidation
+NOCA,HB2064,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 NOCA,HB2066,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 NOCA,HB2068,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 NOCA,HB5146,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
@@ -484,7 +484,7 @@ NOCA,RARI5013,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,include
 NOCA,RARI5014,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 NOCA,RARI5015,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 NOCA,RARI5018,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
-NOCA,RARI5019,TRUE,included,Included,FALSE,species_selection,Only taxa excluded by CCA species selection,TRUE,FALSE,present,species_selection,Only taxa excluded by CCA species selection
+NOCA,RARI5019,TRUE,included,Included,FALSE,species_selection,Only taxa excluded by CCA species selection,FALSE,FALSE,present,species_selection,Only taxa excluded by CCA species selection
 NOCA,RARI5021,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 NOCA,ROSS3006,FALSE,no_recorded_taxa,No tree taxa recorded at legacy,FALSE,species_selection,Only taxa excluded by CCA species selection,FALSE,FALSE,past,no_recorded_taxa,No tree taxa recorded at legacy
 NOCA,ROSS3008,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
@@ -544,7 +544,7 @@ NOCA,SOUR4033,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,include
 NOCA,SOUR4035,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 NOCA,STE2001,FALSE,species_selection,Only taxa excluded by CCA species selection,FALSE,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey,FALSE,FALSE,past,species_selection,Only taxa excluded by CCA species selection
 NOCA,STE2002,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
-NOCA,STE2003,TRUE,included,Included,FALSE,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey,TRUE,FALSE,present,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey
+NOCA,STE2003,TRUE,included,Included,FALSE,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey,FALSE,FALSE,present,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey
 NOCA,STE2005,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 NOCA,STE2006,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 NOCA,STE2007,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
@@ -558,7 +558,7 @@ NOCA,STE2016,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included
 NOCA,STE2017,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 NOCA,STE2020,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 NOCA,STE2021,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
-NOCA,STE2022,TRUE,included,Included,FALSE,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey,TRUE,FALSE,present,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey
+NOCA,STE2022,TRUE,included,Included,FALSE,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey,FALSE,FALSE,present,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey
 NOCA,STE2025,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 NOCA,STE2026,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 NOCA,STE2027,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
@@ -567,18 +567,18 @@ NOCA,STE2029,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included
 NOCA,STE2030,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 NOCA,STE2031,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 NOCA,STE2032,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
-NOCA,STE2035,TRUE,included,Included,FALSE,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey,TRUE,FALSE,present,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey
+NOCA,STE2035,TRUE,included,Included,FALSE,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey,FALSE,FALSE,present,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey
 NOCA,STE2036,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 NOCA,STE2037,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
-NOCA,STE2038,TRUE,included,Included,FALSE,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey,TRUE,FALSE,present,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey
+NOCA,STE2038,TRUE,included,Included,FALSE,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey,FALSE,FALSE,present,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey
 NOCA,STE2039,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 NOCA,STE2040,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 NOCA,STE2041,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 NOCA,STE2042,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 NOCA,STE2043,FALSE,species_selection,Only taxa excluded by CCA species selection,TRUE,included,Included,FALSE,FALSE,past,species_selection,Only taxa excluded by CCA species selection
-NOCA,STE2044,FALSE,consolidation,Only taxa excluded during consolidation,TRUE,included,Included,FALSE,FALSE,past,consolidation,Only taxa excluded during consolidation
+NOCA,STE2044,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 NOCA,STE2045,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
-NOCA,STE2046,TRUE,included,Included,FALSE,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey,TRUE,FALSE,present,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey
+NOCA,STE2046,TRUE,included,Included,FALSE,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey,FALSE,FALSE,present,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey
 NOCA,STE2047,FALSE,species_selection,Only taxa excluded by CCA species selection,TRUE,included,Included,FALSE,FALSE,past,species_selection,Only taxa excluded by CCA species selection
 NOCA,STE2049,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 NOCA,STE2050,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
@@ -586,7 +586,7 @@ NOCA,STE2054,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included
 NOCA,STE2058,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 NOCA,STE2060,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 NOCA,STE2062,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
-NOCA,STE2070,TRUE,included,Included,FALSE,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey,TRUE,FALSE,present,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey
+NOCA,STE2070,TRUE,included,Included,FALSE,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey,FALSE,FALSE,present,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey
 NOCA,STE2072,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 NOCA,STE2078,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 NOCA,STE2080,FALSE,species_selection,Only taxa excluded by CCA species selection,TRUE,included,Included,FALSE,FALSE,past,species_selection,Only taxa excluded by CCA species selection
@@ -627,7 +627,7 @@ NOCA,WHAT6011,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,include
 NOCA,WHAT6013,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 NOCA,WHAT6015,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 NOCA,WHAT6017,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
-NOCA,WHAT6019,TRUE,included,Included,FALSE,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey,TRUE,FALSE,present,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey
+NOCA,WHAT6019,TRUE,included,Included,FALSE,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey,FALSE,FALSE,present,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey
 NOCA,WHAT6021,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 NOCA,WHAT6029,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included
 NOCA,WHAT6031,TRUE,included,Included,TRUE,included,Included,TRUE,TRUE,NA,included,Included

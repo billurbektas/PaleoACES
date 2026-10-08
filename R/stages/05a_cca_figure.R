@@ -21,10 +21,9 @@
 library(here)
 render_figures = isTRUE(getOption("paleoaces.render_figures", TRUE))
 
-# Species set: nothing is set here any more. Taxus brevifolia and Acer circinatum
-# are removed on evidence in R/stages/000_occurrence_data_consolidate.R (understory
-# stratum) and Pinus ponderosa by the analysis exclusion there, so the former
-# "_subset" run IS the model - there is no longer a pair of runs to distinguish.
+# Species selection is inherited from the model. Consolidation removes Taxus
+# brevifolia and Acer circinatum under the understory rule; Pinus ponderosa is
+# retained following the 2026-10-08 reversal of its former manual exclusion.
 # 05_cca_model.R defaults extra_exclude to character(0) and cca_suffix to "".
 source(here("R/stages/05_cca_model.R"), local = TRUE)
 library(ggrepel)
@@ -482,7 +481,8 @@ zy = range(traj_long$y) + c(-1, 1) * zpad * diff(range(traj_long$y))
 # oldest point is the closest thing to it. Reserved by extending the view rather
 # than by shrinking the inset, so the inset stays readable. Checked below.
 zx[2] = zx[2] + 0.30 * diff(zx)
-zy[2] = zy[2] + 0.18 * diff(zy)
+# Extra display space keeps the refitted ponderosa model's era labels clear of B.
+zy[2] = zy[2] + 0.35 * diff(zy)
 
 n_out = sum(calib$o1 < zx[1] | calib$o1 > zx[2] | calib$o2 < zy[1] | calib$o2 > zy[2])
 
@@ -668,7 +668,7 @@ n_calib = nrow(species_past_final)
 # Five stops across a wide lightness span so adjacent species separate; light end
 # #b2b2ad clears 2:1 against the panel surface so the rarest stay visible.
 # The ramp is stretched over the observed prevalence range rather than 0-100.
-# The 13 retained species span that current range, so a fixed 0-100 scale would
+# The retained species span that current range, so a fixed 0-100 scale would
 # compress their colors into the pale half. Legend breaks remain real percentages.
 prev_ramp = c("#b2b2ad", "#8e8e88", "#6b6b65", "#484843", "#1f1f1c")
 

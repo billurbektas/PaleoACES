@@ -1,11 +1,19 @@
-# Compare the dated decision against its fixed pre-update scientific snapshot.
-# Recomputed with every primary tracking run; these are descriptive effects,
-# not a new sensitivity or fit.
+# Compare fixed before/after evidence for the 2026-10-07 survey-date decision.
+# Regenerate the descriptive tables on every primary run, without attributing
+# later CCA refits (including ponderosa reinstatement) to that earlier decision.
 export_survey_decision_effects = function(current) {
   old = readr::read_csv(here::here("docs/report/survey_window_baseline.csv"), show_col_types = FALSE)
-  if (anyDuplicated(old$plot_id) || !setequal(old$plot_id, current$plot_id))
-    stop("Survey-window decision comparison requires the same paired plots as its baseline.")
-  current = current[match(old$plot_id, current$plot_id), ]
+  after_path = here::here("docs/report/survey_window_after.csv")
+  provenance = jsonlite::fromJSON(here::here("docs/report/survey_window_baseline.json"))
+  if (!file.exists(after_path) ||
+      !identical(digest::digest(file = after_path, algo = "sha256"), provenance$after_metrics_sha256))
+    stop("Missing or changed post-decision survey-date evidence.")
+  after = readr::read_csv(after_path, show_col_types = FALSE)
+  if (anyDuplicated(old$plot_id) || anyDuplicated(after$plot_id) ||
+      !setequal(old$plot_id, after$plot_id) ||
+      anyDuplicated(current$plot_id))
+    stop("Survey-window decision evidence requires uniquely matched before/after plots.")
+  after = after[match(old$plot_id, after$plot_id), ]
   metrics = c("vegetation_t2_year", "vegetation_dt_years", "climate_dt_years",
     "MSpT_2", "MWT_2", "SP_2", "WP_2", "observed_vegetation_displacement",
     "predicted_vegetation_displacement", "observed_turnover_rate",
@@ -14,7 +22,7 @@ export_survey_decision_effects = function(current) {
   effects = dplyr::bind_rows(lapply(c("MORA", "NOCA"), function(site) {
     i = old$site == site
     dplyr::bind_rows(lapply(metrics, function(metric) {
-      a = old[[metric]][i]; b = current[[metric]][i]
+      a = old[[metric]][i]; b = after[[metric]][i]
       valid = is.finite(a) & is.finite(b)
       changed = xor(is.finite(a), is.finite(b)) |
         (valid & abs(b - a) > 1e-10)
@@ -26,7 +34,7 @@ export_survey_decision_effects = function(current) {
     }))
   }))
   readr::write_csv(effects, here::here("output/survey_window_decision_effects.csv"))
-  paired_effects = current |>
+  paired_effects = after |>
     dplyr::select(site, plot_id, dplyr::all_of(metrics)) |>
     dplyr::rename_with(~ paste0(.x, "_after"), dplyr::all_of(metrics)) |>
     dplyr::left_join(old |> dplyr::select(plot_id, dplyr::all_of(metrics)) |>

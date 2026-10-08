@@ -8,8 +8,8 @@
         1
       ],
       "producer": "R/stages/000_NOCA_cleaning.R",
-      "purpose": "Account for the corrected paired-plot cleaning universe.",
-      "interpretation": "The retained cleaning universe is broader than the final modeled pairs. Empty-period records and study exclusions remain explicit.",
+      "purpose": "Show which NOCA plots remain after cleaning.",
+      "interpretation": "The cleaned data contain more plots than the final CCA comparisons. Plots empty at one date and the agreed plot exclusions are shown separately.",
       "status": "current"
     },
     {
@@ -71,6 +71,18 @@
       "purpose": "Inspect taxon site confounding and temporal occupancy.",
       "interpretation": "This explicitly retains the 500-year occupancy sensitivity. Sparse sampling is shown; the primary tracking analysis uses 1,000 years.",
       "status": "500-year sensitivity"
+    },
+    {
+      "id": "sample_selection",
+      "section": "selection",
+      "pdf": "plot/test_figures/plots_to_cca.pdf",
+      "pages": [
+        1
+      ],
+      "producer": "R/diagnostics/plot_sample_selection.R",
+      "purpose": "From starting plots and core samples to the CCA.",
+      "interpretation": "Each count shows plots or samples remaining. Reasons beside the arrows explain losses; repeated visits and sample depths combined at the same modeled age are distinguished from exclusions. The middle panels show legacy adult-tree areas among retained plots and the confirmed 500 m² resurvey area at both sites.",
+      "status": "current"
     },
     {
       "id": "chronology",
@@ -149,13 +161,11 @@
       "section": "fire_detection",
       "pdf": "plot/test_figures/fig_fire_event_detection_workflow.pdf",
       "pages": [
-        1,
-        2,
-        5
+        2
       ],
       "producer": "R/stages/12a_fire_event_detection_worked_example.R",
-      "purpose": "Follow interpolation, background, local noise threshold, and count screening.",
-      "interpretation": "Pages 1, 2, and 5 show common settings, Sunrise, and Panther Potholes. Core-specific temporal settings remain explicit; accepted events precede high-fire classification.",
+      "purpose": "Compare fire-event detection in all four lake records.",
+      "interpretation": "Each panel shows the charcoal residual, the local noise threshold (dashed), accepted events (filled circles), and peaks rejected by the minimum-count screen (red crosses). The three MORA records use 95% thresholds; Panther Potholes uses 99%. These events are used later to identify high-fire periods.",
       "status": "current"
     },
     {
@@ -329,6 +339,22 @@
       "source": "output/report/cca_axes.csv",
       "producer": "R/stages/05_cca_model.R"
     },
+    "cca_anova_full": {
+      "source": "output/report/cca_anova_full.csv",
+      "producer": "R/stages/05_cca_model.R"
+    },
+    "cca_anova": {
+      "source": "output/report/cca_anova.csv",
+      "producer": "R/stages/05_cca_model.R"
+    },
+    "cca_species_contributions": {
+      "source": "output/report/cca_species_contributions.csv",
+      "producer": "R/stages/05_cca_model.R"
+    },
+    "cca_climate_contributions": {
+      "source": "output/report/cca_climate_contributions.csv",
+      "producer": "R/stages/05_cca_model.R"
+    },
     "cca_taxa": {
       "source": "output/report/cca_taxa.csv",
       "producer": "R/stages/05_cca_model.R"
@@ -391,6 +417,32 @@
     },
     "seedling_visit_mapping": {
       "source": "output/report/seedling_visit_mapping.csv",
+      "producer": "R/stages/05_cca_model.R"
+    },
+    "sample_selection_counts": {
+      "source": "output/report/sample_selection_counts.csv",
+      "producer": "R/diagnostics/plot_sample_selection.R"
+    },
+    "sample_selection_choices": {
+      "source": "output/report/sample_selection_choices.csv",
+      "producer": "R/diagnostics/plot_sample_selection.R"
+    },
+    "sample_selection_plot_sizes": {
+      "source": "output/report/sample_selection_plot_sizes.csv",
+      "producer": "R/diagnostics/plot_sample_selection.R"
+    }
+  },
+  "text_outputs": {
+    "cca_model_code": {
+      "source": "output/report/cca_model_code.R",
+      "producer": "R/stages/05_cca_model.R"
+    },
+    "cca_model_output": {
+      "source": "output/report/cca_model_output.txt",
+      "producer": "R/stages/05_cca_model.R"
+    },
+    "cca_anova_output": {
+      "source": "output/report/cca_anova_output.txt",
       "producer": "R/stages/05_cca_model.R"
     }
   }

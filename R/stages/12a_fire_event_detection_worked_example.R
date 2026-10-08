@@ -147,27 +147,11 @@ p_note = ggplot() +
 overview = p_flow / p_table / p_note +
   plot_layout(heights = c(.9, 1.25, .55))
 
-make_lake_page = function(lake_name) {
+make_lake_panel = function(lake_name) {
   dd = series |> filter(lake == lake_name) |> arrange(age_cal_yr_BP)
   ss = audit |> filter(lake == lake_name)
   display_lake = recode(lake_name, !!!lake_labels)
   col = lake_colors[[lake_name]]
-
-  level_long = dd |>
-    select(age_cal_yr_BP, `Interpolated CHAR` = char_interpolated,
-           `Robust LOWESS background` = background_char) |>
-    pivot_longer(-age_cal_yr_BP, names_to = "component", values_to = "value")
-  p1 = ggplot(level_long, aes(age_cal_yr_BP, value, color = component,
-                              linewidth = component)) +
-    geom_line() +
-    scale_x_reverse() +
-    scale_color_manual(values = c(`Interpolated CHAR` = "grey45",
-      `Robust LOWESS background` = col)) +
-    scale_linewidth_manual(values = c(`Interpolated CHAR` = .45,
-      `Robust LOWESS background` = 1.0)) +
-    labs(title = "1-2  Interpolate CHAR and estimate background",
-         x = NULL, y = "CHAR", color = NULL, linewidth = NULL) +
-    theme_method
 
   accepted = dd |> filter(is_significant)
   rejected = dd |> filter(rejected_by_count_screen)
@@ -181,46 +165,26 @@ make_lake_page = function(lake_name) {
     geom_point(data = rejected, shape = 4, color = "#B2182B",
                size = 2.8, stroke = 1.0) +
     scale_x_reverse() +
-    labs(title = paste0("3-4  Residual peak and local ",
+    labs(title = paste0(display_lake, ": local ",
       scales::percent(ss$threshold_probability, accuracy = 1),
       " noise threshold"),
-      subtitle = "Dashed = threshold; filled circle = accepted; red X = rejected by count screen",
-      x = NULL, y = "Peak CHAR residual") +
+      x = "cal BP", y = "Peak CHAR residual") +
     theme_method + theme(legend.position = "none")
 
-  candidates = dd |> filter(candidate_before_count_screen) |>
-    mutate(disposition = if_else(is_significant, "Accepted", "Rejected"))
-  p3 = ggplot(candidates,
-      aes(age_cal_yr_BP, disposition, color = disposition,
-          shape = disposition)) +
-    geom_point(size = 2.25, alpha = .85) +
-    scale_x_reverse() +
-    scale_color_manual(values = c(Accepted = col, Rejected = "#B2182B")) +
-    scale_shape_manual(values = c(Accepted = 16, Rejected = 4)) +
-    labs(title = "5-6  Minimum-count screen and accepted events",
-      subtitle = paste("tapas applies p <= 0.05; its returned object retains",
-                       "candidate disposition rather than each p value"),
-      x = "cal BP", y = NULL, color = NULL, shape = NULL) +
-    theme_method
-
   settings_text = sprintf(
-    "%s | %s | interpolation %g yr | background %g yr | local threshold %s | count screen p <= %.2f | candidates %d | rejected %d | accepted %d",
-    ss$site, ss$engine, ss$interpolation_years, ss$smoothing_years,
-    scales::percent(ss$threshold_probability, accuracy = 1),
-    ss$minimum_count_probability, ss$candidate_events,
-    ss$rejected_by_count_screen, ss$accepted_events)
-  p1 / p2 / p3 +
-    plot_layout(heights = c(1, 1, .9)) +
-    plot_annotation(
-      title = paste("Accepted-event detection:", display_lake),
-      subtitle = settings_text,
-      theme = theme(plot.title = element_text(face = "bold", size = 18,
-                                                hjust = .5),
-                    plot.subtitle = element_text(size = 10.5, hjust = .5,
-                                                 color = "grey25")))
+    "Interpolation %g yr | background %g yr\n%d accepted events | %d rejected peaks",
+    ss$interpolation_years, ss$smoothing_years,
+    ss$accepted_events, ss$rejected_by_count_screen)
+  p2 + labs(subtitle = settings_text)
 }
 
-lake_pages = purrr::map(lake_order, make_lake_page)
+lake_panels = purrr::map(lake_order, make_lake_panel)
+lake_page = wrap_plots(lake_panels, ncol = 2) +
+  plot_annotation(
+    title = "Fire-event detection across the four lake records",
+    subtitle = "Dashed = threshold; filled circle = accepted; red X = rejected by count screen",
+    theme = theme(plot.title = element_text(face = "bold", size = 18),
+                  plot.subtitle = element_text(size = 11, color = "grey25")))
 comparison_path = here("output/walsh_charanalysis_software_comparison.csv")
 if (!file.exists(comparison_path)) stop("Missing Walsh software audit.")
 comparison = read_csv(comparison_path, show_col_types = FALSE) |>
@@ -250,12 +214,12 @@ p_audit_note = ggplot() +
     fill = "grey97", color = "grey20") +
   coord_cartesian(xlim = c(0, 1), ylim = c(0, 1)) + theme_void()
 audit_page = p_audit / p_audit_note + plot_layout(heights = c(3, 1))
-pages = c(list(overview), lake_pages, list(audit_page))
+pages = list(overview, lake_page, audit_page)
 
 pdf_path = here("plot/test_figures/fig_fire_event_detection_workflow.pdf")
 if (render_figures) {
   grDevices::pdf(pdf_path, width = 14, height = 9, onefile = TRUE)
   purrr::walk(pages, print)
   grDevices::dev.off()
-  cat("Written six-page accepted-fire-event workflow for all four cores.\n")
+  cat("Written three-page fire-event workflow with all four lake records on one page.\n")
 }

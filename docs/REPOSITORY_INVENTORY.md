@@ -10,7 +10,7 @@ the maintained code, scientific documents and authoritative local inputs.
 | `R/stages/` | The 25 analysis stages, in the workflow's execution order; chronology fitting is optional. |
 | `R/helpers/` | Shared settings and functions for vegetation, climate, chronology, fire, CCA metrics, figures and reporting. |
 | `R/tests/` | The 17 automatic analysis gates and an additional report check. |
-| `R/diagnostics/` | Scientific diagnostics and optional sensitivities; four diagnostics are refreshed with the report. |
+| `R/diagnostics/` | Scientific diagnostics and optional sensitivities; five diagnostics are refreshed with the report, including the counts from starting plots and samples to CCA. |
 | `R/vendor/` | Preserved CHELSA downloader and Torres reference script. |
 | `tools/` | Report construction, dependency diagram and reusable independent verification tools. |
 | `data/`, `notes_from_Rachel/` | Local study inputs and source correspondence. |

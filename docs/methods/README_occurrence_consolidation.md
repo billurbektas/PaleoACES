@@ -238,28 +238,47 @@ change it.
 
 ---
 
-## 5. Analysis exclusion — *Pinus ponderosa*
+<a id="ponderosa-reinstatement"></a>
 
-**A different kind of decision from everything above**, and kept separate in the
-script for that reason. Sections 1–2 are *data quality*: the record is wrong or
-unusable. This one is a *modelling choice* about a species whose record is fine.
-Switch: `APPLY_ANALYSIS_EXCLUDE`.
+## 5. *Pinus ponderosa* — exclusion reversed on 2026-10-08
 
-*Pinus ponderosa* is a legitimate tree — it is in the NOCA legacy tree stratum and
-in Agee & Kertis Table 3. It is excluded because:
+**Current decision:** retain ponderosa pine during consolidation and apply the
+same **≥20 occurrences in any one site × period group** rule used for other
+tree taxa. It qualifies through 26 NOCA legacy plots; it also occurs in 16 NOCA
+resurvey plots and one MORA resurvey plot. The author reversed the manual
+exclusion because its stated reasons did not justify removing valid records.
 
-- it is effectively **single-site**: 42 NOCA plots (26 past, 16 present) against
-  **one** MORA plot, so it encodes site identity more than climate response;
-- it is **absent from both Holocene records**, so no paleo sample can ever be
-  projected onto the gradient it defines;
-- it sat at the **extreme dry end of CCA1** (score 3.51; the next species was 1.31),
-  stretching the axis along which every distance in this study is measured. Its
-  plots are at 347–1320 m, median **669 m**, against 1037 m for NOCA overall — the
-  low, dry east side.
+**Former decision:** ponderosa was explicitly removed before CCA because it was
+concentrated at NOCA, absent from both Holocene records, and occupied an extreme
+position in a historical ordination (CCA1 score 3.51). Those features describe
+the data and the fitted model; they are not identification errors or general
+exclusion criteria. Absence from a macrofossil record does not prevent projection
+of other recorded taxa. Whitebark pine and grand fir also qualify without being
+detected in either Holocene record, so that absence was not applied consistently
+as a selection rule. The historical axis score is not the current fitted score.
 
-This absorbs the last of the old `_subset` run. *Taxus brevifolia* and *Acer
-circinatum*, the other two it excluded by hand, are now removed on evidence by the
-understory rule, so **there is one model, not two**.
+Rachel's species review (`notes_from_Rachel/Review of tree species.rtf`)
+does not flag ponderosa and states that unmentioned species did not look
+especially suspicious. Her missing-tree notes mention PIPO near STE2070 without
+questioning the identification. No recommendation from Rachel to exclude
+ponderosa was found in the available notes or correspondence.
+
+The exclusion list and its filtering step have been removed from
+`R/stages/000_occurrence_data_consolidate.R`. The ≥20 threshold, other taxonomic
+decisions, understory exclusions and chronology settings are unchanged.
+Taxus brevifolia and Acer circinatum remain excluded by the understory rule.
+
+Restoring ponderosa initially changed the CCA from **13 to 14 taxa** and **618 to 619 legacy
+calibration plots**, and modern comparisons from **605 to 607 pairs**. STE2044
+returns to calibration and paired comparisons; HB2064 returns to paired
+comparisons. The 907 Holocene samples remain included, but their coordinates and
+tracking results change when the common CCA is refitted. Figures 2–5 and the
+analysis review are rebuilt from that fit. Climate-explained inertia changes
+from 16.57% to 15.69%; maximizing that percentage is not a selection criterion.
+Later on 2026-10-08, the author restricted calibration to the **607 matched plots**
+(330 MORA and 277 NOCA). That separate decision removes 12 usable legacy
+observations whose resurveys fail eligibility, retains all 14 taxa and refits
+the shared ordination. See the [matched-calibration decision](../SCIENTIFIC_DECISIONS.md#cca-sample-eligibility-and-paired-comparisons).
 
 ---
 
@@ -270,7 +289,7 @@ NOCA tree correction and before threshold 20 became the active configuration.
 It is retained as provenance and used the former MWT/MST/WP/SpP constraint set;
 current model totals are in Section 7.
 
-| | before | understory + taxonomy | + *P. ponderosa* |
+| | before | understory + taxonomy | + former *P. ponderosa* exclusion |
 |---|---|---|---|
 | species in the CCA | 13 | 11 | **10** |
 | calibration plots | 623 | 622 | **621** |
@@ -281,7 +300,9 @@ current model totals are in Section 7.
 Removing the two artefact species **raised the climate-explained fraction by about
 4 percentage points**, which is the expected direction: a species whose occurrence
 is set by *which survey counted it* cannot be explained by climate, so it was pure
-unconstrained noise. Dropping *P. ponderosa* adds a further 0.7.
+unconstrained noise. The former *P. ponderosa* exclusion added a further 0.7;
+that exclusion was reversed on 2026-10-08 and this historical table is not the
+active species-selection policy.
 
 The old CCA1 description and loadings belong only to that historical run and are
 not interpretations of the active ordination.
@@ -310,7 +331,7 @@ count (`max_group` in the printed table).
 
 The table below records the historical sweep before the 2026-10-06 GPS
 exclusion of CARI449/CARI450; alternative thresholds have not been rerun.
-The current threshold-20 model has 618 calibration plots and 1,512 positioned
+The current threshold-20 model, with ponderosa restored and calibration restricted to matched plots, has 607 calibration plots and 1,514 positioned
 samples. See the [analysis review](../ANALYSIS_REVIEW.md) for its current fit.
 
 | `count.thr` | species | calib plots | positioned | CCA1 | CCA2 | constrained |

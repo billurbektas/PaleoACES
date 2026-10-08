@@ -2617,7 +2617,16 @@ render_panel = function(core, outdir) {
           file.path(set$coredir, core, paste0(core, "_", set$K, ".out")), set)
   assign("info", set, envir = .GlobalEnv)
   f = file.path(outdir, paste0(core, ".png"))
-  png(f, width = 1500, height = 1750, res = 190); agedepth(set = set, BCAD = FALSE); dev.off()
+  # Larger text remains readable when the four panels are shown together.
+  png(f, width = 1500, height = 1750, res = 190)
+  par(cex.lab = 1.6)
+  agedepth(set = set, BCAD = FALSE,
+           mainpanel.tickfontsize = 1.8, mainpanel.labelfontsize = 2,
+           toppanel.fontsize = 1.5, prior.fontsize = 1.6, title.size = 2.6,
+           mar.main = c(4.8, 5, 1, 1), mar.left = c(4.5, 5, 1, 0.8),
+           mar.middle = c(4.5, 1.1, 1, 1.8), mar.right = c(4.5, 1.8, 1, 1.1),
+           mgp = c(2.8, 0.9, 0))
+  dev.off()
   cat("rendered", core, " (K =", set$K, ",", nrow(set$output), "iterations)\n")
   f
 }
@@ -3845,34 +3854,14 @@ UNDERSTORY = c(
 #     starting with Pe." An identification nobody can make should not be forced.
 NON_TAXA = c("unknown", "Abies sp.", "Unknown tree.")
 
-# (2b) ANALYSIS EXCLUSIONS - a DIFFERENT KIND of decision from (1) and (2).
-# (1) and (2) are data-quality: the record is wrong or unusable. This one is a
-# modelling choice about a species whose record is perfectly good. It is kept
-# separate, and switchable, so the two are never confused.
-#
-# These are the three species the old `_subset` run in 05_cca_model.R excluded by
-# hand. Two of them - Taxus brevifolia and Acer circinatum - are now removed by
-# the understory rule above, on evidence, so they no longer need a special case
-# and are listed here only to record that the subset run is fully absorbed.
-#
-# Pinus ponderosa is the one that still needs a decision, and it is NOT an
-# understory species - it is a legitimate tree in the NOCA legacy tree stratum
-# and in Agee & Kertis Table 3. It is excluded because:
-#   - it is effectively single-site: 42 NOCA plots (26 past, 16 present) against
-#     ONE MORA plot, so it encodes site identity more than climate response;
-#   - it is absent from BOTH Holocene records, so no paleo sample can ever be
-#     projected onto the gradient it defines;
-#   - it sits at the extreme dry end of CCA1 (score 3.51; the next species is
-#     1.31), stretching the axis that every distance in this study is measured
-#     along. Its plots are at 347-1320 m, median 669 m, against 1037 m for NOCA
-#     as a whole - the low, dry east side.
-# Set APPLY_ANALYSIS_EXCLUDE = FALSE to get the full-model species set back.
-APPLY_ANALYSIS_EXCLUDE = TRUE
-ANALYSIS_EXCLUDE = c(
-  "Pinus ponderosa"       # single-site, absent from both paleo arms, stretches CCA1
-  # "Taxus brevifolia"    <- already removed by the understory rule
-  # "Acer circinatum"     <- already removed by the understory rule
-)
+# (2b) FORMER ANALYSIS EXCLUSION REVERSED - decided 2026-10-08.
+# Pinus ponderosa is a valid tree taxon and is retained here. Its former manual
+# exclusion was not justified by identification evidence or a general selection
+# rule. Site concentration, absence from the Holocene records and an extreme
+# ordination position are not exclusion criteria. It now follows the same >=20
+# species-selection rule as other tree taxa in 05_cca_model.R.
+# The former rationale and the author's reversal are recorded in
+# docs/methods/README_occurrence_consolidation.md and SCIENTIFIC_DECISIONS.md.
 
 # (3) TAXONOMIC HARMONISATION.
 # Each entry says WHICH SITE and WHICH PERIOD it applies to, because two of the
@@ -3939,12 +3928,6 @@ apply_decisions = function(x, verbose = FALSE) {
     x$species[hit] = r$to
   }
   x = x %>% filter(!species %in% NON_TAXA, !species %in% UNDERSTORY)
-  if (APPLY_ANALYSIS_EXCLUDE) {
-    if (verbose)
-      cat("\nanalysis exclusion (NOT a data-quality drop - see (2b)): removing ",
-          paste(ANALYSIS_EXCLUDE, collapse = ", "), "\n", sep = "")
-    x = x %>% filter(!species %in% ANALYSIS_EXCLUDE)
-  }
   x
 }
 
@@ -4045,23 +4028,27 @@ p_counts = ggplot(cnt_long, aes(species, n, fill = period)) +
   geom_col(position = position_dodge(preserve = "single"), width = 0.75) +
   geom_hline(yintercept = CCA_COUNT_THRESHOLD, linetype = "dashed",
              colour = "#B03A2E", linewidth = 0.5) +
-  scale_fill_manual(values = color_era) +
+  scale_fill_manual(values = color_era,
+                    labels = c(paleo = "Holocene", past = "Legacy", present = "Resurvey")) +
   facet_wrap(~ site, scales = "free_x") +
   coord_flip() +
-  labs(x = NULL, y = "Number of plots (paleo: number of samples)", fill = "Period",
-       title = "Species occurrence AFTER consolidation - the basis for count.thr",
-       subtitle = paste0("Dashed = ", CCA_COUNT_THRESHOLD,
-                         " (current count.thr). A species is dropped only if it is\n",
-                         "below the threshold in EVERY site x period group. Understory taxa, unresolved\n",
-                         "taxa and the analysis exclusions have already been removed.")) +
-  theme_minimal(base_size = 11) +
-  theme(plot.title = element_text(face = "bold"),
+  labs(x = NULL, y = "Number of plots (Holocene: number of samples)", fill = "Period",
+       title = "Species occurrence after consolidation",
+       subtitle = paste0("Dashed line: selection threshold of ", CCA_COUNT_THRESHOLD, " plots or samples.\n",
+                         "A species is retained if it reaches the threshold in any site and period.\n",
+                         "Understory and unresolved taxa are removed; ponderosa pine is retained.")) +
+  theme_minimal(base_size = 16) +
+  theme(plot.title = element_text(size = 18, face = "bold"),
+        plot.subtitle = element_text(size = 14),
+        axis.text = element_text(size = 14),
+        strip.text = element_text(size = 16, face = "bold"),
+        legend.text = element_text(size = 14),
         panel.grid.major.y = element_blank(),
         legend.position = "top")
 
 if (render_figures) {
   ggsave(here("plot/test_figures/species_counts_consolidated.pdf"), p_counts,
-         width = 11, height = 6)
+         width = 11, height = 8)
   cat("\nWrote plot/test_figures/species_counts_consolidated.pdf\n")
 }
 
@@ -4117,25 +4104,28 @@ p_stage = ggplot(stage_counts, aes(species, n_plots, fill = period)) +
   geom_col(position = position_dodge(preserve = "single"), width = 0.75) +
   facet_grid(site ~ stage) +
   coord_flip() +
-  scale_fill_manual(values = c(past = "#88CCEE", present = "#CC6677"), name = "Period") +
+  scale_fill_manual(values = c(past = "#88CCEE", present = "#CC6677"),
+                    labels = c(past = "Legacy", present = "Resurvey"), name = "Period") +
   labs(x = NULL, y = "Number of plots",
-       title = "Adults vs regeneration, past vs present",
-       subtitle = paste0("Plots per species, past and present side by side within each stage - localises a change to\n",
-                         "adults or to regeneration. Consolidated species set (understory taxa removed)."),
-       caption = paste0("Size limits differ: NOCA adults are >3 m in the legacy survey versus >1.4 m in resurveys. NOCA past regeneration uses the ",
-                        "legacy 0-3 m\nheight class, whereas MORA (both eras) and NOCA present use 10-140 cm ",
-                        "seedling surveys. The NOCA\npast-vs-present regeneration contrast is therefore ",
-                        "confounded by band width.")) +
-  theme_minimal(base_size = 11) +
+       title = "Adults and regeneration: legacy versus resurvey",
+       subtitle = "Plots per species at each vegetation stage.\nConsolidated tree taxa; understory taxa excluded.",
+       caption = paste0("NOCA adults: >3 m in legacy surveys; >1.4 m in resurveys.\n",
+                        "NOCA regeneration: 0-3 m in legacy surveys; 10-140 cm in resurveys. MORA: 10-140 cm at both dates.\n",
+                        "The NOCA legacy versus resurvey regeneration comparison therefore uses different height bands.")) +
+  theme_minimal(base_size = 16) +
   theme(legend.position = "top",
         panel.grid.major.y = element_blank(),
-        axis.text.y = element_text(face = "italic"),
-        plot.title = element_text(face = "bold"),
-        plot.caption = element_text(hjust = 0, colour = "grey35"))
+        axis.text = element_text(size = 14),
+        axis.text.y = element_text(size = 14, face = "italic"),
+        strip.text = element_text(size = 16, face = "bold"),
+        legend.text = element_text(size = 14),
+        plot.title = element_text(size = 18, face = "bold"),
+        plot.subtitle = element_text(size = 14),
+        plot.caption = element_text(size = 12, hjust = 0, colour = "grey35"))
 
 if (render_figures) {
   ggsave(here("plot/test_figures/stage_adult_seedling_past_present.pdf"), p_stage,
-         width = 12, height = 9)
+         width = 12, height = 12)
 }
 
 cat("\n=== adult vs regeneration, plot occupancy ===\n")
@@ -4208,7 +4198,7 @@ if (VERIFY_AGAINST_RAW) {
 # This file defines the ordination without rendering figures and is sourced by
 # the downstream analysis and figure stages.
 #
-# THE MODEL: one pooled CCA trained on the MORA + NOCA "past" plots, constrained
+# THE MODEL: one pooled CCA trained on matched MORA + NOCA "past" plots, constrained
 # by MSpT + MWT + SP + WP. "present" and "paleo" samples are projected into it -
 # they do not calibrate it. Because there is a single ordination, positions and
 # lengths are directly comparable across both sites and both eras.
@@ -4245,10 +4235,10 @@ source(here("R/helpers/config.R"), local = TRUE)
 #
 #   count.thr = 10; source(here("R/stages/05_cca_model.R"))
 #
-# There is no longer a separate "_subset" run: Taxus brevifolia and Acer
-# circinatum are removed on evidence in R/stages/000_occurrence_data_consolidate.R
-# (understory stratum) and Pinus ponderosa by the analysis exclusion there, so
-# extra_exclude is empty by default and the full model IS the model.
+# Taxus brevifolia and Acer circinatum are removed by the documented understory
+# rule in R/stages/000_occurrence_data_consolidate.R. The former manual exclusion
+# of Pinus ponderosa was reversed on 2026-10-08; it now follows the ordinary
+# frequency rule below. There is one active model and no extra exclusion by default.
 if (!exists("extra_exclude")) extra_exclude = character(0)
 if (!exists("cca_suffix"))    cca_suffix    = ""
 
@@ -4310,13 +4300,11 @@ if (!exists("count.thr")) count.thr = CCA_COUNT_THRESHOLD
 #   position     CCA1 3.57, CCA2 4.39 - the extreme of BOTH axes; the next most
 #                extreme are Abies lasiocarpa (1.80) and Pinus contorta (2.75)
 #   share        14.9% of the constrained inertia, the largest of any species
-# It is absent from both paleo records, so no Holocene sample can be projected
-# onto the gradient it defines, and it is effectively single-site (27 NOCA plots
-# vs 2 at MORA) and declining within that site (20 -> 7). It therefore stretches
-# the CCA1-CCA2 plane in which every distance in this study is measured. This is
-# the same profile that had Pinus ponderosa moved to ANALYSIS_EXCLUDE (CCA1 3.51,
-# single-site, absent from the Holocene) - the difference is a deliberate choice
-# to keep this one, not a difference in the evidence.
+# It is not detected in either paleo record and is concentrated at NOCA
+# (27 survey-date occurrences vs 2 at MORA). Its position affects the CCA1-CCA2
+# plane in which distances are measured. These features are not exclusion rules:
+# Pinus ponderosa's former exclusion for similar reasons was reversed on
+# 2026-10-08. Both species now follow the same frequency-selection rule.
 
 # ORDINATION SCALING -----------------------------------------------------------
 # "sites" (vegan scaling 1): SITE scores are scaled by the eigenvalues, species
@@ -4353,8 +4341,8 @@ color_era_pp   = c("anthropocene" = "#DC267F", "holocene" = "#785EF0")
 # The preparation section below applies this policy after climate and species
 # matrices exist, but BEFORE cca(). It distinguishes cleaned recorded absence,
 # consolidation exclusions, frequency exclusions, and unavailable climate.
-# Legacy calibration retains every eligible legacy plot. Modern comparisons
-# use the SAME valid plot IDs at both dates; paleo WA and LC use the SAME samples.
+# Legacy calibration and modern comparisons use the SAME valid matched plot IDs
+# at both dates (decision 2026-10-08); paleo WA and LC use the SAME samples.
 # Recorded loss at resurvey is absence of the study's recorded tree taxa, not
 # proof of biological extinction. A zero macrofossil sample is non-detection.
 # Counts are unique plots/samples, not species records, age draws or time bins.
@@ -4422,7 +4410,7 @@ cca_pair_samples = function(samples) {
            resurvey_reason_code = reason_code, resurvey_reason = reason)
   full_join(past, present, by = c("site", "plot_id")) %>%
     mutate(
-      calibration_included = coalesce(legacy_eligible, FALSE),
+      calibration_included = coalesce(legacy_eligible & resurvey_eligible, FALSE),
       comparison_included = coalesce(legacy_eligible & resurvey_eligible, FALSE),
       # One primary reason per excluded pair: legacy first, then resurvey.
       # The sample audit keeps BOTH dates' local reasons and taxon counts.
@@ -4659,15 +4647,13 @@ species_paleo = make_wide("paleo");   env_paleo = make_env("paleo")
 # -----------------------------------------------------------------------------
 # Prepare eligible calibration, paired modern comparisons and paleo projections
 # -----------------------------------------------------------------------------
-# Determine model taxa from eligible legacy rows, without changing calibration.
+# Determine candidate model taxa from eligible legacy rows, then restrict the
+# fitted calibration to plots with eligible observations at BOTH dates.
 # The whole cleaned universe is kept for the exclusion audit, including plots
 # that disappear entirely from the consolidated occurrence table.
 common_past = intersect(rownames(species_past), rownames(env_past))
 common_past = common_past[rowSums(species_past[common_past, , drop = FALSE]) > 0]
-species_past_final = species_past[common_past, , drop = FALSE]
-species_past_final = species_past_final[, colSums(species_past_final) > 0, drop = FALSE]
-keep_species       = colnames(species_past_final)
-env_past_final     = env_past[common_past, CCA_VARIABLES, drop = FALSE]
+keep_species = colnames(species_past)[colSums(species_past[common_past, , drop = FALSE]) > 0]
 
 cleaned_occ = bind_rows(
   read_csv(here("output/MORA_occ.csv"), show_col_types = FALSE) %>%
@@ -4677,14 +4663,22 @@ cleaned_occ = bind_rows(
   read_csv(here("output/paleo_occ.csv"), show_col_types = FALSE)
 ) %>% select(site, era, period, plot_id, species, occurrence)
 
-cca_sample_eligibility = cca_classify_samples(
-  cleaned_occ, occ_consolidated, unique(occ$species), keep_species,
-  env, CCA_VARIABLES)
-cca_pair_eligibility = cca_pair_samples(cca_sample_eligibility)
-present_pairs = cca_pair_eligibility %>% filter(comparison_included) %>% pull(plot_id)
-# Preserve the prepared-matrix order, so unchanged projections retain their
-# original row order as well as their coordinates.
-present_pairs = rownames(species_present)[rownames(species_present) %in% present_pairs]
+# Recheck eligibility if pairing leaves a taxon absent from calibration. Such a
+# taxon cannot supply WA projections in this fitted model. The frequency rule
+# itself still uses the existing site-by-period counts above.
+repeat {
+  cca_sample_eligibility = cca_classify_samples(
+    cleaned_occ, occ_consolidated, unique(occ$species), keep_species,
+    env, CCA_VARIABLES)
+  cca_pair_eligibility = cca_pair_samples(cca_sample_eligibility)
+  present_pairs = cca_pair_eligibility %>% filter(comparison_included) %>% pull(plot_id)
+  present_pairs = rownames(species_present)[rownames(species_present) %in% present_pairs]
+  if (!length(present_pairs)) stop("CCA calibration requires eligible matched plots at both dates.")
+  paired_species = species_past[present_pairs, keep_species, drop = FALSE]
+  fitted_taxa = colnames(paired_species)[colSums(paired_species) > 0]
+  if (identical(fitted_taxa, keep_species)) break
+  keep_species = fitted_taxa
+}
 common_paleo = cca_sample_eligibility %>%
   filter(period == "paleo", eligible) %>% pull(plot_id)
 common_paleo = rownames(species_paleo)[rownames(species_paleo) %in% common_paleo]
@@ -4692,10 +4686,13 @@ stopifnot(setequal(common_past, cca_sample_eligibility %>%
                     filter(period == "past", eligible) %>% pull(plot_id)),
           !anyDuplicated(present_pairs), !anyDuplicated(common_paleo))
 
-# Use these matrices for BOTH observed and predicted modern endpoints. The
-# larger species_past_final/env_past_final remain the calibration reference.
-species_past_paired = species_past_final[present_pairs, , drop = FALSE]
-env_past_paired = env_past_final[present_pairs, , drop = FALSE]
+# Fit on exactly the matched legacy endpoints used by BOTH observed and
+# predicted comparisons. No other eligible legacy plots enter the CCA fit or
+# its climate-SD reference.
+species_past_final = species_past[present_pairs, keep_species, drop = FALSE]
+env_past_final = env_past[present_pairs, CCA_VARIABLES, drop = FALSE]
+species_past_paired = species_past_final
+env_past_paired = env_past_final
 species_present_final = species_present[present_pairs, keep_species, drop = FALSE]
 env_present_final = env_present[present_pairs, CCA_VARIABLES, drop = FALSE]
 species_paleo = species_paleo[common_paleo, keep_species, drop = FALSE]
@@ -4706,15 +4703,15 @@ cca_sample_eligibility = cca_sample_eligibility %>%
               select(site, plot_id, pair_included = comparison_included,
                      pair_exclusion_period = exclusion_period,
                      pair_reason = reason), by = c("site", "plot_id")) %>%
-  mutate(calibration_included = period == "past" & eligible,
+  mutate(calibration_included = period == "past" & coalesce(pair_included, FALSE),
          comparison_included = if_else(period == "paleo", eligible,
                                        coalesce(pair_included, FALSE)),
          comparison_reason = if_else(period == "paleo", reason, pair_reason))
 
 cca_eligibility_units = bind_rows(
-  cca_sample_eligibility %>% filter(period == "past") %>%
-    transmute(era, site, use = "Legacy calibration", plot_id,
-              exclusion_period = period, reason_code, reason, included = eligible),
+  cca_pair_eligibility %>%
+    transmute(era = "anthropocene", site, use = "Legacy calibration", plot_id,
+              exclusion_period, reason_code, reason, included = calibration_included),
   cca_pair_eligibility %>%
     transmute(era = "anthropocene", site, use = "Modern paired comparison",
               plot_id, exclusion_period, reason_code, reason,
@@ -5803,10 +5800,9 @@ cat("High-fire periods: ", nrow(fire$periods), "\n", sep = "")
 library(here)
 render_figures = isTRUE(getOption("paleoaces.render_figures", TRUE))
 
-# Species set: nothing is set here any more. Taxus brevifolia and Acer circinatum
-# are removed on evidence in R/stages/000_occurrence_data_consolidate.R (understory
-# stratum) and Pinus ponderosa by the analysis exclusion there, so the former
-# "_subset" run IS the model - there is no longer a pair of runs to distinguish.
+# Species selection is inherited from the model. Consolidation removes Taxus
+# brevifolia and Acer circinatum under the understory rule; Pinus ponderosa is
+# retained following the 2026-10-08 reversal of its former manual exclusion.
 # 05_cca_model.R defaults extra_exclude to character(0) and cca_suffix to "".
 source(here("R/stages/05_cca_model.R"), local = TRUE)
 library(ggrepel)
@@ -6264,7 +6260,8 @@ zy = range(traj_long$y) + c(-1, 1) * zpad * diff(range(traj_long$y))
 # oldest point is the closest thing to it. Reserved by extending the view rather
 # than by shrinking the inset, so the inset stays readable. Checked below.
 zx[2] = zx[2] + 0.30 * diff(zx)
-zy[2] = zy[2] + 0.18 * diff(zy)
+# Extra display space keeps the refitted ponderosa model's era labels clear of B.
+zy[2] = zy[2] + 0.35 * diff(zy)
 
 n_out = sum(calib$o1 < zx[1] | calib$o1 > zx[2] | calib$o2 < zy[1] | calib$o2 > zy[2])
 
@@ -6450,7 +6447,7 @@ n_calib = nrow(species_past_final)
 # Five stops across a wide lightness span so adjacent species separate; light end
 # #b2b2ad clears 2:1 against the panel surface so the rarest stay visible.
 # The ramp is stretched over the observed prevalence range rather than 0-100.
-# The 13 retained species span that current range, so a fixed 0-100 scale would
+# The retained species span that current range, so a fixed 0-100 scale would
 # compress their colors into the pale half. Legend breaks remain real percentages.
 prev_ramp = c("#b2b2ad", "#8e8e88", "#6b6b65", "#484843", "#1f1f1c")
 
@@ -7113,27 +7110,11 @@ p_note = ggplot() +
 overview = p_flow / p_table / p_note +
   plot_layout(heights = c(.9, 1.25, .55))
 
-make_lake_page = function(lake_name) {
+make_lake_panel = function(lake_name) {
   dd = series |> filter(lake == lake_name) |> arrange(age_cal_yr_BP)
   ss = audit |> filter(lake == lake_name)
   display_lake = recode(lake_name, !!!lake_labels)
   col = lake_colors[[lake_name]]
-
-  level_long = dd |>
-    select(age_cal_yr_BP, `Interpolated CHAR` = char_interpolated,
-           `Robust LOWESS background` = background_char) |>
-    pivot_longer(-age_cal_yr_BP, names_to = "component", values_to = "value")
-  p1 = ggplot(level_long, aes(age_cal_yr_BP, value, color = component,
-                              linewidth = component)) +
-    geom_line() +
-    scale_x_reverse() +
-    scale_color_manual(values = c(`Interpolated CHAR` = "grey45",
-      `Robust LOWESS background` = col)) +
-    scale_linewidth_manual(values = c(`Interpolated CHAR` = .45,
-      `Robust LOWESS background` = 1.0)) +
-    labs(title = "1-2  Interpolate CHAR and estimate background",
-         x = NULL, y = "CHAR", color = NULL, linewidth = NULL) +
-    theme_method
 
   accepted = dd |> filter(is_significant)
   rejected = dd |> filter(rejected_by_count_screen)
@@ -7147,46 +7128,26 @@ make_lake_page = function(lake_name) {
     geom_point(data = rejected, shape = 4, color = "#B2182B",
                size = 2.8, stroke = 1.0) +
     scale_x_reverse() +
-    labs(title = paste0("3-4  Residual peak and local ",
+    labs(title = paste0(display_lake, ": local ",
       scales::percent(ss$threshold_probability, accuracy = 1),
       " noise threshold"),
-      subtitle = "Dashed = threshold; filled circle = accepted; red X = rejected by count screen",
-      x = NULL, y = "Peak CHAR residual") +
+      x = "cal BP", y = "Peak CHAR residual") +
     theme_method + theme(legend.position = "none")
 
-  candidates = dd |> filter(candidate_before_count_screen) |>
-    mutate(disposition = if_else(is_significant, "Accepted", "Rejected"))
-  p3 = ggplot(candidates,
-      aes(age_cal_yr_BP, disposition, color = disposition,
-          shape = disposition)) +
-    geom_point(size = 2.25, alpha = .85) +
-    scale_x_reverse() +
-    scale_color_manual(values = c(Accepted = col, Rejected = "#B2182B")) +
-    scale_shape_manual(values = c(Accepted = 16, Rejected = 4)) +
-    labs(title = "5-6  Minimum-count screen and accepted events",
-      subtitle = paste("tapas applies p <= 0.05; its returned object retains",
-                       "candidate disposition rather than each p value"),
-      x = "cal BP", y = NULL, color = NULL, shape = NULL) +
-    theme_method
-
   settings_text = sprintf(
-    "%s | %s | interpolation %g yr | background %g yr | local threshold %s | count screen p <= %.2f | candidates %d | rejected %d | accepted %d",
-    ss$site, ss$engine, ss$interpolation_years, ss$smoothing_years,
-    scales::percent(ss$threshold_probability, accuracy = 1),
-    ss$minimum_count_probability, ss$candidate_events,
-    ss$rejected_by_count_screen, ss$accepted_events)
-  p1 / p2 / p3 +
-    plot_layout(heights = c(1, 1, .9)) +
-    plot_annotation(
-      title = paste("Accepted-event detection:", display_lake),
-      subtitle = settings_text,
-      theme = theme(plot.title = element_text(face = "bold", size = 18,
-                                                hjust = .5),
-                    plot.subtitle = element_text(size = 10.5, hjust = .5,
-                                                 color = "grey25")))
+    "Interpolation %g yr | background %g yr\n%d accepted events | %d rejected peaks",
+    ss$interpolation_years, ss$smoothing_years,
+    ss$accepted_events, ss$rejected_by_count_screen)
+  p2 + labs(subtitle = settings_text)
 }
 
-lake_pages = purrr::map(lake_order, make_lake_page)
+lake_panels = purrr::map(lake_order, make_lake_panel)
+lake_page = wrap_plots(lake_panels, ncol = 2) +
+  plot_annotation(
+    title = "Fire-event detection across the four lake records",
+    subtitle = "Dashed = threshold; filled circle = accepted; red X = rejected by count screen",
+    theme = theme(plot.title = element_text(face = "bold", size = 18),
+                  plot.subtitle = element_text(size = 11, color = "grey25")))
 comparison_path = here("output/walsh_charanalysis_software_comparison.csv")
 if (!file.exists(comparison_path)) stop("Missing Walsh software audit.")
 comparison = read_csv(comparison_path, show_col_types = FALSE) |>
@@ -7216,14 +7177,14 @@ p_audit_note = ggplot() +
     fill = "grey97", color = "grey20") +
   coord_cartesian(xlim = c(0, 1), ylim = c(0, 1)) + theme_void()
 audit_page = p_audit / p_audit_note + plot_layout(heights = c(3, 1))
-pages = c(list(overview), lake_pages, list(audit_page))
+pages = list(overview, lake_page, audit_page)
 
 pdf_path = here("plot/test_figures/fig_fire_event_detection_workflow.pdf")
 if (render_figures) {
   grDevices::pdf(pdf_path, width = 14, height = 9, onefile = TRUE)
   purrr::walk(pages, print)
   grDevices::dev.off()
-  cat("Written six-page accepted-fire-event workflow for all four cores.\n")
+  cat("Written three-page fire-event workflow with all four lake records on one page.\n")
 }
 # END R/stages/12a_fire_event_detection_worked_example.R
 
@@ -8055,7 +8016,7 @@ NO_FIRE = PAPER_NO_FIRE
 site_shapes = PAPER_SITE_SHAPES
 raw_all = points |>
   filter(point_class %in% c("holocene_site_interval", "anthropocene_plot"))
-if (nrow(raw_all) != 742L) stop("Expected 137 Holocene and 605 Anthropocene rows.")
+if (nrow(raw_all) != 744L) stop("Expected 137 Holocene and 607 Anthropocene rows.")
 
 modern_fire = bind_rows(
   read_csv(fire_paths[["MORA"]], show_col_types = FALSE) |>
@@ -8066,15 +8027,15 @@ modern_all = raw_all |>
   filter(point_class == "anthropocene_plot") |>
   mutate(plot_id = str_to_upper(plot_id)) |>
   left_join(modern_fire, by = c("site", "plot_id"))
-if (nrow(modern_all) != 605L || anyNA(modern_all$burnt))
+if (nrow(modern_all) != 607L || anyNA(modern_all$burnt))
   stop("Every Anthropocene plot must have one fire assignment.")
 modern = modern_all |>
   mutate(included = !(site == "MORA" & burnt),
     fire_status = if_else(burnt, "Burned", "Unburned")) |>
   filter(included)
-if (nrow(modern) != 603L ||
+if (nrow(modern) != 605L ||
     sum(modern_all$site == "MORA" & modern_all$burnt) != 2L ||
-    sum(modern$site == "NOCA" & modern$burnt) != 23L)
+    sum(modern$site == "NOCA" & modern$burnt) != 24L)
   stop("Unexpected Anthropocene fire groups.")
 write_csv(modern_all |>
     transmute(site, plot_id, burnt, included = !(site == "MORA" & burnt),
@@ -8412,9 +8373,9 @@ species_matrix = scores(cca_model, display = "species", choices = 1:2,
                         scaling = cca_scaling, hill = cca_hill)
 climate_matrix = scores(cca_model, display = "bp", choices = 1:2,
                         scaling = cca_scaling, hill = cca_hill)
-if (nrow(species_matrix) != 13L ||
+if (nrow(species_matrix) != 14L ||
     !setequal(rownames(climate_matrix), CCA_CLIMATE_VARS))
-  stop("Expected 13 retained taxa and the four configured climate arrows.")
+  stop("Expected 14 retained taxa and the four configured climate arrows.")
 
 targets = bind_rows(
   as_tibble(species_matrix[, 1:2, drop = FALSE], rownames = "target") |>
@@ -8499,15 +8460,15 @@ modern_fire = bind_rows(
 anth = anth |>
   mutate(plot_id = str_to_upper(plot_id)) |>
   left_join(modern_fire, by = c("site", "plot_id"))
-if (nrow(anth) != 605L || anyNA(anth$burned) ||
+if (nrow(anth) != 607L || anyNA(anth$burned) ||
     !identical(as.integer(table(anth$site)[c("MORA", "NOCA")]),
-               c(330L, 275L)))
-  stop("Anthropocene direction scope must contain all 605 fire-classified pairs.")
+               c(330L, 277L)))
+  stop("Anthropocene direction scope must contain all 607 fire-classified pairs.")
 
 anth_keys = c("site", "plot_id", "burned")
 anth_direction = build_direction_contrasts(anth, anth_keys) |>
   mutate(period = "Anthropocene", .before = site)
-if (nrow(anth_direction) != 10285L)
+if (nrow(anth_direction) != 10926L)
   stop("Unexpected Anthropocene paired direction-row count.")
 write_csv(anth_direction,
           here("output/cca_direction_anthropocene_realizations.csv"))
@@ -8523,7 +8484,7 @@ holo_keys = c("site", "run_id", "draw", "offset", "age_hi", "age_lo",
               "n_min", "sparse_bin")
 holo_direction = build_direction_contrasts(holo, holo_keys) |>
   mutate(period = "Holocene", .before = site)
-if (nrow(holo_direction) != 259590L)
+if (nrow(holo_direction) != 274860L)
   stop("Unexpected Holocene paired direction-row count.")
 write_csv(holo_direction,
           here("output/cca_direction_holocene_realizations.csv.gz"))
@@ -8551,8 +8512,8 @@ holo_by_offset = holo_direction |>
     direct_angle_median = safe_stat(direct_angle_degrees, stats::median),
     .groups = "drop"
   )
-if (nrow(holo_by_offset) != 2635L)
-  stop("Expected 2,635 Holocene paired draw-within-offset summaries.")
+if (nrow(holo_by_offset) != 2790L)
+  stop("Expected 2,790 Holocene paired draw-within-offset summaries.")
 write_csv(holo_by_offset,
           here("output/cca_direction_holocene_by_offset.csv.gz"))
 
@@ -8594,10 +8555,10 @@ fire_grid = read_csv(input_paths[6], show_col_types = FALSE) |>
 holo_timeseries = holo_timeseries_all |>
   inner_join(era_grid, by = "t") |>
   left_join(fire_grid, by = c("site", "t"))
-if (nrow(holo_timeseries) != 2329L || anyNA(holo_timeseries$high_fire) ||
+if (nrow(holo_timeseries) != 2466L || anyNA(holo_timeseries$high_fire) ||
     !setequal(holo_timeseries$climate_state,
               c("climate change", "relative stability")))
-  stop("Expected 2,329 completely classified Holocene site-date contrasts.")
+  stop("Expected 2,466 completely classified Holocene site-date contrasts.")
 write_csv(holo_timeseries,
           here("output/cca_direction_holocene_timeseries.csv"))
 
@@ -8659,8 +8620,8 @@ holo_group = holo_timeseries |>
 
 group_summaries = bind_rows(anth_group, holo_group) |>
   arrange(period, site, climate_state, high_fire, burned, target_type, target)
-if (nrow(group_summaries) != 204L)
-  stop("Expected 204 descriptive group-summary rows.")
+if (nrow(group_summaries) != 216L)
+  stop("Expected 216 descriptive group-summary rows.")
 write_csv(group_summaries,
           here("output/cca_direction_group_summaries.csv"))
 legacy_ranking = here("output/cca_direction_group_rankings.csv")

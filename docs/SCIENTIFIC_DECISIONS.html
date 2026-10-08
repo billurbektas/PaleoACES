@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: e39c1410cd89c6ec1face38966fec8ec -->
+<!-- paleoaces-source-md5: 4c75a19c633b3f49cdd98db216e4d026 -->
 
 <html>
 
@@ -1506,7 +1506,7 @@ Execution order and file dependencies are authoritative in <a href="WORKFLOW.htm
 <h2>Study universes and vegetation</h2>
 <ul>
 <li>Modern vegetation is paired within plot. MORA has 330 modeled pairs
-and NOCA has 275 after excluding <code>BAK487</code> (old clearcut),
+and NOCA has 277 after excluding <code>BAK487</code> (old clearcut),
 <code>BEAV6061</code> (uncertain relocation into an avalanche chute),
 and <code>CARI449</code>/<code>CARI450</code> (GPS problem).</li>
 <li>The corrected NOCA workbook is authoritative for its 2,366 received
@@ -1519,7 +1519,7 @@ assignment. The active PaleoACES result is 32 burned and 273 unburned
 plots.</li>
 <li>Presence is adult or regeneration presence. Species are retained
 when present in at least one site-period group of 20 plots or samples.
-The consolidated table has 13,658 rows, 21 taxa, and 1,599 samples.</li>
+The consolidated table has 13,701 rows, 22 taxa, and 1,599 samples.</li>
 </ul>
 <p>Both CARI plots are excluded at both dates before CCA and climate
 preparation. Rachel’s notes and the coordinate CSV provide no verified
@@ -1528,9 +1528,59 @@ elevations of 622 and 1,149 m; the author elected to exclude them for a
 GPS problem. This is an upstream study exclusion, separate from all-zero
 CCA eligibility. See the <a href="review/NOCA_GPS_EXCLUSION.html">GPS
 source review and decision</a>.</p>
+<p><a id="ponderosa-reinstatement"></a></p>
+</div>
+<div id="ponderosa-pine-exclusion-reversed-decided-2026-10-08" class="section level2">
+<h2>Ponderosa pine exclusion reversed — decided 2026-10-08</h2>
+<p><strong>Decision:</strong> retain <em>Pinus ponderosa</em> in
+consolidation and let it follow the same ≥20 site × period occurrence
+rule as other tree taxa. The author rejected its former manual exclusion
+as insufficiently justified. Its 26 NOCA legacy occurrences satisfy the
+existing threshold; the threshold itself is unchanged.</p>
+<p><strong>Before:</strong> ponderosa was removed because it was
+concentrated at NOCA, absent from both Holocene records and extreme in a
+historical CCA. <strong>After:</strong> those features are treated as
+ecological and ordination characteristics, rather than reasons to remove
+a valid taxon. Grand fir and whitebark pine are also retained without
+detections in either Holocene record. Rachel’s species review does not
+flag ponderosa and says unmentioned species did not look especially
+suspicious; the available notes contain no recommendation from her to
+exclude it.</p>
+<p>The manual exclusion is removed in
+<code>R/stages/000_occurrence_data_consolidate.R</code>. Reinstatement
+initially produced 14 taxa and 619 legacy calibration plots, with 607
+modern pairs (330 MORA, 277 NOCA). STE2044 returns to calibration and
+paired comparison; HB2064 returns to paired comparison. The 907 included
+Holocene samples, their chronologies, and the raw climate records are
+unchanged, but refitting the shared CCA changes modern and Holocene
+positions, tracking metrics and direction summaries. Figures 2–5 and the
+report are regenerated. Other cleaning choices, CCA constraints, scaling
+and age-model settings are unchanged.</p>
+<p><a href="methods/README_occurrence_consolidation.html#ponderosa-reinstatement">Former
+rationale, source evidence and reversal</a> record the history. The
+increase in explained inertia under the former exclusion was not a valid
+selection criterion; reinstatement changed it from 16.57% to 15.69%
+before the matched-calibration decision below.</p>
 </div>
 <div id="cca-sample-eligibility-and-paired-comparisons" class="section level2">
 <h2>CCA sample eligibility and paired comparisons</h2>
+<p><strong>Matched calibration — decided 2026-10-08:</strong> fit the
+CCA on the legacy observations of exactly the same plots retained for
+both-date comparisons. Previously, the model used all 619 eligible
+legacy plots while comparisons used 607 pairs. It now uses <strong>607
+legacy plots: 330 MORA and 277 NOCA</strong>, with the same IDs for
+modern observed and predicted endpoints. The author selected one shared
+plot set for calibration and comparisons. This removes 12 legacy
+observations whose resurveys cannot enter CCA: nine have no recorded
+tree presence, and three hold only taxa excluded by species selection.
+Their received records are kept. Species selection still uses the
+existing ≥20 site × period rule; all 14 taxa remain. The model and its
+climate-SD reference are refitted on those 607 plots, and modern and
+Holocene projections, tracking results, direction summaries and Figures
+2–5 are recalculated. Chronologies, climate inputs and fire settings are
+unchanged. Climate-explained inertia changes from 15.69% to 15.33% after
+this restriction; current axes and tracking summaries are in the
+analysis review.</p>
 <p>The species-frequency exclusion remains in
 <code>R/stages/05_cca_model.R</code>. Its eligibility section reports
 all cases before fitting or projection, using the cleaned occurrences,
@@ -1538,18 +1588,16 @@ consolidated occurrences, selected taxa and valid climate constraints.
 All-zero retained-taxon rows have no observed WA position; they are
 excluded from both observed and climate-predicted comparisons.</p>
 <ul>
-<li>Legacy calibration retains 618 eligible plots: 331 MORA and 287
-NOCA. Modern comparisons and Figure 3’s two endpoints use exactly the
-same 330 MORA and 275 NOCA pairs. Restricting comparison membership does
-not remove the other eligible legacy plots from the fitted calibration
-or its climate-SD reference.</li>
+<li>Legacy calibration, modern comparisons and Figure 3’s two endpoints
+use exactly the same 330 MORA and 277 NOCA pairs. A usable legacy
+observation is excluded from fitting when its resurvey fails
+eligibility.</li>
 <li>Of NOCA’s 305 cleaned pairs, legacy eligibility excludes 6 with no
-recorded tree taxa, 1 holding only taxa excluded in consolidation, and
-11 holding only taxa excluded by CCA selection. Among the remaining 287
-plots, resurvey eligibility excludes 9 with loss of all recorded
-tree-taxon presence, 1 holding only consolidation-excluded taxa and 2
-holding only selection-excluded taxa. MORA’s additional resurvey
-exclusion holds only selection-excluded taxa.</li>
+recorded tree taxa and 11 holding only taxa excluded by CCA selection.
+Among the remaining 288 plots, resurvey eligibility excludes 9 with loss
+of all recorded tree-taxon presence and 2 holding only
+selection-excluded taxa. MORA’s additional resurvey exclusion holds only
+selection-excluded taxa.</li>
 <li>Holocene projections retain 117 MORA and 790 NOCA samples. The 56
 excluded NOCA samples have no tree taxa detected in the prepared
 macrofossil data. Observed and predicted Holocene positions use exactly
@@ -1568,7 +1616,7 @@ and unmatched survey endpoints receive explicit reasons if
 encountered.</li>
 </ul>
 <p>Generated totals, reasons and linked per-observation audits are in
-the <a href="ANALYSIS_REVIEW.html#cca-sample-eligibility-and-exclusions">analysis
+the <a href="ANALYSIS_REVIEW.html#plots-and-samples-included-in-cca">analysis
 review</a>. Figure 3’s previously unequal endpoint membership is
 corrected by this decision.</p>
 </div>
@@ -1605,9 +1653,10 @@ repeat visits, especially RAMP-505/RAMP-506, before filtering.</p>
 <p>Climate intervals are calculated per plot from <strong>1984</strong>
 to <strong>Y−2.5</strong>; vegetation intervals use 1977.5 (MORA) or
 1983 (NOCA) to Y. These dates feed climate summaries, CCA projections,
-community trajectories, tracking and direction results. CCA settings and
-the species rule are unchanged; legacy calibration and Holocene results
-must remain unchanged.</p>
+community trajectories, tracking and direction results. For this
+survey-date decision, the CCA settings, species rule, legacy calibration
+and Holocene results were unchanged. The later ponderosa reinstatement
+on 2026-10-08 refits the shared CCA as recorded above.</p>
 <p><a href="../data/SOURCES_SURVEY_YEARS.html">Date evidence and
 rationale</a>, <a href="../data/MORA/resurvey_year_source_discrepancies.csv">95-plot
 discrepancy table</a>, <a href="assets/analysis/tables/mora_repeat_visits.csv">13 latest
@@ -1712,10 +1761,10 @@ winter temperature (<code>MWT</code>), summer precipitation
 seasonal correlates of growing energy, freezing exposure, summer
 dryness, and snowpack—not direct GDD, FDD, fire, soil-moisture, or
 snowpack measurements.</li>
-<li>The pooled CCA is calibrated on 618 legacy plots and 13 retained
-species. Vegan site/scaling 1 is retained because downstream metrics use
-Euclidean sample-score distances. The model positions 1,512 of 1,599
-modern and paleo samples.</li>
+<li>The pooled CCA is calibrated on 607 matched legacy plots and 14
+retained species. Vegan site/scaling 1 is retained because downstream
+metrics use Euclidean sample-score distances. The model positions 1,514
+of 1,599 modern and paleo samples.</li>
 <li>Climate constraints are collinear. Their marginal contributions must
 not be interpreted as additive shares of constrained inertia.</li>
 <li>Binary presence retains CCA’s chi-square row and taxon weighting; it
@@ -1794,7 +1843,7 @@ observations. Lag per century, ratio, and angle are shown; raw lag is
 retained as scatter fill but no longer has a boxplot. All axes are
 linear; the detail positions are not directly comparable with their main
 panels because each detail has an independent Holocene y-range.</li>
-<li>Its single unfaceted angle × ratio scatter places all 589 included
+<li>Its single unfaceted angle × ratio scatter places all 600 included
 direction-valid observations faintly behind four macro-era medians, two
 additional NOCA burned/unburned medians, and eight smaller site ×
 climate state × fire-status medians. A single shared repel layer keeps
@@ -1803,13 +1852,13 @@ climate/fire context, and each pooled climate-state label lists the
 exact numbered eras represented in that site × state × fire group. The
 scatter is centered at 75% of the unchanged A–C row width to avoid
 giving this descriptive panel disproportionate visual weight. Site is
-shape; fire evidence is the only categorical red encoding. The 151
-stationary Anthropocene plots (76 MORA, 75 NOCA) remain in non-angle
+shape; fire evidence is the only categorical red encoding. The 142
+stationary Anthropocene plots (76 MORA, 66 NOCA) remain in non-angle
 summaries; their counts are labelled rather than assigning a false 0°
 direction. Median-point fill is signed raw lag on one symmetric
 blue–neutral–vermillion scale centered at zero and labelled
-<code>Lag</code>. All 137 Holocene site-dates and all 605 modern source
-pairs enter the scope audit; 603 modern pairs remain after the explicit
+<code>Lag</code>. All 137 Holocene site-dates and all 607 modern source
+pairs enter the scope audit; 605 modern pairs remain after the explicit
 MORA fire exclusion.</li>
 </ul>
 </div>
@@ -1827,7 +1876,7 @@ uncertainty.</li>
 CCA calibration SDs. MORA’s three lakes are averaged first; the MORA and
 NOCA site trajectories then receive equal regional weight.</li>
 <li><strong>Standardization sensitivity to discuss later.</strong> The
-active denominator remains each variable’s SD across the 618 pooled
+active denominator remains each variable’s SD across the 607 matched
 MORA/NOCA legacy calibration plots. This fixed, model-calibration
 reference is independent of the Holocene and Anthropocene records being
 evaluated. A future sensitivity could instead calculate one SD per
@@ -1920,10 +1969,11 @@ explicit software/ implementation audit; thresholds were not modified to
 force agreement.</li>
 <li><code>R/stages/12a_fire_event_detection_worked_example.R</code>
 separates individual-event detection from the later high-fire-period
-rule. Its six-page audit shows the common chain—interpolation, robust
+rule. Its three-page figure shows the common chain—interpolation, robust
 LOWESS background, positive residual, local Gaussian-mixture threshold,
-75-year count screen, accepted event—for every core. It also exposes the
-source differences: MORA uses 42–48-year interpolation, lake-specific
+75-year count screen, accepted event—for every core, with all four
+residual/threshold plots together on one page. It also shows the source
+differences: MORA uses 42–48-year interpolation, lake-specific
 500–1,000-year backgrounds, and 95% thresholds; Panther Potholes uses
 12-year interpolation, a 500-year background, and a 99% threshold.
 Current candidate/rejected/accepted counts are Sunrise 26/9/17, Shadow
@@ -2013,10 +2063,10 @@ become <code>NA</code> below <code>1e-8</code>. Nonlinear realization
 values precede draw/offset summaries. Translation, rotation, reflection,
 and a common arrow multiplier must leave results unchanged; unequal axis
 scaling intentionally does not and is forbidden.</li>
-<li>The stage retains 10,285 paired target contrasts from all 605
-Anthropocene pairs and 259,590 from all 15,270 primary Holocene
+<li>The stage retains 10,926 paired target contrasts from all 607
+Anthropocene pairs and 274,860 from all 15,270 primary Holocene
 realizations. Its draw-within-offset and complete-ten-offset hierarchy
-yields 2,329 site-date contrasts and 204 final group summaries. The 151
+yields 2,466 site-date contrasts and 216 final group summaries. The 142
 near-zero observed modern movements have <code>NA</code> paired
 contrasts, while their independently valid predicted associations remain
 available for audit.</li>
@@ -2075,7 +2125,7 @@ intended anomaly interpretation.</td>
 </tr>
 <tr class="even">
 <td>Legacy-calibration versus full-record climate SDs</td>
-<td>Changes are divided by SDs from the 618 pooled legacy CCA
+<td>Changes are divided by SDs from the 607 matched legacy CCA
 calibration plots.</td>
 <td>The reference is tied to the fitted model. A full-record SD would
 change displayed standardized magnitudes, cross-variable weighting, the
@@ -2115,6 +2165,19 @@ movement.</td>
 <div id="inference-limits" class="section level2">
 <h2>Inference limits</h2>
 <ul>
+<li><strong>Adult-tree plot areas (confirmed 2026-10-08):</strong> the
+author confirmed that resurvey plots cover 500 m² at both MORA and NOCA.
+Legacy areas vary: the retained MORA plots have areas of 250, 375, 500
+or 1,000 m²; recorded NOCA areas range from 25 to 400 m², with four
+retained plots lacking an area. Pairing matches plot identities; sampled
+areas can differ between dates. No area restriction is applied. MORA
+summaries use <code>Site info</code> → <code>Plotarea</code> in the
+original legacy workbook; <code>BACK-245</code> and
+<code>LONG-356</code> are recorded as 500 m² there despite conflicting
+species-row entries in <code>rawsizedata</code>. NOCA summaries use
+<code>OVERVIEW</code> → <code>PLOT(M2)</code> in the Agee workbook. See
+the <a href="assets/analysis/tables/sample_selection_plot_sizes.csv">retained
+plot-size counts</a>.</li>
 <li>NOCA size classes differ between surveys: legacy regeneration spans
 0–3 m and adults exceed 3 m; resurvey seedlings span 10–140 cm and trees
 exceed 1.4 m. Neither stratum is an identical size-class measurement

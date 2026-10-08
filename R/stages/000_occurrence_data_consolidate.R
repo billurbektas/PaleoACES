@@ -148,34 +148,14 @@ UNDERSTORY = c(
 #     starting with Pe." An identification nobody can make should not be forced.
 NON_TAXA = c("unknown", "Abies sp.", "Unknown tree.")
 
-# (2b) ANALYSIS EXCLUSIONS - a DIFFERENT KIND of decision from (1) and (2).
-# (1) and (2) are data-quality: the record is wrong or unusable. This one is a
-# modelling choice about a species whose record is perfectly good. It is kept
-# separate, and switchable, so the two are never confused.
-#
-# These are the three species the old `_subset` run in 05_cca_model.R excluded by
-# hand. Two of them - Taxus brevifolia and Acer circinatum - are now removed by
-# the understory rule above, on evidence, so they no longer need a special case
-# and are listed here only to record that the subset run is fully absorbed.
-#
-# Pinus ponderosa is the one that still needs a decision, and it is NOT an
-# understory species - it is a legitimate tree in the NOCA legacy tree stratum
-# and in Agee & Kertis Table 3. It is excluded because:
-#   - it is effectively single-site: 42 NOCA plots (26 past, 16 present) against
-#     ONE MORA plot, so it encodes site identity more than climate response;
-#   - it is absent from BOTH Holocene records, so no paleo sample can ever be
-#     projected onto the gradient it defines;
-#   - it sits at the extreme dry end of CCA1 (score 3.51; the next species is
-#     1.31), stretching the axis that every distance in this study is measured
-#     along. Its plots are at 347-1320 m, median 669 m, against 1037 m for NOCA
-#     as a whole - the low, dry east side.
-# Set APPLY_ANALYSIS_EXCLUDE = FALSE to get the full-model species set back.
-APPLY_ANALYSIS_EXCLUDE = TRUE
-ANALYSIS_EXCLUDE = c(
-  "Pinus ponderosa"       # single-site, absent from both paleo arms, stretches CCA1
-  # "Taxus brevifolia"    <- already removed by the understory rule
-  # "Acer circinatum"     <- already removed by the understory rule
-)
+# (2b) FORMER ANALYSIS EXCLUSION REVERSED - decided 2026-10-08.
+# Pinus ponderosa is a valid tree taxon and is retained here. Its former manual
+# exclusion was not justified by identification evidence or a general selection
+# rule. Site concentration, absence from the Holocene records and an extreme
+# ordination position are not exclusion criteria. It now follows the same >=20
+# species-selection rule as other tree taxa in 05_cca_model.R.
+# The former rationale and the author's reversal are recorded in
+# docs/methods/README_occurrence_consolidation.md and SCIENTIFIC_DECISIONS.md.
 
 # (3) TAXONOMIC HARMONISATION.
 # Each entry says WHICH SITE and WHICH PERIOD it applies to, because two of the
@@ -242,12 +222,6 @@ apply_decisions = function(x, verbose = FALSE) {
     x$species[hit] = r$to
   }
   x = x %>% filter(!species %in% NON_TAXA, !species %in% UNDERSTORY)
-  if (APPLY_ANALYSIS_EXCLUDE) {
-    if (verbose)
-      cat("\nanalysis exclusion (NOT a data-quality drop - see (2b)): removing ",
-          paste(ANALYSIS_EXCLUDE, collapse = ", "), "\n", sep = "")
-    x = x %>% filter(!species %in% ANALYSIS_EXCLUDE)
-  }
   x
 }
 
@@ -348,23 +322,27 @@ p_counts = ggplot(cnt_long, aes(species, n, fill = period)) +
   geom_col(position = position_dodge(preserve = "single"), width = 0.75) +
   geom_hline(yintercept = CCA_COUNT_THRESHOLD, linetype = "dashed",
              colour = "#B03A2E", linewidth = 0.5) +
-  scale_fill_manual(values = color_era) +
+  scale_fill_manual(values = color_era,
+                    labels = c(paleo = "Holocene", past = "Legacy", present = "Resurvey")) +
   facet_wrap(~ site, scales = "free_x") +
   coord_flip() +
-  labs(x = NULL, y = "Number of plots (paleo: number of samples)", fill = "Period",
-       title = "Species occurrence AFTER consolidation - the basis for count.thr",
-       subtitle = paste0("Dashed = ", CCA_COUNT_THRESHOLD,
-                         " (current count.thr). A species is dropped only if it is\n",
-                         "below the threshold in EVERY site x period group. Understory taxa, unresolved\n",
-                         "taxa and the analysis exclusions have already been removed.")) +
-  theme_minimal(base_size = 11) +
-  theme(plot.title = element_text(face = "bold"),
+  labs(x = NULL, y = "Number of plots (Holocene: number of samples)", fill = "Period",
+       title = "Species occurrence after consolidation",
+       subtitle = paste0("Dashed line: selection threshold of ", CCA_COUNT_THRESHOLD, " plots or samples.\n",
+                         "A species is retained if it reaches the threshold in any site and period.\n",
+                         "Understory and unresolved taxa are removed; ponderosa pine is retained.")) +
+  theme_minimal(base_size = 16) +
+  theme(plot.title = element_text(size = 18, face = "bold"),
+        plot.subtitle = element_text(size = 14),
+        axis.text = element_text(size = 14),
+        strip.text = element_text(size = 16, face = "bold"),
+        legend.text = element_text(size = 14),
         panel.grid.major.y = element_blank(),
         legend.position = "top")
 
 if (render_figures) {
   ggsave(here("plot/test_figures/species_counts_consolidated.pdf"), p_counts,
-         width = 11, height = 6)
+         width = 11, height = 8)
   cat("\nWrote plot/test_figures/species_counts_consolidated.pdf\n")
 }
 
@@ -420,25 +398,28 @@ p_stage = ggplot(stage_counts, aes(species, n_plots, fill = period)) +
   geom_col(position = position_dodge(preserve = "single"), width = 0.75) +
   facet_grid(site ~ stage) +
   coord_flip() +
-  scale_fill_manual(values = c(past = "#88CCEE", present = "#CC6677"), name = "Period") +
+  scale_fill_manual(values = c(past = "#88CCEE", present = "#CC6677"),
+                    labels = c(past = "Legacy", present = "Resurvey"), name = "Period") +
   labs(x = NULL, y = "Number of plots",
-       title = "Adults vs regeneration, past vs present",
-       subtitle = paste0("Plots per species, past and present side by side within each stage - localises a change to\n",
-                         "adults or to regeneration. Consolidated species set (understory taxa removed)."),
-       caption = paste0("Size limits differ: NOCA adults are >3 m in the legacy survey versus >1.4 m in resurveys. NOCA past regeneration uses the ",
-                        "legacy 0-3 m\nheight class, whereas MORA (both eras) and NOCA present use 10-140 cm ",
-                        "seedling surveys. The NOCA\npast-vs-present regeneration contrast is therefore ",
-                        "confounded by band width.")) +
-  theme_minimal(base_size = 11) +
+       title = "Adults and regeneration: legacy versus resurvey",
+       subtitle = "Plots per species at each vegetation stage.\nConsolidated tree taxa; understory taxa excluded.",
+       caption = paste0("NOCA adults: >3 m in legacy surveys; >1.4 m in resurveys.\n",
+                        "NOCA regeneration: 0-3 m in legacy surveys; 10-140 cm in resurveys. MORA: 10-140 cm at both dates.\n",
+                        "The NOCA legacy versus resurvey regeneration comparison therefore uses different height bands.")) +
+  theme_minimal(base_size = 16) +
   theme(legend.position = "top",
         panel.grid.major.y = element_blank(),
-        axis.text.y = element_text(face = "italic"),
-        plot.title = element_text(face = "bold"),
-        plot.caption = element_text(hjust = 0, colour = "grey35"))
+        axis.text = element_text(size = 14),
+        axis.text.y = element_text(size = 14, face = "italic"),
+        strip.text = element_text(size = 16, face = "bold"),
+        legend.text = element_text(size = 14),
+        plot.title = element_text(size = 18, face = "bold"),
+        plot.subtitle = element_text(size = 14),
+        plot.caption = element_text(size = 12, hjust = 0, colour = "grey35"))
 
 if (render_figures) {
   ggsave(here("plot/test_figures/stage_adult_seedling_past_present.pdf"), p_stage,
-         width = 12, height = 9)
+         width = 12, height = 12)
 }
 
 cat("\n=== adult vs regeneration, plot occupancy ===\n")

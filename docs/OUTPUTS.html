@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: 3814233ab7fc0181475a100501aebc3e -->
+<!-- paleoaces-source-md5: 2c15c00d88df3dcba947d5919eca046d -->
 
 <html>
 
@@ -1532,8 +1532,9 @@ change</td>
 </tr>
 <tr class="even">
 <td><code>NOCA_study_exclusions.csv</code></td>
-<td>Study-level exclusion reasons and source notes for
-<code>BAK487</code> and <code>BEAV6061</code></td>
+<td>Exclusion reasons and source notes for <code>BAK487</code>,
+<code>BEAV6061</code>, <code>CARI449</code> and
+<code>CARI450</code></td>
 </tr>
 <tr class="odd">
 <td><code>NOCA_coordinate_collision_audit.csv</code></td>
@@ -1571,9 +1572,47 @@ and shared WA/LC comparison membership</td>
 <tr class="even">
 <td><code>cca_eligibility_counts.csv</code>,
 <code>cca_exclusion_summary.csv</code></td>
-<td>Generated pre-fit totals and mutually exclusive exclusion reasons
-for each site, era and use; reproduced near the beginning of the
-analysis review</td>
+<td>Totals and exclusion reasons for each site, era and use; shown
+immediately before CCA in the analysis review</td>
+</tr>
+<tr class="odd">
+<td><code>report/sample_selection_counts.csv</code>,
+<code>report/sample_selection_choices.csv</code></td>
+<td>Counts from the starting survey lists and core depths through
+matching, cleaning and CCA selection; choices that change records
+without removing plots are listed separately</td>
+</tr>
+<tr class="even">
+<td><code>report/sample_selection_plot_sizes.csv</code></td>
+<td>Legacy adult-tree areas among the plots retained for CCA, with
+counts and the confirmed 500 m² resurvey area at both sites</td>
+</tr>
+<tr class="odd">
+<td><code>report/cca_anova.csv</code>,
+<code>report/cca_anova_full.csv</code></td>
+<td>Overall, sequential-axis and marginal climate-variable permutation
+tests of the fitted CCA; 9,999 permutations both unrestricted and within
+parks</td>
+</tr>
+<tr class="even">
+<td><code>report/cca_species_contributions.csv</code>,
+<code>report/cca_climate_contributions.csv</code></td>
+<td>Species shares and unique climate effects on constrained inertia,
+calibration prevalence, CCA1–CCA2 scores and climate collinearity</td>
+</tr>
+<tr class="odd">
+<td><code>report/cca_model_code.R</code>,
+<code>report/cca_model_output.txt</code>,
+<code>report/cca_anova_output.txt</code></td>
+<td>Current fitting/projection code excerpt and readable
+model/permutation-test outputs displayed or linked immediately before
+Figure 3</td>
+</tr>
+<tr class="even">
+<td><code>plot/test_figures/plots_to_cca.pdf</code></td>
+<td>Single-page diagram showing starting counts, exclusion reasons,
+combined sample depths, legacy calibration counts and final
+paired/projection counts</td>
 </tr>
 <tr class="odd">
 <td><code>cca_tracking_anthropocene_*.csv</code></td>
@@ -1615,13 +1654,13 @@ displayed metrics</td>
 </tr>
 <tr class="even">
 <td><code>cca_tracking_anthropocene_fire_scope_audit.csv</code></td>
-<td>All 605 modern pairs with burned status, inclusion decision, and
+<td>All 607 modern pairs with burned status, inclusion decision, and
 explicit exclusion of the two burned MORA pairs</td>
 </tr>
 <tr class="odd">
 <td><code>cca_tracking_comparison_spec.csv</code></td>
 <td>Auditable fixed-site facets, explicit era/state × fire grouping,
-raw-linear lag/rate/ratio/angle contracts, 589-point background, four
+raw-linear lag/rate/ratio/angle contracts, 600-point background, four
 macro medians, eight climate-state/fire medians, two NOCA fire-status
 medians, stationary-angle annotation, reference lines, symmetric raw-lag
 fill limits, and panel-width fractions</td>
@@ -1629,7 +1668,7 @@ fill limits, and panel-width fractions</td>
 <tr class="even">
 <td><code>cca_direction_anthropocene_realizations.csv</code>,
 <code>cca_direction_holocene_realizations.csv.gz</code></td>
-<td>All 10,285 modern and 259,590 primary Holocene unit × taxon/climate
+<td>All 10,926 modern and 274,860 primary Holocene unit × taxon/climate
 paired rows, with predicted and observed cosines,
 predicted-minus-observed contrasts, direct movement angle/cosine, and
 explicit validity flags</td>
@@ -1637,7 +1676,7 @@ explicit validity flags</td>
 <tr class="odd">
 <td><code>cca_direction_holocene_by_offset.csv.gz</code>,
 <code>cca_direction_holocene_timeseries.csv</code></td>
-<td>2,635 draw-within-offset and 2,329 complete-ten-offset site-date
+<td>2,790 draw-within-offset and 2,466 complete-ten-offset site-date
 directional-difference summaries using the tracking stage’s half-open
 mapping</td>
 </tr>
@@ -1741,9 +1780,9 @@ discrepancy audit</td>
 </tr>
 <tr class="even">
 <td><code>plot/test_figures/fig_fire_event_detection_workflow.pdf</code></td>
-<td>PDF-only six-page all-core explanation of how charcoal residual
-candidates become accepted fire events, plus the separate MORA
-software/publication audit</td>
+<td>PDF-only three-page explanation: detection settings, all four lake
+residual/threshold plots in a 2 × 2 grid, and the separate MORA
+software/publication comparison</td>
 </tr>
 <tr class="odd">
 <td><code>plot/fig_cca_trajectories.*</code></td>

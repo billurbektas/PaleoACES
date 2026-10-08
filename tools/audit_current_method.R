@@ -50,8 +50,23 @@ sets = split(present$plot_id, interaction(present$species, present$site,
 counts = lengths(lapply(sets, unique))
 independent = tapply(counts, sub("\\.(MORA|NOCA)\\..*$", "", names(counts)), max)
 selected = names(independent)[independent >= 20]
-stopifnot(setequal(selected, e$keep_species), nrow(y) == 618L, ncol(y) == 13L)
+stopifnot(setequal(selected, e$keep_species), nrow(y) == 607L, ncol(y) == 14L)
 record("binary occurrence keys and independent threshold selection", nrow(occ))
+
+# Independently intersect recorded retained-taxon presence and complete climate
+# at both dates, without calling the CCA eligibility or pairing functions.
+at_date = function(period) {
+  ids = unique(present$plot_id[present$period == period & present$species %in% selected])
+  climate = e$env[e$env$period == period, ]
+  complete = apply(as.matrix(climate[e$CCA_VARIABLES]), 1, function(x) all(is.finite(x)))
+  intersect(ids, climate$plot_id[complete])
+}
+matched_ids = intersect(at_date("past"), at_date("present"))
+stopifnot(setequal(rownames(y), matched_ids),
+          setequal(rownames(e$cca_model$CCA$u), matched_ids),
+          identical(e$species_past_final, e$species_past_paired),
+          identical(e$env_past_final, e$env_past_paired))
+record("independent matched-pair CCA calibration membership", length(matched_ids))
 
 # Original metadata provides an independent check of the stratum distinction.
 wb = here("data/raw/MORA_Cascade Legacy Data_Original1978.xlsx")

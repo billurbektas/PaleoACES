@@ -1,0 +1,91 @@
+Unrestricted — Overall
+Permutation test for cca under reduced model
+Permutation: free
+Number of permutations: 9999
+
+Model: cca(formula = species_past_final ~ MSpT + MWT + SP + WP, data = env_past_final)
+          Df ChiSquare      F Pr(>F)
+Model      4   0.53099 27.239  1e-04 ***
+Residual 602   2.93381
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Unrestricted — Axis
+Permutation test for cca under reduced model
+Forward tests for axes
+Permutation: free
+Number of permutations: 9999
+
+Model: cca(formula = species_past_final ~ MSpT + MWT + SP + WP, data = env_past_final)
+          Df ChiSquare       F Pr(>F)
+CCA1       1   0.29766 61.0783 0.0001 ***
+CCA2       1   0.19574 40.3522 0.0001 ***
+CCA3       1   0.03152  6.5356 0.0001 ***
+CCA4       1   0.00606  1.2621 0.1712
+Residual 602   2.93381
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Unrestricted — Climate variable
+Permutation test for cca under reduced model
+Marginal effects of terms
+Permutation: free
+Number of permutations: 9999
+
+Model: cca(formula = species_past_final ~ MSpT + MWT + SP + WP, data = env_past_final)
+          Df ChiSquare      F Pr(>F)
+MSpT       1   0.03767 7.7290 0.0001 ***
+MWT        1   0.04801 9.8517 0.0001 ***
+SP         1   0.01205 2.4727 0.0032 **
+WP         1   0.01920 3.9405 0.0001 ***
+Residual 602   2.93381
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Within parks — Overall
+Permutation test for cca under reduced model
+Blocks:  sites
+Permutation: free
+Number of permutations: 9999
+
+Model: cca(formula = species_past_final ~ MSpT + MWT + SP + WP, data = env_past_final)
+          Df ChiSquare      F Pr(>F)
+Model      4   0.53099 27.239  1e-04 ***
+Residual 602   2.93381
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Within parks — Axis
+Permutation test for cca under reduced model
+Forward tests for axes
+Blocks:  sites
+Permutation: free
+Number of permutations: 9999
+
+Model: cca(formula = species_past_final ~ MSpT + MWT + SP + WP, data = env_past_final)
+          Df ChiSquare       F Pr(>F)
+CCA1       1   0.29766 61.0783 0.0001 ***
+CCA2       1   0.19574 40.3522 0.0001 ***
+CCA3       1   0.03152  6.5356 0.0001 ***
+CCA4       1   0.00606  1.2621 0.1176
+Residual 602   2.93381
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Within parks — Climate variable
+Permutation test for cca under reduced model
+Marginal effects of terms
+Blocks:  sites
+Permutation: free
+Number of permutations: 9999
+
+Model: cca(formula = species_past_final ~ MSpT + MWT + SP + WP, data = env_past_final)
+          Df ChiSquare      F Pr(>F)
+MSpT       1   0.03767 7.7290 0.9646
+MWT        1   0.04801 9.8517 0.9303
+SP         1   0.01205 2.4727 0.0010 ***
+WP         1   0.01920 3.9405 0.0001 ***
+Residual 602   2.93381
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+

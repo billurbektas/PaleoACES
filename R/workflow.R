@@ -106,6 +106,7 @@ run_script("R/stages/14_cca_direction_analysis.R")
 
 # Reporting-only diagnostics run in the same isolated script environments.
 if (build_report) {
+  run_script("R/diagnostics/plot_sample_selection.R")
   run_script("R/diagnostics/test_cca_scaling_comparison.R")
   run_script("R/diagnostics/test_species_through_time.R")
   run_script("R/diagnostics/test_climate_change_variables.R")

@@ -49,7 +49,7 @@ visit and its matching seedlings are retained; visits tied within a year remain
 pooled. This replaces pooling across years and using the earliest tree/seedling
 year. The received CSVs are preserved.
 
-The source-year audit identifies 95 supplied plot names, including 48 analyzed
+The source-year comparison identifies 95 supplied plot names, including 48 analyzed
 pairs. That total includes `PRAC-1`, a practice plot without a standardized ID;
 94 have standardized IDs. Conflicting years already occur in the original CSVs
 and pass unchanged through their upstream cleaner. The earlier export process
@@ -63,7 +63,7 @@ records the conflicting years, adult dates, treatment and evidence locations;
 NOCA excludes `BAK487` for its old clearcut, `BEAV6061` for uncertain relocation,
 and `CARI449`/`CARI450` for GPS problems. The latter share coordinates despite
 conflicting elevations, and Rachel's notes supply no verified correction.
-These exclusions apply to both dates. The cleaned NOCA universe has 305 pairs;
+These exclusions apply to both dates. The cleaned NOCA data contain 305 pairs;
 CCA eligibility is assessed later. The [cleaning guide](methods/000_NOCA_cleaning_guide.md)
 and [GPS source note](review/NOCA_GPS_EXCLUSION.md) explain the decisions.
 
@@ -178,8 +178,9 @@ primary climate-rate results.
 
 [Consolidation](methods/README_occurrence_consolidation.md) aligns Populus,
 Picea and Abies identifications across surveys and macrofossils. Acer circinatum
-and Taxus brevifolia are removed for stratum compatibility; Pinus ponderosa is
-excluded by the documented analysis choice.
+and Taxus brevifolia are removed for stratum compatibility. Pinus ponderosa's
+manual exclusion was [reversed on 2026-10-08](SCIENTIFIC_DECISIONS.md#ponderosa-reinstatement);
+it is now retained and follows the ordinary frequency rule below.
 
 CCA retains a taxon when it occurs in **at least 20 plots or samples in any one
 site × period group**. The rule does not require 20 in every group. Pinus
@@ -199,14 +200,39 @@ These strata are not identical measurements across surveys.
 The occupancy display is explicitly a **500-year sensitivity**. Primary
 Holocene tracking uses 1,000-year intervals.
 
-## CCA sample eligibility and exclusions
+## Plots and samples included in CCA
+
+The following diagram starts with the supplied survey lists and core sample
+depths. It shows losses during matching and cleaning, then the species and
+climate checks required for CCA. The starting legacy and resurvey counts are
+separate; their exclusions must not be added together. Core depths sharing one
+modeled age are combined, rather than excluded.
+
+{{selection_diagnostics}}
+
+The [counts at each step](assets/analysis/tables/sample_selection_counts.csv)
+and [choices affecting records](assets/analysis/tables/sample_selection_choices.csv)
+are available as tables.
+
+The diagram also shows the [legacy adult-tree plot sizes](assets/analysis/tables/sample_selection_plot_sizes.csv)
+among the plots retained for CCA. Adult-tree resurvey plots cover **500 m² at both
+sites**. Legacy areas vary, so matching plot identities does not mean that the
+sampled areas were equal. Plot size currently does not determine eligibility.
+
+Choices such as correcting tree records and keeping the latest adult visit
+change the observations without necessarily removing plots. They are shown
+alongside the count changes. All current CCA climate values are complete.
+The two burned MORA plots remain in CCA; their exclusion from Figure 4 happens
+later.
 
 [05_cca_model.R](../R/stages/05_cca_model.R) resolves eligibility **before fitting
 or projecting**. An observation with no retained taxa has no observed WA
 position. It is excluded from both observed and climate-predicted comparisons.
 Modern endpoints use the same eligible pairs at both dates; Holocene WA and LC
-positions also use identical samples. All eligible legacy plots remain available
-for calibration.
+positions also use identical samples. The CCA is fitted on the legacy observations
+of these same matched plots; a plot excluded at resurvey is also excluded from
+calibration. The diagram's final modern counts therefore serve both fitting and
+comparison.
 
 {{cca_eligibility_counts}}
 
@@ -230,15 +256,16 @@ cannot enter CCA tracking.
 
 ## CCA calibration and geometry
 
-One pooled legacy CCA relates composition to the four climate variables.
+One pooled legacy CCA relates composition to the four climate variables, using
+the same matched plots used in both-date comparisons (330 MORA and 277 NOCA).
+This matched calibration was selected on 2026-10-08; the former fit used 619
+eligible legacy plots. The ≥20 species-selection rule and 14 taxa are unchanged.
 Observed **weighted-average (WA)** scores describe composition; predicted
 **linear-combination (LC)** scores describe the position expected from climate.
 Modern resurveys and paleo samples enter the existing ordination without
 recalibrating it.
 
 {{cca_summary}}
-
-{{cca_axes}}
 
 {{cca_counts}}
 
@@ -313,12 +340,70 @@ use fixed median event chronologies, without propagating event-timing uncertaint
 
 Figure 3 connects observed and predicted centroids for each site through the
 CC1–S4 eras. These are separate WA and LC trajectories within the same fitted
-ordination. Modern arrows use exactly the same eligible pairs at both endpoints,
-while the broader legacy calibration remains the fitting reference.
+ordination. Modern arrows use exactly the same eligible pairs at both endpoints;
+their matched legacy observations also provide the CCA calibration.
 
 {{modern_centroids}}
 
 {{era_centroids}}
+
+### CCA model, contributions and tests
+
+The model below is fitted to the **607 matched legacy plots and 14 retained
+tree species**. Species values are binary presence, combining adults and
+regeneration. The climate rows use those same plots in the same order.
+`MSpT` is spring temperature, `MWT` winter temperature, `SP` summer precipitation
+and `WP` winter precipitation. The fitting and resurvey-projection lines are
+copied from [05_cca_model.R](../R/stages/05_cca_model.R), with the current scaling
+settings shown explicitly.
+
+{{cca_model_code}}
+
+**Fitted model output.** Inertia measures variation in community composition;
+the constrained part is the variation explained by these climate variables.
+
+{{cca_model_output}}
+
+{{cca_axes}}
+
+**Permutation ANOVA.** The overall test assesses the four climate variables
+together. Axis tests assess each axis after accounting for preceding axes.
+All reported tests use **9,999 permutations**, with seed `20261008`.
+Unrestricted permutations shuffle plots across the whole calibration set;
+within-park permutations shuffle plots within MORA and NOCA separately.
+Neither design accounts for finer spatial dependence among plots. These are
+tests of association, rather than predictive validation. See the
+[vegan ANOVA methods](https://vegandevs.github.io/vegan/reference/anova.cca.html).
+
+{{cca_anova}}
+
+{{cca_axis_interpretation}}
+
+[Complete ANOVA output](assets/analysis/cca_anova_output.txt) includes residual
+degrees of freedom and all overall, axis and climate-variable tests.
+These calculations are reproduced by [the reporting functions](../R/helpers/analysis_report.R).
+
+**Species contributions.** Each percentage is a species' contribution to the
+total climate-explained inertia, across all four constrained axes. These
+contributions sum to 100% and match the species bars in Figure 3. The score
+columns describe position on CCA1–CCA2; distance from the origin is a different
+quantity from contribution. See [vegan's inertia decomposition](https://vegandevs.github.io/vegan/reference/goodness.cca.html).
+
+{{cca_species_contributions}}
+
+**Climate contributions and tests.** Each percentage is the inertia lost when
+that variable is removed while the other three remain, divided by the full
+model's climate-explained inertia. These are the unique effects shown in Figure 3;
+they do not sum to 100% because the predictors are correlated. Their tests use
+`anova(..., by = "margin")`. VIF describes predictor overlap: larger values mean
+stronger collinearity, limiting separate interpretation of climate variables.
+
+{{cca_climate_contributions}}
+
+{{cca_climate_interpretation}}
+
+The existing tracking calculations use CCA1–CCA2. These tests describe the
+fitted model; they do not change the selected axes or the analysis settings.
 
 {{figure_3}}
 
@@ -354,8 +439,8 @@ chronology draws, offsets and overlapping dates are not independent replication.
 {{tracking_summary}}
 
 Figure 4 omits the two burned MORA pairs from its descriptive comparison and
-retains 603 modern pairs across the displayed groups. All 137 supported Holocene
-site-dates remain. Its scatter has 589 direction-valid observations; stationary
+retains 605 modern pairs across the displayed groups. All 137 supported Holocene
+site-dates remain. Its scatter has 600 direction-valid observations; stationary
 modern compositions remain in the non-angle summaries. Quartiles and offset/draw
 spread describe variation, not inferential confidence intervals.
 
@@ -363,9 +448,13 @@ spread describe variation, not inferential confidence intervals.
 
 ### Effects of the 2026-10-07 survey-date decision
 
-The comparison below isolates the update from the preserved pre-update analysis.
-Legacy occurrences and climate, the 618-plot CCA fit, its 13 taxa, and all Holocene
-results are unchanged. Latest-visit selection removes earlier-only presence from
+The comparison below isolates the survey-date update from its preserved
+pre-update analysis. At that time, legacy occurrences and climate, the 618-plot
+CCA fit, its 13 taxa, and all Holocene results were unchanged. The subsequent
+2026-10-08 ponderosa reinstatement first refitted that model with 14 taxa and
+619 legacy plots; matched calibration then restricted fitting to 607 plots.
+These tables describe the earlier survey-date decision alone.
+Latest-visit selection removes earlier-only presence from
 seven cleaned MORA plots; one loss is a taxon already excluded during
 consolidation, so six modeled observed positions change. Modern climate changes for all 330 MORA plots and the 50 NOCA plots surveyed in
 2014. Climate elapsed time changes for 319 MORA plots and those same 50 NOCA
@@ -389,7 +478,7 @@ alignment, including movement that is less opposed to a target.
 Equal target alignment does not imply equal movement vectors. Each taxon
 comparison uses its trajectory's own origin, so starting-position differences
 can contribute to the discrepancy. Cosines are missing for movements below the
-existing 1e-8 tolerance. The stage retains all 605 modern pairs, including the
+existing 1e-8 tolerance. The stage retains all 607 modern pairs, including the
 two burned MORA plots, and 15,270 primary Holocene realizations.
 
 {{direction_support}}

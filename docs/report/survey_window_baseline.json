@@ -3,5 +3,9 @@
   "before_checkpoint": "37a888b",
   "description": "Before adult-year authority/latest visits and plot-specific six-year modern climate windows. Legacy climate 1979-1989; old modern MORA 2010-2019, NOCA 2010-2015.",
   "tracking_source_sha256": "13ea45b394bac1a2c2824c8b47063e96f86a02e931341dd9755ef9f39768839e",
-  "repeat_presence_source_sha256": "d3918242c6d6c86dd6b89e1e67dde73be33fc5f4373acbab069d819a83ce6133"
+  "repeat_presence_source_sha256": "d3918242c6d6c86dd6b89e1e67dde73be33fc5f4373acbab069d819a83ce6133",
+  "after_checkpoint": "2971ed37f5a894ae3f24186359eff51d1a99b472",
+  "after_tracking_source_sha256": "190e5e763437dbfdc294b1f2a41f65646363afcd6766348376c1977cbeacc4fa",
+  "after_metrics_sha256": "83b76be3597672c23a0f786366c4d55944b2b19978da9189b6daba2c6051906c",
+  "comparison_scope": "Fixed before/after evidence for the 2026-10-07 survey-date decision, with the then-active 13-taxon/618-plot CCA and 605 modern pairs. Later CCA refits are not included in these effects."
 }

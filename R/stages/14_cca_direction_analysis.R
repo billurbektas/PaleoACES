@@ -48,9 +48,9 @@ species_matrix = scores(cca_model, display = "species", choices = 1:2,
                         scaling = cca_scaling, hill = cca_hill)
 climate_matrix = scores(cca_model, display = "bp", choices = 1:2,
                         scaling = cca_scaling, hill = cca_hill)
-if (nrow(species_matrix) != 13L ||
+if (nrow(species_matrix) != 14L ||
     !setequal(rownames(climate_matrix), CCA_CLIMATE_VARS))
-  stop("Expected 13 retained taxa and the four configured climate arrows.")
+  stop("Expected 14 retained taxa and the four configured climate arrows.")
 
 targets = bind_rows(
   as_tibble(species_matrix[, 1:2, drop = FALSE], rownames = "target") |>
@@ -135,15 +135,15 @@ modern_fire = bind_rows(
 anth = anth |>
   mutate(plot_id = str_to_upper(plot_id)) |>
   left_join(modern_fire, by = c("site", "plot_id"))
-if (nrow(anth) != 605L || anyNA(anth$burned) ||
+if (nrow(anth) != 607L || anyNA(anth$burned) ||
     !identical(as.integer(table(anth$site)[c("MORA", "NOCA")]),
-               c(330L, 275L)))
-  stop("Anthropocene direction scope must contain all 605 fire-classified pairs.")
+               c(330L, 277L)))
+  stop("Anthropocene direction scope must contain all 607 fire-classified pairs.")
 
 anth_keys = c("site", "plot_id", "burned")
 anth_direction = build_direction_contrasts(anth, anth_keys) |>
   mutate(period = "Anthropocene", .before = site)
-if (nrow(anth_direction) != 10285L)
+if (nrow(anth_direction) != 10926L)
   stop("Unexpected Anthropocene paired direction-row count.")
 write_csv(anth_direction,
           here("output/cca_direction_anthropocene_realizations.csv"))
@@ -159,7 +159,7 @@ holo_keys = c("site", "run_id", "draw", "offset", "age_hi", "age_lo",
               "n_min", "sparse_bin")
 holo_direction = build_direction_contrasts(holo, holo_keys) |>
   mutate(period = "Holocene", .before = site)
-if (nrow(holo_direction) != 259590L)
+if (nrow(holo_direction) != 274860L)
   stop("Unexpected Holocene paired direction-row count.")
 write_csv(holo_direction,
           here("output/cca_direction_holocene_realizations.csv.gz"))
@@ -187,8 +187,8 @@ holo_by_offset = holo_direction |>
     direct_angle_median = safe_stat(direct_angle_degrees, stats::median),
     .groups = "drop"
   )
-if (nrow(holo_by_offset) != 2635L)
-  stop("Expected 2,635 Holocene paired draw-within-offset summaries.")
+if (nrow(holo_by_offset) != 2790L)
+  stop("Expected 2,790 Holocene paired draw-within-offset summaries.")
 write_csv(holo_by_offset,
           here("output/cca_direction_holocene_by_offset.csv.gz"))
 
@@ -230,10 +230,10 @@ fire_grid = read_csv(input_paths[6], show_col_types = FALSE) |>
 holo_timeseries = holo_timeseries_all |>
   inner_join(era_grid, by = "t") |>
   left_join(fire_grid, by = c("site", "t"))
-if (nrow(holo_timeseries) != 2329L || anyNA(holo_timeseries$high_fire) ||
+if (nrow(holo_timeseries) != 2466L || anyNA(holo_timeseries$high_fire) ||
     !setequal(holo_timeseries$climate_state,
               c("climate change", "relative stability")))
-  stop("Expected 2,329 completely classified Holocene site-date contrasts.")
+  stop("Expected 2,466 completely classified Holocene site-date contrasts.")
 write_csv(holo_timeseries,
           here("output/cca_direction_holocene_timeseries.csv"))
 
@@ -295,8 +295,8 @@ holo_group = holo_timeseries |>
 
 group_summaries = bind_rows(anth_group, holo_group) |>
   arrange(period, site, climate_state, high_fire, burned, target_type, target)
-if (nrow(group_summaries) != 204L)
-  stop("Expected 204 descriptive group-summary rows.")
+if (nrow(group_summaries) != 216L)
+  stop("Expected 216 descriptive group-summary rows.")
 write_csv(group_summaries,
           here("output/cca_direction_group_summaries.csv"))
 legacy_ranking = here("output/cca_direction_group_rankings.csv")

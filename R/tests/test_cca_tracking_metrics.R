@@ -154,8 +154,8 @@ timeseries = read_csv(paths[6], show_col_types = FALSE)
 
 stopifnot(setequal(scaling$variable, CCA_CLIMATE_VARS),
           all(scaling$sd > 0),
-          nrow(anth) == 605L,
-          all(table(anth$site)[c("MORA", "NOCA")] == c(330L, 275L)),
+          nrow(anth) == 607L,
+          all(table(anth$site)[c("MORA", "NOCA")] == c(330L, 277L)),
           !anyDuplicated(anth$plot_id),
           !anyNA(anth$vegetation_t2_year),
           identical(range(anth$vegetation_t2_year[anth$site == "MORA"]),
@@ -259,22 +259,34 @@ stopifnot(identical(date_coverage, expected_coverage))
 source(here("R/stages/05_cca_model.R"), local = TRUE)
 expected_scaling = make_climate_scaling(env_past_final, CCA_CLIMATE_VARS)
 stopifnot(identical(cca_scaling, "sites"), !cca_hill,
-          nrow(species_past_final) == 618L,
-          ncol(species_past_final) == 13L,
+          nrow(species_past_final) == 607L,
+          ncol(species_past_final) == 14L,
           near(scaling$mean, expected_scaling$mean),
           near(scaling$sd, expected_scaling$sd))
 
 # One shared membership mask BEFORE predictions: both dates and both score types.
 stopifnot(setequal(present_pairs, anth$plot_id),
+          identical(species_past_final, species_past_paired),
+          identical(env_past_final, env_past_paired),
+          identical(rownames(species_past_final), rownames(species_present_final)),
+          identical(rownames(cca_model$CCA$u), present_pairs),
+          identical(cca_pair_eligibility$calibration_included,
+                    cca_pair_eligibility$comparison_included),
+          sum(cca_sample_eligibility$calibration_included) == 607L,
           identical(rownames(species_past_paired), rownames(species_present_final)),
           identical(rownames(env_past_paired), rownames(env_present_final)),
           identical(rownames(projected_present), rownames(predicted_present)),
           identical(rownames(projected_paleo), rownames(predicted_paleo)),
           all(is.finite(projected_present)), all(is.finite(predicted_present)),
           all(is.finite(projected_paleo)), all(is.finite(predicted_paleo)),
-          nrow(species_past_paired) == 605L, nrow(species_paleo) == 907L,
+          nrow(species_past_paired) == 607L, nrow(species_paleo) == 907L,
           all(cca_eligibility_counts$input_units ==
                 cca_eligibility_counts$excluded_units + cca_eligibility_counts$included_units))
+legacy_only = cca_pair_eligibility %>% filter(legacy_eligible, !resurvey_eligible)
+stopifnot(nrow(legacy_only) == 12L,
+          !any(legacy_only$plot_id %in% rownames(species_past_final)),
+          sum(legacy_only$reason_code == "no_recorded_taxa") == 9L,
+          sum(legacy_only$reason_code == "species_selection") == 3L)
 for (i in seq_len(nrow(cca_eligibility_counts))) {
   row = cca_eligibility_counts[i, ]
   excluded = cca_exclusion_summary %>%
@@ -284,6 +296,35 @@ for (i in seq_len(nrow(cca_eligibility_counts))) {
 # Independently reconcile recorded absence from the cleaned CSV, and paired
 # eligibility from retained-species presence sets (not the classification code).
 cleaned_noca = read_csv(here("output/NOCA_occ.csv"), show_col_types = FALSE)
+# Ponderosa reinstatement: preserve the received occurrence records and let the
+# normal frequency rule retain the species. Reconcile keys without the cleaner.
+ponderosa_input = bind_rows(
+  read_csv(here("output/MORA_occ.csv"), show_col_types = FALSE) %>% mutate(site = "MORA"),
+  cleaned_noca %>% mutate(site = "NOCA")
+) %>% filter(species == "Pinus ponderosa") %>%
+  select(site, period, plot_id, species, occurrence) %>% arrange(site, period, plot_id)
+ponderosa_consolidated = read_csv(here("output/occ_consolidated.csv"), show_col_types = FALSE) %>%
+  filter(species == "Pinus ponderosa") %>%
+  select(site, period, plot_id, species, occurrence) %>% arrange(site, period, plot_id)
+stopifnot(identical(ponderosa_input, ponderosa_consolidated),
+          "Pinus ponderosa" %in% keep_species,
+          max(table(ponderosa_input$site[ponderosa_input$occurrence == 1],
+                    ponderosa_input$period[ponderosa_input$occurrence == 1])) >= count.thr,
+          "STE2044" %in% rownames(species_past_final),
+          all(c("STE2044", "HB2064") %in% present_pairs),
+          all(species_paleo[, "Pinus ponderosa"] == 0))
+# The earlier survey-date effects retain their dated 13-taxon evidence rather
+# than comparing that old ordination with the refitted ponderosa coordinates.
+dated_before = read_csv(here("docs/report/survey_window_baseline.csv"), show_col_types = FALSE)
+dated_after = read_csv(here("docs/report/survey_window_after.csv"), show_col_types = FALSE)
+dated_effects = read_csv(here("output/survey_window_plot_effects.csv"), show_col_types = FALSE)
+stopifnot(setequal(dated_before$plot_id, dated_after$plot_id),
+          setequal(dated_effects$plot_id, dated_after$plot_id),
+          !any(c("STE2044", "HB2064") %in% dated_effects$plot_id))
+for (metric in c("change_in_lag", "observed_vegetation_displacement", "MSpT_2")) {
+  stopifnot(near(dated_effects[[paste0(metric, "_after")]],
+                dated_after[[metric]][match(dated_effects$plot_id, dated_after$plot_id)]))
+}
 consolidated_noca = read_csv(here("output/occ_consolidated.csv"), show_col_types = FALSE) %>%
   filter(site == "NOCA", occurrence == 1, species %in% keep_species)
 ids_at = function(period_name) unique(consolidated_noca$plot_id[
@@ -298,6 +339,6 @@ stopifnot(length(empty_at_legacy) == 6L,
             cca_sample_eligibility$site == "NOCA" & cca_sample_eligibility$period == "past" &
             cca_sample_eligibility$reason_code == "no_recorded_taxa"]))
 
-cat("CCA tracking metric tests passed: synthetic formulas, 605 plots, ",
+cat("CCA tracking metric tests passed: synthetic formulas, 607 plots, ",
     format(nrow(holo), big.mark = ","), " Holocene realizations, draw-first summaries, ",
     "and fixed model/scaling.\n", sep = "")

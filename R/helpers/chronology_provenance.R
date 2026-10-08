@@ -1,5 +1,5 @@
 # Resolve historical chronology hashes only for the exact recorded substitutions
-# (relocated paths and the authorized figure-caption correction).
+# (relocated paths and authorized figure-caption and typography changes).
 # Any other source edit uses the physical file identity and invalidates old caches.
 chronology_source_identity = function(path, actual_path = here::here(path)) {
   physical_md5 = unname(tools::md5sum(actual_path))

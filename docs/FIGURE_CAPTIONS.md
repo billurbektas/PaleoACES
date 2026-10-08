@@ -9,7 +9,7 @@ separate from the publication-ready captions.
 **Method summary.** Adjacent 1,000-year changes in spring temperature, winter
 temperature, summer precipitation, and winter precipitation were evaluated at
 ten 100-year phases and standardized by the corresponding standard deviations
-among the 618 legacy CCA calibration plots. The three MORA lake trajectories
+among the 607 matched legacy CCA calibration plots. The three MORA lake trajectories
 were averaged before MORA and NOCA received equal regional weight. A variable
 qualified when its absolute median regional change reached 50% of its maximum
 and at least eight phases supported its direction; any qualifying variable
@@ -48,12 +48,12 @@ high fire. Ages are calibrated years before present (cal BP; present = 1950).
 ## Figure 3 — Observed and climate-predicted CCA trajectories
 
 **Method summary.** A common canonical correspondence analysis (CCA) was fit to
-13 retained taxa and four seasonal climate constraints in 618 legacy plots.
+14 retained taxa and four seasonal climate constraints in 607 matched legacy plots.
 Observed communities were represented by weighted-average (WA) scores and
 climate-predicted communities by linear-combination (LC) scores in the unchanged
 CCA1–CCA2, scaling-1 (`scaling = "sites"`), Hill-off geometry. Holocene positions
 are MORA and NOCA centroids within each frozen CC1–S4 era; Anthropocene positions
-are site means of the same 330 MORA and 275 NOCA valid paired plots at both
+are site means of the same 330 MORA and 277 NOCA valid paired plots at both
 legacy and resurvey dates, for both WA and LC. MORA uses the latest adult
 visit and its matching seedlings; modern climate uses Y−5 through Y for
 each selected adult survey year Y. All-zero retained-taxon rows are
@@ -70,7 +70,7 @@ community trajectories in the common CCA space. **A.** Observed WA and
 climate-predicted LC trajectories for MORA and NOCA. Holocene paths connect
 site-level centroids chronologically from CC1 through S4; Anthropocene arrows
 connect legacy and resurvey means from identical valid pairs at both dates
-(330 MORA, 275 NOCA). Predicted paths and annotations are
+(330 MORA, 277 NOCA). Predicted paths and annotations are
 shown with reduced opacity. The grey points are legacy calibration plots; the
 panel is cropped to the trajectories; calibration plots outside
 the displayed extent remain in the model. **B.** CCA biplot showing the
@@ -79,7 +79,7 @@ shown only for species vectors at least 25% as long as the longest species
 vector. **C.** Unique marginal effect of each climate constraint, expressed as a
 percentage of total constrained inertia. These values are not additive because
 the constraints share explanatory variation. **D.** Taxon-specific partition
-of constrained inertia; shading indicates occurrence in the 618 calibration
+of constrained inertia; shading indicates occurrence in the 607 calibration
 plots.
 
 ## Figure 4 — Community tracking comparison
@@ -108,17 +108,17 @@ physical widths and show descriptive distributions; annotations report medians
 and valid sample sizes. Neutral and red outlines distinguish no-fire/unburned
 and high-fire/burned groups. The two burned MORA plot pairs are excluded from
 this comparison and retained in its scope audit. **D.** Tracking ratio versus
-turnover angle for all 589 direction-valid observations. Circles and triangles
+turnover angle for all 600 direction-valid observations. Circles and triangles
 identify MORA and NOCA, red outlines identify fire evidence, and fill represents
 signed lag. Labelled points are macro-era, climate/fire, and NOCA burn-status
-medians. Reference lines mark a tracking ratio of 1 and an angle of 90°. The 151
+medians. Reference lines mark a tracking ratio of 1 and an angle of 90°. The 142
 Anthropocene plots with stationary observed composition have undefined angles
 and are reported separately in the panel.
 
 ## Figure 5 — Target-alignment discrepancies
 
 **Method summary.** For every plot pair and Holocene age-draw × offset × interval
-realization, predicted and observed movements were compared separately with 13
+realization, predicted and observed movements were compared separately with 14
 taxon directions and four unscaled climate biplot arrows. For each taxon, the
 predicted cosine uses the vector from the initial LC position to the fixed taxon
 score, whereas the observed cosine uses the vector from the initial WA position
@@ -137,7 +137,7 @@ units were grouped by site and burned status.
 **Publication-ready caption.** Figure 5. Differences between predicted and
 observed community-change alignment with climate and taxon directions.
 **A.** Median target-alignment discrepancies for the four CCA climate vectors.
-**B.** Median target-alignment discrepancies for the 13 retained taxa. Columns
+**B.** Median target-alignment discrepancies for the 14 retained taxa. Columns
 show Holocene climate change and climate stability with or without high-fire
 evidence, followed by burned and unburned Anthropocene plots; MORA and NOCA are
 shown in separate facets. Red group text identifies high-fire or burned groups.

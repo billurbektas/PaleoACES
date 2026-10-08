@@ -21,7 +21,9 @@ report_record = function(state, producer, started, paths = NULL) {
       unlist(lapply(registry$main_figures, function(x)
         if (x$producer == producer) paste0("plot/", x$stem, c(".pdf", ".png")))),
       unlist(lapply(registry$tables, function(x)
-        if (x$producer == producer && basename(x$source) != "bacon_run_manifest.csv") x$source)))
+        if (x$producer == producer && basename(x$source) != "bacon_run_manifest.csv") x$source)),
+      unlist(lapply(registry$text_outputs, function(x)
+        if (x$producer == producer) x$source)))
   }
   for (path in unique(paths)) {
     absolute = here::here(path)
@@ -34,8 +36,103 @@ report_record = function(state, producer, started, paths = NULL) {
   }
   state
 }
+report_cca_details = function(e, permutations = 9999L, seed = 20261008L) {
+  # Reporting inference reads the existing fit. Preserve the caller's RNG state.
+  rng_kind = RNGkind()
+  had_seed = exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)
+  if (had_seed) rng_seed = get(".Random.seed", envir = .GlobalEnv, inherits = FALSE)
+  on.exit({
+    do.call(RNGkind, as.list(rng_kind))
+    if (had_seed) assign(".Random.seed", rng_seed, envir = .GlobalEnv) else
+      if (exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE))
+        rm(".Random.seed", envir = .GlobalEnv)
+  }, add = TRUE)
+  fit = e$cca_model
+  write = function(x, name) readr::write_csv(x, here::here("output/report", paste0(name, ".csv")))
+  stopifnot(identical(rownames(e$species_past_final), rownames(e$env_past_final)))
+  legacy = e$cca_sample_eligibility |>
+    dplyr::filter(period == "past", calibration_included)
+  sites = factor(legacy$site[match(rownames(e$species_past_final), legacy$plot_id)])
+  stopifnot(!anyNA(sites), !anyDuplicated(legacy$plot_id),
+    length(sites) == nrow(e$species_past_final))
+  RNGkind("Mersenne-Twister", "Inversion", "Rejection")
+  set.seed(seed)
+  designs = list(
+    Unrestricted = permute::shuffleSet(length(sites), nset = permutations,
+      control = permute::how(nperm = permutations)),
+    `Within parks` = permute::shuffleSet(length(sites), nset = permutations,
+      control = permute::how(nperm = permutations, blocks = sites)))
+  tests = list(); printed = character()
+  for (design in names(designs)) {
+    if (design == "Within parks") stopifnot(all(vapply(seq_len(permutations),
+      function(i) identical(sites[designs[[design]][i, ]], sites), logical(1))))
+    for (test in c("Overall", "Axis", "Climate variable")) {
+      cat("CCA report: ", design, ", ", test, " (", permutations, " permutations).\n", sep = "")
+      by = switch(test, Overall = NULL, Axis = "axis", `Climate variable` = "margin")
+      a = stats::anova(fit, by = by, permutations = designs[[design]],
+        model = "reduced", cutoff = 1, parallel = 1)
+      tests[[length(tests) + 1L]] = data.frame(design, test, component = rownames(a),
+        df = a$Df, inertia = a$ChiSquare, pseudo_F = a$F, p_value = a$`Pr(>F)`,
+        permutations, seed, vegan_version = as.character(utils::packageVersion("vegan")))
+      printed = c(printed, paste(design, "—", test), capture.output(print(a)), "")
+    }
+  }
+  anova_results = dplyr::bind_rows(tests)
+  write(anova_results, "cca_anova_full")
+  valid = anova_results |> dplyr::filter(!is.na(p_value))
+  overview = valid |> dplyr::filter(design == "Unrestricted", test != "Climate variable") |>
+    dplyr::select(test, component, df, inertia, pseudo_F, p_unrestricted = p_value) |>
+    dplyr::left_join(valid |> dplyr::filter(design == "Within parks") |>
+      dplyr::select(test, component, p_within_parks = p_value), by = c("test", "component"))
+  write(overview, "cca_anova")
+  total = fit$CCA$tot.chi
+  sp = vegan::inertcomp(fit, display = "species")
+  species_scores = vegan::scores(fit, display = "species", choices = 1:2,
+    scaling = e$cca_scaling, hill = e$cca_hill)
+  species = data.frame(species = rownames(sp),
+    legacy_plots = as.numeric(colSums(e$species_past_final)[rownames(sp)]),
+    constrained_inertia = sp[, "CCA"], percent_constrained_inertia = 100 * sp[, "CCA"] / total,
+    CCA1 = species_scores[rownames(sp), 1], CCA2 = species_scores[rownames(sp), 2]) |>
+    dplyr::mutate(prevalence_percent = 100 * legacy_plots / nrow(e$species_past_final)) |>
+    dplyr::arrange(dplyr::desc(percent_constrained_inertia))
+  stopifnot(abs(sum(species$constrained_inertia) - total) < 1e-12)
+  write(species, "cca_species_contributions")
+  bp = vegan::scores(fit, display = "bp", choices = 1:2,
+    scaling = e$cca_scaling, hill = e$cca_hill)
+  vif = vegan::vif.cca(fit)
+  climate = valid |> dplyr::filter(design == "Unrestricted", test == "Climate variable") |>
+    dplyr::transmute(variable = component,
+      variable_label = unname(e$CLIMATE_VARIABLE_LABELS[variable]), df,
+      marginal_inertia = inertia, unique_percent_constrained = 100 * inertia / total,
+      pseudo_F, p_unrestricted = p_value) |>
+    dplyr::left_join(valid |> dplyr::filter(design == "Within parks", test == "Climate variable") |>
+      dplyr::select(variable = component, p_within_parks = p_value), by = "variable") |>
+    dplyr::mutate(VIF = unname(vif[variable]), CCA1 = bp[variable, 1], CCA2 = bp[variable, 2])
+  stopifnot(nrow(climate) == length(e$CCA_VARIABLES), !anyNA(climate))
+  write(climate, "cca_climate_contributions")
+
+  # Copy the fitting/projection statements from the active script verbatim.
+  source = readLines(here::here("R/stages/05_cca_model.R"), warn = FALSE)
+  extract = function(start, lines = 1L) {
+    pos = which(startsWith(source, start))
+    if (length(pos) != 1L) stop("Cannot identify CCA code statement: ", start)
+    source[seq.int(pos, length.out = lines)]
+  }
+  value = function(x) paste(capture.output(dput(x)), collapse = "")
+  code = c("# Current settings; presence and climate tables are prepared above in 05_cca_model.R.",
+    paste0("CCA_VARIABLES = ", value(e$CCA_VARIABLES)),
+    paste0("cca_scaling = ", value(e$cca_scaling)), paste0("cca_hill = ", value(e$cca_hill)),
+    "", "# Matched legacy observations used to calibrate the CCA.",
+    extract("species_past_final = "), extract("env_past_final = "), "",
+    extract("cca_formula = "), extract("cca_model = "), "",
+    "# Resurvey positions: climate-predicted (LC) and observed (WA).",
+    extract("predicted_present = "), extract("projected_present = ", 2L))
+  writeLines(code, here::here("output/report/cca_model_code.R"))
+  writeLines(capture.output(print(fit)), here::here("output/report/cca_model_output.txt"))
+  writeLines(printed, here::here("output/report/cca_anova_output.txt"))
+}
 report_export_cca = function(model_env) {
-  # Only read the current fit and its prepared tables; no alternate fit/inference.
+  # Read the current fit and its prepared tables; no alternate calibration.
   e = model_env
   write = function(x, name) readr::write_csv(x, here::here("output/report", paste0(name, ".csv")))
   write(data.frame(field = c("calibration_plots", "retained_species", "count_threshold", "scaling", "hill", "constraints", "total_inertia", "constrained_inertia", "constrained_percent", "projection_candidates", "positioned_samples"),
@@ -79,6 +176,7 @@ report_export_cca = function(model_env) {
   })
   x = readr::read_csv(here::here("output/occ_consolidated.csv"), show_col_types = FALSE)
   write(dplyr::bind_rows(cleaning, data.frame(source = "consolidated", rows = nrow(x), plot_or_sample_ids = dplyr::n_distinct(x$plot_id), taxa = dplyr::n_distinct(x$species))), "cleaning_summary")
+  report_cca_details(e)
 }
 report_redraw_chronology = function() {
   gate = function() sys.source(here::here("R/tests/test_bacon_provenance.R"), envir = new.env(parent = globalenv()))

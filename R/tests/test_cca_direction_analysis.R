@@ -49,18 +49,18 @@ timeseries = read_csv(paths[4], show_col_types = FALSE)
 summaries = read_csv(paths[5], show_col_types = FALSE)
 scope = read_csv(paths[6], show_col_types = FALSE)
 
-expected_targets = c("taxon" = 13L, "climate" = 4L)
+expected_targets = c("taxon" = 14L, "climate" = 4L)
 stopifnot(
-  nrow(anth) == 10285L,
-  nrow(holo) == 259590L,
-  nrow(by_offset) == 2635L,
-  nrow(timeseries) == 2329L,
-  nrow(summaries) == 204L,
+  nrow(anth) == 10926L,
+  nrow(holo) == 274860L,
+  nrow(by_offset) == 2790L,
+  nrow(timeseries) == 2466L,
+  nrow(summaries) == 216L,
   identical(as.integer(table(anth$target_type)[names(expected_targets)] /
-                         605L), unname(expected_targets)),
+                         607L), unname(expected_targets)),
   identical(as.integer(table(holo$target_type)[names(expected_targets)] /
                          15270L), unname(expected_targets)),
-  n_distinct(anth$plot_id) == 605L,
+  n_distinct(anth$plot_id) == 607L,
   n_distinct(holo$run_id) == 1000L
 )
 
@@ -100,18 +100,18 @@ stopifnot(
   all(holo$direct_angle_degrees[is.finite(holo$direct_angle_degrees)] <= 180)
 )
 
-# The 151 unchanged modern assemblages have undefined observed direction but
+# The 142 unchanged modern assemblages have undefined observed direction but
 # retain every independently valid predicted association.
 stationary = anth |>
   filter(observed_small_movement) |>
   distinct(site, plot_id)
-stopifnot(nrow(stationary) == 151L,
+stopifnot(nrow(stationary) == 142L,
           !any(holo$observed_small_movement),
           !any(holo$predicted_small_movement),
           !any(anth$predicted_small_movement))
 predicted_stationary = anth |>
   semi_join(stationary, by = c("site", "plot_id"))
-stopifnot(nrow(predicted_stationary) == 151L * 17L,
+stopifnot(nrow(predicted_stationary) == 142L * 18L,
           all(predicted_stationary$predicted_association_valid),
           !any(predicted_stationary$observed_association_valid),
           !any(predicted_stationary$contrast_valid),
@@ -125,8 +125,8 @@ expected_anth_support = tribble(
   ~site, ~burned, ~n,
   "MORA", FALSE, 328L,
   "MORA", TRUE,    2L,
-  "NOCA", FALSE, 252L,
-  "NOCA", TRUE,   23L)
+  "NOCA", FALSE, 253L,
+  "NOCA", TRUE,   24L)
 stopifnot(identical(anth_support, expected_anth_support))
 
 holo_support = timeseries |>

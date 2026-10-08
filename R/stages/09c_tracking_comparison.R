@@ -35,7 +35,7 @@ NO_FIRE = PAPER_NO_FIRE
 site_shapes = PAPER_SITE_SHAPES
 raw_all = points |>
   filter(point_class %in% c("holocene_site_interval", "anthropocene_plot"))
-if (nrow(raw_all) != 742L) stop("Expected 137 Holocene and 605 Anthropocene rows.")
+if (nrow(raw_all) != 744L) stop("Expected 137 Holocene and 607 Anthropocene rows.")
 
 modern_fire = bind_rows(
   read_csv(fire_paths[["MORA"]], show_col_types = FALSE) |>
@@ -46,15 +46,15 @@ modern_all = raw_all |>
   filter(point_class == "anthropocene_plot") |>
   mutate(plot_id = str_to_upper(plot_id)) |>
   left_join(modern_fire, by = c("site", "plot_id"))
-if (nrow(modern_all) != 605L || anyNA(modern_all$burnt))
+if (nrow(modern_all) != 607L || anyNA(modern_all$burnt))
   stop("Every Anthropocene plot must have one fire assignment.")
 modern = modern_all |>
   mutate(included = !(site == "MORA" & burnt),
     fire_status = if_else(burnt, "Burned", "Unburned")) |>
   filter(included)
-if (nrow(modern) != 603L ||
+if (nrow(modern) != 605L ||
     sum(modern_all$site == "MORA" & modern_all$burnt) != 2L ||
-    sum(modern$site == "NOCA" & modern$burnt) != 23L)
+    sum(modern$site == "NOCA" & modern$burnt) != 24L)
   stop("Unexpected Anthropocene fire groups.")
 write_csv(modern_all |>
     transmute(site, plot_id, burnt, included = !(site == "MORA" & burnt),

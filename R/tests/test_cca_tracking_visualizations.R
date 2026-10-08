@@ -27,7 +27,7 @@ fire = read_csv(data_paths[8], show_col_types = FALSE)
 dates = timeseries |> distinct(site, t) |> count(site, name = "n")
 stopifnot(identical(dates,
   tibble(site = c("MORA", "NOCA"), n = c(54L, 83L))),
-  all(timeseries$n_offsets == 10L), nrow(anth) == 605L)
+  all(timeseries$n_offsets == 10L), nrow(anth) == 607L)
 
 holo = points |> filter(point_class == "holocene_site_interval") |>
   left_join(fire |> select(site, t = cal_bp, high_fire), by = c("site", "t")) |>
@@ -46,10 +46,10 @@ modern = modern_all |> filter(included) |>
 raw = bind_rows(holo, modern)
 
 stopifnot(nrow(holo) == 137L, !anyNA(holo$high_fire),
-  nrow(modern_all) == 605L, nrow(modern) == 603L,
+  nrow(modern_all) == 607L, nrow(modern) == 605L,
   sum(!scope$included) == 2L,
   setequal(scope$plot_id[!scope$included], c("JAME-295", "OHAN-013")),
-  sum(modern$site == "NOCA" & modern$burnt) == 23L)
+  sum(modern$site == "NOCA" & modern$burnt) == 24L)
 
 state_counts = holo |> count(site, climate_state, fire_class) |>
   arrange(site, climate_state, fire_class)
@@ -107,9 +107,9 @@ for (nm in c("median", "q25", "q75", "whisker_low", "whisker_high"))
                      cmp[[paste0(nm, "_recorded")]])))
 
 stationary = modern |> filter(observed_vegetation_displacement <= 1e-8)
-stopifnot(nrow(stationary) == 151L, all(is.na(stationary$angle_degrees)),
+stopifnot(nrow(stationary) == 142L, all(is.na(stationary$angle_degrees)),
   identical(stationary |> count(site),
-    tibble(site = c("MORA", "NOCA"), n = c(76L, 75L))))
+    tibble(site = c("MORA", "NOCA"), n = c(76L, 66L))))
 background = raw |> filter(is.finite(angle_degrees),
                             is.finite(rate_tracking_ratio))
 box_spec = filter(spec, record_type == "box")
@@ -129,10 +129,10 @@ stopifnot(nrow(box_spec) == 6L,
   scatter_spec$panel == "D",
   scatter_spec$x_reference == 90, scatter_spec$y_reference == 1,
   scatter_spec$n_background == nrow(background),
-  scatter_spec$n_background == 589L,
+  scatter_spec$n_background == 600L,
   scatter_spec$n_macro == 4L, scatter_spec$n_detail == 8L,
   scatter_spec$n_noca_fire == 2L,
-  scatter_spec$n_stationary_angle_undefined == 151L,
+  scatter_spec$n_stationary_angle_undefined == 142L,
   scatter_spec$metric == "angle_degrees x rate_tracking_ratio",
   scatter_spec$grouping_contract ==
     "site=shape;lag=fill;fire=categorical outline;era=label",

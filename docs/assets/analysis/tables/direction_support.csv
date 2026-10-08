@@ -1,8 +1,8 @@
 period,site,climate_state,fire,n_units,valid_min,valid_max
 Anthropocene,MORA,NA,FALSE,328,250,252
 Anthropocene,MORA,NA,TRUE,2,2,2
-Anthropocene,NOCA,NA,FALSE,252,177,188
-Anthropocene,NOCA,NA,TRUE,23,11,12
+Anthropocene,NOCA,NA,FALSE,253,185,194
+Anthropocene,NOCA,NA,TRUE,24,16,17
 Holocene,MORA,climate change,FALSE,7,7,7
 Holocene,MORA,climate change,TRUE,8,8,8
 Holocene,MORA,relative stability,FALSE,31,31,31

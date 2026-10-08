@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "date": "2026-10-05",
-  "purpose": "Exact recorded path substitutions and the authorized figure-caption correction for historical chronology hashes and cached age-draw dependencies. Scientific edits must invalidate equivalence.",
+  "purpose": "Exact recorded path substitutions and authorized figure-caption and typography changes for historical chronology hashes and cached age-draw dependencies. Scientific edits must invalidate equivalence.",
   "files": [
     {
       "original_path": "R/000_PALEO_a_agedepth.R",
@@ -45,9 +45,16 @@
           "role": "figure-caption-only",
           "authorized_on": "2026-10-06",
           "evidence": "docs/review/PB210_STORED_SENSITIVITY_COMPARISON.csv"
+        },
+        {
+          "old": "  png(f, width = 1500, height = 1750, res = 190); agedepth(set = set, BCAD = FALSE); dev.off()",
+          "new": "  # Larger text remains readable when the four panels are shown together.\n  png(f, width = 1500, height = 1750, res = 190)\n  par(cex.lab = 1.6)\n  agedepth(set = set, BCAD = FALSE,\n           mainpanel.tickfontsize = 1.8, mainpanel.labelfontsize = 2,\n           toppanel.fontsize = 1.5, prior.fontsize = 1.6, title.size = 2.6,\n           mar.main = c(4.8, 5, 1, 1), mar.left = c(4.5, 5, 1, 0.8),\n           mar.middle = c(4.5, 1.1, 1, 1.8), mar.right = c(4.5, 1.8, 1, 1.1),\n           mgp = c(2.8, 0.9, 0))\n  dev.off()",
+          "role": "figure-typography-only",
+          "authorized_on": "2026-10-07",
+          "evidence": "User requested significantly larger fonts in the Bacon age-depth figure; only plotting text sizes and margins change."
         }
       ],
-      "relocated_sha256": "90bf42324e5123611cb5f490daed379948000b2f921a4d380ece1d156ee5d2cb"
+      "relocated_sha256": "d2b794e995e41f09c304f9535912de47c5c0718a464f5606a4c50de9e05e708c"
     },
     {
       "original_path": "R/bacon_settings.R",

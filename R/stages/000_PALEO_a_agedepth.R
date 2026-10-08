@@ -487,7 +487,16 @@ render_panel = function(core, outdir) {
           file.path(set$coredir, core, paste0(core, "_", set$K, ".out")), set)
   assign("info", set, envir = .GlobalEnv)
   f = file.path(outdir, paste0(core, ".png"))
-  png(f, width = 1500, height = 1750, res = 190); agedepth(set = set, BCAD = FALSE); dev.off()
+  # Larger text remains readable when the four panels are shown together.
+  png(f, width = 1500, height = 1750, res = 190)
+  par(cex.lab = 1.6)
+  agedepth(set = set, BCAD = FALSE,
+           mainpanel.tickfontsize = 1.8, mainpanel.labelfontsize = 2,
+           toppanel.fontsize = 1.5, prior.fontsize = 1.6, title.size = 2.6,
+           mar.main = c(4.8, 5, 1, 1), mar.left = c(4.5, 5, 1, 0.8),
+           mar.middle = c(4.5, 1.1, 1, 1.8), mar.right = c(4.5, 1.8, 1, 1.1),
+           mgp = c(2.8, 0.9, 0))
+  dev.off()
   cat("rendered", core, " (K =", set$K, ",", nrow(set$output), "iterations)\n")
   f
 }

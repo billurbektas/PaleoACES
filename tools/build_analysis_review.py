@@ -71,6 +71,9 @@ COLUMNS = {
  'cleaning_summary': [('source','Prepared input'),('rows','Rows'),('plot_or_sample_ids','Plot/sample IDs'),('taxa','Taxa')],
  'cca_summary': [('field','Fitted model quantity'),('value','Value')],
  'cca_axes': [('axis','Axis'),('eigenvalue','Eigenvalue'),('percent_total_inertia','% total inertia'),('percent_constrained_inertia','% constrained inertia')],
+ 'cca_anova': [('component','Model / axis'),('df','df'),('pseudo_F','Pseudo-F'),('p_unrestricted','p: unrestricted'),('p_within_parks','p: within parks')],
+ 'cca_species_contributions': [('species','Species'),('legacy_plots','Legacy plots'),('percent_constrained_inertia','% climate-explained inertia'),('CCA1','CCA1 score'),('CCA2','CCA2 score')],
+ 'cca_climate_contributions': [('variable_label','Climate variable'),('unique_percent_constrained','Unique % climate-explained inertia'),('VIF','VIF'),('pseudo_F','Pseudo-F'),('p_unrestricted','p: unrestricted'),('p_within_parks','p: within parks')],
  'cca_counts': [('site','Site'),('period','Period'),('input_samples','Prepared climate samples'),('calibration_samples','Calibrated'),('positioned_samples','Positioned projection')],
  'cca_eligibility_counts': [('era','Era'),('site','Site'),('use','Use'),('input_units','Prepared plots/samples'),('excluded_units','Excluded'),('included_units','Included')],
  'cca_exclusion_summary': [('era','Era'),('site','Site'),('use','Use'),('exclusion_period','Excluded at'),('reason','Reason'),('excluded_units','Count')],
@@ -161,6 +164,33 @@ def validate(root=ROOT):
     fitted = {r['field']: r['value'] for r in rows(root/ASSETS/'tables/cca_summary.csv')}
     if fitted.get('constraints') != 'MSpT;MWT;SP;WP':
         raise ValueError('Report is missing the current fitted CCA constraints.')
+    species = rows(root/ASSETS/'tables/cca_species_contributions.csv')
+    climate = rows(root/ASSETS/'tables/cca_climate_contributions.csv')
+    anova = rows(root/ASSETS/'tables/cca_anova_full.csv')
+    if len(species) != int(fitted['retained_species']) or len({r['species'] for r in species}) != len(species):
+        raise ValueError('CCA species contributions do not match the fitted taxa.')
+    if abs(sum(float(r['percent_constrained_inertia']) for r in species)-100) > 1e-8:
+        raise ValueError('CCA species contributions do not sum to 100%.')
+    constrained = float(fitted['constrained_inertia'])
+    if abs(sum(float(r['constrained_inertia']) for r in species)-constrained) > 1e-10:
+        raise ValueError('CCA species inertia does not reconcile with the model.')
+    if {r['variable'] for r in climate} != set(fitted['constraints'].split(';')) or len(climate) != 4:
+        raise ValueError('CCA climate contribution table omits a fitted constraint.')
+    for r in climate:
+        if abs(float(r['unique_percent_constrained'])-100*float(r['marginal_inertia'])/constrained) > 1e-8:
+            raise ValueError('CCA climate contribution uses the wrong denominator.')
+    axes = {r['axis']:float(r['eigenvalue']) for r in rows(root/ASSETS/'tables/cca_axes.csv')}
+    for design in ['Unrestricted', 'Within parks']:
+        valid = [r for r in anova if r['design']==design and r['p_value']!='NA']
+        if len(valid) != 1+len(axes)+len(climate): raise ValueError('Incomplete CCA permutation tests: '+design)
+        for r in valid:
+            if int(r['permutations']) != 9999 or int(r['seed']) != 20261008 or not 0 < float(r['p_value']) <= 1:
+                raise ValueError('Unexpected CCA permutation settings/results.')
+            expected = constrained if r['test']=='Overall' else axes.get(r['component']) if r['test']=='Axis' else None
+            if expected is not None and abs(float(r['inertia'])-expected) > 1e-10:
+                raise ValueError('CCA permutation output differs from the fitted inertia.')
+    if not (text.index('### CCA model, contributions and tests') < text.index('### Figure 3.')):
+        raise ValueError('CCA model details must precede the main CCA figure.')
     eligibility = rows(root/ASSETS/'tables/cca_eligibility_counts.csv')
     exclusions = rows(root/ASSETS/'tables/cca_exclusion_summary.csv')
     for r in eligibility:
@@ -174,13 +204,17 @@ def validate(root=ROOT):
     true = lambda x: x.upper() == 'TRUE'
     for site in sorted({x['site'] for x in pairs}):
         valid = {x['plot_id'] for x in pairs if x['site'] == site and true(x['comparison_included'])}
+        calibrated = {x['plot_id'] for x in pairs if x['site'] == site and true(x['calibration_included'])}
+        calibrated_samples = {x['plot_id'] for x in samples if x['site'] == site and x['period'] == 'past' and true(x['calibration_included'])}
+        if calibrated != valid or calibrated_samples != valid:
+            raise ValueError('CCA calibration does not use exactly the matched plots: '+site)
         for period in ['past', 'present']:
             ids = {x['plot_id'] for x in samples if x['site'] == site and x['period'] == period and true(x['comparison_included'])}
             if ids != valid: raise ValueError('Unbalanced modern CCA membership: '+site+' '+period)
         centroids = [x for x in rows(root/ASSETS/'tables/modern_centroids.csv') if x['site'] == site]
         if len(centroids) != 2 or {x['t'] for x in centroids} != {'legacy','resurvey'} or any(int(x['n']) != len(valid) for x in centroids):
             raise ValueError('Figure 3 does not use the valid paired CCA set: '+site)
-    if '## CCA sample eligibility and exclusions' not in text or 'Loss of all recorded tree-taxon presence at resurvey' not in text:
+    if '## Plots and samples included in CCA' not in text or 'Loss of all recorded tree-taxon presence at resurvey' not in text:
         raise ValueError('Report omitted the CCA exclusion explanation/table.')
     for metric in ['lag_rate_per_century', 'rate_tracking_ratio', 'angle_degrees']:
         if text.count('| '+METRIC_LABELS[metric]+' |') < 2:
@@ -190,9 +224,54 @@ def validate(root=ROOT):
     review = root/'docs/review/00_main_analysis_review.R'
     if review.read_text() != combined_review(): raise ValueError('Combined analysis review differs from current workflow sources.')
     headings = re.findall(r'^## (.+)$',text,re.M)
-    eligibility_heading = headings.index('CCA sample eligibility and exclusions')
+    eligibility_heading = headings.index('Plots and samples included in CCA')
     if headings[eligibility_heading+1] != 'CCA calibration and geometry':
         raise ValueError('CCA eligibility must immediately precede calibration.')
+    selection = rows(root/ASSETS/'tables/sample_selection_counts.csv')
+    plot_sizes = rows(root/ASSETS/'tables/sample_selection_plot_sizes.csv')
+    if len({(r['site'], r['legacy_area_m2']) for r in plot_sizes}) != len(plot_sizes):
+        raise ValueError('Repeated retained plot-area counts.')
+    for site in ['MORA', 'NOCA']:
+        areas = [r for r in plot_sizes if r['site'] == site]
+        expected_count = sum(r['site'] == site and true(r['calibration_included']) for r in pairs)
+        if sum(int(r['plots']) for r in areas) != expected_count or any(
+                int(r['plots']) <= 0 or float(r['resurvey_area_m2']) != 500 or
+                (r['legacy_area_m2'] != 'NA' and float(r['legacy_area_m2']) <= 0) for r in areas):
+            raise ValueError('Retained plot areas do not match CCA membership/protocol: '+site)
+    lookup = {(r['site'], r['period'], float(r['step'])): r for r in selection}
+    if len(lookup) != len(selection): raise ValueError('Repeated plot-selection steps.')
+    def selection_count(site, period, step):
+        r = lookup[site, period, float(step)]
+        if any(int(r[k]) < 0 for k in ['remaining', 'removed', 'combined']):
+            raise ValueError('Negative plot/sample count.')
+        return r
+    for site in ['MORA', 'NOCA']:
+        chain = [2,3,4,5,9,10] if site == 'MORA' else [2,3,4,5,6,7,8,9,10]
+        for before_step, after_step in zip(chain, chain[1:]):
+            before = selection_count(site, 'Modern', before_step)
+            after = selection_count(site, 'Modern', after_step)
+            if int(before['remaining']) != int(after['remaining']) + int(after['removed']):
+                raise ValueError('Modern plot count does not reconcile: '+site+' '+str(after_step))
+        before = selection_count(site, 'Modern', 1)
+        after = selection_count(site, 'Modern', 2.5)
+        if int(before['remaining']) != int(after['remaining']) + int(after['removed']):
+            raise ValueError('Legacy starting counts do not reconcile: '+site)
+        for use, step in [('Legacy calibration',10), ('Modern paired comparison',10)]:
+            expected_count = next(int(r['included_units']) for r in eligibility if r['site']==site and r['use']==use)
+            if int(selection_count(site,'Modern',step)['remaining']) != expected_count:
+                raise ValueError('Plot-selection figure does not match CCA: '+site+' '+use)
+        start = selection_count(site, 'Holocene', 1)
+        dated = selection_count(site, 'Holocene', 2)
+        if int(start['remaining']) != int(dated['remaining']) + int(dated['combined']) or int(dated['removed']) != 0:
+            raise ValueError('Combined core depths were miscounted as exclusions: '+site)
+        for step in range(3,9):
+            before = selection_count(site,'Holocene',step-1)
+            after = selection_count(site,'Holocene',step)
+            if int(before['remaining']) != int(after['remaining']) + int(after['removed']):
+                raise ValueError('Holocene sample counts do not reconcile: '+site)
+        expected_count = next(int(r['included_units']) for r in eligibility if r['site']==site and r['use']=='Paleo projection')
+        if int(selection_count(site,'Holocene',8)['remaining']) != expected_count:
+            raise ValueError('Core sample diagram does not match CCA: '+site)
     meta = json.loads((root/ASSETS/'build.json').read_text())
     expected = {a['artifact'] for a in rows(root/ASSETS/'artifacts.csv')}
     actual = {p.relative_to(root).as_posix() for p in (root/ASSETS).rglob('*') if p.is_file()}
@@ -225,6 +304,7 @@ def build(mode):
         required=[x['pdf'] for x in registry['diagnostics'] if x['status']!='historical reference']
         required += ['plot/'+x['stem']+'.'+ext for x in registry['main_figures'] for ext in ['pdf','png']]
         required += [x['source'] for x in registry['tables'].values() if not x['source'].endswith('bacon_run_manifest.csv')]
+        required += [x['source'] for x in registry.get('text_outputs', {}).values()]
         for p in required:
             if p not in recorded or sha(ROOT/p)!=recorded[p]['sha256']: raise ValueError('Fresh report lacks a regenerated, unchanged producer output: '+p)
     with tempfile.TemporaryDirectory(prefix='.analysis-review-',dir=ROOT/'docs') as tmp:
@@ -267,6 +347,16 @@ def build(mode):
             if not source.exists(): raise FileNotFoundError('Missing report evidence: '+x['source'])
             dst=out/'tables'/(name+'.csv'); dst.parent.mkdir(exist_ok=True); shutil.copyfile(source,dst)
             tables[name]=rows(dst); record(dst,x['producer'],x['source'],status='validated stored chronology' if name=='bacon_manifest' else 'current result table')
+        text_blocks = {}
+        for name,x in registry.get('text_outputs', {}).items():
+            source = ROOT/x['source']
+            if not source.is_file(): raise FileNotFoundError('Missing CCA output: '+x['source'])
+            dst = out/source.name
+            dst.write_text('\n'.join(line.rstrip() for line in source.read_text().splitlines())+'\n')
+            record(dst, x['producer'], x['source'], status='current fitted CCA output')
+            if name != 'cca_anova_output':
+                language = 'r' if name == 'cca_model_code' else 'text'
+                text_blocks[name] = f'```{language}\n{dst.read_text().rstrip()}\n```\n'
         table_blocks={}
         for name,cols in COLUMNS.items():
             data=tables[name]
@@ -280,12 +370,30 @@ def build(mode):
                 data=[dict(r,metric=labels[r['metric']]) for r in data]
             if name=='cca_summary':
                 data=[dict(r,field=CCA_LABELS[r['field']],value={'sites':'Site scaling (1)','FALSE':'Off'}.get(r['value'],r['value'])) for r in data]
+            if name=='cca_anova': data=[dict(r,component='Whole model' if r['component']=='Model' else r['component']) for r in data]
             if data and any(key not in data[0] for key,_ in cols):
                 missing=[key for key,_ in cols if key not in data[0]]
                 raise ValueError('Unexpected authoritative table schema '+name+': '+str(missing))
             table_blocks[name]=mdtable(data,cols) if data else ''
             label=name.replace('_',' ').replace('cca','CCA')
             table_blocks[name]+=f'[Full {label} table](assets/analysis/tables/{name}.csv).\n'
+        def join_names(names):
+            if len(names) < 2: return ''.join(names)
+            return ', '.join(names[:-1])+' and '+names[-1]
+        axes = tables['cca_anova']
+        supported = [r['component'] for r in axes if r['test']=='Axis' and float(r['p_within_parks'])<.05]
+        unsupported = [r['component'] for r in axes if r['test']=='Axis' and float(r['p_within_parks'])>=.05]
+        interpretation = []
+        if supported: interpretation.append(join_names(supported)+(' meets' if len(supported)==1 else ' meet')+' p < 0.05 when plots are shuffled within parks.')
+        if unsupported: interpretation.append(join_names(unsupported)+(' does not' if len(unsupported)==1 else ' do not')+' meet that threshold.')
+        text_blocks['cca_axis_interpretation'] = ' '.join(interpretation)+'\n'
+        climate = tables['cca_climate_contributions']
+        sensitive = [r['variable_label'].lower() for r in climate if float(r['p_unrestricted'])<.05<=float(r['p_within_parks'])]
+        both = [r['variable_label'].lower() for r in climate if max(float(r['p_unrestricted']),float(r['p_within_parks']))<.05]
+        interpretation = []
+        if sensitive: interpretation.append((join_names(sensitive)+(' meets' if len(sensitive)==1 else ' meet')+' p < 0.05 with unrestricted permutations, but '+('does not' if len(sensitive)==1 else 'do not')+' meet that threshold when plots are shuffled within parks.').capitalize())
+        if both: interpretation.append((join_names(both)+(' meets' if len(both)==1 else ' meet')+' p < 0.05 under both permutation designs.').capitalize())
+        text_blocks['cca_climate_interpretation'] = ' '.join(interpretation)+'\n'
         corrections=tables['correction_audit']; statuses={}
         for r in corrections: statuses[r['final_status']]=statuses.get(r['final_status'],0)+1
         correction_rows=[dict(status=k,plots=v) for k,v in sorted(statuses.items())]
@@ -333,11 +441,11 @@ def build(mode):
         meta=dict(mode=mode,built_at_utc=stamp,run_id=run.get('run_id','snapshot-'+stamp),input_manifest_sha256=ih,source_manifest_sha256=sh,result_manifest_sha256=rh,
             publication='staged and validated before replacement',chronology='validated stored posteriors; no MCMC in reporting')
         (out/'build.json').write_text(json.dumps(meta,indent=2)+'\n')
-        validation=('The analysis checks passed, including paired exclusions, chronology, climate matching, tracking arithmetic and figure outputs. Stored chronologies were unchanged.' if fresh else 'This snapshot uses verified existing outputs; it does not represent a new analysis run.')
+        validation=('The analysis checks passed, including paired exclusions, chronology, climate matching, tracking arithmetic and figure outputs. Stored chronologies were unchanged.' if fresh else 'This snapshot uses verified existing analysis outputs; CCA summaries and permutation tests were refreshed for this review. It does not represent a new full analysis run.')
         validation+=' [Checks and rebuilding instructions](WORKFLOW.md#tests-and-decisions).\n'
         status=f'**{"Rebuilt analysis" if fresh else "Snapshot of existing outputs"} · {stamp[:10]}.** '
-        status+=('Current results and diagnostics were refreshed; chronology figures use the existing stored models.' if fresh else 'Figures and tables are existing results; current CCA summaries were exported for this review.')
-        values=dict(table_blocks,**fig_blocks,build_status=status,questions=questions,validation=validation,workflow_scripts=script_map(),
+        status+=('Current results and diagnostics were refreshed; chronology figures use the existing stored models.' if fresh else 'Figures use existing analysis outputs; current CCA summaries and permutation tests were refreshed for this review.')
+        values=dict(table_blocks,**fig_blocks,**text_blocks,build_status=status,questions=questions,validation=validation,workflow_scripts=script_map(),
             diagnostic_inventory=mdtable(inventory,[('diagnostic','Diagnostic PDF'),('purpose','Purpose'),('producer','Script'),('pages','Shown pages'),('status','Analysis or sensitivity')]))
         for sec,block in diagnostic_blocks.items(): values[sec+'_diagnostics']=block
         text=TEMPLATE.read_text()
