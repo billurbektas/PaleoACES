@@ -93,7 +93,7 @@ run_script("R/stages/09_tracking_metrics.R")
 # Derived audit/visualization data. Mixed scripts still write their CSV audits
 # under --skip-figures; only their persistent PDF/PNG writes are suppressed.
 run_script("R/stages/05a_cca_figure.R")
-run_script("R/stages/09a_method_example.R")
+run_script("R/stages/09a_tracking_example_and_visualizations.R")
 run_script("R/stages/12a_fire_event_detection_worked_example.R")
 run_script("R/stages/13a_climate_change_figure.R")
 run_script("R/stages/13b_fire_method_worked_example.R")

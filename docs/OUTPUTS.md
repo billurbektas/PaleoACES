@@ -24,8 +24,11 @@ Active data and cache locations are preserved. See [repository inventory](REPOSI
 | `report/cca_species_contributions.csv`, `report/cca_climate_contributions.csv` | Species shares and unique climate effects on constrained inertia, calibration prevalence, CCA1–CCA2 scores and climate collinearity |
 | `report/cca_model_code.R`, `report/cca_model_output.txt`, `report/cca_anova_output.txt` | Current fitting/projection code excerpt and readable model/permutation-test outputs displayed or linked immediately before Figure 3 |
 | `plot/test_figures/plots_to_cca.pdf` | Single-page diagram showing starting counts, exclusion reasons, combined sample depths, legacy calibration counts and final paired/projection counts |
-| `cca_tracking_anthropocene_*.csv` | Plot-level tracking metrics and descriptive MORA/NOCA summaries |
-| `cca_tracking_holocene_*.csv` | Primary 1,000-year realization, draw-within-offset, and full 100-year-grid tracking series; `_500yr` files are sensitivity outputs |
+| `plot/test_figures/fig_method_worked_example.pdf` | Panther Potholes realization: WA/LC geometry, counterfactual endpoints, seven responses and chronology-draw distributions |
+| `plot/test_figures/fig_tracking_offset_rates.pdf` | Four lake panels overlay lag-change, observed turnover, pace effect and direction effect on the shared CCA-units-per-century scale |
+| `plot/test_figures/fig_tracking_offset_ratios_angles.pdf` | Four lakes × magnitude ratio, rate ratio and angle, with separate scales by response |
+| `cca_tracking_anthropocene_*.csv` | Compact paired-plot model input and separate detailed calculation records |
+| `cca_tracking_holocene_*.csv` | Primary lake realizations, compact model input, long uncertainty, seven-response reporting and support; later width experiments receive `_Nyr` suffixes |
 | `cca_tracking_climate_scaling.csv` | Fixed pooled-legacy means, SDs, units, and sample sizes used for standardized climate rates |
 | `holocene_era_climate_*.csv` | Lake/site/phase signed changes, pooled-calibration standardization, regional phase scores, 50%-maximum thresholds, directional cells, and unthresholded composite |
 | `holocene_era_grid.csv`, `holocene_era_catalog.csv`, `holocene_era_driver_subintervals.csv`, `holocene_era_climate_change_subphases.csv` | Exhaustive complete-domain CC/S cells, eight merged eras, every variable/direction interval, and auditable driver-trough subdivisions |
@@ -193,3 +196,18 @@ input/source provenance. Its portable formula environment supports later
 prediction without refitting. No future contribution analysis is implemented.
 The report registers a [versioned copy of this reference bundle](assets/analysis/cca_calibration_reference.rds)
 so the existing fitted calibration remains available from the branch.
+
+## Tracking example and exploratory visualizations
+
+`R/stages/09a_tracking_example_and_visualizations.R` reads the canonical stage-09
+products and writes the three diagnostic PDFs listed above. Thin trajectories
+use each offset's finite-draw response medians at `interval_mid_cal_bp`. Thick
+lines use the existing 100-year reporting-grid medians at reporting age `t`,
+requiring finite transition medians in every configured offset separately for
+each response. Missing transitions and undefined values break trajectories;
+no extrapolation, smoothing or new aggregation is applied. The four rate responses
+share CCA units per century. Ratios are unitless and angle uses degrees; these
+receive separate facets, with the same scale across lakes within each response.
+The two Holocene ratios coincide because their elapsed times match. All supported
+transition rows remain visible, including sparse chronology support. Offsets are
+sensitivity realizations, not independent ecological replicates.

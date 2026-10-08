@@ -43,7 +43,7 @@ verbatim for reading. Run the workflow for an analysis rebuild.
 | 14–15 | Fire catalog and climate eras | [12_walsh_fire_reproduction.R](../R/stages/12_walsh_fire_reproduction.R); [13_holocene_climate_fire_eras.R](../R/stages/13_holocene_climate_fire_eras.R) |
 | 16 | Canonical lake/plot tracking | [09_tracking_metrics.R](../R/stages/09_tracking_metrics.R) |
 | 17 | Community trajectories: Figure 3 | [05a_cca_figure.R](../R/stages/05a_cca_figure.R) |
-| 18–19 | Tracking and fire-detection examples | [09a_method_example.R](../R/stages/09a_method_example.R); [12a_fire_event_detection_worked_example.R](../R/stages/12a_fire_event_detection_worked_example.R) |
+| 18–19 | Tracking and fire-detection examples | [09a_tracking_example_and_visualizations.R](../R/stages/09a_tracking_example_and_visualizations.R); [12a_fire_event_detection_worked_example.R](../R/stages/12a_fire_event_detection_worked_example.R) |
 | 20–21 | Climate/fire display: Figure 2 and example | [13a_climate_change_figure.R](../R/stages/13a_climate_change_figure.R); [13b_fire_method_worked_example.R](../R/stages/13b_fire_method_worked_example.R) |
 
 | Prepared input | Rows | Plot/sample IDs | Taxa |
@@ -775,19 +775,42 @@ fitted model; they do not change the selected axes or the analysis settings.
 
 [Full PDF](../plot/fig_cca_trajectories.pdf) · [Figure script](../R/stages/05a_cca_figure.R) · [Publication captions](FIGURE_CAPTIONS.md).
 
-## Worked examples and climate/fire display
+## Tracking example, exploratory visualizations and climate/fire display
 
 The metric example below shows how displacement, lag, ratio and angle follow
-from WA and LC endpoints. The fire-detection examples distinguish individual
-events from the subsequent classification of high-fire periods.
+from WA and LC endpoints. The next two exploratory figures read the compact
+lake-by-offset table. Thin trajectories show each offset at actual transition
+midpoints; thick lines use the existing 100-year median across all ten offsets,
+with response-specific complete-offset eligibility. The four rate responses
+share CCA units per century; ratios and angle have separate facets. Missing
+values break lines and sparse supported transitions remain visible. Offsets
+represent sensitivity placements, not independent ecological replicates.
+The fire-detection examples distinguish individual events from the subsequent
+classification of high-fire periods.
 
 ### Work through WA/LC movement, lag, ratio, and angle
 
 One actual Panther Potholes lake transition shows WA/LC endpoints, pace/direction counterfactuals, focused responses and valid chronology-draw distributions. Corrections are nonadditive.
 
-Script: [09a_method_example.R](../R/stages/09a_method_example.R). [Complete PDF](../plot/test_figures/fig_method_worked_example.pdf) (1 page).
+Script: [09a_tracking_example_and_visualizations.R](../R/stages/09a_tracking_example_and_visualizations.R). [Complete PDF](../plot/test_figures/fig_method_worked_example.pdf) (1 page).
 
 ![Work through WA/LC movement, lag, ratio, and angle. — PDF page 1](assets/analysis/tracking_example-p1.png)
+
+### Explore all four lake trajectories across alternative offsets
+
+Thin colored trajectories show each offset’s chronology-draw medians at actual transition midpoints. Thick lines show the existing complete-offset reporting medians. Lag-change rate, observed turnover and both counterfactual effects share CCA units per century. Missing observations break lines; sparse supported transitions remain visible. Offsets are sensitivity placements, not independent replicates. **Exploratory**.
+
+Script: [09a_tracking_example_and_visualizations.R](../R/stages/09a_tracking_example_and_visualizations.R). [Complete PDF](../plot/test_figures/fig_tracking_offset_rates.pdf) (1 page).
+
+![Explore all four lake trajectories across alternative offsets. — PDF page 1](assets/analysis/tracking_offset_rates-p1.png)
+
+### Explore both tracking ratios and movement angle on their own scales
+
+Separate response rows share a scale across four lake panels. Thin lines show individual offsets; thick lines use existing complete-offset reporting medians. The two ratios coincide for equal Holocene elapsed times. Dashed references mark ratio 1 and angle 90 degrees. All observed ranges are retained; undefined angle values remain missing. **Exploratory**.
+
+Script: [09a_tracking_example_and_visualizations.R](../R/stages/09a_tracking_example_and_visualizations.R). [Complete PDF](../plot/test_figures/fig_tracking_offset_ratios_angles.pdf) (1 page).
+
+![Explore both tracking ratios and movement angle on their own scales. — PDF page 1](assets/analysis/tracking_offset_ratios_angles-p1.png)
 
 ### Compare fire-event detection in all four lake records
 
@@ -1112,7 +1135,9 @@ current-results analysis.
 | [fig_walsh_charanalysis_reproduction.pdf](../plot/test_figures/fig_walsh_charanalysis_reproduction.pdf) | Compare official CharAnalysis results with published Walsh totals. | [12_walsh_fire_reproduction.R](../R/stages/12_walsh_fire_reproduction.R) | 3 | current |
 | [fig_holocene_climate_period_method_worked_example.pdf](../plot/test_figures/fig_holocene_climate_period_method_worked_example.pdf) | Expose signed changes, phase support, and era construction. | [13_holocene_climate_fire_eras.R](../R/stages/13_holocene_climate_fire_eras.R) | 1 | current |
 | [fig_holocene_fire_method_worked_example.pdf](../plot/test_figures/fig_holocene_fire_method_worked_example.pdf) | Work through centered event frequencies at 2,300 cal BP. | [13b_fire_method_worked_example.R](../R/stages/13b_fire_method_worked_example.R) | 1 | current |
-| [fig_method_worked_example.pdf](../plot/test_figures/fig_method_worked_example.pdf) | Work through WA/LC movement, lag, ratio, and angle. | [09a_method_example.R](../R/stages/09a_method_example.R) | 1 | current |
+| [fig_method_worked_example.pdf](../plot/test_figures/fig_method_worked_example.pdf) | Work through WA/LC movement, lag, ratio, and angle. | [09a_tracking_example_and_visualizations.R](../R/stages/09a_tracking_example_and_visualizations.R) | 1 | current |
+| [fig_tracking_offset_rates.pdf](../plot/test_figures/fig_tracking_offset_rates.pdf) | Explore all four lake trajectories across alternative offsets. | [09a_tracking_example_and_visualizations.R](../R/stages/09a_tracking_example_and_visualizations.R) | 1 | exploratory |
+| [fig_tracking_offset_ratios_angles.pdf](../plot/test_figures/fig_tracking_offset_ratios_angles.pdf) | Explore both tracking ratios and movement angle on their own scales. | [09a_tracking_example_and_visualizations.R](../R/stages/09a_tracking_example_and_visualizations.R) | 1 | exploratory |
 | [test_chelsa_cruts_vs_present.pdf](../plot/test_figures/test_chelsa_cruts_vs_present.pdf) | Retain the older product-comparison reference outside current results. | [test_chelsa_cruts_vs_present.R](../R/diagnostics/test_chelsa_cruts_vs_present.R) | Full PDF only | historical reference |
 
 ## TraCE21k–V2.1 comparison and planned sensitivity

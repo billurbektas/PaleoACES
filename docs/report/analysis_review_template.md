@@ -405,11 +405,18 @@ fitted model; they do not change the selected axes or the analysis settings.
 
 {{figure_3}}
 
-## Worked examples and climate/fire display
+## Tracking example, exploratory visualizations and climate/fire display
 
 The metric example below shows how displacement, lag, ratio and angle follow
-from WA and LC endpoints. The fire-detection examples distinguish individual
-events from the subsequent classification of high-fire periods.
+from WA and LC endpoints. The next two exploratory figures read the compact
+lake-by-offset table. Thin trajectories show each offset at actual transition
+midpoints; thick lines use the existing 100-year median across all ten offsets,
+with response-specific complete-offset eligibility. The four rate responses
+share CCA units per century; ratios and angle have separate facets. Missing
+values break lines and sparse supported transitions remain visible. Offsets
+represent sensitivity placements, not independent ecological replicates.
+The fire-detection examples distinguish individual events from the subsequent
+classification of high-fire periods.
 
 {{tracking_diagnostics}}
 

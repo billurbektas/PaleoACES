@@ -22,7 +22,7 @@
 # 15. R/stages/13_holocene_climate_fire_eras.R
 # 16. R/stages/09_tracking_metrics.R
 # 17. R/stages/05a_cca_figure.R
-# 18. R/stages/09a_method_example.R
+# 18. R/stages/09a_tracking_example_and_visualizations.R
 # 19. R/stages/12a_fire_event_detection_worked_example.R
 # 20. R/stages/13a_climate_change_figure.R
 # 21. R/stages/13b_fire_method_worked_example.R
@@ -6315,9 +6315,11 @@ if (render_figures) {
 # END R/stages/05a_cca_figure.R
 
 # ============================================================================
-# BEGIN R/stages/09a_method_example.R
+# BEGIN R/stages/09a_tracking_example_and_visualizations.R
 # ============================================================================
-# Worked geometry and chronology example from canonical lake-level realizations.
+# Worked geometry example and exploratory lake-level tracking visualizations.
+# Run after stage 09; this stage reads canonical tables and writes diagnostic PDFs.
+# Rscript R/stages/09a_tracking_example_and_visualizations.R
 suppressPackageStartupMessages({library(here);library(tidyverse);library(patchwork)})
 source(here('R/helpers/tracking_data.R'),local=TRUE)
 render_figures = isTRUE(getOption('paleoaces.render_figures',TRUE))
@@ -6363,7 +6365,93 @@ figure = (a+p)/(q+s) + plot_annotation(title=paste0('Panther Potholes: ',example
   subtitle=paste0('Offset 0; geometry draw ',example$draw,'; ',nrow(draws),' of 100 draws support this actual transition.'),
   caption='Both corrections start at O1. Effects compare with the actual final lag and are nonadditive. Climate bins contain ten native slices.\nChronology distributions are conditional on valid realizations; draws and offsets are not ecological replicates.')
 if(render_figures) ggsave(here('plot/test_figures/fig_method_worked_example.pdf'),figure,width=12,height=11)
-# END R/stages/09a_method_example.R
+
+# Exploratory offset trajectories. The seven responses are medians across finite
+# chronology draws in each lake/offset transition. Use existing reporting-grid
+# estimates for thick lines; no smoothing, refitting or new metric aggregation.
+bin_width_years=unique(b$climate_dt_years)
+stopifnot(length(bin_width_years)==1L,all(b$vegetation_dt_years==bin_width_years))
+n_offsets=bin_width_years/100L
+lake_order=c('JayBath','LogWallow','ReflectionPond','PantherPotholes')
+lake_labels=c('Jay Bath (MORA)','Log Wallow (MORA)','Reflection Pond (MORA)','Panther Potholes (NOCA)')
+thin=b |> pivot_longer(all_of(metrics),names_to='metric',values_to='value') |>
+ mutate(lake=factor(lake,levels=lake_order,labels=lake_labels)) |>
+ arrange(metric,lake,offset,interval_mid_cal_bp) |>
+ group_by(metric,lake,offset) |>
+ # Break a line at a missing transition or an undefined response.
+ mutate(segment=cumsum(row_number()==1L |
+   coalesce(interval_mid_cal_bp-lag(interval_mid_cal_bp)>bin_width_years,TRUE) |
+   !is.finite(value) | !coalesce(is.finite(lag(value)),FALSE))) |> ungroup()
+# These are the already maintained median-of-offset-median estimates.
+thick=read_csv(here('output/cca_tracking_holocene_lake_timeseries.csv'),show_col_types=FALSE) |>
+ filter(metric %in% metrics) |> mutate(lake=factor(lake,levels=lake_order,labels=lake_labels)) |>
+ arrange(metric,lake,t) |> group_by(metric,lake) |>
+ mutate(segment=cumsum(row_number()==1L | coalesce(t-lag(t)>100,TRUE))) |> ungroup()
+stopifnot(all(thick$bin_width_years==bin_width_years),
+ all(thick$n_offsets==n_offsets),all(thick$n_valid_offsets==n_offsets))
+common=theme_minimal(base_size=13,base_family='sans')+
+ theme(plot.title=element_text(size=20,face='bold',color='#152536'),
+  plot.subtitle=element_text(size=12,color='#526273',margin=margin(b=12)),
+  plot.caption=element_text(size=10,color='#526273',hjust=0,margin=margin(t=12)),
+  panel.grid.minor=element_blank(),panel.grid.major=element_line(color='#e4e8ee',linewidth=.3),
+  strip.text=element_text(face='bold',size=12,color='#233647'),
+  strip.background=element_rect(fill='#f0f3f7',color=NA),
+  panel.spacing=grid::unit(1.2,'lines'),
+  legend.position='bottom',legend.title=element_blank(),
+  legend.text=element_text(size=12),plot.background=element_rect(fill='white',color=NA),
+  plot.margin=margin(16,20,16,16))
+oldest_age=(ceiling(max(c(thin$interval_mid_cal_bp,thick$t))/500)+1)*500
+x_scale=scale_x_reverse(limits=c(oldest_age,0),breaks=seq(0,oldest_age,2500),
+ labels=scales::label_comma(),expand=expansion(mult=c(.015,.015)))
+line_caption=paste0("Thin: each offset's chronology-draw median at actual transition midpoints.  Thick: existing reporting median across all ",
+ n_offsets,' offsets.\nGaps remain gaps; the offsets are alternative bin placements, not independent ecological replicates.')
+rates=c('lag_rate_per_century','observed_turnover_rate',
+ 'pace_effect_on_lag_per_century','direction_effect_on_lag_per_century')
+colors=c(lag_rate_per_century='#2563eb',observed_turnover_rate='#059669',
+ pace_effect_on_lag_per_century='#d42d75',direction_effect_on_lag_per_century='#c97710')
+labels=c('Lag-change rate','Observed turnover','Pace effect','Direction effect')
+p_rates=ggplot()+
+ geom_hline(yintercept=0,color='#8796a5',linewidth=.4,linetype='dashed')+
+ geom_line(data=filter(thin,metric %in% rates),
+  aes(interval_mid_cal_bp,value,color=metric,group=interaction(metric,offset,segment)),
+  linewidth=.35,alpha=.27,na.rm=TRUE)+
+ geom_line(data=filter(thick,metric %in% rates),
+  aes(t,estimate,color=metric,group=interaction(metric,segment)),linewidth=1.15)+
+ facet_wrap(~lake,ncol=2)+x_scale+
+ scale_color_manual(values=colors,breaks=rates,labels=labels)+
+ guides(color=guide_legend(override.aes=list(alpha=1,linewidth=1.3),nrow=1))+
+ labs(title='Holocene tracking responses: alternative offsets',
+  subtitle='Four responses on the same CCA-unit scale; each lake uses its own vegetation and climate record',
+  x='Transition midpoint / reporting age (cal BP)',y='CCA units per century',caption=line_caption)+common
+other=c('magnitude_tracking_ratio','rate_tracking_ratio','angle_degrees')
+row_labels=c('Magnitude ratio\n(unitless)','Rate ratio\n(unitless)','Movement angle\n(degrees)')
+row_map=function(d) d |> filter(metric %in% other) |>
+ mutate(response=factor(metric,levels=other,labels=row_labels))
+reference=expand_grid(lake=factor(lake_labels,levels=lake_labels),
+ response=factor(row_labels,levels=row_labels)) |>
+ mutate(baseline=if_else(response==row_labels[3],90,1))
+p_other=ggplot()+
+ geom_hline(data=reference,aes(yintercept=baseline),color='#8796a5',linewidth=.4,linetype='dashed')+
+ geom_line(data=row_map(thin),aes(interval_mid_cal_bp,value,color=metric,
+  group=interaction(offset,segment)),linewidth=.4,alpha=.32,na.rm=TRUE)+
+ geom_line(data=row_map(thick),aes(t,estimate,color=metric,group=segment),linewidth=1.2)+
+ facet_grid(response~lake,scales='free_y',switch='y')+x_scale+
+ scale_color_manual(values=c(magnitude_tracking_ratio='#5b56b8',
+ rate_tracking_ratio='#8b46a3',angle_degrees='#157d91'),guide='none')+
+ labs(title='Tracking ratios and movement angle',
+  subtitle=paste0('Separate response scales; the magnitude and rate ratios coincide because both Holocene elapsed times are ',
+   format(bin_width_years,big.mark=','),' years'),
+  x='Transition midpoint / reporting age (cal BP)',y=NULL,
+  caption=paste0(line_caption,'\nDashed reference: tracking ratio = 1; angle = 90°. Ratios retain their full observed range.'))+
+ common+theme(strip.placement='outside',strip.text.y.left=element_text(angle=0,size=11),
+  strip.background.y=element_blank(),axis.text.x=element_text(size=10))
+if(render_figures) {
+  ggsave(here('plot/test_figures/fig_tracking_offset_rates.pdf'),
+    p_rates,width=15,height=9.5)
+  ggsave(here('plot/test_figures/fig_tracking_offset_ratios_angles.pdf'),
+    p_other,width=17,height=10)
+}
+# END R/stages/09a_tracking_example_and_visualizations.R
 
 # ============================================================================
 # BEGIN R/stages/12a_fire_event_detection_worked_example.R
