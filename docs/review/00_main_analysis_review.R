@@ -6366,90 +6366,154 @@ figure = (a+p)/(q+s) + plot_annotation(title=paste0('Panther Potholes: ',example
   caption='Both corrections start at O1. Effects compare with the actual final lag and are nonadditive. Climate bins contain ten native slices.\nChronology distributions are conditional on valid realizations; draws and offsets are not ecological replicates.')
 if(render_figures) ggsave(here('plot/test_figures/fig_method_worked_example.pdf'),figure,width=12,height=11)
 
-# Exploratory offset trajectories. The seven responses are medians across finite
-# chronology draws in each lake/offset transition. Use existing reporting-grid
-# estimates for thick lines; no smoothing, refitting or new metric aggregation.
+# Exploratory temporal panels and paired-plot boxplots. Response lines reuse
+# maintained reporting estimates; predictor medians below are transient plot
+# data, following the same half-open mapping and complete-offset support rule.
+# This stage never modifies or exports scientific tables.
 bin_width_years=unique(b$climate_dt_years)
 stopifnot(length(bin_width_years)==1L,all(b$vegetation_dt_years==bin_width_years))
-n_offsets=bin_width_years/100L
+offsets=seq(0,bin_width_years-100,100)
+n_offsets=length(offsets)
 lake_order=c('JayBath','LogWallow','ReflectionPond','PantherPotholes')
 lake_labels=c('Jay Bath (MORA)','Log Wallow (MORA)','Reflection Pond (MORA)','Panther Potholes (NOCA)')
-thin=b |> pivot_longer(all_of(metrics),names_to='metric',values_to='value') |>
+predictors=c('standardized_climate_change_rate','fire_activity')
+thin=b |> pivot_longer(all_of(c(metrics,predictors)),names_to='metric',values_to='value') |>
  mutate(lake=factor(lake,levels=lake_order,labels=lake_labels)) |>
- arrange(metric,lake,offset,interval_mid_cal_bp) |>
- group_by(metric,lake,offset) |>
- # Break a line at a missing transition or an undefined response.
+ arrange(metric,lake,offset,interval_mid_cal_bp) |> group_by(metric,lake,offset) |>
  mutate(segment=cumsum(row_number()==1L |
    coalesce(interval_mid_cal_bp-lag(interval_mid_cal_bp)>bin_width_years,TRUE) |
    !is.finite(value) | !coalesce(is.finite(lag(value)),FALSE))) |> ungroup()
-# These are the already maintained median-of-offset-median estimates.
-thick=read_csv(here('output/cca_tracking_holocene_lake_timeseries.csv'),show_col_types=FALSE) |>
- filter(metric %in% metrics) |> mutate(lake=factor(lake,levels=lake_order,labels=lake_labels)) |>
+response_grid=read_csv(here('output/cca_tracking_holocene_lake_timeseries.csv'),show_col_types=FALSE) |>
+ filter(metric %in% metrics) |> select(site,lake,t,metric,estimate,n_offsets,n_valid_offsets)
+predictor_cells=b |> select(site,lake,offset,age_lo,age_hi,all_of(predictors)) |>
+ pivot_longer(all_of(predictors),names_to='metric',values_to='value') |>
+ mutate(t=map2(age_lo,age_hi,~seq(ceiling(.x/100)*100,ceiling(.y/100)*100-100,100))) |>
+ unnest(t)
+stopifnot(!anyDuplicated(predictor_cells[c('site','lake','offset','t','metric')]),
+ all(predictor_cells$offset %in% offsets))
+predictor_grid=predictor_cells |> group_by(site,lake,t,metric) |> summarize(
+ estimate=if(all(is.finite(value))) median(value) else NA_real_,
+ n_offsets=n_distinct(offset),n_valid_offsets=sum(is.finite(value)),.groups='drop') |>
+ filter(n_offsets==length(offsets),n_valid_offsets==length(offsets))
+thick=bind_rows(response_grid,predictor_grid) |>
+ mutate(lake=factor(lake,levels=lake_order,labels=lake_labels)) |>
  arrange(metric,lake,t) |> group_by(metric,lake) |>
  mutate(segment=cumsum(row_number()==1L | coalesce(t-lag(t)>100,TRUE))) |> ungroup()
-stopifnot(all(thick$bin_width_years==bin_width_years),
- all(thick$n_offsets==n_offsets),all(thick$n_valid_offsets==n_offsets))
-common=theme_minimal(base_size=13,base_family='sans')+
+stopifnot(all(thick$n_offsets==n_offsets),all(thick$n_valid_offsets==n_offsets))
+modern=read_csv(here('output/cca_tracking_anthropocene_plot_model_input.csv'),show_col_types=FALSE) |>
+ mutate(site=factor(site,levels=c('MORA','NOCA')))
+# FireActivity is a charcoal-frequency measure and is unavailable for modern
+# plots. Their binary burned assignments remain available in the model input.
+modern_long=modern |> pivot_longer(all_of(c(metrics,'standardized_climate_change_rate')),
+ names_to='metric',values_to='value')
+rates=c('lag_rate_per_century','observed_turnover_rate',
+ 'pace_effect_on_lag_per_century','direction_effect_on_lag_per_century')
+palette=c(lag_rate_per_century='#2563eb',observed_turnover_rate='#059669',
+ pace_effect_on_lag_per_century='#d42d75',direction_effect_on_lag_per_century='#c97710',
+ magnitude_tracking_ratio='#5b56b8',angle_degrees='#157d91',
+ standardized_climate_change_rate='#665641',fire_activity='#b63c35')
+rate_labels=c('Lag-change rate','Observed turnover','Pace effect','Direction effect')
+common=theme_minimal(base_size=12,base_family='sans')+
  theme(plot.title=element_text(size=20,face='bold',color='#152536'),
   plot.subtitle=element_text(size=12,color='#526273',margin=margin(b=12)),
   plot.caption=element_text(size=10,color='#526273',hjust=0,margin=margin(t=12)),
   panel.grid.minor=element_blank(),panel.grid.major=element_line(color='#e4e8ee',linewidth=.3),
-  strip.text=element_text(face='bold',size=12,color='#233647'),
+  strip.text=element_text(face='bold',size=11,color='#233647'),
   strip.background=element_rect(fill='#f0f3f7',color=NA),
-  panel.spacing=grid::unit(1.2,'lines'),
-  legend.position='bottom',legend.title=element_blank(),
-  legend.text=element_text(size=12),plot.background=element_rect(fill='white',color=NA),
-  plot.margin=margin(16,20,16,16))
+  strip.placement='outside',strip.text.y.left=element_text(angle=0,size=10),
+  strip.background.y=element_blank(),panel.spacing=grid::unit(.8,'lines'),
+  legend.position='bottom',legend.title=element_blank(),legend.text=element_text(size=11),
+  plot.background=element_rect(fill='white',color=NA),plot.margin=margin(8,8,8,8))
 oldest_age=(ceiling(max(c(thin$interval_mid_cal_bp,thick$t))/500)+1)*500
 x_scale=scale_x_reverse(limits=c(oldest_age,0),breaks=seq(0,oldest_age,2500),
  labels=scales::label_comma(),expand=expansion(mult=c(.015,.015)))
-line_caption=paste0("Thin: each offset's chronology-draw median at actual transition midpoints.  Thick: existing reporting median across all ",
- n_offsets,' offsets.\nGaps remain gaps; the offsets are alternative bin placements, not independent ecological replicates.')
-rates=c('lag_rate_per_century','observed_turnover_rate',
- 'pace_effect_on_lag_per_century','direction_effect_on_lag_per_century')
-colors=c(lag_rate_per_century='#2563eb',observed_turnover_rate='#059669',
- pace_effect_on_lag_per_century='#d42d75',direction_effect_on_lag_per_century='#c97710')
-labels=c('Lag-change rate','Observed turnover','Pace effect','Direction effect')
-p_rates=ggplot()+
- geom_hline(yintercept=0,color='#8796a5',linewidth=.4,linetype='dashed')+
- geom_line(data=filter(thin,metric %in% rates),
-  aes(interval_mid_cal_bp,value,color=metric,group=interaction(metric,offset,segment)),
-  linewidth=.35,alpha=.27,na.rm=TRUE)+
- geom_line(data=filter(thick,metric %in% rates),
-  aes(t,estimate,color=metric,group=interaction(metric,segment)),linewidth=1.15)+
- facet_wrap(~lake,ncol=2)+x_scale+
- scale_color_manual(values=colors,breaks=rates,labels=labels)+
- guides(color=guide_legend(override.aes=list(alpha=1,linewidth=1.3),nrow=1))+
- labs(title='Holocene tracking responses: alternative offsets',
-  subtitle='Four responses on the same CCA-unit scale; each lake uses its own vegetation and climate record',
-  x='Transition midpoint / reporting age (cal BP)',y='CCA units per century',caption=line_caption)+common
-other=c('magnitude_tracking_ratio','rate_tracking_ratio','angle_degrees')
-row_labels=c('Magnitude ratio\n(unitless)','Rate ratio\n(unitless)','Movement angle\n(degrees)')
-row_map=function(d) d |> filter(metric %in% other) |>
- mutate(response=factor(metric,levels=other,labels=row_labels))
-reference=expand_grid(lake=factor(lake_labels,levels=lake_labels),
- response=factor(row_labels,levels=row_labels)) |>
- mutate(baseline=if_else(response==row_labels[3],90,1))
-p_other=ggplot()+
- geom_hline(data=reference,aes(yintercept=baseline),color='#8796a5',linewidth=.4,linetype='dashed')+
- geom_line(data=row_map(thin),aes(interval_mid_cal_bp,value,color=metric,
-  group=interaction(offset,segment)),linewidth=.4,alpha=.32,na.rm=TRUE)+
- geom_line(data=row_map(thick),aes(t,estimate,color=metric,group=segment),linewidth=1.2)+
- facet_grid(response~lake,scales='free_y',switch='y')+x_scale+
- scale_color_manual(values=c(magnitude_tracking_ratio='#5b56b8',
- rate_tracking_ratio='#8b46a3',angle_degrees='#157d91'),guide='none')+
- labs(title='Tracking ratios and movement angle',
-  subtitle=paste0('Separate response scales; the magnitude and rate ratios coincide because both Holocene elapsed times are ',
-   format(bin_width_years,big.mark=','),' years'),
-  x='Transition midpoint / reporting age (cal BP)',y=NULL,
-  caption=paste0(line_caption,'\nDashed reference: tracking ratio = 1; angle = 90°. Ratios retain their full observed range.'))+
- common+theme(strip.placement='outside',strip.text.y.left=element_text(angle=0,size=11),
-  strip.background.y=element_blank(),axis.text.x=element_text(size=10))
+# Four lake columns share a time axis and per-row scales. The final column
+# compares independent modern plots at MORA/NOCA and has its own labeled scales.
+# Undefined responses are removed independently by the plotting layers.
+tracking_panels=function(display_metrics,rows,row_labels,title,subtitle,rate_legend=FALSE) {
+  assign_rows=function(d) d |> filter(metric %in% display_metrics) |>
+    mutate(display_row=factor(unname(rows[metric]),levels=row_labels))
+  left_thin=assign_rows(thin);left_thick=assign_rows(thick)
+  modern_values=assign_rows(modern_long) |>
+    mutate(era='Anthropocene',metric=factor(metric,levels=display_metrics))
+  baseline=tibble(display_row=factor(row_labels,levels=row_labels),y=0)
+  if('magnitude_tracking_ratio' %in% names(rows))
+    baseline$y[baseline$display_row==rows['magnitude_tracking_ratio']]=1
+  if('angle_degrees' %in% names(rows))
+    baseline$y[baseline$display_row==rows['angle_degrees']]=90
+  legend_breaks=if(rate_legend) rates else display_metrics
+  legend_labels=if(rate_legend) rate_labels else display_metrics
+  left=ggplot()+
+    geom_hline(data=baseline,aes(yintercept=y),color='#8796a5',linewidth=.35,linetype='dashed')+
+    geom_line(data=left_thin,aes(interval_mid_cal_bp,value,color=metric,
+      group=interaction(metric,offset,segment)),linewidth=.35,alpha=.27,na.rm=TRUE)+
+    geom_line(data=left_thick,aes(t,estimate,color=metric,
+      group=interaction(metric,segment)),linewidth=1.05)+
+    facet_grid(display_row~lake,scales='free_y',switch='y',drop=FALSE)+x_scale+
+    scale_color_manual(values=palette,breaks=legend_breaks,labels=legend_labels,
+      guide=if(rate_legend) guide_legend(override.aes=list(alpha=1,linewidth=1.2),nrow=1) else 'none')+
+    labs(x='Transition midpoint / reporting age (cal BP)',y=NULL)+common
+  right=ggplot(modern_values,aes(site,value,color=metric,fill=metric))+
+    geom_hline(data=baseline,aes(yintercept=y),inherit.aes=FALSE,
+      color='#8796a5',linewidth=.35,linetype='dashed')+
+    geom_boxplot(position=position_dodge(width=.8),width=.65,alpha=.3,
+      linewidth=.4,outlier.size=.6,outlier.alpha=.45,na.rm=TRUE)+
+    facet_grid(display_row~era,scales='free_y',drop=FALSE)+
+    scale_color_manual(values=palette,guide='none')+scale_fill_manual(values=palette,guide='none')+
+    labs(x='Paired plots',y=NULL)+common+
+    theme(strip.text.y=element_blank(),strip.background.y=element_blank(),
+      axis.text.x=element_text(size=11))
+  # Retain the modern fire row without inventing continuous charcoal activity.
+  missing_fire=tibble(display_row=factor(unname(rows['fire_activity']),levels=row_labels),
+    era='Anthropocene',site=factor('MORA',levels=c('MORA','NOCA')),value=.5)
+  right=right+geom_blank(data=missing_fire,aes(x=site,y=value),inherit.aes=FALSE)+
+    geom_rect(data=missing_fire,aes(xmin=-Inf,xmax=Inf,ymin=-Inf,ymax=Inf),
+      inherit.aes=FALSE,fill='white',color=NA)+
+    geom_text(data=missing_fire,aes(x=1.5,y=.25),inherit.aes=FALSE,
+      label='Continuous fire activity\nunavailable for modern plots',
+      color=unname(palette['fire_activity']),size=3.1,lineheight=1.2)
+  caption=paste0('Thin: individual offsets. Thick: medians across all ',n_offsets,
+    ' offsets with complete finite support. Response medians reuse the maintained reporting grid.\n',
+    'The four Holocene columns share scales by row; the Anthropocene column uses its own labeled y-scales. ',
+    'Boxes show finite values from ',sum(modern$site=='MORA'),' MORA / ',
+    sum(modern$site=='NOCA'),' NOCA paired plots.\n',
+    'Climate is the standardized physical climate-change rate. MORA lakes share regional fire exposure; ',
+    'modern fire is binary burned, not continuous charcoal activity.')
+  combined=(left+right)+plot_layout(widths=c(4,1.5),guides='collect')+
+    plot_annotation(title=title,subtitle=subtitle,caption=caption,
+      theme=common)
+  # Remove the annotation's numerical axis after assembling aligned facets.
+  # A null device avoids opening an unsolicited Rplots.pdf during layout.
+  if(grDevices::dev.cur()==1L) {
+    grDevices::pdf(file=NULL)
+    on.exit(grDevices::dev.off(),add=TRUE)
+  }
+  combined_grob=patchworkGrob(combined)
+  fire_row=match(unname(rows['fire_activity']),row_labels)
+  axis_group=which(grepl('^axis-l.*-2$',combined_grob$layout$name))
+  stopifnot(length(axis_group)==1L)
+  fire_axis=which(combined_grob$grobs[[axis_group]]$layout$name==paste0('axis-l-',fire_row))
+  stopifnot(length(fire_axis)==1L)
+  combined_grob$grobs[[axis_group]]$grobs[[fire_axis]]=grid::nullGrob()
+  combined_grob
+}
+rate_rows=c('Tracking responses\n(CCA units / century)',
+ 'Climate-change rate\n(calibration SD / century)','Fire activity\n(normalized frequency)')
+rate_map=setNames(c(rep(rate_rows[1],length(rates)),rate_rows[2:3]),c(rates,predictors))
+p_rates=tracking_panels(c(rates,predictors),rate_map,rate_rows,
+ 'Tracking responses, climate and fire',
+ 'Four Holocene lake columns with aligned cal-BP axes; Anthropocene paired-plot boxplots',
+ rate_legend=TRUE)
+# Only magnitude ratio is displayed here: the rate ratio duplicates it for
+# equal Holocene elapsed times. Both ratios remain in both model input tables.
+other=c('magnitude_tracking_ratio','angle_degrees',predictors)
+other_rows=c('Magnitude ratio\n(unitless)','Movement angle\n(degrees)',rate_rows[2:3])
+p_other=tracking_panels(other,setNames(other_rows,other),other_rows,
+ 'Tracking magnitude ratio, angle, climate and fire',
+ 'One row per variable; duplicate Holocene rate-ratio display omitted')
 if(render_figures) {
-  ggsave(here('plot/test_figures/fig_tracking_offset_rates.pdf'),
-    p_rates,width=15,height=9.5)
-  ggsave(here('plot/test_figures/fig_tracking_offset_ratios_angles.pdf'),
-    p_other,width=17,height=10)
+  ggsave(here('plot/test_figures/fig_tracking_offset_rates.pdf'),p_rates,width=20,height=10)
+  ggsave(here('plot/test_figures/fig_tracking_offset_ratios_angles.pdf'),p_other,width=20,height=12)
 }
 # END R/stages/09a_tracking_example_and_visualizations.R
 

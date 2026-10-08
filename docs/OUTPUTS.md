@@ -25,8 +25,8 @@ Active data and cache locations are preserved. See [repository inventory](REPOSI
 | `report/cca_model_code.R`, `report/cca_model_output.txt`, `report/cca_anova_output.txt` | Current fitting/projection code excerpt and readable model/permutation-test outputs displayed or linked immediately before Figure 3 |
 | `plot/test_figures/plots_to_cca.pdf` | Single-page diagram showing starting counts, exclusion reasons, combined sample depths, legacy calibration counts and final paired/projection counts |
 | `plot/test_figures/fig_method_worked_example.pdf` | Panther Potholes realization: WA/LC geometry, counterfactual endpoints, seven responses and chronology-draw distributions |
-| `plot/test_figures/fig_tracking_offset_rates.pdf` | Four lake panels overlay lag-change, observed turnover, pace effect and direction effect on the shared CCA-units-per-century scale |
-| `plot/test_figures/fig_tracking_offset_ratios_angles.pdf` | Four lakes × magnitude ratio, rate ratio and angle, with separate scales by response |
+| `plot/test_figures/fig_tracking_offset_rates.pdf` | Four lake columns × three rows: tracking rates together, standardized climate-change rate, and continuous fire activity; a fifth column shows MORA/NOCA modern boxplots |
+| `plot/test_figures/fig_tracking_offset_ratios_angles.pdf` | Four lake columns × four rows: magnitude ratio, angle, standardized climate-change rate, and fire activity; a fifth column shows MORA/NOCA modern boxplots |
 | `cca_tracking_anthropocene_*.csv` | Compact paired-plot model input and separate detailed calculation records |
 | `cca_tracking_holocene_*.csv` | Primary lake realizations, compact model input, long uncertainty, seven-response reporting and support; later width experiments receive `_Nyr` suffixes |
 | `cca_tracking_climate_scaling.csv` | Fixed pooled-legacy means, SDs, units, and sample sizes used for standardized climate rates |
@@ -200,14 +200,31 @@ so the existing fitted calibration remains available from the branch.
 ## Tracking example and exploratory visualizations
 
 `R/stages/09a_tracking_example_and_visualizations.R` reads the canonical stage-09
-products and writes the three diagnostic PDFs listed above. Thin trajectories
-use each offset's finite-draw response medians at `interval_mid_cal_bp`. Thick
-lines use the existing 100-year reporting-grid medians at reporting age `t`,
-requiring finite transition medians in every configured offset separately for
-each response. Missing transitions and undefined values break trajectories;
-no extrapolation, smoothing or new aggregation is applied. The four rate responses
-share CCA units per century. Ratios are unitless and angle uses degrees; these
-receive separate facets, with the same scale across lakes within each response.
-The two Holocene ratios coincide because their elapsed times match. All supported
-transition rows remain visible, including sparse chronology support. Offsets are
+products and writes the three diagnostic PDFs listed above. Both exploratory
+figures use four Holocene lake columns with aligned cal-BP axes and shared
+scales across lakes within each row. The rates figure has three rows: the four
+tracking rates together, standardized physical climate-change rate, and continuous
+fire activity. The second figure gives magnitude ratio, angle, climate rate and
+fire activity one row each. The duplicate Holocene rate-ratio display is omitted;
+both ratios remain in both model tables and can differ in the Anthropocene.
+
+Thin trajectories use each offset's transition values at `interval_mid_cal_bp`.
+Response values are finite-draw medians. Thick response lines reuse the existing
+100-year reporting-grid medians at `t`. For the climate/fire context only,
+transient plot summaries map each fixed transition predictor to dates using
+`[age_lo, age_hi)` and take its median across all configured offsets with finite
+support. These plot summaries are not exported and do not add metrics to the
+seven-response reporting CSV. Missing transitions and undefined values break
+lines; no extrapolation or smoothing is applied. All supported transition rows
+remain visible, including sparse chronology support.
+
+A fifth column shows MORA and NOCA boxplots of the same responses and climate
+predictor, using matching colors and all original 607 paired plots. Finite values
+are used separately for each metric, preserving valid responses when angle or
+pace is undefined. The Anthropocene column has its own labeled y-scales because
+the modern rates are substantially larger; the four Holocene columns retain
+shared scales by row. Modern continuous charcoal fire activity is unavailable,
+so that panel contains an annotation with no numeric fire axis. The original
+binary `burned` assignments remain in the model input and are not substituted
+for charcoal activity. MORA lakes share one regional fire history. Offsets are
 sensitivity realizations, not independent ecological replicates.

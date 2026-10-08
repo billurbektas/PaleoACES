@@ -224,8 +224,8 @@
         1
       ],
       "producer": "R/stages/09a_tracking_example_and_visualizations.R",
-      "purpose": "Explore all four lake trajectories across alternative offsets.",
-      "interpretation": "Thin colored trajectories show each offset\u2019s chronology-draw medians at actual transition midpoints. Thick lines show the existing complete-offset reporting medians. Lag-change rate, observed turnover and both counterfactual effects share CCA units per century. Missing observations break lines; sparse supported transitions remain visible. Offsets are sensitivity placements, not independent replicates.",
+      "purpose": "Compare tracking responses, climate and fire in four lake columns with Anthropocene boxplots.",
+      "interpretation": "Rows show four tracking rates together, standardized physical climate-change rate, and continuous fire activity. Four Holocene lake columns share aligned cal-BP axes and scales by row; thin lines show offsets and thick lines show complete-offset medians. A fifth column shows identically colored MORA/NOCA paired-plot boxplots using separate labeled y-scales. Modern continuous fire activity is unavailable and is annotated. MORA vegetation lakes share regional fire exposure. Offsets are sensitivity placements, not independent replicates.",
       "status": "exploratory"
     },
     {
@@ -236,8 +236,8 @@
         1
       ],
       "producer": "R/stages/09a_tracking_example_and_visualizations.R",
-      "purpose": "Explore both tracking ratios and movement angle on their own scales.",
-      "interpretation": "Separate response rows share a scale across four lake panels. Thin lines show individual offsets; thick lines use existing complete-offset reporting medians. The two ratios coincide for equal Holocene elapsed times. Dashed references mark ratio 1 and angle 90 degrees. All observed ranges are retained; undefined angle values remain missing.",
+      "purpose": "Compare magnitude tracking ratio, angle, climate and fire, one variable per row.",
+      "interpretation": "Four lake columns show magnitude tracking ratio, movement angle, standardized climate-change rate and fire activity in separate rows. The duplicate Holocene rate-ratio display is omitted; both ratios remain in the model inputs and can differ in the Anthropocene. A fifth column shows MORA/NOCA plot boxplots with matching colors and separate labeled y-scales; modern continuous fire activity is unavailable and annotated. Thin offset trajectories and thick complete-offset medians retain actual gaps and observed ranges.",
       "status": "exploratory"
     },
     {

@@ -408,13 +408,23 @@ fitted model; they do not change the selected axes or the analysis settings.
 ## Tracking example, exploratory visualizations and climate/fire display
 
 The metric example below shows how displacement, lag, ratio and angle follow
-from WA and LC endpoints. The next two exploratory figures read the compact
-lake-by-offset table. Thin trajectories show each offset at actual transition
-midpoints; thick lines use the existing 100-year median across all ten offsets,
-with response-specific complete-offset eligibility. The four rate responses
-share CCA units per century; ratios and angle have separate facets. Missing
-values break lines and sparse supported transitions remain visible. Offsets
-represent sensitivity placements, not independent ecological replicates.
+from WA and LC endpoints. The next two exploratory figures use four lake columns
+with aligned cal-BP axes. Thin trajectories show offsets at actual transition
+midpoints; thick response lines reuse the maintained complete-offset medians.
+Climate/fire predictor medians are transient plot context, mapped with the same
+half-open intervals and complete-offset rule; the scientific CSVs are unchanged.
+The rates figure has rows for tracking responses together, standardized climate
+rate and fire activity. The other figure gives magnitude ratio, angle, climate
+and fire one row each, omitting the duplicate Holocene rate-ratio display.
+Both ratios remain in the model inputs and can differ for modern plots.
+
+A fifth column shows MORA/NOCA paired-plot boxplots with matching colors and
+separate labeled y-scales. It uses all 607 pairs, retaining finite values per
+response independently. Modern continuous fire activity is unavailable and is
+annotated; binary burned assignments remain in the model input. MORA vegetation
+lakes share regional fire exposure. Missing values break trajectories and sparse
+supported transitions remain visible. Offsets are sensitivity placements,
+not independent ecological replicates.
 The fire-detection examples distinguish individual events from the subsequent
 classification of high-fire periods.
 

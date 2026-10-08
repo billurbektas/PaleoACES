@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: 7c984547765b0e8edd4529849a51c052 -->
+<!-- paleoaces-source-md5: 35c71abfb4624d3834ff793201c2cba6 -->
 
 <html>
 
@@ -1621,13 +1621,15 @@ endpoints, seven responses and chronology-draw distributions</td>
 </tr>
 <tr class="even">
 <td><code>plot/test_figures/fig_tracking_offset_rates.pdf</code></td>
-<td>Four lake panels overlay lag-change, observed turnover, pace effect
-and direction effect on the shared CCA-units-per-century scale</td>
+<td>Four lake columns × three rows: tracking rates together,
+standardized climate-change rate, and continuous fire activity; a fifth
+column shows MORA/NOCA modern boxplots</td>
 </tr>
 <tr class="odd">
 <td><code>plot/test_figures/fig_tracking_offset_ratios_angles.pdf</code></td>
-<td>Four lakes × magnitude ratio, rate ratio and angle, with separate
-scales by response</td>
+<td>Four lake columns × four rows: magnitude ratio, angle, standardized
+climate-change rate, and fire activity; a fifth column shows MORA/NOCA
+modern boxplots</td>
 </tr>
 <tr class="even">
 <td><code>cca_tracking_anthropocene_*.csv</code></td>
@@ -1964,18 +1966,36 @@ available from the branch.</p>
 <h2>Tracking example and exploratory visualizations</h2>
 <p><code>R/stages/09a_tracking_example_and_visualizations.R</code> reads
 the canonical stage-09 products and writes the three diagnostic PDFs
-listed above. Thin trajectories use each offset’s finite-draw response
-medians at <code>interval_mid_cal_bp</code>. Thick lines use the
-existing 100-year reporting-grid medians at reporting age
-<code>t</code>, requiring finite transition medians in every configured
-offset separately for each response. Missing transitions and undefined
-values break trajectories; no extrapolation, smoothing or new
-aggregation is applied. The four rate responses share CCA units per
-century. Ratios are unitless and angle uses degrees; these receive
-separate facets, with the same scale across lakes within each response.
-The two Holocene ratios coincide because their elapsed times match. All
-supported transition rows remain visible, including sparse chronology
-support. Offsets are sensitivity realizations, not independent
+listed above. Both exploratory figures use four Holocene lake columns
+with aligned cal-BP axes and shared scales across lakes within each row.
+The rates figure has three rows: the four tracking rates together,
+standardized physical climate-change rate, and continuous fire activity.
+The second figure gives magnitude ratio, angle, climate rate and fire
+activity one row each. The duplicate Holocene rate-ratio display is
+omitted; both ratios remain in both model tables and can differ in the
+Anthropocene.</p>
+<p>Thin trajectories use each offset’s transition values at
+<code>interval_mid_cal_bp</code>. Response values are finite-draw
+medians. Thick response lines reuse the existing 100-year reporting-grid
+medians at <code>t</code>. For the climate/fire context only, transient
+plot summaries map each fixed transition predictor to dates using
+<code>[age_lo, age_hi)</code> and take its median across all configured
+offsets with finite support. These plot summaries are not exported and
+do not add metrics to the seven-response reporting CSV. Missing
+transitions and undefined values break lines; no extrapolation or
+smoothing is applied. All supported transition rows remain visible,
+including sparse chronology support.</p>
+<p>A fifth column shows MORA and NOCA boxplots of the same responses and
+climate predictor, using matching colors and all original 607 paired
+plots. Finite values are used separately for each metric, preserving
+valid responses when angle or pace is undefined. The Anthropocene column
+has its own labeled y-scales because the modern rates are substantially
+larger; the four Holocene columns retain shared scales by row. Modern
+continuous charcoal fire activity is unavailable, so that panel contains
+an annotation with no numeric fire axis. The original binary
+<code>burned</code> assignments remain in the model input and are not
+substituted for charcoal activity. MORA lakes share one regional fire
+history. Offsets are sensitivity realizations, not independent
 ecological replicates.</p>
 </div>
 </div>

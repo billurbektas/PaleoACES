@@ -778,13 +778,23 @@ fitted model; they do not change the selected axes or the analysis settings.
 ## Tracking example, exploratory visualizations and climate/fire display
 
 The metric example below shows how displacement, lag, ratio and angle follow
-from WA and LC endpoints. The next two exploratory figures read the compact
-lake-by-offset table. Thin trajectories show each offset at actual transition
-midpoints; thick lines use the existing 100-year median across all ten offsets,
-with response-specific complete-offset eligibility. The four rate responses
-share CCA units per century; ratios and angle have separate facets. Missing
-values break lines and sparse supported transitions remain visible. Offsets
-represent sensitivity placements, not independent ecological replicates.
+from WA and LC endpoints. The next two exploratory figures use four lake columns
+with aligned cal-BP axes. Thin trajectories show offsets at actual transition
+midpoints; thick response lines reuse the maintained complete-offset medians.
+Climate/fire predictor medians are transient plot context, mapped with the same
+half-open intervals and complete-offset rule; the scientific CSVs are unchanged.
+The rates figure has rows for tracking responses together, standardized climate
+rate and fire activity. The other figure gives magnitude ratio, angle, climate
+and fire one row each, omitting the duplicate Holocene rate-ratio display.
+Both ratios remain in the model inputs and can differ for modern plots.
+
+A fifth column shows MORA/NOCA paired-plot boxplots with matching colors and
+separate labeled y-scales. It uses all 607 pairs, retaining finite values per
+response independently. Modern continuous fire activity is unavailable and is
+annotated; binary burned assignments remain in the model input. MORA vegetation
+lakes share regional fire exposure. Missing values break trajectories and sparse
+supported transitions remain visible. Offsets are sensitivity placements,
+not independent ecological replicates.
 The fire-detection examples distinguish individual events from the subsequent
 classification of high-fire periods.
 
@@ -796,21 +806,21 @@ Script: [09a_tracking_example_and_visualizations.R](../R/stages/09a_tracking_exa
 
 ![Work through WA/LC movement, lag, ratio, and angle. — PDF page 1](assets/analysis/tracking_example-p1.png)
 
-### Explore all four lake trajectories across alternative offsets
+### Compare tracking responses, climate and fire in four lake columns with Anthropocene boxplots
 
-Thin colored trajectories show each offset’s chronology-draw medians at actual transition midpoints. Thick lines show the existing complete-offset reporting medians. Lag-change rate, observed turnover and both counterfactual effects share CCA units per century. Missing observations break lines; sparse supported transitions remain visible. Offsets are sensitivity placements, not independent replicates. **Exploratory**.
+Rows show four tracking rates together, standardized physical climate-change rate, and continuous fire activity. Four Holocene lake columns share aligned cal-BP axes and scales by row; thin lines show offsets and thick lines show complete-offset medians. A fifth column shows identically colored MORA/NOCA paired-plot boxplots using separate labeled y-scales. Modern continuous fire activity is unavailable and is annotated. MORA vegetation lakes share regional fire exposure. Offsets are sensitivity placements, not independent replicates. **Exploratory**.
 
 Script: [09a_tracking_example_and_visualizations.R](../R/stages/09a_tracking_example_and_visualizations.R). [Complete PDF](../plot/test_figures/fig_tracking_offset_rates.pdf) (1 page).
 
-![Explore all four lake trajectories across alternative offsets. — PDF page 1](assets/analysis/tracking_offset_rates-p1.png)
+![Compare tracking responses, climate and fire in four lake columns with Anthropocene boxplots. — PDF page 1](assets/analysis/tracking_offset_rates-p1.png)
 
-### Explore both tracking ratios and movement angle on their own scales
+### Compare magnitude tracking ratio, angle, climate and fire, one variable per row
 
-Separate response rows share a scale across four lake panels. Thin lines show individual offsets; thick lines use existing complete-offset reporting medians. The two ratios coincide for equal Holocene elapsed times. Dashed references mark ratio 1 and angle 90 degrees. All observed ranges are retained; undefined angle values remain missing. **Exploratory**.
+Four lake columns show magnitude tracking ratio, movement angle, standardized climate-change rate and fire activity in separate rows. The duplicate Holocene rate-ratio display is omitted; both ratios remain in the model inputs and can differ in the Anthropocene. A fifth column shows MORA/NOCA plot boxplots with matching colors and separate labeled y-scales; modern continuous fire activity is unavailable and annotated. Thin offset trajectories and thick complete-offset medians retain actual gaps and observed ranges. **Exploratory**.
 
 Script: [09a_tracking_example_and_visualizations.R](../R/stages/09a_tracking_example_and_visualizations.R). [Complete PDF](../plot/test_figures/fig_tracking_offset_ratios_angles.pdf) (1 page).
 
-![Explore both tracking ratios and movement angle on their own scales. — PDF page 1](assets/analysis/tracking_offset_ratios_angles-p1.png)
+![Compare magnitude tracking ratio, angle, climate and fire, one variable per row. — PDF page 1](assets/analysis/tracking_offset_ratios_angles-p1.png)
 
 ### Compare fire-event detection in all four lake records
 
@@ -1136,8 +1146,8 @@ current-results analysis.
 | [fig_holocene_climate_period_method_worked_example.pdf](../plot/test_figures/fig_holocene_climate_period_method_worked_example.pdf) | Expose signed changes, phase support, and era construction. | [13_holocene_climate_fire_eras.R](../R/stages/13_holocene_climate_fire_eras.R) | 1 | current |
 | [fig_holocene_fire_method_worked_example.pdf](../plot/test_figures/fig_holocene_fire_method_worked_example.pdf) | Work through centered event frequencies at 2,300 cal BP. | [13b_fire_method_worked_example.R](../R/stages/13b_fire_method_worked_example.R) | 1 | current |
 | [fig_method_worked_example.pdf](../plot/test_figures/fig_method_worked_example.pdf) | Work through WA/LC movement, lag, ratio, and angle. | [09a_tracking_example_and_visualizations.R](../R/stages/09a_tracking_example_and_visualizations.R) | 1 | current |
-| [fig_tracking_offset_rates.pdf](../plot/test_figures/fig_tracking_offset_rates.pdf) | Explore all four lake trajectories across alternative offsets. | [09a_tracking_example_and_visualizations.R](../R/stages/09a_tracking_example_and_visualizations.R) | 1 | exploratory |
-| [fig_tracking_offset_ratios_angles.pdf](../plot/test_figures/fig_tracking_offset_ratios_angles.pdf) | Explore both tracking ratios and movement angle on their own scales. | [09a_tracking_example_and_visualizations.R](../R/stages/09a_tracking_example_and_visualizations.R) | 1 | exploratory |
+| [fig_tracking_offset_rates.pdf](../plot/test_figures/fig_tracking_offset_rates.pdf) | Compare tracking responses, climate and fire in four lake columns with Anthropocene boxplots. | [09a_tracking_example_and_visualizations.R](../R/stages/09a_tracking_example_and_visualizations.R) | 1 | exploratory |
+| [fig_tracking_offset_ratios_angles.pdf](../plot/test_figures/fig_tracking_offset_ratios_angles.pdf) | Compare magnitude tracking ratio, angle, climate and fire, one variable per row. | [09a_tracking_example_and_visualizations.R](../R/stages/09a_tracking_example_and_visualizations.R) | 1 | exploratory |
 | [test_chelsa_cruts_vs_present.pdf](../plot/test_figures/test_chelsa_cruts_vs_present.pdf) | Retain the older product-comparison reference outside current results. | [test_chelsa_cruts_vs_present.R](../R/diagnostics/test_chelsa_cruts_vs_present.R) | Full PDF only | historical reference |
 
 ## TraCE21k–V2.1 comparison and planned sensitivity
