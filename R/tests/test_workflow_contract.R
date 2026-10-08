@@ -20,17 +20,13 @@ position = function(path) {
   hit
 }
 
-# Producers must precede consumers on a fresh output tree.
+# Calibration reference precedes classifications, then canonical metrics and examples.
 stopifnot(
-  position("R/stages/09_tracking_metrics.R") < position("R/stages/13_holocene_climate_fire_eras.R"),
+  position("R/stages/05_cca_model.R") < position("R/stages/13_holocene_climate_fire_eras.R"),
   position("R/stages/12_walsh_fire_reproduction.R") < position("R/stages/13_holocene_climate_fire_eras.R"),
+  position("R/stages/13_holocene_climate_fire_eras.R") < position("R/stages/09_tracking_metrics.R"),
   position("R/stages/13_holocene_climate_fire_eras.R") < position("R/stages/05a_cca_figure.R"),
-  position("R/stages/13_holocene_climate_fire_eras.R") < position("R/stages/09b_tracking_visualization_data.R"),
-  position("R/stages/09b_tracking_visualization_data.R") < position("R/stages/09c_tracking_comparison.R"),
-  position("R/stages/09_tracking_metrics.R") < position("R/stages/14_cca_direction_analysis.R"),
-  position("R/stages/13_holocene_climate_fire_eras.R") < position("R/stages/14_cca_direction_analysis.R"),
-  position("R/stages/09c_tracking_comparison.R") < position("R/stages/14_cca_direction_analysis.R"),
-  position("R/stages/14_cca_direction_analysis.R") < position("R/tests/test_cca_direction_analysis.R"))
+  position("R/stages/09_tracking_metrics.R") < position("R/stages/09a_method_example.R"))
 
 # --skip-figures is a render option, not an analysis-stage branch.
 stopifnot(
@@ -39,7 +35,6 @@ stopifnot(
   !grepl("if (!skip_figures)", workflow, fixed = TRUE))
 
 analysis_stages = c(
-  "R/stages/09_tracking_metrics_500yr_sensitivity.R",
   "R/stages/09_tracking_metrics.R",
   "R/stages/12_walsh_fire_reproduction.R",
   "R/stages/13_holocene_climate_fire_eras.R",
@@ -47,19 +42,13 @@ analysis_stages = c(
   "R/stages/09a_method_example.R",
   "R/stages/12a_fire_event_detection_worked_example.R",
   "R/stages/13a_climate_change_figure.R",
-  "R/stages/13b_fire_method_worked_example.R",
-  "R/stages/09b_tracking_visualization_data.R",
-  "R/stages/09c_tracking_comparison.R",
-  "R/stages/14_cca_direction_analysis.R")
+  "R/stages/13b_fire_method_worked_example.R")
 stopifnot(all(analysis_stages %in% calls))
 
 automatic_gates = c(
-  "R/tests/test_cca_tracking_visualizations.R",
   "R/tests/test_walsh_fire_reproduction.R",
   "R/tests/test_holocene_climate_fire_eras.R",
   "R/tests/test_cca_trajectory_figure.R",
-  "R/tests/test_cca_direction_geometry.R",
-  "R/tests/test_cca_direction_analysis.R",
   "R/tests/test_figure_output_contract.R",
   "R/tests/test_workflow_contract.R",
   "R/tests/test_documentation.R")
@@ -72,8 +61,7 @@ render_aware = c(
   "R/stages/09a_method_example.R",
   "R/stages/12_walsh_fire_reproduction.R", "R/stages/12a_fire_event_detection_worked_example.R",
   "R/stages/13_holocene_climate_fire_eras.R", "R/stages/13a_climate_change_figure.R",
-  "R/stages/13b_fire_method_worked_example.R", "R/stages/09c_tracking_comparison.R",
-  "R/stages/14_cca_direction_analysis.R")
+  "R/stages/13b_fire_method_worked_example.R")
 for (path in render_aware) {
   code = paste(readLines(here(path), warn = FALSE, encoding = "UTF-8"), collapse = "\n")
   if (!grepl("paleoaces.render_figures", code, fixed = TRUE))

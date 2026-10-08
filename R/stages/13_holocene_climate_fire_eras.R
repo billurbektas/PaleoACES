@@ -3,7 +3,7 @@
 # =============================================================================
 # Literature-blind unified Holocene climate-era and high-fire-period analysis.
 # Climate and fire are classified independently. This stage freezes the era
-# grid; site-level vegetation tracking joins it later without moving boundaries.
+# grid; lake-level vegetation tracking joins it later without moving boundaries.
 
 suppressPackageStartupMessages({
   library(here); library(tidyverse); library(patchwork)
@@ -23,7 +23,7 @@ required = c(CLIMATE_INPUT, CLIMATE_SCALING, FIRE_EVENTS, FIRE_SERIES,
              FIRE_SETTINGS)
 if (!all(file.exists(required))) stop("Missing unified-era input(s): ",
   paste(required[!file.exists(required)], collapse = ", "),
-  ". Run tracking and R/stages/12_walsh_fire_reproduction.R first.")
+  ". Run CCA reference and R/stages/12_walsh_fire_reproduction.R first.")
 
 # The interpretive stage is read-only with respect to the fitted analysis,
 # climate caches, chronology products, and active paleo-fire assignments.
@@ -31,11 +31,6 @@ protected_paths = c(
   here("output/MORA_climate.csv"), here("output/NOCA_climate.csv"),
   here("output/chelsa_paleo_ponds.csv"),
   here("output/cca_tracking_climate_scaling.csv"),
-  here("output/cca_tracking_anthropocene_plot.csv"),
-  here("output/cca_tracking_anthropocene_site.csv"),
-  here("output/cca_tracking_holocene_realizations.csv"),
-  here("output/cca_tracking_holocene_by_offset.csv"),
-  here("output/cca_tracking_holocene_timeseries.csv"),
   here("output/bacon_run_manifest.csv"), here("output/fire_walsh.csv"),
   here("output/paleo_fire.csv"))
 if (file.exists(here("output/bacon_run_manifest.csv"))) {
@@ -108,7 +103,7 @@ era_catalog = climate$era_catalog |>
     })) |>
   mutate(analytical_status = paste(
     "literature-blind operational era; joined downstream to descriptive",
-    "site-level tracking summaries without changing boundaries"))
+    "lake-level tracking summaries without changing boundaries"))
 
 # Descriptive subdivisions are permitted only where an internal, sustained
 # low-driver interval separates two multi-driver parts of a climate-change era.

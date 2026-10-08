@@ -14,20 +14,12 @@
 #   species_past_final, env_past_final  the calibration matrices
 #   predicted_present / projected_present, predicted_paleo / projected_paleo
 #   comparison_df   per-sample predicted (LC) + observed (WA) positions, all eras
-#   lag_std         comparison_df + the OLD position-based metric and clim_dist
 #   env, species_complete, site_lookup, keep_species
 #   cca_sample_eligibility / cca_pair_eligibility  exclusion reasons and membership
 #   cca_eligibility_counts / cca_exclusion_summary  report tables, before fitting
 #   species_past_paired / env_past_paired  legacy endpoints of valid modern pairs
 #   color_mt, color_site_era, color_era_pp
 #
-# Note on the old metric: euclidean_dist_2D / lag_per_climdist in comparison_df
-# and lag_std are the SUPERSEDED position-based lag. They remain computable only
-# for historical or interactive compatibility; no maintained workflow output
-# consumes them. Current work uses the vector metric specification calculated by
-# R/stages/09_tracking_metrics.R. The earlier framing remains in Git history.
-# =============================================================================
-
 library(here)
 library(tidyverse)
 library(vegan)
@@ -619,32 +611,14 @@ comparison_df = bind_rows(
     left_join(site_fire_info_paleo, by = "plot_id") %>%
     mutate(era = "holocene")
 ) %>%
-  # OLD position-based metric - superseded, kept for the S2 comparison only.
-  # Every row now passed the common WA/LC eligibility section before projection.
   {cat("\ncomparison_df: ", nrow(.), " of ",
        nrow(species_present_final) + nrow(species_paleo),
        " eligible samples positioned; exclusions are in cca_exclusion_summary.\n",
-       sep = ""); .} %>%
-  mutate(diff_CCA1 = abs(projected_CCA1 - predicted_CCA1),
-         diff_CCA2 = abs(projected_CCA2 - predicted_CCA2),
-         diff_CCA3 = abs(projected_CCA3 - predicted_CCA3),
-         euclidean_dist_2D = sqrt(diff_CCA1^2 + diff_CCA2^2),
-         euclidean_dist_3D = sqrt(diff_CCA1^2 + diff_CCA2^2 + diff_CCA3^2))
+       sep = ""); .}
 
-# -----------------------------------------------------------------------------
-# lag_std - old metric standardized by climatic distance. Retained for
-# historical or interactive compatibility; no maintained output consumes it.
-# -----------------------------------------------------------------------------
-past_lc = predict(cca_model, newdata = env_past_final, type = "lc", scaling = cca_scaling, hill = cca_hill)
-past_lc_centroid = tibble(plot_id = rownames(species_past_final),
-                          lc1 = past_lc[, 1], lc2 = past_lc[, 2]) %>%
-  left_join(env %>% filter(period == "past") %>% distinct(plot_id, site), by = "plot_id") %>%
-  group_by(site) %>%
-  summarize(c1 = mean(lc1), c2 = mean(lc2), .groups = "drop")
-
-lag_std = comparison_df %>%
-  left_join(past_lc_centroid, by = "site") %>%
-  mutate(clim_dist = sqrt((predicted_CCA1 - c1)^2 + (predicted_CCA2 - c2)^2),
-         lag_per_climdist = euclidean_dist_2D / clim_dist,
-         bp_year = as.numeric(str_match(plot_id, "_(-?\\d+)_BP$")[, 2])) %>%
-  filter(!is.na(clim_dist), clim_dist > 0)
+# Publish the existing primary fit before climate/fire classification and tracking.
+# Diagnostic alternative calibrations must never overwrite this reference.
+if (count.thr == CCA_COUNT_THRESHOLD && !length(extra_exclude) && !nzchar(cca_suffix)) {
+  source(here('R/helpers/cca_reference.R'), local = TRUE)
+  export_cca_reference(environment())
+}

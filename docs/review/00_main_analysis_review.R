@@ -18,18 +18,14 @@
 # 11. R/stages/000_PALEO_e_climate.R
 # 12. R/stages/000_occurrence_data_consolidate.R
 # 13. R/stages/05_cca_model.R
-# 14. R/stages/09_tracking_metrics_500yr_sensitivity.R
-# 15. R/stages/09_tracking_metrics.R
-# 16. R/stages/12_walsh_fire_reproduction.R
-# 17. R/stages/13_holocene_climate_fire_eras.R
-# 18. R/stages/05a_cca_figure.R
-# 19. R/stages/09a_method_example.R
-# 20. R/stages/12a_fire_event_detection_worked_example.R
-# 21. R/stages/13a_climate_change_figure.R
-# 22. R/stages/13b_fire_method_worked_example.R
-# 23. R/stages/09b_tracking_visualization_data.R
-# 24. R/stages/09c_tracking_comparison.R
-# 25. R/stages/14_cca_direction_analysis.R
+# 14. R/stages/12_walsh_fire_reproduction.R
+# 15. R/stages/13_holocene_climate_fire_eras.R
+# 16. R/stages/09_tracking_metrics.R
+# 17. R/stages/05a_cca_figure.R
+# 18. R/stages/09a_method_example.R
+# 19. R/stages/12a_fire_event_detection_worked_example.R
+# 20. R/stages/13a_climate_change_figure.R
+# 21. R/stages/13b_fire_method_worked_example.R
 
 # ============================================================================
 # BEGIN R/stages/000_MORA_cleaning.R
@@ -4208,20 +4204,12 @@ if (VERIFY_AGAINST_RAW) {
 #   species_past_final, env_past_final  the calibration matrices
 #   predicted_present / projected_present, predicted_paleo / projected_paleo
 #   comparison_df   per-sample predicted (LC) + observed (WA) positions, all eras
-#   lag_std         comparison_df + the OLD position-based metric and clim_dist
 #   env, species_complete, site_lookup, keep_species
 #   cca_sample_eligibility / cca_pair_eligibility  exclusion reasons and membership
 #   cca_eligibility_counts / cca_exclusion_summary  report tables, before fitting
 #   species_past_paired / env_past_paired  legacy endpoints of valid modern pairs
 #   color_mt, color_site_era, color_era_pp
 #
-# Note on the old metric: euclidean_dist_2D / lag_per_climdist in comparison_df
-# and lag_std are the SUPERSEDED position-based lag. They remain computable only
-# for historical or interactive compatibility; no maintained workflow output
-# consumes them. Current work uses the vector metric specification calculated by
-# R/stages/09_tracking_metrics.R. The earlier framing remains in Git history.
-# =============================================================================
-
 library(here)
 library(tidyverse)
 library(vegan)
@@ -4813,414 +4801,18 @@ comparison_df = bind_rows(
     left_join(site_fire_info_paleo, by = "plot_id") %>%
     mutate(era = "holocene")
 ) %>%
-  # OLD position-based metric - superseded, kept for the S2 comparison only.
-  # Every row now passed the common WA/LC eligibility section before projection.
   {cat("\ncomparison_df: ", nrow(.), " of ",
        nrow(species_present_final) + nrow(species_paleo),
        " eligible samples positioned; exclusions are in cca_exclusion_summary.\n",
-       sep = ""); .} %>%
-  mutate(diff_CCA1 = abs(projected_CCA1 - predicted_CCA1),
-         diff_CCA2 = abs(projected_CCA2 - predicted_CCA2),
-         diff_CCA3 = abs(projected_CCA3 - predicted_CCA3),
-         euclidean_dist_2D = sqrt(diff_CCA1^2 + diff_CCA2^2),
-         euclidean_dist_3D = sqrt(diff_CCA1^2 + diff_CCA2^2 + diff_CCA3^2))
+       sep = ""); .}
 
-# -----------------------------------------------------------------------------
-# lag_std - old metric standardized by climatic distance. Retained for
-# historical or interactive compatibility; no maintained output consumes it.
-# -----------------------------------------------------------------------------
-past_lc = predict(cca_model, newdata = env_past_final, type = "lc", scaling = cca_scaling, hill = cca_hill)
-past_lc_centroid = tibble(plot_id = rownames(species_past_final),
-                          lc1 = past_lc[, 1], lc2 = past_lc[, 2]) %>%
-  left_join(env %>% filter(period == "past") %>% distinct(plot_id, site), by = "plot_id") %>%
-  group_by(site) %>%
-  summarize(c1 = mean(lc1), c2 = mean(lc2), .groups = "drop")
-
-lag_std = comparison_df %>%
-  left_join(past_lc_centroid, by = "site") %>%
-  mutate(clim_dist = sqrt((predicted_CCA1 - c1)^2 + (predicted_CCA2 - c2)^2),
-         lag_per_climdist = euclidean_dist_2D / clim_dist,
-         bp_year = as.numeric(str_match(plot_id, "_(-?\\d+)_BP$")[, 2])) %>%
-  filter(!is.na(clim_dist), clim_dist > 0)
+# Publish the existing primary fit before climate/fire classification and tracking.
+# Diagnostic alternative calibrations must never overwrite this reference.
+if (count.thr == CCA_COUNT_THRESHOLD && !length(extra_exclude) && !nzchar(cca_suffix)) {
+  source(here('R/helpers/cca_reference.R'), local = TRUE)
+  export_cca_reference(environment())
+}
 # END R/stages/05_cca_model.R
-
-# ============================================================================
-# BEGIN R/stages/09_tracking_metrics_500yr_sensitivity.R
-# ============================================================================
-# =============================================================================
-# 09_tracking_metrics_500yr_sensitivity.R
-# =============================================================================
-# Explicit sensitivity companion to the authoritative 1,000-year tracking run.
-# It writes only names carrying `_500yr`; Anthropocene tables are regenerated
-# identically and are overwritten by the primary stage when run in workflow
-# order. No model, score scaling, climate cache, or Bacon output is changed.
-
-TRACKING_OUTPUT_SUFFIX = "_500yr"
-sys.source(here::here("R/stages/09_tracking_metrics.R"), envir = environment())
-# END R/stages/09_tracking_metrics_500yr_sensitivity.R
-
-# ============================================================================
-# BEGIN R/stages/09_tracking_metrics.R
-# ============================================================================
-# =============================================================================
-# 09_tracking_metrics.R - authoritative CCA tracking and climate-rate stage
-# =============================================================================
-# Run directly:
-#   Rscript R/stages/09_tracking_metrics.R
-#
-# Reads the fitted pooled CCA and the primary 1,000-year x 100-year-phase x Bacon
-# draw framework. Writes plot/realization/site-level tracking tables but no
-# figures. Compatibility objects and CSVs are retained for the worked-method
-# figure and provenance, but the retired offset figures are no longer drawn.
-# =============================================================================
-
-suppressPackageStartupMessages({
-  library(here)
-  library(tidyverse)
-})
-if (!exists("extra_exclude")) extra_exclude = character(0)
-if (!exists("cca_suffix")) cca_suffix = ""
-# The primary run is 1,000 years. R/stages/09_tracking_metrics_500yr_sensitivity.R
-# sets these objects before sourcing this file and writes explicitly suffixed
-# sensitivity products. Anthropocene results are invariant to this setting.
-if (!exists("TRACKING_OUTPUT_SUFFIX", inherits = FALSE))
-  TRACKING_OUTPUT_SUFFIX = ""
-if (identical(TRACKING_OUTPUT_SUFFIX, "_500yr")) {
-  HOLO_BIN = 500
-  OFFSETS = seq(0, 400, by = 100)
-} else {
-  # Force the primary contract locally. Do not inherit 500-year constants left
-  # by the trajectory figure or another sourced stage in the workflow driver.
-  HOLO_BIN = 1000
-  OFFSETS = seq(0, 900, by = 100)
-}
-source(here("R/stages/05_cca_model.R"), local = TRUE)
-source(here("R/helpers/paleo_runs.R"), local = TRUE)
-source(here("R/helpers/climate_variables.R"), local = TRUE)
-source(here("R/helpers/tracking_metrics.R"), local = TRUE)
-
-if (!exists("USE_CORRECTED")) USE_CORRECTED = PALEO_USE_BIAS_CORRECTED
-if (!exists("TRACKING_EPS")) TRACKING_EPS = TRACKING_EPSILON
-
-CLIM_VARS = CCA_CLIMATE_VARS
-ALL_TRACKING_METRICS = all_cca_metric_names(CLIM_VARS)
-METRICS = c("d_climate", "d_vegetation", "d_offset", "d_offset_vec")
-
-holo_output = function(stem) {
-  here("output", paste0(stem, TRACKING_OUTPUT_SUFFIX, ".csv"))
-}
-
-# =============================================================================
-# NEW: FIXED CLIMATE STANDARDIZATION REFERENCE
-# =============================================================================
-climate_scaling = make_climate_scaling(env_past_final, CLIM_VARS)
-write_csv(climate_scaling, here("output/cca_tracking_climate_scaling.csv"))
-
-# Nominal climate-window midpoints. The four constraints share one LC endpoint,
-# so its rate uses the documented window midpoint rather than variable-specific
-# effective-year adjustments.
-
-# =============================================================================
-# NEW: HOLOCENE ENDPOINTS AND REALIZATION-LEVEL METRICS
-# =============================================================================
-# Climate belongs to fixed time bins, not samples. Each bin is the equally
-# weighted site mean of its ponds and must contain every native 100-year slice.
-N_CLIMATE_SLICES_PER_BIN = as.integer(HOLO_BIN / 100)
-ponds = read_csv(here("output/chelsa_paleo_ponds.csv"), show_col_types = FALSE)
-
-env_slice = ponds %>%
-  transmute(unit = lake, period = "paleo", variable, time = slice, month,
-            value = if (USE_CORRECTED) value_corrected else value_raw) %>%
-  derive_climate_vars(winter_shift = FALSE) %>%
-  rename(lake = unit, slice = time) %>%
-  mutate(age = 1950 - slice * 100) %>%
-  left_join(ponds %>% distinct(lake, site), by = "lake")
-
-mora_spread = env_slice %>%
-  filter(site == "MORA") %>%
-  group_by(slice) %>%
-  summarize(across(all_of(CLIM_VARS), ~ diff(range(.x))), .groups = "drop")
-cat("\nMORA between-pond range at the same slice (max over slices):\n")
-print(as.data.frame(mora_spread %>%
-  summarize(across(all_of(CLIM_VARS), ~ round(max(.x), 3)))))
-
-clim_bins = expand_grid(offset = OFFSETS, env_slice) %>%
-  mutate(bin = floor((age - offset) / HOLO_BIN) * HOLO_BIN + offset,
-         bin_mid = bin + HOLO_BIN / 2) %>%
-  group_by(site, offset, bin_mid, lake) %>%
-  summarize(across(all_of(CLIM_VARS), mean), n_slices = n(), .groups = "drop") %>%
-  group_by(site, offset, bin_mid) %>%
-  summarize(across(all_of(CLIM_VARS), mean), n_slices = min(n_slices),
-            n_lakes = n(), .groups = "drop")
-
-cat("\nclimate bins with fewer than ", N_CLIMATE_SLICES_PER_BIN,
-    " native slices: ", sum(clim_bins$n_slices < N_CLIMATE_SLICES_PER_BIN),
-    " of ", nrow(clim_bins), " (dropped)\n", sep = "")
-clim_bins = clim_bins %>% filter(n_slices == N_CLIMATE_SLICES_PER_BIN)
-
-clim_lc = predict(cca_model, newdata = as.data.frame(clim_bins[, CLIM_VARS]),
-                  type = "lc", scaling = cca_scaling, hill = cca_hill)
-clim_bins = clim_bins %>% mutate(p1 = clim_lc[, 1], p2 = clim_lc[, 2])
-
-# Retain the established within-bin method: average sample WA positions within
-# each age-draw realization. Do not pool sample presences into a union assemblage.
-holo_obs = comparison_df %>%
-  filter(era == "holocene") %>%
-  select(plot_id, site, o1 = projected_CCA1, o2 = projected_CCA2)
-
-runs = make_runs(bin_width = HOLO_BIN, offsets = OFFSETS)
-obs_bins = runs %>%
-  inner_join(holo_obs, by = "plot_id") %>%
-  group_by(site, run_id, draw, offset, bin_mid) %>%
-  summarize(o1 = mean(o1), o2 = mean(o2), n_samples = n(), .groups = "drop")
-
-bins = obs_bins %>%
-  inner_join(
-    clim_bins %>% select(site, offset, bin_mid, p1, p2, all_of(CLIM_VARS)),
-    by = c("site", "offset", "bin_mid")
-  )
-
-# t1 is the older bin and t2 the next younger bin. Lead every endpoint column,
-# including the physical climate variables, before calculating any metric.
-intervals_all = bins %>%
-  arrange(site, run_id, desc(bin_mid)) %>%
-  group_by(site, run_id) %>%
-  mutate(across(c(o1, o2, p1, p2, n_samples, bin_mid, all_of(CLIM_VARS)),
-                ~ lead(.x), .names = "{.col}_2")) %>%
-  ungroup() %>%
-  filter(!is.na(bin_mid_2)) %>%
-  mutate(gap = bin_mid - bin_mid_2)
-
-cat("\nintervals between non-adjacent bins (dropped): ",
-    sum(intervals_all$gap != HOLO_BIN), " of ", nrow(intervals_all), "\n", sep = "")
-
-intervals = intervals_all %>%
-  filter(gap == HOLO_BIN) %>%
-  mutate(
-    vegetation_dt_years = as.numeric(HOLO_BIN),
-    climate_dt_years = as.numeric(HOLO_BIN),
-    n_min = pmin(n_samples, n_samples_2),
-    sparse_bin = n_min < 2L,
-    age_hi = bin_mid,
-    age_lo = bin_mid_2
-  ) %>%
-  calculate_tracking_metrics(epsilon = TRACKING_EPS) %>%
-  add_climate_change_metrics(climate_scaling, CLIM_VARS)
-
-stopifnot(all(intervals$age_hi - intervals$age_lo == HOLO_BIN),
-          all(intervals$offset %in% OFFSETS),
-          !anyDuplicated(intervals %>% select(site, offset, draw, age_hi, age_lo)))
-
-write_csv(intervals, holo_output("cca_tracking_holocene_realizations"))
-write_csv(filter(intervals, n_min >= 2L),
-          holo_output("cca_tracking_holocene_realizations_nmin2"))
-
-# LEVEL 1: posterior summaries across age draws, separately within each offset
-# and actual Holocene interval. These quantiles describe chronology uncertainty,
-# not ecological replication and not confidence intervals.
-holo_by_offset = summarize_metric_distribution(
-  intervals,
-  c("site", "offset", "age_hi", "age_lo"),
-  ALL_TRACKING_METRICS
-)
-
-holo_interval_support = intervals %>%
-  group_by(site, offset, age_hi, age_lo) %>%
-  summarize(
-    n_draws_present = n_distinct(draw),
-    n_per_bin = median(n_min),
-    n_small_predicted = sum(small_predicted_movement),
-    n_small_observed = sum(small_observed_movement),
-    .groups = "drop"
-  )
-holo_by_offset = holo_by_offset %>%
-  left_join(holo_interval_support,
-            by = c("site", "offset", "age_hi", "age_lo"))
-write_csv(holo_by_offset, holo_output("cca_tracking_holocene_by_offset"))
-
-# LEVEL 2: expose every per-offset step function on the established 100-year
-# grid, then summarize the offset medians. Intervals are half-open on the older
-# endpoint: age_lo <= t < age_hi. This prevents a boundary date from belonging
-# to two adjacent intervals in the same offset. Posterior quantiles and phase
-# sensitivity remain separate rather than being pooled.
-grid = tibble(t = seq(floor(min(intervals$age_lo) / 100) * 100,
-                      ceiling(max(intervals$age_hi) / 100) * 100, by = 100))
-
-holo_by_offset_grid = holo_by_offset %>%
-  inner_join(grid, by = join_by(y$t >= x$age_lo, y$t < x$age_hi))
-
-if (anyDuplicated(holo_by_offset_grid %>%
-    select(site, offset, metric, t)))
-  stop("Half-open interval mapping produced duplicate site-offset-metric dates")
-
-cat("\n(offset, interval) metric rows with fewer than 50% of ", N_DRAWS,
-    " draws (retained and audited): ",
-    sum(holo_by_offset$n_draws_present < 0.5 * N_DRAWS), " of ",
-    nrow(holo_by_offset), "\n", sep = "")
-
-holo_timeseries_all = holo_by_offset_grid %>%
-  group_by(site, metric, unit, t) %>%
-  summarize(
-    estimate = median(median),
-    age_q025 = median(q025),
-    age_q975 = median(q975),
-    phase_min = min(median),
-    phase_q25 = quantile(median, 0.25),
-    phase_q75 = quantile(median, 0.75),
-    phase_max = max(median),
-    n_offsets = n_distinct(offset),
-    n_draws_min = min(n_draws_present),
-    n_draws_median = median(n_draws_present),
-    n_per_bin = median(n_per_bin),
-    .groups = "drop"
-  )
-
-cat("grid points dropped (fewer than all ", length(OFFSETS), " offsets present): ",
-    sum(holo_timeseries_all$n_offsets < length(OFFSETS)), " of ",
-    nrow(holo_timeseries_all), "\n", sep = "")
-holo_timeseries = holo_timeseries_all %>%
-  filter(n_offsets == length(OFFSETS))
-write_csv(holo_timeseries, holo_output("cca_tracking_holocene_timeseries"))
-
-# Existing figure interfaces. These retain the historical names, but d_climate
-# is now explicitly documented as predicted VEGETATION displacement from LC
-# scores, not physical climate change.
-by_offset = holo_by_offset_grid %>%
-  filter(metric %in% c(
-    "predicted_vegetation_displacement", "observed_vegetation_displacement",
-    "change_in_lag", "tracking_error"
-  )) %>%
-  mutate(metric = recode(
-    metric,
-    predicted_vegetation_displacement = "d_climate",
-    observed_vegetation_displacement = "d_vegetation",
-    change_in_lag = "d_offset",
-    tracking_error = "d_offset_vec"
-  )) %>%
-  transmute(site, metric, offset, t, med = median, lo = q025, hi = q975,
-            n_draws = n_draws_present, n_per_bin)
-
-series = by_offset %>%
-  group_by(site, metric, t) %>%
-  summarize(
-    est = median(med),
-    age_lo = median(lo),
-    age_hi = median(hi),
-    phase_min = min(med),
-    phase_max = max(med),
-    n_offsets = n_distinct(offset),
-    n_per_bin = median(n_per_bin),
-    .groups = "drop"
-  ) %>%
-  filter(n_offsets == length(OFFSETS))
-
-write_csv(series, holo_output("offset_timeseries"))
-write_csv(by_offset, holo_output("offset_timeseries_by_offset"))
-
-# =============================================================================
-# NEW: ANTHROPOCENE PLOT-LEVEL ENDPOINTS AND METRICS
-# =============================================================================
-past_scores = tibble(
-  plot_id = rownames(species_past_paired),
-  o1 = predict(cca_model, newdata = species_past_paired, type = "wa",
-               scaling = cca_scaling, hill = cca_hill)[, 1],
-  o2 = predict(cca_model, newdata = species_past_paired, type = "wa",
-               scaling = cca_scaling, hill = cca_hill)[, 2],
-  p1 = predict(cca_model, newdata = env_past_paired, type = "lc",
-               scaling = cca_scaling, hill = cca_hill)[, 1],
-  p2 = predict(cca_model, newdata = env_past_paired, type = "lc",
-               scaling = cca_scaling, hill = cca_hill)[, 2]
-) %>% bind_cols(as_tibble(env_past_paired) %>% select(all_of(CLIM_VARS)))
-
-present_scores = tibble(
-  plot_id = rownames(species_present_final),
-  o1_2 = projected_present[, 1], o2_2 = projected_present[, 2],
-  p1_2 = predicted_present[, 1], p2_2 = predicted_present[, 2]
-) %>% bind_cols(
-  as_tibble(env_present_final) %>%
-    select(all_of(CLIM_VARS)) %>%
-    rename_with(~ paste0(.x, "_2"))
-)
-
-# The cleaners resolved adult visits once. Climate windows and both elapsed
-# times come from that same plot-year table; no seedling minima or site means.
-source(here("R/helpers/survey_years.R"), local = TRUE)
-resurvey_years = read_plot_years()
-
-# Membership and finite WA/LC positions were resolved once in the CCA stage.
-anth = tibble(plot_id = present_pairs) %>%
-  left_join(past_scores, by = "plot_id") %>%
-  left_join(present_scores, by = "plot_id") %>%
-  left_join(site_lookup, by = "plot_id") %>%
-  left_join(resurvey_years, by = c("site", "plot_id"))
-
-if (anyNA(anth$vegetation_t2_year) ||
-    any(!is.finite(anth$vegetation_dt_years) | anth$vegetation_dt_years <= 0))
-  stop("Every Anthropocene modeled plot must have one valid positive vegetation interval")
-
-anth = anth %>%
-  calculate_tracking_metrics(epsilon = TRACKING_EPS) %>%
-  add_climate_change_metrics(climate_scaling, CLIM_VARS) %>%
-  mutate(dt = vegetation_dt_years)  # compatibility alias
-
-cat("\nAnthropocene tracking pairs:\n")
-print(as.data.frame(anth %>% count(site, name = "n_pairs")), row.names = FALSE)
-
-write_csv(anth, here("output/cca_tracking_anthropocene_plot.csv"))
-if (!nzchar(TRACKING_OUTPUT_SUFFIX)) {
-  source(here("R/helpers/survey_decision_effects.R"), local = TRUE)
-  export_survey_decision_effects(anth)
-}
-
-anth_support = anth %>%
-  group_by(site) %>%
-  summarize(
-    n_plots = n(),
-    n_small_predicted = sum(small_predicted_movement),
-    n_small_observed = sum(small_observed_movement),
-    vegetation_dt_min = min(vegetation_dt_years),
-    vegetation_dt_max = max(vegetation_dt_years),
-    climate_dt_min = min(climate_dt_years),
-    climate_dt_max = max(climate_dt_years),
-    climate_dt_median = median(climate_dt_years),
-    .groups = "drop"
-  )
-anth_site = summarize_metric_distribution(
-  anth, "site", ALL_TRACKING_METRICS
-) %>% left_join(anth_support, by = "site")
-write_csv(anth_site, here("output/cca_tracking_anthropocene_site.csv"))
-
-# Compatibility objects/files consumed by the existing figures.
-write_csv(anth, here("output/offset_anthropocene.csv"))
-anth_long = anth %>%
-  pivot_longer(all_of(METRICS), names_to = "metric", values_to = "value")
-
-ANTH_VEG_DT_RANGE = anth %>%
-  group_by(site) %>%
-  summarize(dt_min = min(vegetation_dt_years),
-            dt_max = max(vegetation_dt_years), .groups = "drop")
-ANTH_VEG_DT_LABEL = setNames(
-  ifelse(ANTH_VEG_DT_RANGE$dt_min == ANTH_VEG_DT_RANGE$dt_max,
-         as.character(ANTH_VEG_DT_RANGE$dt_min),
-         paste0(ANTH_VEG_DT_RANGE$dt_min, "-", ANTH_VEG_DT_RANGE$dt_max)),
-  ANTH_VEG_DT_RANGE$site
-)
-
-TRACKING_METRICS_READY = TRUE
-
-cat("\nWritten tracking outputs:\n",
-    "  output/cca_tracking_climate_scaling.csv\n",
-    "  output/cca_tracking_anthropocene_plot.csv\n",
-    "  output/cca_tracking_anthropocene_site.csv\n",
-    "  output/cca_tracking_holocene_realizations.csv\n",
-    "  output/cca_tracking_holocene_by_offset.csv\n",
-    "  output/cca_tracking_holocene_timeseries.csv\n",
-    "  primary/suffixed Holocene interval outputs for ", HOLO_BIN,
-    "-year bins\n", sep = "")
-# =============================================================================
-# END NEW TRACKING STAGE
-# =============================================================================
-# END R/stages/09_tracking_metrics.R
 
 # ============================================================================
 # BEGIN R/stages/12_walsh_fire_reproduction.R
@@ -5428,7 +5020,7 @@ cat("Wrote source series and accepted events for the independent era stage.\n")
 # =============================================================================
 # Literature-blind unified Holocene climate-era and high-fire-period analysis.
 # Climate and fire are classified independently. This stage freezes the era
-# grid; site-level vegetation tracking joins it later without moving boundaries.
+# grid; lake-level vegetation tracking joins it later without moving boundaries.
 
 suppressPackageStartupMessages({
   library(here); library(tidyverse); library(patchwork)
@@ -5448,7 +5040,7 @@ required = c(CLIMATE_INPUT, CLIMATE_SCALING, FIRE_EVENTS, FIRE_SERIES,
              FIRE_SETTINGS)
 if (!all(file.exists(required))) stop("Missing unified-era input(s): ",
   paste(required[!file.exists(required)], collapse = ", "),
-  ". Run tracking and R/stages/12_walsh_fire_reproduction.R first.")
+  ". Run CCA reference and R/stages/12_walsh_fire_reproduction.R first.")
 
 # The interpretive stage is read-only with respect to the fitted analysis,
 # climate caches, chronology products, and active paleo-fire assignments.
@@ -5456,11 +5048,6 @@ protected_paths = c(
   here("output/MORA_climate.csv"), here("output/NOCA_climate.csv"),
   here("output/chelsa_paleo_ponds.csv"),
   here("output/cca_tracking_climate_scaling.csv"),
-  here("output/cca_tracking_anthropocene_plot.csv"),
-  here("output/cca_tracking_anthropocene_site.csv"),
-  here("output/cca_tracking_holocene_realizations.csv"),
-  here("output/cca_tracking_holocene_by_offset.csv"),
-  here("output/cca_tracking_holocene_timeseries.csv"),
   here("output/bacon_run_manifest.csv"), here("output/fire_walsh.csv"),
   here("output/paleo_fire.csv"))
 if (file.exists(here("output/bacon_run_manifest.csv"))) {
@@ -5533,7 +5120,7 @@ era_catalog = climate$era_catalog |>
     })) |>
   mutate(analytical_status = paste(
     "literature-blind operational era; joined downstream to descriptive",
-    "site-level tracking summaries without changing boundaries"))
+    "lake-level tracking summaries without changing boundaries"))
 
 # Descriptive subdivisions are permitted only where an internal, sustained
 # low-driver interval separates two multi-driver parts of a climate-change era.
@@ -5773,6 +5360,107 @@ print(as.data.frame(era_catalog |>
          active_variable_directions)))
 cat("High-fire periods: ", nrow(fire$periods), "\n", sep = "")
 # END R/stages/13_holocene_climate_fire_eras.R
+
+# ============================================================================
+# BEGIN R/stages/09_tracking_metrics.R
+# ============================================================================
+# Canonical lake-level and paired-plot tracking datasets. No figure/model fits.
+# Rscript R/stages/09_tracking_metrics.R [--bin-width-years=500]
+# Nondefault widths write only suffixed Holocene products.
+suppressPackageStartupMessages({library(here);library(tidyverse);library(vegan)})
+source(here('R/helpers/config.R'),local=TRUE)
+source(here('R/helpers/tracking_metrics.R'),local=TRUE)
+source(here('R/helpers/tracking_data.R'),local=TRUE)
+N_DRAWS = 100; DRAW_SEED = 42
+source(here('R/helpers/paleo_runs.R'),local=TRUE)
+source(here('R/helpers/climate_variables.R'),local=TRUE)
+source(here('R/helpers/holocene_climate_fire_era_functions.R'),local=TRUE)
+width_arg = grep('^--bin-width-years=',commandArgs(trailingOnly=TRUE),value=TRUE)
+if (length(width_arg)>1L) stop('Specify one bin width')
+bin_width_years = validate_tracking_width(if(length(width_arg))
+  as.numeric(sub('^--bin-width-years=','',width_arg)) else 1000L)
+suffix = if (bin_width_years==1000L) '' else paste0('_',bin_width_years,'yr')
+output_path = function(stem) here('output',paste0(stem,suffix,'.csv'))
+required = here('output',c('cca_calibration_reference.rds','chelsa_paleo_ponds.csv',
+  'paleo_age_draws.rds','holocene_fire_source_events.csv','holocene_fire_source_series.csv',
+  'holocene_era_fire_core_frequency.csv','holocene_era_fire_site_frequency.csv'))
+if (!all(file.exists(required))) stop('Run CCA reference and climate/fire stages first')
+reference = readRDS(required[1])
+if (!identical(reference$scaling,'sites') || reference$hill ||
+    nrow(reference$legacy_species)!=607L || length(reference$retained_species)!=14L)
+  stop('Expected the unchanged primary 607-plot, 14-taxon CCA')
+if (any(tools::md5sum(names(reference$provenance$input_md5)) != reference$provenance$input_md5) ||
+    any(tools::md5sum(names(reference$provenance$model_source_md5)) != reference$provenance$model_source_md5))
+  stop('CCA reference is stale; rerun the unchanged calibration stage')
+# Cache-only chronology access: never regenerate draws or mutate Bacon products.
+draws = paleo_age_draws(allow_rebuild=FALSE)
+ponds = read_csv(required[2],show_col_types=FALSE)
+env_slice = ponds |> transmute(unit=lake,period=site,variable,time=slice,month,
+  value=if(PALEO_USE_BIAS_CORRECTED) value_corrected else value_raw) |>
+  derive_climate_vars(winter_shift=FALSE) |> rename(lake=unit,site=period,slice=time) |>
+  mutate(age=1950-slice*100)
+built = build_lake_tracking(reference,draws,env_slice,bin_width_years)
+realizations = built$realizations
+events = read_csv(required[4],show_col_types=FALSE)
+continuous = read_csv(required[5],show_col_types=FALSE)
+fire = transition_fire(realizations,events,continuous,bin_width_years,
+  core_reference=if(bin_width_years==1000L) read_csv(required[6],show_col_types=FALSE) else NULL,
+  high_fire=read_csv(required[7],show_col_types=FALSE))
+realizations = realizations |> left_join(fire,by=c('site','offset','age_hi','age_lo'),relationship='many-to-one')
+keys = c('site','lake','draw','offset','age_hi','age_lo')
+if (anyDuplicated(realizations[keys])) stop('Duplicate lake realization key')
+by_offset = lake_offset_summary(realizations,N_DRAWS)
+timeseries = lake_reporting_grid(by_offset,bin_width_years)
+sample_support = built$samples |> distinct(site,lake,plot_id) |> count(site,lake,name='n_eligible_samples')
+excluded = built$raw |> group_by(site,lake,offset) |> summarize(
+  n_observed_realizations=n(),n_incomplete_climate_realizations=sum(!climate_complete),.groups='drop')
+support = realizations |> group_by(site,lake,offset) |> summarize(
+  n_realizations=n(),n_nmin2_realizations=sum(n_min>=2),
+  youngest_endpoint=min(age_lo),oldest_endpoint=max(age_hi),
+  endpoint_samples_min=min(c(n_samples,n_samples_2)),
+  endpoint_samples_median=median(c(n_samples,n_samples_2)),
+  endpoint_samples_max=max(c(n_samples,n_samples_2)),.groups='drop') |>
+  left_join(by_offset |> group_by(site,lake,offset) |> summarize(
+    n_transitions=n(),n_transitions_nmin2=sum(n_nmin2_draws>0),
+    n_transitions_full_draw_support=sum(n_present_draws==N_DRAWS),
+    n_transitions_majority_draw_support=sum(n_present_draws>=N_DRAWS/2),
+    n_transitions_nmin2_majority_support=sum(n_nmin2_draws>=N_DRAWS/2),
+    present_draws_min=min(n_present_draws),present_draws_median=median(n_present_draws),
+    n_fire_missing_transitions=sum(!is.finite(fire_activity)),.groups='drop'),by=c('site','lake','offset')) |>
+  left_join(sample_support,by=c('site','lake')) |> left_join(excluded,by=c('site','lake','offset')) |>
+  mutate(bin_width_years=bin_width_years,n_expected_draws=N_DRAWS)
+write_csv(realizations,output_path('cca_tracking_holocene_lake_realizations'))
+write_csv(by_offset,output_path('cca_tracking_holocene_lake_by_offset'))
+write_csv(timeseries,output_path('cca_tracking_holocene_lake_timeseries'))
+write_csv(support,output_path('cca_tracking_holocene_lake_support'))
+if (bin_width_years==1000L) {
+  modern_fire = bind_rows(
+    read_csv(here('output/MORA_plot_info_fire.csv'),show_col_types=FALSE) |>
+      transmute(site='MORA',plot_id=str_to_upper(plot_id),burned=burnt,
+        fire_assignment_source='MORA mapped disturbance 1987-2017'),
+    read_csv(here('output/NOCA_fire_assignment_audit.csv'),show_col_types=FALSE) |>
+      transmute(site='NOCA',plot_id=str_to_upper(plot_id),burned=burnt,
+        fire_assignment_source=assignment_source))
+  if (anyDuplicated(modern_fire[c('site','plot_id')])) stop('Duplicate plot fire assignment')
+  anth = reference$modern_endpoints |> calculate_tracking_metrics() |>
+    add_climate_change_metrics(reference$climate_scaling) |>
+    mutate(fire_plot_key=str_to_upper(plot_id)) |>
+    left_join(modern_fire |> rename(fire_plot_key=plot_id),
+      by=c('site','fire_plot_key'),relationship='many-to-one') |> select(-fire_plot_key)
+  if (nrow(anth)!=607L || anyNA(anth$burned)) stop('Incomplete modern plot dataset')
+  write_csv(anth,here('output/cca_tracking_anthropocene_plot_model_input.csv'))
+  source(here('R/helpers/survey_decision_effects.R'),local=TRUE)
+  export_survey_decision_effects(anth)
+}
+cat('Tracking completed:',nrow(realizations),'lake realizations;',nrow(by_offset),
+  'actual lake/offset transitions; width',bin_width_years,'years.\n')
+if(bin_width_years==1000L) write_csv(tracking_schema(list(
+  cca_tracking_holocene_lake_realizations=realizations,
+  cca_tracking_holocene_lake_by_offset=by_offset,
+  cca_tracking_anthropocene_plot_model_input=anth,
+  cca_tracking_holocene_lake_timeseries=timeseries,
+  cca_tracking_holocene_lake_support=support)),here('output/cca_tracking_schema.csv'))
+# END R/stages/09_tracking_metrics.R
 
 # ============================================================================
 # BEGIN R/stages/05a_cca_figure.R
@@ -6618,344 +6306,52 @@ if (render_figures) {
 # ============================================================================
 # BEGIN R/stages/09a_method_example.R
 # ============================================================================
-# =============================================================================
-# 09a_method_example.R - worked example for the currently displayed metrics
-# =============================================================================
-# A methods figure, not a result. It follows a SINGLE interval at a SINGLE lake
-# all the way through, with the actual numbers the analysis produced - so the
-# machinery in R/stages/09_tracking_metrics.R can be checked by eye rather than taken
-# on trust.
-#
-#   the example   PantherPotholes (NOCA), bin offset 0, using the valid
-#                 consecutive primary bins nearest 3000 cal BP
-#
-#   reads   R/stages/09_tracking_metrics.R   (sourced - every number here is ITS output,
-#                                      never recomputed, so the figure cannot
-#                                      drift from the analysis it explains)
-#   writes  plot/test_figures/fig_method_worked_example.pdf
-#
-# This implements the worked-method figure documented in README.md and
-# docs/WORKFLOW.md; the former archived planning name is no longer authoritative.
-#
-# The four panels answer the four things that are actually confusing:
-#   A  where a bin's CLIMATE comes from        -> average the native slices
-#   B  why the VEGETATION side is uncertain    -> samples straddle the bin edge
-#   C  what the two positions ARE              -> pred and obs in CCA space
-#   D  what comes out                          -> the currently plotted metrics
-# =============================================================================
-
-library(here)
-render_figures = isTRUE(getOption("paleoaces.render_figures", TRUE))
-source(here("R/stages/09_tracking_metrics.R"), local = TRUE)
-library(patchwork)
-
-MET_LAB = c(
-  d_climate = "Delta predicted vegetation\n|| LC(t2) - LC(t1) ||",
-  d_vegetation = "Delta vegetation\n|| obs(t2) - obs(t1) ||",
-  d_offset = "Delta offset  (signed)\n|offset(t2)| - |offset(t1)|"
-)
-SHOW = names(MET_LAB)
-
-LAKE   = "PantherPotholes"
-SITE   = "NOCA"
-OFF    = 0
-
-# Choose a common-grid date retained in the final time series, then choose its
-# real offset-0 interval. This keeps both the realization example (A-D) and the
-# nested offset summary (E) synchronized with the configured primary interval
-# width and with the actual fossil-sample support.
-valid_grid = series %>%
-  filter(site == SITE, metric %in% SHOW) %>%
-  count(t, name = "n_metrics") %>%
-  filter(n_metrics == length(SHOW)) %>%
-  mutate(distance_from_target = abs(t - 3000)) %>%
-  arrange(distance_from_target) %>%
-  slice(1)
-if (nrow(valid_grid) != 1) stop("Could not select a valid worked-example grid date")
-GRID_T = valid_grid$t
-
-example_interval = intervals %>%
-  filter(site == SITE, offset == OFF, age_lo <= GRID_T, age_hi >= GRID_T) %>%
-  count(age_hi, age_lo, name = "n_draws") %>%
-  filter(n_draws > 0) %>%
-  mutate(interval_mid = (age_hi + age_lo) / 2,
-         distance_from_target = abs(interval_mid - GRID_T)) %>%
-  arrange(distance_from_target, desc(n_draws)) %>%
-  slice(1)
-if (nrow(example_interval) != 1) stop("Could not select a valid worked-example interval")
-
-BIN_T1 = example_interval$age_hi
-BIN_T2 = example_interval$age_lo
-BOUNDARY = (BIN_T1 + BIN_T2) / 2
-EDGES = c(BIN_T2 - HOLO_BIN / 2, BOUNDARY, BIN_T1 + HOLO_BIN / 2)
-
-fmt_range = function(lo, hi) paste0(format(lo, trim = TRUE), "-", format(hi, trim = TRUE))
-T1_RANGE = fmt_range(BOUNDARY, max(EDGES))
-T2_RANGE = fmt_range(min(EDGES), BOUNDARY)
-
-# Two colours for the two bins. Deliberately NOT the MORA/NOCA palette - this
-# figure is about one lake, and reusing the site colours here would read as a
-# site contrast. Both are IBM colourblind-safe steps.
-COL = c(t1 = "#785EF0", t2 = "#FFB000")
-LAB = c(t1 = paste0("t1  ", T1_RANGE, " cal BP"),
-        t2 = paste0("t2  ", T2_RANGE, " cal BP"))
-
-base = theme_minimal(base_size = 10) +
-  theme(plot.title = element_text(face = "bold", size = 11),
-        plot.subtitle = element_text(size = 8.5, colour = "grey35"),
-        panel.grid.minor = element_blank(),
-        legend.position = "top", legend.title = element_blank())
-
-# -----------------------------------------------------------------------------
-# A. The climate of a bin = the mean of its native CHELSA slices
-# -----------------------------------------------------------------------------
-sl = env_slice %>%
-  filter(lake == LAKE, age >= min(EDGES), age < max(EDGES)) %>%
-  mutate(bin = if_else(age < BOUNDARY, "t2", "t1")) %>%
-  select(bin, age, all_of(CLIM_VARS)) %>%
-  pivot_longer(all_of(CLIM_VARS), names_to = "variable", values_to = "value") %>%
-  mutate(variable = factor(variable, levels = CLIM_VARS))
-
-sl_mean = sl %>% group_by(bin, variable) %>%
-  summarize(value = mean(value), .groups = "drop") %>%
-  mutate(x0 = if_else(bin == "t1", max(EDGES), BOUNDARY),
-         x1 = if_else(bin == "t1", BOUNDARY, min(EDGES)))
-
-pA = ggplot(sl, aes(age, value, colour = bin)) +
-  geom_vline(xintercept = EDGES, colour = "grey80", linewidth = 0.3) +
-  geom_point(size = 1.6) +
-  geom_segment(data = sl_mean, aes(x = x0, xend = x1, y = value, yend = value,
-                                   colour = bin), linewidth = 0.9) +
-  facet_wrap(~ variable, nrow = 1, scales = "free_y") +
-  scale_x_reverse() +
-  scale_colour_manual(values = COL, labels = LAB) +
-  labs(x = "cal BP", y = NULL,
-       title = paste0("A.  A bin's CLIMATE is the mean of its ",
-                      N_CLIMATE_SLICES_PER_BIN, " native 100-yr CHELSA slices"),
-       subtitle = paste0("Points = the native slices. Horizontal bar = the bin mean. ",
-                         "The bin is a window on the TIME axis and TraCE21k slice ages are known\n",
-                         "calendar dates, so this side of the calculation is FIXED - no age draw can move it.")) +
-  base
-
-# -----------------------------------------------------------------------------
-# B. Which SAMPLES fall in a bin is uncertain - they straddle the edge
-# -----------------------------------------------------------------------------
-dr = paleo_age_draws() %>% filter(lake == LAKE)
-near = dr %>% group_by(plot_id) %>%
-  summarize(med = median(age), lo = quantile(age, 0.025), hi = quantile(age, 0.975),
-            .groups = "drop") %>%
-  filter(abs(med - BOUNDARY) < HOLO_BIN * 0.52) %>%
-  arrange(med) %>%
-  mutate(y = row_number(),
-         straddles = lo < BOUNDARY & hi > BOUNDARY)
-
-pB = ggplot(near) +
-  geom_vline(xintercept = BOUNDARY, colour = "grey25", linewidth = 0.5) +
-  geom_vline(xintercept = range(EDGES), colour = "grey80", linewidth = 0.3) +
-  geom_segment(aes(x = lo, xend = hi, y = y, yend = y, colour = straddles),
-               linewidth = 1.1, alpha = 0.85) +
-  geom_point(aes(med, y), size = 0.9, colour = "grey20") +
-  scale_x_reverse() +
-  scale_colour_manual(values = c(`TRUE` = "#DC267F", `FALSE` = "grey65"),
-                      labels = c(`TRUE` = "95% age range crosses the bin edge",
-                                 `FALSE` = "stays on one side")) +
-  labs(x = "cal BP", y = NULL,
-       title = "B.  ...but which SAMPLES fall in it is not",
-       subtitle = paste0("One line per macrofossil sample near the ", BOUNDARY,
-                         " cal BP edge: its 95% Bacon age range,\n",
-                         "dot = median age. ", sum(near$straddles), " of ", nrow(near),
-                         " straddle the edge, so which bin they belong to changes from draw to draw.")) +
-  base +
-  theme(axis.text.y = element_blank(), legend.direction = "vertical")
-
-# -----------------------------------------------------------------------------
-# C. The two positions in CCA space
-# -----------------------------------------------------------------------------
-obs_ex = obs_bins %>%
-  filter(site == SITE, offset == OFF, bin_mid %in% c(BIN_T1, BIN_T2)) %>%
-  mutate(bin = if_else(bin_mid == BIN_T1, "t1", "t2"))
-pred_ex = clim_bins %>%
-  filter(site == SITE, offset == OFF, bin_mid %in% c(BIN_T1, BIN_T2)) %>%
-  mutate(bin = if_else(bin_mid == BIN_T1, "t1", "t2"))
-
-# the offset arrows are drawn from the MEDIAN obs of each bin, so there are two
-# clean arrows rather than 200 overlapping ones
-obs_med = obs_ex %>% group_by(bin) %>%
-  summarize(o1 = median(o1), o2 = median(o2), .groups = "drop") %>%
-  left_join(pred_ex %>% select(bin, p1, p2), by = "bin")
-
-pC = ggplot() +
-  geom_point(data = obs_ex, aes(o1, o2, colour = bin), size = 0.9, alpha = 0.30) +
-  geom_segment(data = obs_med, aes(o1, o2, xend = p1, yend = p2, colour = bin),
-               linewidth = 0.5, linetype = "22") +
-  geom_point(data = obs_med, aes(o1, o2, colour = bin), size = 3, shape = 19) +
-  geom_point(data = pred_ex, aes(p1, p2, colour = bin), size = 3.4, shape = 17) +
-  geom_text(data = obs_med, aes(o1, o2, colour = bin, label = "obs"),
-            nudge_y = 0.035, size = 3, fontface = "bold", show.legend = FALSE) +
-  geom_text(data = pred_ex, aes(p1, p2, colour = bin, label = "pred"),
-            nudge_y = -0.035, size = 3, fontface = "bold", show.legend = FALSE) +
-  scale_colour_manual(values = COL, labels = LAB) +
-  labs(x = "CCA1", y = "CCA2",
-       title = "C.  Each bin gets TWO positions in the ordination",
-       subtitle = paste0("Triangle = pred, from the bin's climate (one point - fixed). ",
-                         "Faint dots = obs, one per age draw;\nlarge dot = their median. ",
-                         "The dashed line is offset = pred - obs. The metrics are the lengths\n",
-                         "of these things and how they change from t1 to t2.")) +
-  base
-
-# -----------------------------------------------------------------------------
-# D. What comes out: the currently plotted metrics over the 100 draws
-# -----------------------------------------------------------------------------
-iv = intervals %>%
-  filter(site == SITE, offset == OFF, age_hi == BIN_T1, age_lo == BIN_T2) %>%
-  select(all_of(SHOW)) %>%
-  pivot_longer(everything(), names_to = "metric", values_to = "value") %>%
-  mutate(metric = factor(metric, levels = SHOW, labels = MET_LAB[SHOW]))
-if (!nrow(iv)) stop("The selected worked-example interval has no metric realizations")
-
-iv_sum = iv %>% group_by(metric) %>%
-  summarize(med = median(value), lo = quantile(value, 0.025),
-            hi = quantile(value, 0.975), .groups = "drop") %>%
-  mutate(lab = sprintf("median %.3f\n95%% %.3f to %.3f", med, lo, hi))
-
-# The histogram is precomputed rather than left to geom_histogram, because
-# d_climate has ZERO variance: with a free x scale and a bin count, ggplot
-# stretches that single value into one bar filling the whole panel, which reads
-# as a UNIFORM distribution - the exact opposite of what it is. Each metric gets
-# its own padded range instead, so a zero-width distribution draws as a narrow
-# spike and a wide one draws as a histogram.
-NB = 26
-iv_bars = iv %>%
-  group_by(metric) %>%
-  group_modify(function(g, k) {
-    rng  = range(g$value)
-    half = max(diff(rng) / 2, 0.02)          # floor, so a spike is not zero-wide
-    ctr  = mean(rng)
-    brks = seq(ctr - half * 1.3, ctr + half * 1.3, length.out = NB + 1)
-    tibble(x = head(brks, -1) + diff(brks) / 2,
-           w = diff(brks),
-           n = as.integer(table(cut(g$value, brks, include.lowest = TRUE))))
-  }) %>% ungroup()
-
-pD = ggplot(iv_bars) +
-  geom_col(aes(x, n, width = w), fill = "grey78", colour = NA) +
-  geom_vline(data = iv_sum, aes(xintercept = med), colour = "#DC267F", linewidth = 0.7) +
-  geom_vline(data = iv_sum, aes(xintercept = lo), colour = "#DC267F",
-             linewidth = 0.4, linetype = "22") +
-  geom_vline(data = iv_sum, aes(xintercept = hi), colour = "#DC267F",
-             linewidth = 0.4, linetype = "22") +
-  geom_text(data = iv_sum, aes(x = med, y = Inf, label = lab), vjust = 1.3,
-            hjust = -0.06, size = 2.8, colour = "grey25") +
-  facet_wrap(~ metric, nrow = 1, scales = "free") +
-  labs(x = "CCA units", y = "age draws",
-       title = "D.  The currently plotted metrics for this interval, over 100 age draws",
-       subtitle = paste0(
-         "LC-predicted vegetation displacement is a SPIKE because panel A is fixed. ",
-         "The other two spread, because panel B is not.\n",
-         "The pink median and dashed 95% are the realization-level quantities ",
-         "summarized in the authoritative tracking tables for every interval,\n",
-         "both sites, and ", length(OFFSETS), " bin offsets.")) +
-  base
-
-# -----------------------------------------------------------------------------
-# E. ...and how those become one nested summary in the tracking tables
-# -----------------------------------------------------------------------------
-# Panels A-D used bin offset 0, i.e. ONE way to cut the timeline. The final
-# figure combines all configured offsets, and the order matters (see the nesting block in
-# R/stages/09_tracking_metrics.R). This panel shows that combination at the grid point
-# sitting inside the worked interval, so it is the SAME two bins throughout.
-#
-# The selected grid point lies within the worked interval, so the offset-0 row
-# here is panel D. It need not equal the interval midpoint because only grid
-# dates supported by all configured offsets enter the combined time series.
-
-bo = by_offset %>% filter(site == SITE, metric %in% SHOW, t == GRID_T)
-se = series    %>% filter(site == SITE, metric %in% SHOW, t == GRID_T)
-stopifnot(nrow(se) == length(SHOW), nrow(bo) == length(SHOW) * length(OFFSETS))
-
-comb_lab = "COMBINED  = what the figure draws"
-rows = bind_rows(
-  bo %>% transmute(metric, kind = "offset",
-                   lab = paste0("offset ", offset, if_else(offset == OFF,
-                                                           "   <- panels A-D", "")),
-                   ord = offset, med, lo, hi),
-  se %>% transmute(metric, kind = "combined", lab = comb_lab,
-                   ord = HOLO_BIN + 1, med = est, lo = age_lo, hi = age_hi)
-) %>%
-  mutate(metric = factor(metric, levels = SHOW, labels = MET_LAB[SHOW]),
-         lab    = fct_reorder(lab, -ord))
-
-pE = ggplot(rows, aes(med, lab, colour = kind)) +
-  geom_linerange(data = rows %>% filter(kind == "combined"),
-                 aes(xmin = lo, xmax = hi), linewidth = 4, alpha = 0.22) +
-  # geom_errorbar + orientation, not geom_errorbarh: the latter is deprecated in
-  # ggplot2 4.0 and silently translates `height` to `width`.
-  geom_errorbar(aes(xmin = lo, xmax = hi), orientation = "y", width = 0.24,
-                linewidth = 0.5) +
-  geom_point(aes(size = kind)) +
-  facet_wrap(~ metric, nrow = 1, scales = "free_x") +
-  scale_colour_manual(values = c(offset = "grey45", combined = "#DC267F"),
-                      guide = "none") +
-  scale_size_manual(values = c(offset = 1.9, combined = 3.1), guide = "none") +
-  labs(x = "CCA units", y = NULL,
-       title = paste0("E.  ...and how the ", length(OFFSETS),
-                      " bin offsets become ONE point and ONE band, at t = ",
-                      GRID_T, " cal BP"),
-       subtitle = paste0(
-         "Grey rows: each offset ON ITS OWN - dot = median over its ", N_DRAWS,
-         " age draws, bar = its 2.5-97.5. The offset-0 row IS panel D.\n",
-         "Pink row: dot = MEDIAN OF THE ", length(OFFSETS),
-         " GREY DOTS (the retained nested estimate); ",
-         "band = MEDIAN OF THE ", length(OFFSETS), " GREY BAR ENDS (the ribbon).\n",
-         "The ribbon is therefore the TYPICAL age-uncertainty band - not a sum of the offsets, ",
-         "and not an envelope. An envelope would be whichever offset happened to be\n",
-         "widest, so it would keep growing the more offsets were tried; the median does not. ",
-         "Bin phase is NOT in the ribbon - it is the spread of the grey dots, drawn as the\n",
-         "thin lines on the final figure.")) +
-  base +
-  theme(axis.text.y = element_text(size = 8),
-        panel.grid.major.y = element_blank())
-
-fig = pA / (pB | pC) / pD / pE +
-  plot_layout(heights = c(0.85, 1.25, 0.95, 0.80)) +
-  plot_annotation(
-    title = paste0("How the currently plotted metrics are built - one real interval at ", LAKE,
-                   " (", SITE, "), bin offset ", OFF),
-    subtitle = paste0("Every number is taken from R/stages/09_tracking_metrics.R, not recomputed. ",
-                      "Bins are ", HOLO_BIN, " yr wide; ", N_DRAWS,
-                      " Bacon age draws; this is 1 of the ", length(OFFSETS), " bin offsets."),
-    theme = theme(plot.title = element_text(face = "bold", size = 14),
-                  plot.subtitle = element_text(colour = "grey30", size = 9.5)))
-
-if (render_figures) {
-  pdf(here("plot/test_figures/fig_method_worked_example.pdf"),
-      width = 14, height = 17)
-  print(fig)
-  dev.off()
-}
-
-cat("\n=== the numbers in the figure ===\n")
-cat("\nA. bin climate (mean of ", N_CLIMATE_SLICES_PER_BIN, " slices):\n", sep = "")
-print(as.data.frame(pred_ex %>% select(bin, all_of(CLIM_VARS), p1, p2)), digits = 4,
-      row.names = FALSE)
-cat("\nB. samples near the ", BOUNDARY, " edge: ", nrow(near), ", of which ", sum(near$straddles),
-    " have a 95% age range crossing it\n", sep = "")
-cat("\nC. obs, median over draws:\n")
-print(as.data.frame(obs_med %>% select(bin, o1, o2)), digits = 4, row.names = FALSE)
-cat("\nD. metrics over ", nrow(iv) / length(SHOW), " draws:\n", sep = "")
-print(as.data.frame(iv_sum %>% select(-lab)), digits = 3, row.names = FALSE)
-
-cat("\nE. the ", length(OFFSETS), " offsets at t = ", GRID_T,
-    " cal BP, and their combination:\n", sep = "")
-print(as.data.frame(rows %>%
-  mutate(metric = sub("\n.*", "", as.character(metric))) %>%
-  select(metric, lab, lo, med, hi) %>% arrange(metric, desc(lab))),
-  digits = 3, row.names = FALSE)
-if (render_figures) {
-  cat("\nWritten: plot/test_figures/fig_method_worked_example.pdf\n")
-} else {
-  cat("\nFigure rendering skipped; worked-example audit tables were refreshed.\n")
-}
+# Worked geometry and chronology example from canonical lake-level realizations.
+suppressPackageStartupMessages({library(here);library(tidyverse);library(patchwork)})
+render_figures = isTRUE(getOption('paleoaces.render_figures',TRUE))
+r = read_csv(here('output/cca_tracking_holocene_lake_realizations.csv'),show_col_types=FALSE)
+b = read_csv(here('output/cca_tracking_holocene_lake_by_offset.csv'),show_col_types=FALSE)
+interval = b |> filter(lake=='PantherPotholes',offset==0) |>
+  mutate(distance=abs((age_hi+age_lo)/2-3000)) |> arrange(distance) |> slice(1)
+draws = r |> filter(lake=='PantherPotholes',offset==0,
+  age_hi==interval$age_hi,age_lo==interval$age_lo)
+example = draws |> filter(pace_counterfactual_valid,direction_counterfactual_valid) |>
+  arrange(draw) |> slice(1)
+if(nrow(example)!=1L) stop('No valid canonical worked-example realization')
+points = tibble(label=c('O1','O2','P1','P2','Pace corrected','Direction corrected'),
+  CCA1=c(example$o1,example$o1_2,example$p1,example$p1_2,example$pace_corrected_CCA1,example$direction_corrected_CCA1),
+  CCA2=c(example$o2,example$o2_2,example$p2,example$p2_2,example$pace_corrected_CCA2,example$direction_corrected_CCA2))
+vectors = tibble(type=c('Observed','Predicted','Pace corrected','Direction corrected'),
+  x=c(example$o1,example$p1,example$o1,example$o1),y=c(example$o2,example$p2,example$o2,example$o2),
+  xend=c(example$o1_2,example$p1_2,example$pace_corrected_CCA1,example$direction_corrected_CCA1),
+  yend=c(example$o2_2,example$p2_2,example$pace_corrected_CCA2,example$direction_corrected_CCA2))
+a = ggplot(points,aes(CCA1,CCA2)) + geom_segment(data=vectors,
+  aes(x=x,y=y,xend=xend,yend=yend,color=type),inherit.aes=FALSE,
+  arrow=grid::arrow(length=grid::unit(2,'mm'))) + geom_point() +
+  geom_text(aes(label=label),vjust=-.7,size=3) + coord_equal() +
+  labs(title='A. Actual and corrected movement',color=NULL) + theme_minimal(base_size=10)
+lag = tibble(endpoint=c('Initial','Actual final','Pace corrected','Direction corrected'),
+  lag=c(example$lag_t1,example$lag_t2,example$lag_t2_pace_corrected,example$lag_t2_direction_corrected))
+p = ggplot(lag,aes(endpoint,lag)) + geom_col(fill='#4477AA') +
+  geom_text(aes(label=sprintf('%.3f',lag)),vjust=-.3,size=3) +
+  labs(title='B. Distance to actual predicted position',x=NULL,y='Lag (CCA units)') +
+  theme_minimal(base_size=10) + theme(axis.text.x=element_text(angle=20,hjust=1))
+metrics = c('lag_rate_per_century','observed_turnover_rate','magnitude_tracking_ratio',
+  'rate_tracking_ratio','angle_degrees','pace_effect_on_lag_per_century','direction_effect_on_lag_per_century')
+values = example |> select(all_of(metrics)) |> pivot_longer(everything(),names_to='metric',values_to='value')
+q = ggplot(values,aes(x=1,y=value)) + geom_point(size=2) +
+  geom_text(aes(label=sprintf('%.3f',value)),nudge_x=.2,size=3) +
+  facet_wrap(~metric,scales='free_y',ncol=2) + labs(title='C. Focused quantities for this draw',x=NULL,y=NULL) +
+  theme_minimal(base_size=9) + theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())
+uncertainty = draws |> select(draw,lag_rate_per_century,pace_effect_on_lag_per_century,
+  direction_effect_on_lag_per_century) |> pivot_longer(-draw,names_to='metric',values_to='value')
+s = ggplot(uncertainty,aes(value)) + geom_histogram(bins=15,fill='#228833',color='white',na.rm=TRUE) +
+  facet_wrap(~metric,scales='free',ncol=1) + labs(title='D. Valid chronology-draw distributions',
+    x='CCA units per century',y='Draws') + theme_minimal(base_size=9)
+figure = (a+p)/(q+s) + plot_annotation(title=paste0('Panther Potholes: ',example$age_hi,' to ',example$age_lo,' cal BP'),
+  subtitle=paste0('Offset 0; geometry draw ',example$draw,'; ',nrow(draws),' of 100 draws support this actual transition.'),
+  caption='Both corrections start at O1. Effects compare with the actual final lag and are nonadditive. Climate bins contain ten native slices.\nChronology distributions are conditional on valid realizations; draws and offsets are not ecological replicates.')
+if(render_figures) ggsave(here('plot/test_figures/fig_method_worked_example.pdf'),figure,width=12,height=11)
 # END R/stages/09a_method_example.R
 
 # ============================================================================
@@ -7210,7 +6606,7 @@ required = c(
   fire = here("output/holocene_era_high_fire_periods.csv"),
   fire_frequency = here("output/holocene_era_fire_site_frequency.csv"),
   thresholds = here("output/holocene_era_climate_variable_thresholds.csv"),
-  anthropocene = here("output/cca_tracking_anthropocene_plot.csv"),
+  anthropocene = here("output/cca_tracking_anthropocene_plot_model_input.csv"),
   regional_phases = here("output/holocene_era_climate_regional_phase_changes.csv"))
 if (!all(file.exists(required))) stop(
   "Run R/stages/09_tracking_metrics.R and R/stages/13_holocene_climate_fire_eras.R first.")
@@ -7754,1154 +7150,195 @@ if (render_figures) {
 }
 # END R/stages/13b_fire_method_worked_example.R
 
-# ============================================================================
-# BEGIN R/stages/09b_tracking_visualization_data.R
-# ============================================================================
+# BEGIN R/helpers/tracking_metrics.R — maintained calculation definitions
 # =============================================================================
-# 09b_tracking_visualization_data.R - site-level tracking figure audit
+# tracking_metrics.R - pure functions for CCA tracking and climate-change rates
 # =============================================================================
-# Run after both primary and 500-year tracking stages. This script does not
-# recalculate CCA metrics. It reshapes the authoritative MORA/NOCA site series,
-# joins the frozen CC/S eras, creates descriptive medians, and audits sensitivity
-# to the 1,000- versus 500-year Holocene interval width.
-# =============================================================================
-
-suppressPackageStartupMessages({
-  library(here)
-  library(tidyverse)
-})
-
-paths = c(
-  holo_1000 = here("output/cca_tracking_holocene_timeseries.csv"),
-  holo_500 = here("output/cca_tracking_holocene_timeseries_500yr.csv"),
-  realization_1000 = here("output/cca_tracking_holocene_realizations.csv"),
-  realization_500 = here("output/cca_tracking_holocene_realizations_500yr.csv"),
-  anth = here("output/cca_tracking_anthropocene_plot.csv"),
-  era_grid = here("output/holocene_era_grid.csv"),
-  era_catalog = here("output/holocene_era_catalog.csv")
-)
-if (!all(file.exists(paths)))
-  stop("Run the tracking and climate-era stages first. Missing: ",
-       paste(paths[!file.exists(paths)], collapse = ", "))
-
-holo_1000 = read_csv(paths[["holo_1000"]], show_col_types = FALSE)
-holo_500 = read_csv(paths[["holo_500"]], show_col_types = FALSE)
-realization_1000 = read_csv(paths[["realization_1000"]], show_col_types = FALSE)
-realization_500 = read_csv(paths[["realization_500"]], show_col_types = FALSE)
-anth = read_csv(paths[["anth"]], show_col_types = FALSE)
-era_grid = read_csv(paths[["era_grid"]], show_col_types = FALSE)
-era_catalog = read_csv(paths[["era_catalog"]], show_col_types = FALSE)
-
-DISPLAY_METRICS = c(
-  "predicted_vegetation_displacement",
-  "observed_vegetation_displacement",
-  "predicted_vegetation_change_rate",
-  "observed_turnover_rate",
-  "standardized_climate_change_rate",
-  "rate_tracking_ratio",
-  "change_in_lag",
-  "lag",
-  "lag_rate_per_century",
-  "climate_aligned_tracking",
-  "normalized_perpendicular_movement",
-  "angle_degrees"
-)
-missing_holo = setdiff(DISPLAY_METRICS, unique(holo_1000$metric))
-missing_anth = setdiff(DISPLAY_METRICS, names(anth))
-if (length(missing_holo) || length(missing_anth))
-  stop("Tracking input is incomplete. Holocene: ",
-       paste(missing_holo, collapse = ", "), "; Anthropocene: ",
-       paste(missing_anth, collapse = ", "))
-if (any(holo_1000$n_offsets != 10L))
-  stop("Primary Holocene site dates must all have ten offsets")
-
-safe_median = function(x) {
-  x = x[is.finite(x)]
-  if (length(x)) median(x) else NA_real_
-}
-
-# One row is one site-date after realization metrics were summarized over age
-# draws within offset and then over all ten offset phases.
-holo_site_date = holo_1000 %>%
-  filter(metric %in% DISPLAY_METRICS) %>%
-  select(site, t, n_offsets, n_per_bin, metric, estimate) %>%
-  distinct() %>%
-  pivot_wider(names_from = metric, values_from = estimate) %>%
-  left_join(era_grid %>% select(t, climate_era_id = era_id,
-                                climate_era_class = era_class), by = "t") %>%
-  mutate(
-    point_class = "holocene_site_interval",
-    macro_era = "Holocene",
-    plot_id = NA_character_,
-    point_id = paste(site, t, sep = "_"),
-    source_shape = "Holocene site-date",
-    label = NA_character_,
-    source_n = 1L,
-    aggregate = FALSE,
-    coverage_status = "complete ten-offset support"
-  )
-
-anth_plot = anth %>%
-  select(site, plot_id, all_of(DISPLAY_METRICS)) %>%
-  mutate(
-    t = NA_real_, n_offsets = NA_integer_, n_per_bin = NA_real_,
-    climate_era_id = NA_character_, climate_era_class = NA_character_,
-    point_class = "anthropocene_plot", macro_era = "Anthropocene",
-    point_id = plot_id, source_shape = "Anthropocene plot",
-    label = NA_character_, source_n = 1L, aggregate = FALSE,
-    coverage_status = "paired plot"
-  )
-
-overall_medians = bind_rows(holo_site_date, anth_plot) %>%
-  group_by(macro_era, site) %>%
-  summarize(across(all_of(DISPLAY_METRICS), safe_median),
-            source_n = n(), .groups = "drop") %>%
-  mutate(
-    t = NA_real_, n_offsets = NA_integer_, n_per_bin = NA_real_,
-    climate_era_id = NA_character_, climate_era_class = NA_character_,
-    plot_id = NA_character_, point_class = "site_macro_era_median",
-    point_id = paste(site, macro_era, "median", sep = "_"),
-    source_shape = "Overall site median", label = paste(macro_era, site),
-    aggregate = TRUE, coverage_status = "descriptive coordinate-wise median"
-  )
-
-era_levels = era_catalog$era_id
-era_lookup = era_catalog %>% select(climate_era_id = era_id,
-                                    climate_era_class = era_class)
-era_coverage = expand_grid(site = c("MORA", "NOCA"),
-                           climate_era_id = era_levels) %>%
-  left_join(era_lookup, by = "climate_era_id") %>%
-  left_join(holo_site_date %>%
-      count(site, climate_era_id, name = "n_site_dates"),
-    by = c("site", "climate_era_id")) %>%
-  mutate(
-    n_site_dates = replace_na(n_site_dates, 0L),
-    coverage_status = if_else(n_site_dates > 0,
-      "complete ten-offset support",
-      "insufficient complete-offset support"),
-    climate_era_id = factor(climate_era_id, levels = era_levels)
-  ) %>%
-  arrange(site, climate_era_id) %>%
-  mutate(climate_era_id = as.character(climate_era_id))
-write_csv(era_coverage, here("output/cca_tracking_holocene_era_coverage.csv"))
-
-era_medians_observed = holo_site_date %>%
-  filter(!is.na(climate_era_id)) %>%
-  group_by(site, climate_era_id, climate_era_class) %>%
-  summarize(across(all_of(DISPLAY_METRICS), safe_median),
-            source_n = n(), .groups = "drop")
-era_medians = era_coverage %>%
-  select(site, climate_era_id, climate_era_class, coverage_status,
-         n_site_dates) %>%
-  left_join(era_medians_observed,
-    by = c("site", "climate_era_id", "climate_era_class")) %>%
-  mutate(
-    source_n = coalesce(source_n, n_site_dates),
-    t = NA_real_, n_offsets = if_else(source_n > 0L, 10L, NA_integer_),
-    n_per_bin = NA_real_, plot_id = NA_character_,
-    point_class = "holocene_site_era_median", macro_era = "Holocene",
-    point_id = paste(site, climate_era_id, "median", sep = "_"),
-    source_shape = "CC/S site median", label = climate_era_id,
-    aggregate = TRUE
-  ) %>%
-  select(-n_site_dates)
-
-viz_points = bind_rows(holo_site_date, anth_plot, overall_medians, era_medians) %>%
-  select(point_class, macro_era, site, climate_era_id, climate_era_class,
-         plot_id, point_id, t, n_offsets, n_per_bin, source_shape, label,
-         source_n, aggregate, coverage_status, all_of(DISPLAY_METRICS)) %>%
-  arrange(factor(point_class, levels = c(
-    "holocene_site_interval", "anthropocene_plot",
-    "holocene_site_era_median", "site_macro_era_median")),
-    site, climate_era_id, t, plot_id)
-write_csv(viz_points, here("output/cca_tracking_visualization_points.csv"))
-
-# Resolution sensitivity is descriptive. It does not require the two temporal
-# supports to agree, and it never changes the 1,000-year primary estimates.
-AUDIT_METRICS = c("observed_turnover_rate", "rate_tracking_ratio", "lag",
-                  "lag_rate_per_century", "angle_degrees")
-summarize_resolution = function(x, resolution) {
-  x %>%
-    filter(metric %in% AUDIT_METRICS) %>%
-    group_by(site, metric) %>%
-    summarize(
-      record_type = "timeseries summary", resolution = resolution,
-      n_dates = n_distinct(t), t_min = min(t), t_max = max(t),
-      n_valid = sum(is.finite(estimate)),
-      estimate_median = safe_median(estimate),
-      estimate_q25 = quantile(estimate[is.finite(estimate)], .25, names = FALSE),
-      estimate_q75 = quantile(estimate[is.finite(estimate)], .75, names = FALSE),
-      n_per_bin_median = safe_median(n_per_bin), .groups = "drop"
-    )
-}
-summarize_support = function(x, resolution) {
-  x %>% group_by(site) %>% summarize(
-    record_type = "realization support", resolution = resolution,
-    metric = "all", n_realizations = n(), n_offsets = n_distinct(offset),
-    n_draws = n_distinct(draw), sparse_fraction = mean(sparse_bin),
-    n_per_bin_median = median(n_min), .groups = "drop")
-}
-matched = holo_1000 %>%
-  filter(metric %in% AUDIT_METRICS) %>%
-  select(site, metric, t, estimate_1000 = estimate) %>%
-  inner_join(holo_500 %>% filter(metric %in% AUDIT_METRICS) %>%
-      select(site, metric, t, estimate_500 = estimate),
-    by = c("site", "metric", "t")) %>%
-  group_by(site, metric) %>%
-  summarize(
-    record_type = "matched-date comparison",
-    resolution = "1000 minus 500 years", matched_n = n(),
-    median_difference_1000_minus_500 = median(estimate_1000 - estimate_500,
-      na.rm = TRUE),
-    iqr_difference_1000_minus_500 = IQR(estimate_1000 - estimate_500,
-      na.rm = TRUE),
-    spearman_correlation = if (sum(is.finite(estimate_1000) &
-        is.finite(estimate_500)) >= 3L)
-      cor(estimate_1000, estimate_500, method = "spearman",
-          use = "complete.obs") else NA_real_, .groups = "drop")
-
-resolution_audit = bind_rows(
-  summarize_resolution(holo_1000, "1000 years (primary)"),
-  summarize_resolution(holo_500, "500 years (sensitivity)"),
-  summarize_support(realization_1000, "1000 years (primary)"),
-  summarize_support(realization_500, "500 years (sensitivity)"),
-  matched
-)
-write_csv(resolution_audit,
-          here("output/cca_tracking_interval_resolution_audit.csv"))
-
-cat("Written site-level figure and resolution audits:\n",
-    "  output/cca_tracking_visualization_points.csv\n",
-    "  output/cca_tracking_holocene_era_coverage.csv\n",
-    "  output/cca_tracking_interval_resolution_audit.csv\n", sep = "")
-# END R/stages/09b_tracking_visualization_data.R
-
-# ============================================================================
-# BEGIN R/stages/09c_tracking_comparison.R
-# ============================================================================
-# =============================================================================
-# 09c_tracking_comparison.R - integrated tracking comparison figure
-# =============================================================================
-# Boxplots are faceted by site with fixed scales. The scatter remains one panel:
-# site is shape, lag is fill, and fire evidence is the only categorical colour.
-
-suppressPackageStartupMessages({
-  library(here); library(tidyverse); library(patchwork); library(ggrepel)
-})
-source(here("R/helpers/figure_style.R"), local = TRUE)
-render_figures = isTRUE(getOption("paleoaces.render_figures", TRUE))
-
-input_path = here("output/cca_tracking_visualization_points.csv")
-fire_paths = c(
-  MORA = here("output/MORA_plot_info_fire.csv"),
-  NOCA = here("output/NOCA_fire_assignment_audit.csv"),
-  Holocene = here("output/holocene_era_fire_site_frequency.csv"))
-if (!file.exists(input_path) || !all(file.exists(fire_paths)))
-  stop("Run tracking visualization data and the harmonized fire-era stage first.")
-
-points = read_csv(input_path, show_col_types = FALSE)
-METRICS = c(
-  lag = "Lag",
-  lag_rate_per_century = "Lag per century",
-  rate_tracking_ratio = "Tracking ratio (observed/predicted)",
-  angle_degrees = "Angle (degrees)")
-BOX_METRICS = METRICS[names(METRICS) != "lag"]
-BOX_TAGS = c(lag_rate_per_century = "A.", rate_tracking_ratio = "B.",
-             angle_degrees = "C.")
-if (length(setdiff(names(METRICS), names(points))))
-  stop("Tracking visualization points lack required metrics.")
-
-FIRE_RED = PAPER_FIRE_RED
-NO_FIRE = PAPER_NO_FIRE
-site_shapes = PAPER_SITE_SHAPES
-raw_all = points |>
-  filter(point_class %in% c("holocene_site_interval", "anthropocene_plot"))
-if (nrow(raw_all) != 744L) stop("Expected 137 Holocene and 607 Anthropocene rows.")
-
-modern_fire = bind_rows(
-  read_csv(fire_paths[["MORA"]], show_col_types = FALSE) |>
-    transmute(site = "MORA", plot_id = str_to_upper(plot_id), burnt),
-  read_csv(fire_paths[["NOCA"]], show_col_types = FALSE) |>
-    transmute(site = "NOCA", plot_id = str_to_upper(plot_id), burnt))
-modern_all = raw_all |>
-  filter(point_class == "anthropocene_plot") |>
-  mutate(plot_id = str_to_upper(plot_id)) |>
-  left_join(modern_fire, by = c("site", "plot_id"))
-if (nrow(modern_all) != 607L || anyNA(modern_all$burnt))
-  stop("Every Anthropocene plot must have one fire assignment.")
-modern = modern_all |>
-  mutate(included = !(site == "MORA" & burnt),
-    fire_status = if_else(burnt, "Burned", "Unburned")) |>
-  filter(included)
-if (nrow(modern) != 605L ||
-    sum(modern_all$site == "MORA" & modern_all$burnt) != 2L ||
-    sum(modern$site == "NOCA" & modern$burnt) != 24L)
-  stop("Unexpected Anthropocene fire groups.")
-write_csv(modern_all |>
-    transmute(site, plot_id, burnt, included = !(site == "MORA" & burnt),
-      analysis_group = case_when(
-        site == "MORA" & burnt ~ "excluded: MORA burned",
-        burnt ~ "included: NOCA burned", TRUE ~ "included: unburned")),
-  here("output/cca_tracking_anthropocene_fire_scope_audit.csv"))
-
-holocene_fire = read_csv(fire_paths[["Holocene"]], show_col_types = FALSE) |>
-  transmute(site, t = cal_bp, high_fire,
-    normalized_fire_frequency = normalized_frequency)
-holocene = raw_all |>
-  filter(point_class == "holocene_site_interval") |>
-  left_join(holocene_fire, by = c("site", "t")) |>
-  mutate(fire_status = if_else(high_fire,
-    "High-fire evidence", "No high-fire evidence"))
-if (nrow(holocene) != 137L || anyNA(holocene$high_fire))
-  stop("Every Holocene site-date must match one harmonized fire date.")
-
-raw = bind_rows(holocene, modern) |>
-  mutate(site = factor(site, c("MORA", "NOCA")),
-    macro_era = factor(macro_era, c("Holocene", "Anthropocene")),
-    fire_class = if_else(fire_status %in% c("Burned", "High-fire evidence"),
-      "Fire", "No fire"),
-    fire_class = factor(fire_class, c("No fire", "Fire")))
-state = holocene |>
-  mutate(site = factor(site, c("MORA", "NOCA")),
-    climate_state = if_else(climate_era_class == "climate change",
-      "Holocene climate change", "Holocene climate stability"),
-    climate_state = factor(climate_state,
-      c("Holocene climate change", "Holocene climate stability")),
-    fire_class = factor(if_else(high_fire, "Fire", "No fire"),
-      c("No fire", "Fire")))
-
-safe = function(x, f, ...) {
-  x = x[is.finite(x)]
-  if (length(x)) f(x, ...) else NA_real_
-}
-summarize_group = function(data, group_vars, level) {
-  data |>
-    select(all_of(group_vars), all_of(names(METRICS))) |>
-    pivot_longer(all_of(names(METRICS)), names_to = "metric", values_to = "value") |>
-    group_by(across(all_of(c(group_vars, "metric")))) |>
-    summarise(summary_level = level, n_total = n(),
-      n_valid = sum(is.finite(value)), median = safe(value, median),
-      q25 = safe(value, quantile, .25, names = FALSE),
-      q75 = safe(value, quantile, .75, names = FALSE),
-      whisker_low = if (any(is.finite(value)))
-        boxplot.stats(value[is.finite(value)])$stats[1] else NA_real_,
-      whisker_high = if (any(is.finite(value)))
-        boxplot.stats(value[is.finite(value)])$stats[5] else NA_real_,
-      .groups = "drop")
-}
-
-main_summary = summarize_group(raw,
-  c("site", "macro_era", "fire_class"), "macro era x fire")
-detail_summary = summarize_group(state,
-  c("site", "climate_state", "fire_class"), "Holocene climate state x fire")
-macro_summary = summarize_group(raw,
-  c("site", "macro_era"), "macro era")
-noca_fire_summary = summarize_group(
-  filter(raw, site == "NOCA", macro_era == "Anthropocene"),
-  c("site", "fire_status"), "NOCA Anthropocene fire status")
-comparison_summary = bind_rows(main_summary, detail_summary,
-  macro_summary, noca_fire_summary)
-write_csv(comparison_summary,
-  here("output/cca_tracking_comparison_summary.csv"))
-
-fmt = function(metric, x) formatC(x, format = "f",
-  digits = if (metric == "angle_degrees") 1L else
-    if (metric == "rate_tracking_ratio") 2L else 3L)
-# Fire status is carried by the outline. Both boxes stay white so the median
-# line remains visible; a solid dark-red box previously obscured it.
-fire_fill = c(`No fire` = "white", Fire = "white")
-fire_line = c(`No fire` = NO_FIRE, Fire = FIRE_RED)
-base_theme = theme_paleoaces(base_size = 11.5) +
-  theme(panel.grid.minor = element_blank(), panel.grid.major.x = element_blank(),
-    legend.position = "none", axis.title.x = element_blank(),
-    axis.text.x = element_text(face = "bold", size = 9.4),
-    strip.background = element_rect(fill = "grey95", color = "grey65"),
-    strip.text = element_text(face = "bold", size = 11.5),
-    axis.title.y = element_text(size = 13),
-    plot.margin = margin(5, 5, 4, 5))
-
-make_main_box = function(metric, tag = BOX_TAGS[[metric]]) {
-  dat = filter(raw, is.finite(.data[[metric]]))
-  sm = filter(main_summary, .data$metric == .env$metric) |>
-    mutate(label = paste0(fmt(.env$metric, median), "\nn=", n_valid))
-  dodge = position_dodge2(width = .68, preserve = "single", padding = .15)
-  ggplot(dat, aes(macro_era, .data[[metric]], fill = fire_class,
-      color = fire_class, group = interaction(macro_era, fire_class))) +
-    geom_boxplot(position = dodge, width = .55, linewidth = .6,
-      outlier.shape = NA, na.rm = TRUE) +
-    geom_text(data = sm,
-      aes(macro_era, whisker_high, label = label, color = fire_class,
-        group = interaction(macro_era, fire_class)), inherit.aes = FALSE,
-      position = dodge, vjust = -.35, size = 2.4, lineheight = .84,
-      fontface = "bold", show.legend = FALSE) +
-    facet_wrap(~site, nrow = 1, scales = "fixed") +
-    scale_fill_manual(values = fire_fill) + scale_color_manual(values = fire_line) +
-    scale_y_continuous(expand = expansion(mult = c(.08, .25))) +
-    labs(title = tag, y = unname(METRICS[metric])) + base_theme +
-    theme(plot.title = element_text(face = "bold", size = 15))
-}
-
-make_detail_box = function(metric) {
-  dat = filter(state, is.finite(.data[[metric]]))
-  sm = filter(detail_summary, .data$metric == .env$metric) |>
-    mutate(label = paste0(fmt(.env$metric, median), "\nn=", n_valid))
-  dodge = position_dodge2(width = .68, preserve = "single", padding = .15)
-  ggplot(dat, aes(climate_state, .data[[metric]], fill = fire_class,
-      color = fire_class, group = interaction(climate_state, fire_class))) +
-    geom_boxplot(position = dodge, width = .55, linewidth = .55,
-      outlier.shape = NA, na.rm = TRUE) +
-    geom_text(data = sm,
-      aes(climate_state, whisker_high, label = label, color = fire_class,
-        group = interaction(climate_state, fire_class)), inherit.aes = FALSE,
-      position = dodge, vjust = -.35, size = 2.05, lineheight = .82,
-      fontface = "bold", show.legend = FALSE) +
-    facet_wrap(~site, nrow = 1, scales = "fixed") +
-    scale_fill_manual(values = fire_fill) + scale_color_manual(values = fire_line) +
-    scale_x_discrete(labels = c("Holocene\nclimate change",
-                                "Holocene\nclimate stability")) +
-    scale_y_continuous(expand = expansion(mult = c(.09, .28))) +
-    labs(title = NULL, y = unname(METRICS[metric])) + base_theme +
-    theme(axis.text.x = element_text(size = 8.8, face = "bold"))
-}
-
-metric_stacks = purrr::map(names(BOX_METRICS), ~make_main_box(.x) /
-  make_detail_box(.x) +
-  plot_layout(heights = c(1.65, 1), axis_titles = "collect"))
-panel_a = wrap_plots(metric_stacks, nrow = 1)
-SCATTER_WIDTH_FRACTION = 0.75
-
-wide_summary = function(x) x |>
-  select(-summary_level, -n_valid, -q25, -q75,
-         -whisker_low, -whisker_high) |>
-  pivot_wider(names_from = metric, values_from = median)
-macro_scatter = wide_summary(macro_summary) |>
-  mutate(label = paste0(as.character(macro_era), "\nmedian"),
-    fire_class = factor("No fire",
-    levels = c("No fire", "Fire")), point_size = 6.2)
-era_sets = state |>
-  group_by(site, climate_state, fire_class) |>
-  summarise(era_ids = paste(sort(unique(climate_era_id)), collapse = ", "),
-            .groups = "drop")
-detail_scatter = wide_summary(detail_summary) |>
-  left_join(era_sets, by = c("site", "climate_state", "fire_class")) |>
-  mutate(label = paste0("Holocene\n",
-      if_else(climate_state == "Holocene climate change",
-        paste0("Climate change (", era_ids, ")"),
-        paste0("Climate stability (", era_ids, ")"))),
-    point_size = 3.8)
-noca_fire_scatter = wide_summary(noca_fire_summary) |>
-  mutate(label = paste0("Anthropocene\n", str_to_lower(fire_status)),
-    fire_class = factor(if_else(fire_status == "Burned", "Fire", "No fire"),
-      levels = c("No fire", "Fire")), point_size = 4.8)
-
-# One label layer is essential: separate ggrepel layers do not repel one
-# another, which allowed macro-era, climate-state and burn-status text to sit on
-# top of each other. Size remains a display attribute, not a data encoding.
-scatter_labels = bind_rows(
-  macro_scatter |> mutate(label_size = 3.2),
-  detail_scatter |> mutate(label_size = 2.45),
-  noca_fire_scatter |> mutate(label_size = 2.65))
-
-background = raw |>
-  filter(is.finite(angle_degrees), is.finite(rate_tracking_ratio))
-stationary = raw |>
-  filter(macro_era == "Anthropocene",
-    observed_vegetation_displacement <= 1e-8) |>
-  count(site, name = "n")
-stationary_label = paste0("Stationary observed composition: angle undefined\n",
-  paste0(stationary$site, " n=", stationary$n, collapse = "; "))
-lag_limit = max(abs(c(macro_scatter$lag, detail_scatter$lag,
-  noca_fire_scatter$lag)), na.rm = TRUE)
-ratio_upper = max(c(1, background$rate_tracking_ratio,
-  macro_scatter$rate_tracking_ratio, detail_scatter$rate_tracking_ratio,
-  noca_fire_scatter$rate_tracking_ratio), na.rm = TRUE) * 1.05
-
-panel_b = ggplot() +
-  geom_vline(xintercept = 90, linetype = "dashed", color = "grey40") +
-  geom_hline(yintercept = 1, linetype = "dashed", color = "grey40") +
-  geom_point(data = background,
-    aes(angle_degrees, rate_tracking_ratio, shape = site, color = fire_class),
-    fill = "white", size = 1.2, stroke = .35, alpha = .13,
-    show.legend = FALSE) +
-  geom_point(data = detail_scatter,
-    aes(angle_degrees, rate_tracking_ratio, shape = site,
-      fill = lag, color = fire_class), size = 3.8, stroke = 1.0, alpha = .72) +
-  geom_point(data = noca_fire_scatter,
-    aes(angle_degrees, rate_tracking_ratio, shape = site,
-      fill = lag, color = fire_class), size = 4.8, stroke = 1.25) +
-  geom_point(data = macro_scatter,
-    aes(angle_degrees, rate_tracking_ratio, shape = site,
-      fill = lag, color = fire_class), size = 6.2, stroke = 1.45) +
-  geom_text_repel(data = scatter_labels,
-    aes(angle_degrees, rate_tracking_ratio, label = label,
-      color = fire_class, size = label_size),
-    fontface = "bold", min.segment.length = 0,
-    box.padding = .48, point.padding = .18, force = 2,
-    seed = 37, max.overlaps = Inf, max.iter = 200000,
-    show.legend = FALSE) +
-  annotate("label", x = 3, y = ratio_upper * .965,
-    label = stationary_label, hjust = 0, vjust = 1,
-    size = 3, color = "grey25", fill = "white", linewidth = .25) +
-  scale_shape_manual(name = "Site", values = site_shapes) +
-  scale_color_manual(name = "Fire evidence", values = fire_line,
-    labels = c(`No fire` = "No fire evidence / unburned",
-               Fire = "High-fire evidence / burned")) +
-  scale_fill_gradient2(name = "Lag", low = PAPER_SIGNED_COLORS[["low"]],
-    mid = PAPER_SIGNED_COLORS[["mid"]], high = PAPER_SIGNED_COLORS[["high"]],
-    midpoint = 0, limits = c(-lag_limit, lag_limit)) +
-  scale_size_identity() +
-  scale_x_continuous(limits = c(0, 180), breaks = seq(0, 180, 30),
-    expand = expansion(mult = c(0, .01))) +
-  scale_y_continuous(limits = c(0, ratio_upper),
-    expand = expansion(mult = c(0, .025))) +
-  guides(shape = guide_legend(order = 1),
-    color = guide_legend(order = 2, override.aes = list(shape = 21,
-      fill = "white", size = 4)),
-    fill = guide_colorbar(order = 3, barwidth = grid::unit(4.5, "cm"))) +
-  labs(title = "D.",
-    x = "Angle (degrees)", y = "Tracking ratio (observed/predicted)") +
-  theme_paleoaces(base_size = 12.5) +
-  theme(panel.grid.minor = element_blank(),
-    plot.title = element_text(face = "bold", size = 15),
-    legend.position = "bottom", legend.box = "horizontal")
-
-scatter_side_fraction = (1 - SCATTER_WIDTH_FRACTION) / 2
-panel_b_row = plot_spacer() + panel_b + plot_spacer() +
-  plot_layout(widths = c(scatter_side_fraction, SCATTER_WIDTH_FRACTION,
-                         scatter_side_fraction))
-figure = panel_a / panel_b_row + plot_layout(heights = c(1.25, 1))
-
-plot_limits = function(plot) {
-  pp = ggplot_build(plot)$layout$panel_params[[1]]
-  tibble(x_min = pp$x.range[1], x_max = pp$x.range[2],
-         y_min = pp$y.range[1], y_max = pp$y.range[2])
-}
-box_spec = purrr::map_dfr(names(BOX_METRICS), function(metric) bind_rows(
-  plot_limits(make_main_box(metric)) |>
-    mutate(record_type = "box", panel = str_remove(BOX_TAGS[[metric]], "\\.$"),
-      metric = metric,
-      element = "macro era x fire, fixed site facets",
-      grouping_contract = "x=macro_era;group=interaction(macro_era,fire_class)",
-      box_width_contract = "width=0.55;position_dodge2(preserve=single)",
-      panel_width_fraction = 1),
-  plot_limits(make_detail_box(metric)) |>
-    mutate(record_type = "box", panel = str_remove(BOX_TAGS[[metric]], "\\.$"),
-      metric = metric,
-      element = "Holocene climate state x fire, fixed site facets",
-      grouping_contract = "x=climate_state;group=interaction(climate_state,fire_class)",
-      box_width_contract = "width=0.55;position_dodge2(preserve=single)",
-      panel_width_fraction = 1)))
-scatter_spec = plot_limits(panel_b) |>
-  mutate(record_type = "scatter", panel = "D",
-    metric = "angle_degrees x rate_tracking_ratio",
-    element = "single unfaceted panel; raw points and labelled medians",
-    grouping_contract = "site=shape;lag=fill;fire=categorical outline;era=label",
-    n_background = nrow(background), n_macro = nrow(macro_scatter),
-    n_detail = nrow(detail_scatter), n_noca_fire = nrow(noca_fire_scatter),
-    x_reference = 90, y_reference = 1, lag_limit = lag_limit,
-    n_stationary_angle_undefined = sum(stationary$n),
-    label_contract = paste0("one shared repel layer; Holocene/Anthropocene median; ",
-      "Holocene climate-state labels list exact represented CC/S eras; ",
-      "Anthropocene burn status"),
-    box_metrics = paste(names(BOX_METRICS), collapse = ";"),
-    fire_box_fill = "white; fire distinguished by dark-red outline",
-    panel_width_fraction = SCATTER_WIDTH_FRACTION,
-    layout_contract = "centered with symmetric side spacers")
-spec = bind_rows(box_spec, scatter_spec) |>
-  mutate(x_scale = "raw_linear", y_scale = "raw_linear")
-write_csv(spec, here("output/cca_tracking_comparison_spec.csv"))
-
-if (render_figures) {
-  ggsave(here("plot/fig_tracking_comparison.pdf"), figure,
-    width = 17, height = 11.5, bg = "white")
-  ggsave(here("plot/fig_tracking_comparison.png"), figure,
-    width = 17, height = 11.5, dpi = 300, bg = "white")
-  cat("Written fixed-facet fire-aware boxplots and one unfaceted tracking scatter.\n")
-}
-# END R/stages/09c_tracking_comparison.R
-
-# ============================================================================
-# BEGIN R/stages/14_cca_direction_analysis.R
-# ============================================================================
-# =============================================================================
-# 14_cca_direction_analysis.R - predicted/observed CCA direction differences
-# =============================================================================
-# Descriptive direction analysis in the fitted scaling-1, Hill-off CCA1-CCA2
-# geometry. For taxa, predicted movement is compared with the vector from its
-# initial LC position to the fixed species score, whereas observed movement is
-# compared with the vector from its initial WA position to that same score.
-# Climate arrows use the common biplot-vector origin. Predicted and observed
-# cosines are paired within every plot or Holocene draw x offset x interval
-# realization, and their predicted-minus-observed target-alignment discrepancy
-# is calculated before any aggregation. The contrast is descriptive, not
-# abundance, dominance, prevalence, contribution, driver attribution, or causal
-# inference; zero is equality of target-specific cosines, not complete vector
-# agreement.
+# This file has no data-loading or file-writing side effects. Both the executable
+# tracking stage and its unit tests source these functions.
+#
+# Required endpoint columns in `calculate_tracking_metrics()`:
+#   observed WA: o1, o2 at t1 and o1_2, o2_2 at t2
+#   predicted LC: p1, p2 at t1 and p1_2, p2_2 at t2
+#   elapsed years: vegetation_dt_years and climate_dt_years
+#
+# Required climate columns in `add_climate_change_metrics()`:
+#   the configured CCA variables at t1 and their `_2` counterparts at t2.
 # =============================================================================
 
 suppressPackageStartupMessages({
-  library(here)
-  library(tidyverse)
-  library(vegan)
-  library(patchwork)
+  library(dplyr)
+  library(tidyr)
 })
-source(here("R/helpers/config.R"), local = TRUE)
-source(here("R/helpers/tracking_metrics.R"), local = TRUE)
-source(here("R/helpers/figure_style.R"), local = TRUE)
-source(here("R/stages/05_cca_model.R"), local = TRUE)
 
-render_figures = isTRUE(getOption("paleoaces.render_figures", TRUE))
-DIRECTION_EPSILON = TRACKING_EPSILON
+TRACKING_EPSILON = 1e-8
+if (!exists("CCA_VARIABLES") || !exists("CLIMATE_VARIABLE_UNITS"))
+  stop("Source R/helpers/config.R before R/helpers/tracking_metrics.R")
+CCA_CLIMATE_VARS = CCA_VARIABLES
 
-input_paths = here("output", c(
-  "cca_tracking_anthropocene_plot.csv",
-  "cca_tracking_holocene_realizations.csv",
-  "MORA_plot_info_fire.csv",
-  "NOCA_fire_assignment_audit.csv",
-  "holocene_era_grid.csv",
-  "holocene_era_fire_site_frequency.csv"
-))
-if (!all(file.exists(input_paths)))
-  stop("Missing direction-analysis input(s): ",
-       paste(input_paths[!file.exists(input_paths)], collapse = ", "))
-input_hash_before = unname(tools::md5sum(input_paths))
+# Internal angle utility: no direction is assigned to nonfinite or tiny vectors.
+safe_cosine_2d = function(ax, ay, bx, by, epsilon = TRACKING_EPSILON) {
+  sizes = lengths(list(ax, ay, bx, by))
+  n = max(sizes)
+  if (any(!sizes %in% c(1L, n)) || !is.finite(epsilon) || epsilon <= 0)
+    stop("Invalid vector lengths or movement tolerance")
+  ax = rep_len(ax, n); ay = rep_len(ay, n)
+  bx = rep_len(bx, n); by = rep_len(by, n)
+  a = sqrt(ax^2 + ay^2); b = sqrt(bx^2 + by^2)
+  ok = is.finite(a) & is.finite(b) & a > epsilon & b > epsilon
+  result = rep(NA_real_, n)
+  result[ok] = pmax(-1, pmin(1, (ax[ok]*bx[ok] + ay[ok]*by[ok])/(a[ok]*b[ok])))
+  result
+}
 
-if (!identical(cca_scaling, "sites") || isTRUE(cca_hill))
-  stop("Direction analysis requires scaling='sites' and hill=FALSE.")
+tracking_metric_names = function() c(
+  "observed_vegetation_displacement", "predicted_vegetation_displacement",
+  "observed_turnover_rate", "predicted_vegetation_change_rate",
+  "magnitude_tracking_ratio", "rate_tracking_ratio", "angle_degrees",
+  "lag_t1", "lag_t2", "change_in_lag", "lag_rate_per_century",
+  "lag_t2_pace_corrected", "lag_t2_direction_corrected",
+  "pace_effect_on_lag", "direction_effect_on_lag",
+  "pace_effect_on_lag_per_century", "direction_effect_on_lag_per_century")
 
-species_matrix = scores(cca_model, display = "species", choices = 1:2,
-                        scaling = cca_scaling, hill = cca_hill)
-climate_matrix = scores(cca_model, display = "bp", choices = 1:2,
-                        scaling = cca_scaling, hill = cca_hill)
-if (nrow(species_matrix) != 14L ||
-    !setequal(rownames(climate_matrix), CCA_CLIMATE_VARS))
-  stop("Expected 14 retained taxa and the four configured climate arrows.")
+climate_metric_names = function(vars = CCA_CLIMATE_VARS) c(
+  unlist(lapply(vars, function(v) paste0(v, c("_change", "_rate_per_century",
+    "_z_change", "_z_rate_per_century")))),
+  "standardized_climate_displacement", "standardized_climate_change_rate")
 
-targets = bind_rows(
-  as_tibble(species_matrix[, 1:2, drop = FALSE], rownames = "target") |>
-    transmute(target_type = "taxon", target,
-              target_label = target,
-              target_x = CCA1, target_y = CCA2),
-  as_tibble(climate_matrix[, 1:2, drop = FALSE], rownames = "target") |>
-    transmute(target_type = "climate", target,
-              target_label = unname(CLIMATE_VARIABLE_LABELS[target]),
-              target_x = CCA1, target_y = CCA2)
-)
+# Return the fixed standardization reference used by both eras. The pooled
+# legacy calibration set is the reference because it trained the CCA; using a
+# future or paleo distribution would make one era help define the other's scale.
+make_climate_scaling = function(calibration_env, vars = CCA_CLIMATE_VARS) {
+  missing = setdiff(vars, names(calibration_env))
+  if (length(missing))
+    stop("make_climate_scaling(): missing calibration variable(s): ",
+         paste(missing, collapse = ", "))
 
-build_direction_contrasts = function(x, keys) {
-  expanded = x |>
-    transmute(across(all_of(keys)),
-              predicted_origin_x = p1, predicted_origin_y = p2,
-              observed_origin_x = o1, observed_origin_y = o2,
-              predicted_movement_x = delta_predicted_CCA1,
-              predicted_movement_y = delta_predicted_CCA2,
-              observed_movement_x = delta_observed_CCA1,
-              observed_movement_y = delta_observed_CCA2) |>
-    cross_join(targets) |>
-    mutate(
-      predicted_target_x = if_else(target_type == "taxon",
-                                   target_x - predicted_origin_x, target_x),
-      predicted_target_y = if_else(target_type == "taxon",
-                                   target_y - predicted_origin_y, target_y),
-      observed_target_x = if_else(target_type == "taxon",
-                                  target_x - observed_origin_x, target_x),
-      observed_target_y = if_else(target_type == "taxon",
-                                  target_y - observed_origin_y, target_y)
-    )
-  predicted = safe_cosine_2d(
-    expanded$predicted_movement_x, expanded$predicted_movement_y,
-    expanded$predicted_target_x, expanded$predicted_target_y,
-    epsilon = DIRECTION_EPSILON
-  ) |>
-    rename_with(~ paste0("predicted_", .x))
-  observed = safe_cosine_2d(
-    expanded$observed_movement_x, expanded$observed_movement_y,
-    expanded$observed_target_x, expanded$observed_target_y,
-    epsilon = DIRECTION_EPSILON
-  ) |>
-    rename_with(~ paste0("observed_", .x))
-  direct = safe_cosine_2d(
-    expanded$predicted_movement_x, expanded$predicted_movement_y,
-    expanded$observed_movement_x, expanded$observed_movement_y,
-    epsilon = DIRECTION_EPSILON
+  out = tibble(
+    variable = vars,
+    mean = vapply(calibration_env[vars], mean, numeric(1), na.rm = TRUE),
+    sd = vapply(calibration_env[vars], stats::sd, numeric(1), na.rm = TRUE),
+    n_calibration = vapply(calibration_env[vars], function(x) sum(is.finite(x)), integer(1)),
+    unit = unname(CLIMATE_VARIABLE_UNITS[variable])
   )
-
-  bind_cols(expanded, predicted, observed) |>
-    mutate(
-      directional_difference = predicted_association - observed_association,
-      absolute_directional_difference = abs(directional_difference),
-      contrast_valid = predicted_association_valid & observed_association_valid,
-      direct_movement_cosine = direct$association,
-      direct_angle_degrees = acos(direct_movement_cosine) * 180 / pi,
-      direct_direction_valid = direct$association_valid
-    ) |>
-    select(all_of(keys), target_type, target, target_label,
-           predicted_association, observed_association,
-           directional_difference, absolute_directional_difference,
-           direct_movement_cosine, direct_angle_degrees,
-           predicted_movement_magnitude, observed_movement_magnitude,
-           predicted_target_magnitude, observed_target_magnitude,
-           predicted_nonfinite_input, observed_nonfinite_input,
-           predicted_small_movement, observed_small_movement,
-           predicted_small_target_vector, observed_small_target_vector,
-           predicted_association_valid, observed_association_valid,
-           contrast_valid, direct_direction_valid)
+  if (any(!is.finite(out$sd) | out$sd <= 0))
+    stop("make_climate_scaling(): every calibration SD must be finite and positive")
+  out
 }
 
-# Anthropocene ---------------------------------------------------------------
-anth = read_csv(input_paths[1], show_col_types = FALSE)
-modern_fire = bind_rows(
-  read_csv(input_paths[3], show_col_types = FALSE) |>
-    transmute(site = "MORA", plot_id = str_to_upper(plot_id), burned = burnt),
-  read_csv(input_paths[4], show_col_types = FALSE) |>
-    transmute(site = "NOCA", plot_id = str_to_upper(plot_id), burned = burnt)
-) |>
-  distinct(site, plot_id, .keep_all = TRUE)
-anth = anth |>
-  mutate(plot_id = str_to_upper(plot_id)) |>
-  left_join(modern_fire, by = c("site", "plot_id"))
-if (nrow(anth) != 607L || anyNA(anth$burned) ||
-    !identical(as.integer(table(anth$site)[c("MORA", "NOCA")]),
-               c(330L, 277L)))
-  stop("Anthropocene direction scope must contain all 607 fire-classified pairs.")
+# Six response families and their supporting geometry, in one CCA1-CCA2 space.
+# Counterfactuals start at the actual O1 and compare with the actual final P2.
+# They correct displacement magnitude/direction, are nonadditive and noncausal.
+calculate_tracking_metrics = function(x, epsilon = TRACKING_EPSILON) {
+  coords = c("o1", "o2", "o1_2", "o2_2", "p1", "p2", "p1_2", "p2_2")
+  need = c(coords, "vegetation_dt_years", "climate_dt_years")
+  if (!all(need %in% names(x))) stop("Missing tracking endpoint/time columns")
+  if (length(epsilon) != 1L || !is.finite(epsilon) || epsilon <= 0)
+    stop("Movement tolerance must be finite and positive")
+  if (any(!is.finite(x$vegetation_dt_years) | x$vegetation_dt_years <= 0) ||
+      any(!is.finite(x$climate_dt_years) | x$climate_dt_years <= 0))
+    stop("Elapsed times must be finite and positive")
+  ox = x$o1_2-x$o1; oy = x$o2_2-x$o2
+  px = x$p1_2-x$p1; py = x$p2_2-x$p2
+  a = sqrt(ox^2+oy^2); b = sqrt(px^2+py^2)
+  x$finite_endpoints = rowSums(!is.finite(as.matrix(x[coords]))) == 0L
+  x$small_observed_movement = is.finite(a) & a <= epsilon
+  x$small_predicted_movement = is.finite(b) & b <= epsilon
+  observed_direction = x$finite_endpoints & is.finite(a) & a > epsilon
+  predicted_direction = x$finite_endpoints & is.finite(b) & b > epsilon
+  x$angle_valid = observed_direction & predicted_direction
+  x$pace_counterfactual_valid = observed_direction
+  x$direction_counterfactual_valid = predicted_direction
+  x$tracking_ratio_valid = predicted_direction
+  x$delta_observed_CCA1 = ox; x$delta_observed_CCA2 = oy
+  x$delta_predicted_CCA1 = px; x$delta_predicted_CCA2 = py
+  x$observed_vegetation_displacement = a
+  x$predicted_vegetation_displacement = b
+  x$observed_turnover_rate = a/x$vegetation_dt_years*100
+  x$predicted_vegetation_change_rate = b/x$climate_dt_years*100
+  x$magnitude_tracking_ratio = ifelse(predicted_direction, a/b, NA_real_)
+  x$rate_tracking_ratio = ifelse(predicted_direction,
+    x$observed_turnover_rate/x$predicted_vegetation_change_rate, NA_real_)
+  x$angle_degrees = acos(safe_cosine_2d(ox, oy, px, py, epsilon))*180/pi
+  x$lag_t1 = sqrt((x$o1-x$p1)^2+(x$o2-x$p2)^2)
+  x$lag_t2 = sqrt((x$o1_2-x$p1_2)^2+(x$o2_2-x$p2_2)^2)
+  x$change_in_lag = x$lag_t2-x$lag_t1
+  x$lag_rate_per_century = x$change_in_lag/x$climate_dt_years*100
 
-anth_keys = c("site", "plot_id", "burned")
-anth_direction = build_direction_contrasts(anth, anth_keys) |>
-  mutate(period = "Anthropocene", .before = site)
-if (nrow(anth_direction) != 10926L)
-  stop("Unexpected Anthropocene paired direction-row count.")
-write_csv(anth_direction,
-          here("output/cca_direction_anthropocene_realizations.csv"))
-
-# Holocene realization values ------------------------------------------------
-holo = read_csv(input_paths[2], show_col_types = FALSE)
-if (nrow(holo) != 15270L ||
-    !setequal(unique(holo$offset), seq(0, 900, 100)) ||
-    !setequal(unique(holo$draw), seq_len(100)))
-  stop("Holocene direction analysis requires the primary 15,270 realizations.")
-
-holo_keys = c("site", "run_id", "draw", "offset", "age_hi", "age_lo",
-              "n_min", "sparse_bin")
-holo_direction = build_direction_contrasts(holo, holo_keys) |>
-  mutate(period = "Holocene", .before = site)
-if (nrow(holo_direction) != 274860L)
-  stop("Unexpected Holocene paired direction-row count.")
-write_csv(holo_direction,
-          here("output/cca_direction_holocene_realizations.csv.gz"))
-
-# Draws are summarized inside each offset and actual interval before phase
-# offsets or the frozen climate/fire classifications are combined.
-holo_by_offset = holo_direction |>
-  group_by(site, offset, age_hi, age_lo,
-           target_type, target, target_label) |>
-  summarize(
-    n_total = n(),
-    n_valid = sum(contrast_valid),
-    n_missing = n_total - n_valid,
-    n_sparse = sum(sparse_bin),
-    difference_median = safe_stat(directional_difference, stats::median),
-    difference_q025 = safe_stat(directional_difference, stats::quantile,
-                                probs = .025, names = FALSE),
-    difference_q25 = safe_stat(directional_difference, stats::quantile,
-                               probs = .25, names = FALSE),
-    difference_q75 = safe_stat(directional_difference, stats::quantile,
-                               probs = .75, names = FALSE),
-    difference_q975 = safe_stat(directional_difference, stats::quantile,
-                                probs = .975, names = FALSE),
-    direct_cosine_median = safe_stat(direct_movement_cosine, stats::median),
-    direct_angle_median = safe_stat(direct_angle_degrees, stats::median),
-    .groups = "drop"
-  )
-if (nrow(holo_by_offset) != 2790L)
-  stop("Expected 2,790 Holocene paired draw-within-offset summaries.")
-write_csv(holo_by_offset,
-          here("output/cca_direction_holocene_by_offset.csv.gz"))
-
-# Match the tracking stage's half-open interval mapping: age_lo <= t < age_hi.
-grid = tibble(t = seq(floor(min(holo$age_lo) / 100) * 100,
-                      ceiling(max(holo$age_hi) / 100) * 100, by = 100))
-holo_grid = holo_by_offset |>
-  inner_join(grid, by = join_by(y$t >= x$age_lo, y$t < x$age_hi))
-if (anyDuplicated(holo_grid |>
-    select(site, offset, target_type, target, t)))
-  stop("Direction interval mapping duplicated a site-offset-target date.")
-
-holo_timeseries_all = holo_grid |>
-  group_by(site, t, target_type, target, target_label) |>
-  summarize(
-    difference_estimate = safe_stat(difference_median, stats::median),
-    draw_difference_q025 = safe_stat(difference_q025, stats::median),
-    draw_difference_q975 = safe_stat(difference_q975, stats::median),
-    phase_difference_min = safe_stat(difference_median, base::min),
-    phase_difference_q25 = safe_stat(difference_median, stats::quantile,
-                                     probs = .25, names = FALSE),
-    phase_difference_q75 = safe_stat(difference_median, stats::quantile,
-                                     probs = .75, names = FALSE),
-    phase_difference_max = safe_stat(difference_median, base::max),
-    direct_cosine_estimate = safe_stat(direct_cosine_median, stats::median),
-    direct_angle_estimate = safe_stat(direct_angle_median, stats::median),
-    n_offsets = n_distinct(offset),
-    n_draws_min = min(n_total),
-    n_valid_draws_min = min(n_valid),
-    n_sparse_draws = sum(n_sparse),
-    .groups = "drop"
-  ) |>
-  filter(n_offsets == 10L)
-
-era_grid = read_csv(input_paths[5], show_col_types = FALSE) |>
-  transmute(t, climate_state = era_class)
-fire_grid = read_csv(input_paths[6], show_col_types = FALSE) |>
-  transmute(site, t = cal_bp, high_fire)
-holo_timeseries = holo_timeseries_all |>
-  inner_join(era_grid, by = "t") |>
-  left_join(fire_grid, by = c("site", "t"))
-if (nrow(holo_timeseries) != 2466L || anyNA(holo_timeseries$high_fire) ||
-    !setequal(holo_timeseries$climate_state,
-              c("climate change", "relative stability")))
-  stop("Expected 2,466 completely classified Holocene site-date contrasts.")
-write_csv(holo_timeseries,
-          here("output/cca_direction_holocene_timeseries.csv"))
-
-# Descriptive group summaries ------------------------------------------------
-anth_group = anth_direction |>
-  group_by(site, burned, target_type, target, target_label) |>
-  summarize(
-    n_units = n_distinct(plot_id), n_total = n(),
-    n_valid = sum(contrast_valid), n_missing = n_total - n_valid,
-    predicted_median = safe_stat(predicted_association, stats::median),
-    observed_median = safe_stat(observed_association, stats::median),
-    difference_median = safe_stat(directional_difference, stats::median),
-    difference_q025 = safe_stat(directional_difference, stats::quantile,
-                                probs = .025, names = FALSE),
-    difference_q25 = safe_stat(directional_difference, stats::quantile,
-                               probs = .25, names = FALSE),
-    difference_q75 = safe_stat(directional_difference, stats::quantile,
-                               probs = .75, names = FALSE),
-    difference_q975 = safe_stat(directional_difference, stats::quantile,
-                                probs = .975, names = FALSE),
-    direct_cosine_median = safe_stat(direct_movement_cosine, stats::median),
-    direct_angle_median = safe_stat(direct_angle_degrees, stats::median),
-    .groups = "drop"
-  ) |>
-  mutate(period = "Anthropocene", climate_state = NA_character_,
-         high_fire = NA,
-         draw_difference_q025_typical = NA_real_,
-         draw_difference_q975_typical = NA_real_,
-         phase_difference_min = NA_real_, phase_difference_max = NA_real_) |>
-  select(period, site, climate_state, high_fire, burned,
-         target_type, target, target_label, everything())
-
-holo_group = holo_timeseries |>
-  group_by(site, climate_state, high_fire, target_type, target, target_label) |>
-  summarize(
-    n_units = n_distinct(t), n_total = n(),
-    n_valid = sum(is.finite(difference_estimate)), n_missing = n_total - n_valid,
-    predicted_median = NA_real_, observed_median = NA_real_,
-    difference_median = safe_stat(difference_estimate, stats::median),
-    difference_q025 = safe_stat(difference_estimate, stats::quantile,
-                                probs = .025, names = FALSE),
-    difference_q25 = safe_stat(difference_estimate, stats::quantile,
-                               probs = .25, names = FALSE),
-    difference_q75 = safe_stat(difference_estimate, stats::quantile,
-                               probs = .75, names = FALSE),
-    difference_q975 = safe_stat(difference_estimate, stats::quantile,
-                                probs = .975, names = FALSE),
-    direct_cosine_median = safe_stat(direct_cosine_estimate, stats::median),
-    direct_angle_median = safe_stat(direct_angle_estimate, stats::median),
-    draw_difference_q025_typical = safe_stat(draw_difference_q025, stats::median),
-    draw_difference_q975_typical = safe_stat(draw_difference_q975, stats::median),
-    phase_difference_min = safe_stat(phase_difference_min, base::min),
-    phase_difference_max = safe_stat(phase_difference_max, base::max),
-    .groups = "drop"
-  ) |>
-  mutate(period = "Holocene", burned = NA) |>
-  select(period, site, climate_state, high_fire, burned,
-         target_type, target, target_label, everything())
-
-group_summaries = bind_rows(anth_group, holo_group) |>
-  arrange(period, site, climate_state, high_fire, burned, target_type, target)
-if (nrow(group_summaries) != 216L)
-  stop("Expected 216 descriptive group-summary rows.")
-write_csv(group_summaries,
-          here("output/cca_direction_group_summaries.csv"))
-legacy_ranking = here("output/cca_direction_group_rankings.csv")
-if (file.exists(legacy_ranking))
-  unlink(legacy_ranking)
-
-# Figures --------------------------------------------------------------------
-group_palette = c(
-  "Change / high fire" = PAPER_FIRE_RED,
-  "Change / no high fire" = "grey55",
-  "Stability / high fire" = PAPER_FIRE_RED,
-  "Stability / no high fire" = "grey72",
-  "Burned" = PAPER_FIRE_RED,
-  "Unburned" = "grey55"
-)
-
-add_group_labels = function(x) {
-  x |>
-    mutate(
-      comparison_group = if_else(
-        period == "Holocene",
-        paste(
-          if_else(climate_state == "climate change", "Change", "Stability"),
-          if_else(high_fire, "high fire", "no high fire"), sep = " / "),
-        if_else(burned, "Burned", "Unburned")
-      ),
-      comparison_group = factor(comparison_group,
-        levels = names(group_palette))
-    )
+  # Only divide by a direction's magnitude when that direction is defined.
+  x$pace_corrected_CCA1 = x$pace_corrected_CCA2 = rep(NA_real_, nrow(x))
+  x$direction_corrected_CCA1 = x$direction_corrected_CCA2 = rep(NA_real_, nrow(x))
+  i = observed_direction
+  x$pace_corrected_CCA1[i] = x$o1[i]+b[i]*ox[i]/a[i]
+  x$pace_corrected_CCA2[i] = x$o2[i]+b[i]*oy[i]/a[i]
+  i = predicted_direction
+  x$direction_corrected_CCA1[i] = x$o1[i]+a[i]*px[i]/b[i]
+  x$direction_corrected_CCA2[i] = x$o2[i]+a[i]*py[i]/b[i]
+  x$lag_t2_pace_corrected = sqrt((x$pace_corrected_CCA1-x$p1_2)^2+
+    (x$pace_corrected_CCA2-x$p2_2)^2)
+  x$lag_t2_direction_corrected = sqrt((x$direction_corrected_CCA1-x$p1_2)^2+
+    (x$direction_corrected_CCA2-x$p2_2)^2)
+  x$pace_effect_on_lag = x$lag_t2-x$lag_t2_pace_corrected
+  x$direction_effect_on_lag = x$lag_t2-x$lag_t2_direction_corrected
+  x$pace_effect_on_lag_per_century = x$pace_effect_on_lag/x$climate_dt_years*100
+  x$direction_effect_on_lag_per_century = x$direction_effect_on_lag/x$climate_dt_years*100
+  x
 }
 
-make_difference_boxplot = function(x, title, unit_text) {
-  x = add_group_labels(x) |>
-    mutate(target_label = factor(target_label,
-      levels = sort(unique(as.character(target_label)))))
-  ggplot(x, aes(target_label, directional_difference,
-                fill = comparison_group, color = comparison_group)) +
-    geom_hline(yintercept = 0, color = "grey35", linewidth = .4) +
-    geom_boxplot(position = position_dodge2(width = .82, preserve = "single"),
-                 width = .72, outlier.shape = NA, alpha = .72,
-                 linewidth = .38, na.rm = TRUE) +
-    geom_point(position = position_jitterdodge(
-                 jitter.width = .16, jitter.height = 0, dodge.width = .82),
-               alpha = .16, size = .4, na.rm = TRUE) +
-    facet_grid(. ~ site) +
-    scale_y_continuous(limits = c(-2, 2), breaks = seq(-2, 2, 1)) +
-    scale_fill_manual(values = group_palette, drop = TRUE,
-                      name = "Group") +
-    scale_color_manual(values = group_palette, drop = TRUE,
-                       name = "Group") +
-    labs(title = title,
-         subtitle = paste0("Boxplots describe ", unit_text,
-           "; points are individual valid units and are not confidence intervals."),
-         x = NULL,
-         y = "Target-alignment discrepancy\n(predicted cosine - observed cosine)") +
-    theme_bw(base_size = 10.5) +
-    theme(panel.grid = element_blank(), strip.text = element_text(face = "bold"),
-          axis.text.x = element_text(angle = 42, hjust = 1, vjust = 1,
-                                     size = 8.5),
-          legend.position = "bottom")
-}
+# Actual climate change in predictor space, kept separate from LC movement.
+# Per-variable rates remain signed and in physical units. The combined index is
+# the Euclidean norm after scaling every variable by its pooled legacy SD:
+#   standardized rate = sqrt(sum_v ((X2_v-X1_v)/SD_v/dt*100)^2).
+# It is nonnegative and measures multivariate climate speed; signed component
+# columns retain whether each season became warmer/colder or wetter/drier.
+add_climate_change_metrics = function(x, scaling, vars = CCA_CLIMATE_VARS) {
+  need_scaling = c("variable", "mean", "sd", "unit", "n_calibration")
+  if (!all(need_scaling %in% names(scaling)) || !setequal(vars, scaling$variable))
+    stop("add_climate_change_metrics(): invalid or incomplete scaling table")
+  need = c("climate_dt_years", vars, paste0(vars, "_2"))
+  missing = setdiff(need, names(x))
+  if (length(missing))
+    stop("add_climate_change_metrics(): missing column(s): ",
+         paste(missing, collapse = ", "))
+  if (any(!is.finite(x$climate_dt_years) | x$climate_dt_years <= 0))
+    stop("add_climate_change_metrics(): climate elapsed times must be positive")
 
-add_heatmap_groups = function(x) {
-  x |>
-    mutate(
-      comparison_group = case_when(
-        period == "Holocene" & climate_state == "climate change" & high_fire ~
-          "Holocene: climate change, high fire",
-        period == "Holocene" & climate_state == "climate change" ~
-          "Holocene: climate change",
-        period == "Holocene" & climate_state == "relative stability" & high_fire ~
-          "Holocene: climate stability, high fire",
-        period == "Holocene" ~ "Holocene: climate stability",
-        period == "Anthropocene" & burned ~ "Anthropocene: burned",
-        TRUE ~ "Anthropocene: unburned"
-      ),
-      group_order = case_when(
-        period == "Holocene" & climate_state == "climate change" & high_fire ~ 1L,
-        period == "Holocene" & climate_state == "climate change" & !high_fire ~ 2L,
-        period == "Holocene" & climate_state == "relative stability" & high_fire ~ 3L,
-        period == "Holocene" ~ 4L,
-        period == "Anthropocene" & burned ~ 5L,
-        TRUE ~ 6L
-      ),
-      group_label = comparison_group
-    ) |>
-    arrange(group_order, site)
-}
-
-make_difference_heatmap = function(x, title, italic_targets = FALSE) {
-  target_levels = if (all(x$target_type == "taxon")) {
-    targets |>
-      filter(target_type == "taxon") |>
-      pull(target_label)
-  } else {
-    targets |>
-      filter(target_type == "climate") |>
-      pull(target_label)
+  z_change_cols = character(0)
+  z_rate_cols = character(0)
+  for (v in vars) {
+    s = scaling$sd[match(v, scaling$variable)]
+    delta = x[[paste0(v, "_2")]] - x[[v]]
+    x[[paste0(v, "_change")]] = delta
+    x[[paste0(v, "_rate_per_century")]] = delta / x$climate_dt_years * 100
+    x[[paste0(v, "_z_change")]] = delta / s
+    x[[paste0(v, "_z_rate_per_century")]] = delta / s / x$climate_dt_years * 100
+    z_change_cols = c(z_change_cols, paste0(v, "_z_change"))
+    z_rate_cols = c(z_rate_cols, paste0(v, "_z_rate_per_century"))
   }
-  x = add_heatmap_groups(x) |>
-    mutate(
-      target_label = factor(target_label, levels = rev(target_levels))
-    )
-  x$group_label = factor(x$group_label,
-                         levels = unique(x$group_label))
-
-  ggplot(x, aes(group_label, target_label, fill = difference_median)) +
-    geom_tile(color = "white", linewidth = .65) +
-    facet_wrap(vars(site), nrow = 1) +
-    scale_fill_gradient2(
-      low = PAPER_SIGNED_COLORS[["low"]],
-      mid = PAPER_SIGNED_COLORS[["mid"]],
-      high = PAPER_SIGNED_COLORS[["high"]],
-      midpoint = 0, limits = c(-2, 2), breaks = seq(-2, 2, 1),
-      na.value = "grey80",
-      name = "Target-alignment discrepancy\n(predicted - observed)",
-      guide = guide_colorbar(
-        barwidth = grid::unit(8, "cm"),
-        barheight = grid::unit(.65, "cm"),
-        frame.colour = "grey35",
-        ticks.colour = "white"
-      )
-    ) +
-    labs(title = title, x = NULL, y = NULL) +
-    theme_paleoaces(base_size = 13) +
-    theme(
-      panel.grid = element_blank(),
-      axis.text.x = element_blank(),
-      axis.ticks.x = element_blank(),
-      axis.text.y = element_text(size = 14,
-                                 face = if (italic_targets) "italic" else "plain"),
-      strip.text = element_text(face = "bold", size = 14),
-      legend.position = "bottom",
-      plot.title = element_text(face = "bold", size = 16),
-      plot.margin = margin(6, 8, 3, 8)
-    )
+  x$standardized_climate_displacement = sqrt(rowSums(x[z_change_cols]^2))
+  x$standardized_climate_change_rate = sqrt(rowSums(x[z_rate_cols]^2))
+  x
 }
 
-make_common_group_axis = function(x) {
-  axis_data = add_heatmap_groups(x) |>
-    distinct(site, group_order, group_label, period, climate_state,
-             high_fire, burned) |>
-    mutate(
-      group_label = factor(group_label,
-        levels = unique(group_label[order(group_order)])),
-      condition_label = case_when(
-        period != "Holocene" ~ "",
-        climate_state == "relative stability" ~ "climate stability",
-        TRUE ~ climate_state),
-      disturbance_label = case_when(
-        period == "Holocene" & high_fire ~ "high fire",
-        period == "Anthropocene" & burned ~ "burned",
-        period == "Anthropocene" ~ "unburned",
-        TRUE ~ ""
-      )
-    )
-
-  ggplot(axis_data, aes(group_label)) +
-    geom_text(aes(y = 1.86, label = period),
-              color = "grey15", fontface = "bold", size = 4.15) +
-    geom_text(aes(y = 1.52, label = condition_label),
-              color = "grey20", size = 4.15) +
-    geom_text(aes(y = 1.18, label = disturbance_label,
-              color = disturbance_label %in% c("high fire", "burned")),
-              fontface = "bold", size = 4.15) +
-    facet_wrap(vars(site), nrow = 1) +
-    scale_color_manual(
-      values = c("TRUE" = PAPER_FIRE_RED, "FALSE" = "grey35"),
-      guide = "none"
-    ) +
-    scale_y_continuous(limits = c(1.05, 2.00)) +
-    labs(x = NULL, y = NULL) +
-    theme_paleoaces(base_size = 13) +
-    theme(
-      panel.grid = element_blank(),
-      panel.border = element_blank(),
-      axis.text = element_blank(),
-      axis.ticks = element_blank(),
-      strip.text = element_blank(),
-      strip.background = element_blank(),
-      plot.margin = margin(0, 5.5, 0, 5.5)
-    )
+metric_unit = function(metric) {
+  case_when(
+    metric == "angle_degrees" ~ "degrees",
+    metric %in% c("magnitude_tracking_ratio", "rate_tracking_ratio") ~ "unitless",
+    metric %in% c("observed_turnover_rate", "predicted_vegetation_change_rate") |
+      grepl("^(lag_rate|pace_effect|direction_effect).*per_century$", metric) ~ "CCA_units_per_century",
+    metric %in% tracking_metric_names() ~ "CCA_units",
+    grepl("_z_rate_per_century$", metric) | metric == "standardized_climate_change_rate" ~ "calibration_SD_per_century",
+    grepl("_z_change$", metric) | metric == "standardized_climate_displacement" ~ "calibration_SD",
+    grepl("_rate_per_century$", metric) ~ paste0(unname(CLIMATE_VARIABLE_UNITS[sub("_rate_per_century$", "", metric)]), "_per_century"),
+    grepl("_change$", metric) ~ unname(CLIMATE_VARIABLE_UNITS[sub("_change$", "", metric)]),
+    TRUE ~ NA_character_
+  )
 }
 
-anth_plot = anth_direction |>
-  mutate(period = "Anthropocene", climate_state = NA_character_, high_fire = NA)
-holo_plot = holo_timeseries |>
-  mutate(period = "Holocene",
-         burned = NA,
-         directional_difference = difference_estimate)
-
-common_group_axis = make_common_group_axis(group_summaries)
-
-main_figure =
-  make_difference_heatmap(
-    filter(group_summaries, target_type == "climate"),
-    "A. Climate") /
-  make_difference_heatmap(
-    filter(group_summaries, target_type == "taxon"),
-    "B. Species", italic_targets = TRUE) /
-  common_group_axis +
-  plot_layout(heights = c(.46, 1.38, .25), guides = "collect") &
-  theme(legend.position = "bottom",
-        legend.title = element_text(size = 14.5),
-        legend.text = element_text(size = 13.5),
-        legend.key.width = grid::unit(9, "cm"),
-        legend.key.height = grid::unit(.75, "cm"))
-
-audit_pages = list(
-  make_difference_boxplot(filter(holo_plot, target_type == "taxon"),
-    "Holocene taxon-direction audit (NOCA stability/high-fire has n = 2 dates)",
-    "site-date estimates after the full chronology hierarchy"),
-  make_difference_boxplot(filter(anth_plot, target_type == "taxon"),
-    "Anthropocene taxon-direction audit (MORA burned has n = 2 plots)",
-    "paired ecological plots"),
-  make_difference_boxplot(bind_rows(
-      filter(holo_plot, target_type == "climate")),
-    "Holocene climate-arrow direction-difference audit",
-    "hierarchically summarized site-dates") /
-  make_difference_boxplot(filter(anth_plot, target_type == "climate"),
-    "Anthropocene climate-arrow direction-difference audit",
-    "paired ecological plots")
-)
-
-if (render_figures) {
-  ggsave(here("plot/fig_cca_direction_differences.pdf"), main_figure,
-         width = 18, height = 10.5)
-  ggsave(here("plot/fig_cca_direction_differences.png"), main_figure,
-         width = 18, height = 10.5, dpi = 300, bg = "white")
-  audit_pdf = here("plot/test_figures/fig_cca_direction_differences_audit.pdf")
-  pdf(audit_pdf, width = 14, height = 22, onefile = TRUE)
-  walk(audit_pages, print)
-  dev.off()
-  legacy_figures = here(c(
-    "plot/fig_cca_direction_associations.pdf",
-    "plot/fig_cca_direction_associations.png",
-    "plot/test_figures/fig_cca_direction_associations_audit.pdf",
-    paste0("plot/test_figures/fig_cca_direction_associations_audit_page",
-           1:3, ".png")
-  ))
-  unlink(legacy_figures[file.exists(legacy_figures)])
+safe_stat = function(x, fun, ...) {
+  x = x[is.finite(x)]
+  if (!length(x)) return(NA_real_)
+  fun(x, ...)
 }
 
-# Scope and immutability audit ------------------------------------------------
-input_hash_after = unname(tools::md5sum(input_paths))
-if (!identical(input_hash_before, input_hash_after))
-  stop("Direction stage modified an upstream analytical input.")
-relative_inputs = sub(paste0(here(), "/"), "", input_paths, fixed = TRUE)
-scope_audit = bind_rows(
-  tibble(
-    category = "setting",
-    item = c("cca_scaling", "cca_hill", "axes", "epsilon",
-             "contrast_definition",
-             "taxa", "climate_variables", "anthropocene_pairs",
-             "holocene_realizations", "anthropocene_contrast_rows",
-             "holocene_contrast_rows", "holocene_offset_rows",
-             "holocene_site_date_rows", "group_summary_rows",
-             "anthropocene_small_observed_movements"),
-    value = as.character(c(
-      cca_scaling, cca_hill, "CCA1;CCA2", DIRECTION_EPSILON,
-      "predicted_association - observed_association",
-      nrow(species_matrix), nrow(climate_matrix), nrow(anth), nrow(holo),
-      nrow(anth_direction), nrow(holo_direction), nrow(holo_by_offset),
-      nrow(holo_timeseries), nrow(group_summaries),
-      n_distinct(anth_direction$plot_id[
-        anth_direction$observed_small_movement])
-    )),
-    md5_before = NA_character_, md5_after = NA_character_, unchanged = NA
-  ),
-  tibble(category = "upstream_input", item = relative_inputs, value = NA_character_,
-         md5_before = input_hash_before, md5_after = input_hash_after,
-         unchanged = input_hash_before == input_hash_after)
-)
-write_csv(scope_audit, here("output/cca_direction_scope_audit.csv"))
-
-cat("Community-direction difference analysis written: ",
-    format(nrow(anth_direction), big.mark = ","), " Anthropocene and ",
-    format(nrow(holo_direction), big.mark = ","),
-    " Holocene paired contrast rows; 204 descriptive group summaries.",
-    if (render_figures) " Figures rendered.\n" else " Figure rendering skipped.\n",
-    sep = "")
-# END R/stages/14_cca_direction_analysis.R
-
+# END R/helpers/tracking_metrics.R

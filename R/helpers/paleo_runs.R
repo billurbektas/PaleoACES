@@ -77,7 +77,7 @@ CORES = c("JayBath", "LogWallow", "ReflectionPond", "PantherPotholes")
 # which posterior a sample carries. This mirrors how the vegetation collapses
 # them (present if present at any contributing depth) and how the fire table does
 # (max magnitude, mean percentage).
-paleo_age_draws = function(n_draws = N_DRAWS, seed = DRAW_SEED, cache = TRUE) {
+paleo_age_draws = function(n_draws = N_DRAWS, seed = DRAW_SEED, cache = TRUE, allow_rebuild = TRUE) {
 
   cache_file = here("output", "paleo_age_draws.rds")
   dependency_files = c(
@@ -110,6 +110,8 @@ paleo_age_draws = function(n_draws = N_DRAWS, seed = DRAW_SEED, cache = TRUE) {
       return(cached$draws)
     message("paleo_age_draws.rds dependencies changed; rebuilding cached draws.")
   }
+
+  if (!allow_rebuild) stop("Chronology cache is absent/stale; tracking will not rebuild it.")
 
   sd_tbl = read_csv(here("output/paleo_sample_depths.csv"), show_col_types = FALSE)
   stopifnot(setequal(sd_tbl$lake, CORES))

@@ -9,9 +9,10 @@ The [analysis review](ANALYSIS_REVIEW.md) connects current results to intermedia
 | [OUTPUTS](OUTPUTS.md) | Active result tables |
 | [ANALYSIS_REVIEW](ANALYSIS_REVIEW.md) | Scientific review with diagnostics |
 | [NOCA_GPS_EXCLUSION](review/NOCA_GPS_EXCLUSION.md) | Rachel source review and the resolved CARI449/CARI450 GPS exclusion |
+| [TRACKING_DATA_VALIDATION](review/TRACKING_DATA_VALIDATION.md) | Canonical schemas, draw support, preservation checks and future modeling limits |
 | [WORKFLOW](WORKFLOW.md) | Executable order, commands, and checks |
 | [SCIENTIFIC_DECISIONS](SCIENTIFIC_DECISIONS.md) | Scientific rationale and open questions |
-| [FIGURE_CAPTIONS](FIGURE_CAPTIONS.md) | Manuscript Figures 2–5 captions |
+| [FIGURE_CAPTIONS](FIGURE_CAPTIONS.md) | Manuscript Figures 2 and 3 captions |
 | [CONTROL_POINTS](../Cores/CONTROL_POINTS.md) | Methods or input provenance |
 | [SOURCES_MORA](../Cores/SOURCES_MORA.md) | Methods or input provenance |
 | [000_NOCA_cleaning_guide](methods/000_NOCA_cleaning_guide.md) | Methods or input provenance |
@@ -21,7 +22,7 @@ The [analysis review](ANALYSIS_REVIEW.md) connects current results to intermedia
 | [README_outputs_MORA_AT](../data/README_outputs_MORA_AT.md) | Methods or input provenance |
 | [SOURCES_SURVEY_YEARS](../data/SOURCES_SURVEY_YEARS.md) | Methods or input provenance |
 
-Additional reading: [tracking specification](methods/cca_tracking_metrics.pdf), [Holocene context](references/Holocene_period_choices_MORA_NOCA_summary.pdf), [combined analysis copy](review/00_main_analysis_review.R), and [report template](report/analysis_review_template.md).
+Additional reading: [tracking definitions](SCIENTIFIC_DECISIONS.md#lake-tracking-metrics), [Holocene context](references/Holocene_period_choices_MORA_NOCA_summary.pdf), [combined analysis copy](review/00_main_analysis_review.R), and [report template](report/analysis_review_template.md).
 
 Scientific limitations and adopted audit decisions are consolidated in
 [SCIENTIFIC_DECISIONS](SCIENTIFIC_DECISIONS.md). Stored chronology verification

@@ -28,26 +28,19 @@ Rscript R/workflow.R --offline --skip-figures --skip-tests
 Rscript R/stages/000_FIRE_cleaning.R
 Rscript R/stages/000_PALEO_c_fire.R
 Rscript R/stages/05a_cca_figure.R
-Rscript R/stages/09_tracking_metrics_500yr_sensitivity.R
 Rscript R/stages/09_tracking_metrics.R
 Rscript R/stages/12_walsh_fire_reproduction.R
 Rscript R/stages/12a_fire_event_detection_worked_example.R
 Rscript R/stages/13_holocene_climate_fire_eras.R
 Rscript R/stages/13a_climate_change_figure.R
 Rscript R/stages/13b_fire_method_worked_example.R
-Rscript R/stages/09b_tracking_visualization_data.R
-Rscript R/stages/09c_tracking_comparison.R
-Rscript R/stages/14_cca_direction_analysis.R
 
 # Focused offline gates
 Rscript R/tests/test_cca_tracking_metrics.R
 Rscript R/tests/test_review_edge_cases.R
-Rscript R/tests/test_cca_tracking_visualizations.R
 Rscript R/tests/test_walsh_fire_reproduction.R
 Rscript R/tests/test_holocene_climate_fire_eras.R
 Rscript R/tests/test_cca_trajectory_figure.R
-Rscript R/tests/test_cca_direction_geometry.R
-Rscript R/tests/test_cca_direction_analysis.R
 Rscript R/tests/test_figure_output_contract.R
 Rscript R/tests/test_workflow_contract.R
 Rscript R/render_docs.R
@@ -60,9 +53,8 @@ model-derived tables, audits, and non-visual regression checks still run. It
 does not delete or refresh existing figure files. Scripts run directly render
 by default.
 
-The publication-output contract reserves root `plot/` for four stems only:
-`fig_standardized_climate_change_eras_fire`, `fig_tracking_comparison`,
-`fig_cca_trajectories`, and `fig_cca_direction_differences`. Each has a
+The publication-output contract reserves root `plot/` for two stems only:
+`fig_standardized_climate_change_eras_fire` and `fig_cca_trajectories`. Each has a
 single-page PDF and PNG. Every other maintained figure is PDF-only under
 `plot/test_figures/`; temporary rasters used while composing a PDF are not
 retained.
@@ -95,21 +87,15 @@ flowchart TD
   PE --> CCA
   AF --> CCA
   PF --> CCA
-  CCA --> TM5[09 tracking 500-year sensitivity]
-  CCA --> TM1[09 tracking 1,000-year primary]
+  CCA --> TM1[09 canonical lake and plot tracking]
   FW --> WR[12 all-tapas source catalog plus official Walsh audit]
   PF --> WR
-  TM1 --> ER[13 unified climate eras/fire classification]
+  CCA --> ER[13 unified climate eras/fire classification]
+  ER --> TM1
   PE --> ER
   WR --> ER
   ER --> CA[05a selected era-centroid output and main render]
   ER --> CF[13a authoritative climate/fire figure]
-  TM1 --> TV[09b-09c integrated tracking figure]
-  ER --> TV
-  CCA --> DA[14 community-direction analysis]
-  TM1 --> DA
-  ER --> DA
-  TV --> DA
 ```
 
 ## Ordered stages
@@ -127,22 +113,18 @@ flowchart TD
 | 6b | `R/stages/000_PALEO_c_fire.R` | Required harmonized NOCA `tapas` catalog and combined sample fire | Paleo vegetation, MORA catalog, NOCA Neotoma charcoal/Bacon ages | NOCA series/events/settings, `fire_noca_peaks.csv`, `paleo_fire.csv`; 12/500/99 primary with 66 peaks and 12.5-year interpolation sensitivity |
 | 7a | `R/stages/000_PALEO_d_climate_download.R` | Validated native-cache aggregation; download only in online mode | Four pond coordinates and CHELSA services | `chelsa_paleo_ponds.csv`, chunks and bias anchor; atomic complete-cache validation |
 | 7b | `R/stages/000_PALEO_e_climate.R` | Required seasonal derivation and age match | Cached pond climate and paleo samples | `paleo_env.csv`; complete nearest-slice match within tolerance |
-| 8 | `R/stages/000_occurrence_data_consolidate.R` | Required taxonomy and occurrence consolidation | Three occurrence tables and stage data | `occ_consolidated.csv`; 13,647 rows, 21 taxa, 1,599 plots/samples |
-| 9 | `R/stages/05_cca_model.R` | Required pooled calibration/projection | Consolidated occurrence, modern/paleo climate and fire | In-memory CCA/model scores; 20 threshold, scaling 1, 14 species, 607 matched calibration plots |
-| 10a | `R/stages/09_tracking_metrics_500yr_sensitivity.R` | Explicit former-framework sensitivity | Model, all Bacon draws, native pond climate | All Holocene metric tables with `_500yr` suffix; five offsets |
-| 10b | `R/stages/09_tracking_metrics.R` | Authoritative 1,000-year site tracking | Same inputs | Unsuffixed MORA/NOCA realization, by-offset and half-open-mapped time-series tables; ten offsets, all draws, lag and lag/century, sparse-bin flags and `nmin2` sensitivity |
+| 8 | `R/stages/000_occurrence_data_consolidate.R` | Required taxonomy and occurrence consolidation | Three occurrence tables and stage data | `occ_consolidated.csv`; 13,690 rows, 22 taxa, 1,599 plots/samples |
+| 9 | `R/stages/05_cca_model.R` | Required pooled calibration/projection | Consolidated occurrence, modern/paleo climate and fire | CCA reference bundle and fixed climate scaling; 20 threshold, scaling 1, 14 species, 607 matched calibration plots |
 | 10c | `R/stages/12_walsh_fire_reproduction.R` | Assemble authoritative all-`tapas` source catalog and retain a separate official Walsh audit | Harmonized MORA/NOCA tapas outputs, three Walsh workbooks, CharAnalysis 2.0.3 | Authoritative four-core source series/events/settings and tapas manifest; separate official MORA series/events/FRIs/publication audit; active fire outputs hash-protected |
 | 10d | `R/stages/13_holocene_climate_fire_eras.R` | Authoritative literature-blind climate-era and independent high-fire classification | Native pond climate, pooled legacy CCA scaling, stage-12 source series/events | Four-variable signed 1,000-year changes, thresholds, frozen CC/S grid/catalog, subphases, composite, normalized fire frequency/high-fire runs, and audit tables |
+| 10e | `R/stages/09_tracking_metrics.R` | Canonical lake/plot tracking | Published CCA reference, cached whole draws, own-lake climate, accepted charcoal events and coverage | Five lake/plot datasets, response distributions, fire predictors and support; schema dictionary |
 | 10e | `R/stages/05a_cca_figure.R` | Selected CCA trajectory data and main render | Model, positioned Holocene samples, stage-13 frozen CC/S grid | `cca_trajectory_era_centroids.csv` and, when rendering, main-paper `fig_cca_trajectories.pdf/.png` |
-| 10f | `R/stages/09a_method_example.R` | Worked metric illustration | Authoritative tracking/model objects | PDF-only worked example under `plot/test_figures/` when rendering |
+| 10f | `R/stages/09a_method_example.R` | Worked metric illustration | Canonical Panther Potholes lake realization and uncertainty tables | PDF-only worked example under `plot/test_figures/` when rendering |
 | 10g | `R/stages/12a_fire_event_detection_worked_example.R` | Accepted-event detection for all four cores | All-`tapas` source series with local thresholds, candidate/count-screen flags, and accepted events | `fire_event_detection_lake_audit.csv` and, when rendering, a PDF with all four residual/threshold plots on one page, alongside settings and the software comparison |
 | 10h | `R/stages/13a_climate_change_figure.R` | Climate/subphase/fire display data and render | Stage-13 directional cells, eras, subphases, fire frequency and thresholds; annualized Anthropocene plot-level contrasts for historical 1979–1989 and plot-specific modern Y−5 through Y (MORA 27.5–32.5 midpoint years; NOCA 27.5–28.5) | Fire-ratio and raw-rate comparison tables, including the maximum-absolute Holocene regional median after ten-offset aggregation, plus the main-paper PDF/PNG when rendering |
 | 10i | `R/stages/13b_fire_method_worked_example.R` | Fire-classification arithmetic audit and illustration | Stage-12 accepted events and stage-13 core/site fire-frequency tables | `holocene_fire_method_worked_example.csv` and a PDF-only audit under `plot/test_figures/` |
-| 10j | `R/stages/09b_tracking_visualization_data.R` | Site/era point and resolution audit | Primary and 500-year site series, 607 modern plots, frozen CC/S grid | Visualization-point, era-coverage, and interval-resolution audit CSVs |
-| 10k | `R/stages/09c_tracking_comparison.R` | Integrated descriptive tracking/fire summaries and render | Complete 137 Holocene site-dates; all 607 modern pairs; modern and Holocene fire audits | Summary/specification/audit CSVs plus, when rendering, main-paper `fig_tracking_comparison.pdf/.png` |
-| 10l | `R/stages/14_cca_direction_analysis.R` | Final descriptive predicted-minus-observed target-alignment discrepancy analysis | Scaling-1/Hill-off CCA scores; taxon targets use initial LC→species for prediction and initial WA→species for observation; all 607 modern pairs, all 15,270 primary Holocene realizations, frozen climate state and fire classifications | Paired unit × target discrepancies, draw-within-offset, site-date, group-summary and provenance tables; main-paper heatmap PDF/PNG and PDF-only three-page audit |
 
-Stages 1–10l are seconds to a few minutes when cached. Modern/paleo climate
+The active stages are seconds to a few minutes when cached. Modern/paleo climate
 downloads can take hours on a fresh cache. Bacon is the only intentionally slow
 offline regeneration. The official Walsh stage takes seconds once its pinned R
 package is installed.
@@ -189,15 +171,12 @@ the verification needed to use the existing posteriors.
 | `test_paleo_split_validation.R` | Automatic offline gate after paleo fire | Vegetation/fire refactor changes intended sample/species/fire content |
 | `test_bacon_provenance.R` | Automatic provenance gate | Seed/settings/control/version/posterior/age or chronology-code fingerprint drift; exact path-only relocations are accepted through verified historical source snapshots. Other whole-script differences require the explicit figure-output-only revision recorded in the manifest. |
 | `test_paleo_climate_age_match.R` | Automatic offline climate gate | Missing/orphan climate, NA constraints, clamping, or >50-year nearest-slice error |
-| `test_cca_tracking_metrics.R` | Automatic offline gate after tracking | Formula/unit/zero-guard errors, wrong lag denominator, boundary duplication, loss of the expected 54 MORA/83 NOCA full-offset dates, lost draws/offsets, missing 500-year sensitivity, aggregation-order or CCA-scaling drift |
+| `test_cca_tracking_metrics.R` | Automatic offline gate after tracking | Independent geometry and counterfactual errors, incorrect lake/interval joins, fire coverage or comparable-window normalization, missing draw support, incorrect distributions, interval configuration or CCA drift |
 | `test_review_edge_cases.R` | Automatic independent review gate | Known geometric values and invariances, unequal elapsed times, missing turnover classes, invalid monthly values/keys/caches, and climate/fire coverage gaps |
-| `test_cca_tracking_visualizations.R` | Automatic data/render gate | Missing site dates/plots, wrong fixed-site era/state × fire statistics, wrong stationary/angle-valid counts, incoherent metric labels or encodings, loss of the centered 75%-width scatter contract, or—when rendering—missing/split output |
 | `test_walsh_fire_reproduction.R` | Automatic scientific/provenance gate | Any non-tapas primary event, wrong settings/counts, lost sensitivity/catalog, modified protected outputs, stale manifest, or—when rendering—missing audit figures |
 | `test_holocene_climate_fire_eras.R` | Automatic unified-era gate | Wrong scaling, threshold arithmetic, phase support, era sequence, composite, fire aggregation/threshold, audit, protected hashes, or—when rendering—missing figures |
 | `test_cca_trajectory_figure.R` | Automatic trajectory data/render gate | Changed scaling/Hill/axes, incorrect CC1–S4 centroids, missing A–D labels or any of the eight independently positioned two-line path names, incorrect named anchors, unfaded predicted annotations, non-arrow legend glyphs, boxed series labels, retired duplicate artifacts, or missing main outputs |
-| `test_cca_direction_geometry.R` | Automatic geometry gate | Species/climate cosines use mismatched scores, fail zero guards or allowed rigid-transform/common-arrow invariance, or ignore unequal-axis-scaling sensitivity |
-| `test_cca_direction_analysis.R` | Automatic data/render gate after stage 14 | Wrong paired subtraction or row counts, invalid cosine/difference bounds or NA guards, lost modern or Holocene groups, ranking fields, modified upstream artifacts, forbidden inference fields, or—when rendering—missing main/audit figures |
-| `test_figure_output_contract.R` | Automatic publication-output gate | Root `plot/` differs from the four approved PDF/PNG stems, diagnostic PNGs exist, a main PDF is multipage, or retired trajectory artifacts return |
+| `test_figure_output_contract.R` | Automatic publication-output gate | Root `plot/` differs from the two approved PDF/PNG stems, diagnostic PNGs exist, a main PDF is multipage, or retired trajectory artifacts return |
 | `test_workflow_contract.R` | Automatic structural gate | Producer/consumer order drifts, analysis is placed behind `--skip-figures`, a required gate disappears, or a plotting stage ignores the shared render option |
 | `test_cca_scaling_comparison.R` | Offline model diagnostic | Reassesses site/scaling-1 geometry after model/species changes |
 | `test_climate_change_variables.R` | Offline decision diagnostic | Reassesses units/redundancy and the four active constraints |
@@ -213,8 +192,9 @@ the verification needed to use the existing posteriors.
 |---|---|
 | [README](../README.md) | Project landing page and principal outputs |
 | [Scientific decisions](SCIENTIFIC_DECISIONS.md) | Current rationale, results, caveats, and unresolved sensitivities |
-| [Figure captions](FIGURE_CAPTIONS.md) | Separate method summaries, previews, and publication-ready captions for Figures 2–5 |
-| [Tracking metrics](methods/cca_tracking_metrics.pdf) | Mathematical working specification |
+| [Figure captions](FIGURE_CAPTIONS.md) | Separate method summaries, previews, and publication-ready captions for Figures 2 and 3 |
+| [Tracking definitions](SCIENTIFIC_DECISIONS.md#lake-tracking-metrics) | Canonical formulas, signs, units and support conventions |
+| [Tracking validation](review/TRACKING_DATA_VALIDATION.md) | Current schemas, support, migration checks and modeling limits |
 | [Holocene evidence summary](references/Holocene_period_choices_MORA_NOCA_summary.pdf) | Literature/context source review retained outside the classification stage |
 | [Bacon controls](../Cores/CONTROL_POINTS.md) | Age controls and chronology interpretation |
 | [MORA core sources](../Cores/SOURCES_MORA.md) | MORA chronology provenance |
@@ -252,3 +232,22 @@ mode. `output/modern_plot_years.csv` is produced after both cleaners; it supplie
 adult Y, six-year modern windows Y−5 through Y, and per-plot vegetation/climate
 elapsed times. A changed date input requires cleaning again before projections.
 The MORA record and visit audits preserve the assignment and selection evidence.
+
+## Canonical tracking rebuild
+
+After `05_cca_model.R` publishes the calibration reference, run stage 12, then
+stage 13, then `09_tracking_metrics.R`. The stage is cache-only for chronology
+and does not refit the CCA. Default outputs and schema definitions are in
+[OUTPUTS.md](OUTPUTS.md#canonical-tracking-schemas).
+
+```bash
+Rscript R/stages/09_tracking_metrics.R
+# Later sensitivity experiment; primary products stay untouched
+Rscript R/stages/09_tracking_metrics.R --bin-width-years=500
+```
+
+The separate 500-year wrapper, old tracking visualization/target-direction
+pipelines and their Figures 4/5 are retired through Git history. The shared
+metric implementation supports other widths without retaining those analyses.
+`tracking_data.R` handles lake joins, comparable fire windows and draw support;
+`cca_reference.R` exports the existing fit and prepared endpoints.

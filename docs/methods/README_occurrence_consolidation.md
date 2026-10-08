@@ -272,7 +272,7 @@ Restoring ponderosa initially changed the CCA from **13 to 14 taxa** and **618 t
 calibration plots**, and modern comparisons from **605 to 607 pairs**. STE2044
 returns to calibration and paired comparisons; HB2064 returns to paired
 comparisons. The 907 Holocene samples remain included, but their coordinates and
-tracking results change when the common CCA is refitted. Figures 2–5 and the
+tracking results change when the common CCA is refitted. Figures 2 and 3 and the
 analysis review are rebuilt from that fit. Climate-explained inertia changes
 from 16.57% to 15.69%; maximizing that percentage is not a selection criterion.
 Later on 2026-10-08, the author restricted calibration to the **607 matched plots**

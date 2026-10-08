@@ -110,14 +110,14 @@ monthly = rbind(read("MORA_climate"), read("NOCA_climate"))
 adult_dates = read_csv(here("data/MORA/MORA_TreeData_Resurvey_Cleaned.csv"), show_col_types = FALSE)
 library_ids = read_csv(here("data/MORA/MORA_plot_lib.csv"), show_col_types = FALSE)
 latest = tapply(adult_dates$Year, adult_dates$Plot_ID, max)
-modern = read("cca_tracking_anthropocene_plot")
+modern = read("cca_tracking_anthropocene_plot_model_input")
 mi = modern$site == "MORA"
 supplied = library_ids$Plot_ID[match(modern$plot_id[mi], library_ids$plot_id)]
 same(modern$vegetation_t2_year[mi], as.numeric(latest[supplied]), "independent latest adult MORA dates")
 wilson = read_csv(here("data/NOCA/NOCA_plots_fromWilson.csv"), show_col_types = FALSE)
 ni = !mi
 same(modern$vegetation_t2_year[ni], wilson$Resurvey.Year[
-  match(modern$plot_id[ni], toupper(trimws(wilson$`2015.Plot.Name`)))], "independent Wilson NOCA dates")
+  match(toupper(modern$plot_id[ni]), toupper(trimws(wilson$`2015.Plot.Name`)))], "independent Wilson NOCA dates")
 same(modern$climate_t1_midyear, rep(1984, nrow(modern)), "historical climate midpoint retained")
 same(modern$climate_t2_midyear, modern$vegetation_t2_year - 2.5, "independent six-year modern midpoints")
 same(modern$climate_dt_years, modern$vegetation_t2_year - 1986.5, "independent plot-specific climate intervals")
@@ -178,20 +178,16 @@ for (lake in unique(pe$lake)) {
 }
 
 # Independently recalculate every displacement/rate and every signed climate
-# change, for all modern rows and both already-existing Holocene resolutions.
-for (name in c("cca_tracking_anthropocene_plot", "cca_tracking_holocene_realizations",
-               "cca_tracking_holocene_realizations_500yr")) {
+# change, for all modern rows and the canonical lake realizations.
+for (name in c("cca_tracking_anthropocene_plot_model_input",
+               "cca_tracking_holocene_lake_realizations")) {
   x = read(name)
   o = cbind(x$o1_2 - x$o1, x$o2_2 - x$o2)
   p = cbind(x$p1_2 - x$p1, x$p2_2 - x$p2)
   no = sqrt(rowSums(o^2)); np = sqrt(rowSums(p^2)); dot = rowSums(o * p)
   valid = is.finite(no) & is.finite(np) & no > 1e-8 & np > 1e-8
-  cosine = parallel = perpendicular = rep(NA_real_, nrow(x))
+  cosine = rep(NA_real_, nrow(x))
   cosine[valid] = pmax(-1, pmin(1, dot[valid] / no[valid] / np[valid]))
-  parallel[valid] = dot[valid] / np[valid]
-  # Cross-product expression is independent of subtraction of squared lengths.
-  perpendicular[valid] = abs(o[valid, 1] * p[valid, 2] -
-    o[valid, 2] * p[valid, 1]) / np[valid]
   expected = list(observed_vegetation_displacement = no,
     predicted_vegetation_displacement = np,
     observed_turnover_rate = no * 100 / x$vegetation_dt_years,
@@ -199,19 +195,22 @@ for (name in c("cca_tracking_anthropocene_plot", "cca_tracking_holocene_realizat
     magnitude_tracking_ratio = ifelse(np > 1e-8, no / np, NA_real_),
     rate_tracking_ratio = ifelse(np > 1e-8,
       no / np * x$climate_dt_years / x$vegetation_dt_years, NA_real_),
-    cosine_similarity = cosine, angle_degrees = acos(cosine) * 180 / pi,
-    climate_aligned_displacement = parallel,
-    climate_aligned_tracking = parallel / np,
-    perpendicular_movement = perpendicular,
-    normalized_perpendicular_movement = perpendicular / np,
-    tracking_error = sqrt(rowSums((o - p)^2)),
-    normalized_tracking_error = ifelse(np > 1e-8,
-      sqrt(rowSums((o - p)^2)) / np, NA_real_),
+    angle_degrees = acos(cosine) * 180 / pi,
     lag_t1 = sqrt((x$p1 - x$o1)^2 + (x$p2 - x$o2)^2),
     lag_t2 = sqrt((x$p1_2 - x$o1_2)^2 + (x$p2_2 - x$o2_2)^2))
-  expected$lag = expected$lag_t2 - expected$lag_t1
-  expected$change_in_lag = expected$lag
-  expected$lag_rate_per_century = expected$lag * 100 / x$climate_dt_years
+  expected$change_in_lag = expected$lag_t2 - expected$lag_t1
+  expected$lag_rate_per_century = expected$change_in_lag * 100 / x$climate_dt_years
+  pace = cbind(x$o1,x$o2) + o * (np / no)
+  direction = cbind(x$o1,x$o2) + p * (no / np)
+  pace[no <= 1e-8, ] = NA_real_
+  direction[np <= 1e-8, ] = NA_real_
+  final = cbind(x$p1_2,x$p2_2)
+  expected$lag_t2_pace_corrected = sqrt(rowSums((pace-final)^2))
+  expected$lag_t2_direction_corrected = sqrt(rowSums((direction-final)^2))
+  expected$pace_effect_on_lag = expected$lag_t2-expected$lag_t2_pace_corrected
+  expected$direction_effect_on_lag = expected$lag_t2-expected$lag_t2_direction_corrected
+  expected$pace_effect_on_lag_per_century = expected$pace_effect_on_lag*100/x$climate_dt_years
+  expected$direction_effect_on_lag_per_century = expected$direction_effect_on_lag*100/x$climate_dt_years
   for (metric in names(expected)) same(x[[metric]], expected[[metric]],
                                        paste(name, metric))
   for (v in e$CCA_VARIABLES) {
@@ -249,33 +248,36 @@ summary_functions = list(mean = mean, sd = sd, median = median,
   q25 = function(x) quantile(x, .25, names = FALSE),
   q75 = function(x) quantile(x, .75, names = FALSE),
   q975 = function(x) quantile(x, .975, names = FALSE))
-for (suffix in c("", "_500yr")) {
-  x = read(paste0("cca_tracking_holocene_realizations", suffix))
-  b = read(paste0("cca_tracking_holocene_by_offset", suffix))
-  columns = c("site", "offset", "age_hi", "age_lo")
-  groups = split(seq_len(nrow(x)), key_for(x, columns))
-  indices = groups[key_for(b, columns)]
-  stopifnot(!anyDuplicated(key_for(b, c(columns, "metric"))))
-  values = lapply(seq_len(nrow(b)), function(i) x[[b$metric[i]]][indices[[i]]])
-  same(b$n_total, lengths(values), paste(suffix, "independent draw counts"))
-  same(b$n_valid, vapply(values, function(v) sum(is.finite(v)), integer(1)),
-       paste(suffix, "independent finite draw counts"))
+x = read("cca_tracking_holocene_lake_realizations")
+b = read("cca_tracking_holocene_lake_by_offset")
+columns = c("site", "lake", "offset", "age_hi", "age_lo")
+groups = split(seq_len(nrow(x)), key_for(x, columns))
+indices = groups[key_for(b, columns)]
+stopifnot(!anyDuplicated(key_for(b, columns)))
+metrics = c("lag_rate_per_century", "observed_turnover_rate", "magnitude_tracking_ratio",
+  "rate_tracking_ratio", "angle_degrees", "pace_effect_on_lag_per_century",
+  "direction_effect_on_lag_per_century")
+for (metric in metrics) {
+  values = lapply(indices, function(i) x[[metric]][i])
+  valid = vapply(values, function(v) sum(is.finite(v)), integer(1))
+  same(b[[paste0(metric,"_n_valid_draws")]], valid, paste(metric,"finite draw counts"))
+  same(b[[paste0(metric,"_n_missing_draws")]], 100-valid, paste(metric,"missing draw counts"))
   for (field in names(summary_functions)) {
-    expected = vapply(values, finite_stat, numeric(1), fun = summary_functions[[field]])
-    same(b[[field]], expected, paste(suffix, "draw-within-offset", field))
+    expected = vapply(values, finite_stat, numeric(1), fun=summary_functions[[field]])
+    same(b[[paste0(metric,"_",field)]], expected, paste(metric,"draw-within-offset",field))
   }
-  dates = read(paste0("cca_tracking_holocene_timeseries", suffix))
-  indices = lapply(seq_len(nrow(dates)), function(i) which(
-    b$site == dates$site[i] & b$metric == dates$metric[i] &
-    b$age_lo <= dates$t[i] & dates$t[i] < b$age_hi))
-  stopifnot(all(vapply(indices, function(i) length(unique(b$offset[i])), integer(1)) ==
-                  if (suffix == "") 10L else 5L))
-  same(dates$estimate, vapply(indices, function(i) median(b$median[i]), numeric(1)),
-       paste(suffix, "half-open interval mapping and median across offsets"))
-  same(dates$age_q025, vapply(indices, function(i) median(b$q025[i]), numeric(1)),
-       paste(suffix, "date draw lower bounds"))
-  same(dates$age_q975, vapply(indices, function(i) median(b$q975[i]), numeric(1)),
-       paste(suffix, "date draw upper bounds"))
+}
+dates = read("cca_tracking_holocene_lake_timeseries")
+indices = lapply(seq_len(nrow(dates)), function(i) which(
+  b$site == dates$site[i] & b$lake == dates$lake[i] &
+  b$age_lo <= dates$t[i] & dates$t[i] < b$age_hi))
+stopifnot(all(vapply(indices, function(i) length(unique(b$offset[i])), integer(1)) == 10L))
+for (field in c(estimate="median",age_q025="q025",age_q975="q975")) {
+  actual_field = names(c(estimate="median",age_q025="q025",age_q975="q975"))[
+    match(field,c("median","q025","q975"))]
+  expected = vapply(seq_len(nrow(dates)), function(j)
+    finite_stat(b[[paste0(dates$metric[j],"_",field)]][indices[[j]]],median),numeric(1))
+  same(dates[[actual_field]],expected,paste("lake reporting grid",actual_field))
 }
 
 # CCA extrapolation is assessed against the unchanged calibration bounds,
@@ -294,94 +296,6 @@ extrapolation = do.call(rbind, lapply(c("present", "paleo"), function(period) {
     calibration_min = NA_real_, calibration_max = NA_real_))
 }))
 write_csv(extrapolation, file.path(destination, "extrapolation.csv"))
-
-# Every own-origin direction cosine, including its NA validity mask.
-targets = rbind(data.frame(target_type = "taxon", target = rownames(e$species_scores),
-  tx = e$species_scores[, 1], ty = e$species_scores[, 2]),
-  data.frame(target_type = "climate", target = rownames(e$env_scores),
-  tx = e$env_scores[, 1], ty = e$env_scores[, 2]))
-cosine = function(a, b) {
-  na = sqrt(rowSums(a^2)); nb = sqrt(rowSums(b^2))
-  valid = is.finite(na) & is.finite(nb) & na > 1e-8 & nb > 1e-8
-  out = rep(NA_real_, nrow(a))
-  out[valid] = pmax(-1, pmin(1, rowSums(a[valid, , drop = FALSE] *
-    b[valid, , drop = FALSE]) / na[valid] / nb[valid]))
-  out
-}
-for (era in c("anthropocene", "holocene")) {
-  x = read(paste0("cca_tracking_", if (era == "anthropocene") "anthropocene_plot" else
-                  "holocene_realizations"))
-  path = here("output", paste0("cca_direction_", era, "_realizations.csv",
-                              if (era == "holocene") ".gz" else ""))
-  d = read_csv(path, show_col_types = FALSE)
-  keys = if (era == "anthropocene") c("site", "plot_id") else
-    c("site", "draw", "offset", "age_hi", "age_lo")
-  key = function(x) {
-    if ("plot_id" %in% names(x)) x$plot_id = toupper(x$plot_id)
-    do.call(paste, c(x[keys], sep = "::"))
-  }
-  stopifnot(!anyDuplicated(key(x)))
-  x = x[match(key(d), key(x)), ]; stopifnot(!anyNA(x$site))
-  target = targets[match(paste(d$target_type, d$target),
-                         paste(targets$target_type, targets$target)), ]
-  tp = to = as.matrix(target[c("tx", "ty")])
-  species = d$target_type == "taxon"
-  tp[species, ] = tp[species, ] - as.matrix(x[species, c("p1", "p2")])
-  to[species, ] = to[species, ] - as.matrix(x[species, c("o1", "o2")])
-  a = cbind(x$p1_2 - x$p1, x$p2_2 - x$p2)
-  b = cbind(x$o1_2 - x$o1, x$o2_2 - x$o2)
-  cp = cosine(a, tp); co = cosine(b, to)
-  same(d$predicted_association, cp, paste(era, "predicted own-origin cosine"))
-  same(d$observed_association, co, paste(era, "observed own-origin cosine"))
-  same(d$directional_difference, cp - co, paste(era, "direction discrepancy"))
-  same(d$direct_movement_cosine, cosine(a, b), paste(era, "direct movement cosine"))
-}
-
-# Descriptive direction groups use ecological units/site-dates, not all draws.
-raw_direction = read_csv(here("output/cca_direction_holocene_realizations.csv.gz"),
-                          show_col_types = FALSE)
-by_offset = read_csv(here("output/cca_direction_holocene_by_offset.csv.gz"),
-                     show_col_types = FALSE)
-columns = c("site", "offset", "age_hi", "age_lo", "target_type", "target")
-groups = split(seq_len(nrow(raw_direction)), key_for(raw_direction, columns))
-indices = groups[key_for(by_offset, columns)]
-values = lapply(indices, function(i) raw_direction$directional_difference[i])
-same(by_offset$n_total, lengths(values), "direction posterior-within-offset counts")
-for (field in c("median", "q025", "q25", "q75", "q975"))
-  same(by_offset[[paste0("difference_", field)]], vapply(values, finite_stat,
-    numeric(1), fun = summary_functions[[field]]),
-    paste("independent direction draw-within-offset", field))
-dates = read("cca_direction_holocene_timeseries")
-indices = lapply(seq_len(nrow(dates)), function(i) which(
-  by_offset$site == dates$site[i] & by_offset$target == dates$target[i] &
-  by_offset$target_type == dates$target_type[i] &
-  by_offset$age_lo <= dates$t[i] & dates$t[i] < by_offset$age_hi))
-stopifnot(all(vapply(indices, function(i) length(unique(by_offset$offset[i])), integer(1)) == 10L))
-same(dates$difference_estimate, vapply(indices, function(i)
-  finite_stat(by_offset$difference_median[i], median), numeric(1)),
-  "independent direction half-open mapping and median across offsets")
-
-summaries = read("cca_direction_group_summaries")
-for (period in c("Anthropocene", "Holocene")) {
-  modern = period == "Anthropocene"
-  input = if (modern) read("cca_direction_anthropocene_realizations") else
-    read("cca_direction_holocene_timeseries")
-  s = summaries[summaries$period == period, ]
-  columns = c("site", if (modern) "burned" else c("climate_state", "high_fire"),
-              "target_type", "target")
-  groups = split(seq_len(nrow(input)), key_for(input, columns))
-  indices = groups[key_for(s, columns)]
-  stopifnot(!anyDuplicated(key_for(s, columns)))
-  values = lapply(indices, function(i) input[[if (modern)
-    "directional_difference" else "difference_estimate"]][i])
-  same(s$n_total, lengths(values), paste(period, "direction group counts"))
-  same(s$n_valid, vapply(values, function(v) sum(is.finite(v)), integer(1)),
-       paste(period, "direction group finite counts"))
-  for (field in c("median", "q025", "q25", "q75", "q975"))
-    same(s[[paste0("difference_", field)]], vapply(values, finite_stat,
-      numeric(1), fun = summary_functions[[field]]),
-      paste(period, "independent direction group", field))
-}
 
 # Source event ages -> exact half-open windows -> core normalization -> site MAD.
 events = read("holocene_fire_source_events")

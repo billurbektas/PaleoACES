@@ -222,8 +222,7 @@ sampled areas were equal. Plot size currently does not determine eligibility.
 Choices such as correcting tree records and keeping the latest adult visit
 change the observations without necessarily removing plots. They are shown
 alongside the count changes. All current CCA climate values are complete.
-The two burned MORA plots remain in CCA; their exclusion from Figure 4 happens
-later.
+The two burned MORA plots remain in CCA and in the canonical 607-plot tracking table.
 
 [05_cca_model.R](../R/stages/05_cca_model.R) resolves eligibility **before fitting
 or projecting**. An observation with no retained taxa has no observed WA
@@ -278,7 +277,7 @@ descriptive scores rather than independently validated forecasts.
 
 {{cca_diagnostics}}
 
-## Tracking calculations and resolution sensitivity
+## Tracking calculations
 
 Observed movement is the change in WA position; climate-predicted movement is
 the change in LC position. Endpoint lag is the distance between LC and WA.
@@ -286,17 +285,12 @@ the change in LC position. Endpoint lag is the distance between LC and WA.
 The tracking ratio compares observed and predicted movement rates; the angle
 compares their directions and is undefined when either movement is stationary.
 
-Primary Holocene calculations pool MORA's lakes before calculating nonlinear
+Primary Holocene calculations treat each lake separately before calculating nonlinear
 metrics for consecutive **1,000-year intervals**. Each core contributes 100
 chronology draws, and ten 100-year offsets assess sensitivity to interval
 placement. Draws are summarized within offset before offsets are combined.
 These realizations are not additional ecological replicates. One-sample bins
 remain flagged, with an existing minimum-two-sample sensitivity.
-
-The workflow runs the **500-year sensitivity** first, then the primary analysis.
-The table compares their resolution and descriptive estimates.
-
-{{resolution_audit}}
 
 ## Accepted fire events and climate eras
 
@@ -356,6 +350,10 @@ regeneration. The climate rows use those same plots in the same order.
 and `WP` winter precipitation. The fitting and resurvey-projection lines are
 copied from [05_cca_model.R](../R/stages/05_cca_model.R), with the current scaling
 settings shown explicitly.
+
+The [calibration reference bundle](assets/analysis/cca_calibration_reference.rds)
+preserves the fitted CCA, calibration matrices and identities, species and
+climate scores, scaling, prepared endpoints and provenance for future work.
 
 {{cca_model_code}}
 
@@ -427,24 +425,47 @@ in mm/century. Modern rates describe the agreed survey-window contrasts.
 
 {{fire_eras_diagnostics}}
 
-## Tracking comparisons
+## Lake-level tracking datasets and support
 
-Prepared tracking summaries are assigned to climate eras and fire contexts.
-Coverage is explicit: the primary analysis supports 54 MORA and 83 NOCA
-site-dates across all ten offsets. Group summaries describe the supported data;
-chronology draws, offsets and overlapping dates are not independent replication.
+The canonical tracking analysis calculates each lake independently in the same
+pooled CCA. Its five tables contain endpoints, all focused responses, own-lake
+physical climate and interval-aligned fire predictors. The wide lake/offset
+actual-transition table is the prospective model input. Full supported data:
+[lake/offset table](assets/analysis/tables/lake_by_offset.csv),
+[607 modern pairs](assets/analysis/tables/modern_model_input.csv), and
+[column definitions and units](assets/analysis/tables/tracking_schema.csv).
 
-{{era_coverage}}
+{{lake_support}}
 
-{{tracking_summary}}
+No majority-draw cutoff is imposed. `n_valid_draws,n_missing_draws` refer to the
+primary lag response out of 100 draws; each response has its own counts.
+Presence/absence counts distinguish missing transitions from undefined geometry.
+Statistics describe valid draws conditional on the transition's support;
+minimum-two-samples sensitivity statistics are marked `_nmin2`.
+There are approximately 5–6 majority-supported transitions per MORA lake per
+offset and 9–10 for Panther Potholes. Four lakes and two fire histories provide
+limited independent support for a later three-way interaction. No models,
+distributions or temporal-correlation structures are fitted or selected here.
 
-Figure 4 omits the two burned MORA pairs from its descriptive comparison and
-retains 605 modern pairs across the displayed groups. All 137 supported Holocene
-site-dates remain. Its scatter has 600 direction-valid observations; stationary
-modern compositions remain in the non-angle summaries. Quartiles and offset/draw
-spread describe variation, not inferential confidence intervals.
+Each MORA vegetation lake uses its own climate but shares regional fire exposure.
+Numerators and core maxima use fully covered windows of identical duration and
+matching half-open interval conventions. Covered zero-event intervals have zero
+activity; absent coverage remains missing. Full-window denominators match the
+existing 1,000-year references. [Scientific definitions](SCIENTIFIC_DECISIONS.md#lake-tracking-metrics)
+explain the formulas, units, stationary cases and nonadditive counterfactuals.
+[NOCA migration validation](review/NOCA_TRACKING_MIGRATION_CHECK.csv) records the
+full 9,200-realization comparison before legacy outputs were removed.
+The [tracking validation report](review/TRACKING_DATA_VALIDATION.md) gives the
+schemas, exclusion counts, independent checks and limits for later modeling.
 
-{{figure_4}}
+### Maintained tracking calculation code
+
+The following code is copied automatically from
+[tracking_metrics.R](../R/helpers/tracking_metrics.R); the generated R reading
+copy includes the same definitions. The helper is the calculation authority.
+
+{{tracking_metrics_code}}
+
 
 ### Effects of the 2026-10-07 survey-date decision
 
@@ -460,37 +481,11 @@ consolidation, so six modeled observed positions change. Modern climate changes 
 2014. Climate elapsed time changes for 319 MORA plots and those same 50 NOCA
 plots; 2017 MORA resurveys retain the former 30.5-year midpoint interval.
 The 225 NOCA plots surveyed in 2015 retain their former 2010–2015 window.
-Figures 2–5 and the tracking/direction summaries use the updated inputs.
+Figures 2 and 3 and the lake/plot tracking datasets use the updated inputs.
 
 {{latest_visit_composition_effects}}
 
 {{survey_decision_effects}}
-
-## Direction discrepancies and support
-
-For each taxon, predicted alignment compares LC movement with the vector from
-its initial LC position toward the species score. Observed alignment uses the
-corresponding vector from its initial WA position. Climate targets use the
-common environmental biplot directions. The **target-alignment discrepancy**
-is predicted minus observed cosine: positive values mean stronger predicted
-alignment, including movement that is less opposed to a target.
-
-Equal target alignment does not imply equal movement vectors. Each taxon
-comparison uses its trajectory's own origin, so starting-position differences
-can contribute to the discrepancy. Cosines are missing for movements below the
-existing 1e-8 tolerance. The stage retains all 607 modern pairs, including the
-two burned MORA plots, and 15,270 primary Holocene realizations.
-
-{{direction_support}}
-
-MORA burned has only two plots and NOCA relative-stability/high-fire has only
-two dates. These groups remain visible, but do not support precise or causal
-claims. Directional alignment does not directly measure taxon gain, dominance
-or climate causation.
-
-{{direction_diagnostics}}
-
-{{figure_5}}
 
 ## Limitations and remaining questions
 

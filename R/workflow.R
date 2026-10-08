@@ -82,16 +82,13 @@ run_script("R/stages/000_occurrence_data_consolidate.R")
 run_script("R/stages/05_cca_model.R")
 
 # 5. Analysis products. These always run, including with --skip-figures.
-# Primary tracking uses 1,000-year bins; the former 500-year framework is an
-# explicitly suffixed sensitivity and runs first so the primary products win.
-run_script("R/stages/09_tracking_metrics_500yr_sensitivity.R")
-run_script("R/stages/09_tracking_metrics.R")
 
 # Assemble source-specific accepted fire events, then independently build the
 # literature-blind unified climate-era/fire classification. Stage 13 creates the
 # frozen era grid required by the main CCA trajectory render.
 run_script("R/stages/12_walsh_fire_reproduction.R")
 run_script("R/stages/13_holocene_climate_fire_eras.R")
+run_script("R/stages/09_tracking_metrics.R")
 
 # Derived audit/visualization data. Mixed scripts still write their CSV audits
 # under --skip-figures; only their persistent PDF/PNG writes are suppressed.
@@ -100,9 +97,6 @@ run_script("R/stages/09a_method_example.R")
 run_script("R/stages/12a_fire_event_detection_worked_example.R")
 run_script("R/stages/13a_climate_change_figure.R")
 run_script("R/stages/13b_fire_method_worked_example.R")
-run_script("R/stages/09b_tracking_visualization_data.R")
-run_script("R/stages/09c_tracking_comparison.R")
-run_script("R/stages/14_cca_direction_analysis.R")
 
 # Reporting-only diagnostics run in the same isolated script environments.
 if (build_report) {
@@ -127,12 +121,9 @@ if (!skip_tests) {
   run_script("R/tests/test_bacon_provenance.R")
   run_script("R/tests/test_cca_tracking_metrics.R")
   run_script("R/tests/test_review_edge_cases.R")
-  run_script("R/tests/test_cca_tracking_visualizations.R")
   run_script("R/tests/test_walsh_fire_reproduction.R")
   run_script("R/tests/test_holocene_climate_fire_eras.R")
   run_script("R/tests/test_cca_trajectory_figure.R")
-  run_script("R/tests/test_cca_direction_geometry.R")
-  run_script("R/tests/test_cca_direction_analysis.R")
   run_script("R/tests/test_figure_output_contract.R")
   run_script("R/tests/test_workflow_contract.R")
   run_script("R/tests/test_documentation.R")

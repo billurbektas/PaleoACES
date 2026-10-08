@@ -23,6 +23,8 @@ report_record = function(state, producer, started, paths = NULL) {
       unlist(lapply(registry$tables, function(x)
         if (x$producer == producer && basename(x$source) != "bacon_run_manifest.csv") x$source)),
       unlist(lapply(registry$text_outputs, function(x)
+        if (x$producer == producer) x$source)),
+      unlist(lapply(registry$reference_bundles, function(x)
         if (x$producer == producer) x$source)))
   }
   for (path in unique(paths)) {

@@ -81,7 +81,7 @@
       ],
       "producer": "R/diagnostics/plot_sample_selection.R",
       "purpose": "From starting plots and core samples to the CCA.",
-      "interpretation": "Each count shows plots or samples remaining. Reasons beside the arrows explain losses; repeated visits and sample depths combined at the same modeled age are distinguished from exclusions. The middle panels show legacy adult-tree areas among retained plots and the confirmed 500 m² resurvey area at both sites.",
+      "interpretation": "Each count shows plots or samples remaining. Reasons beside the arrows explain losses; repeated visits and sample depths combined at the same modeled age are distinguished from exclusions. The middle panels show legacy adult-tree areas among retained plots and the confirmed 500 m\u00b2 resurvey area at both sites.",
       "status": "current"
     },
     {
@@ -213,20 +213,7 @@
       ],
       "producer": "R/stages/09a_method_example.R",
       "purpose": "Work through WA/LC movement, lag, ratio, and angle.",
-      "interpretation": "Lag change is endpoint mismatch at t2 minus t1; a stationary observed movement has no defined direction.",
-      "status": "current"
-    },
-    {
-      "id": "direction_audit",
-      "section": "direction",
-      "pdf": "plot/test_figures/fig_cca_direction_differences_audit.pdf",
-      "pages": [
-        1,
-        2
-      ],
-      "producer": "R/stages/14_cca_direction_analysis.R",
-      "purpose": "Inspect distributions and support beneath the Figure 5 heatmap.",
-      "interpretation": "The paired target discrepancy uses each trajectory's own origin. Quartiles are descriptive; small groups are retained rather than interpreted as precise estimates.",
+      "interpretation": "One actual Panther Potholes lake transition shows WA/LC endpoints, pace/direction counterfactuals, focused responses and valid chronology-draw distributions. Corrections are nonadditive.",
       "status": "current"
     },
     {
@@ -252,18 +239,6 @@
       "stem": "fig_cca_trajectories",
       "section": "trajectories",
       "producer": "R/stages/05a_cca_figure.R"
-    },
-    {
-      "number": 4,
-      "stem": "fig_tracking_comparison",
-      "section": "tracking",
-      "producer": "R/stages/09c_tracking_comparison.R"
-    },
-    {
-      "number": 5,
-      "stem": "fig_cca_direction_differences",
-      "section": "direction",
-      "producer": "R/stages/14_cca_direction_analysis.R"
     }
   ],
   "tables": {
@@ -294,22 +269,6 @@
     "era_centroids": {
       "source": "output/cca_trajectory_era_centroids.csv",
       "producer": "R/stages/05a_cca_figure.R"
-    },
-    "resolution_audit": {
-      "source": "output/cca_tracking_interval_resolution_audit.csv",
-      "producer": "R/stages/09b_tracking_visualization_data.R"
-    },
-    "era_coverage": {
-      "source": "output/cca_tracking_holocene_era_coverage.csv",
-      "producer": "R/stages/09b_tracking_visualization_data.R"
-    },
-    "tracking_summary": {
-      "source": "output/cca_tracking_comparison_summary.csv",
-      "producer": "R/stages/09c_tracking_comparison.R"
-    },
-    "direction_summary": {
-      "source": "output/cca_direction_group_summaries.csv",
-      "producer": "R/stages/14_cca_direction_analysis.R"
     },
     "correction_audit": {
       "source": "output/NOCA_tree_correction_audit.csv",
@@ -430,6 +389,22 @@
     "sample_selection_plot_sizes": {
       "source": "output/report/sample_selection_plot_sizes.csv",
       "producer": "R/diagnostics/plot_sample_selection.R"
+    },
+    "lake_support": {
+      "source": "output/cca_tracking_holocene_lake_support.csv",
+      "producer": "R/stages/09_tracking_metrics.R"
+    },
+    "lake_by_offset": {
+      "source": "output/cca_tracking_holocene_lake_by_offset.csv",
+      "producer": "R/stages/09_tracking_metrics.R"
+    },
+    "modern_model_input": {
+      "source": "output/cca_tracking_anthropocene_plot_model_input.csv",
+      "producer": "R/stages/09_tracking_metrics.R"
+    },
+    "tracking_schema": {
+      "source": "output/cca_tracking_schema.csv",
+      "producer": "R/stages/09_tracking_metrics.R"
     }
   },
   "text_outputs": {
@@ -443,6 +418,12 @@
     },
     "cca_anova_output": {
       "source": "output/report/cca_anova_output.txt",
+      "producer": "R/stages/05_cca_model.R"
+    }
+  },
+  "reference_bundles": {
+    "cca_calibration_reference": {
+      "source": "output/cca_calibration_reference.rds",
       "producer": "R/stages/05_cca_model.R"
     }
   }

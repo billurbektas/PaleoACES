@@ -92,20 +92,18 @@ if (file.exists(caption_path)) {
   caption_flat = str_squish(caption_text)
   heading_matches = str_match_all(
     caption_text, regex("^## Figure ([2-5]) —", multiline = TRUE))[[1]]
-  if (!identical(heading_matches[, 2], as.character(2:5)))
-    fail("docs/FIGURE_CAPTIONS.md does not order Figures 2-5 exactly once")
-  if (str_count(caption_text, fixed("**Method summary.**")) != 4L)
-    fail("docs/FIGURE_CAPTIONS.md must contain four separate method summaries")
+  if (!identical(heading_matches[, 2], as.character(2:3)))
+    fail("docs/FIGURE_CAPTIONS.md does not order Figures 2 and 3 exactly once")
+  if (str_count(caption_text, fixed("**Method summary.**")) != 2L)
+    fail("docs/FIGURE_CAPTIONS.md must contain two separate method summaries")
   if (str_count(caption_text,
-                fixed("**Publication-ready caption.**")) != 4L)
-    fail("docs/FIGURE_CAPTIONS.md must contain four publication-ready captions")
-  if (str_count(caption_text, "!\\[Figure [2-5]\\.") != 4L)
-    fail("docs/FIGURE_CAPTIONS.md must embed four figure previews")
+                fixed("**Publication-ready caption.**")) != 2L)
+    fail("docs/FIGURE_CAPTIONS.md must contain two publication-ready captions")
+  if (str_count(caption_text, "!\\[Figure [2-5]\\.") != 2L)
+    fail("docs/FIGURE_CAPTIONS.md must embed two figure previews")
   expected_pdfs = c(
     "plot/fig_standardized_climate_change_eras_fire.pdf",
-    "plot/fig_cca_trajectories.pdf",
-    "plot/fig_tracking_comparison.pdf",
-    "plot/fig_cca_direction_differences.pdf")
+    "plot/fig_cca_trajectories.pdf")
   if (!all(vapply(expected_pdfs, function(x) str_detect(caption_text, fixed(x)),
                   logical(1))))
     fail("docs/FIGURE_CAPTIONS.md does not link every publication PDF")
@@ -120,16 +118,7 @@ if (file.exists(caption_path)) {
   if (!all(vapply(figure2_contract, function(x) str_detect(caption_flat, fixed(x)),
                   logical(1))))
     fail("docs/FIGURE_CAPTIONS.md lacks exact Figure 2 window/rate semantics")
-  figure5_contract = c(
-    "initial LC position to the fixed taxon",
-    "initial WA position",
-    "equal target-specific cosines",
-    "less strongly opposed",
-    "stronger observed target alignment"
-  )
-  if (!all(vapply(figure5_contract, function(x) str_detect(caption_flat, fixed(x)),
-                  logical(1))))
-    fail("docs/FIGURE_CAPTIONS.md lacks the precise Figure 5 own-origin geometry")
+
 }
 
 decisions_text = paste(readLines(here("docs/SCIENTIFIC_DECISIONS.md"), warn = FALSE,
@@ -187,8 +176,6 @@ banned = c(
   "post hoc correspondence stage",
   "fig_holocene_climate_fire_eras",
   "table_holocene_anthropocene_raw_climate_rates",
-  "cca_tracking_holocene_lake_",
-  "lake–1,000-year-interval",
   "R/09d_tracking_storyline_raw.R",
   "fig_tracking_storyline_raw",
   "cca_tracking_storyline_raw_spec.csv",

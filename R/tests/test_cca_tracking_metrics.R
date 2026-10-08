@@ -1,344 +1,135 @@
-# =============================================================================
-# test_cca_tracking_metrics.R - offline unit and integration gate
-# =============================================================================
+# Independent geometry and integration checks for the canonical tracking data.
+suppressPackageStartupMessages({library(here);library(tidyverse);library(vegan)})
+source(here('R/helpers/config.R'),local=TRUE)
+source(here('R/helpers/tracking_metrics.R'),local=TRUE)
+source(here('R/helpers/tracking_data.R'),local=TRUE)
+source(here('R/helpers/holocene_climate_fire_era_functions.R'),local=TRUE)
+equal = function(a,b) stopifnot(isTRUE(all.equal(a,b,tolerance=1e-10,check.attributes=FALSE)))
+fail = function(expr) stopifnot(inherits(tryCatch({force(expr);NULL},error=identity),'error'))
+x = tibble(o1=1,o2=1,o1_2=1,o2_2=3,p1=0,p2=0,p1_2=4,p2_2=0,
+  vegetation_dt_years=20,climate_dt_years=40)
+m = calculate_tracking_metrics(x)
+equal(m$lag_t1,sqrt(2));equal(m$lag_t2,sqrt(18));equal(m$angle_degrees,90)
+equal(m$magnitude_tracking_ratio,.5);equal(m$rate_tracking_ratio,1)
+equal(m$observed_turnover_rate,10);equal(m$predicted_vegetation_change_rate,10)
+equal(m$pace_corrected_CCA1,1);equal(m$pace_corrected_CCA2,5)
+equal(m$direction_corrected_CCA1,3);equal(m$direction_corrected_CCA2,1)
+equal(m$pace_effect_on_lag,sqrt(18)-sqrt(34))
+equal(m$direction_effect_on_lag,sqrt(18)-sqrt(2))
+equal(m$pace_effect_on_lag_per_century,(sqrt(18)-sqrt(34))*2.5)
+stopifnot(m$pace_effect_on_lag<0,m$direction_effect_on_lag>0)
+stopifnot(abs(m$pace_effect_on_lag+m$direction_effect_on_lag-m$change_in_lag)>1e-6)
+# Equality, opposite direction and both stationary source directions.
+z=x;z$o1=z$o2=z$p1=z$p2=0;z$o1_2=z$p1_2=1;z$o2_2=z$p2_2=0
+p=calculate_tracking_metrics(z);equal(p$lag_t2,0);equal(p$pace_effect_on_lag,0);equal(p$direction_effect_on_lag,0)
+z$o1_2=-1;equal(calculate_tracking_metrics(z)$angle_degrees,180)
+z=x;z$o1_2=z$o1;z$o2_2=z$o2;p=calculate_tracking_metrics(z)
+stopifnot(is.na(p$angle_degrees),is.na(p$pace_effect_on_lag),p$direction_counterfactual_valid)
+equal(p$direction_effect_on_lag,0);equal(p$observed_turnover_rate,0)
+z=x;z$p1_2=z$p1;z$p2_2=z$p2;p=calculate_tracking_metrics(z)
+stopifnot(is.na(p$angle_degrees),is.na(p$magnitude_tracking_ratio),is.na(p$direction_effect_on_lag))
+equal(p$pace_corrected_CCA1,1);equal(p$pace_corrected_CCA2,1)
+z$o1_2=z$o1;z$o2_2=z$o2;p=calculate_tracking_metrics(z)
+stopifnot(is.na(p$pace_effect_on_lag),is.na(p$direction_effect_on_lag));equal(p$change_in_lag,0)
+z=x;z$p1_2=NA_real_;p=calculate_tracking_metrics(z)
+stopifnot(!p$finite_endpoints,is.na(p$lag_t2));equal(p$observed_turnover_rate,10)
+fail(calculate_tracking_metrics(mutate(x,climate_dt_years=0)))
+fail(validate_tracking_width(350));equal(validate_tracking_width(500),500L)
+# Guarded cosine can be shared without exporting an additional response metric.
+equal(safe_cosine_2d(c(1,-1,0),c(0,0,0),1,0),c(1,-1,NA_real_))
+stopifnot(!any(c('lag','d_offset','cosine_similarity','tracking_error') %in% names(m)))
 
-suppressPackageStartupMessages({
-  library(here)
-  library(tidyverse)
-})
-source(here("R/helpers/config.R"), local = TRUE)
-source(here("R/helpers/tracking_metrics.R"), local = TRUE)
+# Full-coverage zero is distinct from absent coverage, including interval edges.
+continuous=tibble(site='NOCA',lake='PantherPotholes',age_cal_yr_BP=c(0,4000),background_z=0)
+events=tibble(site='NOCA',lake='PantherPotholes',age_cal_yr_BP=c(1000,2000),peak_magnitude=1)
+intervals=tibble(site='NOCA',offset=0,age_lo=c(0,1000,2000,4000),age_hi=c(1000,2000,3000,5000))
+f=transition_fire(intervals,events,continuous,1000)
+equal(f$fire_panther_accepted_event_count,c(0L,1L,1L,NA_integer_))
+equal(f$fire_activity[1],0);stopifnot(is.na(f$fire_activity[4]),!f$fire_coverage_valid[4])
+equal(f$fire_window_years,rep(1000L,4));equal(f$fire_reference_window_years,rep(1000L,4))
+f500=transition_fire(tibble(site='NOCA',offset=0,age_lo=1000,age_hi=1500),events,continuous,500)
+equal(f500$fire_window_years,500);equal(f500$fire_panther_frequency_per_1000yr,2)
+equal(f500$fire_panther_core_max_frequency,2);equal(f500$fire_activity,1)
+# A missing MORA core cannot be treated as a zero-fire contributing record.
+mora_cont=bind_rows(lapply(c('Sunrise Lake','Shadow Lake','Little Sunrise Lake'),function(lake)
+  tibble(site='MORA',lake=lake,age_cal_yr_BP=c(0,if(lake=='Sunrise Lake') 4000 else 2000),background_z=0)))
+mora_events=tibble(site='MORA',lake=c('Sunrise Lake','Shadow Lake','Little Sunrise Lake'),age_cal_yr_BP=1000,peak_magnitude=1)
+fm=transition_fire(tibble(site='MORA',offset=0,age_lo=c(0,2000),age_hi=c(1000,3000)),mora_events,mora_cont,1000)
+equal(fm$fire_activity[1],0);stopifnot(is.na(fm$fire_activity[2]),fm$fire_covered_cores[2]==1)
 
-# Tracking climate rates and scaling must follow the active fitted CCA exactly.
-stopifnot(identical(CCA_VARIABLES, c("MSpT", "MWT", "SP", "WP")))
-
-tol = 1e-10
-near = function(x, y, tolerance = tol) {
-  isTRUE(all.equal(as.numeric(x), as.numeric(y), tolerance = tolerance,
-                   check.attributes = FALSE))
+r=read_csv(here('output/cca_tracking_holocene_lake_realizations.csv'),show_col_types=FALSE)
+b=read_csv(here('output/cca_tracking_holocene_lake_by_offset.csv'),show_col_types=FALSE)
+a=read_csv(here('output/cca_tracking_anthropocene_plot_model_input.csv'),show_col_types=FALSE)
+keys=c('site','lake','draw','offset','age_hi','age_lo');group_keys=setdiff(keys,'draw')
+stopifnot(!anyDuplicated(r[keys]),!anyDuplicated(b[group_keys]),
+  all(r$age_hi-r$age_lo==1000),all(r$n_climate_slices==10),all(r$n_climate_slices_2==10),
+  setequal(r$draw,1:100),setequal(r$offset,seq(0,900,100)),nrow(a)==607L,
+  !anyDuplicated(a$plot_id),!anyNA(a$burned),sum(a$small_observed_movement)==142L,
+  all(is.na(a$pace_effect_on_lag[a$small_observed_movement])),
+  all(a$direction_effect_on_lag[a$small_observed_movement]==0),
+  all(b$n_valid_draws+b$n_missing_draws==100),all(b$n_present_draws+b$n_absent_draws==100))
+equal(r$magnitude_tracking_ratio,r$rate_tracking_ratio)
+# Reconstruct distributions with base R, independently of the producer's summary helper.
+distribution = function(v) {
+  v=v[is.finite(v)]
+  c(n_valid_draws=length(v),n_missing_draws=100-length(v),
+    mean=if(length(v)) mean(v) else NA_real_,sd=if(length(v)>1) sd(v) else NA_real_,
+    median=if(length(v)) median(v) else NA_real_,
+    setNames(if(length(v)) quantile(v,c(.025,.25,.75,.975),names=FALSE) else rep(NA_real_,4),
+      c('q025','q25','q75','q975')))
 }
-
-endpoint = function(o1 = 0, o2 = 0, o1_2, o2_2,
-                    p1 = 0, p2 = 0, p1_2, p2_2,
-                    vegetation_dt_years = 10, climate_dt_years = 10) {
-  tibble(o1, o2, o1_2, o2_2, p1, p2, p1_2, p2_2,
-         vegetation_dt_years, climate_dt_years)
+for(sensitivity in c(FALSE,TRUE)) for(metric in tracking_metric_names()) {
+  raw=if(sensitivity) filter(r,n_min>=2) else r
+  manual=raw |> group_by(across(all_of(group_keys))) |>
+    summarize(stats=list(distribution(.data[[metric]])),.groups='drop') |> unnest_wider(stats) |>
+    rename_with(~paste0(.x,'_audit'),-all_of(group_keys))
+  cmp=left_join(b,manual,by=group_keys)
+  for(stat in names(distribution(numeric()))) {
+    expected=cmp[[paste0(stat,'_audit')]]
+    if(stat=='n_valid_draws') expected=replace_na(expected,0)
+    if(stat=='n_missing_draws') expected=replace_na(expected,100)
+    equal(cmp[[paste0(metric,'_',stat,if(sensitivity) '_nmin2' else '')]],expected)
+  }
 }
-
-# Perfect tracking: equal magnitude, rate and direction; no trajectory error.
-perfect = endpoint(o1_2 = 1, o2_2 = 0, p1_2 = 1, p2_2 = 0) %>%
-  calculate_tracking_metrics()
-stopifnot(
-  near(perfect$magnitude_tracking_ratio, 1),
-  near(perfect$rate_tracking_ratio, 1),
-  near(perfect$angle_degrees, 0),
-  near(perfect$cosine_similarity, 1),
-  near(perfect$climate_aligned_tracking, 1),
-  near(perfect$perpendicular_movement, 0),
-  near(perfect$tracking_error, 0)
-)
-
-# Opposite and perpendicular vectors exercise sign, angle and projection.
-opposite = endpoint(o1_2 = -1, o2_2 = 0, p1_2 = 1, p2_2 = 0) %>%
-  calculate_tracking_metrics()
-stopifnot(near(opposite$angle_degrees, 180),
-          near(opposite$cosine_similarity, -1),
-          near(opposite$climate_aligned_displacement, -1),
-          near(opposite$climate_aligned_tracking, -1),
-          near(opposite$tracking_error, 2))
-
-perpendicular = endpoint(o1_2 = 0, o2_2 = 1, p1_2 = 1, p2_2 = 0) %>%
-  calculate_tracking_metrics()
-stopifnot(near(perpendicular$angle_degrees, 90),
-          near(perpendicular$cosine_similarity, 0),
-          near(perpendicular$climate_aligned_displacement, 0),
-          near(perpendicular$perpendicular_movement, 1))
-
-# Equal displacements need not imply equal rates if their elapsed times differ.
-unequal_dt = endpoint(o1_2 = 1, o2_2 = 0, p1_2 = 1, p2_2 = 0,
-                      vegetation_dt_years = 20, climate_dt_years = 10) %>%
-  calculate_tracking_metrics()
-stopifnot(near(unequal_dt$magnitude_tracking_ratio, 1),
-          near(unequal_dt$observed_turnover_rate, 5),
-          near(unequal_dt$predicted_vegetation_change_rate, 10),
-          near(unequal_dt$rate_tracking_ratio, 0.5))
-
-# Lag is the signed change in endpoint mismatch. Its rate uses the climate
-# interval, not the plot-specific vegetation interval.
-lag_test = endpoint(o1 = 0, o2 = 0, o1_2 = 1, o2_2 = 0,
-                    p1 = 1, p2 = 0, p1_2 = 3, p2_2 = 0,
-                    vegetation_dt_years = 20, climate_dt_years = 50) %>%
-  calculate_tracking_metrics()
-stopifnot(near(lag_test$lag_t1, 1), near(lag_test$lag_t2, 2),
-          near(lag_test$change_in_lag, 1), near(lag_test$lag, 1),
-          near(lag_test$lag_rate_per_century, 2))
-
-# A tiny predicted vector invalidates denominator and directional metrics, but
-# tracking error and lag remain defined. A stationary observed vector has valid
-# zero magnitude/rate ratios but no meaningful direction.
-zero_pred = endpoint(o1_2 = 1, o2_2 = 0, p1_2 = 0, p2_2 = 0) %>%
-  calculate_tracking_metrics()
-stopifnot(zero_pred$small_predicted_movement,
-          is.na(zero_pred$magnitude_tracking_ratio),
-          is.na(zero_pred$rate_tracking_ratio),
-          is.na(zero_pred$angle_degrees),
-          is.na(zero_pred$climate_aligned_tracking),
-          near(zero_pred$tracking_error, 1))
-
-zero_obs = endpoint(o1_2 = 0, o2_2 = 0, p1_2 = 1, p2_2 = 0) %>%
-  calculate_tracking_metrics()
-stopifnot(zero_obs$small_observed_movement,
-          near(zero_obs$magnitude_tracking_ratio, 0),
-          near(zero_obs$rate_tracking_ratio, 0),
-          is.na(zero_obs$angle_degrees),
-          is.na(zero_obs$climate_aligned_displacement),
-          near(zero_obs$tracking_error, 1))
-
-tiny = endpoint(o1_2 = 1, o2_2 = 0, p1_2 = 1e-9, p2_2 = 0) %>%
-  calculate_tracking_metrics(epsilon = 1e-8)
-stopifnot(tiny$small_predicted_movement, is.na(tiny$normalized_tracking_error))
-
-# Physical climate rates and their standardized Euclidean combination.
-scale_test = tibble(variable = CCA_CLIMATE_VARS,
-                    mean = c(0, 0, 0, 0), sd = c(2, 4, 10, 20),
-                    n_calibration = 10L,
-                    unit = c("degrees_C", "degrees_C", "mm", "mm"))
-clim_test = tibble(
-  climate_dt_years = 50,
-  MSpT = 0, MWT = 0, SP = 0, WP = 0,
-  MSpT_2 = 1, MWT_2 = -2, SP_2 = 5, WP_2 = -10
-) %>% add_climate_change_metrics(scale_test)
-stopifnot(near(clim_test$MSpT_rate_per_century, 2),
-          near(clim_test$MWT_rate_per_century, -4),
-          near(clim_test$SP_rate_per_century, 10),
-          near(clim_test$WP_rate_per_century, -20),
-          near(clim_test$standardized_climate_displacement, 1),
-          near(clim_test$standardized_climate_change_rate, 2))
-
-# Integration outputs ---------------------------------------------------------
-paths = here("output", c(
-  "cca_tracking_climate_scaling.csv",
-  "cca_tracking_anthropocene_plot.csv",
-  "cca_tracking_anthropocene_site.csv",
-  "cca_tracking_holocene_realizations.csv",
-  "cca_tracking_holocene_by_offset.csv",
-  "cca_tracking_holocene_timeseries.csv"
-))
-if (!all(file.exists(paths)))
-  stop("Missing tracking output(s): ", paste(paths[!file.exists(paths)], collapse = ", "))
-
-scaling = read_csv(paths[1], show_col_types = FALSE)
-anth = read_csv(paths[2], show_col_types = FALSE)
-source(here("R/helpers/survey_years.R"), local = TRUE)
-plot_years = read_plot_years()
-expected_years = plot_years[match(anth$plot_id, plot_years$plot_id), ]
-stopifnot(identical(anth$vegetation_t2_year, expected_years$vegetation_t2_year),
-  near(anth$climate_t1_midyear, rep(1984, nrow(anth))),
-  near(anth$climate_t2_midyear, anth$vegetation_t2_year - 2.5),
-  near(anth$climate_dt_years, anth$vegetation_t2_year - 1986.5))
-# Independently recover selected dates from adults alone, never seedlings.
-trees = read_csv(here("data/MORA/MORA_TreeData_Resurvey_Cleaned.csv"), show_col_types = FALSE)
-library_map = read_csv(here("data/MORA/MORA_plot_lib.csv"), show_col_types = FALSE)
-latest = tapply(trees$Year, trees$Plot_ID, max)
-mi = anth$site == "MORA"
-supplied_ids = library_map$Plot_ID[match(anth$plot_id[mi], library_map$plot_id)]
-stopifnot(near(anth$vegetation_t2_year[mi], latest[supplied_ids]))
-record_audit = read_csv(here("output/MORA_resurvey_record_audit.csv"), show_col_types = FALSE)
-stopifnot(sum(record_audit$year_corrected[record_audit$stage == "seedling"]) == 93L,
-  sum(!record_audit$selected[record_audit$stage == "adult"]) == 698L,
-  sum(!record_audit$selected[record_audit$stage == "seedling"]) == 22L,
-  all(record_audit$assigned_year[record_audit$selected] == record_audit$selected_year[record_audit$selected]))
-holo = read_csv(paths[4], show_col_types = FALSE)
-by_offset = read_csv(paths[5], show_col_types = FALSE)
-timeseries = read_csv(paths[6], show_col_types = FALSE)
-
-stopifnot(setequal(scaling$variable, CCA_CLIMATE_VARS),
-          all(scaling$sd > 0),
-          nrow(anth) == 607L,
-          all(table(anth$site)[c("MORA", "NOCA")] == c(330L, 277L)),
-          !anyDuplicated(anth$plot_id),
-          !anyNA(anth$vegetation_t2_year),
-          identical(range(anth$vegetation_t2_year[anth$site == "MORA"]),
-                    c(2014, 2019)),
-          all(anth$vegetation_dt_years > 0),
-          !anyDuplicated(holo %>% select(site, offset, draw, age_hi, age_lo)),
-          all(holo$age_hi - holo$age_lo == 1000),
-          setequal(unique(holo$offset), seq(0, 900, by = 100)),
-          setequal(unique(holo$draw), seq_len(100)),
-          identical(holo$sparse_bin, holo$n_min < 2L))
-
-stopifnot(
-  max(abs(holo$lag - holo$change_in_lag), na.rm = TRUE) < 1e-12,
-  max(abs(holo$lag_rate_per_century - holo$lag / 10), na.rm = TRUE) < 1e-12,
-  max(abs(anth$lag - anth$change_in_lag), na.rm = TRUE) < 1e-12,
-  max(abs(anth$lag_rate_per_century -
-          anth$lag / anth$climate_dt_years * 100), na.rm = TRUE) < 1e-12
-)
-
-holo_500 = read_csv(here("output/cca_tracking_holocene_realizations_500yr.csv"),
-                    show_col_types = FALSE)
-stopifnot(all(holo_500$age_hi - holo_500$age_lo == 500),
-          setequal(unique(holo_500$offset), seq(0, 400, by = 100)),
-          setequal(unique(holo_500$draw), seq_len(100)))
-
-# The Holocene identity is algebra, not an independent result: both rates divide
-# their respective displacements by the same 1,000 years. It is checked only where
-# the predicted denominator is valid.
-holo_valid = holo %>% filter(!small_predicted_movement)
-stopifnot(max(abs(holo_valid$rate_tracking_ratio -
-                  holo_valid$magnitude_tracking_ratio), na.rm = TRUE) < 1e-10)
-
-# The unequal-dt synthetic case above proves the identity is not assumed for the
-# Anthropocene. Current plot-specific intervals should produce real differences.
-anth_valid = anth %>% filter(!small_predicted_movement)
-stopifnot(any(abs(anth_valid$rate_tracking_ratio -
-                  anth_valid$magnitude_tracking_ratio) > 1e-6))
-
-# Independently recalculate every realization's combined standardized climate
-# rate and a deterministic sample of the nonlinear CCA metrics.
-z_rate_cols = paste0(CCA_CLIMATE_VARS, "_z_rate_per_century")
-combined = sqrt(rowSums(holo[z_rate_cols]^2))
-stopifnot(max(abs(combined - holo$standardized_climate_change_rate)) < 1e-10)
-
-idx = unique(round(seq(1, nrow(holo), length.out = 101)))
-recalc = sqrt((holo$o1_2[idx] - holo$o1[idx])^2 +
-              (holo$o2_2[idx] - holo$o2[idx])^2)
-stopifnot(max(abs(recalc - holo$observed_vegetation_displacement[idx])) < 1e-10)
-recalc_error = sqrt(
-  ((holo$o1_2[idx] - holo$o1[idx]) - (holo$p1_2[idx] - holo$p1[idx]))^2 +
-  ((holo$o2_2[idx] - holo$o2[idx]) - (holo$p2_2[idx] - holo$p2[idx]))^2
-)
-stopifnot(max(abs(recalc_error - holo$tracking_error[idx])) < 1e-10)
-
-# Bin climate is fixed at site x offset x interval; draws move samples, not the
-# climate. Therefore actual and LC-predicted climate-only quantities must have
-# zero variation across draws for the same interval.
-climate_fixed = holo %>%
-  group_by(site, offset, age_hi, age_lo) %>%
-  summarize(n_climate_rate = n_distinct(round(standardized_climate_change_rate, 12)),
-            n_predicted = n_distinct(round(predicted_vegetation_displacement, 12)),
-            .groups = "drop")
-stopifnot(all(climate_fixed$n_climate_rate == 1L),
-          all(climate_fixed$n_predicted == 1L))
-
-# Verify draw-first summaries for representative metrics and all interval keys.
-check_metrics = c("rate_tracking_ratio", "angle_degrees",
-                  "standardized_climate_change_rate", "change_in_lag")
-manual = holo %>%
-  select(site, offset, age_hi, age_lo, all_of(check_metrics)) %>%
-  pivot_longer(all_of(check_metrics), names_to = "metric", values_to = "value") %>%
-  group_by(site, offset, age_hi, age_lo, metric) %>%
-  summarize(manual_median = median(value, na.rm = TRUE), .groups = "drop")
-recorded = by_offset %>%
-  filter(metric %in% check_metrics) %>%
-  select(site, offset, age_hi, age_lo, metric, recorded_median = median)
-summary_check = inner_join(manual, recorded,
-                           by = c("site", "offset", "age_hi", "age_lo", "metric"))
-stopifnot(nrow(summary_check) == nrow(manual),
-          max(abs(summary_check$manual_median - summary_check$recorded_median),
-              na.rm = TRUE) < 1e-10,
-          all(timeseries$n_offsets == 10L))
-
-# The primary grid uses half-open intervals [age_lo, age_hi), so an internal
-# boundary cannot be assigned to two adjacent intervals in the same offset.
-grid = tibble(t = seq(floor(min(holo$age_lo) / 100) * 100,
-                      ceiling(max(holo$age_hi) / 100) * 100, by = 100))
-mapped = by_offset %>%
-  inner_join(grid, by = join_by(y$t >= x$age_lo, y$t < x$age_hi))
-stopifnot(!anyDuplicated(mapped %>% select(site, offset, metric, t)))
-date_coverage = timeseries %>% distinct(site, t) %>%
-  group_by(site) %>% summarize(n_dates = n(), t_min = min(t), t_max = max(t),
-                               .groups = "drop")
-expected_coverage = tribble(
-  ~site, ~n_dates, ~t_min, ~t_max,
-  "MORA", 54L, 1300, 6600,
-  "NOCA", 83L, 1300, 9500)
-stopifnot(identical(date_coverage, expected_coverage))
-
-# Re-source the model only for invariants and calibration-reference provenance.
-source(here("R/stages/05_cca_model.R"), local = TRUE)
-expected_scaling = make_climate_scaling(env_past_final, CCA_CLIMATE_VARS)
-stopifnot(identical(cca_scaling, "sites"), !cca_hill,
-          nrow(species_past_final) == 607L,
-          ncol(species_past_final) == 14L,
-          near(scaling$mean, expected_scaling$mean),
-          near(scaling$sd, expected_scaling$sd))
-
-# One shared membership mask BEFORE predictions: both dates and both score types.
-stopifnot(setequal(present_pairs, anth$plot_id),
-          identical(species_past_final, species_past_paired),
-          identical(env_past_final, env_past_paired),
-          identical(rownames(species_past_final), rownames(species_present_final)),
-          identical(rownames(cca_model$CCA$u), present_pairs),
-          identical(cca_pair_eligibility$calibration_included,
-                    cca_pair_eligibility$comparison_included),
-          sum(cca_sample_eligibility$calibration_included) == 607L,
-          identical(rownames(species_past_paired), rownames(species_present_final)),
-          identical(rownames(env_past_paired), rownames(env_present_final)),
-          identical(rownames(projected_present), rownames(predicted_present)),
-          identical(rownames(projected_paleo), rownames(predicted_paleo)),
-          all(is.finite(projected_present)), all(is.finite(predicted_present)),
-          all(is.finite(projected_paleo)), all(is.finite(predicted_paleo)),
-          nrow(species_past_paired) == 607L, nrow(species_paleo) == 907L,
-          all(cca_eligibility_counts$input_units ==
-                cca_eligibility_counts$excluded_units + cca_eligibility_counts$included_units))
-legacy_only = cca_pair_eligibility %>% filter(legacy_eligible, !resurvey_eligible)
-stopifnot(nrow(legacy_only) == 12L,
-          !any(legacy_only$plot_id %in% rownames(species_past_final)),
-          sum(legacy_only$reason_code == "no_recorded_taxa") == 9L,
-          sum(legacy_only$reason_code == "species_selection") == 3L)
-for (i in seq_len(nrow(cca_eligibility_counts))) {
-  row = cca_eligibility_counts[i, ]
-  excluded = cca_exclusion_summary %>%
-    filter(era == row$era, site == row$site, use == row$use)
-  stopifnot(sum(excluded$excluded_units) == row$excluded_units)
+stopifnot(any(b$n_present_draws<10))
+# One present stationary response, one moving response and 98 absent draws.
+stationary=calculate_tracking_metrics(mutate(x,o1_2=o1,o2_2=o2))
+synthetic=bind_rows(mutate(stationary,draw=1L),mutate(m,draw=2L)) |>
+  mutate(site='test',lake='test',offset=0,age_hi=1500,age_lo=500)
+ss=summarize_draw_metrics(synthetic,'pace_effect_on_lag',100)
+equal(ss$pace_effect_on_lag_n_valid_draws,1)
+equal(ss$pace_effect_on_lag_n_missing_draws,99)
+equal(ss$pace_effect_on_lag_n_undefined_draws,1)
+# Primary normalization references and MORA history are identical at shared intervals.
+source('R/helpers/paleo_runs.R',local=TRUE)
+ref=readRDS(here('output/cca_calibration_reference.rds'))
+scale=read_csv(here('output/cca_tracking_climate_scaling.csv'),show_col_types=FALSE)
+equal(scale$sd,ref$climate_scaling$sd)
+shared=r |> filter(site=='MORA') |> distinct(offset,age_hi,age_lo,fire_activity,fire_history_id)
+stopifnot(!anyDuplicated(shared[c('offset','age_hi','age_lo')]))
+# Width affects bin support in one implementation; do not generate sensitivity output files.
+ponds=read_csv(here('output/chelsa_paleo_ponds.csv'),show_col_types=FALSE)
+source(here('R/helpers/climate_variables.R'),local=TRUE)
+env=ponds |> transmute(unit=lake,period=site,variable,time=slice,month,value=value_raw) |>
+  derive_climate_vars(winter_shift=FALSE) |> rename(lake=unit,site=period) |> mutate(age=1950-time*100)
+# Verify each endpoint against that lake's complete native climate window.
+for(endpoint in c('age_hi','age_lo')) {
+  endpoints=r |> distinct(site,lake,offset,across(all_of(endpoint)),across(all_of(
+    if(endpoint=='age_hi') CCA_CLIMATE_VARS else paste0(CCA_CLIMATE_VARS,'_2'))))
+  for(i in seq_len(nrow(endpoints))) {
+    e=endpoints[i,];mid=e[[endpoint]]
+    native=env |> filter(site==e$site,lake==e$lake,age>=mid-500,age<mid+500)
+    stopifnot(nrow(native)==10)
+    for(v in CCA_CLIMATE_VARS) equal(e[[paste0(v,if(endpoint=='age_lo') '_2' else '')]],mean(native[[v]]))
+  }
 }
-# Independently reconcile recorded absence from the cleaned CSV, and paired
-# eligibility from retained-species presence sets (not the classification code).
-cleaned_noca = read_csv(here("output/NOCA_occ.csv"), show_col_types = FALSE)
-# Ponderosa reinstatement: preserve the received occurrence records and let the
-# normal frequency rule retain the species. Reconcile keys without the cleaner.
-ponderosa_input = bind_rows(
-  read_csv(here("output/MORA_occ.csv"), show_col_types = FALSE) %>% mutate(site = "MORA"),
-  cleaned_noca %>% mutate(site = "NOCA")
-) %>% filter(species == "Pinus ponderosa") %>%
-  select(site, period, plot_id, species, occurrence) %>% arrange(site, period, plot_id)
-ponderosa_consolidated = read_csv(here("output/occ_consolidated.csv"), show_col_types = FALSE) %>%
-  filter(species == "Pinus ponderosa") %>%
-  select(site, period, plot_id, species, occurrence) %>% arrange(site, period, plot_id)
-stopifnot(identical(ponderosa_input, ponderosa_consolidated),
-          "Pinus ponderosa" %in% keep_species,
-          max(table(ponderosa_input$site[ponderosa_input$occurrence == 1],
-                    ponderosa_input$period[ponderosa_input$occurrence == 1])) >= count.thr,
-          "STE2044" %in% rownames(species_past_final),
-          all(c("STE2044", "HB2064") %in% present_pairs),
-          all(species_paleo[, "Pinus ponderosa"] == 0))
-# The earlier survey-date effects retain their dated 13-taxon evidence rather
-# than comparing that old ordination with the refitted ponderosa coordinates.
-dated_before = read_csv(here("docs/report/survey_window_baseline.csv"), show_col_types = FALSE)
-dated_after = read_csv(here("docs/report/survey_window_after.csv"), show_col_types = FALSE)
-dated_effects = read_csv(here("output/survey_window_plot_effects.csv"), show_col_types = FALSE)
-stopifnot(setequal(dated_before$plot_id, dated_after$plot_id),
-          setequal(dated_effects$plot_id, dated_after$plot_id),
-          !any(c("STE2044", "HB2064") %in% dated_effects$plot_id))
-for (metric in c("change_in_lag", "observed_vegetation_displacement", "MSpT_2")) {
-  stopifnot(near(dated_effects[[paste0(metric, "_after")]],
-                dated_after[[metric]][match(dated_effects$plot_id, dated_after$plot_id)]))
-}
-consolidated_noca = read_csv(here("output/occ_consolidated.csv"), show_col_types = FALSE) %>%
-  filter(site == "NOCA", occurrence == 1, species %in% keep_species)
-ids_at = function(period_name) unique(consolidated_noca$plot_id[
-  consolidated_noca$period == period_name])
-stopifnot(setequal(intersect(ids_at("past"), ids_at("present")),
-                    cca_pair_eligibility$plot_id[cca_pair_eligibility$site == "NOCA" &
-                                                 cca_pair_eligibility$comparison_included]))
-empty_at_legacy = setdiff(unique(cleaned_noca$plot_id), unique(cleaned_noca$plot_id[
-  cleaned_noca$period == "past" & cleaned_noca$occurrence == 1]))
-stopifnot(length(empty_at_legacy) == 6L,
-          setequal(empty_at_legacy, cca_sample_eligibility$plot_id[
-            cca_sample_eligibility$site == "NOCA" & cca_sample_eligibility$period == "past" &
-            cca_sample_eligibility$reason_code == "no_recorded_taxa"]))
+small=build_lake_tracking(ref,paleo_age_draws(allow_rebuild=FALSE) |> filter(draw<=2),env,500)$realizations
+stopifnot(all(small$vegetation_dt_years==500),all(small$n_climate_slices==5),
+  setequal(small$offset,seq(0,400,100)),all(small$age_hi-small$age_lo==500))
 
-cat("CCA tracking metric tests passed: synthetic formulas, 607 plots, ",
-    format(nrow(holo), big.mark = ","), " Holocene realizations, draw-first summaries, ",
-    "and fixed model/scaling.\n", sep = "")
+# Compact, fixed migration reference; no old analysis implementation is retained.
+fixture=read_csv(here('R/tests/fixtures/cca_noca_tracking_baseline.csv'),show_col_types=FALSE)
+actual=inner_join(fixture |> select(all_of(setdiff(keys,'lake'))),r,by=setdiff(keys,'lake'))
+stopifnot(nrow(actual)==nrow(fixture))
+for(v in names(fixture)) equal(actual[[v]],fixture[[v]])
+cat('PASS: focused geometry, counterfactuals, lake climate, fire support/normalization, full draw distributions, interval configuration and migration reference.\n')

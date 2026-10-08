@@ -2,7 +2,7 @@
 title: "PaleoACES analysis review"
 ---
 
-**Rebuilt analysis · 2026-10-08.** Current results and diagnostics were refreshed; chronology figures use the existing stored models.
+**Snapshot of existing outputs · 2026-10-08.** Figures and CCA summaries use verified existing analysis outputs.
 
 PaleoACES asks how observed forest composition moves relative to the composition
 predicted by climate, comparing modern forest resurveys with four Holocene
@@ -39,14 +39,12 @@ verbatim for reading. Run the workflow for an analysis rebuild.
 | 7–9 | Paleo vegetation and fire | [000_PALEO_b_vegetation.R](../R/stages/000_PALEO_b_vegetation.R); [000_FIRE_cleaning.R](../R/stages/000_FIRE_cleaning.R); [000_PALEO_c_fire.R](../R/stages/000_PALEO_c_fire.R) |
 | 10–11 | Paleo climate | [000_PALEO_d_climate_download.R](../R/stages/000_PALEO_d_climate_download.R); [000_PALEO_e_climate.R](../R/stages/000_PALEO_e_climate.R) |
 | 12 | Taxonomy consolidation | [000_occurrence_data_consolidate.R](../R/stages/000_occurrence_data_consolidate.R) |
-| 13 | CCA eligibility and calibration | [05_cca_model.R](../R/stages/05_cca_model.R) |
-| 14–15 | Tracking and 500-year sensitivity | [09_tracking_metrics_500yr_sensitivity.R](../R/stages/09_tracking_metrics_500yr_sensitivity.R); [09_tracking_metrics.R](../R/stages/09_tracking_metrics.R) |
-| 16–17 | Fire catalog and climate eras | [12_walsh_fire_reproduction.R](../R/stages/12_walsh_fire_reproduction.R); [13_holocene_climate_fire_eras.R](../R/stages/13_holocene_climate_fire_eras.R) |
-| 18 | Community trajectories: Figure 3 | [05a_cca_figure.R](../R/stages/05a_cca_figure.R) |
-| 19–20 | Tracking and fire-detection examples | [09a_method_example.R](../R/stages/09a_method_example.R); [12a_fire_event_detection_worked_example.R](../R/stages/12a_fire_event_detection_worked_example.R) |
-| 21–22 | Climate/fire display: Figure 2 and example | [13a_climate_change_figure.R](../R/stages/13a_climate_change_figure.R); [13b_fire_method_worked_example.R](../R/stages/13b_fire_method_worked_example.R) |
-| 23–24 | Tracking comparison: Figure 4 | [09b_tracking_visualization_data.R](../R/stages/09b_tracking_visualization_data.R); [09c_tracking_comparison.R](../R/stages/09c_tracking_comparison.R) |
-| 25 | Direction discrepancies: Figure 5 | [14_cca_direction_analysis.R](../R/stages/14_cca_direction_analysis.R) |
+| 13 | CCA eligibility, calibration and reference | [05_cca_model.R](../R/stages/05_cca_model.R) |
+| 14–15 | Fire catalog and climate eras | [12_walsh_fire_reproduction.R](../R/stages/12_walsh_fire_reproduction.R); [13_holocene_climate_fire_eras.R](../R/stages/13_holocene_climate_fire_eras.R) |
+| 16 | Canonical lake/plot tracking | [09_tracking_metrics.R](../R/stages/09_tracking_metrics.R) |
+| 17 | Community trajectories: Figure 3 | [05a_cca_figure.R](../R/stages/05a_cca_figure.R) |
+| 18–19 | Tracking and fire-detection examples | [09a_method_example.R](../R/stages/09a_method_example.R); [12a_fire_event_detection_worked_example.R](../R/stages/12a_fire_event_detection_worked_example.R) |
+| 20–21 | Climate/fire display: Figure 2 and example | [13a_climate_change_figure.R](../R/stages/13a_climate_change_figure.R); [13b_fire_method_worked_example.R](../R/stages/13b_fire_method_worked_example.R) |
 
 | Prepared input | Rows | Plot/sample IDs | Taxa |
 | --- | --- | --- | --- |
@@ -398,8 +396,7 @@ sampled areas were equal. Plot size currently does not determine eligibility.
 Choices such as correcting tree records and keeping the latest adult visit
 change the observations without necessarily removing plots. They are shown
 alongside the count changes. All current CCA climate values are complete.
-The two burned MORA plots remain in CCA; their exclusion from Figure 4 happens
-later.
+The two burned MORA plots remain in CCA and in the canonical 607-plot tracking table.
 
 [05_cca_model.R](../R/stages/05_cca_model.R) resolves eligibility **before fitting
 or projecting**. An observation with no retained taxa has no observed WA
@@ -506,7 +503,7 @@ Script: [test_cca_scaling_comparison.R](../R/diagnostics/test_cca_scaling_compar
 
 ![Compare scaling 1 and 2 of the same fitted CCA. — PDF page 1](assets/analysis/scaling-p1.png)
 
-## Tracking calculations and resolution sensitivity
+## Tracking calculations
 
 Observed movement is the change in WA position; climate-predicted movement is
 the change in LC position. Endpoint lag is the distance between LC and WA.
@@ -514,32 +511,12 @@ the change in LC position. Endpoint lag is the distance between LC and WA.
 The tracking ratio compares observed and predicted movement rates; the angle
 compares their directions and is undefined when either movement is stationary.
 
-Primary Holocene calculations pool MORA's lakes before calculating nonlinear
+Primary Holocene calculations treat each lake separately before calculating nonlinear
 metrics for consecutive **1,000-year intervals**. Each core contributes 100
 chronology draws, and ten 100-year offsets assess sensitivity to interval
 placement. Draws are summarized within offset before offsets are combined.
 These realizations are not additional ecological replicates. One-sample bins
 remain flagged, with an existing minimum-two-sample sensitivity.
-
-The workflow runs the **500-year sensitivity** first, then the primary analysis.
-The table compares their resolution and descriptive estimates.
-
-| Site | Metric | Resolution | Dates | Median | Median samples/bin |
-| --- | --- | --- | --- | --- | --- |
-| MORA | Movement angle (°) | 1000 years (primary) | 54 | 34 | 11.5 |
-| MORA | Δlag per century | 1000 years (primary) | 54 | -0.005593 | 11.5 |
-| MORA | Tracking rate ratio | 1000 years (primary) | 54 | 5.241 | 11.5 |
-| NOCA | Movement angle (°) | 1000 years (primary) | 83 | 72.85 | 57.5 |
-| NOCA | Δlag per century | 1000 years (primary) | 83 | -0.01272 | 57.5 |
-| NOCA | Tracking rate ratio | 1000 years (primary) | 83 | 3.775 | 57.5 |
-| MORA | Movement angle (°) | 500 years (sensitivity) | 64 | 73.96 | 6 |
-| MORA | Δlag per century | 500 years (sensitivity) | 64 | -0.003697 | 6 |
-| MORA | Tracking rate ratio | 500 years (sensitivity) | 64 | 2.952 | 6 |
-| NOCA | Movement angle (°) | 500 years (sensitivity) | 98 | 89.72 | 30 |
-| NOCA | Δlag per century | 500 years (sensitivity) | 98 | -0.0006912 | 30 |
-| NOCA | Tracking rate ratio | 500 years (sensitivity) | 98 | 2.952 | 30 |
-
-[Full resolution audit table](assets/analysis/tables/resolution_audit.csv).
 
 ## Accepted fire events and climate eras
 
@@ -662,6 +639,10 @@ regeneration. The climate rows use those same plots in the same order.
 and `WP` winter precipitation. The fitting and resurvey-projection lines are
 copied from [05_cca_model.R](../R/stages/05_cca_model.R), with the current scaling
 settings shown explicitly.
+
+The [calibration reference bundle](assets/analysis/cca_calibration_reference.rds)
+preserves the fitted CCA, calibration matrices and identities, species and
+climate scores, scaling, prepared endpoints and provenance for future work.
 
 ```r
 # Current settings; presence and climate tables are prepared above in 05_cca_model.R.
@@ -802,7 +783,7 @@ events from the subsequent classification of high-fire periods.
 
 ### Work through WA/LC movement, lag, ratio, and angle
 
-Lag change is endpoint mismatch at t2 minus t1; a stationary observed movement has no defined direction.
+One actual Panther Potholes lake transition shows WA/LC endpoints, pace/direction counterfactuals, focused responses and valid chronology-draw distributions. Corrections are nonadditive.
 
 Script: [09a_method_example.R](../R/stages/09a_method_example.R). [Complete PDF](../plot/test_figures/fig_method_worked_example.pdf) (1 page).
 
@@ -851,71 +832,279 @@ Script: [13b_fire_method_worked_example.R](../R/stages/13b_fire_method_worked_ex
 
 ![Work through centered event frequencies at 2,300 cal BP. — PDF page 1](assets/analysis/high_fire_example-p1.png)
 
-## Tracking comparisons
+## Lake-level tracking datasets and support
 
-Prepared tracking summaries are assigned to climate eras and fire contexts.
-Coverage is explicit: the primary analysis supports 54 MORA and 83 NOCA
-site-dates across all ten offsets. Group summaries describe the supported data;
-chronology draws, offsets and overlapping dates are not independent replication.
+The canonical tracking analysis calculates each lake independently in the same
+pooled CCA. Its five tables contain endpoints, all focused responses, own-lake
+physical climate and interval-aligned fire predictors. The wide lake/offset
+actual-transition table is the prospective model input. Full supported data:
+[lake/offset table](assets/analysis/tables/lake_by_offset.csv),
+[607 modern pairs](assets/analysis/tables/modern_model_input.csv), and
+[column definitions and units](assets/analysis/tables/tracking_schema.csv).
 
-| Site | Era | Supported dates | Coverage |
-| --- | --- | --- | --- |
-| MORA | CC1 | 0 | insufficient complete-offset support |
-| MORA | S1 | 0 | insufficient complete-offset support |
-| MORA | CC2 | 5 | complete ten-offset support |
-| MORA | S2 | 8 | complete ten-offset support |
-| MORA | CC3 | 5 | complete ten-offset support |
-| MORA | S3 | 27 | complete ten-offset support |
-| MORA | CC4 | 5 | complete ten-offset support |
-| MORA | S4 | 4 | complete ten-offset support |
-| NOCA | CC1 | 24 | complete ten-offset support |
-| NOCA | S1 | 4 | complete ten-offset support |
-| NOCA | CC2 | 6 | complete ten-offset support |
-| NOCA | S2 | 8 | complete ten-offset support |
-| NOCA | CC3 | 5 | complete ten-offset support |
-| NOCA | S3 | 27 | complete ten-offset support |
-| NOCA | CC4 | 5 | complete ten-offset support |
-| NOCA | S4 | 4 | complete ten-offset support |
+| Lake | Offset | Samples | Transitions | Minimum draws | Two-sample realizations |
+| --- | --- | --- | --- | --- | --- |
+| JayBath | 0 | 48 | 7 | 24 | 583 |
+| JayBath | 100 | 48 | 7 | 13 | 586 |
+| JayBath | 200 | 48 | 6 | 98 | 595 |
+| JayBath | 300 | 48 | 6 | 98 | 582 |
+| JayBath | 400 | 48 | 6 | 95 | 567 |
+| JayBath | 500 | 48 | 6 | 90 | 540 |
+| JayBath | 600 | 48 | 6 | 85 | 528 |
+| JayBath | 700 | 48 | 6 | 76 | 511 |
+| JayBath | 800 | 48 | 6 | 63 | 488 |
+| JayBath | 900 | 48 | 7 | 39 | 584 |
+| LogWallow | 0 | 40 | 7 | 2 | 521 |
+| LogWallow | 100 | 40 | 6 | 99 | 539 |
+| LogWallow | 200 | 40 | 6 | 98 | 525 |
+| LogWallow | 300 | 40 | 6 | 100 | 521 |
+| LogWallow | 400 | 40 | 6 | 100 | 522 |
+| LogWallow | 500 | 40 | 6 | 100 | 501 |
+| LogWallow | 600 | 40 | 6 | 99 | 484 |
+| LogWallow | 700 | 40 | 6 | 88 | 465 |
+| LogWallow | 800 | 40 | 6 | 57 | 439 |
+| LogWallow | 900 | 40 | 7 | 19 | 506 |
+| ReflectionPond | 0 | 29 | 6 | 29 | 474 |
+| ReflectionPond | 100 | 29 | 6 | 15 | 458 |
+| ReflectionPond | 200 | 29 | 6 | 9 | 433 |
+| ReflectionPond | 300 | 29 | 6 | 6 | 417 |
+| ReflectionPond | 400 | 29 | 6 | 1 | 425 |
+| ReflectionPond | 500 | 29 | 5 | 98 | 440 |
+| ReflectionPond | 600 | 29 | 5 | 98 | 460 |
+| ReflectionPond | 700 | 29 | 5 | 92 | 453 |
+| ReflectionPond | 800 | 29 | 5 | 77 | 431 |
+| ReflectionPond | 900 | 29 | 6 | 59 | 490 |
+| PantherPotholes | 0 | 790 | 10 | 100 | 1000 |
+| PantherPotholes | 100 | 790 | 9 | 100 | 900 |
+| PantherPotholes | 200 | 790 | 9 | 100 | 900 |
+| PantherPotholes | 300 | 790 | 9 | 100 | 900 |
+| PantherPotholes | 400 | 790 | 9 | 100 | 900 |
+| PantherPotholes | 500 | 790 | 9 | 100 | 900 |
+| PantherPotholes | 600 | 790 | 9 | 100 | 900 |
+| PantherPotholes | 700 | 790 | 9 | 100 | 900 |
+| PantherPotholes | 800 | 790 | 9 | 100 | 900 |
+| PantherPotholes | 900 | 790 | 10 | 100 | 1000 |
 
-[Full era coverage table](assets/analysis/tables/era_coverage.csv).
+[Full lake support table](assets/analysis/tables/lake_support.csv).
 
-| Site | Era | Fire | Metric | Total | Valid | Median | Q25 | Q75 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| MORA | Holocene | No fire | Movement angle (°) | 38 | 38 | 33.76 | 30.76 | 65.27 |
-| MORA | Holocene | No fire | Δlag per century | 38 | 38 | -0.007157 | -0.01092 | 0.001253 |
-| MORA | Holocene | No fire | Tracking rate ratio | 38 | 38 | 5.833 | 2.024 | 6.686 |
-| MORA | Holocene | Fire | Movement angle (°) | 16 | 16 | 36.27 | 28.58 | 46.94 |
-| MORA | Holocene | Fire | Δlag per century | 16 | 16 | -0.002277 | -0.01681 | 0.004481 |
-| MORA | Holocene | Fire | Tracking rate ratio | 16 | 16 | 4.234 | 2.999 | 5.728 |
-| MORA | Anthropocene | No fire | Movement angle (°) | 328 | 252 | 94.04 | 34.13 | 146.7 |
-| MORA | Anthropocene | No fire | Δlag per century | 328 | 328 | 0.5972 | -0.1668 | 1.431 |
-| MORA | Anthropocene | No fire | Tracking rate ratio | 328 | 328 | 0.5423 | 0.1619 | 0.9632 |
-| NOCA | Holocene | No fire | Movement angle (°) | 69 | 69 | 90.36 | 49.71 | 136.4 |
-| NOCA | Holocene | No fire | Δlag per century | 69 | 69 | -0.006917 | -0.02473 | 0.01418 |
-| NOCA | Holocene | No fire | Tracking rate ratio | 69 | 69 | 3.571 | 2.44 | 5.67 |
-| NOCA | Holocene | Fire | Movement angle (°) | 14 | 14 | 63.35 | 20.97 | 72.85 |
-| NOCA | Holocene | Fire | Δlag per century | 14 | 14 | -0.0322 | -0.03373 | -0.01641 |
-| NOCA | Holocene | Fire | Tracking rate ratio | 14 | 14 | 5.03 | 2.853 | 6.259 |
-| NOCA | Anthropocene | No fire | Movement angle (°) | 253 | 194 | 94.66 | 45.52 | 144.6 |
-| NOCA | Anthropocene | No fire | Δlag per century | 253 | 253 | 0.1516 | -0.9559 | 1.001 |
-| NOCA | Anthropocene | No fire | Tracking rate ratio | 253 | 253 | 2.354 | 0.856 | 4.791 |
-| NOCA | Anthropocene | Fire | Movement angle (°) | 24 | 17 | 51.02 | 9.275 | 128.6 |
-| NOCA | Anthropocene | Fire | Δlag per century | 24 | 24 | 0.005475 | -3.998 | 0.6411 |
-| NOCA | Anthropocene | Fire | Tracking rate ratio | 24 | 24 | 3.922 | 0 | 6.426 |
+No majority-draw cutoff is imposed. `n_valid_draws,n_missing_draws` refer to the
+primary lag response out of 100 draws; each response has its own counts.
+Presence/absence counts distinguish missing transitions from undefined geometry.
+Statistics describe valid draws conditional on the transition's support;
+minimum-two-samples sensitivity statistics are marked `_nmin2`.
+There are approximately 5–6 majority-supported transitions per MORA lake per
+offset and 9–10 for Panther Potholes. Four lakes and two fire histories provide
+limited independent support for a later three-way interaction. No models,
+distributions or temporal-correlation structures are fitted or selected here.
 
-[Full tracking summary table](assets/analysis/tables/tracking_summary.csv).
+Each MORA vegetation lake uses its own climate but shares regional fire exposure.
+Numerators and core maxima use fully covered windows of identical duration and
+matching half-open interval conventions. Covered zero-event intervals have zero
+activity; absent coverage remains missing. Full-window denominators match the
+existing 1,000-year references. [Scientific definitions](SCIENTIFIC_DECISIONS.md#lake-tracking-metrics)
+explain the formulas, units, stationary cases and nonadditive counterfactuals.
+[NOCA migration validation](review/NOCA_TRACKING_MIGRATION_CHECK.csv) records the
+full 9,200-realization comparison before legacy outputs were removed.
+The [tracking validation report](review/TRACKING_DATA_VALIDATION.md) gives the
+schemas, exclusion counts, independent checks and limits for later modeling.
 
-Figure 4 omits the two burned MORA pairs from its descriptive comparison and
-retains 605 modern pairs across the displayed groups. All 137 supported Holocene
-site-dates remain. Its scatter has 600 direction-valid observations; stationary
-modern compositions remain in the non-angle summaries. Quartiles and offset/draw
-spread describe variation, not inferential confidence intervals.
+### Maintained tracking calculation code
 
-### Figure 4. Vegetation tracking across eras and fire contexts
+The following code is copied automatically from
+[tracking_metrics.R](../R/helpers/tracking_metrics.R); the generated R reading
+copy includes the same definitions. The helper is the calculation authority.
 
-![Figure 4. fig tracking comparison](assets/analysis/figure-4.png)
+```r
+# =============================================================================
+# tracking_metrics.R - pure functions for CCA tracking and climate-change rates
+# =============================================================================
+# This file has no data-loading or file-writing side effects. Both the executable
+# tracking stage and its unit tests source these functions.
+#
+# Required endpoint columns in `calculate_tracking_metrics()`:
+#   observed WA: o1, o2 at t1 and o1_2, o2_2 at t2
+#   predicted LC: p1, p2 at t1 and p1_2, p2_2 at t2
+#   elapsed years: vegetation_dt_years and climate_dt_years
+#
+# Required climate columns in `add_climate_change_metrics()`:
+#   the configured CCA variables at t1 and their `_2` counterparts at t2.
+# =============================================================================
 
-[Full PDF](../plot/fig_tracking_comparison.pdf) · [Figure script](../R/stages/09c_tracking_comparison.R) · [Publication captions](FIGURE_CAPTIONS.md).
+suppressPackageStartupMessages({
+  library(dplyr)
+  library(tidyr)
+})
+
+TRACKING_EPSILON = 1e-8
+if (!exists("CCA_VARIABLES") || !exists("CLIMATE_VARIABLE_UNITS"))
+  stop("Source R/helpers/config.R before R/helpers/tracking_metrics.R")
+CCA_CLIMATE_VARS = CCA_VARIABLES
+
+# Internal angle utility: no direction is assigned to nonfinite or tiny vectors.
+safe_cosine_2d = function(ax, ay, bx, by, epsilon = TRACKING_EPSILON) {
+  sizes = lengths(list(ax, ay, bx, by))
+  n = max(sizes)
+  if (any(!sizes %in% c(1L, n)) || !is.finite(epsilon) || epsilon <= 0)
+    stop("Invalid vector lengths or movement tolerance")
+  ax = rep_len(ax, n); ay = rep_len(ay, n)
+  bx = rep_len(bx, n); by = rep_len(by, n)
+  a = sqrt(ax^2 + ay^2); b = sqrt(bx^2 + by^2)
+  ok = is.finite(a) & is.finite(b) & a > epsilon & b > epsilon
+  result = rep(NA_real_, n)
+  result[ok] = pmax(-1, pmin(1, (ax[ok]*bx[ok] + ay[ok]*by[ok])/(a[ok]*b[ok])))
+  result
+}
+
+tracking_metric_names = function() c(
+  "observed_vegetation_displacement", "predicted_vegetation_displacement",
+  "observed_turnover_rate", "predicted_vegetation_change_rate",
+  "magnitude_tracking_ratio", "rate_tracking_ratio", "angle_degrees",
+  "lag_t1", "lag_t2", "change_in_lag", "lag_rate_per_century",
+  "lag_t2_pace_corrected", "lag_t2_direction_corrected",
+  "pace_effect_on_lag", "direction_effect_on_lag",
+  "pace_effect_on_lag_per_century", "direction_effect_on_lag_per_century")
+
+climate_metric_names = function(vars = CCA_CLIMATE_VARS) c(
+  unlist(lapply(vars, function(v) paste0(v, c("_change", "_rate_per_century",
+    "_z_change", "_z_rate_per_century")))),
+  "standardized_climate_displacement", "standardized_climate_change_rate")
+
+# Return the fixed standardization reference used by both eras. The pooled
+# legacy calibration set is the reference because it trained the CCA; using a
+# future or paleo distribution would make one era help define the other's scale.
+make_climate_scaling = function(calibration_env, vars = CCA_CLIMATE_VARS) {
+  missing = setdiff(vars, names(calibration_env))
+  if (length(missing))
+    stop("make_climate_scaling(): missing calibration variable(s): ",
+         paste(missing, collapse = ", "))
+
+  out = tibble(
+    variable = vars,
+    mean = vapply(calibration_env[vars], mean, numeric(1), na.rm = TRUE),
+    sd = vapply(calibration_env[vars], stats::sd, numeric(1), na.rm = TRUE),
+    n_calibration = vapply(calibration_env[vars], function(x) sum(is.finite(x)), integer(1)),
+    unit = unname(CLIMATE_VARIABLE_UNITS[variable])
+  )
+  if (any(!is.finite(out$sd) | out$sd <= 0))
+    stop("make_climate_scaling(): every calibration SD must be finite and positive")
+  out
+}
+
+# Six response families and their supporting geometry, in one CCA1-CCA2 space.
+# Counterfactuals start at the actual O1 and compare with the actual final P2.
+# They correct displacement magnitude/direction, are nonadditive and noncausal.
+calculate_tracking_metrics = function(x, epsilon = TRACKING_EPSILON) {
+  coords = c("o1", "o2", "o1_2", "o2_2", "p1", "p2", "p1_2", "p2_2")
+  need = c(coords, "vegetation_dt_years", "climate_dt_years")
+  if (!all(need %in% names(x))) stop("Missing tracking endpoint/time columns")
+  if (length(epsilon) != 1L || !is.finite(epsilon) || epsilon <= 0)
+    stop("Movement tolerance must be finite and positive")
+  if (any(!is.finite(x$vegetation_dt_years) | x$vegetation_dt_years <= 0) ||
+      any(!is.finite(x$climate_dt_years) | x$climate_dt_years <= 0))
+    stop("Elapsed times must be finite and positive")
+  ox = x$o1_2-x$o1; oy = x$o2_2-x$o2
+  px = x$p1_2-x$p1; py = x$p2_2-x$p2
+  a = sqrt(ox^2+oy^2); b = sqrt(px^2+py^2)
+  x$finite_endpoints = rowSums(!is.finite(as.matrix(x[coords]))) == 0L
+  x$small_observed_movement = is.finite(a) & a <= epsilon
+  x$small_predicted_movement = is.finite(b) & b <= epsilon
+  observed_direction = x$finite_endpoints & is.finite(a) & a > epsilon
+  predicted_direction = x$finite_endpoints & is.finite(b) & b > epsilon
+  x$angle_valid = observed_direction & predicted_direction
+  x$pace_counterfactual_valid = observed_direction
+  x$direction_counterfactual_valid = predicted_direction
+  x$tracking_ratio_valid = predicted_direction
+  x$delta_observed_CCA1 = ox; x$delta_observed_CCA2 = oy
+  x$delta_predicted_CCA1 = px; x$delta_predicted_CCA2 = py
+  x$observed_vegetation_displacement = a
+  x$predicted_vegetation_displacement = b
+  x$observed_turnover_rate = a/x$vegetation_dt_years*100
+  x$predicted_vegetation_change_rate = b/x$climate_dt_years*100
+  x$magnitude_tracking_ratio = ifelse(predicted_direction, a/b, NA_real_)
+  x$rate_tracking_ratio = ifelse(predicted_direction,
+    x$observed_turnover_rate/x$predicted_vegetation_change_rate, NA_real_)
+  x$angle_degrees = acos(safe_cosine_2d(ox, oy, px, py, epsilon))*180/pi
+  x$lag_t1 = sqrt((x$o1-x$p1)^2+(x$o2-x$p2)^2)
+  x$lag_t2 = sqrt((x$o1_2-x$p1_2)^2+(x$o2_2-x$p2_2)^2)
+  x$change_in_lag = x$lag_t2-x$lag_t1
+  x$lag_rate_per_century = x$change_in_lag/x$climate_dt_years*100
+
+  # Only divide by a direction's magnitude when that direction is defined.
+  x$pace_corrected_CCA1 = x$pace_corrected_CCA2 = rep(NA_real_, nrow(x))
+  x$direction_corrected_CCA1 = x$direction_corrected_CCA2 = rep(NA_real_, nrow(x))
+  i = observed_direction
+  x$pace_corrected_CCA1[i] = x$o1[i]+b[i]*ox[i]/a[i]
+  x$pace_corrected_CCA2[i] = x$o2[i]+b[i]*oy[i]/a[i]
+  i = predicted_direction
+  x$direction_corrected_CCA1[i] = x$o1[i]+a[i]*px[i]/b[i]
+  x$direction_corrected_CCA2[i] = x$o2[i]+a[i]*py[i]/b[i]
+  x$lag_t2_pace_corrected = sqrt((x$pace_corrected_CCA1-x$p1_2)^2+
+    (x$pace_corrected_CCA2-x$p2_2)^2)
+  x$lag_t2_direction_corrected = sqrt((x$direction_corrected_CCA1-x$p1_2)^2+
+    (x$direction_corrected_CCA2-x$p2_2)^2)
+  x$pace_effect_on_lag = x$lag_t2-x$lag_t2_pace_corrected
+  x$direction_effect_on_lag = x$lag_t2-x$lag_t2_direction_corrected
+  x$pace_effect_on_lag_per_century = x$pace_effect_on_lag/x$climate_dt_years*100
+  x$direction_effect_on_lag_per_century = x$direction_effect_on_lag/x$climate_dt_years*100
+  x
+}
+
+# Actual climate change in predictor space, kept separate from LC movement.
+# Per-variable rates remain signed and in physical units. The combined index is
+# the Euclidean norm after scaling every variable by its pooled legacy SD:
+#   standardized rate = sqrt(sum_v ((X2_v-X1_v)/SD_v/dt*100)^2).
+# It is nonnegative and measures multivariate climate speed; signed component
+# columns retain whether each season became warmer/colder or wetter/drier.
+add_climate_change_metrics = function(x, scaling, vars = CCA_CLIMATE_VARS) {
+  need_scaling = c("variable", "mean", "sd", "unit", "n_calibration")
+  if (!all(need_scaling %in% names(scaling)) || !setequal(vars, scaling$variable))
+    stop("add_climate_change_metrics(): invalid or incomplete scaling table")
+  need = c("climate_dt_years", vars, paste0(vars, "_2"))
+  missing = setdiff(need, names(x))
+  if (length(missing))
+    stop("add_climate_change_metrics(): missing column(s): ",
+         paste(missing, collapse = ", "))
+  if (any(!is.finite(x$climate_dt_years) | x$climate_dt_years <= 0))
+    stop("add_climate_change_metrics(): climate elapsed times must be positive")
+
+  z_change_cols = character(0)
+  z_rate_cols = character(0)
+  for (v in vars) {
+    s = scaling$sd[match(v, scaling$variable)]
+    delta = x[[paste0(v, "_2")]] - x[[v]]
+    x[[paste0(v, "_change")]] = delta
+    x[[paste0(v, "_rate_per_century")]] = delta / x$climate_dt_years * 100
+    x[[paste0(v, "_z_change")]] = delta / s
+    x[[paste0(v, "_z_rate_per_century")]] = delta / s / x$climate_dt_years * 100
+    z_change_cols = c(z_change_cols, paste0(v, "_z_change"))
+    z_rate_cols = c(z_rate_cols, paste0(v, "_z_rate_per_century"))
+  }
+  x$standardized_climate_displacement = sqrt(rowSums(x[z_change_cols]^2))
+  x$standardized_climate_change_rate = sqrt(rowSums(x[z_rate_cols]^2))
+  x
+}
+
+metric_unit = function(metric) {
+  case_when(
+    metric == "angle_degrees" ~ "degrees",
+    metric %in% c("magnitude_tracking_ratio", "rate_tracking_ratio") ~ "unitless",
+    metric %in% c("observed_turnover_rate", "predicted_vegetation_change_rate") |
+      grepl("^(lag_rate|pace_effect|direction_effect).*per_century$", metric) ~ "CCA_units_per_century",
+    metric %in% tracking_metric_names() ~ "CCA_units",
+    grepl("_z_rate_per_century$", metric) | metric == "standardized_climate_change_rate" ~ "calibration_SD_per_century",
+    grepl("_z_change$", metric) | metric == "standardized_climate_displacement" ~ "calibration_SD",
+    grepl("_rate_per_century$", metric) ~ paste0(unname(CLIMATE_VARIABLE_UNITS[sub("_rate_per_century$", "", metric)]), "_per_century"),
+    grepl("_change$", metric) ~ unname(CLIMATE_VARIABLE_UNITS[sub("_change$", "", metric)]),
+    TRUE ~ NA_character_
+  )
+}
+
+safe_stat = function(x, fun, ...) {
+  x = x[is.finite(x)]
+  if (!length(x)) return(NA_real_)
+  fun(x, ...)
+}
+```
 
 ### Effects of the 2026-10-07 survey-date decision
 
@@ -931,7 +1120,7 @@ consolidation, so six modeled observed positions change. Modern climate changes 
 2014. Climate elapsed time changes for 319 MORA plots and those same 50 NOCA
 plots; 2017 MORA resurveys retain the former 30.5-year midpoint interval.
 The 225 NOCA plots surveyed in 2015 retain their former 2010–2015 window.
-Figures 2–5 and the tracking/direction summaries use the updated inputs.
+Figures 2 and 3 and the lake/plot tracking datasets use the updated inputs.
 
 | Plot | Presence removed from pooled resurvey |
 | --- | --- |
@@ -969,59 +1158,6 @@ Figures 2–5 and the tracking/direction summaries use the updated inputs.
 
 [Full survey decision effects table](assets/analysis/tables/survey_decision_effects.csv).
 
-## Direction discrepancies and support
-
-For each taxon, predicted alignment compares LC movement with the vector from
-its initial LC position toward the species score. Observed alignment uses the
-corresponding vector from its initial WA position. Climate targets use the
-common environmental biplot directions. The **target-alignment discrepancy**
-is predicted minus observed cosine: positive values mean stronger predicted
-alignment, including movement that is less opposed to a target.
-
-Equal target alignment does not imply equal movement vectors. Each taxon
-comparison uses its trajectory's own origin, so starting-position differences
-can contribute to the discrepancy. Cosines are missing for movements below the
-existing 1e-8 tolerance. The stage retains all 607 modern pairs, including the
-two burned MORA plots, and 15,270 primary Holocene realizations.
-
-| Period | Site | Climate state | Burned/high fire | Units | Min valid targets | Max valid targets |
-| --- | --- | --- | --- | --- | --- | --- |
-| Anthropocene | MORA | — | FALSE | 328 | 250 | 252 |
-| Anthropocene | MORA | — | TRUE | 2 | 2 | 2 |
-| Anthropocene | NOCA | — | FALSE | 253 | 185 | 194 |
-| Anthropocene | NOCA | — | TRUE | 24 | 16 | 17 |
-| Holocene | MORA | climate change | FALSE | 7 | 7 | 7 |
-| Holocene | MORA | climate change | TRUE | 8 | 8 | 8 |
-| Holocene | MORA | relative stability | FALSE | 31 | 31 | 31 |
-| Holocene | MORA | relative stability | TRUE | 8 | 8 | 8 |
-| Holocene | NOCA | climate change | FALSE | 28 | 28 | 28 |
-| Holocene | NOCA | climate change | TRUE | 12 | 12 | 12 |
-| Holocene | NOCA | relative stability | FALSE | 41 | 41 | 41 |
-| Holocene | NOCA | relative stability | TRUE | 2 | 2 | 2 |
-
-[Full direction summaries](assets/analysis/tables/direction_summary.csv) and [group support](assets/analysis/tables/direction_support.csv).
-
-MORA burned has only two plots and NOCA relative-stability/high-fire has only
-two dates. These groups remain visible, but do not support precise or causal
-claims. Directional alignment does not directly measure taxon gain, dominance
-or climate causation.
-
-### Inspect distributions and support beneath the Figure 5 heatmap
-
-The paired target discrepancy uses each trajectory's own origin. Quartiles are descriptive; small groups are retained rather than interpreted as precise estimates.
-
-Script: [14_cca_direction_analysis.R](../R/stages/14_cca_direction_analysis.R). [Complete PDF](../plot/test_figures/fig_cca_direction_differences_audit.pdf) (3 pages).
-
-![Inspect distributions and support beneath the Figure 5 heatmap. — PDF page 1](assets/analysis/direction_audit-p1.png)
-
-![Inspect distributions and support beneath the Figure 5 heatmap. — PDF page 2](assets/analysis/direction_audit-p2.png)
-
-### Figure 5. Predicted-minus-observed target-alignment discrepancies
-
-![Figure 5. fig cca direction differences](assets/analysis/figure-5.png)
-
-[Full PDF](../plot/fig_cca_direction_differences.pdf) · [Figure script](../R/stages/14_cca_direction_analysis.R) · [Publication captions](FIGURE_CAPTIONS.md).
-
 ## Limitations and remaining questions
 
 The chronology controls, survey windows, GPS exclusions and paired CCA
@@ -1039,9 +1175,9 @@ They distinguish planned or optional sensitivities from decisions already made.
 | Raw versus V2.1-anchored TraCE21k climate | The active Holocene analysis uses raw TraCE21k values; the V2.1 anchoring diagnostic is not authoritative. | Absolute Holocene climate levels and cross-product comparisons may retain product bias, although the active within-series change calculations are internally consistent. | A validated overlap-period comparison showing whether anchoring reduces bias without introducing a discontinuity or changing the intended anomaly interpretation. |
 | Legacy-calibration versus full-record climate SDs | Changes are divided by SDs from the 607 matched legacy CCA calibration plots. | The reference is tied to the fitted model. A full-record SD would change displayed standardized magnitudes, cross-variable weighting, the unthresholded composite, and standardized climate rates, but not CC/S boundaries under the current variable-specific 50%-of-own-maximum rule. | A prespecified full-record sensitivity with explicit temporal/site weighting and a scientific choice between calibration-relative and dataset-relative effect sizes. |
 | Anthropocene precipitation continuity | Historical climate remains 1979–1989; modern climate uses adult Y−5 through Y at both sites (2026-10-07 decision). The MORA precipitation contrast is flagged. | The apparent post-2010 MORA precipitation shift may partly reflect CHELSA inhomogeneity rather than climate. | Independent station/reanalysis validation and a documented decision on whether post-2010 MORA precipitation is usable. The agreed years are not a pending decision. |
-| Own-origin versus common-origin taxon target geometry | The primary target-alignment analysis uses LC₁→species for predicted movement and WA₁→species for observed movement. | The two cosines answer alignment relative to each trajectory's own starting community; part of their difference can arise because LC₁ and WA₁ differ. | A prespecified common-origin sensitivity and an ecological decision about whether the estimand should condition on each starting state or hold the target vector fixed across observed and predicted movement. |
+| Own-origin versus common-origin taxon target geometry | Deferred: the target-alignment analysis is retired. Existing CCA scores and reference matrices are preserved for future contribution analysis. | The two cosines answer alignment relative to each trajectory's own starting community; part of their difference can arise because LC₁ and WA₁ differ. | A prespecified common-origin sensitivity and an ecological decision about whether the estimand should condition on each starting state or hold the target vector fixed across observed and predicted movement. |
 
-The analysis checks passed, including paired exclusions, chronology, climate matching, tracking arithmetic and figure outputs. Stored chronologies were unchanged. [Checks and rebuilding instructions](WORKFLOW.md#tests-and-decisions).
+This snapshot uses verified existing analysis outputs, including stored CCA summaries and permutation tests. It does not represent a new full analysis run. [Checks and rebuilding instructions](WORKFLOW.md#tests-and-decisions).
 
 ## Diagnostic PDFs
 
@@ -1069,7 +1205,6 @@ current-results analysis.
 | [fig_holocene_climate_period_method_worked_example.pdf](../plot/test_figures/fig_holocene_climate_period_method_worked_example.pdf) | Expose signed changes, phase support, and era construction. | [13_holocene_climate_fire_eras.R](../R/stages/13_holocene_climate_fire_eras.R) | 1 | current |
 | [fig_holocene_fire_method_worked_example.pdf](../plot/test_figures/fig_holocene_fire_method_worked_example.pdf) | Work through centered event frequencies at 2,300 cal BP. | [13b_fire_method_worked_example.R](../R/stages/13b_fire_method_worked_example.R) | 1 | current |
 | [fig_method_worked_example.pdf](../plot/test_figures/fig_method_worked_example.pdf) | Work through WA/LC movement, lag, ratio, and angle. | [09a_method_example.R](../R/stages/09a_method_example.R) | 1 | current |
-| [fig_cca_direction_differences_audit.pdf](../plot/test_figures/fig_cca_direction_differences_audit.pdf) | Inspect distributions and support beneath the Figure 5 heatmap. | [14_cca_direction_analysis.R](../R/stages/14_cca_direction_analysis.R) | 1, 2 | current |
 | [test_chelsa_cruts_vs_present.pdf](../plot/test_figures/test_chelsa_cruts_vs_present.pdf) | Retain the older product-comparison reference outside current results. | [test_chelsa_cruts_vs_present.R](../R/diagnostics/test_chelsa_cruts_vs_present.R) | Full PDF only | historical reference |
 
 ## TraCE21k–V2.1 comparison and planned sensitivity

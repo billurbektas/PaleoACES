@@ -27,15 +27,6 @@ Active data and cache locations are preserved. See [repository inventory](REPOSI
 | `cca_tracking_anthropocene_*.csv` | Plot-level tracking metrics and descriptive MORA/NOCA summaries |
 | `cca_tracking_holocene_*.csv` | Primary 1,000-year realization, draw-within-offset, and full 100-year-grid tracking series; `_500yr` files are sensitivity outputs |
 | `cca_tracking_climate_scaling.csv` | Fixed pooled-legacy means, SDs, units, and sample sizes used for standardized climate rates |
-| `cca_tracking_visualization_points.csv` | Common Holocene site-date and Anthropocene plot source, plus compatibility aggregates; the active figure recalculates its summaries only from raw rows |
-| `cca_tracking_holocene_era_coverage.csv` | Complete-ten-offset site-date coverage for every MORA/NOCA × CC/S combination, including explicit missing slots |
-| `cca_tracking_interval_resolution_audit.csv` | Descriptive support, distribution, and matched-date comparison of primary 1,000-year and sensitivity 500-year tracking |
-| `cca_tracking_comparison_summary.csv` | Independently calculated counts, medians, quartiles, and whiskers for fire-stratified main boxes, macro eras, NOCA Anthropocene fire status, and Holocene climate state × fire status across the four displayed metrics |
-| `cca_tracking_anthropocene_fire_scope_audit.csv` | All 607 modern pairs with burned status, inclusion decision, and explicit exclusion of the two burned MORA pairs |
-| `cca_tracking_comparison_spec.csv` | Auditable fixed-site facets, explicit era/state × fire grouping, raw-linear lag/rate/ratio/angle contracts, 600-point background, four macro medians, eight climate-state/fire medians, two NOCA fire-status medians, stationary-angle annotation, reference lines, symmetric raw-lag fill limits, and panel-width fractions |
-| `cca_direction_anthropocene_realizations.csv`, `cca_direction_holocene_realizations.csv.gz` | All 10,926 modern and 274,860 primary Holocene unit × taxon/climate paired rows, with predicted and observed cosines, predicted-minus-observed contrasts, direct movement angle/cosine, and explicit validity flags |
-| `cca_direction_holocene_by_offset.csv.gz`, `cca_direction_holocene_timeseries.csv` | 2,790 draw-within-offset and 2,466 complete-ten-offset site-date directional-difference summaries using the tracking stage's half-open mapping |
-| `cca_direction_group_summaries.csv`, `cca_direction_scope_audit.csv` | All 204 descriptive site × climate/fire or site × burned summaries, support/NA counts, geometry settings, and upstream hashes; no rankings |
 | `holocene_era_climate_*.csv` | Lake/site/phase signed changes, pooled-calibration standardization, regional phase scores, 50%-maximum thresholds, directional cells, and unthresholded composite |
 | `holocene_era_grid.csv`, `holocene_era_catalog.csv`, `holocene_era_driver_subintervals.csv`, `holocene_era_climate_change_subphases.csv` | Exhaustive complete-domain CC/S cells, eight merged eras, every variable/direction interval, and auditable driver-trough subdivisions |
 | `walsh_charanalysis_*.csv` | Pinned official-engine inputs, settings, series, events, FRIs, package/source hashes, publication regression, and comparison with the separate primary `tapas` catalog |
@@ -44,8 +35,6 @@ Active data and cache locations are preserved. See [repository inventory](REPOSI
 | `holocene_era_fire_*.csv` | Normalized core/site frequency, robust thresholds, all retained high-fire runs, and strength/background corroboration |
 | `holocene_era_fire_threshold_ratio.csv` | Display audit for normalized site fire frequency divided by its frozen robust threshold; values above 1 retain the existing high-fire classification |
 | `holocene_fire_method_worked_example.csv` | Exact core- and site-level arithmetic used in the 2,300 cal-BP fire worked example |
-| `offset_timeseries*.csv` | Backward-compatible LC-predicted vegetation, observed vegetation, and offset data; no offset figures are generated |
-| `plot/fig_tracking_comparison.*` | Main-paper PDF/PNG with equal-width fixed-site-facet boxplot/detail panels A–C (lag rate, ratio, angle) and a centered 75%-width panel-D angle × tracking-ratio scatter; pooled state labels list their exact represented CC/S eras |
 | `holocene_anthropocene_raw_climate_rate_comparison.csv` | Raw physical-rate comparison: maximum-absolute Holocene equal-site regional median after ten-offset aggregation and annualized Anthropocene plot-rate medians for the exact MORA/NOCA windows, all per century |
 | `plot/fig_standardized_climate_change_eras_fire.*` | Main-paper PDF/PNG of signed Holocene climate change, readable variable-specific stability brackets near 10 ka, raw-rate comparison, and threshold-normalized MORA/NOCA fire-frequency ratios |
 | `plot/test_figures/fig_holocene_climate_period_method_worked_example.pdf` | PDF-only worked example for the 50% threshold, phase support, any-variable union, no-gap rule, composite role, and independent fire rule |
@@ -55,8 +44,6 @@ Active data and cache locations are preserved. See [repository inventory](REPOSI
 | `plot/fig_cca_trajectories.*` | Main-paper PDF/PNG with A. pooled trajectories, B. biplot inset, C. climate contributions, D. species contributions, eight independently positioned two-line path names, transparent predicted paths/annotations, and an arrow-only observed/predicted legend |
 | `cca_trajectory_era_centroids.csv` | Site × CC1–S4 observed WA and predicted LC centroids used by the selected trajectories |
 | `cca_trajectory_anthropocene_centroids.csv` | Exact legacy/resurvey WA and LC site means from identical valid paired plots at both dates, plus pair counts |
-| `plot/fig_cca_direction_differences.*` | Main-paper PDF/PNG with A. Climate and B. Species median heatmaps of target-alignment discrepancy (predicted minus observed); display labels use climate stability, species names are italicized, and neutral era labels highlight only high fire/burned status in red within MORA/NOCA facets |
-| `plot/test_figures/fig_cca_direction_differences_audit.pdf` | Three-page complete taxon/climate boxplot audit retaining individual valid units, distributions, and explicit two-unit groups |
 | `bacon_run_manifest.csv` | Seed, versions, settings/control/output hashes, the historical whole-script hash used for five chronology runs, and a separately checked chronology-code fingerprint; the recorded post-run revision is limited to PDF location and PNG persistence |
 
 ## Adult survey dates and the 2026-10-07 climate update
@@ -79,3 +66,68 @@ accounts for all 115 pre-update scientific CSVs: 88 are byte-identical, six have
 only provenance or ordering changes, and 21 change scientifically. It records
 matching keys, added/removed rows, changed fields and before/after checksums.
 Historical climate and Holocene values remain unchanged in the mixed tables.
+
+## Canonical tracking schemas
+
+All five datasets are local reproducible CSVs in `output/`. The complete
+column-by-column dictionary is `output/cca_tracking_schema.csv`, also exposed
+in the Analysis Review. One metric implementation serves both eras.
+
+| CSV | Unique key | Contents |
+|---|---|---|
+| `cca_tracking_holocene_lake_realizations.csv` | `site, lake, draw, offset, age_hi, age_lo` | WA/LC endpoints, focused responses, own-lake physical climate, interval charcoal activity, sample support and validity flags |
+| `cca_tracking_holocene_lake_by_offset.csv` | `site, lake, offset, age_hi, age_lo` | Fixed climate/fire predictors and wide chronology distributions; primary prospective model input |
+| `cca_tracking_anthropocene_plot_model_input.csv` | `site, plot_id` | All 607 original pairs, endpoints, survey/window dates, both elapsed times, physical climate, binary fire and focused responses |
+| `cca_tracking_holocene_lake_timeseries.csv` | `site, lake, t, metric` | Descriptive 100-year grid; complete offset support within each lake, without cross-lake coverage restrictions |
+| `cca_tracking_holocene_lake_support.csv` | `site, lake, offset` | Eligible samples, observed/retained/excluded realization counts, transitions, draw support, sample density and minimum-two-sample sensitivity |
+
+`age_hi` is the older endpoint and `age_lo` the younger endpoint in calendar
+years BP; their difference is the actual transition duration. `o1,o2` are
+initial observed CCA1/CCA2; `o1_2,o2_2` are final observed coordinates. The `p`
+columns follow the same convention for climate-predicted positions.
+
+Metrics and units are authoritative in [Scientific Decisions](SCIENTIFIC_DECISIONS.md#lake-tracking-metrics).
+CCA displacement/lag/effects use CCA units, their rates use CCA units/century,
+ratios are unitless, and angles use degrees. Seasonal temperature changes use
+°C; precipitation changes use mm; seasonal rates use those units/century.
+`standardized_climate_change_rate` uses calibration SD/century.
+
+In the wide table, `<metric>_mean`, `_sd`, `_median`, `_q025`, `_q25`, `_q75`
+and `_q975` describe valid chronology draws. `<metric>_n_valid_draws` counts
+finite values; `_n_missing_draws` is 100 minus that count; `_n_undefined_draws`
+counts invalid values among present realizations. `n_present_draws` and
+`n_absent_draws` distinguish chronology support from undefined response geometry.
+Unprefixed `n_valid_draws,n_missing_draws` describe the primary lag-rate response.
+Statistics with `_nmin2` restrict both endpoint bins to at least two vegetation
+samples. Zero valid sensitivity draws have missing statistics and zero valid
+count; they are not assigned zero responses. No majority threshold filters data.
+
+`fire_activity` is the equal-core mean of normalized charcoal event frequency.
+Each `fire_<core>_*` group provides its exact source ID, coverage bounds/fraction,
+full-coverage and normalization flags, event count, frequency per 1,000 years,
+maximum comparable-window frequency and normalized activity. MORA core labels
+are `sunrise,shadow,little_sunrise`; NOCA is `panther`. Missing core coverage
+produces missing counts, while a covered zero-event interval produces zero.
+`fire_history_id` records shared regional exposure across MORA vegetation lakes.
+`fire_window_years,fire_reference_window_years` must match the transition width.
+`high_fire` uses the existing midpoint annotation with `high_fire_window_years=1000`.
+Modern `burned` is binary and `fire_assignment_source` retains assignment provenance.
+
+Reporting fields `age_q025,age_q975` are typical within-offset posterior
+quantiles, while `phase_min,phase_max` describe offset-median spread. Neither
+is an inferential confidence interval. Reporting rows, offsets and draws are
+not independent observations for modeling.
+
+The default 1,000-year stage has ten offsets and 100 cached whole chronologies.
+A nondefault `--bin-width-years=N` must be a positive multiple of 100; Holocene
+files acquire `_Nyr` suffixes and modern/primary outputs are not overwritten.
+The separate 500-year stage, site-pooled metric products, compatibility files
+and former Figures 4/5 are retired through Git history.
+
+`cca_calibration_reference.rds` preserves the existing CCA fit, 607 calibration
+identities and matrices, retained taxa, species/environmental scores, exact
+modern endpoints, paleo sample positions, climate labels/units/scaling and
+input/source provenance. Its portable formula environment supports later
+prediction without refitting. No future contribution analysis is implemented.
+The report registers a [versioned copy of this reference bundle](assets/analysis/cca_calibration_reference.rds)
+so the existing fitted calibration remains available from the branch.

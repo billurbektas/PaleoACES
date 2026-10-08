@@ -48,7 +48,7 @@ pairs (330 MORA, 277 NOCA). STE2044 returns to calibration and paired comparison
 HB2064 returns to paired comparison. The 907 included Holocene samples, their
 chronologies, and the raw climate records are unchanged, but refitting the shared
 CCA changes modern and Holocene positions, tracking metrics and direction
-summaries. Figures 2–5 and the report are regenerated. Other cleaning choices,
+summaries. Figures 2 and 3 and the report are regenerated. Other cleaning choices,
 CCA constraints, scaling and age-model settings are unchanged.
 
 [Former rationale, source evidence and reversal](methods/README_occurrence_consolidation.md#ponderosa-reinstatement)
@@ -69,7 +69,7 @@ hold only taxa excluded by species selection. Their received records are kept.
 Species selection still uses the existing ≥20 site × period rule; all 14 taxa
 remain. The model and its climate-SD reference are refitted on those 607 plots,
 and modern and Holocene projections, tracking results, direction summaries and
-Figures 2–5 are recalculated. Chronologies, climate inputs and fire settings are
+Figures 2 and 3 are recalculated. Chronologies, climate inputs and fire settings are
 unchanged. Climate-explained inertia changes from 15.69% to 15.33% after this
 restriction; current axes and tracking summaries are in the analysis review.
 
@@ -133,7 +133,7 @@ resolve mislabeled repeat visits, especially RAMP-505/RAMP-506, before filtering
 
 Climate intervals are calculated per plot from **1984** to **Y−2.5**; vegetation
 intervals use 1977.5 (MORA) or 1983 (NOCA) to Y. These dates feed climate summaries,
-CCA projections, community trajectories, tracking and direction results.
+CCA projections, community trajectories and tracking results.
 For this survey-date decision, the CCA settings, species rule, legacy
 calibration and Holocene results were unchanged. The later ponderosa
 reinstatement on 2026-10-08 refits the shared CCA as recorded above.
@@ -241,76 +241,112 @@ The detailed evidence and publication links are in the
   within the joint multivariate calibration domain. LC positions are
   climate-predicted ordination scores, not independently validated forecasts.
 
-## Vegetation tracking
+<a id="lake-tracking-metrics"></a>
 
-- Observed vegetation movement is the CCA1–CCA2 displacement of WA scores.
-  Expected vegetation movement is the displacement of climate-predicted LC
-  scores. The compatibility alias `d_climate` means the latter, not physical
-  climate change.
-- Actual climate change retains signed physical changes/rates for all four
-  constraints. Its combined standardized magnitude is the Euclidean norm after
-  scaling by pooled legacy-calibration SDs.
-- Anthropocene vegetation rates use each plot's resurvey year: MORA relative to
-  1977.5 and NOCA relative to 1983. Climate-predicted and physical-climate rates
-  use each plot’s interval from 1984 to Y−2.5 (MORA 27.5–32.5 years;
-  NOCA 27.5–28.5 years).
-- Primary Holocene tracking uses consecutive 1,000-year bins, ten 100-year
-  offsets, and all 100 whole-chronology Bacon draws. Metrics are calculated for
-  every MORA/NOCA site × offset × draw × interval realization before summarizing
-  draws within offset and then offset-phase sensitivity. MORA vegetation and
-  climate are pooled across its three lake records at the site level before
-  interval metrics; Panther Potholes represents NOCA.
-- Offset-specific intervals are mapped to the 100-year reporting grid as
-  half-open intervals (`age_lo <= t < age_hi`). This prevents internal boundary
-  dates from being assigned twice. Strict ten-offset coverage yields 54 MORA
-  dates from 6.6–1.3 ka and 83 NOCA dates from 9.5–1.3 ka.
-- The former 500-year framework is retained only in explicit `_500yr`
-  sensitivity tables. A resolution audit reports support and matched-date
-  differences without requiring the two resolutions to agree. The 1,000-year
-  analysis is primary because it matches climate/fire support and improves
-  vegetation-bin density; the material resolution sensitivity remains part of
-  interpretation. Neither draws nor offsets are ecological replicates.
-- The magnitude ratio and the tracking ratio (observed/predicted) are
-  algebraically identical for valid
-  Holocene realizations because both rates use the same interval denominator.
-  This is an implementation invariant, not an independent ecological result.
-- One-sample bins remain visible through `n_min` and `sparse_bin`; parallel
-  `nmin2` realization tables provide the prespecified sampling-density
-  sensitivity.
-- Endpoint lag is `||LC-WA||`; the displayed signed lag is `lag_t2-lag_t1`.
-  Positive values mean mismatch opened and negative values mean it closed.
-  Lag per century uses the climate interval denominator: 1,000 years for
-  Holocene and (Y−2.5)−1984 for each Anthropocene plot.
-- The integrated tracking figure uses MORA/NOCA site-date summaries, not
-  individual lakes. Every boxplot has fixed-scale MORA and NOCA facets, with
-  Holocene/Anthropocene or Holocene climate-state groups on the x-axis and fire
-  status explicitly dodged within each group. The two burned MORA pairs are
-  omitted and recorded in a scope audit; the NOCA Anthropocene boxes retain and
-  distinguish 252 unburned and 23 burned pairs. The Holocene details compare
-  Holocene climate change and Holocene climate stability, then split each state
-  by high-fire status. Every box retains the same physical width even when its
-  category contains only one fire group. All boxes are white so the median remains visible; neutral
-  and dark-red outlines represent no-fire and burned/high-fire observations.
-  Lag per century, ratio, and angle are shown; raw lag is retained as scatter
-  fill but no longer has a boxplot. All axes are linear; the detail positions are not directly
-  comparable with their main panels because each detail has an independent
-  Holocene y-range.
-- Its single unfaceted angle × ratio scatter places all 600 included
-  direction-valid observations faintly behind four macro-era medians, two
-  additional NOCA burned/unburned medians, and eight smaller site × climate
-  state × fire-status medians. A single shared repel layer keeps labels from
-  overlapping; each label names its macro era or full climate/fire context, and
-  each pooled climate-state label lists the exact numbered eras represented in
-  that site × state × fire group.
-  The scatter is centered at 75% of the unchanged A–C row width to avoid giving
-  this descriptive panel disproportionate visual weight.
-  Site is shape; fire evidence is the only
-  categorical red encoding. The 142 stationary Anthropocene plots (76 MORA, 66 NOCA)
-  remain in non-angle summaries; their counts are labelled rather than assigning
-  a false 0° direction. Median-point fill is signed raw lag on one symmetric
-  blue–neutral–vermillion scale centered at zero and labelled `Lag`. All 137
-  Holocene site-dates and all 607 modern source pairs enter the scope audit;
-  605 modern pairs remain after the explicit MORA fire exclusion.
+## Lake-level tracking responses — decided 2026-10-08
+
+The statistical observation is **lake × actual consecutive transition** for
+JayBath, LogWallow, ReflectionPond and PantherPotholes, or an individual paired
+modern plot. One maintained helper calculates the same response definitions for
+both eras. The existing pooled 607-plot, 14-taxon CCA and Figure 3 are unchanged.
+The former site-pooled tracking analyses and Figures 4/5 are retired; their
+historical code and figures remain in Git. No replacement figures or models
+are fitted in this step.
+
+Let $O_1,O_2$ be observed WA endpoints and $P_1,P_2$ climate-predicted LC endpoints
+in scaling-1, Hill-off CCA1–CCA2 space. Define $\Delta O=O_2-O_1$,
+$\Delta P=P_2-P_1$, $a=\|\Delta O\|$ and $b=\|\Delta P\|$.
+
+| Quantity | Definition | Units / interpretation |
+|---|---|---|
+| `lag_t1`, `lag_t2` | $L_i=\|O_i-P_i\|$ | CCA units |
+| `change_in_lag` | $L_2-L_1$ | Positive: mismatch grows; negative: closes |
+| `lag_rate_per_century` | $100(L_2-L_1)/\Delta t_C$ | Primary response; CCA units/century |
+| `observed_turnover_rate` | $100a/\Delta t_V$ | CCA units/century |
+| `predicted_vegetation_change_rate` | $100b/\Delta t_C$ | Supporting community-space rate; not physical climate speed |
+| `magnitude_tracking_ratio` | $a/b$ | Unitless displacement ratio |
+| `rate_tracking_ratio` | $(a/\Delta t_V)/(b/\Delta t_C)$ | Unitless rate ratio; equals magnitude ratio only when durations match |
+| `angle_degrees` | $\arccos[(\Delta O\cdot\Delta P)/(ab)]$ | Degrees, 0–180 |
+| `pace_effect_on_lag` | $L_2-\|O_{pace}-P_2\|$ | CCA units |
+| `direction_effect_on_lag` | $L_2-\|O_{direction}-P_2\|$ | CCA units |
+
+The two corrected endpoints begin at the **actual observed** initial position:
+
+$$O_{pace}=O_1+b\,\Delta O/a,\qquad
+O_{direction}=O_1+a\,\Delta P/b.$$
+
+Positive counterfactual effects mean the correction would reduce final lag;
+negative effects mean it would increase it. They are **nonadditive descriptive
+counterfactuals**, not a causal attribution or exact decomposition. The pace
+correction imposes predicted displacement magnitude. With unequal modern
+elapsed times it does not impose equality of the two annualized turnover rates.
+Their `_per_century` fields divide by $\Delta t_C$, consistently with lag rate.
+
+Movement tolerance is `1e-8`. Angle needs both directions; a stationary observed
+movement invalidates pace correction but leaves a zero direction effect when
+predicted direction exists. A stationary predicted movement invalidates direction
+correction and ratios; pace correction can still yield the initial observed
+position. If both movements are stationary, both corrections are undefined.
+Valid lag and turnover values are retained; finite-endpoint, stationary,
+ratio, angle and counterfactual flags distinguish these cases. Obsolete exported
+alignment, perpendicular/error metrics and compatibility aliases are removed.
+
+### Physical climate and continuous fire predictors
+
+`standardized_climate_change_rate` is the physical **ClimateRate** predictor:
+$100\sqrt{\sum_v[(X_{v2}-X_{v1})/SD_v]^2}/\Delta t_C$, using spring/winter
+temperature and summer/winter precipitation. SDs come from the unchanged 607
+legacy calibration plots. Raw and standardized signed component changes and
+rates remain auditable. Each vegetation lake uses its own climate record.
+Every endpoint bin must contain all native 100-year climate slices; incomplete
+edge bins remain excluded, with excluded realization counts in the support table.
+
+`fire_activity` is continuous **FireActivity**. Count accepted charcoal events in
+`[age_lo, age_hi)` and express frequency per 1,000 years. For each core, divide
+by its maximum frequency among **fully covered windows of the same duration**
+and the same half-open convention across the entire available core record.
+The primary 1,000-year denominators are 3 events/1,000 years for each MORA core
+and 11 for Panther Potholes. Alternative interval widths recompute their own
+comparable reference; they never reuse the 1,000-year denominator blindly.
+
+A fully covered zero-event interval has zero activity. Uncovered intervals have
+missing counts/activity, not zero. Coverage fractions, bounds, event counts,
+frequencies, denominators and source identities are exported per core. MORA
+requires at least two covered, normalizable Sunrise/Shadow/Little Sunrise cores
+and combines them with equal core weights. **All three MORA vegetation lakes
+share this one regional exposure**; they are three vegetation responses, not
+three independent fire measurements. NOCA uses Panther Potholes alone.
+Existing 1,000-year high-fire classifications are descriptive annotations at
+the actual transition midpoint, with their window width recorded.
+Modern fire is binary, retaining all 607 original plot assignments.
+
+### Chronology support, configurable intervals and future inference
+
+The default width is 1,000 years, with ten offsets 0–900 by 100 and 100 whole
+Bacon chronology draws. A single `bin_width_years` parameter accepts positive
+multiples of 100 and controls vegetation/climate bins, elapsed time, required
+slice count, offsets and fire normalization windows together. Alternative widths
+write suffixed outputs; they are not run automatically. Figure 3 and the frozen
+climate-era/high-fire definitions continue to use their existing 1,000-year framework.
+
+Nonlinear responses precede summarization across draws. Keep all supported
+realizations without a majority-draw cutoff. `n_valid_draws` and
+`n_missing_draws` refer to the primary lag response out of 100 configured draws;
+every response also has its own counts. Missing draws include absent transitions
+and undefined metrics, distinguished by presence/absence and undefined counts.
+Means, SDs and quantiles are conditional on valid realizations. A transition with
+only a handful of valid draws is retained with visibly limited support.
+
+Minimum-two-samples-per-bin sensitivity summaries accompany the primary wide
+table. Reporting grids are descriptive, require all configured offsets within
+each lake and never require matching coverage across lakes. Overlapping dates,
+offsets and chronology draws are not ecological replicates. Model inclusion,
+uncertainty treatment and temporal correlation remain future decisions.
+Approximately 5–6 majority-supported transitions per MORA lake per offset and
+9–10 for Panther Potholes imply limited support for a later three-way interaction;
+four lakes and shared fire histories must not be treated as abundant independent
+replication. No distribution, LMM, AR(1), power analysis or contribution attribution
+is selected or fitted here. See [output schemas](OUTPUTS.md#canonical-tracking-schemas).
 
 ## Unified 1,000-year climate eras
 
@@ -436,7 +472,7 @@ The detailed evidence and publication links are in the
   NOCA frequency does not (ratio 0.94). This date illustrates the frozen rule;
   it was not used to choose the threshold or tune the classifications.
 
-## Selected era-centroid trajectories and community-direction analysis
+## Preserved Figure 3 era-centroid trajectories
 
 - The primary CCA fit is unchanged. The selected display uses the exact current
   `scaling = "sites"` (vegan scaling 1), Hill-off, CCA1–CCA2 geometry and the
@@ -453,46 +489,6 @@ The detailed evidence and publication links are in the
   climate/species biplot inset, C. climate contributions, and D. species
   contributions. Individual Holocene dates, the pooled full-record centroid,
   and the duplicate era-centroid compatibility render are not active displays.
-- The implemented direction analysis pairs, within every measurement unit and
-  target, taxon alignment with predicted LC movement,
-  `cos(delta LC, species score - LC_t1)`, with taxon alignment with observed WA
-  movement, `cos(delta WA, species score - WA_t1)`. Thus each taxon cosine uses
-  its own initial origin—LC for predicted and WA for observed—toward the same
-  fixed species score. The same pairing uses each raw environmental biplot
-  arrow. Its primary result, termed the
-  **target-alignment discrepancy**, is `predicted cosine - observed cosine`.
-  Zero means equal target-specific cosines, not complete movement-vector
-  agreement. Positive values mean stronger predicted target alignment,
-  including being less strongly opposed to the target; negative values mean
-  stronger observed target alignment. The absolute magnitude measures
-  target-specific discrepancy strength. The retained direct cosine and unsigned
-  angle separately measure overall movement-vector agreement and deviation.
-- The compact main display contains only A. Climate and B. Species. It uses
-  `climate stability` as the reader-facing form of the analytical
-  `relative stability` class, preserves the common group axis across both rows,
-  italicizes species, and reserves red for high-fire/burned status. Holocene and
-  Anthropocene labels remain neutral.
-- LC, WA, species, and environmental scores must come from the same fitted
-  scaling-1/Hill-off CCA1–CCA2 coordinates. Vectors are formed before unit
-  normalization; raw biplot directions are used without display multipliers;
-  dot-product cosines are clamped to [-1, 1] and become `NA` below `1e-8`.
-  Nonlinear realization values precede draw/offset summaries. Translation,
-  rotation, reflection, and a common arrow multiplier must leave results
-  unchanged; unequal axis scaling intentionally does not and is forbidden.
-- The stage retains 10,926 paired target contrasts from all 607 Anthropocene
-  pairs and 274,860 from all 15,270 primary Holocene realizations. Its
-  draw-within-offset and complete-ten-offset hierarchy yields 2,466 site-date
-  contrasts and 216 final group summaries. The 142 near-zero observed modern
-  movements have `NA` paired contrasts, while their independently valid
-  predicted associations remain available for audit.
-- Summaries are Holocene site × climate change/stability × high-fire status and
-  Anthropocene site × burned status. All groups remain visible, including MORA
-  burned (2 plots) and NOCA stable/high-fire (2 dates). Taxa and climate arrows
-  are shown as descriptive predicted-minus-observed target-alignment
-  discrepancies without ranking.
-  No prevalence model, dominance claim, contribution decomposition, causal
-  attribution, significance test, or numbered-era inference is authorized.
-
 ## Remaining scientific questions
 
 CCA sample eligibility, balanced observed/predicted exclusions and paired
@@ -513,7 +509,7 @@ notes; any future chronology revision is separate work.
 | Raw versus V2.1-anchored TraCE21k climate | The active Holocene analysis uses raw TraCE21k values; the V2.1 anchoring diagnostic is not authoritative. | Absolute Holocene climate levels and cross-product comparisons may retain product bias, although the active within-series change calculations are internally consistent. | A validated overlap-period comparison showing whether anchoring reduces bias without introducing a discontinuity or changing the intended anomaly interpretation. |
 | Legacy-calibration versus full-record climate SDs | Changes are divided by SDs from the 607 matched legacy CCA calibration plots. | The reference is tied to the fitted model. A full-record SD would change displayed standardized magnitudes, cross-variable weighting, the unthresholded composite, and standardized climate rates, but not CC/S boundaries under the current variable-specific 50%-of-own-maximum rule. | A prespecified full-record sensitivity with explicit temporal/site weighting and a scientific choice between calibration-relative and dataset-relative effect sizes. |
 | Anthropocene precipitation continuity | Historical climate remains 1979–1989; modern climate uses adult Y−5 through Y at both sites (2026-10-07 decision). The MORA precipitation contrast is flagged. | The apparent post-2010 MORA precipitation shift may partly reflect CHELSA inhomogeneity rather than climate. | Independent station/reanalysis validation and a documented decision on whether post-2010 MORA precipitation is usable. The agreed years are not a pending decision. |
-| Own-origin versus common-origin taxon target geometry | The primary target-alignment analysis uses LC₁→species for predicted movement and WA₁→species for observed movement. | The two cosines answer alignment relative to each trajectory's own starting community; part of their difference can arise because LC₁ and WA₁ differ. | A prespecified common-origin sensitivity and an ecological decision about whether the estimand should condition on each starting state or hold the target vector fixed across observed and predicted movement. |
+| Own-origin versus common-origin taxon target geometry | Deferred: the target-alignment analysis is retired. Existing CCA scores and reference matrices are preserved for future contribution analysis. | The two cosines answer alignment relative to each trajectory's own starting community; part of their difference can arise because LC₁ and WA₁ differ. | A prespecified common-origin sensitivity and an ecological decision about whether the estimand should condition on each starting state or hold the target vector fixed across observed and predicted movement. |
 
 ## Inference limits
 
@@ -553,9 +549,10 @@ notes; any future chronology revision is separate work.
   Gaussian-mixture detector also differs from Prichard's original noise
   description, so its published settings do not imply an exact reproduction of
   every original algorithmic detail.
-- Overlapping dates, chronology draws, offsets and taxa are not independent
-  ecological replicates. Sparse groups remain descriptive: MORA burned has two
-  plots, and NOCA relative-stability/high-fire has two supported dates.
+- Overlapping dates, chronology draws and offsets are not independent
+  ecological replicates. Some MORA lake transitions occur in only 1–2 draws;
+  the modern MORA burned group contains two plots. These sparse supports need
+  explicit treatment before fitting models.
 - Native climate caches identify the reviewed local values, but cannot recover
   an immutable historical remote raster release on their own.
 
@@ -564,7 +561,7 @@ notes; any future chronology revision is separate work.
 - [README](../README.md)
 - [Workflow](WORKFLOW.md)
 - [Figure methods and captions](FIGURE_CAPTIONS.md)
-- [Tracking metric specification](methods/cca_tracking_metrics.pdf)
+- [Tracking data validation](review/TRACKING_DATA_VALIDATION.md)
 - [Holocene literature summary](references/Holocene_period_choices_MORA_NOCA_summary.pdf)
 - [Bacon controls](../Cores/CONTROL_POINTS.md)
 - [MORA chronology sources](../Cores/SOURCES_MORA.md)

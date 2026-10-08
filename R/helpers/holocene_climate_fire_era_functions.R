@@ -378,6 +378,8 @@ calculate_fire_frequency = function(events, continuous, window_years = 1000L,
   half = window_years / 2
   rows = purrr::pmap_dfr(coverage, function(site, lake, younger_cal_bp,
                                             older_cal_bp) {
+    if (ceiling((younger_cal_bp + half) / grid_step) >
+        floor((older_cal_bp - half) / grid_step)) return(NULL)
     centers = seq(ceiling((younger_cal_bp + half) / grid_step) * grid_step,
                   floor((older_cal_bp - half) / grid_step) * grid_step,
                   by = grid_step)
@@ -435,10 +437,10 @@ calculate_fire_frequency = function(events, continuous, window_years = 1000L,
     dplyr::filter(.data$high_fire) |>
     dplyr::group_by(.data$site, .data$run_id) |>
     dplyr::summarise(
-      older_cal_bp = max(.data$cal_bp) + grid_step / 2,
-      younger_cal_bp = min(.data$cal_bp) - grid_step / 2,
+      older_cal_bp = if (length(.data$cal_bp)) max(.data$cal_bp) + grid_step / 2 else NA_real_,
+      younger_cal_bp = if (length(.data$cal_bp)) min(.data$cal_bp) - grid_step / 2 else NA_real_,
       duration_years = .data$older_cal_bp - .data$younger_cal_bp,
-      maximum_normalized_frequency = max(.data$normalized_frequency),
+      maximum_normalized_frequency = if (length(.data$normalized_frequency)) max(.data$normalized_frequency) else NA_real_,
       threshold = dplyr::first(.data$high_fire_threshold), .groups = "drop")
 
   corroboration_core = core |>

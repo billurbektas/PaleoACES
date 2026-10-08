@@ -85,11 +85,7 @@ equal(m$observed_turnover_rate, 25)
 equal(m$predicted_vegetation_change_rate, 10)
 equal(m$magnitude_tracking_ratio, 1.25)
 equal(m$rate_tracking_ratio, 2.5)
-equal(m$cosine_similarity, .6)
-equal(m$climate_aligned_displacement, 3)
-equal(m$perpendicular_movement, 4)
-equal(m$tracking_error, sqrt(17))
-equal(m$lag, sqrt(20) - 1)
+equal(m$change_in_lag, sqrt(20) - 1)
 
 transform_endpoints = function(x, matrix, translation = c(0, 0)) {
   for (cols in list(c("o1", "o2"), c("p1", "p2"),
@@ -102,20 +98,20 @@ for (a in list(diag(2), matrix(c(0, 1, -1, 0), 2), diag(c(-1, 1)))) {
   equal(y[tracking_metric_names()], m[tracking_metric_names()])
 }
 y = calculate_tracking_metrics(transform_endpoints(x, 5 * diag(2)))
-equal(y$cosine_similarity, m$cosine_similarity)
+equal(y$angle_degrees, m$angle_degrees)
 equal(y$rate_tracking_ratio, m$rate_tracking_ratio)
-equal(y$lag, 5 * m$lag)
+equal(y$change_in_lag, 5 * m$change_in_lag)
 # Unequal axis scaling changes the chosen Euclidean metric, hence its angle.
 y = calculate_tracking_metrics(transform_endpoints(x, diag(c(2, 1))))
-stopifnot(abs(y$cosine_similarity - m$cosine_similarity) > .1)
+stopifnot(abs(y$angle_degrees - m$angle_degrees) > .1)
 for (v in c(0, 1e-10, NA_real_, Inf)) {
   z = x; z$o1_2 = v; z$o2_2 = 0
-  stopifnot(is.na(calculate_tracking_metrics(z)$cosine_similarity))
+  stopifnot(is.na(calculate_tracking_metrics(z)$angle_degrees))
 }
 for (dt in c(0, -1, NA_real_, Inf)) {
   z = x; z$vegetation_dt_years = dt; must_fail(calculate_tracking_metrics(z))
 }
-equal(safe_cosine_2d(c(1, -1, 0), c(0, 0, 1), 1, 0)$association,
+equal(safe_cosine_2d(c(1, -1, 0), c(0, 0, 1), 1, 0),
       c(1, -1, 0))
 
 # Complete seasonal sums and the exact December -> next winter mapping.
