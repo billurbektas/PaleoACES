@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: fe51777e46202037312dbc41a0a1b06e -->
+<!-- paleoaces-source-md5: d2b47d19f4a725e730e248af26812409 -->
 
 <html>
 
@@ -4303,200 +4303,76 @@ validation</a> records the full 9,200-realization comparison before
 legacy outputs were removed. The <a href="review/TRACKING_DATA_VALIDATION.html">tracking validation report</a>
 gives the schemas, exclusion counts, independent checks and limits for
 later modeling.</p>
-<div id="maintained-tracking-calculation-code" class="section level3">
-<h3>Maintained tracking calculation code</h3>
-<p>The following code is copied automatically from <a href="../R/helpers/tracking_metrics.R">tracking_metrics.R</a>; the
-generated R reading copy includes the same definitions. The helper is
-the calculation authority.</p>
-<pre class="r"><code># =============================================================================
-# tracking_metrics.R - pure functions for CCA tracking and climate-change rates
-# =============================================================================
-# This file has no data-loading or file-writing side effects. Both the executable
-# tracking stage and its unit tests source these functions.
-#
-# Required endpoint columns in `calculate_tracking_metrics()`:
-#   observed WA: o1, o2 at t1 and o1_2, o2_2 at t2
-#   predicted LC: p1, p2 at t1 and p1_2, p2_2 at t2
-#   elapsed years: vegetation_dt_years and climate_dt_years
-#
-# Required climate columns in `add_climate_change_metrics()`:
-#   the configured CCA variables at t1 and their `_2` counterparts at t2.
-# =============================================================================
-
-suppressPackageStartupMessages({
-  library(dplyr)
-  library(tidyr)
-})
-
-TRACKING_EPSILON = 1e-8
-if (!exists(&quot;CCA_VARIABLES&quot;) || !exists(&quot;CLIMATE_VARIABLE_UNITS&quot;))
-  stop(&quot;Source R/helpers/config.R before R/helpers/tracking_metrics.R&quot;)
-CCA_CLIMATE_VARS = CCA_VARIABLES
-
-# Internal angle utility: no direction is assigned to nonfinite or tiny vectors.
-safe_cosine_2d = function(ax, ay, bx, by, epsilon = TRACKING_EPSILON) {
-  sizes = lengths(list(ax, ay, bx, by))
-  n = max(sizes)
-  if (any(!sizes %in% c(1L, n)) || !is.finite(epsilon) || epsilon &lt;= 0)
-    stop(&quot;Invalid vector lengths or movement tolerance&quot;)
-  ax = rep_len(ax, n); ay = rep_len(ay, n)
-  bx = rep_len(bx, n); by = rep_len(by, n)
-  a = sqrt(ax^2 + ay^2); b = sqrt(bx^2 + by^2)
-  ok = is.finite(a) &amp; is.finite(b) &amp; a &gt; epsilon &amp; b &gt; epsilon
-  result = rep(NA_real_, n)
-  result[ok] = pmax(-1, pmin(1, (ax[ok]*bx[ok] + ay[ok]*by[ok])/(a[ok]*b[ok])))
-  result
+<div id="tracking-metric-calculations" class="section level3">
+<h3>Tracking metric calculations</h3>
+<p>These calculation excerpts are generated directly from <a href="../R/helpers/tracking_metrics.R">tracking_metrics.R</a>. The
+generated R reading copy includes the same excerpts. <code>x</code>
+contains the observed and predicted endpoints, seasonal climate values
+and their respective elapsed times. <code>epsilon</code> is the movement
+tolerance (default <code>1e-8</code>), and <code>scaling</code> supplies
+the fixed pooled-calibration SDs. In the cosine calculation,
+<code>ax,ay</code> and <code>bx,by</code> are the observed and predicted
+displacement components.</p>
+<p><strong>Endpoint geometry and lag/turnover rates.</strong></p>
+<pre class="r"><code>coords = c(&quot;o1&quot;, &quot;o2&quot;, &quot;o1_2&quot;, &quot;o2_2&quot;, &quot;p1&quot;, &quot;p2&quot;, &quot;p1_2&quot;, &quot;p2_2&quot;)
+ox = x$o1_2-x$o1; oy = x$o2_2-x$o2
+px = x$p1_2-x$p1; py = x$p2_2-x$p2
+a = sqrt(ox^2+oy^2); b = sqrt(px^2+py^2)
+x$finite_endpoints = rowSums(!is.finite(as.matrix(x[coords]))) == 0L
+observed_direction = x$finite_endpoints &amp; is.finite(a) &amp; a &gt; epsilon
+predicted_direction = x$finite_endpoints &amp; is.finite(b) &amp; b &gt; epsilon
+x$observed_vegetation_displacement = a
+x$predicted_vegetation_displacement = b
+x$observed_turnover_rate = a/x$vegetation_dt_years*100
+x$predicted_vegetation_change_rate = b/x$climate_dt_years*100
+x$lag_t1 = sqrt((x$o1-x$p1)^2+(x$o2-x$p2)^2)
+x$lag_t2 = sqrt((x$o1_2-x$p1_2)^2+(x$o2_2-x$p2_2)^2)
+x$change_in_lag = x$lag_t2-x$lag_t1
+x$lag_rate_per_century = x$change_in_lag/x$climate_dt_years*100</code></pre>
+<p><strong>Tracking ratios and turnover angle.</strong></p>
+<pre class="r"><code>x$magnitude_tracking_ratio = ifelse(predicted_direction, a/b, NA_real_)
+x$rate_tracking_ratio = ifelse(predicted_direction,
+  x$observed_turnover_rate/x$predicted_vegetation_change_rate, NA_real_)
+x$angle_degrees = acos(safe_cosine_2d(ox, oy, px, py, epsilon))*180/pi</code></pre>
+<p><strong>Guarded cosine used internally for the angle.</strong></p>
+<pre class="r"><code>a = sqrt(ax^2 + ay^2); b = sqrt(bx^2 + by^2)
+ok = is.finite(a) &amp; is.finite(b) &amp; a &gt; epsilon &amp; b &gt; epsilon
+result = rep(NA_real_, n)
+result[ok] = pmax(-1, pmin(1, (ax[ok]*bx[ok] + ay[ok]*by[ok])/(a[ok]*b[ok])))</code></pre>
+<p><strong>Pace and direction counterfactual effects.</strong></p>
+<pre class="r"><code># Only divide by a direction&#39;s magnitude when that direction is defined.
+x$pace_corrected_CCA1 = x$pace_corrected_CCA2 = rep(NA_real_, nrow(x))
+x$direction_corrected_CCA1 = x$direction_corrected_CCA2 = rep(NA_real_, nrow(x))
+i = observed_direction
+x$pace_corrected_CCA1[i] = x$o1[i]+b[i]*ox[i]/a[i]
+x$pace_corrected_CCA2[i] = x$o2[i]+b[i]*oy[i]/a[i]
+i = predicted_direction
+x$direction_corrected_CCA1[i] = x$o1[i]+a[i]*px[i]/b[i]
+x$direction_corrected_CCA2[i] = x$o2[i]+a[i]*py[i]/b[i]
+x$lag_t2_pace_corrected = sqrt((x$pace_corrected_CCA1-x$p1_2)^2+
+  (x$pace_corrected_CCA2-x$p2_2)^2)
+x$lag_t2_direction_corrected = sqrt((x$direction_corrected_CCA1-x$p1_2)^2+
+  (x$direction_corrected_CCA2-x$p2_2)^2)
+x$pace_effect_on_lag = x$lag_t2-x$lag_t2_pace_corrected
+x$direction_effect_on_lag = x$lag_t2-x$lag_t2_direction_corrected
+x$pace_effect_on_lag_per_century = x$pace_effect_on_lag/x$climate_dt_years*100
+x$direction_effect_on_lag_per_century = x$direction_effect_on_lag/x$climate_dt_years*100</code></pre>
+<p><strong>Physical seasonal climate changes and standardized
+rate.</strong></p>
+<pre class="r"><code>z_change_cols = character(0)
+z_rate_cols = character(0)
+for (v in vars) {
+  s = scaling$sd[match(v, scaling$variable)]
+  delta = x[[paste0(v, &quot;_2&quot;)]] - x[[v]]
+  x[[paste0(v, &quot;_change&quot;)]] = delta
+  x[[paste0(v, &quot;_rate_per_century&quot;)]] = delta / x$climate_dt_years * 100
+  x[[paste0(v, &quot;_z_change&quot;)]] = delta / s
+  x[[paste0(v, &quot;_z_rate_per_century&quot;)]] = delta / s / x$climate_dt_years * 100
+  z_change_cols = c(z_change_cols, paste0(v, &quot;_z_change&quot;))
+  z_rate_cols = c(z_rate_cols, paste0(v, &quot;_z_rate_per_century&quot;))
 }
-
-tracking_metric_names = function() c(
-  &quot;observed_vegetation_displacement&quot;, &quot;predicted_vegetation_displacement&quot;,
-  &quot;observed_turnover_rate&quot;, &quot;predicted_vegetation_change_rate&quot;,
-  &quot;magnitude_tracking_ratio&quot;, &quot;rate_tracking_ratio&quot;, &quot;angle_degrees&quot;,
-  &quot;lag_t1&quot;, &quot;lag_t2&quot;, &quot;change_in_lag&quot;, &quot;lag_rate_per_century&quot;,
-  &quot;lag_t2_pace_corrected&quot;, &quot;lag_t2_direction_corrected&quot;,
-  &quot;pace_effect_on_lag&quot;, &quot;direction_effect_on_lag&quot;,
-  &quot;pace_effect_on_lag_per_century&quot;, &quot;direction_effect_on_lag_per_century&quot;)
-
-climate_metric_names = function(vars = CCA_CLIMATE_VARS) c(
-  unlist(lapply(vars, function(v) paste0(v, c(&quot;_change&quot;, &quot;_rate_per_century&quot;,
-    &quot;_z_change&quot;, &quot;_z_rate_per_century&quot;)))),
-  &quot;standardized_climate_displacement&quot;, &quot;standardized_climate_change_rate&quot;)
-
-# Return the fixed standardization reference used by both eras. The pooled
-# legacy calibration set is the reference because it trained the CCA; using a
-# future or paleo distribution would make one era help define the other&#39;s scale.
-make_climate_scaling = function(calibration_env, vars = CCA_CLIMATE_VARS) {
-  missing = setdiff(vars, names(calibration_env))
-  if (length(missing))
-    stop(&quot;make_climate_scaling(): missing calibration variable(s): &quot;,
-         paste(missing, collapse = &quot;, &quot;))
-
-  out = tibble(
-    variable = vars,
-    mean = vapply(calibration_env[vars], mean, numeric(1), na.rm = TRUE),
-    sd = vapply(calibration_env[vars], stats::sd, numeric(1), na.rm = TRUE),
-    n_calibration = vapply(calibration_env[vars], function(x) sum(is.finite(x)), integer(1)),
-    unit = unname(CLIMATE_VARIABLE_UNITS[variable])
-  )
-  if (any(!is.finite(out$sd) | out$sd &lt;= 0))
-    stop(&quot;make_climate_scaling(): every calibration SD must be finite and positive&quot;)
-  out
-}
-
-# Six response families and their supporting geometry, in one CCA1-CCA2 space.
-# Counterfactuals start at the actual O1 and compare with the actual final P2.
-# They correct displacement magnitude/direction, are nonadditive and noncausal.
-calculate_tracking_metrics = function(x, epsilon = TRACKING_EPSILON) {
-  coords = c(&quot;o1&quot;, &quot;o2&quot;, &quot;o1_2&quot;, &quot;o2_2&quot;, &quot;p1&quot;, &quot;p2&quot;, &quot;p1_2&quot;, &quot;p2_2&quot;)
-  need = c(coords, &quot;vegetation_dt_years&quot;, &quot;climate_dt_years&quot;)
-  if (!all(need %in% names(x))) stop(&quot;Missing tracking endpoint/time columns&quot;)
-  if (length(epsilon) != 1L || !is.finite(epsilon) || epsilon &lt;= 0)
-    stop(&quot;Movement tolerance must be finite and positive&quot;)
-  if (any(!is.finite(x$vegetation_dt_years) | x$vegetation_dt_years &lt;= 0) ||
-      any(!is.finite(x$climate_dt_years) | x$climate_dt_years &lt;= 0))
-    stop(&quot;Elapsed times must be finite and positive&quot;)
-  ox = x$o1_2-x$o1; oy = x$o2_2-x$o2
-  px = x$p1_2-x$p1; py = x$p2_2-x$p2
-  a = sqrt(ox^2+oy^2); b = sqrt(px^2+py^2)
-  x$finite_endpoints = rowSums(!is.finite(as.matrix(x[coords]))) == 0L
-  x$small_observed_movement = is.finite(a) &amp; a &lt;= epsilon
-  x$small_predicted_movement = is.finite(b) &amp; b &lt;= epsilon
-  observed_direction = x$finite_endpoints &amp; is.finite(a) &amp; a &gt; epsilon
-  predicted_direction = x$finite_endpoints &amp; is.finite(b) &amp; b &gt; epsilon
-  x$angle_valid = observed_direction &amp; predicted_direction
-  x$pace_counterfactual_valid = observed_direction
-  x$direction_counterfactual_valid = predicted_direction
-  x$tracking_ratio_valid = predicted_direction
-  x$delta_observed_CCA1 = ox; x$delta_observed_CCA2 = oy
-  x$delta_predicted_CCA1 = px; x$delta_predicted_CCA2 = py
-  x$observed_vegetation_displacement = a
-  x$predicted_vegetation_displacement = b
-  x$observed_turnover_rate = a/x$vegetation_dt_years*100
-  x$predicted_vegetation_change_rate = b/x$climate_dt_years*100
-  x$magnitude_tracking_ratio = ifelse(predicted_direction, a/b, NA_real_)
-  x$rate_tracking_ratio = ifelse(predicted_direction,
-    x$observed_turnover_rate/x$predicted_vegetation_change_rate, NA_real_)
-  x$angle_degrees = acos(safe_cosine_2d(ox, oy, px, py, epsilon))*180/pi
-  x$lag_t1 = sqrt((x$o1-x$p1)^2+(x$o2-x$p2)^2)
-  x$lag_t2 = sqrt((x$o1_2-x$p1_2)^2+(x$o2_2-x$p2_2)^2)
-  x$change_in_lag = x$lag_t2-x$lag_t1
-  x$lag_rate_per_century = x$change_in_lag/x$climate_dt_years*100
-
-  # Only divide by a direction&#39;s magnitude when that direction is defined.
-  x$pace_corrected_CCA1 = x$pace_corrected_CCA2 = rep(NA_real_, nrow(x))
-  x$direction_corrected_CCA1 = x$direction_corrected_CCA2 = rep(NA_real_, nrow(x))
-  i = observed_direction
-  x$pace_corrected_CCA1[i] = x$o1[i]+b[i]*ox[i]/a[i]
-  x$pace_corrected_CCA2[i] = x$o2[i]+b[i]*oy[i]/a[i]
-  i = predicted_direction
-  x$direction_corrected_CCA1[i] = x$o1[i]+a[i]*px[i]/b[i]
-  x$direction_corrected_CCA2[i] = x$o2[i]+a[i]*py[i]/b[i]
-  x$lag_t2_pace_corrected = sqrt((x$pace_corrected_CCA1-x$p1_2)^2+
-    (x$pace_corrected_CCA2-x$p2_2)^2)
-  x$lag_t2_direction_corrected = sqrt((x$direction_corrected_CCA1-x$p1_2)^2+
-    (x$direction_corrected_CCA2-x$p2_2)^2)
-  x$pace_effect_on_lag = x$lag_t2-x$lag_t2_pace_corrected
-  x$direction_effect_on_lag = x$lag_t2-x$lag_t2_direction_corrected
-  x$pace_effect_on_lag_per_century = x$pace_effect_on_lag/x$climate_dt_years*100
-  x$direction_effect_on_lag_per_century = x$direction_effect_on_lag/x$climate_dt_years*100
-  x
-}
-
-# Actual climate change in predictor space, kept separate from LC movement.
-# Per-variable rates remain signed and in physical units. The combined index is
-# the Euclidean norm after scaling every variable by its pooled legacy SD:
-#   standardized rate = sqrt(sum_v ((X2_v-X1_v)/SD_v/dt*100)^2).
-# It is nonnegative and measures multivariate climate speed; signed component
-# columns retain whether each season became warmer/colder or wetter/drier.
-add_climate_change_metrics = function(x, scaling, vars = CCA_CLIMATE_VARS) {
-  need_scaling = c(&quot;variable&quot;, &quot;mean&quot;, &quot;sd&quot;, &quot;unit&quot;, &quot;n_calibration&quot;)
-  if (!all(need_scaling %in% names(scaling)) || !setequal(vars, scaling$variable))
-    stop(&quot;add_climate_change_metrics(): invalid or incomplete scaling table&quot;)
-  need = c(&quot;climate_dt_years&quot;, vars, paste0(vars, &quot;_2&quot;))
-  missing = setdiff(need, names(x))
-  if (length(missing))
-    stop(&quot;add_climate_change_metrics(): missing column(s): &quot;,
-         paste(missing, collapse = &quot;, &quot;))
-  if (any(!is.finite(x$climate_dt_years) | x$climate_dt_years &lt;= 0))
-    stop(&quot;add_climate_change_metrics(): climate elapsed times must be positive&quot;)
-
-  z_change_cols = character(0)
-  z_rate_cols = character(0)
-  for (v in vars) {
-    s = scaling$sd[match(v, scaling$variable)]
-    delta = x[[paste0(v, &quot;_2&quot;)]] - x[[v]]
-    x[[paste0(v, &quot;_change&quot;)]] = delta
-    x[[paste0(v, &quot;_rate_per_century&quot;)]] = delta / x$climate_dt_years * 100
-    x[[paste0(v, &quot;_z_change&quot;)]] = delta / s
-    x[[paste0(v, &quot;_z_rate_per_century&quot;)]] = delta / s / x$climate_dt_years * 100
-    z_change_cols = c(z_change_cols, paste0(v, &quot;_z_change&quot;))
-    z_rate_cols = c(z_rate_cols, paste0(v, &quot;_z_rate_per_century&quot;))
-  }
-  x$standardized_climate_displacement = sqrt(rowSums(x[z_change_cols]^2))
-  x$standardized_climate_change_rate = sqrt(rowSums(x[z_rate_cols]^2))
-  x
-}
-
-metric_unit = function(metric) {
-  case_when(
-    metric == &quot;angle_degrees&quot; ~ &quot;degrees&quot;,
-    metric %in% c(&quot;magnitude_tracking_ratio&quot;, &quot;rate_tracking_ratio&quot;) ~ &quot;unitless&quot;,
-    metric %in% c(&quot;observed_turnover_rate&quot;, &quot;predicted_vegetation_change_rate&quot;) |
-      grepl(&quot;^(lag_rate|pace_effect|direction_effect).*per_century$&quot;, metric) ~ &quot;CCA_units_per_century&quot;,
-    metric %in% tracking_metric_names() ~ &quot;CCA_units&quot;,
-    grepl(&quot;_z_rate_per_century$&quot;, metric) | metric == &quot;standardized_climate_change_rate&quot; ~ &quot;calibration_SD_per_century&quot;,
-    grepl(&quot;_z_change$&quot;, metric) | metric == &quot;standardized_climate_displacement&quot; ~ &quot;calibration_SD&quot;,
-    grepl(&quot;_rate_per_century$&quot;, metric) ~ paste0(unname(CLIMATE_VARIABLE_UNITS[sub(&quot;_rate_per_century$&quot;, &quot;&quot;, metric)]), &quot;_per_century&quot;),
-    grepl(&quot;_change$&quot;, metric) ~ unname(CLIMATE_VARIABLE_UNITS[sub(&quot;_change$&quot;, &quot;&quot;, metric)]),
-    TRUE ~ NA_character_
-  )
-}
-
-safe_stat = function(x, fun, ...) {
-  x = x[is.finite(x)]
-  if (!length(x)) return(NA_real_)
-  fun(x, ...)
-}</code></pre>
+x$standardized_climate_displacement = sqrt(rowSums(x[z_change_cols]^2))
+x$standardized_climate_change_rate = sqrt(rowSums(x[z_rate_cols]^2))</code></pre>
 </div>
 <div id="effects-of-the-2026-10-07-survey-date-decision" class="section level3">
 <h3>Effects of the 2026-10-07 survey-date decision</h3>

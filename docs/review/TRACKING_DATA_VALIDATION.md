@@ -17,7 +17,7 @@ interval runs or statistical response models were performed.
 These outputs are written under `output/`. The [machine-readable schema](../assets/analysis/tables/tracking_schema.csv)
 defines all 862 columns across the five contracts. The [output register](../OUTPUTS.md)
 documents keys, units and suffix conventions. The [analysis review](../ANALYSIS_REVIEW.md)
-contains the maintained calculation code and portable copies of the wide, modern
+contains excerpts of the maintained metric calculations and portable copies of the wide, modern
 and support tables.
 
 ## Observed support

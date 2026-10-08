@@ -3,7 +3,7 @@
 No raw input or scientific result is modified. Python standard library only.
 """
 from pathlib import Path
-import argparse, csv, hashlib, json, os, re, shutil, subprocess, tempfile
+import argparse, csv, hashlib, json, os, re, shutil, subprocess, tempfile, textwrap
 from datetime import datetime, timezone
 ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = ROOT / 'docs/report/artifacts.json'
@@ -102,6 +102,44 @@ def workflow_stages():
     if len(paths) != 21 or len(set(paths)) != 21: raise ValueError('Expected exactly 21 ordered workflow analysis stages.')
     return paths
 
+def tracking_calculation_sections():
+    """Extract calculation statements from the maintained helper, without its setup."""
+    helper = (ROOT/'R/helpers/tracking_metrics.R').read_text()
+    def body(name):
+        match = re.search(r'^'+re.escape(name)+r' = function\([^\n]*\) \{\n(.*?)^\}',
+                          helper,re.M|re.S)
+        if not match: raise ValueError('Missing tracking calculation function: '+name)
+        return match.group(1)
+    def excerpt(source,start,end):
+        starts=list(re.finditer('^'+re.escape(start),source,re.M))
+        ends=list(re.finditer('^'+re.escape(end),source,re.M))
+        if len(starts)!=1 or len(ends)!=1 or ends[0].start()<=starts[0].start():
+            raise ValueError('Ambiguous tracking calculation excerpt: '+start)
+        lo=starts[0].start(); hi=ends[0].start()
+        return textwrap.dedent(source[lo:hi]).strip()
+    tracking=body('calculate_tracking_metrics')
+    angle=body('safe_cosine_2d')
+    climate=body('add_climate_change_metrics')
+    return [
+        ('Endpoint geometry and lag/turnover rates','\n'.join([
+            excerpt(tracking,'  coords =','  need ='),
+            excerpt(tracking,'  ox =','  x$small_observed_movement ='),
+            excerpt(tracking,'  observed_direction =','  x$angle_valid ='),
+            excerpt(tracking,'  x$observed_vegetation_displacement =','  x$magnitude_tracking_ratio ='),
+            excerpt(tracking,'  x$lag_t1 =','  # Only divide')])),
+        ('Tracking ratios and turnover angle',
+            excerpt(tracking,'  x$magnitude_tracking_ratio =','  x$lag_t1 =')),
+        ('Guarded cosine used internally for the angle',
+            excerpt(angle,'  a = sqrt(ax^2','  result\n')),
+        ('Pace and direction counterfactual effects',
+            excerpt(tracking,'  # Only divide','  x\n')),
+        ('Physical seasonal climate changes and standardized rate',
+            excerpt(climate,'  z_change_cols =','  x\n'))]
+
+def tracking_calculation_markdown():
+    return '\n\n'.join('**'+title+'.**\n\n```r\n'+code+'\n```'
+                       for title,code in tracking_calculation_sections())+'\n'
+
 def combined_review():
     paths = workflow_stages()
     text = '# GENERATED REVIEW COPY — DO NOT EXECUTE AS THE WORKFLOW\n# Rebuild: Rscript R/workflow.R --offline --report\n# Bodies are copied verbatim in workflow order; automatic and optional tests are excluded.\n# The driver provides conditional execution and isolated environments that concatenation does not preserve.\n# Retained helper sources refer to the actual shared definitions.\n# Historical chronology source hashes are preserved in Cores/provenance/chronology_relocation.json.\n#\n'
@@ -114,7 +152,10 @@ def combined_review():
         if not text.endswith('\n'): text += '\n'
         text += '# END '+p+'\n\n'
     helper = 'R/helpers/tracking_metrics.R'
-    text += '# BEGIN '+helper+' — maintained calculation definitions\n'+(ROOT/helper).read_text()+'\n# END '+helper+'\n'
+    text += '# BEGIN '+helper+' — calculation excerpts; see helper for full functions\n'
+    for title,code in tracking_calculation_sections():
+        text += '# '+title+'\n'+code+'\n\n'
+    text += '# END '+helper+'\n'
     return text
 
 def script_map():
@@ -216,9 +257,11 @@ def validate(root=ROOT):
             raise ValueError('Figure 3 does not use the valid paired CCA set: '+site)
     if '## Plots and samples included in CCA' not in text or 'Loss of all recorded tree-taxon presence at resurvey' not in text:
         raise ValueError('Report omitted the CCA exclusion explanation/table.')
-    helper = (ROOT/'R/helpers/tracking_metrics.R').read_text()
-    if helper.rstrip() not in text or 'n_missing_draws' not in text:
+    calculations = tracking_calculation_markdown()
+    if calculations.rstrip() not in text or 'n_missing_draws' not in text:
         raise ValueError('Review omitted maintained calculation code or support definitions.')
+    if (ROOT/'R/helpers/tracking_metrics.R').read_text().rstrip() in text:
+        raise ValueError('Review embeds the whole tracking helper instead of calculation excerpts.')
     if any(f'### Figure {n}.' in text for n in [4,5]):
         raise ValueError('Retired manuscript figure remains active.')
     stages = workflow_stages()
@@ -366,7 +409,7 @@ def build(mode):
             if name != 'cca_anova_output':
                 language = 'r' if name == 'cca_model_code' else 'text'
                 text_blocks[name] = f'```{language}\n{dst.read_text().rstrip()}\n```\n'
-        text_blocks['tracking_metrics_code'] = '```r\n'+(ROOT/'R/helpers/tracking_metrics.R').read_text().rstrip()+'\n```\n'
+        text_blocks['tracking_metrics_code'] = tracking_calculation_markdown()
         table_blocks={}
         for name,cols in COLUMNS.items():
             data=tables[name]

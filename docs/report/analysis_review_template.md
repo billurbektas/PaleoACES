@@ -458,11 +458,15 @@ full 9,200-realization comparison before legacy outputs were removed.
 The [tracking validation report](review/TRACKING_DATA_VALIDATION.md) gives the
 schemas, exclusion counts, independent checks and limits for later modeling.
 
-### Maintained tracking calculation code
+### Tracking metric calculations
 
-The following code is copied automatically from
-[tracking_metrics.R](../R/helpers/tracking_metrics.R); the generated R reading
-copy includes the same definitions. The helper is the calculation authority.
+These calculation excerpts are generated directly from
+[tracking_metrics.R](../R/helpers/tracking_metrics.R). The generated R reading
+copy includes the same excerpts. `x` contains the observed and predicted
+endpoints, seasonal climate values and their respective elapsed times.
+`epsilon` is the movement tolerance (default `1e-8`), and `scaling` supplies the
+fixed pooled-calibration SDs. In the cosine calculation, `ax,ay` and `bx,by`
+are the observed and predicted displacement components.
 
 {{tracking_metrics_code}}
 
