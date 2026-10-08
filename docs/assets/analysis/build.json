@@ -1,8 +1,8 @@
 {
   "mode": "snapshot",
-  "built_at_utc": "2026-10-08T18:51:37Z",
-  "run_id": "snapshot-2026-10-08T18:51:37Z",
-  "input_manifest_sha256": "286ca082b6dc1b63322308deb0a3bdd0ac266dd84e57b9de9505f3e22bde6adb",
+  "built_at_utc": "2026-10-08T18:53:30Z",
+  "run_id": "snapshot-2026-10-08T18:53:30Z",
+  "input_manifest_sha256": "8ae5ca9fc89826d926484d592d55b9c0455ca593ce6198788b2e519588b45cb1",
   "source_manifest_sha256": "f327ce22b9aaa9bd9915644bfb435cd74c4e50ca65fe56faf2f20806af8f15c2",
   "result_manifest_sha256": "76807ef1ce564584ac3acf621cbf8c233cc9522bfc3a8318eac4dcbb81890e4b",
   "publication": "staged and validated before replacement",
