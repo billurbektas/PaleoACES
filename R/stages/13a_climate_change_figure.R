@@ -17,7 +17,7 @@ required = c(
   fire = here("output/holocene_era_high_fire_periods.csv"),
   fire_frequency = here("output/holocene_era_fire_site_frequency.csv"),
   thresholds = here("output/holocene_era_climate_variable_thresholds.csv"),
-  anthropocene = here("output/cca_tracking_anthropocene_plot_model_input.csv"),
+  anthropocene = here("output/cca_tracking_anthropocene_plot_calculations.csv"),
   regional_phases = here("output/holocene_era_climate_regional_phase_changes.csv"))
 if (!all(file.exists(required))) stop(
   "Run R/stages/09_tracking_metrics.R and R/stages/13_holocene_climate_fire_eras.R first.")

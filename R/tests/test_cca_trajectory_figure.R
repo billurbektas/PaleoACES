@@ -11,7 +11,7 @@ if (render_figures)
 
 centroids = read_csv(centroid_path, show_col_types = FALSE)
 modern = read_csv(here("output/cca_trajectory_anthropocene_centroids.csv"), show_col_types = FALSE)
-tracking_pairs = read_csv(here("output/cca_tracking_anthropocene_plot_model_input.csv"), show_col_types = FALSE)
+tracking_pairs = read_csv(here("output/cca_tracking_anthropocene_plot_calculations.csv"), show_col_types = FALSE)
 stopifnot(nrow(modern) == 4L, !anyDuplicated(modern[c("site", "t")]),
           all(is.finite(unlist(select(modern, o1, o2, p1, p2)))))
 # Independent means of the actual tracking endpoints must reproduce Figure 3;

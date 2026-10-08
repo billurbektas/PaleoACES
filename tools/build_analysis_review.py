@@ -44,7 +44,7 @@ def input_files():
     files += list((ROOT / 'Cores/provenance').glob('*.json'))
     files += list((ROOT / 'Cores/provenance/chronology_sources_before_move').glob('*.txt'))
     files += list((ROOT/'R/tests/fixtures').glob('*.csv'))
-    files += [ROOT/p for p in ['docs/SCIENTIFIC_DECISIONS.md', 'docs/FIGURE_CAPTIONS.md', 'docs/methods/000_NOCA_cleaning_guide.md', 'docs/methods/README_occurrence_consolidation.md', 'docs/review/NOCA_GPS_EXCLUSION.md', 'docs/review/TRACKING_DATA_VALIDATION.md', 'docs/review/NOCA_TRACKING_MIGRATION_CHECK.csv']]
+    files += [ROOT/p for p in ['docs/SCIENTIFIC_DECISIONS.md', 'docs/FIGURE_CAPTIONS.md', 'docs/methods/000_NOCA_cleaning_guide.md', 'docs/methods/README_occurrence_consolidation.md', 'docs/review/NOCA_GPS_EXCLUSION.md', 'docs/review/TRACKING_DATA_VALIDATION.md', 'docs/review/NOCA_TRACKING_MIGRATION_CHECK.csv', 'docs/review/TRACKING_COMPACT_PRESERVATION.csv', 'docs/review/TRACKING_INDEPENDENT_CHECKS.csv']]
     return sorted(set(files))
 
 def manifest(files): return [dict(path=relative(p), bytes=p.stat().st_size, sha256=sha(p)) for p in files]
@@ -190,7 +190,38 @@ def local_links(text):
         if re.match(r'^(https?://|mailto:|#)', target): continue
         yield target.split('#',1)[0]
 
+def validate_tracking_contracts(root):
+    # Portable readers must see the same compact contracts as local model users.
+    responses = ['lag_rate_per_century', 'observed_turnover_rate', 'magnitude_tracking_ratio',
+                 'rate_tracking_ratio', 'angle_degrees', 'pace_effect_on_lag_per_century',
+                 'direction_effect_on_lag_per_century']
+    keys = ['site', 'lake', 'offset', 'age_hi', 'age_lo']
+    contracts = {
+        'lake_by_offset': keys + ['interval_mid_cal_bp', 'vegetation_dt_years', 'climate_dt_years',
+            'standardized_climate_change_rate', 'fire_activity', 'fire_coverage_valid', 'high_fire'] +
+            responses + ['n_draws_present', 'n_draws_nmin2', 'n_samples_t1_median', 'n_samples_t2_median'],
+        'modern_model_input': ['site', 'plot_id', 'vegetation_t1_year', 'vegetation_t2_year',
+            'climate_t1_midyear', 'climate_t2_midyear', 'vegetation_dt_years', 'climate_dt_years',
+            'standardized_climate_change_rate', 'burned'] + responses + ['angle_valid',
+            'pace_counterfactual_valid', 'direction_counterfactual_valid', 'tracking_ratio_valid'],
+        'lake_uncertainty': keys + ['metric', 'sampling_rule', 'median', 'q025', 'q975',
+            'n_expected_draws', 'n_present_draws', 'n_eligible_draws', 'n_valid_draws', 'n_undefined_draws']}
+    for name, expected in contracts.items():
+        with (root/ASSETS/'tables'/f'{name}.csv').open(newline='') as f:
+            header = next(csv.reader(f))
+        if header != expected: raise ValueError('Portable tracking contract differs: '+name)
+    modern = rows(root/ASSETS/'tables/modern_model_input.csv')
+    calculations = rows(root/ASSETS/'tables/modern_calculations.csv')
+    indexed = {(r['site'], r['plot_id']): r for r in calculations}
+    if len(indexed) != len(calculations) or len(modern) != len(calculations):
+        raise ValueError('Modern model/calculation keys differ.')
+    for r in modern:
+        audit = indexed.get((r['site'], r['plot_id']), {})
+        if any(value != audit.get(column) for column, value in r.items()):
+            raise ValueError('Modern model differs from calculation record: '+r['plot_id'])
+
 def validate(root=ROOT):
+    validate_tracking_contracts(root)
     doc = root/'docs/ANALYSIS_REVIEW.md'; html = root/'docs/ANALYSIS_REVIEW.html'
     text = doc.read_text(); h = html.read_text()
     md5 = hashlib.md5(doc.read_bytes()).hexdigest()
@@ -258,7 +289,8 @@ def validate(root=ROOT):
     if '## Plots and samples included in CCA' not in text or 'Loss of all recorded tree-taxon presence at resurvey' not in text:
         raise ValueError('Report omitted the CCA exclusion explanation/table.')
     calculations = tracking_calculation_markdown()
-    if calculations.rstrip() not in text or 'n_missing_draws' not in text:
+    if calculations.rstrip() not in text or any(name not in text for name in
+            ['n_draws_present', 'n_draws_nmin2', 'undefined', 'nmin2']):
         raise ValueError('Review omitted maintained calculation code or support definitions.')
     if (ROOT/'R/helpers/tracking_metrics.R').read_text().rstrip() in text:
         raise ValueError('Review embeds the whole tracking helper instead of calculation excerpts.')

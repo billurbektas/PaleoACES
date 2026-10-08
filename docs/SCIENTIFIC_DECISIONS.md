@@ -310,7 +310,7 @@ and 11 for Panther Potholes. Alternative interval widths recompute their own
 comparable reference; they never reuse the 1,000-year denominator blindly.
 
 A fully covered zero-event interval has zero activity. Uncovered intervals have
-missing counts/activity, not zero. Coverage fractions, bounds, event counts,
+missing counts/activity and `high_fire=NA`, not zero or `FALSE`. Coverage fractions, bounds, event counts,
 frequencies, denominators and source identities are exported per core. MORA
 requires at least two covered, normalizable Sunrise/Shadow/Little Sunrise cores
 and combines them with equal core weights. **All three MORA vegetation lakes
@@ -330,18 +330,47 @@ write suffixed outputs; they are not run automatically. Figure 3 and the frozen
 climate-era/high-fire definitions continue to use their existing 1,000-year framework.
 
 Nonlinear responses precede summarization across draws. Keep all supported
-realizations without a majority-draw cutoff. `n_valid_draws` and
-`n_missing_draws` refer to the primary lag response out of 100 configured draws;
-every response also has its own counts. Missing draws include absent transitions
-and undefined metrics, distinguished by presence/absence and undefined counts.
-Means, SDs and quantiles are conditional on valid realizations. A transition with
-only a handful of valid draws is retained with visibly limited support.
+realizations without a majority-draw cutoff. The 23-column Holocene model input
+contains independently calculated finite-draw medians for the seven responses,
+fixed predictors, both elapsed times and sampling support. `n_draws_present`
+counts transition presence before mathematical validity; `n_draws_nmin2` counts
+present draws with at least two samples in both endpoint bins.
 
-Minimum-two-samples-per-bin sensitivity summaries accompany the primary wide
-table. Reporting grids are descriptive, require all configured offsets within
-each lake and never require matching coverage across lakes. Overlapping dates,
-offsets and chronology draws are not ecological replicates. Model inclusion,
-uncertainty treatment and temporal correlation remain future decisions.
+The separate 15-column long uncertainty table retains each response under `all`
+and `nmin2` for every actual transition. Counts distinguish 100 expected draws,
+present transitions, sampling-eligible draws, finite responses and undefined
+responses (eligible minus valid). Absent draws are expected minus present.
+Median and 2.5%/97.5% quantiles are conditional on valid realizations and are
+chronology-related uncertainty, not model confidence intervals. Empty eligible
+or valid groups receive `NA` statistics; their summary rows do not add observations
+or draws. A transition with only a handful of valid draws is retained with
+visibly limited support. Detailed geometry stays in calculation records.
+
+The 21-column Anthropocene model input preserves all paired plot identities,
+survey and climate-window midyears, both elapsed times, binary fire assignments,
+the seven responses and four validity flags. Detailed modern endpoints, seasonal
+changes and assignment provenance remain in a separate calculations CSV. For an
+MORA resurvey in 2015, vegetation elapsed time is 2015−1977.5 = 37.5 years while
+climate elapsed time is 2012.5−1984 = 28.5 years. Consequently magnitude and rate
+tracking ratios are both retained and are not interchangeable.
+
+The descriptive 100-year grid contains only the seven agreed responses. For each
+response separately, summarize finite draws within each actual transition and
+offset, map the transition onto dates using `[age_lo, age_hi)`, and summarize
+the offset medians. A lake/date/response requires a finite median from every
+configured offset. Complete-offset eligibility for angle or a counterfactual
+cannot remove valid lag, turnover or tracking-ratio values. At Reflection Pond,
+5,900 cal BP, angle and pace effect have finite medians in nine of ten offsets;
+only those two reporting values are excluded. Their transition-level model and
+uncertainty records remain available. No matching coverage across lakes is required.
+
+The 273 primary transition rows span ten alternative bin placements. **Offsets
+are sensitivity realizations, not independent ecological replicates.** The
+intended primary statistical approach is to analyze non-overlapping transitions
+separately within each offset, considering lake identity and temporal dependence
+during later model development. Adjacent transitions share endpoint information.
+Chronology draws and overlapping reporting dates are also not independent
+replicates. Model inclusion and uncertainty treatment remain future decisions.
 Approximately 5–6 majority-supported transitions per MORA lake per offset and
 9–10 for Panther Potholes imply limited support for a later three-way interaction;
 four lakes and shared fire histories must not be treated as abundant independent

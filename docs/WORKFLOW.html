@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: b87108643c9f539ea521bbba82c04605 -->
+<!-- paleoaces-source-md5: 69dde49b503f8287f08ffda8cf93e2eb -->
 
 <html>
 
@@ -1753,8 +1753,9 @@ runs, and audit tables</td>
 <td>Canonical lake/plot tracking</td>
 <td>Published CCA reference, cached whole draws, own-lake climate,
 accepted charcoal events and coverage</td>
-<td>Five lake/plot datasets, response distributions, fire predictors and
-support; schema dictionary</td>
+<td>Compact 23/21-column model tables, long uncertainty, lake/modern
+calculation audits, seven-response reporting and support; schema
+dictionary</td>
 </tr>
 <tr class="odd">
 <td align="right">10e</td>
@@ -1851,8 +1852,8 @@ presence</td>
 </tr>
 <tr class="even">
 <td><code>R/helpers/tracking_metrics.R</code></td>
-<td>Vector metrics, safe two-dimensional cosines, physical-climate
-rates, zero guards, summaries</td>
+<td>Focused vector geometry, guarded internal angle calculation,
+physical-climate rates and validity flags</td>
 </tr>
 <tr class="odd">
 <td><code>R/helpers/fire_detection_functions.R</code></td>
@@ -2209,9 +2210,20 @@ Rscript R/stages/09_tracking_metrics.R --bin-width-years=500</code></pre>
 visualization/target-direction pipelines and their Figures 4/5 are
 retired through Git history. The shared metric implementation supports
 other widths without retaining those analyses.
-<code>tracking_data.R</code> handles lake joins, comparable fire windows
-and draw support; <code>cca_reference.R</code> exports the existing fit
-and prepared endpoints.</p>
+<code>tracking_data.R</code> handles lake joins, comparable fire
+windows, compact contracts, long uncertainty, draw support and
+response-specific complete-offset reporting;
+<code>cca_reference.R</code> exports the existing fit and prepared
+endpoints.</p>
+<p>Stage 09 validates the 273 Holocene transition keys, 607 plot-pair
+keys and 3,822 uncertainty rows before replacing primary exports.
+Changed keys or exclusions stop execution with diagnostics.
+Plot-endpoint and seasonal-climate consumers read
+<code>cca_tracking_anthropocene_plot_calculations.csv</code>; model
+consumers read the compact inputs. Future primary models will analyze
+non-overlapping transitions separately within each offset, with lake
+identity and temporal dependence considered; offsets are sensitivity
+realizations rather than replicates.</p>
 </div>
 </div>
 

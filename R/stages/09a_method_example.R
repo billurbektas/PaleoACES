@@ -1,5 +1,6 @@
 # Worked geometry and chronology example from canonical lake-level realizations.
 suppressPackageStartupMessages({library(here);library(tidyverse);library(patchwork)})
+source(here('R/helpers/tracking_data.R'),local=TRUE)
 render_figures = isTRUE(getOption('paleoaces.render_figures',TRUE))
 r = read_csv(here('output/cca_tracking_holocene_lake_realizations.csv'),show_col_types=FALSE)
 b = read_csv(here('output/cca_tracking_holocene_lake_by_offset.csv'),show_col_types=FALSE)
@@ -28,8 +29,7 @@ p = ggplot(lag,aes(endpoint,lag)) + geom_col(fill='#4477AA') +
   geom_text(aes(label=sprintf('%.3f',lag)),vjust=-.3,size=3) +
   labs(title='B. Distance to actual predicted position',x=NULL,y='Lag (CCA units)') +
   theme_minimal(base_size=10) + theme(axis.text.x=element_text(angle=20,hjust=1))
-metrics = c('lag_rate_per_century','observed_turnover_rate','magnitude_tracking_ratio',
-  'rate_tracking_ratio','angle_degrees','pace_effect_on_lag_per_century','direction_effect_on_lag_per_century')
+metrics = tracking_response_names()
 values = example |> select(all_of(metrics)) |> pivot_longer(everything(),names_to='metric',values_to='value')
 q = ggplot(values,aes(x=1,y=value)) + geom_point(size=2) +
   geom_text(aes(label=sprintf('%.3f',value)),nudge_x=.2,size=3) +

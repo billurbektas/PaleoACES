@@ -5409,8 +5409,9 @@ fire = transition_fire(realizations,events,continuous,bin_width_years,
 realizations = realizations |> left_join(fire,by=c('site','offset','age_hi','age_lo'),relationship='many-to-one')
 keys = c('site','lake','draw','offset','age_hi','age_lo')
 if (anyDuplicated(realizations[keys])) stop('Duplicate lake realization key')
-by_offset = lake_offset_summary(realizations,N_DRAWS)
-timeseries = lake_reporting_grid(by_offset,bin_width_years)
+uncertainty = lake_uncertainty(realizations,N_DRAWS)
+by_offset = lake_offset_summary(realizations,uncertainty)
+timeseries = lake_reporting_grid(uncertainty,bin_width_years)
 sample_support = built$samples |> distinct(site,lake,plot_id) |> count(site,lake,name='n_eligible_samples')
 excluded = built$raw |> group_by(site,lake,offset) |> summarize(
   n_observed_realizations=n(),n_incomplete_climate_realizations=sum(!climate_complete),.groups='drop')
@@ -5421,18 +5422,14 @@ support = realizations |> group_by(site,lake,offset) |> summarize(
   endpoint_samples_median=median(c(n_samples,n_samples_2)),
   endpoint_samples_max=max(c(n_samples,n_samples_2)),.groups='drop') |>
   left_join(by_offset |> group_by(site,lake,offset) |> summarize(
-    n_transitions=n(),n_transitions_nmin2=sum(n_nmin2_draws>0),
-    n_transitions_full_draw_support=sum(n_present_draws==N_DRAWS),
-    n_transitions_majority_draw_support=sum(n_present_draws>=N_DRAWS/2),
-    n_transitions_nmin2_majority_support=sum(n_nmin2_draws>=N_DRAWS/2),
-    present_draws_min=min(n_present_draws),present_draws_median=median(n_present_draws),
+    n_transitions=n(),n_transitions_nmin2=sum(n_draws_nmin2>0),
+    n_transitions_full_draw_support=sum(n_draws_present==N_DRAWS),
+    n_transitions_majority_draw_support=sum(n_draws_present>=N_DRAWS/2),
+    n_transitions_nmin2_majority_support=sum(n_draws_nmin2>=N_DRAWS/2),
+    present_draws_min=min(n_draws_present),present_draws_median=median(n_draws_present),
     n_fire_missing_transitions=sum(!is.finite(fire_activity)),.groups='drop'),by=c('site','lake','offset')) |>
   left_join(sample_support,by=c('site','lake')) |> left_join(excluded,by=c('site','lake','offset')) |>
   mutate(bin_width_years=bin_width_years,n_expected_draws=N_DRAWS)
-write_csv(realizations,output_path('cca_tracking_holocene_lake_realizations'))
-write_csv(by_offset,output_path('cca_tracking_holocene_lake_by_offset'))
-write_csv(timeseries,output_path('cca_tracking_holocene_lake_timeseries'))
-write_csv(support,output_path('cca_tracking_holocene_lake_support'))
 if (bin_width_years==1000L) {
   modern_fire = bind_rows(
     read_csv(here('output/MORA_plot_info_fire.csv'),show_col_types=FALSE) |>
@@ -5447,19 +5444,33 @@ if (bin_width_years==1000L) {
     mutate(fire_plot_key=str_to_upper(plot_id)) |>
     left_join(modern_fire |> rename(fire_plot_key=plot_id),
       by=c('site','fire_plot_key'),relationship='many-to-one') |> select(-fire_plot_key)
-  if (nrow(anth)!=607L || anyNA(anth$burned)) stop('Incomplete modern plot dataset')
-  write_csv(anth,here('output/cca_tracking_anthropocene_plot_model_input.csv'))
+  if (anyNA(anth$burned)) stop('Missing modern plot fire assignment')
+  anth_model = anth |> select(all_of(anthropocene_model_columns()))
+}
+# Validate calculated products and regression keys before replacing any exports.
+tryCatch(validate_tracking_products(by_offset,uncertainty,
+  if(bin_width_years==1000L) anth_model else NULL,bin_width_years),error=function(e) {
+  stop(conditionMessage(e),'\nObserved/excluded realization diagnostics:\n',
+    paste(capture.output(print(excluded,n=40)),collapse='\n'),call.=FALSE)
+})
+tables = list(cca_tracking_holocene_lake_realizations=realizations,
+  cca_tracking_holocene_lake_by_offset=by_offset,
+  cca_tracking_holocene_lake_uncertainty=uncertainty,
+  cca_tracking_holocene_lake_timeseries=timeseries,
+  cca_tracking_holocene_lake_support=support)
+for(stem in names(tables)) write_csv(tables[[stem]],output_path(stem))
+if(bin_width_years==1000L) {
+  tables$cca_tracking_anthropocene_plot_model_input = anth_model
+  tables$cca_tracking_anthropocene_plot_calculations = anth
+  write_csv(anth_model,here('output/cca_tracking_anthropocene_plot_model_input.csv'))
+  write_csv(anth,here('output/cca_tracking_anthropocene_plot_calculations.csv'))
+  write_csv(tracking_schema(tables),here('output/cca_tracking_schema.csv'))
   source(here('R/helpers/survey_decision_effects.R'),local=TRUE)
   export_survey_decision_effects(anth)
 }
 cat('Tracking completed:',nrow(realizations),'lake realizations;',nrow(by_offset),
-  'actual lake/offset transitions; width',bin_width_years,'years.\n')
-if(bin_width_years==1000L) write_csv(tracking_schema(list(
-  cca_tracking_holocene_lake_realizations=realizations,
-  cca_tracking_holocene_lake_by_offset=by_offset,
-  cca_tracking_anthropocene_plot_model_input=anth,
-  cca_tracking_holocene_lake_timeseries=timeseries,
-  cca_tracking_holocene_lake_support=support)),here('output/cca_tracking_schema.csv'))
+  'actual lake/offset transitions;',nrow(uncertainty),'uncertainty rows; width',
+  bin_width_years,'years.\n')
 # END R/stages/09_tracking_metrics.R
 
 # ============================================================================
@@ -6308,6 +6319,7 @@ if (render_figures) {
 # ============================================================================
 # Worked geometry and chronology example from canonical lake-level realizations.
 suppressPackageStartupMessages({library(here);library(tidyverse);library(patchwork)})
+source(here('R/helpers/tracking_data.R'),local=TRUE)
 render_figures = isTRUE(getOption('paleoaces.render_figures',TRUE))
 r = read_csv(here('output/cca_tracking_holocene_lake_realizations.csv'),show_col_types=FALSE)
 b = read_csv(here('output/cca_tracking_holocene_lake_by_offset.csv'),show_col_types=FALSE)
@@ -6336,8 +6348,7 @@ p = ggplot(lag,aes(endpoint,lag)) + geom_col(fill='#4477AA') +
   geom_text(aes(label=sprintf('%.3f',lag)),vjust=-.3,size=3) +
   labs(title='B. Distance to actual predicted position',x=NULL,y='Lag (CCA units)') +
   theme_minimal(base_size=10) + theme(axis.text.x=element_text(angle=20,hjust=1))
-metrics = c('lag_rate_per_century','observed_turnover_rate','magnitude_tracking_ratio',
-  'rate_tracking_ratio','angle_degrees','pace_effect_on_lag_per_century','direction_effect_on_lag_per_century')
+metrics = tracking_response_names()
 values = example |> select(all_of(metrics)) |> pivot_longer(everything(),names_to='metric',values_to='value')
 q = ggplot(values,aes(x=1,y=value)) + geom_point(size=2) +
   geom_text(aes(label=sprintf('%.3f',value)),nudge_x=.2,size=3) +
@@ -6606,7 +6617,7 @@ required = c(
   fire = here("output/holocene_era_high_fire_periods.csv"),
   fire_frequency = here("output/holocene_era_fire_site_frequency.csv"),
   thresholds = here("output/holocene_era_climate_variable_thresholds.csv"),
-  anthropocene = here("output/cca_tracking_anthropocene_plot_model_input.csv"),
+  anthropocene = here("output/cca_tracking_anthropocene_plot_calculations.csv"),
   regional_phases = here("output/holocene_era_climate_regional_phase_changes.csv"))
 if (!all(file.exists(required))) stop(
   "Run R/stages/09_tracking_metrics.R and R/stages/13_holocene_climate_fire_eras.R first.")

@@ -835,11 +835,14 @@ Script: [13b_fire_method_worked_example.R](../R/stages/13b_fire_method_worked_ex
 ## Lake-level tracking datasets and support
 
 The canonical tracking analysis calculates each lake independently in the same
-pooled CCA. Its five tables contain endpoints, all focused responses, own-lake
-physical climate and interval-aligned fire predictors. The wide lake/offset
-actual-transition table is the prospective model input. Full supported data:
-[lake/offset table](assets/analysis/tables/lake_by_offset.csv),
-[607 modern pairs](assets/analysis/tables/modern_model_input.csv), and
+pooled CCA. Stage 09 derives seven products from detailed records: two compact
+model inputs, long chronology uncertainty, lake and modern calculation audits,
+seven-response descriptive reporting and sampling/coverage diagnostics.
+The model inputs share exactly the same seven response names and definitions:
+[273 lake/offset transitions, 23 columns](assets/analysis/tables/lake_by_offset.csv),
+[607 modern pairs, 21 columns](assets/analysis/tables/modern_model_input.csv).
+Separate records expose [chronology uncertainty, 15 columns](assets/analysis/tables/lake_uncertainty.csv),
+[detailed modern calculations](assets/analysis/tables/modern_calculations.csv), and
 [column definitions and units](assets/analysis/tables/tracking_schema.csv).
 
 | Lake | Offset | Samples | Transitions | Minimum draws | Two-sample realizations |
@@ -887,11 +890,25 @@ actual-transition table is the prospective model input. Full supported data:
 
 [Full lake support table](assets/analysis/tables/lake_support.csv).
 
-No majority-draw cutoff is imposed. `n_valid_draws,n_missing_draws` refer to the
-primary lag response out of 100 draws; each response has its own counts.
-Presence/absence counts distinguish missing transitions from undefined geometry.
-Statistics describe valid draws conditional on the transition's support;
-minimum-two-samples sensitivity statistics are marked `_nmin2`.
+No majority-draw cutoff is imposed. `n_draws_present` counts existing transitions
+before response validity; `n_draws_nmin2` counts present draws with at least two
+samples in both endpoint bins. Model responses are independent finite-draw
+medians. The uncertainty table records expected, present, eligible, valid and
+undefined draws for each response under `all` and `nmin2`, retaining empty
+sensitivity groups with missing statistics. Quantiles describe chronology
+uncertainty conditional on valid realizations, not model confidence intervals.
+
+The descriptive grid contains only seven responses and requires a finite median
+from every offset separately for each lake/date/response. At Reflection Pond,
+5,900 cal BP, angle and pace have nine valid offsets: only those two reporting
+values are excluded, while the other five responses and all underlying transition
+records remain available.
+
+The 273 Holocene rows span ten alternative bin placements. Offsets are sensitivity
+realizations, not independent ecological replicates. The intended primary
+statistical approach is to analyze non-overlapping transitions separately within
+each offset, considering lake identity and temporal dependence during later
+model development. Adjacent transitions share endpoint information.
 There are approximately 5–6 majority-supported transitions per MORA lake per
 offset and 9–10 for Panther Potholes. Four lakes and two fire histories provide
 limited independent support for a later three-way interaction. No models,
@@ -900,7 +917,7 @@ distributions or temporal-correlation structures are fitted or selected here.
 Each MORA vegetation lake uses its own climate but shares regional fire exposure.
 Numerators and core maxima use fully covered windows of identical duration and
 matching half-open interval conventions. Covered zero-event intervals have zero
-activity; absent coverage remains missing. Full-window denominators match the
+activity; inadequate coverage gives both `fire_activity=NA` and `high_fire=NA`. Full-window denominators match the
 existing 1,000-year references. [Scientific definitions](SCIENTIFIC_DECISIONS.md#lake-tracking-metrics)
 explain the formulas, units, stationary cases and nonadditive counterfactuals.
 [NOCA migration validation](review/NOCA_TRACKING_MIGRATION_CHECK.csv) records the

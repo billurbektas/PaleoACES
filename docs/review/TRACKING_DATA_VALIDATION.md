@@ -9,16 +9,23 @@ interval runs or statistical response models were performed.
 | Output | Rows | Columns | Unit of observation |
 |---|---:|---:|---|
 | `cca_tracking_holocene_lake_realizations.csv` | 26,168 | 138 | Lake × whole chronology draw × offset × actual adjacent transition |
-| `cca_tracking_holocene_lake_by_offset.csv` | 273 | 607 | Lake × offset × actual transition, with response distributions and fixed predictors |
-| `cca_tracking_anthropocene_plot_model_input.csv` | 607 | 79 | Paired modern plot, retaining its original ID, endpoints, dates and binary fire assignment |
-| `cca_tracking_holocene_lake_timeseries.csv` | 4,029 | 15 | Lake × response quantity × descriptive 100-year reporting date |
+| `cca_tracking_holocene_lake_by_offset.csv` | 273 | 23 | Lake × offset × actual transition: fixed predictors, seven response medians and sampling support |
+| `cca_tracking_anthropocene_plot_model_input.csv` | 607 | 21 | Paired modern plot: original ID, known dates, both elapsed times, binary fire, seven responses and validity flags |
+| `cca_tracking_holocene_lake_uncertainty.csv` | 3,822 | 15 | Lake × offset × actual transition × response × sampling rule |
+| `cca_tracking_anthropocene_plot_calculations.csv` | 607 | 79 | Detailed modern calculation record, preserving endpoints, seasonal climate and provenance |
+| `cca_tracking_holocene_lake_timeseries.csv` | 1,657 | 15 | Lake × one of seven responses × descriptive 100-year reporting date |
 | `cca_tracking_holocene_lake_support.csv` | 40 | 23 | Lake × offset, including exclusions and two-sample sensitivity support |
 
 These outputs are written under `output/`. The [machine-readable schema](../assets/analysis/tables/tracking_schema.csv)
-defines all 862 columns across the five contracts. The [output register](../OUTPUTS.md)
+defines all 314 columns across the seven contracts. The [output register](../OUTPUTS.md)
 documents keys, units and suffix conventions. The [analysis review](../ANALYSIS_REVIEW.md)
-contains excerpts of the maintained metric calculations and portable copies of the wide, modern
-and support tables.
+contains focused excerpts of the maintained metric calculations and portable copies
+of the compact inputs, uncertainty, modern calculations and support tables.
+The exact column orders are specified in the output register. Fixed primary key
+fixtures check 273 transitions and 607 pairs; uncertainty must contain 14 rows
+per actual transition (3,822). These checks precede every primary export. A
+changed key or row count stops execution with added/removed keys and climate
+exclusion diagnostics; no filtering is adjusted and no observation is filled.
 
 ## Observed support
 
@@ -57,8 +64,12 @@ angle are undefined. The other 465 plots have defined angles and pace effects.
   pre-migration snapshot. The [versioned reference bundle](../assets/analysis/cca_calibration_reference.rds) preserves that fit,
   its matrices, scaling, scores and provenance.
 - Figure 3 PDF/PNG and both authoritative centroid CSVs are byte-identical to
-  the baseline. The chronology-draw cache and all seven checked Bacon
-  posterior/configuration pairs are also byte-identical: 19 protected files.
+  the baseline, including species and climate contribution panels. The CCA
+  reference and scaling, chronology-draw cache, chronology inputs, stored
+  posteriors/configurations and their maintained sources are unchanged. The
+  [preservation evidence](TRACKING_COMPACT_PRESERVATION.csv) records 59
+  successful SHA-256 comparisons, including byte-identical lake realizations,
+  lake support and all 79 fields in the detailed modern record.
 - All retained shared quantities match the previous NOCA output across all
   9,200 Panther Potholes realizations, with maximum absolute difference zero.
   The [full comparison by quantity](NOCA_TRACKING_MIGRATION_CHECK.csv) and the
@@ -66,24 +77,39 @@ angle are undefined. The other 465 plots have defined angles and pace effects.
   preserve compact regression evidence. Counterfactual endpoints/effects are
   new quantities and are checked independently against known geometry.
 - All 607 modern identities and retained shared quantities agree with the
-  pre-migration output, allowing only CSV floating-point roundoff.
+  pre-migration output, allowing only CSV floating-point roundoff. For this
+  compact-table refactor, the separate modern calculations CSV is byte-identical
+  to the prior 79-column modern output. Its 21 model columns match those detailed
+  records exactly, including validity flags, dates and the two burned MORA plots.
 - Independent checks cover counterfactual origins and signs, nonadditivity,
   unequal elapsed times, opposing and stationary movement, and undefined
   directions without losing usable lag or turnover.
 - Unique keys, consecutive bins and every lake-specific native climate
-  endpoint are checked. Every response's mean, SD, median, quantiles and
-  valid/missing counts are reconstructed from realizations, including the
-  minimum-two-samples sensitivity. A synthetic case distinguishes an
-  undefined present response from 98 absent draws.
+  endpoint are checked. MORA formulas are verified independently using each
+  lake's actual WA/LC endpoints and elapsed times, without requiring historical
+  pooled-site agreement. Every response's median, chronology quantiles and all
+  support counts are reconstructed from realizations under both sampling rules.
+  A synthetic case distinguishes an undefined present response from 98 absent
+  draws; empty sensitivity groups remain explicit with missing statistics.
+- Every reporting estimate, chronology bound, phase range and support field is
+  independently reconstructed through the draw → actual transition/offset →
+  half-open date mapping → across-offset hierarchy. All 1,657 retained reporting
+  rows match their prior values exactly. Only angle and pace effect at Reflection
+  Pond, 5,900 cal BP, are removed for nine-of-ten finite offset support. The other
+  five responses and the transition-level model/uncertainty records remain.
+  Eligibility is tested separately for every response.
 - Fire checks cover half-open boundaries, covered zeros, insufficient core
   coverage, equal-core MORA exposure and numerator/reference compatibility.
   The primary stage verifies agreement with existing 1,000-year references;
   a small in-memory 500-year fixture checks interval propagation and the
-  recalculated denominator without writing alternative-width products.
+  recalculated denominator without writing alternative-width products. A
+  300-year in-memory fixture also verifies date mapping for 50-year endpoint
+  midpoints, preserving the half-open boundary convention.
 - All scientific gates in the offline workflow pass. Fresh sessions and
   repeated isolated execution of the canonical tracking stage reproduce
   identical scientific output hashes. The independent method audit passes
-  501 checks, including CCA inertia, physical climate changes and the
+  [564 checks](TRACKING_INDEPENDENT_CHECKS.csv), including independently
+  reconstructed CCA inertia, physical climate changes and the
   draw-to-offset-to-reporting hierarchy. Documentation and report validation
   check links, generated source code, registries and the two active figures.
 
@@ -94,9 +120,13 @@ example now reads a Panther Potholes realization from the canonical lake table.
 ## Limits for later modeling
 
 Chronology draws, offsets and reporting dates represent uncertainty or
-overlapping temporal support, not independent replicates. Draw distributions
-are conditional on the transition being valid; a one-draw transition has no
-estimable draw SD and its quantiles describe that single realization.
+overlapping temporal support, not independent replicates. The 273 Holocene
+rows span ten alternative placements. The intended primary approach is to
+analyze non-overlapping transitions separately within each offset, considering
+lake identity and temporal dependence during later model development. Adjacent
+transitions share endpoint information. Draw distributions are conditional on
+valid realizations; a one-draw transition has coincident chronology quantiles
+without information about a wider distribution.
 No majority threshold has been selected for future modeling.
 
 Only four vegetation lakes and two regional fire histories are represented.

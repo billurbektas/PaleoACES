@@ -405,6 +405,14 @@
     "tracking_schema": {
       "source": "output/cca_tracking_schema.csv",
       "producer": "R/stages/09_tracking_metrics.R"
+    },
+    "lake_uncertainty": {
+      "source": "output/cca_tracking_holocene_lake_uncertainty.csv",
+      "producer": "R/stages/09_tracking_metrics.R"
+    },
+    "modern_calculations": {
+      "source": "output/cca_tracking_anthropocene_plot_calculations.csv",
+      "producer": "R/stages/09_tracking_metrics.R"
     }
   },
   "text_outputs": {

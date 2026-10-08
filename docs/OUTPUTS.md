@@ -69,60 +69,122 @@ Historical climate and Holocene values remain unchanged in the mixed tables.
 
 ## Canonical tracking schemas
 
-All five datasets are local reproducible CSVs in `output/`. The complete
-column-by-column dictionary is `output/cca_tracking_schema.csv`, also exposed
-in the Analysis Review. One metric implementation serves both eras.
+Stage `R/stages/09_tracking_metrics.R` is the single producer of all seven
+tracking CSVs in `output/`. It calculates lake and plot records once, then
+separates model inputs, chronology uncertainty, descriptive reporting and audits.
+The complete ordered column dictionary is `output/cca_tracking_schema.csv`,
+also exposed in the Analysis Review. One metric implementation serves both eras.
 
-| CSV | Unique key | Contents |
-|---|---|---|
-| `cca_tracking_holocene_lake_realizations.csv` | `site, lake, draw, offset, age_hi, age_lo` | WA/LC endpoints, focused responses, own-lake physical climate, interval charcoal activity, sample support and validity flags |
-| `cca_tracking_holocene_lake_by_offset.csv` | `site, lake, offset, age_hi, age_lo` | Fixed climate/fire predictors and wide chronology distributions; primary prospective model input |
-| `cca_tracking_anthropocene_plot_model_input.csv` | `site, plot_id` | All 607 original pairs, endpoints, survey/window dates, both elapsed times, physical climate, binary fire and focused responses |
-| `cca_tracking_holocene_lake_timeseries.csv` | `site, lake, t, metric` | Descriptive 100-year grid; complete offset support within each lake, without cross-lake coverage restrictions |
-| `cca_tracking_holocene_lake_support.csv` | `site, lake, offset` | Eligible samples, observed/retained/excluded realization counts, transitions, draw support, sample density and minimum-two-sample sensitivity |
+| CSV | Columns | Unique key | Role |
+|---|---:|---|---|
+| `cca_tracking_holocene_lake_by_offset.csv` | 23 | `site, lake, offset, age_hi, age_lo` | Model input: fixed predictors, independently summarized response medians and sampling support |
+| `cca_tracking_anthropocene_plot_model_input.csv` | 21 | `site, plot_id` | Model input: known dates, both elapsed times, binary fire, seven responses and validity flags |
+| `cca_tracking_holocene_lake_uncertainty.csv` | 15 | `site, lake, offset, age_hi, age_lo, metric, sampling_rule` | Chronology distributions and response-specific support under both sampling rules |
+| `cca_tracking_holocene_lake_realizations.csv` | 138 | `site, lake, draw, offset, age_hi, age_lo` | Calculation audit: original WA/LC endpoints, geometry, own-lake seasonal climate, fire provenance and validity flags |
+| `cca_tracking_anthropocene_plot_calculations.csv` | 79 | `site, plot_id` | Detailed modern calculation audit, including endpoints, seasonal changes, climate windows and fire-assignment sources |
+| `cca_tracking_holocene_lake_timeseries.csv` | 15 | `site, lake, t, metric` | Seven-response descriptive 100-year grid with response-specific complete offset support |
+| `cca_tracking_holocene_lake_support.csv` | 23 | `site, lake, offset` | Sampling, draw support, observed/retained/excluded realization counts and minimum-two-sample sensitivity |
 
-`age_hi` is the older endpoint and `age_lo` the younger endpoint in calendar
-years BP; their difference is the actual transition duration. `o1,o2` are
-initial observed CCA1/CCA2; `o1_2,o2_2` are final observed coordinates. The `p`
-columns follow the same convention for climate-predicted positions.
+The exact model and uncertainty column orders are:
 
-Metrics and units are authoritative in [Scientific Decisions](SCIENTIFIC_DECISIONS.md#lake-tracking-metrics).
-CCA displacement/lag/effects use CCA units, their rates use CCA units/century,
-ratios are unitless, and angles use degrees. Seasonal temperature changes use
-°C; precipitation changes use mm; seasonal rates use those units/century.
-`standardized_climate_change_rate` uses calibration SD/century.
+**Holocene model input (23)**
 
-In the wide table, `<metric>_mean`, `_sd`, `_median`, `_q025`, `_q25`, `_q75`
-and `_q975` describe valid chronology draws. `<metric>_n_valid_draws` counts
-finite values; `_n_missing_draws` is 100 minus that count; `_n_undefined_draws`
-counts invalid values among present realizations. `n_present_draws` and
-`n_absent_draws` distinguish chronology support from undefined response geometry.
-Unprefixed `n_valid_draws,n_missing_draws` describe the primary lag-rate response.
-Statistics with `_nmin2` restrict both endpoint bins to at least two vegetation
-samples. Zero valid sensitivity draws have missing statistics and zero valid
-count; they are not assigned zero responses. No majority threshold filters data.
+```text
+site, lake, offset, age_hi, age_lo, interval_mid_cal_bp,
+vegetation_dt_years, climate_dt_years,
+standardized_climate_change_rate, fire_activity, fire_coverage_valid, high_fire,
+lag_rate_per_century, observed_turnover_rate, magnitude_tracking_ratio,
+rate_tracking_ratio, angle_degrees, pace_effect_on_lag_per_century,
+direction_effect_on_lag_per_century,
+n_draws_present, n_draws_nmin2, n_samples_t1_median, n_samples_t2_median
+```
 
-`fire_activity` is the equal-core mean of normalized charcoal event frequency.
-Each `fire_<core>_*` group provides its exact source ID, coverage bounds/fraction,
-full-coverage and normalization flags, event count, frequency per 1,000 years,
-maximum comparable-window frequency and normalized activity. MORA core labels
-are `sunrise,shadow,little_sunrise`; NOCA is `panther`. Missing core coverage
-produces missing counts, while a covered zero-event interval produces zero.
-`fire_history_id` records shared regional exposure across MORA vegetation lakes.
-`fire_window_years,fire_reference_window_years` must match the transition width.
-`high_fire` uses the existing midpoint annotation with `high_fire_window_years=1000`.
-Modern `burned` is binary and `fire_assignment_source` retains assignment provenance.
+**Anthropocene model input (21)**
 
-Reporting fields `age_q025,age_q975` are typical within-offset posterior
-quantiles, while `phase_min,phase_max` describe offset-median spread. Neither
-is an inferential confidence interval. Reporting rows, offsets and draws are
-not independent observations for modeling.
+```text
+site, plot_id, vegetation_t1_year, vegetation_t2_year,
+climate_t1_midyear, climate_t2_midyear, vegetation_dt_years, climate_dt_years,
+standardized_climate_change_rate, burned,
+lag_rate_per_century, observed_turnover_rate, magnitude_tracking_ratio,
+rate_tracking_ratio, angle_degrees, pace_effect_on_lag_per_century,
+direction_effect_on_lag_per_century,
+angle_valid, pace_counterfactual_valid, direction_counterfactual_valid,
+tracking_ratio_valid
+```
 
-The default 1,000-year stage has ten offsets and 100 cached whole chronologies.
-A nondefault `--bin-width-years=N` must be a positive multiple of 100; Holocene
-files acquire `_Nyr` suffixes and modern/primary outputs are not overwritten.
-The separate 500-year stage, site-pooled metric products, compatibility files
-and former Figures 4/5 are retired through Git history.
+**Holocene uncertainty (15)**
+
+```text
+site, lake, offset, age_hi, age_lo, metric, sampling_rule,
+median, q025, q975, n_expected_draws, n_present_draws, n_eligible_draws,
+n_valid_draws, n_undefined_draws
+```
+
+`age_hi` and `age_lo` are the older and younger **endpoint-bin midpoints**,
+in cal BP; their difference is the actual transition duration.
+`interval_mid_cal_bp` is their mean. The primary elapsed times are both 1,000
+years. The seven Holocene responses are medians across finite draws, calculated
+independently for each response. `n_draws_present` counts existing transitions
+before response-validity filtering; `n_draws_nmin2` counts present transitions
+with at least two macrofossil samples in both endpoint bins. No majority threshold
+filters either the model table or its underlying realizations.
+
+The uncertainty table retains seven metrics × two sampling rules (`all`, `nmin2`)
+for every actual transition. Expected draws are 100; present draws contain the
+transition; eligible draws satisfy the sampling rule; valid draws have a finite
+response; undefined draws equal eligible minus valid. Absent draws equal expected
+minus present. Empty eligible or valid groups have `NA` statistics and zero
+valid counts. These rows describe unavailable distributions without inventing
+observations. Quantiles describe chronology uncertainty conditional on valid
+realizations, not confidence intervals from a fitted model.
+
+Definitions and units are authoritative in [Scientific Decisions](SCIENTIFIC_DECISIONS.md#lake-tracking-metrics).
+CCA rates use CCA units/century, ratios are unitless, angles use degrees and
+`standardized_climate_change_rate` uses calibration SD/century. The two tracking
+ratios can differ in the Anthropocene because vegetation and climate elapsed
+times differ. The counterfactual pace correction matches **displacement magnitude**.
+The detailed audits preserve raw and standardized seasonal changes, supporting
+geometry and coordinates; they contain no posterior-summary columns. Consumers
+requiring modern endpoints or seasonal changes read the calculations CSV.
+
+`fire_activity` is the equal-core mean of normalized event frequency. Detailed
+lake records retain each core's source ID, coverage bounds/fraction, event count,
+frequency per 1,000 years and maximum comparable-window frequency. MORA labels
+are `sunrise,shadow,little_sunrise`; NOCA is `panther`. A covered zero-event
+interval has zero activity. Inadequate coverage produces both `fire_activity=NA`
+and `high_fire=NA`. MORA requires at least two covered cores, and all three
+vegetation lakes share its regional exposure. Numerator and reference windows
+have the same duration. `high_fire` remains a descriptive site label at the
+transition midpoint from the existing 1,000-year classification. Modern `burned`
+remains binary, with assignment provenance in the modern calculation audit.
+
+The reporting grid contains only the seven response names. For each response,
+finite chronology draws are summarized within actual transitions and offsets;
+intervals are mapped to dates using `[age_lo, age_hi)`, then summarized across
+offsets. A lake/date/response is reported only when **every configured offset**
+has a finite transition median. Undefined angles or counterfactuals do not remove
+other responses. `age_q025,age_q975` are medians of within-offset chronology
+quantiles; `phase_min,phase_max` bound the offset medians. Support fields retain
+observed offset counts and minimum draw presence. Neither interval is an
+inferential confidence interval.
+
+The 273 primary Holocene rows span ten alternative bin placements. Offsets are
+sensitivity realizations, not independent ecological replicates. The intended
+primary modeling approach is to analyze non-overlapping transitions separately
+within each offset, considering lake identity and temporal dependence during
+later model development. Adjacent transitions share endpoint information.
+Chronology draws and overlapping reporting dates are also not independent replicates.
+
+The default stage uses ten offsets and 100 cached whole chronologies. A nondefault
+`--bin-width-years=N` must be a positive multiple of 100; all five Holocene files
+acquire `_Nyr` suffixes and modern/primary products remain untouched. Additional
+widths are not run automatically. The separate 500-year wrapper, site-pooled
+metric products, compatibility files and former Figures 4/5 are retired through
+Git history. Primary expectations (273 model rows, 607 plot pairs and 3,822
+uncertainty rows) are regression checks against fixed keys, verified before any
+export is replaced. A discrepancy stops execution with changed-key and
+incomplete-climate exclusion diagnostics; it never changes filtering to recover
+an expected count.
 
 `cca_calibration_reference.rds` preserves the existing CCA fit, 607 calibration
 identities and matrices, retained taxa, species/environmental scores, exact

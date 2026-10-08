@@ -19,4 +19,4 @@ Read the **[analysis review](docs/ANALYSIS_REVIEW.md)** or its [self-contained H
 
 The [repository inventory](docs/REPOSITORY_INVENTORY.md) explains current file roles and authoritative inputs; the [output inventory](docs/OUTPUTS.md) describes result tables. Main figures remain PDF/PNG pairs in `plot/`; diagnostics remain PDF-only in `plot/test_figures/`. Retired scripts are preserved in Git history. The [combined analysis script](docs/review/00_main_analysis_review.R) is a generated reading copy; execute the workflow driver for a real run.
 
-Tracking now uses individual lakes and paired modern plots. See the [canonical datasets and schemas](docs/OUTPUTS.md#canonical-tracking-schemas). Historical tracking and target-direction figures are preserved in Git.
+Tracking uses individual lakes and paired modern plots, with compact 23/21-column model inputs, separate chronology uncertainty and detailed calculation records. See the [canonical datasets and schemas](docs/OUTPUTS.md#canonical-tracking-schemas). Historical tracking and target-direction figures are preserved in Git.

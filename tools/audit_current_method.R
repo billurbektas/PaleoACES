@@ -110,7 +110,7 @@ monthly = rbind(read("MORA_climate"), read("NOCA_climate"))
 adult_dates = read_csv(here("data/MORA/MORA_TreeData_Resurvey_Cleaned.csv"), show_col_types = FALSE)
 library_ids = read_csv(here("data/MORA/MORA_plot_lib.csv"), show_col_types = FALSE)
 latest = tapply(adult_dates$Year, adult_dates$Plot_ID, max)
-modern = read("cca_tracking_anthropocene_plot_model_input")
+modern = read("cca_tracking_anthropocene_plot_calculations")
 mi = modern$site == "MORA"
 supplied = library_ids$Plot_ID[match(modern$plot_id[mi], library_ids$plot_id)]
 same(modern$vegetation_t2_year[mi], as.numeric(latest[supplied]), "independent latest adult MORA dates")
@@ -179,7 +179,7 @@ for (lake in unique(pe$lake)) {
 
 # Independently recalculate every displacement/rate and every signed climate
 # change, for all modern rows and the canonical lake realizations.
-for (name in c("cca_tracking_anthropocene_plot_model_input",
+for (name in c("cca_tracking_anthropocene_plot_calculations",
                "cca_tracking_holocene_lake_realizations")) {
   x = read(name)
   o = cbind(x$o1_2 - x$o1, x$o2_2 - x$o2)
@@ -243,42 +243,57 @@ finite_stat = function(values, fun, ...) {
   values = values[is.finite(values)]
   if (length(values)) fun(values, ...) else NA_real_
 }
-summary_functions = list(mean = mean, sd = sd, median = median,
+summary_functions = list(median = median,
   q025 = function(x) quantile(x, .025, names = FALSE),
-  q25 = function(x) quantile(x, .25, names = FALSE),
-  q75 = function(x) quantile(x, .75, names = FALSE),
   q975 = function(x) quantile(x, .975, names = FALSE))
 x = read("cca_tracking_holocene_lake_realizations")
 b = read("cca_tracking_holocene_lake_by_offset")
+u = read("cca_tracking_holocene_lake_uncertainty")
 columns = c("site", "lake", "offset", "age_hi", "age_lo")
 groups = split(seq_len(nrow(x)), key_for(x, columns))
 indices = groups[key_for(b, columns)]
-stopifnot(!anyDuplicated(key_for(b, columns)))
+stopifnot(!anyDuplicated(key_for(b, columns)), nrow(b)==273L, nrow(u)==3822L)
 metrics = c("lag_rate_per_century", "observed_turnover_rate", "magnitude_tracking_ratio",
   "rate_tracking_ratio", "angle_degrees", "pace_effect_on_lag_per_century",
   "direction_effect_on_lag_per_century")
-for (metric in metrics) {
-  values = lapply(indices, function(i) x[[metric]][i])
+same(b$n_draws_present, lengths(indices), "transition draw presence")
+same(b$n_draws_nmin2, vapply(indices,function(i) sum(x$n_min[i]>=2),integer(1)),
+     "transition sampling support")
+for (rule in c("all","nmin2")) for (metric in metrics) {
+  rows = u[u$sampling_rule==rule & u$metric==metric,]
+  idx = groups[key_for(rows,columns)]
+  eligible = lapply(idx,function(i) if(rule=="all") i else i[x$n_min[i]>=2])
+  values = lapply(eligible, function(i) x[[metric]][i])
   valid = vapply(values, function(v) sum(is.finite(v)), integer(1))
-  same(b[[paste0(metric,"_n_valid_draws")]], valid, paste(metric,"finite draw counts"))
-  same(b[[paste0(metric,"_n_missing_draws")]], 100-valid, paste(metric,"missing draw counts"))
+  same(rows$n_present_draws,lengths(idx),paste(rule,metric,"present draws"))
+  same(rows$n_eligible_draws,lengths(eligible),paste(rule,metric,"eligible draws"))
+  same(rows$n_valid_draws,valid,paste(rule,metric,"finite draw counts"))
+  same(rows$n_undefined_draws,lengths(eligible)-valid,paste(rule,metric,"undefined draw counts"))
+  same(rows$n_expected_draws,rep(100L,nrow(rows)),paste(rule,metric,"expected draws"))
   for (field in names(summary_functions)) {
     expected = vapply(values, finite_stat, numeric(1), fun=summary_functions[[field]])
-    same(b[[paste0(metric,"_",field)]], expected, paste(metric,"draw-within-offset",field))
+    same(rows[[field]],expected,paste(rule,metric,"draw-within-offset",field))
+    if(rule=="all" && field=="median") same(b[[metric]],
+      expected[match(key_for(b,columns),key_for(rows,columns))],paste(metric,"compact model response"))
   }
 }
 dates = read("cca_tracking_holocene_lake_timeseries")
+all = u[u$sampling_rule=="all",]
 indices = lapply(seq_len(nrow(dates)), function(i) which(
-  b$site == dates$site[i] & b$lake == dates$lake[i] &
-  b$age_lo <= dates$t[i] & dates$t[i] < b$age_hi))
-stopifnot(all(vapply(indices, function(i) length(unique(b$offset[i])), integer(1)) == 10L))
-for (field in c(estimate="median",age_q025="q025",age_q975="q975")) {
-  actual_field = names(c(estimate="median",age_q025="q025",age_q975="q975"))[
-    match(field,c("median","q025","q975"))]
-  expected = vapply(seq_len(nrow(dates)), function(j)
-    finite_stat(b[[paste0(dates$metric[j],"_",field)]][indices[[j]]],median),numeric(1))
+  all$site == dates$site[i] & all$lake == dates$lake[i] & all$metric == dates$metric[i] &
+  all$age_lo <= dates$t[i] & dates$t[i] < all$age_hi))
+stopifnot(all(vapply(indices, function(i) length(unique(all$offset[i])), integer(1)) == 10L),
+  all(vapply(indices, function(i) sum(is.finite(all$median[i])), integer(1)) == 10L))
+for (actual_field in c("estimate","age_q025","age_q975","phase_min","phase_max")) {
+  source_field = c(estimate="median",age_q025="q025",age_q975="q975",phase_min="median",phase_max="median")[[actual_field]]
+  fun = switch(actual_field,phase_min=min,phase_max=max,median)
+  expected = vapply(indices,function(i) finite_stat(all[[source_field]][i],fun),numeric(1))
   same(dates[[actual_field]],expected,paste("lake reporting grid",actual_field))
 }
+same(dates$min_present_draws,vapply(indices,function(i) min(all$n_present_draws[i]),numeric(1)),
+  "lake reporting grid draw support")
+same(dates$n_offsets,rep(10L,nrow(dates)),"lake reporting grid offset support")
+same(dates$n_valid_offsets,rep(10L,nrow(dates)),"lake reporting grid finite offset support")
 
 # CCA extrapolation is assessed against the unchanged calibration bounds,
 # without refitting or replacing predictors.

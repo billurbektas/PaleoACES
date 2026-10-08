@@ -23,7 +23,7 @@ rate_comparison = read_csv(
   here("output/holocene_anthropocene_raw_climate_rate_comparison.csv"),
   show_col_types = FALSE)
 anthropocene_climate = read_csv(
-  here("output/cca_tracking_anthropocene_plot_model_input.csv"), show_col_types = FALSE)
+  here("output/cca_tracking_anthropocene_plot_calculations.csv"), show_col_types = FALSE)
 
 stopifnot(
   setequal(thresholds$variable, c("MSpT", "MWT", "SP", "WP")),
