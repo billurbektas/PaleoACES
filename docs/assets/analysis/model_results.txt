@@ -14,12 +14,12 @@ No chronology uncertainty propagation, lake random intercept, climate/fire fixed
 Adjacent Holocene transitions share endpoints; only four lakes and two fire histories are available.
 AIC comparisons are meaningful between covariance types within the same offset, not across offsets.
 Delta AIC is measured from the minimum within each offset; Akaike weights are relative to these three candidates only.
-Boxplots summarize offset sensitivity, not independent samples; raw AIC boxes do not select models across different datasets.
+Boxplots show within-offset delta AIC and summarize offset sensitivity, not independent samples; raw AIC remains in the CSV.
 REML is retained because these covariance comparisons use identical fixed effects and observations within each offset.
 The comparison does not automatically select a covariance model or change the lake-sensitivity specifications.
 Coefficient intervals and park contrasts are unadjusted exploratory intervals/tests.
 Input: cca_tracking_era_by_offset.csv | MD5: b4c903acf64253f0225d8d8d448fe860
-Script MD5: 8aed66f29acc82c86975c728df10811b
+Script MD5: 0c228f4ed6eb4a489737ae72001a1fd2
 Packages: nlme 3.1.170; emmeans 2.0.4
 
 Fit overview:

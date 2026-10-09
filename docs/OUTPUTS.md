@@ -215,8 +215,7 @@ REML, and separate residual SDs by era/site. The primary outputs are:
 | `plot/test_figures/fig_tracking_model_coefficients_lag_rate_per_century.pdf` | One page comparing coefficients and unadjusted 95% t intervals across offsets for AR1, MA1 and independent residuals |
 | `plot/test_figures/fig_tracking_model_contrasts_lag_rate_per_century.pdf` | One page comparing era contrasts and unadjusted 95% intervals across offsets for AR1, MA1 and independent residuals, with separate MORA and NOCA panels |
 | `plot/test_figures/fig_tracking_model_residuals_lag_rate_per_century.pdf` | One page with one row per offset: scatter, Q-Q and Holocene lag products for each covariance type |
-
-| `plot/test_figures/fig_tracking_model_aic_lag_rate_per_century.pdf` | Raw-AIC and within-offset ΔAIC boxplots for the three candidates, with paired dots/lines for each offset |
+| `plot/test_figures/fig_tracking_model_aic_lag_rate_per_century.pdf` | Within-offset ΔAIC boxplots for the three candidates, with paired dots/lines for each offset |
 
 The independent candidate uses `correlation=NULL` and retains the same era/site
 residual variances. Its correlation parameter is `NA`. Each offset must use

@@ -574,7 +574,8 @@ distribution and inference remain provisional.
 
 The [30 fit comparisons](assets/analysis/tables/tracking_model_comparison.csv)
 include likelihoods, parameter counts, AIC, within-offset ΔAIC and relative
-Akaike weights. The AIC figure shows raw-AIC and paired ΔAIC boxplots.
+Akaike weights. The AIC figure shows only paired within-offset ΔAIC boxplots;
+raw AIC values remain in the CSV.
 Select using comparisons within the same offset: raw AICs across offsets
 involve different observations, and the offsets are not independent samples.
 MA1 has the lowest AIC at five offsets, independent residuals at four and AR1

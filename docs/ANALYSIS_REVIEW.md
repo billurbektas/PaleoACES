@@ -1151,7 +1151,8 @@ distribution and inference remain provisional.
 
 The [30 fit comparisons](assets/analysis/tables/tracking_model_comparison.csv)
 include likelihoods, parameter counts, AIC, within-offset ΔAIC and relative
-Akaike weights. The AIC figure shows raw-AIC and paired ΔAIC boxplots.
+Akaike weights. The AIC figure shows only paired within-offset ΔAIC boxplots;
+raw AIC values remain in the CSV.
 Select using comparisons within the same offset: raw AICs across offsets
 involve different observations, and the offsets are not independent samples.
 MA1 has the lowest AIC at five offsets, independent residuals at four and AR1
@@ -1186,7 +1187,7 @@ Script: [10_tracking_era_models.R](../R/stages/10_tracking_era_models.R). [Compl
 
 ### Compare AR1, MA1 and no temporal autocorrelation using AIC across all ten offsets
 
-Boxes summarize raw AIC and within-offset delta AIC; dots show each fit and lines link the same offset. All candidates within an offset share observations, fixed effects, REML and era/site residual variances. Use paired within-offset differences for selection: offsets have different observations and are sensitivity fits, not independent replicates. MA1 minimizes AIC at five offsets, independent residuals at four and AR1 at one; AR1-MA1 differences remain below 1.2. No covariance choice is automatically selected. **Provisional covariance comparison**.
+Boxes summarize within-offset delta AIC; raw AIC values remain in the comparison CSV; dots show each fit and lines link the same offset. All candidates within an offset share observations, fixed effects, REML and era/site residual variances. Use paired within-offset differences for selection: offsets have different observations and are sensitivity fits, not independent replicates. MA1 minimizes AIC at five offsets, independent residuals at four and AR1 at one; AR1-MA1 differences remain below 1.2. No covariance choice is automatically selected. **Provisional covariance comparison**.
 
 Script: [10_tracking_era_models.R](../R/stages/10_tracking_era_models.R). [Complete PDF](../plot/test_figures/fig_tracking_model_aic_lag_rate_per_century.pdf) (1 page).
 

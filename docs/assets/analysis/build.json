@@ -1,10 +1,10 @@
 {
   "mode": "snapshot",
-  "built_at_utc": "2026-10-09T13:16:34Z",
-  "run_id": "snapshot-2026-10-09T13:16:34Z",
-  "input_manifest_sha256": "1e5c41c8249d0be8f0502242b029f5a7337b7a9bb03380d6970a13142a2dccb3",
-  "source_manifest_sha256": "79f4362d86140e6be4fa0ea0fb67849cee8ceeeb733898f1e5a19b2fc7ba41b8",
-  "result_manifest_sha256": "dc3af765ef7e70b99fccbeb205d772180fb28ab63d9f30072791f3a255d48b8d",
+  "built_at_utc": "2026-10-09T13:25:01Z",
+  "run_id": "snapshot-2026-10-09T13:25:01Z",
+  "input_manifest_sha256": "75c871fb7db16a4d2f41bd218ac6bdfe1788de77a3a7e7566cb80c8c681761de",
+  "source_manifest_sha256": "13e7e94e3956b6f6ecadecfe649b36f792a33e69c0f6b2a2f84abf2cb3974e33",
+  "result_manifest_sha256": "2615266fed0fc33c33eccb9aae0ecf7c6c9affd45b82343388e603f337e34776",
   "publication": "staged and validated before replacement",
   "chronology": "validated stored posteriors; no MCMC in reporting"
 }

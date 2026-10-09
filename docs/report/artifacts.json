@@ -295,7 +295,7 @@
       ],
       "producer": "R/stages/10_tracking_era_models.R",
       "purpose": "Compare AR1, MA1 and no temporal autocorrelation using AIC across all ten offsets.",
-      "interpretation": "Boxes summarize raw AIC and within-offset delta AIC; dots show each fit and lines link the same offset. All candidates within an offset share observations, fixed effects, REML and era/site residual variances. Use paired within-offset differences for selection: offsets have different observations and are sensitivity fits, not independent replicates. MA1 minimizes AIC at five offsets, independent residuals at four and AR1 at one; AR1-MA1 differences remain below 1.2. No covariance choice is automatically selected.",
+      "interpretation": "Boxes summarize within-offset delta AIC; raw AIC values remain in the comparison CSV; dots show each fit and lines link the same offset. All candidates within an offset share observations, fixed effects, REML and era/site residual variances. Use paired within-offset differences for selection: offsets have different observations and are sensitivity fits, not independent replicates. MA1 minimizes AIC at five offsets, independent residuals at four and AR1 at one; AR1-MA1 differences remain below 1.2. No covariance choice is automatically selected.",
       "status": "provisional covariance comparison"
     },
     {

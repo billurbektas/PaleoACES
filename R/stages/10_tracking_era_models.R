@@ -148,7 +148,7 @@ notes=c('PROVISIONAL: model distribution, covariance and inference are not scien
   'Adjacent Holocene transitions share endpoints; only four lakes and two fire histories are available.',
   'AIC comparisons are meaningful between covariance types within the same offset, not across offsets.',
   'Delta AIC is measured from the minimum within each offset; Akaike weights are relative to these three candidates only.',
-  'Boxplots summarize offset sensitivity, not independent samples; raw AIC boxes do not select models across different datasets.',
+  'Boxplots show within-offset delta AIC and summarize offset sensitivity, not independent samples; raw AIC remains in the CSV.',
   'REML is retained because these covariance comparisons use identical fixed effects and observations within each offset.',
   'The comparison does not automatically select a covariance model or change the lake-sensitivity specifications.',
   'Coefficient intervals and park contrasts are unadjusted exploratory intervals/tests.',
@@ -201,23 +201,21 @@ contrast_plot=ggplot(contrasts,aes(offset,estimate,color=model_type,group=model_
 aic_data=fit_overview |> mutate(model_index=match(model_type,model_types),
   point_x=model_index+(match(offset,offsets)-(length(offsets)+1)/2)/
     max(1,length(offsets)-1)*.24)
-aic_panel=function(value,title,y_label) ggplot(aic_data,
-  aes(model_index,.data[[value]],group=model_type,fill=model_type))+
+aic_plot=ggplot(aic_data,
+  aes(model_index,delta_AIC,group=model_type,fill=model_type))+
+  geom_hline(yintercept=0,color='grey55',linetype='dashed')+
   geom_boxplot(width=.48,alpha=.2,outlier.shape=NA,color='grey45')+
   geom_line(aes(x=point_x,group=offset),color='grey65',alpha=.6,linewidth=.4)+
   geom_point(aes(x=point_x,color=model_type),size=2.4)+
   scale_x_continuous(breaks=seq_along(model_types),labels=c('AR(1)','MA(1)','No temporal\nautocorrelation'))+
   scale_color_manual(values=model_colors)+scale_fill_manual(values=model_colors)+
-  labs(title=title,x=NULL,y=y_label)+theme_minimal(base_size=12)+
-  theme(legend.position='none',panel.grid.minor=element_blank())
-aic_plot=(aic_panel('AIC','Raw AIC: descriptive overview','REML AIC') |
-  (aic_panel('delta_AIC','Within-offset comparison: lower is better','AIC - minimum AIC within offset')+
-    geom_hline(yintercept=0,color='grey55',linetype='dashed'))) +
-  plot_annotation(title=paste('Residual covariance comparison:',response_metric),
+  labs(title=paste('Within-offset covariance comparison:',response_metric),
     subtitle=paste(length(offsets),'offsets; same observations, fixed effects, REML and era/site residual variances within each offset'),
-    caption='Boxes summarize the configured offsets; dots are individual fits; grey lines connect the same offset.\nUse within-offset differences for selection: raw AICs across offsets involve different observations and sample sizes.\nOffsets reuse modern plots and are sensitivity fits, not independent replicates. Covariance selection remains a scientific decision.',
-    theme=theme(plot.title=element_text(size=17,face='bold'),plot.subtitle=element_text(size=11),
-      plot.caption=element_text(size=10,hjust=0)))
+    x=NULL,y='AIC - minimum AIC within offset (lower is better)',
+    caption='Zero identifies the lowest AIC within each offset. Boxes summarize the configured offsets; dots are individual fits.\nGrey lines connect the same offset. Offsets reuse modern plots and are sensitivity fits, not independent replicates.\nRaw AIC values are retained in model_comparison.csv. Covariance selection remains a scientific decision.')+
+  theme_minimal(base_size=12)+theme(legend.position='none',panel.grid.minor=element_blank(),
+    plot.title=element_text(size=17,face='bold'),plot.subtitle=element_text(size=11),
+    plot.caption=element_text(size=10,hjust=0))
 group_colors=c(Holocene.MORA='#059669',Anthropocene.MORA='#2563eb',
   Holocene.NOCA='#c97710',Anthropocene.NOCA='#d42d75')
 residual_panels=list()

@@ -417,10 +417,10 @@ under REML require the same fixed effects, as described in the
 The 30-row comparison CSV records likelihoods, parameter counts, AIC, ΔAIC,
 relative Akaike weights and ranks. ΔAIC is measured from the lowest AIC within
 each offset. Weights are relative to these three candidates, not probabilities
-that one is the true model. The AIC figure shows raw values and paired
-within-offset differences. Offsets have different observations and are
-sensitivity fits, so the raw-AIC boxplot median is not a model-selection
-criterion across offsets. No covariance choice is automatically made.
+that one is the true model. The figure shows only paired within-offset ΔAIC
+boxplots; raw AIC values remain in the CSV. Offsets have different observations
+and are sensitivity fits, so raw AIC cannot select covariance choices across
+offsets. No covariance choice is automatically made.
 
 These fits retain all finite selected responses without a draw-support cutoff.
 They do not propagate chronology uncertainty, add a lake random intercept or
