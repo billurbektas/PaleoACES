@@ -395,9 +395,9 @@ CSV flags offset and `model_type`. A separate contrast CSV holds Anthropocene
 minus Holocene within MORA and within NOCA: 60 contrasts with unadjusted 95%
 intervals and Satterthwaite degrees of freedom. Positive contrasts indicate a
 higher Anthropocene response. One TXT holds all fit summaries, park contrasts
-and fit comparisons. Coefficient, contrast and residual PDFs include all three
-covariance choices across all offsets. This is a maintained exploration;
-distribution, covariance and inference remain provisional.
+and fit comparisons. The AIC PDF compares all three covariance candidates.
+Following the author’s 2026-10-09 decision, coefficient, contrast and residual
+PDFs present MA1 only. Distribution and inference remain exploratory.
 
 Holocene time indices are spaced by the actual interval width; missing
 transitions keep their original gaps. Modern pairs are independent singleton
@@ -420,26 +420,37 @@ each offset. Weights are relative to these three candidates, not probabilities
 that one is the true model. The figure shows only paired within-offset ΔAIC
 boxplots; raw AIC values remain in the CSV. Offsets have different observations
 and are sensitivity fits, so raw AIC cannot select covariance choices across
-offsets. No covariance choice is automatically made.
+offsets. Selection is an explicit scientific decision, not an automatic rule.
+
+**MA(1) selected for the reported lag-change analyses (2026-10-09).** The author
+chose MA1 after reviewing the within-offset comparison. MA1 is competitive:
+it minimizes AIC at five offsets, independent residuals at four and AR1 at one.
+All three candidates are within two AIC units at nine of ten offsets. These
+small differences do not uniquely identify a covariance structure. MA1 permits
+dependence between immediately neighboring transitions that share endpoints
+and has zero correlation beyond one actual time step. The choice is recorded
+in `R/helpers/tracking_model_reporting.R` and applied consistently to offset
+and lake figures. All covariance-comparison fits remain in the numerical audit.
 
 These fits retain all finite selected responses without a draw-support cutoff.
 They do not propagate chronology uncertainty, add a lake random intercept or
 include climate/fire fixed effects. The residual page shows normalized scatter,
-Q-Q and Holocene lag products for all three covariance choices. Lag products match
+Q-Q and Holocene lag products for the selected MA1 covariance. Lag products match
 actual time gaps, exclude modern singleton series, and report pair counts;
 they are descriptive diagnostics without formal significance tests.
 
 Stage 10a maintains the offset-0 lake sensitivity authorized on 2026-10-09.
 Each Holocene lake is compared separately with its own park's modern plot
-pairs, trying AR1 and MA1 with `estimate ~ era`, REML and era-specific residual
-variances. A constant park factor is omitted within these individual fits.
+pairs with `estimate ~ era`, REML and era-specific residual
+variances. Its figures show MA1 only: four fits, eight coefficients and four
+contrasts. The AR1 fits remain in the calculation audit. A constant park factor is omitted within these individual fits.
 The three MORA comparisons reuse the same 330 modern plots; their estimates
 are overlapping sensitivity results, not independent park replicates.
 All finite responses remain eligible and actual within-lake time gaps remain.
 Reflection Pond and Panther Potholes MA1 fits have parameters near -1;
 fits with an absolute parameter above 0.98 are retained and explicitly flagged
 in tables and figures. This diagnostic flag does not select a covariance model.
-There is no automatic lake fit at additional offsets, no averaged lake result,
+The review shows offset 0 only. There is no automatic lake fit at additional offsets, no averaged lake result,
 and no comparison of AICs across different lake inputs. MA(2) is not maintained.
 
 The GLS models support estimated marginal means through `emmeans`, using
@@ -456,11 +467,12 @@ intended primary statistical approach is to analyze non-overlapping transitions
 separately within each offset, considering lake identity and temporal dependence
 during later model development. Adjacent transitions share endpoint information.
 Chronology draws and overlapping reporting dates are also not independent
-replicates. Final model inclusion, covariance and uncertainty treatment remain future decisions.
+replicates. MA1 is chosen for the reported results; final model inclusion,
+distribution and uncertainty treatment remain future decisions.
 Approximately 5–6 majority-supported transitions per MORA lake per offset and
 9–10 for Panther Potholes imply limited support for a later three-way interaction;
 four lakes and shared fire histories must not be treated as abundant independent
-replication. The AR1/MA1/independent GLS fits above remain provisional; no final distribution,
+replication. Covariance comparisons remain available; no final distribution,
 lake random effect, power analysis or contribution attribution is selected here. See [output schemas](OUTPUTS.md#canonical-tracking-schemas).
 
 ## Unified 1,000-year climate eras

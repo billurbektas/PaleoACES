@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: c97e5e960f255be5569b0c802d9ebd70 -->
+<!-- paleoaces-source-md5: 54b0ac7137e2f81b1472f9fd757492de -->
 
 <html>
 
@@ -1976,9 +1976,10 @@ replicates. Alternative widths receive <code>_Nyr</code> suffixes.</p>
 <p>Stage <code>R/stages/10_tracking_era_models.R</code> reads only the
 combined CSV and fits lag-change rate separately for all ten offsets
 under AR1, MA1 and no temporal autocorrelation
-(<code>model_type=Independent</code>). Its specification remains
-provisional: <code>estimate ~ era * site</code>, REML, and separate
-residual SDs by era/site. The primary outputs are:</p>
+(<code>model_type=Independent</code>). Its initial fixed-effect
+specification remains exploratory: <code>estimate ~ era * site</code>,
+REML, and separate residual SDs by era/site. The primary outputs
+are:</p>
 <table>
 <colgroup>
 <col width="50%" />
@@ -2020,19 +2021,18 @@ correlation parameter and convergence</td>
 </tr>
 <tr class="odd">
 <td><code>plot/test_figures/fig_tracking_model_coefficients_lag_rate_per_century.pdf</code></td>
-<td>One page comparing coefficients and unadjusted 95% t intervals
-across offsets for AR1, MA1 and independent residuals</td>
+<td>MA1 only: 40 coefficients and unadjusted 95% t intervals across ten
+offsets</td>
 </tr>
 <tr class="even">
 <td><code>plot/test_figures/fig_tracking_model_contrasts_lag_rate_per_century.pdf</code></td>
-<td>One page comparing era contrasts and unadjusted 95% intervals across
-offsets for AR1, MA1 and independent residuals, with separate MORA and
-NOCA panels</td>
+<td>MA1 only: 20 era contrasts and unadjusted 95% intervals across ten
+offsets, with separate MORA and NOCA panels</td>
 </tr>
 <tr class="odd">
 <td><code>plot/test_figures/fig_tracking_model_residuals_lag_rate_per_century.pdf</code></td>
 <td>One page with one row per offset: scatter, Q-Q and Holocene lag
-products for each covariance type</td>
+products for the selected MA1</td>
 </tr>
 <tr class="even">
 <td><code>plot/test_figures/fig_tracking_model_aic_lag_rate_per_century.pdf</code></td>
@@ -2049,24 +2049,28 @@ candidates before any results are exported. AIC is
 and eight for independent residuals. ΔAIC is relative to that offset’s
 lowest AIC, and relative Akaike weights sum to one within its three
 candidates. REML is retained with identical fixed effects and
-observations. No candidate is automatically selected. The boxes
-summarize sensitivity across offsets, not independent replicates;
+observations. The author selected MA1 on 2026-10-09 for reported
+results; all candidates remain in the calculation records. This decision
+is recorded in <code>R/helpers/tracking_model_reporting.R</code>. The
+boxes summarize sensitivity across offsets, not independent replicates;
 selection uses paired within-offset differences rather than pooled raw
 AIC.</p>
 <p>Modern pairs are singleton series. Holocene integer time indices
 retain gaps; MA1 correlates only observations one actual time step
 apart. AICs compare covariance choices within an offset; different
-offsets contain different observations. Model inclusion, chronology
-uncertainty and distribution choices remain provisional. No lake random
-intercept or climate/fire fixed effects are added to this initial
-model.</p>
+offsets contain different observations. The review shows the comparison
+first, followed by MA1-only coefficients, contrasts and residuals. Model
+inclusion, chronology uncertainty and distribution choices remain
+exploratory. No lake random intercept or climate/fire fixed effects are
+added to this initial model.</p>
 <p>Stage <code>R/stages/10a_tracking_lake_sensitivity.R</code> then runs
 the agreed <strong>offset-0 lake sensitivity</strong>: each of the four
 Holocene lakes versus modern pairs from its own park, under AR1 and MA1
 (eight fits). The park is constant within each fit, so the formula is
 <code>estimate ~ era</code>, with REML and separate era residual SDs.
-Time gaps and response-specific finite-value selection remain
-unchanged.</p>
+The figures and review display MA1 only; the AR1 fits remain numerical
+audit records. Time gaps and response-specific finite-value selection
+remain unchanged.</p>
 <table>
 <colgroup>
 <col width="50%" />
@@ -2097,12 +2101,12 @@ boundary flags and provenance</td>
 </tr>
 <tr class="even">
 <td><code>plot/test_figures/fig_tracking_lake_coefficients_lag_rate_per_century_offset_0.pdf</code></td>
-<td>Lake coefficient comparison; separate scales for intercept and era
-effect</td>
+<td>MA1-only lake coefficients at offset 0; eight displayed estimates,
+separate scales for intercept and era effect</td>
 </tr>
 <tr class="odd">
 <td><code>plot/test_figures/fig_tracking_lake_contrasts_lag_rate_per_century_offset_0.pdf</code></td>
-<td>Lake era-contrast comparison under AR1 and MA1</td>
+<td>MA1-only lake contrasts at offset 0; four displayed estimates</td>
 </tr>
 </tbody>
 </table>

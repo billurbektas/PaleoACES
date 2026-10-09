@@ -499,9 +499,9 @@ each offset, considering lake identity and temporal dependence during later
 model development. Adjacent transitions share endpoint information.
 There are approximately 5–6 majority-supported transitions per MORA lake per
 offset and 9–10 for Panther Potholes. Four lakes and two fire histories provide
-limited independent support for a later three-way interaction. Provisional
-AR1/MA1/independent GLS comparisons are shown below; final distributions, covariance choices
-and lake/chronology uncertainty treatment remain open.
+limited independent support for a later three-way interaction. The covariance
+comparison and chosen MA(1) results are shown below; distributions and
+lake/chronology uncertainty treatment remain open.
 
 Each MORA vegetation lake uses its own climate but shares regional fire exposure.
 Numerators and core maxima use fully covered windows of identical duration and
@@ -547,63 +547,122 @@ Figures 2 and 3 and the lake/plot tracking datasets use the updated inputs.
 
 {{survey_decision_effects}}
 
-## Provisional offset GLS comparisons
+## Residual covariance comparison
 
-[Stage 10](../R/stages/10_tracking_era_models.R) fits lag-change rate separately
-at offsets 0–900 years, using actual 1,000-year transitions plus all 607 modern
-pairs. AR1, MA1 and independent residuals share the same `estimate ~ era * site` fixed effects, REML
-and separate era/site residual variances. All 30 fits converged in the current
-run. The [120 coefficient rows](assets/analysis/tables/tracking_model_coefficients.csv)
-flag offset and `model_type` and include standard errors, unadjusted 95% t
-intervals, group counts and the fitted correlation parameter.
+[Stage 10](../R/stages/10_tracking_era_models.R) compares three Gaussian GLS
+structures for lag-change rate at each offset from 0 to 900 years. Within an
+offset, all candidates use exactly the same actual 1,000-year Holocene
+transitions and 607 modern pairs, the same `era * site` fixed effects, REML,
+and separate residual variances for the four era/site groups. All 30 fits
+converged. The following focused specifications show the three structures;
+`d` is the finite-response dataset for one offset, prepared by
+[tracking_offset_model_input()](../R/helpers/tracking_model_data.R).
 
-The [60 park contrasts](assets/analysis/tables/tracking_model_contrasts.csv)
-compare Anthropocene minus Holocene within MORA and within NOCA for every
-offset and covariance type. Positive estimates indicate a higher Anthropocene
-lag-change rate. Their unadjusted 95% intervals use Satterthwaite degrees of
-freedom. The contrast figure places all three covariance types together in each park panel.
+### AR(1)
 
-MA1 restricts residual correlation to observations one actual time step apart
-within a lake; missing transitions retain their original indices. Modern pairs
-are singleton series. AR1 permits longer-lag correlation. The independent
-candidate retains era/site residual variances with `correlation=NULL`. AIC comparisons are
-between covariance types within the same offset; the ten offsets are sensitivity
-fits that reuse modern pairs. These models do not propagate chronology uncertainty,
-add lake random intercepts or include climate/fire fixed effects. Their covariance,
-distribution and inference remain provisional.
+```r
+m_ar1 <- nlme::gls(
+  estimate ~ era * site, data = d,
+  correlation = nlme::corAR1(form = ~ time_index | series),
+  weights = nlme::varIdent(form = ~ 1 | era_site),
+  method = "REML", na.action = na.fail,
+  control = nlme::glsControl(msMaxIter = 200)
+)
+```
+
+### MA(1)
+
+```r
+m_ma1 <- nlme::gls(
+  estimate ~ era * site, data = d,
+  correlation = nlme::corARMA(p = 0, q = 1, form = ~ time_index | series),
+  weights = nlme::varIdent(form = ~ 1 | era_site),
+  method = "REML", na.action = na.fail,
+  control = nlme::glsControl(msMaxIter = 200)
+)
+```
+
+### No temporal autocorrelation
+
+```r
+m_independent <- nlme::gls(
+  estimate ~ era * site, data = d,
+  correlation = NULL,
+  weights = nlme::varIdent(form = ~ 1 | era_site),
+  method = "REML", na.action = na.fail,
+  control = nlme::glsControl(msMaxIter = 200)
+)
+```
 
 The [30 fit comparisons](assets/analysis/tables/tracking_model_comparison.csv)
-include likelihoods, parameter counts, AIC, within-offset ΔAIC and relative
-Akaike weights. The AIC figure shows only paired within-offset ΔAIC boxplots;
-raw AIC values remain in the CSV.
-Select using comparisons within the same offset: raw AICs across offsets
-involve different observations, and the offsets are not independent samples.
+record restricted likelihoods, parameter counts, AIC, within-offset ΔAIC,
+relative Akaike weights and ranks. ΔAIC is each candidate's AIC minus the
+minimum for that same offset. Offsets are sensitivity realizations that reuse
+modern plots; AICs are compared within an offset, where observations agree.
 MA1 has the lowest AIC at five offsets, independent residuals at four and AR1
-at one. AR1–MA1 differences are below 1.2 AIC units at all offsets. No candidate
-is automatically selected.
+at one. All three candidates are within two AIC units at nine of ten offsets.
 
-{{tracking_model_results}}
+{{tracking_covariance_diagnostics}}
+
+**We chose MA(1) for the reported lag-change analyses.** This is the author's
+covariance decision following the comparison above. MA1 accommodates residual
+dependence between immediately neighboring transitions, which share endpoint
+information, while setting correlation beyond one actual time step to zero.
+The small AIC differences provide limited separation between candidates;
+this choice does not imply that AIC uniquely identified MA1. Missing time
+steps retain their original indices, and modern plot pairs are singleton series.
+The selected covariance is recorded in
+[tracking_model_reporting.R](../R/helpers/tracking_model_reporting.R).
+
+## MA(1) coefficients and contrasts across offsets
+
+The figures below show **MA(1) only**, fitted separately at each of the ten
+alternative bin placements. They display 40 coefficients and 20 within-park
+era contrasts. The full [coefficient](assets/analysis/tables/tracking_model_coefficients.csv)
+and [contrast](assets/analysis/tables/tracking_model_contrasts.csv) calculation
+records retain the comparison candidates; select `model_type == "MA1"` for
+these reported results. The reference categories are Holocene and MORA.
+
+Contrasts are Anthropocene minus Holocene within MORA and within NOCA.
+Positive values indicate higher Anthropocene lag-change rates. Coefficient
+bars are unadjusted 95% t intervals; contrast bars use Satterthwaite degrees
+of freedom. Points and intervals use the same MA1 color in the offset and
+lake figures. Offsets are alternative sensitivity fits, not independent
+replicates, and are not pooled into one coefficient or contrast.
 
 {{tracking_models_diagnostics}}
 
-## Offset-0 lake sensitivity
+{{tracking_model_results}}
+
+## MA(1) lake comparisons at offset 0
 
 [Stage 10a](../R/stages/10a_tracking_lake_sensitivity.R) compares each Holocene
-lake separately with modern plots from its own park under AR1 and MA1. The
-eight fits use `estimate ~ era`, REML, era-specific residual variances and the
-original time gaps. The [16 coefficient rows](assets/analysis/tables/tracking_lake_coefficients.csv)
-and [eight contrasts](assets/analysis/tables/tracking_lake_contrasts.csv) retain
-lake identity, sample counts and correlation-boundary flags.
+lake with modern pairs from its own park at **offset 0 only**. These figures
+show four MA(1) fits: eight coefficients and four era contrasts. The formula
+is `estimate ~ era`, with REML and era-specific residual variances, since
+park is constant within each lake comparison. Original time gaps are retained.
+The [coefficient](assets/analysis/tables/tracking_lake_coefficients.csv) and
+[contrast](assets/analysis/tables/tracking_lake_contrasts.csv) records retain
+AR1 sensitivity fits as an audit; the displayed results use MA1 only.
 
 Reflection Pond and Panther Potholes MA1 fits approach the parameter boundary;
 triangles identify absolute parameters above 0.98. These fits are retained.
-MORA lake comparisons reuse the same modern plots and are overlapping
-sensitivities. The workflow runs this sensitivity at offset 0 only, without
-choosing a final covariance model or maintaining MA(2).
+MORA comparisons reuse the same 330 modern plots and are overlapping
+sensitivities. Each lake provides only 6–10 Holocene transitions at offset 0.
+MA(2) is outside the maintained workflow.
+
+{{tracking_lake_diagnostics}}
 
 {{tracking_lake_results}}
 
-{{tracking_lake_diagnostics}}
+### MA(1) residual checks
+
+{{tracking_model_checks_diagnostics}}
+
+MA1 is the chosen covariance structure for these results. Distribution,
+lake effects, response inclusion and chronology uncertainty treatment remain
+subjects for later model development. These fits do not propagate chronology
+uncertainty or add lake random intercepts or climate/fire fixed effects.
 
 ## Limitations and remaining questions
 

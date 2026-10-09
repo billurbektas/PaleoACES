@@ -203,7 +203,7 @@ does not add ecological replicates. Alternative widths receive `_Nyr` suffixes.
 
 Stage `R/stages/10_tracking_era_models.R` reads only the combined CSV and fits
 lag-change rate separately for all ten offsets under AR1, MA1 and no temporal autocorrelation
-(`model_type=Independent`). Its specification remains provisional: `estimate ~ era * site`,
+(`model_type=Independent`). Its initial fixed-effect specification remains exploratory: `estimate ~ era * site`,
 REML, and separate residual SDs by era/site. The primary outputs are:
 
 | Output | Contents |
@@ -212,9 +212,9 @@ REML, and separate residual SDs by era/site. The primary outputs are:
 | `output/exploratory/tracking_offset_models/lag_rate_per_century/model_contrasts.csv` | 60 within-park Anthropocene-minus-Holocene contrasts: two parks × ten offsets × three covariance types, with SEs, Satterthwaite degrees of freedom, t statistics, unadjusted p values and 95% intervals, and park-specific observation counts |
 | `output/exploratory/tracking_offset_models/lag_rate_per_century/model_results.txt` | One complete text record: provenance, fit overview, all 30 model summaries, park contrasts, residual SDs, warnings and diagnostic lag products |
 | `output/exploratory/tracking_offset_models/lag_rate_per_century/model_comparison.csv` | 30 rows × 15 columns: response, offset, covariance type, Holocene/modern/total counts, method, parameter count, restricted log-likelihood, AIC, within-offset ΔAIC, relative Akaike weight, rank, correlation parameter and convergence |
-| `plot/test_figures/fig_tracking_model_coefficients_lag_rate_per_century.pdf` | One page comparing coefficients and unadjusted 95% t intervals across offsets for AR1, MA1 and independent residuals |
-| `plot/test_figures/fig_tracking_model_contrasts_lag_rate_per_century.pdf` | One page comparing era contrasts and unadjusted 95% intervals across offsets for AR1, MA1 and independent residuals, with separate MORA and NOCA panels |
-| `plot/test_figures/fig_tracking_model_residuals_lag_rate_per_century.pdf` | One page with one row per offset: scatter, Q-Q and Holocene lag products for each covariance type |
+| `plot/test_figures/fig_tracking_model_coefficients_lag_rate_per_century.pdf` | MA1 only: 40 coefficients and unadjusted 95% t intervals across ten offsets |
+| `plot/test_figures/fig_tracking_model_contrasts_lag_rate_per_century.pdf` | MA1 only: 20 era contrasts and unadjusted 95% intervals across ten offsets, with separate MORA and NOCA panels |
+| `plot/test_figures/fig_tracking_model_residuals_lag_rate_per_century.pdf` | One page with one row per offset: scatter, Q-Q and Holocene lag products for the selected MA1 |
 | `plot/test_figures/fig_tracking_model_aic_lag_rate_per_century.pdf` | Within-offset ΔAIC boxplots for the three candidates, with paired dots/lines for each offset |
 
 The independent candidate uses `correlation=NULL` and retains the same era/site
@@ -223,30 +223,34 @@ identical observations across candidates before any results are exported. AIC
 is `-2 × logLik + 2 × n_parameters`: nine parameters for AR1/MA1 and eight for
 independent residuals. ΔAIC is relative to that offset’s lowest AIC, and relative
 Akaike weights sum to one within its three candidates. REML is retained with
-identical fixed effects and observations. No candidate is automatically selected.
+identical fixed effects and observations. The author selected MA1 on 2026-10-09
+for reported results; all candidates remain in the calculation records. This
+decision is recorded in `R/helpers/tracking_model_reporting.R`.
 The boxes summarize sensitivity across offsets, not independent replicates;
 selection uses paired within-offset differences rather than pooled raw AIC.
 
 Modern pairs are singleton series. Holocene integer time indices retain gaps;
 MA1 correlates only observations one actual time step apart. AICs compare
 covariance choices within an offset; different offsets contain different
-observations. Model inclusion, chronology uncertainty and distribution choices
-remain provisional. No lake random intercept or climate/fire fixed effects are
+observations. The review shows the comparison first, followed by MA1-only
+coefficients, contrasts and residuals. Model inclusion, chronology uncertainty
+and distribution choices remain exploratory. No lake random intercept or climate/fire fixed effects are
 added to this initial model.
 
 Stage `R/stages/10a_tracking_lake_sensitivity.R` then runs the agreed **offset-0
 lake sensitivity**: each of the four Holocene lakes versus modern pairs from
 its own park, under AR1 and MA1 (eight fits). The park is constant within each
 fit, so the formula is `estimate ~ era`, with REML and separate era residual
-SDs. Time gaps and response-specific finite-value selection remain unchanged.
+SDs. The figures and review display MA1 only; the AR1 fits remain numerical
+audit records. Time gaps and response-specific finite-value selection remain unchanged.
 
 | Sensitivity output | Contents |
 |---|---|
 | `output/exploratory/tracking_lake_sensitivity/lag_rate_per_century/offset_0/model_coefficients.csv` | 16 rows: intercept and era coefficient for each lake and covariance type; lake/site identities, uncertainty, sample counts and correlation-boundary flags |
 | `output/exploratory/tracking_lake_sensitivity/lag_rate_per_century/offset_0/model_contrasts.csv` | Eight Anthropocene-minus-Holocene contrasts, with Satterthwaite intervals, sample counts and boundary flags |
 | `output/exploratory/tracking_lake_sensitivity/lag_rate_per_century/offset_0/model_results.txt` | All eight GLS summaries, era means, contrasts, warning records, boundary flags and provenance |
-| `plot/test_figures/fig_tracking_lake_coefficients_lag_rate_per_century_offset_0.pdf` | Lake coefficient comparison; separate scales for intercept and era effect |
-| `plot/test_figures/fig_tracking_lake_contrasts_lag_rate_per_century_offset_0.pdf` | Lake era-contrast comparison under AR1 and MA1 |
+| `plot/test_figures/fig_tracking_lake_coefficients_lag_rate_per_century_offset_0.pdf` | MA1-only lake coefficients at offset 0; eight displayed estimates, separate scales for intercept and era effect |
+| `plot/test_figures/fig_tracking_lake_contrasts_lag_rate_per_century_offset_0.pdf` | MA1-only lake contrasts at offset 0; four displayed estimates |
 
 Triangles and `near_correlation_boundary` flag an absolute fitted correlation
 parameter above 0.98; flagged fits remain in the outputs. The current Reflection

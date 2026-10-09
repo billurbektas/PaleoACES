@@ -5517,7 +5517,7 @@ cat('Combined model input:',nrow(combined),'rows;',ncol(combined),'columns;',
 # ============================================================================
 # BEGIN R/stages/10_tracking_era_models.R
 # ============================================================================
-# Maintained, provisional GLS comparisons: one actual transition offset per fit.
+# Covariance comparison and selected MA1 results: one transition offset per fit.
 # Rscript R/stages/10_tracking_era_models.R [--metric=observed_turnover_rate]
 # Optional later width experiments: --bin-width-years=N; never run automatically.
 # Same fixed effects and variance groups for AR1, MA1 and independent residuals.
@@ -5526,6 +5526,7 @@ suppressPackageStartupMessages({
 })
 source(here('R/helpers/tracking_data.R'),local=TRUE)
 source(here('R/helpers/tracking_model_data.R'),local=TRUE)
+source(here('R/helpers/tracking_model_reporting.R'),local=TRUE)
 render_figures=isTRUE(getOption('paleoaces.render_figures',TRUE))
 argument=function(name,default) {
   prefix=paste0('--',name,'=')
@@ -5543,6 +5544,7 @@ combined=read_csv(input_path,show_col_types=FALSE)
 if(validate_tracking_model_data(combined)!=width) stop('Requested interval width differs from input')
 offsets=seq(0,width-100,100)
 model_types=c('AR1','MA1','Independent')
+selected_model_type=tracking_selected_model_type()
 
 fit_offset=function(offset,model_type) {
   selected=tracking_offset_model_input(combined,response_metric,offset)
@@ -5651,7 +5653,7 @@ fit_overview=map_dfr(fits,function(x) tibble(metric=response_metric,offset=x$off
     akaike_weight=exp(-delta_AIC/2)/sum(exp(-delta_AIC/2)),aic_rank=min_rank(AIC)) |>
   ungroup() |> select(metric,offset,model_type,n_holocene,n_anthropocene,n,method,
     n_parameters,log_likelihood,AIC,delta_AIC,akaike_weight,aic_rank,correlation_parameter,converged)
-notes=c('PROVISIONAL: model distribution, covariance and inference are not scientifically anchored.',
+notes=c('MA1 covariance selected by the author on 2026-10-09; model development and inference remain exploratory.',
   paste('Response:',response_metric,'| Holocene interval / time step:',width,'years'),
   'Fixed effects: estimate ~ era * site; REML; separate residual SDs by era/site.',
   'Reference categories: Holocene and MORA. Coefficient units follow the selected response.',
@@ -5669,7 +5671,8 @@ notes=c('PROVISIONAL: model distribution, covariance and inference are not scien
   'Delta AIC is measured from the minimum within each offset; Akaike weights are relative to these three candidates only.',
   'Boxplots show within-offset delta AIC and summarize offset sensitivity, not independent samples; raw AIC remains in the CSV.',
   'REML is retained because these covariance comparisons use identical fixed effects and observations within each offset.',
-  'The comparison does not automatically select a covariance model or change the lake-sensitivity specifications.',
+  'The comparison retains all candidates; reported coefficients, contrasts and residuals use the author-selected MA1.',
+  'MA1 is competitive across offsets; AIC differences are small and do not uniquely identify the covariance structure.',
   'Coefficient intervals and park contrasts are unadjusted exploratory intervals/tests.',
   paste('Input:',basename(input_path),'| MD5:',unname(tools::md5sum(input_path))),
   paste('Script MD5:',unname(tools::md5sum(here('R/stages/10_tracking_era_models.R')))),
@@ -5684,35 +5687,38 @@ writeLines(c(notes,'','Fit overview:',capture.output(print(as.data.frame(fit_ove
   digits=8,row.names=FALSE)), '',
   unlist(map(fits,'text')),capture.output(sessionInfo())),file.path(out,'model_results.txt'))
 
-# Coefficient and contrast PDFs, plus one residual PDF for the entire offset run.
-model_colors=c(AR1='#2563eb',MA1='#d42d75',Independent='#64748b')
-coef_plot=ggplot(coefficients,aes(offset,estimate,color=model_type,group=model_type))+
+# Only the selected covariance is presented after the comparison figure.
+model_colors=tracking_model_colors()
+plot_coefficients=tracking_selected_model_results(coefficients)
+plot_contrasts=tracking_selected_model_results(contrasts)
+selected_fits=fits[vapply(fits,function(x) x$model_type==selected_model_type,logical(1))]
+coef_plot=ggplot(plot_coefficients,aes(offset,estimate))+
   geom_hline(yintercept=0,color='grey65',linetype='dashed')+
   geom_errorbar(aes(ymin=conf_low,ymax=conf_high),width=20,
-    position=position_dodge(width=30),linewidth=.4)+
-  geom_line(position=position_dodge(width=30),linewidth=.6)+
-  geom_point(position=position_dodge(width=30),size=2)+
-  facet_wrap(~term,scales='free_y',ncol=2)+scale_color_manual(values=model_colors)+
+    color=unname(model_colors[selected_model_type]),linewidth=.6)+
+  geom_line(color=unname(model_colors[selected_model_type]),linewidth=.6)+
+  geom_point(color=unname(model_colors[selected_model_type]),size=2.8)+
+  facet_wrap(~term,scales='free_y',ncol=2)+
   scale_x_continuous(breaks=offsets)+
-  labs(title=paste('Provisional GLS coefficients:',response_metric),
-    subtitle=paste(length(offsets),'offsets; AR(1), MA(1) and independent residuals; same fixed effects and variance groups'),
-    x='Bin offset (years)',y='Coefficient estimate',color='Residual model',
+  labs(title=paste('MA(1) coefficients:',response_metric),
+    subtitle=paste(length(offsets),'offsets; era × site; REML and separate era/site residual variances'),
+    x='Bin offset (years)',y='Coefficient estimate',
     caption='Points: coefficients; bars: unadjusted 95% t intervals. Reference: Holocene / MORA.\nOffsets reuse the same modern pairs and are sensitivity fits, not independent replicates.')+
-  theme_minimal(base_size=12)+theme(legend.position='bottom',
+  tracking_model_plot_theme()+theme(
     axis.text.x=element_text(angle=45,hjust=1))
-contrast_plot=ggplot(contrasts,aes(offset,estimate,color=model_type,group=model_type))+
+contrast_plot=ggplot(plot_contrasts,aes(offset,estimate))+
   geom_hline(yintercept=0,color='grey65',linetype='dashed')+
   geom_errorbar(aes(ymin=conf_low,ymax=conf_high),width=20,
-    position=position_dodge(width=30),linewidth=.4)+
-  geom_line(position=position_dodge(width=30),linewidth=.6)+
-  geom_point(position=position_dodge(width=30),size=2)+
-  facet_wrap(~site,scales='free_y',nrow=1)+scale_color_manual(values=model_colors)+
+    color=unname(model_colors[selected_model_type]),linewidth=.6)+
+  geom_line(color=unname(model_colors[selected_model_type]),linewidth=.6)+
+  geom_point(color=unname(model_colors[selected_model_type]),size=2.8)+
+  facet_wrap(~site,scales='free_y',nrow=1)+
   scale_x_continuous(breaks=offsets)+
-  labs(title=paste('Provisional era contrasts:',response_metric),
-    subtitle='Anthropocene minus Holocene within each park; AR(1), MA(1) and independent residuals at every offset',
-    x='Bin offset (years)',y='Anthropocene - Holocene',color='Residual model',
+  labs(title=paste('MA(1) era contrasts:',response_metric),
+    subtitle='Anthropocene minus Holocene within each park; selected MA(1) at every offset',
+    x='Bin offset (years)',y='Anthropocene - Holocene',
     caption='Points: model-based era contrasts; bars: unadjusted 95% intervals with Satterthwaite degrees of freedom.\nPositive estimates indicate higher Anthropocene responses. Parks have separate y-scales. Offsets reuse modern pairs and are sensitivity fits.')+
-  theme_minimal(base_size=12)+theme(legend.position='bottom',
+  tracking_model_plot_theme()+theme(
     axis.text.x=element_text(angle=45,hjust=1))
 
 # Pair each offset's three comparisons. Deterministic point displacement keeps
@@ -5731,14 +5737,14 @@ aic_plot=ggplot(aic_data,
   labs(title=paste('Within-offset covariance comparison:',response_metric),
     subtitle=paste(length(offsets),'offsets; same observations, fixed effects, REML and era/site residual variances within each offset'),
     x=NULL,y='AIC - minimum AIC within offset (lower is better)',
-    caption='Zero identifies the lowest AIC within each offset. Boxes summarize the configured offsets; dots are individual fits.\nGrey lines connect the same offset. Offsets reuse modern plots and are sensitivity fits, not independent replicates.\nRaw AIC values are retained in model_comparison.csv. Covariance selection remains a scientific decision.')+
+    caption='Zero identifies the lowest AIC within each offset. Boxes summarize offsets; dots are fits; grey lines connect the same offset.\nOffsets reuse modern plots and are sensitivity fits, not independent replicates. Raw AIC values remain in model_comparison.csv.\nMA(1) was selected by the author for reported analyses; the small AIC differences do not uniquely identify a covariance structure.')+
   theme_minimal(base_size=12)+theme(legend.position='none',panel.grid.minor=element_blank(),
     plot.title=element_text(size=17,face='bold'),plot.subtitle=element_text(size=11),
     plot.caption=element_text(size=10,hjust=0))
 group_colors=c(Holocene.MORA='#059669',Anthropocene.MORA='#2563eb',
   Holocene.NOCA='#c97710',Anthropocene.NOCA='#d42d75')
 residual_panels=list()
-for(x in fits) {
+for(x in selected_fits) {
   tag=paste('Offset',x$offset,'|',x$model_type)
   common=theme_minimal(base_size=8)+theme(legend.position='none',
     plot.title=element_text(size=9,face='bold'),plot.subtitle=element_text(size=7))
@@ -5761,10 +5767,10 @@ for(x in fits) {
     labs(title=tag,subtitle='Holocene residual lag products',x=paste0('Lag (',width,'-year steps)'),y='Lag product')+common
   residual_panels=c(residual_panels,list(p1,p2,p3))
 }
-residual_plot=wrap_plots(residual_panels,ncol=3*length(model_types))+plot_annotation(
-  title=paste('Provisional offset-model residual checks:',response_metric),
-  subtitle='One row per offset: scatter / Q-Q / lag products for AR(1), MA(1), then independent residuals',
-  caption='Colors: Holocene MORA green, Holocene NOCA orange, Anthropocene MORA blue, Anthropocene NOCA pink.\nHolocene lag products match actual within-lake time gaps; labels give pair counts. Modern singletons are excluded. No formal lag tests or confidence bands.\nGaussian GLS and covariance choices remain provisional; chronology uncertainty is not propagated.',
+residual_plot=wrap_plots(residual_panels,ncol=3)+plot_annotation(
+  title=paste('MA(1) offset-model residual checks:',response_metric),
+  subtitle='One row per offset: scatter / Q-Q / Holocene lag products for the selected MA(1)',
+  caption='Colors: Holocene MORA green, Holocene NOCA orange, Anthropocene MORA blue, Anthropocene NOCA pink.\nHolocene lag products match actual within-lake time gaps; labels give pair counts. Modern singletons are excluded. No formal lag tests or confidence bands.\nMA(1) selected; distribution and inference remain exploratory. Chronology uncertainty is not propagated.',
   theme=theme(plot.title=element_text(size=18,face='bold'),plot.subtitle=element_text(size=11),
     plot.caption=element_text(size=10,hjust=0)))
 figure_stem=paste0(response_metric,suffix)
@@ -5774,11 +5780,11 @@ if(render_figures) {
   ggsave(here('plot/test_figures',paste0('fig_tracking_model_contrasts_',figure_stem,'.pdf')),
     contrast_plot,width=13,height=7)
   ggsave(here('plot/test_figures',paste0('fig_tracking_model_residuals_',figure_stem,'.pdf')),
-    residual_plot,width=12*length(model_types),height=2.6*length(offsets)+1.5,limitsize=FALSE)
+    residual_plot,width=12,height=2.6*length(offsets)+1.5,limitsize=FALSE)
   ggsave(here('plot/test_figures',paste0('fig_tracking_model_aic_',figure_stem,'.pdf')),
     aic_plot,width=13,height=7)
 }
-cat('Saved',length(fits),'provisional fits;',nrow(coefficients),'coefficient rows and',
+cat('Saved',length(fits),'comparison fits; MA1 reported;',nrow(coefficients),'coefficient rows and',
   nrow(contrasts),'park contrasts in',out,'\n')
 # END R/stages/10_tracking_era_models.R
 
@@ -5793,6 +5799,7 @@ suppressPackageStartupMessages({
 })
 source(here('R/helpers/tracking_data.R'),local=TRUE)
 source(here('R/helpers/tracking_model_data.R'),local=TRUE)
+source(here('R/helpers/tracking_model_reporting.R'),local=TRUE)
 render_figures=isTRUE(getOption('paleoaces.render_figures',TRUE))
 argument=function(name,default) {
   prefix=paste0('--',name,'=')
@@ -5810,6 +5817,7 @@ combined=read_csv(input_path,show_col_types=FALSE)
 if(validate_tracking_model_data(combined)!=width) stop('Requested width differs from input')
 lakes=combined |> filter(era=='Holocene') |> distinct(site,lake) |> arrange(site,lake)
 model_types=c('AR1','MA1')
+selected_model_type=tracking_selected_model_type()
 
 fit_lake=function(lake,model_type) {
   selected=tracking_lake_model_input(combined,response_metric,lake,offset)
@@ -5878,11 +5886,12 @@ out=here('output/exploratory/tracking_lake_sensitivity',paste0(response_metric,s
 dir.create(out,recursive=TRUE,showWarnings=FALSE)
 write_csv(coefficients,file.path(out,'model_coefficients.csv'))
 write_csv(contrasts,file.path(out,'model_contrasts.csv'))
-notes=c('Lake sensitivity; statistical model choices remain provisional.',
+notes=c('Lake sensitivity; MA1 selected by the author on 2026-10-09; inference remains exploratory.',
   paste('Response:',response_metric,'| Offset:',offset,'| Holocene interval:',width,'years'),
   'Each fit compares one Holocene lake with all finite modern responses from the same park.',
   'Constant site is removed: estimate ~ era; REML; separate residual variances by era.',
   'AR1 or MA1 correlation retains actual within-lake gaps; modern pairs are singleton series.',
+  'Comparison records retain AR1 and MA1; reported lake coefficients and contrasts use only the selected MA1.',
   'MORA lake fits reuse the same modern plots; they are not independent comparisons.',
   'Near-boundary fits are retained and flagged when the absolute correlation parameter exceeds 0.98.',
   'No chronology propagation, support cutoff, lake random effect or climate/fire fixed effects.',
@@ -5896,31 +5905,32 @@ lake_labels=c(JayBath='Jay Bath',LogWallow='Log Wallow',ReflectionPond='Reflecti
 counts=contrasts |> distinct(lake,site,n_holocene,n_anthropocene)
 counts$label=paste0(unname(lake_labels[counts$lake]),' (',counts$site,')\n',
   counts$n_holocene,' Holocene / ',counts$n_anthropocene,' modern')
-plot_coefficients=coefficients |> left_join(counts |> select(lake,label),by='lake',relationship='many-to-one')
-plot_contrasts=contrasts |> left_join(counts |> select(lake,label),by='lake',relationship='many-to-one')
+plot_coefficients=tracking_selected_model_results(coefficients) |>
+  left_join(counts |> select(lake,label),by='lake',relationship='many-to-one')
+plot_contrasts=tracking_selected_model_results(contrasts) |>
+  left_join(counts |> select(lake,label),by='lake',relationship='many-to-one')
 plot_coefficients$label=factor(plot_coefficients$label,levels=rev(counts$label))
 plot_contrasts$label=factor(plot_contrasts$label,levels=rev(counts$label))
 plot_coefficients$term=factor(plot_coefficients$term,levels=c('(Intercept)','eraAnthropocene'),
   labels=c('Holocene mean (intercept)','Anthropocene - Holocene (era coefficient)'))
-colors=c(AR1='#2563eb',MA1='#d42d75')
-base_plot=function(tbl) ggplot(tbl,aes(estimate,label,color=model_type,group=model_type))+
+colors=tracking_model_colors()
+base_plot=function(tbl) ggplot(tbl,aes(estimate,label))+
   geom_vline(xintercept=0,linetype='dashed',color='grey60')+
   geom_errorbar(aes(xmin=conf_low,xmax=conf_high),orientation='y',width=.2,
-    position=position_dodge(width=.5),linewidth=.6)+
-  geom_point(aes(shape=near_correlation_boundary),position=position_dodge(width=.5),size=2.8)+
-  scale_color_manual(values=colors)+
+    color=unname(colors[selected_model_type]),linewidth=.6)+
+  geom_point(aes(shape=near_correlation_boundary),color=unname(colors[selected_model_type]),size=2.8)+
   scale_shape_manual(values=c('FALSE'=16,'TRUE'=17),labels=c('FALSE'='No','TRUE'='Yes'))+
-  theme_minimal(base_size=12)+theme(legend.position='bottom',plot.caption=element_text(hjust=0,size=10))
+  tracking_model_plot_theme()
 coef_plot=base_plot(plot_coefficients)+facet_wrap(~term,scales='free_x',nrow=1)+
-  labs(title=paste('Lake sensitivity coefficients:',response_metric),
+  labs(title=paste('MA(1) lake sensitivity coefficients:',response_metric),
     subtitle=paste('Offset',offset,'; each lake compared with modern pairs from its own park'),
-    x='Coefficient estimate',y=NULL,color='Residual model',shape='Near boundary',
-    caption='Bars: unadjusted 95% t intervals. Coefficient panels use separate x-scales.\nTriangles flag absolute correlation parameters > 0.98. MORA fits reuse the same modern plots; models remain provisional.')
+    x='Coefficient estimate',y=NULL,shape='Near boundary',
+    caption='Bars: unadjusted 95% t intervals. Coefficient panels use separate x-scales.\nTriangles flag absolute correlation parameters > 0.98. MORA fits reuse modern plots. MA(1) selected; inference remains exploratory.')
 contrast_plot=base_plot(plot_contrasts)+
-  labs(title=paste('Lake sensitivity era contrasts:',response_metric),
+  labs(title=paste('MA(1) lake sensitivity era contrasts:',response_metric),
     subtitle=paste('Offset',offset,'; Anthropocene minus Holocene within each lake/park comparison'),
-    x='Anthropocene - Holocene',y=NULL,color='Residual model',shape='Near boundary',
-    caption='Bars: unadjusted 95% intervals with Satterthwaite degrees of freedom.\nTriangles flag absolute correlation parameters > 0.98. Only 6-10 Holocene transitions support primary fits; models remain provisional.')
+    x='Anthropocene - Holocene',y=NULL,shape='Near boundary',
+    caption='Bars: unadjusted 95% intervals with Satterthwaite degrees of freedom.\nTriangles flag absolute correlation parameters > 0.98. Only 6-10 Holocene transitions support primary fits; inference remains exploratory.')
 if(render_figures) {
   stem=paste0(response_metric,suffix,'_offset_',offset)
   ggsave(here('plot/test_figures',paste0('fig_tracking_lake_coefficients_',stem,'.pdf')),coef_plot,width=14,height=7.5)

@@ -43,7 +43,7 @@ verbatim for reading. Run the workflow for an analysis rebuild.
 | 14–15 | Fire catalog and climate eras | [12_walsh_fire_reproduction.R](../R/stages/12_walsh_fire_reproduction.R); [13_holocene_climate_fire_eras.R](../R/stages/13_holocene_climate_fire_eras.R) |
 | 16 | Canonical lake/plot tracking | [09_tracking_metrics.R](../R/stages/09_tracking_metrics.R) |
 | 17 | Combined transition input | [09b_tracking_model_data.R](../R/stages/09b_tracking_model_data.R) |
-| 18 | Provisional offset GLS comparisons | [10_tracking_era_models.R](../R/stages/10_tracking_era_models.R) |
+| 18 | Covariance comparison and selected MA1 | [10_tracking_era_models.R](../R/stages/10_tracking_era_models.R) |
 | 19 | Offset-0 lake sensitivity | [10a_tracking_lake_sensitivity.R](../R/stages/10a_tracking_lake_sensitivity.R) |
 | 20 | Community trajectories: Figure 3 | [05a_cca_figure.R](../R/stages/05a_cca_figure.R) |
 | 21–22 | Tracking and fire-detection examples | [09a_tracking_example_and_visualizations.R](../R/stages/09a_tracking_example_and_visualizations.R); [12a_fire_event_detection_worked_example.R](../R/stages/12a_fire_event_detection_worked_example.R) |
@@ -968,9 +968,9 @@ each offset, considering lake identity and temporal dependence during later
 model development. Adjacent transitions share endpoint information.
 There are approximately 5–6 majority-supported transitions per MORA lake per
 offset and 9–10 for Panther Potholes. Four lakes and two fire histories provide
-limited independent support for a later three-way interaction. Provisional
-AR1/MA1/independent GLS comparisons are shown below; final distributions, covariance choices
-and lake/chronology uncertainty treatment remain open.
+limited independent support for a later three-way interaction. The covariance
+comparison and chosen MA(1) results are shown below; distributions and
+lake/chronology uncertainty treatment remain open.
 
 Each MORA vegetation lake uses its own climate but shares regional fire exposure.
 Numerators and core maxima use fully covered windows of identical duration and
@@ -1124,107 +1124,162 @@ Figures 2 and 3 and the lake/plot tracking datasets use the updated inputs.
 
 [Full survey decision effects table](assets/analysis/tables/survey_decision_effects.csv).
 
-## Provisional offset GLS comparisons
+## Residual covariance comparison
 
-[Stage 10](../R/stages/10_tracking_era_models.R) fits lag-change rate separately
-at offsets 0–900 years, using actual 1,000-year transitions plus all 607 modern
-pairs. AR1, MA1 and independent residuals share the same `estimate ~ era * site` fixed effects, REML
-and separate era/site residual variances. All 30 fits converged in the current
-run. The [120 coefficient rows](assets/analysis/tables/tracking_model_coefficients.csv)
-flag offset and `model_type` and include standard errors, unadjusted 95% t
-intervals, group counts and the fitted correlation parameter.
+[Stage 10](../R/stages/10_tracking_era_models.R) compares three Gaussian GLS
+structures for lag-change rate at each offset from 0 to 900 years. Within an
+offset, all candidates use exactly the same actual 1,000-year Holocene
+transitions and 607 modern pairs, the same `era * site` fixed effects, REML,
+and separate residual variances for the four era/site groups. All 30 fits
+converged. The following focused specifications show the three structures;
+`d` is the finite-response dataset for one offset, prepared by
+[tracking_offset_model_input()](../R/helpers/tracking_model_data.R).
 
-The [60 park contrasts](assets/analysis/tables/tracking_model_contrasts.csv)
-compare Anthropocene minus Holocene within MORA and within NOCA for every
-offset and covariance type. Positive estimates indicate a higher Anthropocene
-lag-change rate. Their unadjusted 95% intervals use Satterthwaite degrees of
-freedom. The contrast figure places all three covariance types together in each park panel.
+### AR(1)
 
-MA1 restricts residual correlation to observations one actual time step apart
-within a lake; missing transitions retain their original indices. Modern pairs
-are singleton series. AR1 permits longer-lag correlation. The independent
-candidate retains era/site residual variances with `correlation=NULL`. AIC comparisons are
-between covariance types within the same offset; the ten offsets are sensitivity
-fits that reuse modern pairs. These models do not propagate chronology uncertainty,
-add lake random intercepts or include climate/fire fixed effects. Their covariance,
-distribution and inference remain provisional.
+```r
+m_ar1 <- nlme::gls(
+  estimate ~ era * site, data = d,
+  correlation = nlme::corAR1(form = ~ time_index | series),
+  weights = nlme::varIdent(form = ~ 1 | era_site),
+  method = "REML", na.action = na.fail,
+  control = nlme::glsControl(msMaxIter = 200)
+)
+```
+
+### MA(1)
+
+```r
+m_ma1 <- nlme::gls(
+  estimate ~ era * site, data = d,
+  correlation = nlme::corARMA(p = 0, q = 1, form = ~ time_index | series),
+  weights = nlme::varIdent(form = ~ 1 | era_site),
+  method = "REML", na.action = na.fail,
+  control = nlme::glsControl(msMaxIter = 200)
+)
+```
+
+### No temporal autocorrelation
+
+```r
+m_independent <- nlme::gls(
+  estimate ~ era * site, data = d,
+  correlation = NULL,
+  weights = nlme::varIdent(form = ~ 1 | era_site),
+  method = "REML", na.action = na.fail,
+  control = nlme::glsControl(msMaxIter = 200)
+)
+```
 
 The [30 fit comparisons](assets/analysis/tables/tracking_model_comparison.csv)
-include likelihoods, parameter counts, AIC, within-offset ΔAIC and relative
-Akaike weights. The AIC figure shows only paired within-offset ΔAIC boxplots;
-raw AIC values remain in the CSV.
-Select using comparisons within the same offset: raw AICs across offsets
-involve different observations, and the offsets are not independent samples.
+record restricted likelihoods, parameter counts, AIC, within-offset ΔAIC,
+relative Akaike weights and ranks. ΔAIC is each candidate's AIC minus the
+minimum for that same offset. Offsets are sensitivity realizations that reuse
+modern plots; AICs are compared within an offset, where observations agree.
 MA1 has the lowest AIC at five offsets, independent residuals at four and AR1
-at one. AR1–MA1 differences are below 1.2 AIC units at all offsets. No candidate
-is automatically selected.
-
-[Complete results for all offset/covariance fits](assets/analysis/model_results.txt).
-
-### Compare provisional AR1, MA1 and independent-residual coefficients across all ten offsets
-
-Lag-change rate is fitted with identical era-by-site fixed effects, REML and era/site residual variances for each offset and covariance type. Points show coefficients and bars unadjusted 95% t intervals. Offsets reuse the same modern plots and are sensitivity fits, not independent replications. **Provisional**.
-
-Script: [10_tracking_era_models.R](../R/stages/10_tracking_era_models.R). [Complete PDF](../plot/test_figures/fig_tracking_model_coefficients_lag_rate_per_century.pdf) (1 page).
-
-![Compare provisional AR1, MA1 and independent-residual coefficients across all ten offsets. — PDF page 1](assets/analysis/tracking_model_coefficients-p1.png)
-
-### Compare Anthropocene minus Holocene within each park across offsets and covariance choices
-
-Each MORA/NOCA panel shows model-based era contrasts for AR1, MA1 and independent residuals at all ten offsets. Positive estimates indicate higher Anthropocene lag-change rates. Bars are unadjusted 95% intervals using Satterthwaite degrees of freedom; park panels have separate y-scales. Offsets reuse modern pairs and are sensitivity fits, not independent replications. Inference remains provisional. **Provisional**.
-
-Script: [10_tracking_era_models.R](../R/stages/10_tracking_era_models.R). [Complete PDF](../plot/test_figures/fig_tracking_model_contrasts_lag_rate_per_century.pdf) (1 page).
-
-![Compare Anthropocene minus Holocene within each park across offsets and covariance choices. — PDF page 1](assets/analysis/tracking_model_contrasts-p1.png)
-
-### Evaluate residuals for all three covariance models at every offset
-
-Each offset row shows AR1 scatter, normal Q-Q and Holocene residual lag products, then the same three checks for MA1 and independent residuals. Normalized residuals account for the fitted variance/correlation structure. Lag products preserve actual within-lake gaps and exclude modern singleton series; pair counts are shown, without formal tests. Only 26–30 Holocene transitions support each fit; covariance and distribution remain provisional. **Provisional**.
-
-Script: [10_tracking_era_models.R](../R/stages/10_tracking_era_models.R). [Complete PDF](../plot/test_figures/fig_tracking_model_residuals_lag_rate_per_century.pdf) (1 page).
-
-![Evaluate residuals for all three covariance models at every offset. — PDF page 1](assets/analysis/tracking_model_residuals-p1.png)
+at one. All three candidates are within two AIC units at nine of ten offsets.
 
 ### Compare AR1, MA1 and no temporal autocorrelation using AIC across all ten offsets
 
-Boxes summarize within-offset delta AIC; raw AIC values remain in the comparison CSV; dots show each fit and lines link the same offset. All candidates within an offset share observations, fixed effects, REML and era/site residual variances. Use paired within-offset differences for selection: offsets have different observations and are sensitivity fits, not independent replicates. MA1 minimizes AIC at five offsets, independent residuals at four and AR1 at one; AR1-MA1 differences remain below 1.2. No covariance choice is automatically selected. **Provisional covariance comparison**.
+Boxes summarize within-offset delta AIC; raw values remain in the comparison CSV. Dots show each fit and lines link the same offset. Candidates within an offset share observations, fixed effects, REML and era/site residual variances. MA1 minimizes AIC at five offsets, independent residuals at four and AR1 at one; all three candidates are within two AIC units at nine offsets. The author chose MA1 for reported analyses; the small AIC differences do not uniquely identify a covariance structure. **Covariance comparison; MA1 selected**.
 
 Script: [10_tracking_era_models.R](../R/stages/10_tracking_era_models.R). [Complete PDF](../plot/test_figures/fig_tracking_model_aic_lag_rate_per_century.pdf) (1 page).
 
 ![Compare AR1, MA1 and no temporal autocorrelation using AIC across all ten offsets. — PDF page 1](assets/analysis/tracking_model_aic-p1.png)
 
-## Offset-0 lake sensitivity
+**We chose MA(1) for the reported lag-change analyses.** This is the author's
+covariance decision following the comparison above. MA1 accommodates residual
+dependence between immediately neighboring transitions, which share endpoint
+information, while setting correlation beyond one actual time step to zero.
+The small AIC differences provide limited separation between candidates;
+this choice does not imply that AIC uniquely identified MA1. Missing time
+steps retain their original indices, and modern plot pairs are singleton series.
+The selected covariance is recorded in
+[tracking_model_reporting.R](../R/helpers/tracking_model_reporting.R).
+
+## MA(1) coefficients and contrasts across offsets
+
+The figures below show **MA(1) only**, fitted separately at each of the ten
+alternative bin placements. They display 40 coefficients and 20 within-park
+era contrasts. The full [coefficient](assets/analysis/tables/tracking_model_coefficients.csv)
+and [contrast](assets/analysis/tables/tracking_model_contrasts.csv) calculation
+records retain the comparison candidates; select `model_type == "MA1"` for
+these reported results. The reference categories are Holocene and MORA.
+
+Contrasts are Anthropocene minus Holocene within MORA and within NOCA.
+Positive values indicate higher Anthropocene lag-change rates. Coefficient
+bars are unadjusted 95% t intervals; contrast bars use Satterthwaite degrees
+of freedom. Points and intervals use the same MA1 color in the offset and
+lake figures. Offsets are alternative sensitivity fits, not independent
+replicates, and are not pooled into one coefficient or contrast.
+
+### MA(1) coefficients across all ten offsets
+
+Only the selected MA1 covariance is shown: four coefficients at each offset for era-by-site fixed effects, with REML and separate era/site residual variances. Points show estimates and bars unadjusted 95% t intervals. Reference categories are Holocene and MORA. Offsets reuse modern plots and are alternative sensitivity fits, not independent replicates. Comparison fits remain in the calculation records. **MA1 selected; exploratory inference**.
+
+Script: [10_tracking_era_models.R](../R/stages/10_tracking_era_models.R). [Complete PDF](../plot/test_figures/fig_tracking_model_coefficients_lag_rate_per_century.pdf) (1 page).
+
+![MA(1) coefficients across all ten offsets. — PDF page 1](assets/analysis/tracking_model_coefficients-p1.png)
+
+### MA(1) Anthropocene-minus-Holocene contrasts across offsets within each park
+
+Only MA1 contrasts are shown, with separate MORA/NOCA panels. Positive values indicate higher Anthropocene lag-change rates. Bars show unadjusted 95% intervals with Satterthwaite degrees of freedom; park panels have separate y-scales. The ten offsets reuse modern pairs and are sensitivity fits, not independent replicates. **MA1 selected; exploratory inference**.
+
+Script: [10_tracking_era_models.R](../R/stages/10_tracking_era_models.R). [Complete PDF](../plot/test_figures/fig_tracking_model_contrasts_lag_rate_per_century.pdf) (1 page).
+
+![MA(1) Anthropocene-minus-Holocene contrasts across offsets within each park. — PDF page 1](assets/analysis/tracking_model_contrasts-p1.png)
+
+[Complete results for all offset/covariance fits](assets/analysis/model_results.txt).
+
+## MA(1) lake comparisons at offset 0
 
 [Stage 10a](../R/stages/10a_tracking_lake_sensitivity.R) compares each Holocene
-lake separately with modern plots from its own park under AR1 and MA1. The
-eight fits use `estimate ~ era`, REML, era-specific residual variances and the
-original time gaps. The [16 coefficient rows](assets/analysis/tables/tracking_lake_coefficients.csv)
-and [eight contrasts](assets/analysis/tables/tracking_lake_contrasts.csv) retain
-lake identity, sample counts and correlation-boundary flags.
+lake with modern pairs from its own park at **offset 0 only**. These figures
+show four MA(1) fits: eight coefficients and four era contrasts. The formula
+is `estimate ~ era`, with REML and era-specific residual variances, since
+park is constant within each lake comparison. Original time gaps are retained.
+The [coefficient](assets/analysis/tables/tracking_lake_coefficients.csv) and
+[contrast](assets/analysis/tables/tracking_lake_contrasts.csv) records retain
+AR1 sensitivity fits as an audit; the displayed results use MA1 only.
 
 Reflection Pond and Panther Potholes MA1 fits approach the parameter boundary;
 triangles identify absolute parameters above 0.98. These fits are retained.
-MORA lake comparisons reuse the same modern plots and are overlapping
-sensitivities. The workflow runs this sensitivity at offset 0 only, without
-choosing a final covariance model or maintaining MA(2).
+MORA comparisons reuse the same 330 modern plots and are overlapping
+sensitivities. Each lake provides only 6–10 Holocene transitions at offset 0.
+MA(2) is outside the maintained workflow.
 
-[Complete offset-0 lake sensitivity results](assets/analysis/lake_model_results.txt).
+### MA(1) individual-lake coefficients at offset 0
 
-### Compare individual-lake offset-0 coefficients under AR1 and MA1
-
-Each Holocene lake is compared with all finite modern responses from its own park. Fits use era fixed effects, REML, AR1/MA1 and separate residual variances by era. Bars show unadjusted 95% intervals. Triangles flag absolute correlation parameters above 0.98; Reflection Pond and Panther Potholes MA1 fits are near the boundary. MORA comparisons reuse modern plots and are not independent. Statistical choices remain provisional. **Provisional lake sensitivity**.
+Only MA1 is shown at offset 0: each Holocene lake is compared with modern responses from its own park, using era fixed effects, REML and separate residual variances by era. Bars show unadjusted 95% intervals. Triangles flag absolute correlation parameters above 0.98; Reflection Pond and Panther Potholes MA1 fits approach the boundary and are retained. MORA comparisons reuse modern plots and are overlapping sensitivities. AR1 fits remain in the calculation audit. **MA1 selected; offset-0 sensitivity**.
 
 Script: [10a_tracking_lake_sensitivity.R](../R/stages/10a_tracking_lake_sensitivity.R). [Complete PDF](../plot/test_figures/fig_tracking_lake_coefficients_lag_rate_per_century_offset_0.pdf) (1 page).
 
-![Compare individual-lake offset-0 coefficients under AR1 and MA1. — PDF page 1](assets/analysis/tracking_lake_coefficients-p1.png)
+![MA(1) individual-lake coefficients at offset 0. — PDF page 1](assets/analysis/tracking_lake_coefficients-p1.png)
 
-### Compare Anthropocene minus Holocene separately for each lake at offset 0
+### MA(1) Anthropocene-minus-Holocene lake contrasts at offset 0
 
-Each Holocene lake is compared with all finite modern responses from its own park. Fits use era fixed effects, REML, AR1/MA1 and separate residual variances by era. Bars show unadjusted 95% intervals. Triangles flag absolute correlation parameters above 0.98; Reflection Pond and Panther Potholes MA1 fits are near the boundary. MORA comparisons reuse modern plots and are not independent. Statistical choices remain provisional. **Provisional lake sensitivity**.
+Only MA1 is shown at offset 0: each Holocene lake is compared with modern responses from its own park, using era fixed effects, REML and separate residual variances by era. Bars show unadjusted 95% intervals. Triangles flag absolute correlation parameters above 0.98; Reflection Pond and Panther Potholes MA1 fits approach the boundary and are retained. MORA comparisons reuse modern plots and are overlapping sensitivities. AR1 fits remain in the calculation audit. **MA1 selected; offset-0 sensitivity**.
 
 Script: [10a_tracking_lake_sensitivity.R](../R/stages/10a_tracking_lake_sensitivity.R). [Complete PDF](../plot/test_figures/fig_tracking_lake_contrasts_lag_rate_per_century_offset_0.pdf) (1 page).
 
-![Compare Anthropocene minus Holocene separately for each lake at offset 0. — PDF page 1](assets/analysis/tracking_lake_contrasts-p1.png)
+![MA(1) Anthropocene-minus-Holocene lake contrasts at offset 0. — PDF page 1](assets/analysis/tracking_lake_contrasts-p1.png)
+
+[Complete offset-0 lake sensitivity results](assets/analysis/lake_model_results.txt).
+
+### MA(1) residual checks
+
+### Residual checks for the selected MA(1) at every offset
+
+Each offset row shows MA1 scatter, normal Q-Q and Holocene residual lag products. Normalized residuals account for the fitted variance/correlation structure. Lag products preserve actual within-lake gaps and exclude modern singleton series; pair counts are shown without formal tests. Only 26–30 Holocene transitions support each offset fit. Distribution and uncertainty treatment remain exploratory. **MA1 selected; exploratory inference**.
+
+Script: [10_tracking_era_models.R](../R/stages/10_tracking_era_models.R). [Complete PDF](../plot/test_figures/fig_tracking_model_residuals_lag_rate_per_century.pdf) (1 page).
+
+![Residual checks for the selected MA(1) at every offset. — PDF page 1](assets/analysis/tracking_model_residuals-p1.png)
+
+MA1 is the chosen covariance structure for these results. Distribution,
+lake effects, response inclusion and chronology uncertainty treatment remain
+subjects for later model development. These fits do not propagate chronology
+uncertainty or add lake random intercepts or climate/fire fixed effects.
 
 ## Limitations and remaining questions
 
@@ -1276,12 +1331,12 @@ current-results analysis.
 | [fig_tracking_offset_rates.pdf](../plot/test_figures/fig_tracking_offset_rates.pdf) | Compare tracking responses, climate and fire under established regional climate-period bands, with Anthropocene boxplots. | [09a_tracking_example_and_visualizations.R](../R/stages/09a_tracking_example_and_visualizations.R) | 1 | current |
 | [fig_tracking_offset_ratios_angles.pdf](../plot/test_figures/fig_tracking_offset_ratios_angles.pdf) | Compare magnitude tracking ratio, angle, climate and fire under the same regional climate-period bands, one variable per row. | [09a_tracking_example_and_visualizations.R](../R/stages/09a_tracking_example_and_visualizations.R) | 1 | current |
 | [test_chelsa_cruts_vs_present.pdf](../plot/test_figures/test_chelsa_cruts_vs_present.pdf) | Retain the older product-comparison reference outside current results. | [test_chelsa_cruts_vs_present.R](../R/diagnostics/test_chelsa_cruts_vs_present.R) | Full PDF only | historical reference |
-| [fig_tracking_model_coefficients_lag_rate_per_century.pdf](../plot/test_figures/fig_tracking_model_coefficients_lag_rate_per_century.pdf) | Compare provisional AR1, MA1 and independent-residual coefficients across all ten offsets. | [10_tracking_era_models.R](../R/stages/10_tracking_era_models.R) | 1 | provisional |
-| [fig_tracking_model_contrasts_lag_rate_per_century.pdf](../plot/test_figures/fig_tracking_model_contrasts_lag_rate_per_century.pdf) | Compare Anthropocene minus Holocene within each park across offsets and covariance choices. | [10_tracking_era_models.R](../R/stages/10_tracking_era_models.R) | 1 | provisional |
-| [fig_tracking_model_residuals_lag_rate_per_century.pdf](../plot/test_figures/fig_tracking_model_residuals_lag_rate_per_century.pdf) | Evaluate residuals for all three covariance models at every offset. | [10_tracking_era_models.R](../R/stages/10_tracking_era_models.R) | 1 | provisional |
-| [fig_tracking_model_aic_lag_rate_per_century.pdf](../plot/test_figures/fig_tracking_model_aic_lag_rate_per_century.pdf) | Compare AR1, MA1 and no temporal autocorrelation using AIC across all ten offsets. | [10_tracking_era_models.R](../R/stages/10_tracking_era_models.R) | 1 | provisional covariance comparison |
-| [fig_tracking_lake_coefficients_lag_rate_per_century_offset_0.pdf](../plot/test_figures/fig_tracking_lake_coefficients_lag_rate_per_century_offset_0.pdf) | Compare individual-lake offset-0 coefficients under AR1 and MA1. | [10a_tracking_lake_sensitivity.R](../R/stages/10a_tracking_lake_sensitivity.R) | 1 | provisional lake sensitivity |
-| [fig_tracking_lake_contrasts_lag_rate_per_century_offset_0.pdf](../plot/test_figures/fig_tracking_lake_contrasts_lag_rate_per_century_offset_0.pdf) | Compare Anthropocene minus Holocene separately for each lake at offset 0. | [10a_tracking_lake_sensitivity.R](../R/stages/10a_tracking_lake_sensitivity.R) | 1 | provisional lake sensitivity |
+| [fig_tracking_model_coefficients_lag_rate_per_century.pdf](../plot/test_figures/fig_tracking_model_coefficients_lag_rate_per_century.pdf) | MA(1) coefficients across all ten offsets. | [10_tracking_era_models.R](../R/stages/10_tracking_era_models.R) | 1 | MA1 selected; exploratory inference |
+| [fig_tracking_model_contrasts_lag_rate_per_century.pdf](../plot/test_figures/fig_tracking_model_contrasts_lag_rate_per_century.pdf) | MA(1) Anthropocene-minus-Holocene contrasts across offsets within each park. | [10_tracking_era_models.R](../R/stages/10_tracking_era_models.R) | 1 | MA1 selected; exploratory inference |
+| [fig_tracking_model_residuals_lag_rate_per_century.pdf](../plot/test_figures/fig_tracking_model_residuals_lag_rate_per_century.pdf) | Residual checks for the selected MA(1) at every offset. | [10_tracking_era_models.R](../R/stages/10_tracking_era_models.R) | 1 | MA1 selected; exploratory inference |
+| [fig_tracking_model_aic_lag_rate_per_century.pdf](../plot/test_figures/fig_tracking_model_aic_lag_rate_per_century.pdf) | Compare AR1, MA1 and no temporal autocorrelation using AIC across all ten offsets. | [10_tracking_era_models.R](../R/stages/10_tracking_era_models.R) | 1 | covariance comparison; MA1 selected |
+| [fig_tracking_lake_coefficients_lag_rate_per_century_offset_0.pdf](../plot/test_figures/fig_tracking_lake_coefficients_lag_rate_per_century_offset_0.pdf) | MA(1) individual-lake coefficients at offset 0. | [10a_tracking_lake_sensitivity.R](../R/stages/10a_tracking_lake_sensitivity.R) | 1 | MA1 selected; offset-0 sensitivity |
+| [fig_tracking_lake_contrasts_lag_rate_per_century_offset_0.pdf](../plot/test_figures/fig_tracking_lake_contrasts_lag_rate_per_century_offset_0.pdf) | MA(1) Anthropocene-minus-Holocene lake contrasts at offset 0. | [10a_tracking_lake_sensitivity.R](../R/stages/10a_tracking_lake_sensitivity.R) | 1 | MA1 selected; offset-0 sensitivity |
 
 ## TraCE21k–V2.1 comparison and planned sensitivity
 

@@ -97,8 +97,8 @@ flowchart TD
   CCA --> ER[13 unified climate eras/fire classification]
   ER --> TM1
   TM1 --> MD[09b combined transition model input]
-  MD --> GLS[10 provisional AR1, MA1 and independent models by offset]
-  MD --> LS[10a offset-0 lake sensitivity under AR1 and MA1]
+  MD --> GLS[10 covariance comparison and selected MA1 by offset]
+  MD --> LS[10a selected MA1 lake reporting at offset 0]
   TM1 --> TV[09a tracking plots with climate bands]
   ER --> TV
   PE --> ER
@@ -128,8 +128,8 @@ flowchart TD
 | 10d | `R/stages/13_holocene_climate_fire_eras.R` | Authoritative literature-blind climate-era and independent high-fire classification | Native pond climate, pooled legacy CCA scaling, stage-12 source series/events | Four-variable signed 1,000-year changes, thresholds, frozen CC/S grid/catalog, subphases, composite, normalized fire frequency/high-fire runs, and audit tables |
 | 10e | `R/stages/09_tracking_metrics.R` | Canonical lake/plot tracking | Published CCA reference, cached whole draws, own-lake climate, accepted charcoal events and coverage, cleaned plot coordinates | Compact 23/21-column model tables, long uncertainty, lake/modern calculation audits, seven-response reporting and support; base schema dictionary |
 | 10f | `R/stages/09b_tracking_model_data.R` | Combined transition model input | Canonical 23/21-column source tables, lake and cleaned plot coordinates | One 28-column long input with actual lake/offset transitions and modern pairs stored once per response; completed schema dictionary |
-| 10g | `R/stages/10_tracking_era_models.R` | Maintained provisional offset GLS exploration | Combined transition input only | Ten separate offsets × AR1/MA1/Independent; coefficient, within-park contrast and paired AIC comparison CSVs, one full results TXT, coefficient/contrast/residual PDFs and within-offset ΔAIC boxplots when rendering; lag-change rate initially |
-| 10g-a | `R/stages/10a_tracking_lake_sensitivity.R` | Maintained offset-0 lake sensitivity | Combined transition input only | Four lakes × AR1/MA1; each lake versus its park's modern pairs; 16 coefficient rows, eight contrasts, one results TXT and two PDFs; near-boundary fits retained and flagged |
+| 10g | `R/stages/10_tracking_era_models.R` | Maintained provisional offset GLS exploration | Combined transition input only | Ten separate offsets × AR1/MA1/Independent; coefficient, within-park contrast and paired AIC comparison CSVs, one full results TXT, MA1-only coefficient/contrast/residual PDFs and three-candidate within-offset ΔAIC boxplots when rendering; lag-change rate initially |
+| 10g-a | `R/stages/10a_tracking_lake_sensitivity.R` | Maintained offset-0 lake sensitivity | Combined transition input only | Four lakes × AR1/MA1; each lake versus its park's modern pairs; 16 coefficient rows, eight contrasts, one results TXT and two PDFs; MA1-only figures show eight coefficients and four contrasts; near-boundary fits retained and flagged |
 | 10h | `R/stages/05a_cca_figure.R` | Selected CCA trajectory data and main render | Model, positioned Holocene samples, stage-13 frozen CC/S grid | `cca_trajectory_era_centroids.csv` and, when rendering, main-paper `fig_cca_trajectories.pdf/.png` |
 | 10i | `R/stages/09a_tracking_example_and_visualizations.R` | Tracking example and visualizations | Canonical lake realizations, lake-by-offset responses/predictors, reporting grid, aligned predictor medians reconstructed from source transitions, modern paired-plot model input and stage-13 frozen climate-era catalog/subphases | Three diagnostic PDFs: worked geometry and two tracking/climate/fire grids with four lake columns, established regional CC/S bands and CC1 subdivisions, complete-offset medians and an Anthropocene MORA/NOCA boxplot column |
 | 10j | `R/stages/12a_fire_event_detection_worked_example.R` | Accepted-event detection for all four cores | All-`tapas` source series with local thresholds, candidate/count-screen flags, and accepted events | `fire_event_detection_lake_audit.csv` and, when rendering, a PDF with all four residual/threshold plots on one page, alongside settings and the software comparison |
@@ -156,6 +156,7 @@ Both dates must pass eligibility before the legacy observation enters fitting.
 | `R/helpers/config.R` | Species threshold 20, active climate variables, units, fire interval, cache fingerprints |
 | `R/helpers/functions.R` | Occurrence/turnover helpers; only `occurrence == 1` is presence |
 | `R/helpers/climate_variables.R` | Central seasonal climate derivation |
+| `R/helpers/tracking_model_reporting.R` | Author-selected MA1 covariance, result filtering, shared colors and plot theme |
 | `R/helpers/tracking_model_data.R` | Combined 28-column assembly, era-specific missingness, coordinate identities and response-specific offset selection |
 | `R/helpers/tracking_metrics.R` | Focused vector geometry, guarded internal angle calculation, physical-climate rates and validity flags |
 | `R/helpers/fire_detection_functions.R` | Shared all-core tapas preparation/detection, record settings, series, count-screen, and accepted-event extraction |
@@ -277,13 +278,15 @@ with AR1, MA1 and independent residuals while retaining all finite selected
 responses. Each offset uses identical observations, fixed effects and era/site
 variances across its three covariance candidates. The comparison CSV exports
 AIC, within-offset ΔAIC and relative Akaike weights; the paired boxplots
-summarize sensitivity across offsets without automatically selecting a model. Modern pairs
+summarize sensitivity across offsets. The author selected MA1 for reporting
+on 2026-10-09; the AIC comparison remains available. Coefficient, contrast
+and residual figures show only MA1, using a common plot theme. Modern pairs
 are reused across offset fits. Stage 10a follows with the agreed offset-0
-individual-lake sensitivity, using AR1 and MA1 with modern plots from each
+individual-lake sensitivity; its figures show MA1 only with modern plots from each
 lake's own park. Its files live under `output/exploratory/tracking_lake_sensitivity/`.
 Reflection Pond and Panther Potholes MA1 fits approach the parameter boundary;
 tables and figures retain and flag them. The MA(2) comparison and group-mean
-visual remain previews outside the workflow. Final distribution, covariance, lake effects
+visual remain previews outside the workflow. MA1 is selected for reporting. Final distribution, lake effects
 and chronology uncertainty treatment remain decisions for model development.
 
 ```bash

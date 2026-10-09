@@ -1,4 +1,4 @@
-PROVISIONAL: model distribution, covariance and inference are not scientifically anchored.
+MA1 covariance selected by the author on 2026-10-09; model development and inference remain exploratory.
 Response: lag_rate_per_century | Holocene interval / time step: 1000 years
 Fixed effects: estimate ~ era * site; REML; separate residual SDs by era/site.
 Reference categories: Holocene and MORA. Coefficient units follow the selected response.
@@ -16,10 +16,11 @@ AIC comparisons are meaningful between covariance types within the same offset, 
 Delta AIC is measured from the minimum within each offset; Akaike weights are relative to these three candidates only.
 Boxplots show within-offset delta AIC and summarize offset sensitivity, not independent samples; raw AIC remains in the CSV.
 REML is retained because these covariance comparisons use identical fixed effects and observations within each offset.
-The comparison does not automatically select a covariance model or change the lake-sensitivity specifications.
+The comparison retains all candidates; reported coefficients, contrasts and residuals use the author-selected MA1.
+MA1 is competitive across offsets; AIC differences are small and do not uniquely identify the covariance structure.
 Coefficient intervals and park contrasts are unadjusted exploratory intervals/tests.
 Input: cca_tracking_era_by_offset.csv | MD5: b4c903acf64253f0225d8d8d448fe860
-Script MD5: 0c228f4ed6eb4a489737ae72001a1fd2
+Script MD5: c3879c0b0283eaa8cbdcd6837bc5d333
 Packages: nlme 3.1.170; emmeans 2.0.4
 
 Fit overview:

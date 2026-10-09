@@ -2,6 +2,7 @@
 suppressPackageStartupMessages({library(here);library(tidyverse);library(nlme)})
 source(here('R/helpers/tracking_data.R'),local=TRUE)
 source(here('R/helpers/tracking_model_data.R'),local=TRUE)
+source(here('R/helpers/tracking_model_reporting.R'),local=TRUE)
 equal=function(a,b) stopifnot(isTRUE(all.equal(a,b,tolerance=1e-9,check.attributes=FALSE)))
 fail=function(x) stopifnot(inherits(tryCatch({force(x);NULL},error=identity),'error'))
 read_tracking=function(stem) read_csv(here('output',paste0('cca_tracking_',stem,'.csv')),show_col_types=FALSE)
@@ -82,6 +83,8 @@ equal(coeff$t_value,coeff$estimate/coeff$std_error)
 equal(coeff$p_value,2*pt(-abs(coeff$t_value),df=coeff$df))
 equal(coeff$conf_low,coeff$estimate-qt(.975,coeff$df)*coeff$std_error)
 equal(coeff$conf_high,coeff$estimate+qt(.975,coeff$df)*coeff$std_error)
+stopifnot(tracking_selected_model_type()=='MA1',
+  nrow(tracking_selected_model_results(coeff))==40L)
 for(offset in seq(0,900,100)) {
   d=tracking_offset_model_input(c,'lag_rate_per_century',offset)$data
   co=coeff[coeff$offset==offset,]
@@ -101,6 +104,7 @@ equal(contrasts$t_value,contrasts$estimate/contrasts$std_error)
 equal(contrasts$p_value,2*pt(-abs(contrasts$t_value),df=contrasts$df))
 equal(contrasts$conf_low,contrasts$estimate-qt(.975,contrasts$df)*contrasts$std_error)
 equal(contrasts$conf_high,contrasts$estimate+qt(.975,contrasts$df)*contrasts$std_error)
+stopifnot(nrow(tracking_selected_model_results(contrasts))==20L)
 for(i in seq_len(nrow(contrasts))) {
   ct=contrasts[i,];co=coeff[coeff$offset==ct$offset & coeff$model_type==ct$model_type,]
   expected=co$estimate[co$term=='eraAnthropocene']
@@ -162,6 +166,8 @@ stopifnot(!file.exists(here('R/diagnostics/explore_tracking_era_models.R')),
 lake_out=here('output/exploratory/tracking_lake_sensitivity/lag_rate_per_century/offset_0')
 lc=read_csv(file.path(lake_out,'model_coefficients.csv'),show_col_types=FALSE)
 lt=read_csv(file.path(lake_out,'model_contrasts.csv'),show_col_types=FALSE)
+stopifnot(nrow(tracking_selected_model_results(lc))==8L,
+  nrow(tracking_selected_model_results(lt))==4L)
 stopifnot(nrow(lc)==16L,nrow(lt)==8L,all(lc$offset==0),all(lt$offset==0),
   setequal(lc$model_type,c('AR1','MA1')),all(lc$converged),all(lt$converged),
   !anyDuplicated(lc[c('site','lake','model_type','term')]),

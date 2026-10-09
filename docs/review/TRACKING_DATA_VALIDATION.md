@@ -64,7 +64,13 @@ exactly preserved (maximum absolute numerical differences: zero).
 MA1 minimizes AIC at five offsets, independent residuals at four and AR1 at
 one. AR1–MA1 AIC differences remain below 1.2 at every offset; the independent
 candidate is within 1.71 of the minimum except at offset 900 (ΔAIC 3.30).
-These checks validate implementation, without selecting a final statistical model.
+These checks validate implementation. On 2026-10-09 the author selected MA1
+for the reported covariance structure. The review shows all three model
+specifications and ΔAIC, followed by only MA1 results: 40 offset coefficients,
+20 park contrasts, eight offset-0 lake coefficients and four lake contrasts.
+Comparison records remain complete and numerically unchanged; the selected
+figures share a theme and color. This covariance decision does not settle
+distribution, lake effects or chronology uncertainty treatment.
 
 The maintained offset-0 lake sensitivity produces eight fits, 16 coefficients
 and eight era contrasts. The model gate independently matches each selected
@@ -74,10 +80,12 @@ and verifies that missing transitions retain their time gaps. MORA fits use
 330 modern pairs; NOCA uses 277. The Holocene counts are 7 Jay Bath, 7 Log
 Wallow, 6 Reflection Pond and 10 Panther Potholes. Reflection Pond and Panther
 Potholes MA1 fits approach -1; both are retained with explicit boundary flags.
-The two lake-sensitivity PDFs are single-page outputs. The lake-sensitivity products, source calculations, CCA, chronology inputs and
-approved figures remain byte-identical. Adding the independent covariance
-candidate changes only the main model products and their review copies. MA(2) and the group-mean visualization remain
-outside the workflow.
+The two lake-sensitivity PDFs are single-page MA1-only outputs at offset 0.
+All offset/lake coefficient, contrast and comparison CSVs remain byte-identical
+to their pre-selection calculations, as do source calculations, CCA, chronology
+inputs and approved main figures. The changes affect reported figures,
+selection/provenance notes and review presentation. MA(2) and the group-mean
+visualization remain outside the workflow.
 
 ## Observed support
 

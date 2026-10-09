@@ -258,9 +258,9 @@
         1
       ],
       "producer": "R/stages/10_tracking_era_models.R",
-      "purpose": "Compare provisional AR1, MA1 and independent-residual coefficients across all ten offsets.",
-      "interpretation": "Lag-change rate is fitted with identical era-by-site fixed effects, REML and era/site residual variances for each offset and covariance type. Points show coefficients and bars unadjusted 95% t intervals. Offsets reuse the same modern plots and are sensitivity fits, not independent replications.",
-      "status": "provisional"
+      "purpose": "MA(1) coefficients across all ten offsets.",
+      "interpretation": "Only the selected MA1 covariance is shown: four coefficients at each offset for era-by-site fixed effects, with REML and separate era/site residual variances. Points show estimates and bars unadjusted 95% t intervals. Reference categories are Holocene and MORA. Offsets reuse modern plots and are alternative sensitivity fits, not independent replicates. Comparison fits remain in the calculation records.",
+      "status": "MA1 selected; exploratory inference"
     },
     {
       "id": "tracking_model_contrasts",
@@ -270,33 +270,33 @@
         1
       ],
       "producer": "R/stages/10_tracking_era_models.R",
-      "purpose": "Compare Anthropocene minus Holocene within each park across offsets and covariance choices.",
-      "interpretation": "Each MORA/NOCA panel shows model-based era contrasts for AR1, MA1 and independent residuals at all ten offsets. Positive estimates indicate higher Anthropocene lag-change rates. Bars are unadjusted 95% intervals using Satterthwaite degrees of freedom; park panels have separate y-scales. Offsets reuse modern pairs and are sensitivity fits, not independent replications. Inference remains provisional.",
-      "status": "provisional"
+      "purpose": "MA(1) Anthropocene-minus-Holocene contrasts across offsets within each park.",
+      "interpretation": "Only MA1 contrasts are shown, with separate MORA/NOCA panels. Positive values indicate higher Anthropocene lag-change rates. Bars show unadjusted 95% intervals with Satterthwaite degrees of freedom; park panels have separate y-scales. The ten offsets reuse modern pairs and are sensitivity fits, not independent replicates.",
+      "status": "MA1 selected; exploratory inference"
     },
     {
       "id": "tracking_model_residuals",
-      "section": "tracking_models",
+      "section": "tracking_model_checks",
       "pdf": "plot/test_figures/fig_tracking_model_residuals_lag_rate_per_century.pdf",
       "pages": [
         1
       ],
       "producer": "R/stages/10_tracking_era_models.R",
-      "purpose": "Evaluate residuals for all three covariance models at every offset.",
-      "interpretation": "Each offset row shows AR1 scatter, normal Q-Q and Holocene residual lag products, then the same three checks for MA1 and independent residuals. Normalized residuals account for the fitted variance/correlation structure. Lag products preserve actual within-lake gaps and exclude modern singleton series; pair counts are shown, without formal tests. Only 26\u201330 Holocene transitions support each fit; covariance and distribution remain provisional.",
-      "status": "provisional"
+      "purpose": "Residual checks for the selected MA(1) at every offset.",
+      "interpretation": "Each offset row shows MA1 scatter, normal Q-Q and Holocene residual lag products. Normalized residuals account for the fitted variance/correlation structure. Lag products preserve actual within-lake gaps and exclude modern singleton series; pair counts are shown without formal tests. Only 26\u201330 Holocene transitions support each offset fit. Distribution and uncertainty treatment remain exploratory.",
+      "status": "MA1 selected; exploratory inference"
     },
     {
       "id": "tracking_model_aic",
-      "section": "tracking_models",
+      "section": "tracking_covariance",
       "pdf": "plot/test_figures/fig_tracking_model_aic_lag_rate_per_century.pdf",
       "pages": [
         1
       ],
       "producer": "R/stages/10_tracking_era_models.R",
       "purpose": "Compare AR1, MA1 and no temporal autocorrelation using AIC across all ten offsets.",
-      "interpretation": "Boxes summarize within-offset delta AIC; raw AIC values remain in the comparison CSV; dots show each fit and lines link the same offset. All candidates within an offset share observations, fixed effects, REML and era/site residual variances. Use paired within-offset differences for selection: offsets have different observations and are sensitivity fits, not independent replicates. MA1 minimizes AIC at five offsets, independent residuals at four and AR1 at one; AR1-MA1 differences remain below 1.2. No covariance choice is automatically selected.",
-      "status": "provisional covariance comparison"
+      "interpretation": "Boxes summarize within-offset delta AIC; raw values remain in the comparison CSV. Dots show each fit and lines link the same offset. Candidates within an offset share observations, fixed effects, REML and era/site residual variances. MA1 minimizes AIC at five offsets, independent residuals at four and AR1 at one; all three candidates are within two AIC units at nine offsets. The author chose MA1 for reported analyses; the small AIC differences do not uniquely identify a covariance structure.",
+      "status": "covariance comparison; MA1 selected"
     },
     {
       "id": "tracking_lake_coefficients",
@@ -306,9 +306,9 @@
         1
       ],
       "producer": "R/stages/10a_tracking_lake_sensitivity.R",
-      "purpose": "Compare individual-lake offset-0 coefficients under AR1 and MA1.",
-      "interpretation": "Each Holocene lake is compared with all finite modern responses from its own park. Fits use era fixed effects, REML, AR1/MA1 and separate residual variances by era. Bars show unadjusted 95% intervals. Triangles flag absolute correlation parameters above 0.98; Reflection Pond and Panther Potholes MA1 fits are near the boundary. MORA comparisons reuse modern plots and are not independent. Statistical choices remain provisional.",
-      "status": "provisional lake sensitivity"
+      "purpose": "MA(1) individual-lake coefficients at offset 0.",
+      "interpretation": "Only MA1 is shown at offset 0: each Holocene lake is compared with modern responses from its own park, using era fixed effects, REML and separate residual variances by era. Bars show unadjusted 95% intervals. Triangles flag absolute correlation parameters above 0.98; Reflection Pond and Panther Potholes MA1 fits approach the boundary and are retained. MORA comparisons reuse modern plots and are overlapping sensitivities. AR1 fits remain in the calculation audit.",
+      "status": "MA1 selected; offset-0 sensitivity"
     },
     {
       "id": "tracking_lake_contrasts",
@@ -318,9 +318,9 @@
         1
       ],
       "producer": "R/stages/10a_tracking_lake_sensitivity.R",
-      "purpose": "Compare Anthropocene minus Holocene separately for each lake at offset 0.",
-      "interpretation": "Each Holocene lake is compared with all finite modern responses from its own park. Fits use era fixed effects, REML, AR1/MA1 and separate residual variances by era. Bars show unadjusted 95% intervals. Triangles flag absolute correlation parameters above 0.98; Reflection Pond and Panther Potholes MA1 fits are near the boundary. MORA comparisons reuse modern plots and are not independent. Statistical choices remain provisional.",
-      "status": "provisional lake sensitivity"
+      "purpose": "MA(1) Anthropocene-minus-Holocene lake contrasts at offset 0.",
+      "interpretation": "Only MA1 is shown at offset 0: each Holocene lake is compared with modern responses from its own park, using era fixed effects, REML and separate residual variances by era. Bars show unadjusted 95% intervals. Triangles flag absolute correlation parameters above 0.98; Reflection Pond and Panther Potholes MA1 fits approach the boundary and are retained. MORA comparisons reuse modern plots and are overlapping sensitivities. AR1 fits remain in the calculation audit.",
+      "status": "MA1 selected; offset-0 sensitivity"
     }
   ],
   "main_figures": [

@@ -6,6 +6,7 @@ suppressPackageStartupMessages({
 })
 source(here('R/helpers/tracking_data.R'),local=TRUE)
 source(here('R/helpers/tracking_model_data.R'),local=TRUE)
+source(here('R/helpers/tracking_model_reporting.R'),local=TRUE)
 render_figures=isTRUE(getOption('paleoaces.render_figures',TRUE))
 argument=function(name,default) {
   prefix=paste0('--',name,'=')
@@ -23,6 +24,7 @@ combined=read_csv(input_path,show_col_types=FALSE)
 if(validate_tracking_model_data(combined)!=width) stop('Requested width differs from input')
 lakes=combined |> filter(era=='Holocene') |> distinct(site,lake) |> arrange(site,lake)
 model_types=c('AR1','MA1')
+selected_model_type=tracking_selected_model_type()
 
 fit_lake=function(lake,model_type) {
   selected=tracking_lake_model_input(combined,response_metric,lake,offset)
@@ -91,11 +93,12 @@ out=here('output/exploratory/tracking_lake_sensitivity',paste0(response_metric,s
 dir.create(out,recursive=TRUE,showWarnings=FALSE)
 write_csv(coefficients,file.path(out,'model_coefficients.csv'))
 write_csv(contrasts,file.path(out,'model_contrasts.csv'))
-notes=c('Lake sensitivity; statistical model choices remain provisional.',
+notes=c('Lake sensitivity; MA1 selected by the author on 2026-10-09; inference remains exploratory.',
   paste('Response:',response_metric,'| Offset:',offset,'| Holocene interval:',width,'years'),
   'Each fit compares one Holocene lake with all finite modern responses from the same park.',
   'Constant site is removed: estimate ~ era; REML; separate residual variances by era.',
   'AR1 or MA1 correlation retains actual within-lake gaps; modern pairs are singleton series.',
+  'Comparison records retain AR1 and MA1; reported lake coefficients and contrasts use only the selected MA1.',
   'MORA lake fits reuse the same modern plots; they are not independent comparisons.',
   'Near-boundary fits are retained and flagged when the absolute correlation parameter exceeds 0.98.',
   'No chronology propagation, support cutoff, lake random effect or climate/fire fixed effects.',
@@ -109,31 +112,32 @@ lake_labels=c(JayBath='Jay Bath',LogWallow='Log Wallow',ReflectionPond='Reflecti
 counts=contrasts |> distinct(lake,site,n_holocene,n_anthropocene)
 counts$label=paste0(unname(lake_labels[counts$lake]),' (',counts$site,')\n',
   counts$n_holocene,' Holocene / ',counts$n_anthropocene,' modern')
-plot_coefficients=coefficients |> left_join(counts |> select(lake,label),by='lake',relationship='many-to-one')
-plot_contrasts=contrasts |> left_join(counts |> select(lake,label),by='lake',relationship='many-to-one')
+plot_coefficients=tracking_selected_model_results(coefficients) |>
+  left_join(counts |> select(lake,label),by='lake',relationship='many-to-one')
+plot_contrasts=tracking_selected_model_results(contrasts) |>
+  left_join(counts |> select(lake,label),by='lake',relationship='many-to-one')
 plot_coefficients$label=factor(plot_coefficients$label,levels=rev(counts$label))
 plot_contrasts$label=factor(plot_contrasts$label,levels=rev(counts$label))
 plot_coefficients$term=factor(plot_coefficients$term,levels=c('(Intercept)','eraAnthropocene'),
   labels=c('Holocene mean (intercept)','Anthropocene - Holocene (era coefficient)'))
-colors=c(AR1='#2563eb',MA1='#d42d75')
-base_plot=function(tbl) ggplot(tbl,aes(estimate,label,color=model_type,group=model_type))+
+colors=tracking_model_colors()
+base_plot=function(tbl) ggplot(tbl,aes(estimate,label))+
   geom_vline(xintercept=0,linetype='dashed',color='grey60')+
   geom_errorbar(aes(xmin=conf_low,xmax=conf_high),orientation='y',width=.2,
-    position=position_dodge(width=.5),linewidth=.6)+
-  geom_point(aes(shape=near_correlation_boundary),position=position_dodge(width=.5),size=2.8)+
-  scale_color_manual(values=colors)+
+    color=unname(colors[selected_model_type]),linewidth=.6)+
+  geom_point(aes(shape=near_correlation_boundary),color=unname(colors[selected_model_type]),size=2.8)+
   scale_shape_manual(values=c('FALSE'=16,'TRUE'=17),labels=c('FALSE'='No','TRUE'='Yes'))+
-  theme_minimal(base_size=12)+theme(legend.position='bottom',plot.caption=element_text(hjust=0,size=10))
+  tracking_model_plot_theme()
 coef_plot=base_plot(plot_coefficients)+facet_wrap(~term,scales='free_x',nrow=1)+
-  labs(title=paste('Lake sensitivity coefficients:',response_metric),
+  labs(title=paste('MA(1) lake sensitivity coefficients:',response_metric),
     subtitle=paste('Offset',offset,'; each lake compared with modern pairs from its own park'),
-    x='Coefficient estimate',y=NULL,color='Residual model',shape='Near boundary',
-    caption='Bars: unadjusted 95% t intervals. Coefficient panels use separate x-scales.\nTriangles flag absolute correlation parameters > 0.98. MORA fits reuse the same modern plots; models remain provisional.')
+    x='Coefficient estimate',y=NULL,shape='Near boundary',
+    caption='Bars: unadjusted 95% t intervals. Coefficient panels use separate x-scales.\nTriangles flag absolute correlation parameters > 0.98. MORA fits reuse modern plots. MA(1) selected; inference remains exploratory.')
 contrast_plot=base_plot(plot_contrasts)+
-  labs(title=paste('Lake sensitivity era contrasts:',response_metric),
+  labs(title=paste('MA(1) lake sensitivity era contrasts:',response_metric),
     subtitle=paste('Offset',offset,'; Anthropocene minus Holocene within each lake/park comparison'),
-    x='Anthropocene - Holocene',y=NULL,color='Residual model',shape='Near boundary',
-    caption='Bars: unadjusted 95% intervals with Satterthwaite degrees of freedom.\nTriangles flag absolute correlation parameters > 0.98. Only 6-10 Holocene transitions support primary fits; models remain provisional.')
+    x='Anthropocene - Holocene',y=NULL,shape='Near boundary',
+    caption='Bars: unadjusted 95% intervals with Satterthwaite degrees of freedom.\nTriangles flag absolute correlation parameters > 0.98. Only 6-10 Holocene transitions support primary fits; inference remains exploratory.')
 if(render_figures) {
   stem=paste0(response_metric,suffix,'_offset_',offset)
   ggsave(here('plot/test_figures',paste0('fig_tracking_lake_coefficients_',stem,'.pdf')),coef_plot,width=14,height=7.5)

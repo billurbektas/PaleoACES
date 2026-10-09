@@ -164,7 +164,7 @@ def script_map():
         ('Chronology (optional refit)', 1), ('Paleo vegetation and fire', 3),
         ('Paleo climate', 2), ('Taxonomy consolidation', 1),
         ('CCA eligibility, calibration and reference', 1),
-        ('Fire catalog and climate eras', 2), ('Canonical lake/plot tracking', 1), ('Combined transition input', 1), ('Provisional offset GLS comparisons', 1), ('Offset-0 lake sensitivity', 1), ('Community trajectories: Figure 3', 1),
+        ('Fire catalog and climate eras', 2), ('Canonical lake/plot tracking', 1), ('Combined transition input', 1), ('Covariance comparison and selected MA1', 1), ('Offset-0 lake sensitivity', 1), ('Community trajectories: Figure 3', 1),
         ('Tracking and fire-detection examples', 2), ('Climate/fire display: Figure 2 and example', 2)]
     paths = workflow_stages(); index = 0; data = []
     for part,count in groups:

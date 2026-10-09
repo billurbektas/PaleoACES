@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: e22522c493b9ab6c229b632b7db0145e -->
+<!-- paleoaces-source-md5: 99f45036afcc34f3cf08e35af8be3619 -->
 
 <html>
 
@@ -1592,8 +1592,8 @@ regeneration is needed for stages 9–14.</p>
   CCA --&gt; ER[13 unified climate eras/fire classification]
   ER --&gt; TM1
   TM1 --&gt; MD[09b combined transition model input]
-  MD --&gt; GLS[10 provisional AR1, MA1 and independent models by offset]
-  MD --&gt; LS[10a offset-0 lake sensitivity under AR1 and MA1]
+  MD --&gt; GLS[10 covariance comparison and selected MA1 by offset]
+  MD --&gt; LS[10a selected MA1 lake reporting at offset 0]
   TM1 --&gt; TV[09a tracking plots with climate bands]
   ER --&gt; TV
   PE --&gt; ER
@@ -1781,9 +1781,9 @@ modern pairs stored once per response; completed schema dictionary</td>
 <td>Maintained provisional offset GLS exploration</td>
 <td>Combined transition input only</td>
 <td>Ten separate offsets × AR1/MA1/Independent; coefficient, within-park
-contrast and paired AIC comparison CSVs, one full results TXT,
-coefficient/contrast/residual PDFs and within-offset ΔAIC boxplots when
-rendering; lag-change rate initially</td>
+contrast and paired AIC comparison CSVs, one full results TXT, MA1-only
+coefficient/contrast/residual PDFs and three-candidate within-offset
+ΔAIC boxplots when rendering; lag-change rate initially</td>
 </tr>
 <tr class="odd">
 <td align="right">10g-a</td>
@@ -1792,6 +1792,7 @@ rendering; lag-change rate initially</td>
 <td>Combined transition input only</td>
 <td>Four lakes × AR1/MA1; each lake versus its park’s modern pairs; 16
 coefficient rows, eight contrasts, one results TXT and two PDFs;
+MA1-only figures show eight coefficients and four contrasts;
 near-boundary fits retained and flagged</td>
 </tr>
 <tr class="even">
@@ -1892,57 +1893,62 @@ presence</td>
 <td>Central seasonal climate derivation</td>
 </tr>
 <tr class="even">
+<td><code>R/helpers/tracking_model_reporting.R</code></td>
+<td>Author-selected MA1 covariance, result filtering, shared colors and
+plot theme</td>
+</tr>
+<tr class="odd">
 <td><code>R/helpers/tracking_model_data.R</code></td>
 <td>Combined 28-column assembly, era-specific missingness, coordinate
 identities and response-specific offset selection</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>R/helpers/tracking_metrics.R</code></td>
 <td>Focused vector geometry, guarded internal angle calculation,
 physical-climate rates and validity flags</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>R/helpers/fire_detection_functions.R</code></td>
 <td>Shared all-core tapas preparation/detection, record settings,
 series, count-screen, and accepted-event extraction</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>R/helpers/paleo_runs.R</code></td>
 <td>Whole-chronology draws and parameterized bin/offset assignment</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>R/helpers/holocene_climate_fire_era_functions.R</code></td>
 <td>Complete 1,000-year climate changes, 50%-maximum classification,
 any-variable era union, composite magnitude, and independent
 fire-frequency classification</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>R/helpers/walsh_fire_functions.R</code></td>
 <td>Separate official CharAnalysis audit and Walsh input construction;
 not the downstream primary detector</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>R/helpers/figure_style.R</code></td>
 <td>Shared main-figure typography, site shapes, fire/burned red, and
 signed-gradient colors</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>R/vendor/get_chelsa.R</code>,
 <code>R/helpers/get_chelsa_monthly.R</code></td>
 <td>Supported CHELSA clients</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>R/helpers/bacon_settings.R</code>,
 <code>R/helpers/paleo_ages.R</code></td>
 <td>Bacon configuration and ages</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>R/helpers/chronology_provenance.R</code></td>
 <td>Verified recorded path/caption substitutions for historical
 chronology hashes and age-draw cache dependencies; unrecorded source
 changes invalidate that equivalence</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>data/holocene_period_candidates.csv</code></td>
 <td>Provisional calibrated/context evidence; never classification
 input</td>
@@ -2280,16 +2286,18 @@ retaining all finite selected responses. Each offset uses identical
 observations, fixed effects and era/site variances across its three
 covariance candidates. The comparison CSV exports AIC, within-offset
 ΔAIC and relative Akaike weights; the paired boxplots summarize
-sensitivity across offsets without automatically selecting a model.
-Modern pairs are reused across offset fits. Stage 10a follows with the
-agreed offset-0 individual-lake sensitivity, using AR1 and MA1 with
+sensitivity across offsets. The author selected MA1 for reporting on
+2026-10-09; the AIC comparison remains available. Coefficient, contrast
+and residual figures show only MA1, using a common plot theme. Modern
+pairs are reused across offset fits. Stage 10a follows with the agreed
+offset-0 individual-lake sensitivity; its figures show MA1 only with
 modern plots from each lake’s own park. Its files live under
 <code>output/exploratory/tracking_lake_sensitivity/</code>. Reflection
 Pond and Panther Potholes MA1 fits approach the parameter boundary;
 tables and figures retain and flag them. The MA(2) comparison and
-group-mean visual remain previews outside the workflow. Final
-distribution, covariance, lake effects and chronology uncertainty
-treatment remain decisions for model development.</p>
+group-mean visual remain previews outside the workflow. MA1 is selected
+for reporting. Final distribution, lake effects and chronology
+uncertainty treatment remain decisions for model development.</p>
 <pre class="bash"><code># Primary combined input and all ten provisional offset/covariance fits
 Rscript R/stages/09b_tracking_model_data.R
 Rscript R/stages/10_tracking_era_models.R

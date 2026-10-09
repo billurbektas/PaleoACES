@@ -90,7 +90,8 @@ run_script("R/stages/12_walsh_fire_reproduction.R")
 run_script("R/stages/13_holocene_climate_fire_eras.R")
 run_script("R/stages/09_tracking_metrics.R")
 run_script("R/stages/09b_tracking_model_data.R")
-# The maintained model runner remains a provisional sensitivity analysis.
+# Compare covariance candidates, then present the author-selected MA1; inference
+# and model development remain exploratory. Lake reporting uses offset 0 only.
 run_script("R/stages/10_tracking_era_models.R")
 run_script("R/stages/10a_tracking_lake_sensitivity.R")
 
