@@ -72,9 +72,10 @@ Historical climate and Holocene values remain unchanged in the mixed tables.
 
 ## Canonical tracking schemas
 
-Stage `R/stages/09_tracking_metrics.R` is the single producer of all eight
-tracking CSVs in `output/`. It calculates lake and plot records once, then
-separates model inputs, chronology uncertainty, descriptive reporting and audits.
+Stage `R/stages/09_tracking_metrics.R` calculates lake and plot records once,
+then separates the seven source, uncertainty, descriptive and audit tables.
+Stage `R/stages/09b_tracking_model_data.R` assembles one combined transition
+input from these calculations without recalculating responses.
 The complete ordered column dictionary is `output/cca_tracking_schema.csv`,
 also exposed in the Analysis Review. One metric implementation serves both eras.
 
@@ -87,7 +88,7 @@ also exposed in the Analysis Review. One metric implementation serves both eras.
 | `cca_tracking_anthropocene_plot_calculations.csv` | 79 | `site, plot_id` | Detailed modern calculation audit, including endpoints, seasonal changes, climate windows and fire-assignment sources |
 | `cca_tracking_holocene_lake_timeseries.csv` | 15 | `site, lake, t, metric` | Seven-response descriptive 100-year grid with response-specific complete offset support |
 | `cca_tracking_holocene_lake_support.csv` | 23 | `site, lake, offset` | Sampling, draw support, observed/retained/excluded realization counts and minimum-two-sample sensitivity |
-| `cca_tracking_era_comparison.csv` | 16 | Holocene: `era, site, lake, t, metric`; Anthropocene: `era, site, plot_id, metric` | Long era comparison: reporting-grid responses and aligned predictors, or individual modern responses, with dates and WGS84 coordinates |
+| `cca_tracking_era_by_offset.csv` | 28 | Holocene: `site, lake, offset, age_hi, age_lo, metric`; Anthropocene: `site, plot_id, metric` | Sole input to offset GLS fits: actual transitions and modern pairs, with dates, predictors, support, response validity and WGS84 coordinates |
 
 The exact model and uncertainty column orders are:
 
@@ -172,40 +173,60 @@ quantiles; `phase_min,phase_max` bound the offset medians. Support fields retain
 observed offset counts and minimum draw presence. Neither interval is an
 inferential confidence interval.
 
-The primary run also exports `cca_tracking_era_comparison.csv` with exactly:
+Stage 09b exports `cca_tracking_era_by_offset.csv` with exactly:
 
 ```text
-era, site, lake, plot_id, t, resurvey_year, metric, estimate,
-climate_rate, climate_rate_offset_sd, fire_activity, fire_activity_offset_sd,
-burned, longitude, latitude, n_valid_offsets
+era, site, lake, plot_id, offset, age_hi, age_lo, interval_mid_cal_bp,
+vegetation_t1_year, vegetation_t2_year, climate_t1_midyear, climate_t2_midyear,
+vegetation_dt_years, climate_dt_years, metric, estimate, response_valid,
+standardized_climate_change_rate, fire_activity, fire_coverage_valid, high_fire,
+burned, n_draws_present, n_draws_nmin2, n_samples_t1_median, n_samples_t2_median,
+longitude, latitude
 ```
 
-`era` is `Holocene` or `Anthropocene`. Each Holocene row retains a reporting
-lake/date/response estimate and its response-specific offset support. For each
-date, the climate/fire predictors are the medians over the same temporally
-aligned offsets that contribute to that response, using `[age_lo, age_hi)`.
-`climate_rate_offset_sd` and `fire_activity_offset_sd` are sample SDs (denominator
-`n - 1`) among those offset-specific predictors. They describe placement
-sensitivity, not standard errors or confidence intervals. If any required offset
-has inadequate fire coverage or missing activity, both the fire median and its
-SD are `NA`; covered zero-event intervals remain zero. SD is `NA` for a single
-contributing offset.
+One row is one response for an actual lake/offset transition or modern pair.
+The current file contains 6,160 rows: 273 transitions × seven responses plus
+607 modern pairs × seven responses. Modern rows are stored once per response,
+with `offset = NA`; every offset fit reuses the same modern observations.
+Holocene estimates retain the finite-draw median within their actual transition;
+there is no across-offset median or 100-year reporting-grid mapping. The physical
+climate predictor and fire exposure are copied from that transition. Both elapsed
+times and all original survey/climate midyears remain available.
 
-Modern rows retain each original plot response, including mathematically
-undefined responses as `NA`, its climate rate, actual vegetation resurvey year,
-and original binary `burned` assignment. Modern `t`, `lake`, continuous fire
-activity, both offset SDs and `n_valid_offsets` are `NA`. Holocene `plot_id`,
-`resurvey_year` and `burned` are `NA`. Modern dates are never assigned `t = 0`:
-zero cal BP refers to 1950. The coordinates are WGS84 decimal degrees, from
-the cached lake climate locations and cleaned modern plot locations. Coordinate
-joins normalize plot ID case without altering exported identities; missing or
-ambiguous locations stop export.
+`response_valid` is exactly `is.finite(estimate)`. Undefined responses remain
+rows and are excluded only when that response is modeled. Inapplicable era
+fields are `NA`: modern pairs have no cal-BP age, offset, lake, charcoal exposure
+or chronology support; Holocene transitions have no survey calendar year or
+binary burned assignment. WGS84 coordinates retain original identities and
+normalized joins; missing or ambiguous locations stop export. The long layout
+does not add ecological replicates. Alternative widths receive `_Nyr` suffixes.
 
-The current comparison has 5,906 rows: 1,657 Holocene reporting rows and
-4,249 modern rows (607 plots × seven responses). Repeated metric rows and
-overlapping reporting dates do not add independent observations. This
-descriptive comparison preserves the original offset-level model inputs,
-chronology uncertainty and calculation records for validation and modeling.
+Stage `R/stages/10_tracking_era_models.R` reads only the combined CSV and fits
+lag-change rate separately for all ten offsets with both AR1 and MA1 residual
+correlation. Its specification remains provisional: `estimate ~ era * site`,
+REML, and separate residual SDs by era/site. The primary outputs are:
+
+| Output | Contents |
+|---|---|
+| `output/exploratory/tracking_offset_models/lag_rate_per_century/model_coefficients.csv` | 80 coefficient rows: four terms × ten offsets × two covariance types, flagged by `model_type`, with SEs, degrees of freedom, t statistics, p values, 95% intervals, group counts and fitted correlation parameter |
+| `output/exploratory/tracking_offset_models/lag_rate_per_century/model_contrasts.csv` | 40 within-park Anthropocene-minus-Holocene contrasts: two parks × ten offsets × two covariance types, with SEs, Satterthwaite degrees of freedom, t statistics, unadjusted p values and 95% intervals, and park-specific observation counts |
+| `output/exploratory/tracking_offset_models/lag_rate_per_century/model_results.txt` | One complete text record: provenance, fit overview, all 20 model summaries, park contrasts, residual SDs, warnings and diagnostic lag products |
+| `plot/test_figures/fig_tracking_model_coefficients_lag_rate_per_century.pdf` | One page comparing coefficients and unadjusted 95% t intervals across offsets for AR1 and MA1 |
+| `plot/test_figures/fig_tracking_model_contrasts_lag_rate_per_century.pdf` | One page comparing era contrasts and unadjusted 95% intervals across offsets for AR1 and MA1, with separate MORA and NOCA panels |
+| `plot/test_figures/fig_tracking_model_residuals_lag_rate_per_century.pdf` | One page with one row per offset: scatter, Q-Q and Holocene lag products for each covariance type |
+
+Modern pairs are singleton series. Holocene integer time indices retain gaps;
+MA1 correlates only observations one actual time step apart. AICs compare
+covariance choices within an offset; different offsets contain different
+observations. Model inclusion, chronology uncertainty and distribution choices
+remain provisional. No lake random intercept or climate/fire fixed effects are
+added to this initial model.
+
+The previous combined reporting-grid CSV, exploratory modeling script and its
+per-run inputs, model bundles, summaries and residual PDFs are retired. The
+23/21-column canonical source tables, uncertainty and calculation records remain.
+The maintained tracking figures reconstruct their aligned climate/fire context
+directly from the source transitions and descriptive reporting dates.
 
 The 273 primary Holocene rows span ten alternative bin placements. Offsets are
 sensitivity realizations, not independent ecological replicates. The intended
@@ -256,7 +277,7 @@ The plotting stage does not recalculate eras, alter responses or add model field
 Thin trajectories use each offset's transition values at `interval_mid_cal_bp`.
 Response values are finite-draw medians. Thick response lines reuse the existing
 100-year reporting-grid medians at `t`. Thick climate/fire context lines read
-the aligned predictor medians from the canonical era-comparison CSV, requiring
+the aligned predictor medians reconstructed from the canonical transitions, requiring
 complete finite offset support. The seven-response reporting CSV remains
 unchanged. Missing transitions and undefined values break
 lines; no extrapolation or smoothing is applied. All supported transition rows

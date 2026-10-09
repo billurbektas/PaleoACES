@@ -26,6 +26,8 @@ stopifnot(
   position("R/stages/12_walsh_fire_reproduction.R") < position("R/stages/13_holocene_climate_fire_eras.R"),
   position("R/stages/13_holocene_climate_fire_eras.R") < position("R/stages/09_tracking_metrics.R"),
   position("R/stages/13_holocene_climate_fire_eras.R") < position("R/stages/05a_cca_figure.R"),
+  position("R/stages/09_tracking_metrics.R") < position("R/stages/09b_tracking_model_data.R"),
+  position("R/stages/09b_tracking_model_data.R") < position("R/stages/10_tracking_era_models.R"),
   position("R/stages/09_tracking_metrics.R") < position("R/stages/09a_tracking_example_and_visualizations.R"))
 
 # --skip-figures is a render option, not an analysis-stage branch.
@@ -36,6 +38,8 @@ stopifnot(
 
 analysis_stages = c(
   "R/stages/09_tracking_metrics.R",
+  "R/stages/09b_tracking_model_data.R",
+  "R/stages/10_tracking_era_models.R",
   "R/stages/12_walsh_fire_reproduction.R",
   "R/stages/13_holocene_climate_fire_eras.R",
   "R/stages/05a_cca_figure.R",
@@ -46,6 +50,7 @@ analysis_stages = c(
 stopifnot(all(analysis_stages %in% calls))
 
 automatic_gates = c(
+  "R/tests/test_tracking_offset_models.R",
   "R/tests/test_walsh_fire_reproduction.R",
   "R/tests/test_holocene_climate_fire_eras.R",
   "R/tests/test_cca_trajectory_figure.R",
@@ -59,6 +64,7 @@ render_aware = c(
   "R/stages/000_occurrence_data_consolidate.R", "R/stages/01_get_fire_info.R",
   "R/stages/000_PALEO_a_agedepth.R", "R/stages/05a_cca_figure.R",
   "R/stages/09a_tracking_example_and_visualizations.R",
+  "R/stages/10_tracking_era_models.R",
   "R/stages/12_walsh_fire_reproduction.R", "R/stages/12a_fire_event_detection_worked_example.R",
   "R/stages/13_holocene_climate_fire_eras.R", "R/stages/13a_climate_change_figure.R",
   "R/stages/13b_fire_method_worked_example.R")

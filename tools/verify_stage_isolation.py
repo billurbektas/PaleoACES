@@ -22,9 +22,11 @@ parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--isolated', action='store_true', required=True)
 parser.parse_args()
 primary = 'R/stages/09_tracking_metrics.R'
+assembly = 'R/stages/09b_tracking_model_data.R'
 baseline = state()
 checks = []
-for label, stages in [('fresh primary', [primary]), ('repeated primary', [primary, primary])]:
+for label, stages in [('fresh tracking and assembly', [primary, assembly]),
+                      ('repeated tracking and assembly', [primary, assembly, primary, assembly])]:
     code = 'options(paleoaces.render_figures=FALSE); '
     for stage in stages:
         code += f'sys.source("{stage}", envir=new.env(parent=globalenv())); '

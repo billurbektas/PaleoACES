@@ -99,7 +99,7 @@ def workflow_stages():
     workflow = (ROOT / 'R/workflow.R').read_text()
     paths = re.findall(r'run_script\("(R/[^\"]+[.]R)"', workflow)
     paths = [p for p in paths if p.startswith('R/stages/')]
-    if len(paths) != 21 or len(set(paths)) != 21: raise ValueError('Expected exactly 21 ordered workflow analysis stages.')
+    if len(paths) != 23 or len(set(paths)) != 23: raise ValueError('Expected exactly 23 ordered workflow analysis stages.')
     return paths
 
 def tracking_calculation_sections():
@@ -164,7 +164,7 @@ def script_map():
         ('Chronology (optional refit)', 1), ('Paleo vegetation and fire', 3),
         ('Paleo climate', 2), ('Taxonomy consolidation', 1),
         ('CCA eligibility, calibration and reference', 1),
-        ('Fire catalog and climate eras', 2), ('Canonical lake/plot tracking', 1), ('Community trajectories: Figure 3', 1),
+        ('Fire catalog and climate eras', 2), ('Canonical lake/plot tracking', 1), ('Combined transition input', 1), ('Provisional offset GLS comparisons', 1), ('Community trajectories: Figure 3', 1),
         ('Tracking and fire-detection examples', 2), ('Climate/fire display: Figure 2 and example', 2)]
     paths = workflow_stages(); index = 0; data = []
     for part,count in groups:
@@ -206,10 +206,12 @@ def validate_tracking_contracts(root):
             'pace_counterfactual_valid', 'direction_counterfactual_valid', 'tracking_ratio_valid'],
         'lake_uncertainty': keys + ['metric', 'sampling_rule', 'median', 'q025', 'q975',
             'n_expected_draws', 'n_present_draws', 'n_eligible_draws', 'n_valid_draws', 'n_undefined_draws'],
-        'era_comparison': ['era', 'site', 'lake', 'plot_id', 't', 'resurvey_year',
-            'metric', 'estimate', 'climate_rate', 'climate_rate_offset_sd',
-            'fire_activity', 'fire_activity_offset_sd', 'burned', 'longitude',
-            'latitude', 'n_valid_offsets']}
+        'era_by_offset': ['era', 'site', 'lake', 'plot_id', 'offset', 'age_hi', 'age_lo',
+            'interval_mid_cal_bp', 'vegetation_t1_year', 'vegetation_t2_year',
+            'climate_t1_midyear', 'climate_t2_midyear', 'vegetation_dt_years', 'climate_dt_years',
+            'metric', 'estimate', 'response_valid', 'standardized_climate_change_rate',
+            'fire_activity', 'fire_coverage_valid', 'high_fire', 'burned', 'n_draws_present',
+            'n_draws_nmin2', 'n_samples_t1_median', 'n_samples_t2_median', 'longitude', 'latitude']}
     for name, expected in contracts.items():
         with (root/ASSETS/'tables'/f'{name}.csv').open(newline='') as f:
             header = next(csv.reader(f))
@@ -410,6 +412,8 @@ def build(mode):
         sources=manifest([p for p in input_files() if p.suffix in ['.R','.py','.md'] or p == REGISTRY or 'provenance' in p.parts])
         write_csv(out/'sources.csv',sources)
         result_files=[p for p in (ROOT/'output').iterdir() if p.is_file() and p.suffix in ['.csv','.gz','.rds']]
+        result_files += [ROOT/x['source'] for x in registry['tables'].values()]
+        result_files += [ROOT/x['source'] for x in registry.get('text_outputs', {}).values()]
         result_files += [ROOT/x['pdf'] for x in registry['diagnostics']] + [ROOT/'plot'/(x['stem']+'.'+e) for x in registry['main_figures'] for e in ['pdf','png']]
         write_csv(out/'results.csv',manifest(sorted(set(result_files))))
         ih=sha(out/'inputs.csv'); sh=sha(out/'sources.csv'); rh=sha(out/'results.csv')
@@ -438,11 +442,13 @@ def build(mode):
             record(dst,x['producer'],x['source'],status='unchanged calibration reference bundle')
         for name,x in registry.get('text_outputs', {}).items():
             source = ROOT/x['source']
-            if not source.is_file(): raise FileNotFoundError('Missing CCA output: '+x['source'])
+            if not source.is_file(): raise FileNotFoundError('Missing registered text output: '+x['source'])
             dst = out/source.name
             dst.write_text('\n'.join(line.rstrip() for line in source.read_text().splitlines())+'\n')
-            record(dst, x['producer'], x['source'], status='current fitted CCA output')
-            if name != 'cca_anova_output':
+            record(dst, x['producer'], x['source'], status=x.get('status', 'current fitted CCA output'))
+            if name == 'tracking_model_results':
+                text_blocks[name] = f'[Complete results for all offset/covariance fits](assets/analysis/{dst.name}).\n'
+            elif name != 'cca_anova_output':
                 language = 'r' if name == 'cca_model_code' else 'text'
                 text_blocks[name] = f'```{language}\n{dst.read_text().rstrip()}\n```\n'
         text_blocks['tracking_metrics_code'] = tracking_calculation_markdown()

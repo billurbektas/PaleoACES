@@ -249,6 +249,42 @@
       "purpose": "Retain the older product-comparison reference outside current results.",
       "interpretation": "This historical comparison used older product/window assumptions. It is excluded from current evidence and never refreshed by --report.",
       "status": "historical reference"
+    },
+    {
+      "id": "tracking_model_coefficients",
+      "section": "tracking_models",
+      "pdf": "plot/test_figures/fig_tracking_model_coefficients_lag_rate_per_century.pdf",
+      "pages": [
+        1
+      ],
+      "producer": "R/stages/10_tracking_era_models.R",
+      "purpose": "Compare provisional AR1 and MA1 coefficients across all ten offsets.",
+      "interpretation": "Lag-change rate is fitted with identical era-by-site fixed effects, REML and era/site residual variances for each offset and covariance type. Points show coefficients and bars unadjusted 95% t intervals. Offsets reuse the same modern plots and are sensitivity fits, not independent replications.",
+      "status": "provisional"
+    },
+    {
+      "id": "tracking_model_contrasts",
+      "section": "tracking_models",
+      "pdf": "plot/test_figures/fig_tracking_model_contrasts_lag_rate_per_century.pdf",
+      "pages": [
+        1
+      ],
+      "producer": "R/stages/10_tracking_era_models.R",
+      "purpose": "Compare Anthropocene minus Holocene within each park across offsets and covariance choices.",
+      "interpretation": "Each MORA/NOCA panel shows model-based era contrasts for AR1 and MA1 at all ten offsets. Positive estimates indicate higher Anthropocene lag-change rates. Bars are unadjusted 95% intervals using Satterthwaite degrees of freedom; park panels have separate y-scales. Offsets reuse modern pairs and are sensitivity fits, not independent replications. Inference remains provisional.",
+      "status": "provisional"
+    },
+    {
+      "id": "tracking_model_residuals",
+      "section": "tracking_models",
+      "pdf": "plot/test_figures/fig_tracking_model_residuals_lag_rate_per_century.pdf",
+      "pages": [
+        1
+      ],
+      "producer": "R/stages/10_tracking_era_models.R",
+      "purpose": "Evaluate residuals for both covariance models at every offset.",
+      "interpretation": "Each offset row shows AR1 scatter, normal Q-Q and Holocene residual lag products, then the same three checks for MA1. Normalized residuals account for the fitted variance/correlation structure. Lag products preserve actual within-lake gaps and exclude modern singleton series; pair counts are shown, without formal tests. Only 26\u201330 Holocene transitions support each fit; covariance and distribution remain provisional.",
+      "status": "provisional"
     }
   ],
   "main_figures": [
@@ -428,7 +464,7 @@
     },
     "tracking_schema": {
       "source": "output/cca_tracking_schema.csv",
-      "producer": "R/stages/09_tracking_metrics.R"
+      "producer": "R/stages/09b_tracking_model_data.R"
     },
     "lake_uncertainty": {
       "source": "output/cca_tracking_holocene_lake_uncertainty.csv",
@@ -438,9 +474,17 @@
       "source": "output/cca_tracking_anthropocene_plot_calculations.csv",
       "producer": "R/stages/09_tracking_metrics.R"
     },
-    "era_comparison": {
-      "source": "output/cca_tracking_era_comparison.csv",
-      "producer": "R/stages/09_tracking_metrics.R"
+    "era_by_offset": {
+      "source": "output/cca_tracking_era_by_offset.csv",
+      "producer": "R/stages/09b_tracking_model_data.R"
+    },
+    "tracking_model_coefficients": {
+      "source": "output/exploratory/tracking_offset_models/lag_rate_per_century/model_coefficients.csv",
+      "producer": "R/stages/10_tracking_era_models.R"
+    },
+    "tracking_model_contrasts": {
+      "source": "output/exploratory/tracking_offset_models/lag_rate_per_century/model_contrasts.csv",
+      "producer": "R/stages/10_tracking_era_models.R"
     }
   },
   "text_outputs": {
@@ -455,6 +499,11 @@
     "cca_anova_output": {
       "source": "output/report/cca_anova_output.txt",
       "producer": "R/stages/05_cca_model.R"
+    },
+    "tracking_model_results": {
+      "source": "output/exploratory/tracking_offset_models/lag_rate_per_century/model_results.txt",
+      "producer": "R/stages/10_tracking_era_models.R",
+      "status": "provisional GLS results"
     }
   },
   "reference_bundles": {

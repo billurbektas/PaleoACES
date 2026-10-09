@@ -42,9 +42,11 @@ verbatim for reading. Run the workflow for an analysis rebuild.
 | 13 | CCA eligibility, calibration and reference | [05_cca_model.R](../R/stages/05_cca_model.R) |
 | 14–15 | Fire catalog and climate eras | [12_walsh_fire_reproduction.R](../R/stages/12_walsh_fire_reproduction.R); [13_holocene_climate_fire_eras.R](../R/stages/13_holocene_climate_fire_eras.R) |
 | 16 | Canonical lake/plot tracking | [09_tracking_metrics.R](../R/stages/09_tracking_metrics.R) |
-| 17 | Community trajectories: Figure 3 | [05a_cca_figure.R](../R/stages/05a_cca_figure.R) |
-| 18–19 | Tracking and fire-detection examples | [09a_tracking_example_and_visualizations.R](../R/stages/09a_tracking_example_and_visualizations.R); [12a_fire_event_detection_worked_example.R](../R/stages/12a_fire_event_detection_worked_example.R) |
-| 20–21 | Climate/fire display: Figure 2 and example | [13a_climate_change_figure.R](../R/stages/13a_climate_change_figure.R); [13b_fire_method_worked_example.R](../R/stages/13b_fire_method_worked_example.R) |
+| 17 | Combined transition input | [09b_tracking_model_data.R](../R/stages/09b_tracking_model_data.R) |
+| 18 | Provisional offset GLS comparisons | [10_tracking_era_models.R](../R/stages/10_tracking_era_models.R) |
+| 19 | Community trajectories: Figure 3 | [05a_cca_figure.R](../R/stages/05a_cca_figure.R) |
+| 20–21 | Tracking and fire-detection examples | [09a_tracking_example_and_visualizations.R](../R/stages/09a_tracking_example_and_visualizations.R); [12a_fire_event_detection_worked_example.R](../R/stages/12a_fire_event_detection_worked_example.R) |
+| 22–23 | Climate/fire display: Figure 2 and example | [13a_climate_change_figure.R](../R/stages/13a_climate_change_figure.R); [13b_fire_method_worked_example.R](../R/stages/13b_fire_method_worked_example.R) |
 
 | Prepared input | Rows | Plot/sample IDs | Taxa |
 | --- | --- | --- | --- |
@@ -242,7 +244,7 @@ The deeper models are similar, not identical: the
 [stored comparison](review/PB210_STORED_SENSITIVITY_COMPARISON.csv) finds maximum
 differences below 35 cm of 15 years in median age and 24/28 years in the lower/upper
 95% bounds. The [NOCA source notes](../data/NOCA/NOCA_paleo/SOURCES.md) preserve the
-earlier discussion. This report uses stored chronologies; no model is refitted.
+earlier discussion. This report uses stored chronologies; no chronology model is refitted.
 
 ### Inspect four fitted age-depth models and slump treatment
 
@@ -781,7 +783,7 @@ The metric example below shows how displacement, lag, ratio and angle follow
 from WA and LC endpoints. The next two descriptive figures use four lake columns
 with aligned cal-BP axes. Thin trajectories show offsets at actual transition
 midpoints; thick response lines reuse the maintained complete-offset medians.
-Climate/fire predictor medians read the canonical era-comparison table, mapped
+Climate/fire predictor medians are reconstructed from canonical transitions
 with the same half-open intervals and complete-offset rule. The original model,
 uncertainty and seven-response reporting CSVs are unchanged.
 The rates figure has rows for tracking responses together, standardized climate
@@ -877,10 +879,10 @@ Script: [13b_fire_method_worked_example.R](../R/stages/13b_fire_method_worked_ex
 ## Lake-level tracking datasets and support
 
 The canonical tracking analysis calculates each lake independently in the same
-pooled CCA. Stage 09 derives eight products from detailed records: two compact
-model inputs, long chronology uncertainty, lake and modern calculation audits,
-seven-response descriptive reporting, sampling/coverage diagnostics and the
-16-column long era comparison.
+pooled CCA. Stage 09 derives seven products from detailed records: two compact
+source inputs, long chronology uncertainty, lake and modern calculation audits,
+seven-response descriptive reporting and sampling/coverage diagnostics.
+Stage 09b assembles the combined transition model input without recalculating responses.
 The model inputs share exactly the same seven response names and definitions:
 [273 lake/offset transitions, 23 columns](assets/analysis/tables/lake_by_offset.csv),
 [607 modern pairs, 21 columns](assets/analysis/tables/modern_model_input.csv).
@@ -888,16 +890,16 @@ Separate records expose [chronology uncertainty, 15 columns](assets/analysis/tab
 [detailed modern calculations](assets/analysis/tables/modern_calculations.csv), and
 [column definitions and units](assets/analysis/tables/tracking_schema.csv).
 
-The [combined era comparison, 16 columns](assets/analysis/tables/era_comparison.csv)
-contains 1,657 Holocene reporting rows and seven responses for each of the
-607 modern plots (4,249 modern rows). Holocene climate/fire medians and sample
-SDs use the same aligned offsets as each response. Offset SDs describe placement
-sensitivity. Missing fire in a required offset leaves both fire fields missing.
-Modern `t` is `NA`; actual resurvey years and original binary fire assignments
-remain available. WGS84 coordinates come from cached lake climate locations and
-cleaned plot locations. Undefined modern responses remain `NA` rows, and the
-original offset-level datasets remain the validation and modeling records.
-The long layout does not make reporting dates or response rows independent.
+The [combined transition input, 28 columns](assets/analysis/tables/era_by_offset.csv)
+contains 6,160 rows: seven responses for each of 273 actual lake/offset transitions
+and 607 modern pairs. Modern observations are stored once per response, with
+an absent offset; each model fit selects one Holocene offset and the same modern
+pairs. No across-offset median or 100-year grid is used for modeling. Holocene
+estimates remain finite-draw medians within actual transitions. Dates, both
+elapsed times, predictors, sampling support and WGS84 identities are retained.
+Undefined responses remain rows and are filtered separately using `response_valid`.
+Missing charcoal exposure stays missing; modern fire remains binary burned.
+The previous reporting-grid model input and model trials are retired.
 
 | Lake | Offset | Samples | Transitions | Minimum draws | Two-sample realizations |
 | --- | --- | --- | --- | --- | --- |
@@ -965,8 +967,9 @@ each offset, considering lake identity and temporal dependence during later
 model development. Adjacent transitions share endpoint information.
 There are approximately 5–6 majority-supported transitions per MORA lake per
 offset and 9–10 for Panther Potholes. Four lakes and two fire histories provide
-limited independent support for a later three-way interaction. No models,
-distributions or temporal-correlation structures are fitted or selected here.
+limited independent support for a later three-way interaction. Provisional
+AR1/MA1 GLS comparisons are shown below; final distributions, covariance choices
+and lake/chronology uncertainty treatment remain open.
 
 Each MORA vegetation lake uses its own climate but shares regional fire exposure.
 Numerators and core maxima use fully covered windows of identical duration and
@@ -1120,6 +1123,56 @@ Figures 2 and 3 and the lake/plot tracking datasets use the updated inputs.
 
 [Full survey decision effects table](assets/analysis/tables/survey_decision_effects.csv).
 
+## Provisional offset GLS comparisons
+
+[Stage 10](../R/stages/10_tracking_era_models.R) fits lag-change rate separately
+at offsets 0–900 years, using actual 1,000-year transitions plus all 607 modern
+pairs. AR1 and MA1 share the same `estimate ~ era * site` fixed effects, REML
+and separate era/site residual variances. All 20 fits converged in the current
+run. The [80 coefficient rows](assets/analysis/tables/tracking_model_coefficients.csv)
+flag offset and `model_type` and include standard errors, unadjusted 95% t
+intervals, group counts and the fitted correlation parameter.
+
+The [40 park contrasts](assets/analysis/tables/tracking_model_contrasts.csv)
+compare Anthropocene minus Holocene within MORA and within NOCA for every
+offset and covariance type. Positive estimates indicate a higher Anthropocene
+lag-change rate. Their unadjusted 95% intervals use Satterthwaite degrees of
+freedom. The contrast figure places AR1 and MA1 together in each park panel.
+
+MA1 restricts residual correlation to observations one actual time step apart
+within a lake; missing transitions retain their original indices. Modern pairs
+are singleton series. AR1 permits longer-lag correlation. AIC comparisons are
+between covariance types within the same offset; the ten offsets are sensitivity
+fits that reuse modern pairs. These models do not propagate chronology uncertainty,
+add lake random intercepts or include climate/fire fixed effects. Their covariance,
+distribution and inference remain provisional.
+
+[Complete results for all offset/covariance fits](assets/analysis/model_results.txt).
+
+### Compare provisional AR1 and MA1 coefficients across all ten offsets
+
+Lag-change rate is fitted with identical era-by-site fixed effects, REML and era/site residual variances for each offset and covariance type. Points show coefficients and bars unadjusted 95% t intervals. Offsets reuse the same modern plots and are sensitivity fits, not independent replications. **Provisional**.
+
+Script: [10_tracking_era_models.R](../R/stages/10_tracking_era_models.R). [Complete PDF](../plot/test_figures/fig_tracking_model_coefficients_lag_rate_per_century.pdf) (1 page).
+
+![Compare provisional AR1 and MA1 coefficients across all ten offsets. — PDF page 1](assets/analysis/tracking_model_coefficients-p1.png)
+
+### Compare Anthropocene minus Holocene within each park across offsets and covariance choices
+
+Each MORA/NOCA panel shows model-based era contrasts for AR1 and MA1 at all ten offsets. Positive estimates indicate higher Anthropocene lag-change rates. Bars are unadjusted 95% intervals using Satterthwaite degrees of freedom; park panels have separate y-scales. Offsets reuse modern pairs and are sensitivity fits, not independent replications. Inference remains provisional. **Provisional**.
+
+Script: [10_tracking_era_models.R](../R/stages/10_tracking_era_models.R). [Complete PDF](../plot/test_figures/fig_tracking_model_contrasts_lag_rate_per_century.pdf) (1 page).
+
+![Compare Anthropocene minus Holocene within each park across offsets and covariance choices. — PDF page 1](assets/analysis/tracking_model_contrasts-p1.png)
+
+### Evaluate residuals for both covariance models at every offset
+
+Each offset row shows AR1 scatter, normal Q-Q and Holocene residual lag products, then the same three checks for MA1. Normalized residuals account for the fitted variance/correlation structure. Lag products preserve actual within-lake gaps and exclude modern singleton series; pair counts are shown, without formal tests. Only 26–30 Holocene transitions support each fit; covariance and distribution remain provisional. **Provisional**.
+
+Script: [10_tracking_era_models.R](../R/stages/10_tracking_era_models.R). [Complete PDF](../plot/test_figures/fig_tracking_model_residuals_lag_rate_per_century.pdf) (1 page).
+
+![Evaluate residuals for both covariance models at every offset. — PDF page 1](assets/analysis/tracking_model_residuals-p1.png)
+
 ## Limitations and remaining questions
 
 The chronology controls, survey windows, GPS exclusions and paired CCA
@@ -1170,6 +1223,9 @@ current-results analysis.
 | [fig_tracking_offset_rates.pdf](../plot/test_figures/fig_tracking_offset_rates.pdf) | Compare tracking responses, climate and fire under established regional climate-period bands, with Anthropocene boxplots. | [09a_tracking_example_and_visualizations.R](../R/stages/09a_tracking_example_and_visualizations.R) | 1 | current |
 | [fig_tracking_offset_ratios_angles.pdf](../plot/test_figures/fig_tracking_offset_ratios_angles.pdf) | Compare magnitude tracking ratio, angle, climate and fire under the same regional climate-period bands, one variable per row. | [09a_tracking_example_and_visualizations.R](../R/stages/09a_tracking_example_and_visualizations.R) | 1 | current |
 | [test_chelsa_cruts_vs_present.pdf](../plot/test_figures/test_chelsa_cruts_vs_present.pdf) | Retain the older product-comparison reference outside current results. | [test_chelsa_cruts_vs_present.R](../R/diagnostics/test_chelsa_cruts_vs_present.R) | Full PDF only | historical reference |
+| [fig_tracking_model_coefficients_lag_rate_per_century.pdf](../plot/test_figures/fig_tracking_model_coefficients_lag_rate_per_century.pdf) | Compare provisional AR1 and MA1 coefficients across all ten offsets. | [10_tracking_era_models.R](../R/stages/10_tracking_era_models.R) | 1 | provisional |
+| [fig_tracking_model_contrasts_lag_rate_per_century.pdf](../plot/test_figures/fig_tracking_model_contrasts_lag_rate_per_century.pdf) | Compare Anthropocene minus Holocene within each park across offsets and covariance choices. | [10_tracking_era_models.R](../R/stages/10_tracking_era_models.R) | 1 | provisional |
+| [fig_tracking_model_residuals_lag_rate_per_century.pdf](../plot/test_figures/fig_tracking_model_residuals_lag_rate_per_century.pdf) | Evaluate residuals for both covariance models at every offset. | [10_tracking_era_models.R](../R/stages/10_tracking_era_models.R) | 1 | provisional |
 
 ## TraCE21k–V2.1 comparison and planned sensitivity
 

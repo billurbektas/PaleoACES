@@ -250,8 +250,8 @@ JayBath, LogWallow, ReflectionPond and PantherPotholes, or an individual paired
 modern plot. One maintained helper calculates the same response definitions for
 both eras. The existing pooled 607-plot, 14-taxon CCA and Figure 3 are unchanged.
 The former site-pooled tracking analyses and Figures 4/5 are retired; their
-historical code and figures remain in Git. No replacement figures or models
-are fitted in this step.
+historical code and figures remain in Git. The tracking calculation stage fits
+no response models; provisional offset GLS trials are documented below.
 
 Let $O_1,O_2$ be observed WA endpoints and $P_1,P_2$ climate-predicted LC endpoints
 in scaling-1, Hill-off CCA1–CCA2 space. Define $\Delta O=O_2-O_1$,
@@ -373,29 +373,50 @@ individually or enter the model tables as predictors. The plotting stage
 preserves response estimates and leaves dates outside the classified
 9,600–1,300 cal-BP domain unshaded. Modern boxplots retain their existing layout.
 
-### Long era comparison and aligned predictors
+### Combined transition input and provisional offset models
 
-`cca_tracking_era_comparison.csv` adds a 16-column descriptive view while
-preserving the two model inputs, offset-level uncertainty and calculation
-records. Holocene rows retain the response-specific complete-offset reporting
-rule and estimate. Climate and fire medians are calculated over the exact
-offsets whose supported transitions contain the reporting date under
-`[age_lo, age_hi)`. Their offset SDs use the sample SD (`n - 1`) and describe
-bin-placement sensitivity, not confidence intervals or independent replication.
-Missing fire activity or inadequate coverage in any required offset makes both
-the fire median and offset SD missing; covered zero-event intervals stay zero.
+Stage 09b assembles `cca_tracking_era_by_offset.csv` from the canonical lake
+transition and modern plot tables. Its [28-column contract](OUTPUTS.md#canonical-tracking-schemas)
+retains one response per actual observation, both elapsed times, known survey
+and climate dates, physical climate rate, original fire exposure, lake support
+and WGS84 coordinates. Modern pairs appear once per response with an absent
+offset; each offset fit reuses them. Response validity is determined separately
+by finite estimates. Holocene estimates remain chronology-draw medians within
+actual transitions, without aggregation across offsets or reporting dates.
+The long layout and reuse of modern pairs do not create independent replicates.
+The 16-column reporting-grid comparison and its model trials are retired.
+Descriptive tracking plots still reconstruct their aligned predictor medians
+from source transitions using the existing response-specific reporting rule.
 
-Anthropocene rows retain seven responses for each original plot, including
-undefined response values as `NA`, its standardized climate rate and binary
-fire assignment. The actual vegetation resurvey calendar year is retained;
-modern `t` is `NA`, since zero cal BP denotes 1950. Lake identifiers, continuous
-fire and offset support/spread are inapplicable to modern plots. WGS84 longitude
-and latitude use cached lake climate locations and cleaned plot locations.
-Coordinate matching preserves original plot IDs, including case, and neither
-fills missing locations nor combines plots sharing coordinates. Current
-comparison rows are descriptive reporting values or individual modern responses;
-the overlapping Holocene dates and seven metric rows per plot are not extra
-ecological replicates. See the [exact 16-column contract](OUTPUTS.md#canonical-tracking-schemas).
+Stage 10 runs the same provisional Gaussian GLS separately at all ten offsets
+for lag-change rate. It fits `estimate ~ era * site` with REML and era/site
+residual variances, trying both AR1 and MA1 covariance. One combined coefficient
+CSV flags offset and `model_type`. A separate contrast CSV holds Anthropocene
+minus Holocene within MORA and within NOCA: 40 contrasts with unadjusted 95%
+intervals and Satterthwaite degrees of freedom. Positive contrasts indicate a
+higher Anthropocene response. One TXT holds all fit summaries, park contrasts
+and fit comparisons. Coefficient, contrast and residual PDFs include both
+covariance choices across all offsets. This is a maintained exploration;
+distribution, covariance and inference remain provisional.
+
+Holocene time indices are spaced by the actual interval width; missing
+transitions keep their original gaps. Modern pairs are independent singleton
+series with an internal dummy index of zero and their actual calendar dates
+retained. MA1 uses `corARMA(p=0,q=1)`: residual correlation is zero beyond one
+time step within a series. Its fitted moving-average parameter is not directly
+the neighboring residual correlation: rho(1) = theta / (1 + theta²).
+[The official nlme documentation](https://stat.ethz.ch/R-manual/R-devel/library/nlme/html/corARMA.html)
+defines its integer time covariate and series grouping. AR1 permits correlations
+at longer lags. AIC comparisons between the two covariance choices use identical
+observations and fixed effects within an offset; offsets are sensitivity fits
+with different observations, so their AICs are not selection comparisons.
+
+These fits retain all finite selected responses without a draw-support cutoff.
+They do not propagate chronology uncertainty, add a lake random intercept or
+include climate/fire fixed effects. The residual page shows normalized scatter,
+Q-Q and Holocene lag products for both covariance choices. Lag products match
+actual time gaps, exclude modern singleton series, and report pair counts;
+they are descriptive diagnostics without formal significance tests.
 
 The 273 primary transition rows span ten alternative bin placements. **Offsets
 are sensitivity realizations, not independent ecological replicates.** The
@@ -403,12 +424,12 @@ intended primary statistical approach is to analyze non-overlapping transitions
 separately within each offset, considering lake identity and temporal dependence
 during later model development. Adjacent transitions share endpoint information.
 Chronology draws and overlapping reporting dates are also not independent
-replicates. Model inclusion and uncertainty treatment remain future decisions.
+replicates. Final model inclusion, covariance and uncertainty treatment remain future decisions.
 Approximately 5–6 majority-supported transitions per MORA lake per offset and
 9–10 for Panther Potholes imply limited support for a later three-way interaction;
 four lakes and shared fire histories must not be treated as abundant independent
-replication. No distribution, LMM, AR(1), power analysis or contribution attribution
-is selected or fitted here. See [output schemas](OUTPUTS.md#canonical-tracking-schemas).
+replication. The AR1/MA1 GLS fits above remain provisional; no final distribution,
+lake random effect, power analysis or contribution attribution is selected here. See [output schemas](OUTPUTS.md#canonical-tracking-schemas).
 
 ## Unified 1,000-year climate eras
 

@@ -48,7 +48,7 @@ figure = (a+p)/(q+s) + plot_annotation(title=paste0('Panther Potholes: ',example
 if(render_figures) ggsave(here('plot/test_figures/fig_method_worked_example.pdf'),figure,width=12,height=11)
 
 # Descriptive temporal panels and paired-plot boxplots. Response lines reuse
-# maintained reporting estimates and the canonical era-comparison predictors,
+# maintained reporting estimates and their aligned transition predictors,
 # following the same half-open mapping and complete-offset support rule.
 # This stage never modifies or exports scientific tables.
 # Regional climate bands reuse Figure 2's frozen catalog and subdivisions.
@@ -93,8 +93,8 @@ thin=b |> pivot_longer(all_of(c(metrics,predictors)),names_to='metric',values_to
    !is.finite(value) | !coalesce(is.finite(lag(value)),FALSE))) |> ungroup()
 response_grid=read_csv(here('output/cca_tracking_holocene_lake_timeseries.csv'),show_col_types=FALSE) |>
  filter(metric %in% metrics) |> select(site,lake,t,metric,estimate,n_offsets,n_valid_offsets)
-predictor_grid=read_csv(here('output/cca_tracking_era_comparison.csv'),show_col_types=FALSE) |>
- filter(era=='Holocene') |> distinct(site,lake,t,n_valid_offsets,
+predictor_grid=lake_reporting_context(b,response_grid,bin_width_years) |>
+ distinct(site,lake,t,n_valid_offsets,
    standardized_climate_change_rate=climate_rate,fire_activity) |>
  pivot_longer(all_of(predictors),names_to='metric',values_to='estimate') |>
  mutate(n_offsets=n_valid_offsets) |> filter(is.finite(estimate))

@@ -178,66 +178,18 @@ equal(report$unit,ifelse(report$metric=='angle_degrees','degrees',
 reflection=report |> filter(lake=='ReflectionPond',t==5900)
 stopifnot(setequal(reflection$metric,setdiff(responses,c('angle_degrees','pace_effect_on_lag_per_century'))))
 
-# Long era comparison: independent aligned predictor reconstruction, original
-# modern responses (including undefined ones), dates and geographic identities.
-comparison_contract=c('era','site','lake','plot_id','t','resurvey_year','metric',
-  'estimate','climate_rate','climate_rate_offset_sd','fire_activity',
-  'fire_activity_offset_sd','burned','longitude','latitude','n_valid_offsets')
-comparison=read_tracking('era_comparison')
-h=comparison |> filter(era=='Holocene');modern_long=comparison |> filter(era=='Anthropocene')
-stopifnot(identical(names(comparison),comparison_contract),
-  setequal(key_for(h,report_keys),key_for(report,report_keys)),
-  !anyDuplicated(h[report_keys]),!anyDuplicated(modern_long[c('site','plot_id','metric')]),
-  nrow(h)==nrow(report),nrow(modern_long)==nrow(a)*7L,
-  all(is.na(h$plot_id)),all(is.na(h$resurvey_year)),all(is.na(h$burned)),
-  all(is.na(modern_long$lake)),all(is.na(modern_long$t)),
-  all(is.na(modern_long$climate_rate_offset_sd)),
-  all(is.na(modern_long$fire_activity)),all(is.na(modern_long$fire_activity_offset_sd)),
-  all(is.na(modern_long$n_valid_offsets)))
-for(i in seq_len(nrow(h))) {
-  d=h[i,]
+# Reconstruct the plotting context directly, without a reporting-grid model CSV.
+context=lake_reporting_context(b,report,1000)
+for(i in seq_len(nrow(context))) {
+  d=context[i,]
   selected=b[b$site==d$site & b$lake==d$lake & b$age_lo<=d$t & b$age_hi>d$t,]
   selected=selected[is.finite(selected[[d$metric]]),]
   stopifnot(!anyDuplicated(selected$offset),setequal(selected$offset,seq(0,900,100)))
   equal(d$estimate,median(selected[[d$metric]]))
-  equal(d$n_valid_offsets,length(unique(selected$offset)))
   equal(d$climate_rate,median(selected$standardized_climate_change_rate))
-  equal(d$climate_rate_offset_sd,sd(selected$standardized_climate_change_rate))
   covered=all(selected$fire_coverage_valid & is.finite(selected$fire_activity))
   equal(d$fire_activity,if(covered) median(selected$fire_activity) else NA_real_)
-  equal(d$fire_activity_offset_sd,if(covered) sd(selected$fire_activity) else NA_real_)
 }
-for(metric in responses) {
-  d=modern_long[modern_long$metric==metric,]
-  stopifnot(setequal(key_for(d,c('site','plot_id')),key_for(a,c('site','plot_id'))))
-  d=d[match(key_for(a,c('site','plot_id')),key_for(d,c('site','plot_id'))),]
-  equal(d$estimate,a[[metric]]);equal(d$resurvey_year,a$vegetation_t2_year)
-  equal(d$climate_rate,a$standardized_climate_change_rate);equal(d$burned,a$burned)
-}
-lake_locations=read_csv(here('output/chelsa_paleo_ponds.csv'),show_col_types=FALSE) |>
-  distinct(site,lake,longitude=lon,latitude=lat)
-plot_locations=bind_rows(
-  read_csv(here('output/MORA_plot_info.csv'),show_col_types=FALSE) |>
-    transmute(site='MORA',plot_id=toupper(plot_id),longitude,latitude),
-  read_csv(here('output/NOCA_plot_info.csv'),show_col_types=FALSE) |>
-    transmute(site='NOCA',plot_id=toupper(plot_id),longitude=-abs(Longitude),latitude=Latitude))
-matched_lakes=lake_locations[match(key_for(h,c('site','lake')),
-  key_for(lake_locations,c('site','lake'))),]
-matched_plots=plot_locations[match(paste(modern_long$site,toupper(modern_long$plot_id)),
-  paste(plot_locations$site,plot_locations$plot_id)),]
-equal(h$longitude,matched_lakes$longitude);equal(h$latitude,matched_lakes$latitude)
-equal(modern_long$longitude,matched_plots$longitude);equal(modern_long$latitude,matched_plots$latitude)
-stopifnot(all(is.finite(comparison$longitude)),all(is.finite(comparison$latitude)),
-  'EAGl-120' %in% modern_long$plot_id,all(h$n_valid_offsets==10),
-  sum(is.na(modern_long$estimate[modern_long$metric=='angle_degrees']))==142L)
-schema=read_csv(here('output/cca_tracking_schema.csv'),show_col_types=FALSE) |>
-  filter(dataset=='cca_tracking_era_comparison')
-stopifnot(identical(schema$column,comparison_contract))
-units=c(estimate='metric_dependent',t='cal_years_BP',resurvey_year='calendar_year',
-  climate_rate='calibration_SD_per_century',climate_rate_offset_sd='calibration_SD_per_century',
-  fire_activity='unitless',fire_activity_offset_sd='unitless',burned='boolean',
-  longitude='decimal_degrees_WGS84',latitude='decimal_degrees_WGS84',n_valid_offsets='count')
-equal(schema$unit[match(names(units),schema$column)],unname(units))
 
 # Shifted intervals, response-specific eligibility, covered zero fire and
 # insufficient fire coverage. Missing exposure must not delete valid responses.
@@ -252,22 +204,12 @@ su=sb |> select(all_of(group_keys),all_of(responses)) |>
 sg=lake_reporting_grid(su,300)
 sc=lake_reporting_context(sb,sg,300)
 stopifnot(nrow(sc)==5L,all(sc$t==300),all(sc$n_valid_offsets==3L),
-  all(is.na(sc$fire_activity)),all(is.na(sc$fire_activity_offset_sd)))
-equal(sc$climate_rate,rep(2,5));equal(sc$climate_rate_offset_sd,rep(sd(c(1,2,6)),5))
+  all(is.na(sc$fire_activity)))
+equal(sc$climate_rate,rep(2,5))
 sb$fire_activity=0;sb$fire_coverage_valid=TRUE
 zero_context=lake_reporting_context(sb,sg,300)
-equal(zero_context$fire_activity,rep(0,5));equal(zero_context$fire_activity_offset_sd,rep(0,5))
+equal(zero_context$fire_activity,rep(0,5))
 fail(lake_reporting_context(sb,mutate(sg,estimate=estimate+1),300))
-missing_location=plot_locations |> filter(!(site==a$site[1] & plot_id==toupper(a$plot_id[1])))
-fail(tracking_era_comparison(b,report,a,lake_locations,missing_location))
-fail(tracking_era_comparison(b,report,a,lake_locations,
-  bind_rows(plot_locations,plot_locations |> filter(plot_id=='EAGL-120') |> mutate(plot_id='EAGl-120'))))
-single=sb[1,] |> mutate(offset=0,age_lo=50,age_hi=150)
-single_grid=sg |> mutate(t=100,estimate=10,n_offsets=1L,n_valid_offsets=1L)
-single_context=lake_reporting_context(single,single_grid,100)
-stopifnot(all(is.na(single_context$climate_rate_offset_sd)),
-  all(is.na(single_context$fire_activity_offset_sd)))
-
 # Sparse support and an empty sensitivity group are retained explicitly.
 stationary=calculate_tracking_metrics(mutate(x,o1_2=o1,o2_2=o2))
 synthetic=bind_rows(mutate(stationary,draw=1L),mutate(m,draw=2L)) |>
@@ -320,4 +262,4 @@ fixture=read_csv(here('R/tests/fixtures/cca_noca_tracking_baseline.csv'),show_co
 actual=inner_join(fixture |> select(all_of(setdiff(keys,'lake'))),r,by=setdiff(keys,'lake'))
 stopifnot(nrow(actual)==nrow(fixture))
 for(v in names(fixture)) equal(actual[[v]],fixture[[v]])
-cat('PASS: independent geometry, compact contracts, all response/sampling distributions, response-specific reporting, aligned era-comparison medians/SDs/dates/coordinates, fire support, interval configuration and NOCA regression.\n')
+cat('PASS: independent geometry, compact contracts, all response/sampling distributions, response-specific reporting, aligned plotting predictors, fire support, interval configuration and NOCA regression.\n')

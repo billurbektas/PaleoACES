@@ -4,9 +4,10 @@ The primary 1,000-year run on 2026-10-08 uses the existing 100 whole chronology
 draws and ten offsets. No climate downloads, chronology regeneration, additional
 interval runs or statistical response models were performed.
 
-The 2026-10-09 extension adds the long era comparison from these existing
-calculation records. All 898 snapshotted data/cache and figure files remain
-byte-identical; only the schema dictionary and new comparison product change.
+The 2026-10-09 extension assembles a combined actual-transition input and
+maintains provisional AR1/MA1 era/site comparisons separately at every offset.
+It retires the earlier reporting-grid comparison input and exploratory model
+script/outputs while preserving the source calculations and descriptive plots.
 
 ## Data contracts
 
@@ -19,10 +20,11 @@ byte-identical; only the schema dictionary and new comparison product change.
 | `cca_tracking_anthropocene_plot_calculations.csv` | 607 | 79 | Detailed modern calculation record, preserving endpoints, seasonal climate and provenance |
 | `cca_tracking_holocene_lake_timeseries.csv` | 1,657 | 15 | Lake × one of seven responses × descriptive 100-year reporting date |
 | `cca_tracking_holocene_lake_support.csv` | 40 | 23 | Lake × offset, including exclusions and two-sample sensitivity support |
-| `cca_tracking_era_comparison.csv` | 5,906 | 16 | Holocene lake × reporting date × response, or modern plot × response, with aligned predictors, offset sensitivity, dates and WGS84 coordinates |
+| `cca_tracking_era_by_offset.csv` | 6,160 | 28 | Actual Holocene lake × offset × transition × response, or modern plot × response, with dates, elapsed times, original predictors/support and WGS84 coordinates |
 
 These outputs are written under `output/`. The [machine-readable schema](../assets/analysis/tables/tracking_schema.csv)
-defines all 330 columns across the eight contracts. The [output register](../OUTPUTS.md)
+defines all 342 columns across the eight contracts. Stage 09b assembles the combined
+input after stage 09 calculates the canonical records. The [output register](../OUTPUTS.md)
 documents keys, units and suffix conventions. The [analysis review](../ANALYSIS_REVIEW.md)
 contains focused excerpts of the maintained metric calculations and portable copies
 of the compact inputs, uncertainty, modern calculations and support tables.
@@ -32,15 +34,27 @@ per actual transition (3,822). These checks precede every primary export. A
 changed key or row count stops execution with added/removed keys and climate
 exclusion diagnostics; no filtering is adjusted and no observation is filled.
 
-The extended offline tracking gate independently reconstructs every comparison
-response and aligned predictor median/sample SD from actual offset transitions.
-It checks all original modern responses (including 142 undefined angle values),
-resurvey years, fire assignments and coordinate joins against the original plot
-and lake locations. Original ID case is retained, including `EAGl-120`.
-Synthetic shifted intervals verify half-open boundaries, response-specific
-eligibility, missing fire coverage, covered zero fire, single-offset undefined
-SDs, and rejection of absent or ambiguous coordinates. No global response
-validity filter is introduced, and modern `t` remains `NA`.
+The offline tracking gate independently reconstructs each descriptive predictor
+median from actual offset transitions using the original reporting rule. The
+combined-input/model gate independently matches all seven responses, dates,
+elapsed times, fire assignments, sampling support and WGS84 coordinates to
+canonical source records. Original ID case remains, including `EAGl-120`; all
+142 undefined modern angles remain rows with `response_valid = FALSE`.
+Synthetic shifted intervals retain half-open reporting boundaries, covered zero
+fire and missing coverage. Combined coordinate joins reject absent or ambiguous
+locations. No global response-validity filter is introduced.
+
+The new offset-0 AR1 coefficients and standard errors exactly reproduce the
+previous offset-0 exploration (maximum absolute coefficient difference: zero).
+Independent covariance checks confirm that MA1 correlations are zero at lags
+greater than one, while AR1 preserves correlations across actual missing-time
+gaps. The new gate checks all 80 coefficient rows, model type/offset keys,
+t statistics, p values, interval bounds and observation counts. It also checks
+all 40 park contrasts against the fitted coefficients: MORA uses the era term;
+NOCA uses the era term plus the era/site interaction. Contrast signs, p values,
+95% intervals and park-specific counts are verified. Current AR1/MA1 fits all
+converge without warnings. The three diagnostic PDFs each have one page.
+These checks validate implementation, without selecting a final statistical model.
 
 ## Observed support
 
@@ -149,5 +163,5 @@ The sparse MORA transitions and shared MORA exposure give limited independent
 support for a three-way interaction. Evaluating such an interaction will need
 an explicit estimand, an assessment of predictor overlap and independent
 support, and an uncertainty/inclusion strategy. This validation does not fit
-that interaction, choose distributions, add AR(1), calculate contribution
+that interaction, choose a final distribution/covariance, calculate contribution
 attribution or replace the retired figures.

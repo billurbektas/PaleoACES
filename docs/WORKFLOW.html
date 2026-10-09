@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: c063507429e7afe5274133c121aea1ad -->
+<!-- paleoaces-source-md5: 28f6df54ccf0107015f09d7d7beec944 -->
 
 <html>
 
@@ -1527,6 +1527,8 @@ Rscript R/stages/000_FIRE_cleaning.R
 Rscript R/stages/000_PALEO_c_fire.R
 Rscript R/stages/05a_cca_figure.R
 Rscript R/stages/09_tracking_metrics.R
+Rscript R/stages/09b_tracking_model_data.R
+Rscript R/stages/10_tracking_era_models.R
 Rscript R/stages/12_walsh_fire_reproduction.R
 Rscript R/stages/12a_fire_event_detection_worked_example.R
 Rscript R/stages/13_holocene_climate_fire_eras.R
@@ -1535,6 +1537,7 @@ Rscript R/stages/13b_fire_method_worked_example.R
 
 # Focused offline gates
 Rscript R/tests/test_cca_tracking_metrics.R
+Rscript R/tests/test_tracking_offset_models.R
 Rscript R/tests/test_review_edge_cases.R
 Rscript R/tests/test_walsh_fire_reproduction.R
 Rscript R/tests/test_holocene_climate_fire_eras.R
@@ -1587,6 +1590,10 @@ regeneration is needed for stages 9–14.</p>
   PF --&gt; WR
   CCA --&gt; ER[13 unified climate eras/fire classification]
   ER --&gt; TM1
+  TM1 --&gt; MD[09b combined transition model input]
+  MD --&gt; GLS[10 provisional AR1 and MA1 models by offset]
+  TM1 --&gt; TV[09a tracking plots with climate bands]
+  ER --&gt; TV
   PE --&gt; ER
   WR --&gt; ER
   ER --&gt; CA[05a selected era-centroid output and main render]
@@ -1754,12 +1761,29 @@ runs, and audit tables</td>
 <td>Published CCA reference, cached whole draws, own-lake climate,
 accepted charcoal events and coverage, cleaned plot coordinates</td>
 <td>Compact 23/21-column model tables, long uncertainty, lake/modern
-calculation audits, seven-response reporting and support, 16-column era
-comparison with aligned predictors and WGS84 coordinates; schema
+calculation audits, seven-response reporting and support; base schema
 dictionary</td>
 </tr>
 <tr class="odd">
-<td align="right">10e</td>
+<td align="right">10f</td>
+<td><code>R/stages/09b_tracking_model_data.R</code></td>
+<td>Combined transition model input</td>
+<td>Canonical 23/21-column source tables, lake and cleaned plot
+coordinates</td>
+<td>One 28-column long input with actual lake/offset transitions and
+modern pairs stored once per response; completed schema dictionary</td>
+</tr>
+<tr class="even">
+<td align="right">10g</td>
+<td><code>R/stages/10_tracking_era_models.R</code></td>
+<td>Maintained provisional offset GLS exploration</td>
+<td>Combined transition input only</td>
+<td>Ten separate offsets × AR1/MA1; coefficient and within-park contrast
+CSVs, one full results TXT, coefficient and contrast PDFs, and one
+residual PDF when rendering; lag-change rate initially</td>
+</tr>
+<tr class="odd">
+<td align="right">10h</td>
 <td><code>R/stages/05a_cca_figure.R</code></td>
 <td>Selected CCA trajectory data and main render</td>
 <td>Model, positioned Holocene samples, stage-13 frozen CC/S grid</td>
@@ -1767,19 +1791,20 @@ dictionary</td>
 main-paper <code>fig_cca_trajectories.pdf/.png</code></td>
 </tr>
 <tr class="even">
-<td align="right">10f</td>
+<td align="right">10i</td>
 <td><code>R/stages/09a_tracking_example_and_visualizations.R</code></td>
 <td>Tracking example and visualizations</td>
 <td>Canonical lake realizations, lake-by-offset responses/predictors,
-reporting grid, era-comparison predictor medians, modern paired-plot
-model input and stage-13 frozen climate-era catalog/subphases</td>
+reporting grid, aligned predictor medians reconstructed from source
+transitions, modern paired-plot model input and stage-13 frozen
+climate-era catalog/subphases</td>
 <td>Three diagnostic PDFs: worked geometry and two tracking/climate/fire
 grids with four lake columns, established regional CC/S bands and CC1
 subdivisions, complete-offset medians and an Anthropocene MORA/NOCA
 boxplot column</td>
 </tr>
 <tr class="odd">
-<td align="right">10g</td>
+<td align="right">10j</td>
 <td><code>R/stages/12a_fire_event_detection_worked_example.R</code></td>
 <td>Accepted-event detection for all four cores</td>
 <td>All-<code>tapas</code> source series with local thresholds,
@@ -1789,7 +1814,7 @@ rendering, a PDF with all four residual/threshold plots on one page,
 alongside settings and the software comparison</td>
 </tr>
 <tr class="even">
-<td align="right">10h</td>
+<td align="right">10k</td>
 <td><code>R/stages/13a_climate_change_figure.R</code></td>
 <td>Climate/subphase/fire display data and render</td>
 <td>Stage-13 directional cells, eras, subphases, fire frequency and
@@ -1801,7 +1826,7 @@ maximum-absolute Holocene regional median after ten-offset aggregation,
 plus the main-paper PDF/PNG when rendering</td>
 </tr>
 <tr class="odd">
-<td align="right">10i</td>
+<td align="right">10l</td>
 <td><code>R/stages/13b_fire_method_worked_example.R</code></td>
 <td>Fire-classification arithmetic audit and illustration</td>
 <td>Stage-12 accepted events and stage-13 core/site fire-frequency
@@ -1855,52 +1880,57 @@ presence</td>
 <td>Central seasonal climate derivation</td>
 </tr>
 <tr class="even">
+<td><code>R/helpers/tracking_model_data.R</code></td>
+<td>Combined 28-column assembly, era-specific missingness, coordinate
+identities and response-specific offset selection</td>
+</tr>
+<tr class="odd">
 <td><code>R/helpers/tracking_metrics.R</code></td>
 <td>Focused vector geometry, guarded internal angle calculation,
 physical-climate rates and validity flags</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>R/helpers/fire_detection_functions.R</code></td>
 <td>Shared all-core tapas preparation/detection, record settings,
 series, count-screen, and accepted-event extraction</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>R/helpers/paleo_runs.R</code></td>
 <td>Whole-chronology draws and parameterized bin/offset assignment</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>R/helpers/holocene_climate_fire_era_functions.R</code></td>
 <td>Complete 1,000-year climate changes, 50%-maximum classification,
 any-variable era union, composite magnitude, and independent
 fire-frequency classification</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>R/helpers/walsh_fire_functions.R</code></td>
 <td>Separate official CharAnalysis audit and Walsh input construction;
 not the downstream primary detector</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>R/helpers/figure_style.R</code></td>
 <td>Shared main-figure typography, site shapes, fire/burned red, and
 signed-gradient colors</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>R/vendor/get_chelsa.R</code>,
 <code>R/helpers/get_chelsa_monthly.R</code></td>
 <td>Supported CHELSA clients</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>R/helpers/bacon_settings.R</code>,
 <code>R/helpers/paleo_ages.R</code></td>
 <td>Bacon configuration and ages</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>R/helpers/chronology_provenance.R</code></td>
 <td>Verified recorded path/caption substitutions for historical
 chronology hashes and age-draw cache dependencies; unrecorded source
 changes invalidate that equivalence</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>data/holocene_period_candidates.csv</code></td>
 <td>Provisional calibrated/context evidence; never classification
 input</td>
@@ -1972,6 +2002,12 @@ manifest.</td>
 nearest-slice error</td>
 </tr>
 <tr class="odd">
+<td><code>test_tracking_offset_models.R</code></td>
+<td>Automatic offline gate after model fits</td>
+<td>Combined input reconstruction, singleton modern pairs, actual time
+gaps, AR1/MA1 covariance and coefficient/support integrity</td>
+</tr>
+<tr class="even">
 <td><code>test_cca_tracking_metrics.R</code></td>
 <td>Automatic offline gate after tracking</td>
 <td>Independent geometry and counterfactual errors, incorrect
@@ -1979,28 +2015,28 @@ lake/interval joins, fire coverage or comparable-window normalization,
 missing draw support, incorrect distributions, interval configuration or
 CCA drift</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>test_review_edge_cases.R</code></td>
 <td>Automatic independent review gate</td>
 <td>Known geometric values and invariances, unequal elapsed times,
 missing turnover classes, invalid monthly values/keys/caches, and
 climate/fire coverage gaps</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>test_walsh_fire_reproduction.R</code></td>
 <td>Automatic scientific/provenance gate</td>
 <td>Any non-tapas primary event, wrong settings/counts, lost
 sensitivity/catalog, modified protected outputs, stale manifest, or—when
 rendering—missing audit figures</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>test_holocene_climate_fire_eras.R</code></td>
 <td>Automatic unified-era gate</td>
 <td>Wrong scaling, threshold arithmetic, phase support, era sequence,
 composite, fire aggregation/threshold, audit, protected hashes, or—when
 rendering—missing figures</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>test_cca_trajectory_figure.R</code></td>
 <td>Automatic trajectory data/render gate</td>
 <td>Changed scaling/Hill/axes, incorrect CC1–S4 centroids, missing A–D
@@ -2009,55 +2045,55 @@ incorrect named anchors, unfaded predicted annotations, non-arrow legend
 glyphs, boxed series labels, retired duplicate artifacts, or missing
 main outputs</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>test_figure_output_contract.R</code></td>
 <td>Automatic publication-output gate</td>
 <td>Root <code>plot/</code> differs from the two approved PDF/PNG stems,
 diagnostic PNGs exist, a main PDF is multipage, or retired trajectory
 artifacts return</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>test_workflow_contract.R</code></td>
 <td>Automatic structural gate</td>
 <td>Producer/consumer order drifts, analysis is placed behind
 <code>--skip-figures</code>, a required gate disappears, or a plotting
 stage ignores the shared render option</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>test_cca_scaling_comparison.R</code></td>
 <td>Offline model diagnostic</td>
 <td>Reassesses site/scaling-1 geometry after model/species changes</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>test_climate_change_variables.R</code></td>
 <td>Offline decision diagnostic</td>
 <td>Reassesses units/redundancy and the four active constraints</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>test_species_through_time.R</code></td>
 <td>Offline sensitivity</td>
 <td>Quantifies site confounding and threshold effects</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>test_survey_year_anomaly.R</code></td>
 <td>Cached/network sensitivity</td>
 <td>Reassesses modern survey windows when universe or dates change</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>test_chelsa_coverage.R</code>,
 <code>test_chelsa_cruts_vs_present.R</code>,
 <code>test_trace21k_vs_v21.R</code></td>
 <td>Optional network diagnostics</td>
 <td>Product coverage and cross-product bias decisions</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>test_paleo_surface_years.R</code>,
 <code>test_paleo_anthro_climate_match.R</code></td>
 <td>Offline unresolved sensitivities</td>
 <td>Surface coverage and product/geography bias; raw TraCE21k remains
 current without closing the question</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>test_documentation.R</code></td>
 <td>Automatic final gate</td>
 <td>Broken links/inline paths, stale HTML/source hashes, missing
@@ -2223,11 +2259,23 @@ endpoints.</p>
 keys and 3,822 uncertainty rows before replacing primary exports.
 Changed keys or exclusions stop execution with diagnostics.
 Plot-endpoint and seasonal-climate consumers read
-<code>cca_tracking_anthropocene_plot_calculations.csv</code>; model
-consumers read the compact inputs. Future primary models will analyze
-non-overlapping transitions separately within each offset, with lake
-identity and temporal dependence considered; offsets are sensitivity
-realizations rather than replicates.</p>
+<code>cca_tracking_anthropocene_plot_calculations.csv</code>. Stage 09b
+assembles the combined model input from the compact source tables; stage
+10 reads only that combined CSV. Its initial lag-change exploration runs
+every offset separately with AR1 and MA1 while retaining all finite
+selected responses. Modern pairs are reused across offset fits. Final
+distribution, covariance, lake effects and chronology uncertainty
+treatment remain decisions for model development.</p>
+<pre class="bash"><code># Primary combined input and all ten provisional offset/covariance fits
+Rscript R/stages/09b_tracking_model_data.R
+Rscript R/stages/10_tracking_era_models.R
+# Later exploration of another response, still running each offset separately
+Rscript R/stages/10_tracking_era_models.R --metric=observed_turnover_rate</code></pre>
+<p>The previous reporting-grid comparison CSV and diagnostic model
+runner/results are retired. Canonical source, uncertainty and
+calculation tables remain. The model stage honors
+<code>--skip-figures</code>: coefficients and TXT still refresh, while
+persistent coefficient/residual PDF writes are suppressed.</p>
 </div>
 </div>
 
