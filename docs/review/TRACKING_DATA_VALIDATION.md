@@ -4,6 +4,10 @@ The primary 1,000-year run on 2026-10-08 uses the existing 100 whole chronology
 draws and ten offsets. No climate downloads, chronology regeneration, additional
 interval runs or statistical response models were performed.
 
+The 2026-10-09 extension adds the long era comparison from these existing
+calculation records. All 898 snapshotted data/cache and figure files remain
+byte-identical; only the schema dictionary and new comparison product change.
+
 ## Data contracts
 
 | Output | Rows | Columns | Unit of observation |
@@ -15,9 +19,10 @@ interval runs or statistical response models were performed.
 | `cca_tracking_anthropocene_plot_calculations.csv` | 607 | 79 | Detailed modern calculation record, preserving endpoints, seasonal climate and provenance |
 | `cca_tracking_holocene_lake_timeseries.csv` | 1,657 | 15 | Lake × one of seven responses × descriptive 100-year reporting date |
 | `cca_tracking_holocene_lake_support.csv` | 40 | 23 | Lake × offset, including exclusions and two-sample sensitivity support |
+| `cca_tracking_era_comparison.csv` | 5,906 | 16 | Holocene lake × reporting date × response, or modern plot × response, with aligned predictors, offset sensitivity, dates and WGS84 coordinates |
 
 These outputs are written under `output/`. The [machine-readable schema](../assets/analysis/tables/tracking_schema.csv)
-defines all 314 columns across the seven contracts. The [output register](../OUTPUTS.md)
+defines all 330 columns across the eight contracts. The [output register](../OUTPUTS.md)
 documents keys, units and suffix conventions. The [analysis review](../ANALYSIS_REVIEW.md)
 contains focused excerpts of the maintained metric calculations and portable copies
 of the compact inputs, uncertainty, modern calculations and support tables.
@@ -26,6 +31,16 @@ fixtures check 273 transitions and 607 pairs; uncertainty must contain 14 rows
 per actual transition (3,822). These checks precede every primary export. A
 changed key or row count stops execution with added/removed keys and climate
 exclusion diagnostics; no filtering is adjusted and no observation is filled.
+
+The extended offline tracking gate independently reconstructs every comparison
+response and aligned predictor median/sample SD from actual offset transitions.
+It checks all original modern responses (including 142 undefined angle values),
+resurvey years, fire assignments and coordinate joins against the original plot
+and lake locations. Original ID case is retained, including `EAGl-120`.
+Synthetic shifted intervals verify half-open boundaries, response-specific
+eligibility, missing fire coverage, covered zero fire, single-offset undefined
+SDs, and rejection of absent or ambiguous coordinates. No global response
+validity filter is introduced, and modern `t` remains `NA`.
 
 ## Observed support
 

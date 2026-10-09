@@ -364,6 +364,30 @@ cannot remove valid lag, turnover or tracking-ratio values. At Reflection Pond,
 only those two reporting values are excluded. Their transition-level model and
 uncertainty records remain available. No matching coverage across lakes is required.
 
+### Long era comparison and aligned predictors
+
+`cca_tracking_era_comparison.csv` adds a 16-column descriptive view while
+preserving the two model inputs, offset-level uncertainty and calculation
+records. Holocene rows retain the response-specific complete-offset reporting
+rule and estimate. Climate and fire medians are calculated over the exact
+offsets whose supported transitions contain the reporting date under
+`[age_lo, age_hi)`. Their offset SDs use the sample SD (`n - 1`) and describe
+bin-placement sensitivity, not confidence intervals or independent replication.
+Missing fire activity or inadequate coverage in any required offset makes both
+the fire median and offset SD missing; covered zero-event intervals stay zero.
+
+Anthropocene rows retain seven responses for each original plot, including
+undefined response values as `NA`, its standardized climate rate and binary
+fire assignment. The actual vegetation resurvey calendar year is retained;
+modern `t` is `NA`, since zero cal BP denotes 1950. Lake identifiers, continuous
+fire and offset support/spread are inapplicable to modern plots. WGS84 longitude
+and latitude use cached lake climate locations and cleaned plot locations.
+Coordinate matching preserves original plot IDs, including case, and neither
+fills missing locations nor combines plots sharing coordinates. Current
+comparison rows are descriptive reporting values or individual modern responses;
+the overlapping Holocene dates and seven metric rows per plot are not extra
+ecological replicates. See the [exact 16-column contract](OUTPUTS.md#canonical-tracking-schemas).
+
 The 273 primary transition rows span ten alternative bin placements. **Offsets
 are sensitivity realizations, not independent ecological replicates.** The
 intended primary statistical approach is to analyze non-overlapping transitions

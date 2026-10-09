@@ -5446,6 +5446,14 @@ if (bin_width_years==1000L) {
       by=c('site','fire_plot_key'),relationship='many-to-one') |> select(-fire_plot_key)
   if (anyNA(anth$burned)) stop('Missing modern plot fire assignment')
   anth_model = anth |> select(all_of(anthropocene_model_columns()))
+  lake_coordinates = ponds |> distinct(site,lake,longitude=lon,latitude=lat)
+  plot_coordinates = bind_rows(
+    read_csv(here('output/MORA_plot_info_fire.csv'),show_col_types=FALSE) |>
+      transmute(site='MORA',plot_id=str_to_upper(plot_id),longitude,latitude),
+    read_csv(here('output/NOCA_plot_info_fire.csv'),show_col_types=FALSE) |>
+      transmute(site='NOCA',plot_id=str_to_upper(plot_id),longitude,latitude))
+  era_comparison = tracking_era_comparison(by_offset,timeseries,anth_model,
+    lake_coordinates,plot_coordinates,bin_width_years)
 }
 # Validate calculated products and regression keys before replacing any exports.
 tryCatch(validate_tracking_products(by_offset,uncertainty,
@@ -5462,8 +5470,10 @@ for(stem in names(tables)) write_csv(tables[[stem]],output_path(stem))
 if(bin_width_years==1000L) {
   tables$cca_tracking_anthropocene_plot_model_input = anth_model
   tables$cca_tracking_anthropocene_plot_calculations = anth
+  tables$cca_tracking_era_comparison = era_comparison
   write_csv(anth_model,here('output/cca_tracking_anthropocene_plot_model_input.csv'))
   write_csv(anth,here('output/cca_tracking_anthropocene_plot_calculations.csv'))
+  write_csv(era_comparison,here('output/cca_tracking_era_comparison.csv'))
   write_csv(tracking_schema(tables),here('output/cca_tracking_schema.csv'))
   source(here('R/helpers/survey_decision_effects.R'),local=TRUE)
   export_survey_decision_effects(anth)
@@ -6367,8 +6377,8 @@ figure = (a+p)/(q+s) + plot_annotation(title=paste0('Panther Potholes: ',example
 if(render_figures) ggsave(here('plot/test_figures/fig_method_worked_example.pdf'),figure,width=12,height=11)
 
 # Exploratory temporal panels and paired-plot boxplots. Response lines reuse
-# maintained reporting estimates; predictor medians below are transient plot
-# data, following the same half-open mapping and complete-offset support rule.
+# maintained reporting estimates and the canonical era-comparison predictors,
+# following the same half-open mapping and complete-offset support rule.
 # This stage never modifies or exports scientific tables.
 bin_width_years=unique(b$climate_dt_years)
 stopifnot(length(bin_width_years)==1L,all(b$vegetation_dt_years==bin_width_years))
@@ -6385,16 +6395,12 @@ thin=b |> pivot_longer(all_of(c(metrics,predictors)),names_to='metric',values_to
    !is.finite(value) | !coalesce(is.finite(lag(value)),FALSE))) |> ungroup()
 response_grid=read_csv(here('output/cca_tracking_holocene_lake_timeseries.csv'),show_col_types=FALSE) |>
  filter(metric %in% metrics) |> select(site,lake,t,metric,estimate,n_offsets,n_valid_offsets)
-predictor_cells=b |> select(site,lake,offset,age_lo,age_hi,all_of(predictors)) |>
- pivot_longer(all_of(predictors),names_to='metric',values_to='value') |>
- mutate(t=map2(age_lo,age_hi,~seq(ceiling(.x/100)*100,ceiling(.y/100)*100-100,100))) |>
- unnest(t)
-stopifnot(!anyDuplicated(predictor_cells[c('site','lake','offset','t','metric')]),
- all(predictor_cells$offset %in% offsets))
-predictor_grid=predictor_cells |> group_by(site,lake,t,metric) |> summarize(
- estimate=if(all(is.finite(value))) median(value) else NA_real_,
- n_offsets=n_distinct(offset),n_valid_offsets=sum(is.finite(value)),.groups='drop') |>
- filter(n_offsets==length(offsets),n_valid_offsets==length(offsets))
+predictor_grid=read_csv(here('output/cca_tracking_era_comparison.csv'),show_col_types=FALSE) |>
+ filter(era=='Holocene') |> distinct(site,lake,t,n_valid_offsets,
+   standardized_climate_change_rate=climate_rate,fire_activity) |>
+ pivot_longer(all_of(predictors),names_to='metric',values_to='estimate') |>
+ mutate(n_offsets=n_valid_offsets) |> filter(is.finite(estimate))
+stopifnot(!anyDuplicated(predictor_grid[c('site','lake','t','metric')]))
 thick=bind_rows(response_grid,predictor_grid) |>
  mutate(lake=factor(lake,levels=lake_order,labels=lake_labels)) |>
  arrange(metric,lake,t) |> group_by(metric,lake) |>

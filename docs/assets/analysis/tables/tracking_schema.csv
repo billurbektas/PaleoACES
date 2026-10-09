@@ -179,13 +179,13 @@ cca_tracking_holocene_lake_timeseries,site,character,identifier_or_category,site
 cca_tracking_holocene_lake_timeseries,lake,character,identifier_or_category,lake
 cca_tracking_holocene_lake_timeseries,t,numeric,cal_years_BP,t
 cca_tracking_holocene_lake_timeseries,metric,character,identifier_or_category,metric
-cca_tracking_holocene_lake_timeseries,estimate,numeric,count_or_dimensionless,estimate
+cca_tracking_holocene_lake_timeseries,estimate,numeric,metric_dependent,Response value; units follow metric
 cca_tracking_holocene_lake_timeseries,age_q025,numeric,count_or_dimensionless,age q025
 cca_tracking_holocene_lake_timeseries,age_q975,numeric,count_or_dimensionless,age q975
 cca_tracking_holocene_lake_timeseries,phase_min,numeric,count_or_dimensionless,phase min
 cca_tracking_holocene_lake_timeseries,phase_max,numeric,count_or_dimensionless,phase max
 cca_tracking_holocene_lake_timeseries,n_offsets,integer,count,n offsets
-cca_tracking_holocene_lake_timeseries,n_valid_offsets,integer,count,n valid offsets
+cca_tracking_holocene_lake_timeseries,n_valid_offsets,integer,count,Number of finite aligned offset response medians; NA for Anthropocene
 cca_tracking_holocene_lake_timeseries,min_present_draws,integer,count,min present draws
 cca_tracking_holocene_lake_timeseries,unit,character,identifier_or_category,unit
 cca_tracking_holocene_lake_timeseries,bin_width_years,integer,years,bin width years
@@ -313,3 +313,19 @@ cca_tracking_anthropocene_plot_calculations,standardized_climate_displacement,nu
 cca_tracking_anthropocene_plot_calculations,standardized_climate_change_rate,numeric,calibration_SD_per_century,standardized climate change rate
 cca_tracking_anthropocene_plot_calculations,burned,logical,boolean,burned
 cca_tracking_anthropocene_plot_calculations,fire_assignment_source,character,identifier_or_category,fire assignment source
+cca_tracking_era_comparison,era,character,identifier_or_category,Holocene or Anthropocene
+cca_tracking_era_comparison,site,character,identifier_or_category,site
+cca_tracking_era_comparison,lake,character,identifier_or_category,Holocene vegetation lake; NA for Anthropocene
+cca_tracking_era_comparison,plot_id,character,identifier_or_category,Original Anthropocene paired-plot identifier; NA for Holocene
+cca_tracking_era_comparison,t,numeric,cal_years_BP,Holocene reporting date in cal BP (before 1950); NA for Anthropocene
+cca_tracking_era_comparison,resurvey_year,numeric,calendar_year,Actual vegetation resurvey calendar year; NA for Holocene
+cca_tracking_era_comparison,metric,character,identifier_or_category,metric
+cca_tracking_era_comparison,estimate,numeric,metric_dependent,"Median of supported aligned offset response medians for Holocene; original individual plot response for Anthropocene, including NA when undefined"
+cca_tracking_era_comparison,climate_rate,numeric,calibration_SD_per_century,"Standardized physical climate-change rate per century; aligned offset median for Holocene, original plot value for Anthropocene"
+cca_tracking_era_comparison,climate_rate_offset_sd,numeric,calibration_SD_per_century,"Sample SD of climate rates across the same aligned response offsets; placement sensitivity, not a standard error; NA for Anthropocene"
+cca_tracking_era_comparison,fire_activity,numeric,unitless,Median of equal-core normalized activity across the same aligned response offsets; NA for any required missing fire exposure or for Anthropocene
+cca_tracking_era_comparison,fire_activity_offset_sd,numeric,unitless,Sample SD of normalized fire activity across the same aligned response offsets; NA if any required offset lacks fire coverage or for Anthropocene
+cca_tracking_era_comparison,burned,logical,boolean,Original modern binary fire assignment; NA for Holocene
+cca_tracking_era_comparison,longitude,numeric,decimal_degrees_WGS84,"WGS84 longitude in decimal degrees, from the lake climate location or cleaned plot location"
+cca_tracking_era_comparison,latitude,numeric,decimal_degrees_WGS84,"WGS84 latitude in decimal degrees, from the lake climate location or cleaned plot location"
+cca_tracking_era_comparison,n_valid_offsets,integer,count,Number of finite aligned offset response medians; NA for Anthropocene

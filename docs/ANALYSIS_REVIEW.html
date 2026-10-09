@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: 7abea0a3f6a60c033aa64cd2b5f05e02 -->
+<!-- paleoaces-source-md5: 34cc0b824c2a43187a03bb5af8bf9664 -->
 
 <html>
 
@@ -1499,7 +1499,7 @@ border-radius: 0px;
 </div>
 
 
-<p><strong>Snapshot of existing outputs · 2026-10-08.</strong> Figures
+<p><strong>Snapshot of existing outputs · 2026-10-09.</strong> Figures
 and CCA summaries use verified existing analysis outputs.</p>
 <p>PaleoACES asks how observed forest composition moves relative to the
 composition predicted by climate, comparing modern forest resurveys with
@@ -3799,14 +3799,15 @@ display</h2>
 follow from WA and LC endpoints. The next two exploratory figures use
 four lake columns with aligned cal-BP axes. Thin trajectories show
 offsets at actual transition midpoints; thick response lines reuse the
-maintained complete-offset medians. Climate/fire predictor medians are
-transient plot context, mapped with the same half-open intervals and
-complete-offset rule; the scientific CSVs are unchanged. The rates
-figure has rows for tracking responses together, standardized climate
-rate and fire activity. The other figure gives magnitude ratio, angle,
-climate and fire one row each, omitting the duplicate Holocene
-rate-ratio display. Both ratios remain in the model inputs and can
-differ for modern plots.</p>
+maintained complete-offset medians. Climate/fire predictor medians read
+the canonical era-comparison table, mapped with the same half-open
+intervals and complete-offset rule. The original model, uncertainty and
+seven-response reporting CSVs are unchanged. The rates figure has rows
+for tracking responses together, standardized climate rate and fire
+activity. The other figure gives magnitude ratio, angle, climate and
+fire one row each, omitting the duplicate Holocene rate-ratio display.
+Both ratios remain in the model inputs and can differ for modern
+plots.</p>
 <p>A fifth column shows MORA/NOCA paired-plot boxplots with matching
 colors and separate labeled y-scales. It uses all 607 pairs, retaining
 finite values per response independently. Modern continuous fire
@@ -3989,16 +3990,30 @@ cal BP. — PDF page 1</div>
 <div id="lake-level-tracking-datasets-and-support" class="section level2">
 <h2>Lake-level tracking datasets and support</h2>
 <p>The canonical tracking analysis calculates each lake independently in
-the same pooled CCA. Stage 09 derives seven products from detailed
+the same pooled CCA. Stage 09 derives eight products from detailed
 records: two compact model inputs, long chronology uncertainty, lake and
-modern calculation audits, seven-response descriptive reporting and
-sampling/coverage diagnostics. The model inputs share exactly the same
-seven response names and definitions: <a href="assets/analysis/tables/lake_by_offset.csv">273 lake/offset
-transitions, 23 columns</a>, <a href="assets/analysis/tables/modern_model_input.csv">607 modern pairs,
+modern calculation audits, seven-response descriptive reporting,
+sampling/coverage diagnostics and the 16-column long era comparison. The
+model inputs share exactly the same seven response names and
+definitions: <a href="assets/analysis/tables/lake_by_offset.csv">273
+lake/offset transitions, 23 columns</a>, <a href="assets/analysis/tables/modern_model_input.csv">607 modern pairs,
 21 columns</a>. Separate records expose <a href="assets/analysis/tables/lake_uncertainty.csv">chronology
 uncertainty, 15 columns</a>, <a href="assets/analysis/tables/modern_calculations.csv">detailed modern
 calculations</a>, and <a href="assets/analysis/tables/tracking_schema.csv">column definitions and
 units</a>.</p>
+<p>The <a href="assets/analysis/tables/era_comparison.csv">combined era
+comparison, 16 columns</a> contains 1,657 Holocene reporting rows and
+seven responses for each of the 607 modern plots (4,249 modern rows).
+Holocene climate/fire medians and sample SDs use the same aligned
+offsets as each response. Offset SDs describe placement sensitivity.
+Missing fire in a required offset leaves both fire fields missing.
+Modern <code>t</code> is <code>NA</code>; actual resurvey years and
+original binary fire assignments remain available. WGS84 coordinates
+come from cached lake climate locations and cleaned plot locations.
+Undefined modern responses remain <code>NA</code> rows, and the original
+offset-level datasets remain the validation and modeling records. The
+long layout does not make reporting dates or response rows
+independent.</p>
 <table style="width:100%;">
 <colgroup>
 <col width="16%" />

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: ac2486c36b1d24563a0f55a2afee46bc -->
+<!-- paleoaces-source-md5: 60840e3ac549309810415a6e7edb6793 -->
 
 <html>
 
@@ -1970,6 +1970,33 @@ remove valid lag, turnover or tracking-ratio values. At Reflection Pond,
 offsets; only those two reporting values are excluded. Their
 transition-level model and uncertainty records remain available. No
 matching coverage across lakes is required.</p>
+</div>
+<div id="long-era-comparison-and-aligned-predictors" class="section level3">
+<h3>Long era comparison and aligned predictors</h3>
+<p><code>cca_tracking_era_comparison.csv</code> adds a 16-column
+descriptive view while preserving the two model inputs, offset-level
+uncertainty and calculation records. Holocene rows retain the
+response-specific complete-offset reporting rule and estimate. Climate
+and fire medians are calculated over the exact offsets whose supported
+transitions contain the reporting date under
+<code>[age_lo, age_hi)</code>. Their offset SDs use the sample SD
+(<code>n - 1</code>) and describe bin-placement sensitivity, not
+confidence intervals or independent replication. Missing fire activity
+or inadequate coverage in any required offset makes both the fire median
+and offset SD missing; covered zero-event intervals stay zero.</p>
+<p>Anthropocene rows retain seven responses for each original plot,
+including undefined response values as <code>NA</code>, its standardized
+climate rate and binary fire assignment. The actual vegetation resurvey
+calendar year is retained; modern <code>t</code> is <code>NA</code>,
+since zero cal BP denotes 1950. Lake identifiers, continuous fire and
+offset support/spread are inapplicable to modern plots. WGS84 longitude
+and latitude use cached lake climate locations and cleaned plot
+locations. Coordinate matching preserves original plot IDs, including
+case, and neither fills missing locations nor combines plots sharing
+coordinates. Current comparison rows are descriptive reporting values or
+individual modern responses; the overlapping Holocene dates and seven
+metric rows per plot are not extra ecological replicates. See the <a href="OUTPUTS.html#canonical-tracking-schemas">exact 16-column
+contract</a>.</p>
 <p>The 273 primary transition rows span ten alternative bin placements.
 <strong>Offsets are sensitivity realizations, not independent ecological
 replicates.</strong> The intended primary statistical approach is to

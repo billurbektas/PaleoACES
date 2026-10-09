@@ -186,6 +186,91 @@ lake_reporting_grid = function(uncertainty,bin_width_years=1000L) {
     arrange(match(metric,tracking_response_names()),site,lake,t)
 }
 
+# Attach fixed predictors using exactly the response's temporally aligned
+# offsets. Preserve the reporting eligibility rule and unavailable fire values.
+lake_reporting_context = function(by_offset,reporting,bin_width_years=1000L) {
+  w = validate_tracking_width(bin_width_years)
+  offsets = seq(0,w-100,100)
+  keys = c('site','lake','t','metric')
+  if(anyDuplicated(by_offset[tracking_transition_keys()]) ||
+     anyDuplicated(reporting[keys]) || any(!by_offset$offset %in% offsets) ||
+     any(by_offset$age_hi-by_offset$age_lo!=w))
+    stop('Invalid transition keys or interval configuration for reporting predictors')
+  cells = by_offset |> select(all_of(tracking_transition_keys()),
+    offset_climate_rate=standardized_climate_change_rate,
+    offset_fire_activity=fire_activity,fire_coverage_valid,
+    all_of(tracking_response_names())) |>
+    pivot_longer(all_of(tracking_response_names()),names_to='metric',values_to='response') |>
+    mutate(t=purrr::map2(age_lo,age_hi,
+      ~seq(ceiling(.x/100)*100,ceiling(.y/100)*100-100,100))) |> unnest(t) |>
+    inner_join(reporting |> select(all_of(keys)),by=keys,relationship='many-to-one') |>
+    filter(is.finite(response))
+  if(anyDuplicated(cells[c(keys,'offset')]))
+    stop('Overlapping transitions within an aligned response/offset')
+  strict_median = function(x) if(length(x) && all(is.finite(x))) median(x) else NA_real_
+  strict_sd = function(x) if(length(x)>1L && all(is.finite(x))) stats::sd(x) else NA_real_
+  context = cells |> group_by(across(all_of(keys))) |> summarize(
+    aligned_estimate=median(response),aligned_offsets=n_distinct(offset),
+    climate_rate=strict_median(offset_climate_rate),
+    climate_rate_offset_sd=strict_sd(offset_climate_rate),
+    fire_activity=if(all(fire_coverage_valid %in% TRUE)) strict_median(offset_fire_activity) else NA_real_,
+    fire_activity_offset_sd=if(all(fire_coverage_valid %in% TRUE)) strict_sd(offset_fire_activity) else NA_real_,
+    .groups='drop')
+  joined = reporting |> left_join(context,by=keys,relationship='one-to-one')
+  if(anyNA(joined$aligned_offsets) ||
+     any(joined$aligned_offsets!=joined$n_valid_offsets) ||
+     any(joined$aligned_offsets!=length(offsets)) ||
+     !isTRUE(all.equal(joined$estimate,joined$aligned_estimate,
+       tolerance=1e-12,check.attributes=FALSE)))
+    stop('Reporting responses and aligned predictor offsets disagree')
+  joined |> select(-aligned_estimate,-aligned_offsets)
+}
+
+era_comparison_columns = function() c('era','site','lake','plot_id','t',
+  'resurvey_year','metric','estimate','climate_rate','climate_rate_offset_sd',
+  'fire_activity','fire_activity_offset_sd','burned','longitude','latitude','n_valid_offsets')
+
+# One long descriptive comparison, preserving distinct calendar conventions
+# and observational units. Response-specific NA values remain on modern rows.
+tracking_era_comparison = function(by_offset,reporting,modern,lake_coordinates,
+                                    plot_coordinates,bin_width_years=1000L) {
+  if(anyDuplicated(lake_coordinates[c('site','lake')]) ||
+     anyDuplicated(plot_coordinates[c('site','plot_id')]) ||
+     anyDuplicated(modern[c('site','plot_id')]))
+    stop('Duplicate coordinate or modern plot identity')
+  lakes = lake_reporting_context(by_offset,reporting,bin_width_years) |>
+    left_join(lake_coordinates,by=c('site','lake'),relationship='many-to-one') |>
+    transmute(era='Holocene',site,lake,plot_id=NA_character_,t,
+      resurvey_year=NA_real_,metric,estimate,climate_rate,climate_rate_offset_sd,
+      fire_activity,fire_activity_offset_sd,burned=NA,longitude,latitude,n_valid_offsets)
+  # Coordinates use normalized IDs; retain the model table's original spelling
+  # (including EAGl-120) in the exported plot_id.
+  locations = plot_coordinates |> mutate(coordinate_plot_key=toupper(plot_id)) |>
+    select(site,coordinate_plot_key,longitude,latitude)
+  modern = modern |> mutate(coordinate_plot_key=toupper(plot_id))
+  if(anyDuplicated(locations[c('site','coordinate_plot_key')]) ||
+     anyDuplicated(modern[c('site','coordinate_plot_key')]))
+    stop('Ambiguous normalized coordinate/plot identity')
+  plots = modern |> left_join(locations,by=c('site','coordinate_plot_key'),relationship='one-to-one') |>
+    pivot_longer(all_of(tracking_response_names()),names_to='metric',values_to='estimate') |>
+    transmute(era='Anthropocene',site,lake=NA_character_,plot_id,t=NA_real_,
+      resurvey_year=vegetation_t2_year,metric,estimate,
+      climate_rate=standardized_climate_change_rate,climate_rate_offset_sd=NA_real_,
+      fire_activity=NA_real_,fire_activity_offset_sd=NA_real_,burned,
+      longitude,latitude,n_valid_offsets=NA_integer_)
+  combined = bind_rows(lakes,plots) |> select(all_of(era_comparison_columns()))
+  bad_coordinates = combined |> filter(!is.finite(longitude) | !is.finite(latitude) |
+    abs(longitude)>180 | abs(latitude)>90) |> distinct(era,site,lake,plot_id)
+  if(nrow(bad_coordinates)) stop('Missing or invalid WGS84 coordinates:\n',
+    paste(capture.output(print(bad_coordinates,n=20)),collapse='\n'))
+  if(any(!is.finite(plots$resurvey_year))) stop('Missing actual modern resurvey year')
+  stopifnot(!anyDuplicated(lakes[c('site','lake','t','metric')]),
+    !anyDuplicated(plots[c('site','plot_id','metric')]),
+    nrow(lakes)==nrow(reporting),nrow(plots)==nrow(modern)*length(tracking_response_names()))
+  combined |> arrange(match(era,c('Holocene','Anthropocene')),site,lake,plot_id,t,
+    match(metric,tracking_response_names()))
+}
+
 # Regression expectations diagnose changes; they never shape the observations.
 check_tracking_keys = function(actual,expected,keys,label) {
   added = anti_join(actual |> select(all_of(keys)),expected,by=keys)
@@ -252,6 +337,10 @@ tracking_schema = function(tables) purrr::imap_dfr(tables,function(tbl,dataset) 
     if(grepl('^n_|draws|samples|cores|event_count',column)) u='count'
     if(grepl('core_max_frequency|frequency_per_1000yr',column)) u='events_per_1000yr'
     if(grepl('coverage_fraction|normalized_activity|^fire_activity$',column)) u='unitless'
+    if(column %in% c('climate_rate','climate_rate_offset_sd')) u='calibration_SD_per_century'
+    if(column=='fire_activity_offset_sd') u='unitless'
+    if(column %in% c('longitude','latitude')) u='decimal_degrees_WGS84'
+    if(column=='resurvey_year') u='calendar_year'
     if(column %in% c('age_hi','age_lo','t','interval_mid_cal_bp','youngest_endpoint','oldest_endpoint') || grepl('cal_bp$',column)) u='cal_years_BP'
     if(column %in% c('offset','bin_width_years','vegetation_dt_years','climate_dt_years','climate_n_years') || grepl('window_years$',column)) u='years'
     if(grepl('^(vegetation_t[12]_year|climate_[t12]+_midyear|climate_start|climate_end)$',column)) u='calendar_year'
@@ -259,6 +348,9 @@ tracking_schema = function(tables) purrr::imap_dfr(tables,function(tbl,dataset) 
     if(is.character(tbl[[column]])) u='identifier_or_category'
     if(grepl('_uncertainty$',dataset) && column %in% c('median','q025','q975')) {
       u='metric_dependent'; description=paste(column,'across finite eligible draws; units follow metric')
+    }
+    if(column=='estimate' && 'metric' %in% names(tbl)) {
+      u='metric_dependent'; description='Response value; units follow metric'
     }
     definitions = c(n_draws_present='Distinct chronology draws containing the transition before response-validity filtering',
       n_draws_nmin2='Present chronology draws with at least two samples in both endpoint bins',
@@ -269,8 +361,26 @@ tracking_schema = function(tables) purrr::imap_dfr(tables,function(tbl,dataset) 
       n_expected_draws='Configured whole chronology draws: 100',
       sampling_rule='all or nmin2; nmin2 requires at least two samples in each endpoint bin',
       fire_activity='Equal-core normalized frequency; MORA vegetation lakes share the regional history',
-      high_fire='Descriptive site classification at the transition midpoint using the original 1000-year window; NA for inadequate coverage')
+      high_fire='Descriptive site classification at the transition midpoint using the original 1000-year window; NA for inadequate coverage',
+      climate_rate='Standardized physical climate-change rate per century; aligned offset median for Holocene, original plot value for Anthropocene',
+      climate_rate_offset_sd='Sample SD of climate rates across the same aligned response offsets; placement sensitivity, not a standard error; NA for Anthropocene',
+      fire_activity_offset_sd='Sample SD of normalized fire activity across the same aligned response offsets; NA if any required offset lacks fire coverage or for Anthropocene',
+      resurvey_year='Actual vegetation resurvey calendar year; NA for Holocene',
+      longitude='WGS84 longitude in decimal degrees, from the lake climate location or cleaned plot location',
+      latitude='WGS84 latitude in decimal degrees, from the lake climate location or cleaned plot location',
+      n_valid_offsets='Number of finite aligned offset response medians; NA for Anthropocene')
     if(column %in% names(definitions)) description=unname(definitions[column])
+    if(dataset=='cca_tracking_era_comparison') {
+      comparison_definitions = c(era='Holocene or Anthropocene',
+        lake='Holocene vegetation lake; NA for Anthropocene',
+        plot_id='Original Anthropocene paired-plot identifier; NA for Holocene',
+        t='Holocene reporting date in cal BP (before 1950); NA for Anthropocene',
+        estimate='Median of supported aligned offset response medians for Holocene; original individual plot response for Anthropocene, including NA when undefined',
+        burned='Original modern binary fire assignment; NA for Holocene',
+        fire_activity='Median of equal-core normalized activity across the same aligned response offsets; NA for any required missing fire exposure or for Anthropocene')
+      if(column %in% names(comparison_definitions))
+        description=unname(comparison_definitions[column])
+    }
     if(is.na(u)) u='count_or_dimensionless'
     tibble(dataset=dataset,column=column,type=class(tbl[[column]])[1],unit=u,definition=description)
   })

@@ -2,7 +2,7 @@
 title: "PaleoACES analysis review"
 ---
 
-**Snapshot of existing outputs · 2026-10-08.** Figures and CCA summaries use verified existing analysis outputs.
+**Snapshot of existing outputs · 2026-10-09.** Figures and CCA summaries use verified existing analysis outputs.
 
 PaleoACES asks how observed forest composition moves relative to the composition
 predicted by climate, comparing modern forest resurveys with four Holocene
@@ -781,8 +781,9 @@ The metric example below shows how displacement, lag, ratio and angle follow
 from WA and LC endpoints. The next two exploratory figures use four lake columns
 with aligned cal-BP axes. Thin trajectories show offsets at actual transition
 midpoints; thick response lines reuse the maintained complete-offset medians.
-Climate/fire predictor medians are transient plot context, mapped with the same
-half-open intervals and complete-offset rule; the scientific CSVs are unchanged.
+Climate/fire predictor medians read the canonical era-comparison table, mapped
+with the same half-open intervals and complete-offset rule. The original model,
+uncertainty and seven-response reporting CSVs are unchanged.
 The rates figure has rows for tracking responses together, standardized climate
 rate and fire activity. The other figure gives magnitude ratio, angle, climate
 and fire one row each, omitting the duplicate Holocene rate-ratio display.
@@ -868,15 +869,27 @@ Script: [13b_fire_method_worked_example.R](../R/stages/13b_fire_method_worked_ex
 ## Lake-level tracking datasets and support
 
 The canonical tracking analysis calculates each lake independently in the same
-pooled CCA. Stage 09 derives seven products from detailed records: two compact
+pooled CCA. Stage 09 derives eight products from detailed records: two compact
 model inputs, long chronology uncertainty, lake and modern calculation audits,
-seven-response descriptive reporting and sampling/coverage diagnostics.
+seven-response descriptive reporting, sampling/coverage diagnostics and the
+16-column long era comparison.
 The model inputs share exactly the same seven response names and definitions:
 [273 lake/offset transitions, 23 columns](assets/analysis/tables/lake_by_offset.csv),
 [607 modern pairs, 21 columns](assets/analysis/tables/modern_model_input.csv).
 Separate records expose [chronology uncertainty, 15 columns](assets/analysis/tables/lake_uncertainty.csv),
 [detailed modern calculations](assets/analysis/tables/modern_calculations.csv), and
 [column definitions and units](assets/analysis/tables/tracking_schema.csv).
+
+The [combined era comparison, 16 columns](assets/analysis/tables/era_comparison.csv)
+contains 1,657 Holocene reporting rows and seven responses for each of the
+607 modern plots (4,249 modern rows). Holocene climate/fire medians and sample
+SDs use the same aligned offsets as each response. Offset SDs describe placement
+sensitivity. Missing fire in a required offset leaves both fire fields missing.
+Modern `t` is `NA`; actual resurvey years and original binary fire assignments
+remain available. WGS84 coordinates come from cached lake climate locations and
+cleaned plot locations. Undefined modern responses remain `NA` rows, and the
+original offset-level datasets remain the validation and modeling records.
+The long layout does not make reporting dates or response rows independent.
 
 | Lake | Offset | Samples | Transitions | Minimum draws | Two-sample realizations |
 | --- | --- | --- | --- | --- | --- |

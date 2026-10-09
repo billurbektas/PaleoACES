@@ -205,7 +205,11 @@ def validate_tracking_contracts(root):
             'standardized_climate_change_rate', 'burned'] + responses + ['angle_valid',
             'pace_counterfactual_valid', 'direction_counterfactual_valid', 'tracking_ratio_valid'],
         'lake_uncertainty': keys + ['metric', 'sampling_rule', 'median', 'q025', 'q975',
-            'n_expected_draws', 'n_present_draws', 'n_eligible_draws', 'n_valid_draws', 'n_undefined_draws']}
+            'n_expected_draws', 'n_present_draws', 'n_eligible_draws', 'n_valid_draws', 'n_undefined_draws'],
+        'era_comparison': ['era', 'site', 'lake', 'plot_id', 't', 'resurvey_year',
+            'metric', 'estimate', 'climate_rate', 'climate_rate_offset_sd',
+            'fire_activity', 'fire_activity_offset_sd', 'burned', 'longitude',
+            'latitude', 'n_valid_offsets']}
     for name, expected in contracts.items():
         with (root/ASSETS/'tables'/f'{name}.csv').open(newline='') as f:
             header = next(csv.reader(f))

@@ -48,8 +48,8 @@ figure = (a+p)/(q+s) + plot_annotation(title=paste0('Panther Potholes: ',example
 if(render_figures) ggsave(here('plot/test_figures/fig_method_worked_example.pdf'),figure,width=12,height=11)
 
 # Exploratory temporal panels and paired-plot boxplots. Response lines reuse
-# maintained reporting estimates; predictor medians below are transient plot
-# data, following the same half-open mapping and complete-offset support rule.
+# maintained reporting estimates and the canonical era-comparison predictors,
+# following the same half-open mapping and complete-offset support rule.
 # This stage never modifies or exports scientific tables.
 bin_width_years=unique(b$climate_dt_years)
 stopifnot(length(bin_width_years)==1L,all(b$vegetation_dt_years==bin_width_years))
@@ -66,16 +66,12 @@ thin=b |> pivot_longer(all_of(c(metrics,predictors)),names_to='metric',values_to
    !is.finite(value) | !coalesce(is.finite(lag(value)),FALSE))) |> ungroup()
 response_grid=read_csv(here('output/cca_tracking_holocene_lake_timeseries.csv'),show_col_types=FALSE) |>
  filter(metric %in% metrics) |> select(site,lake,t,metric,estimate,n_offsets,n_valid_offsets)
-predictor_cells=b |> select(site,lake,offset,age_lo,age_hi,all_of(predictors)) |>
- pivot_longer(all_of(predictors),names_to='metric',values_to='value') |>
- mutate(t=map2(age_lo,age_hi,~seq(ceiling(.x/100)*100,ceiling(.y/100)*100-100,100))) |>
- unnest(t)
-stopifnot(!anyDuplicated(predictor_cells[c('site','lake','offset','t','metric')]),
- all(predictor_cells$offset %in% offsets))
-predictor_grid=predictor_cells |> group_by(site,lake,t,metric) |> summarize(
- estimate=if(all(is.finite(value))) median(value) else NA_real_,
- n_offsets=n_distinct(offset),n_valid_offsets=sum(is.finite(value)),.groups='drop') |>
- filter(n_offsets==length(offsets),n_valid_offsets==length(offsets))
+predictor_grid=read_csv(here('output/cca_tracking_era_comparison.csv'),show_col_types=FALSE) |>
+ filter(era=='Holocene') |> distinct(site,lake,t,n_valid_offsets,
+   standardized_climate_change_rate=climate_rate,fire_activity) |>
+ pivot_longer(all_of(predictors),names_to='metric',values_to='estimate') |>
+ mutate(n_offsets=n_valid_offsets) |> filter(is.finite(estimate))
+stopifnot(!anyDuplicated(predictor_grid[c('site','lake','t','metric')]))
 thick=bind_rows(response_grid,predictor_grid) |>
  mutate(lake=factor(lake,levels=lake_order,labels=lake_labels)) |>
  arrange(metric,lake,t) |> group_by(metric,lake) |>

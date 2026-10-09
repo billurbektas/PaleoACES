@@ -437,6 +437,10 @@
     "modern_calculations": {
       "source": "output/cca_tracking_anthropocene_plot_calculations.csv",
       "producer": "R/stages/09_tracking_metrics.R"
+    },
+    "era_comparison": {
+      "source": "output/cca_tracking_era_comparison.csv",
+      "producer": "R/stages/09_tracking_metrics.R"
     }
   },
   "text_outputs": {

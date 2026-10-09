@@ -80,6 +80,14 @@ if (bin_width_years==1000L) {
       by=c('site','fire_plot_key'),relationship='many-to-one') |> select(-fire_plot_key)
   if (anyNA(anth$burned)) stop('Missing modern plot fire assignment')
   anth_model = anth |> select(all_of(anthropocene_model_columns()))
+  lake_coordinates = ponds |> distinct(site,lake,longitude=lon,latitude=lat)
+  plot_coordinates = bind_rows(
+    read_csv(here('output/MORA_plot_info_fire.csv'),show_col_types=FALSE) |>
+      transmute(site='MORA',plot_id=str_to_upper(plot_id),longitude,latitude),
+    read_csv(here('output/NOCA_plot_info_fire.csv'),show_col_types=FALSE) |>
+      transmute(site='NOCA',plot_id=str_to_upper(plot_id),longitude,latitude))
+  era_comparison = tracking_era_comparison(by_offset,timeseries,anth_model,
+    lake_coordinates,plot_coordinates,bin_width_years)
 }
 # Validate calculated products and regression keys before replacing any exports.
 tryCatch(validate_tracking_products(by_offset,uncertainty,
@@ -96,8 +104,10 @@ for(stem in names(tables)) write_csv(tables[[stem]],output_path(stem))
 if(bin_width_years==1000L) {
   tables$cca_tracking_anthropocene_plot_model_input = anth_model
   tables$cca_tracking_anthropocene_plot_calculations = anth
+  tables$cca_tracking_era_comparison = era_comparison
   write_csv(anth_model,here('output/cca_tracking_anthropocene_plot_model_input.csv'))
   write_csv(anth,here('output/cca_tracking_anthropocene_plot_calculations.csv'))
+  write_csv(era_comparison,here('output/cca_tracking_era_comparison.csv'))
   write_csv(tracking_schema(tables),here('output/cca_tracking_schema.csv'))
   source(here('R/helpers/survey_decision_effects.R'),local=TRUE)
   export_survey_decision_effects(anth)
