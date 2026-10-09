@@ -44,9 +44,10 @@ verbatim for reading. Run the workflow for an analysis rebuild.
 | 16 | Canonical lake/plot tracking | [09_tracking_metrics.R](../R/stages/09_tracking_metrics.R) |
 | 17 | Combined transition input | [09b_tracking_model_data.R](../R/stages/09b_tracking_model_data.R) |
 | 18 | Provisional offset GLS comparisons | [10_tracking_era_models.R](../R/stages/10_tracking_era_models.R) |
-| 19 | Community trajectories: Figure 3 | [05a_cca_figure.R](../R/stages/05a_cca_figure.R) |
-| 20–21 | Tracking and fire-detection examples | [09a_tracking_example_and_visualizations.R](../R/stages/09a_tracking_example_and_visualizations.R); [12a_fire_event_detection_worked_example.R](../R/stages/12a_fire_event_detection_worked_example.R) |
-| 22–23 | Climate/fire display: Figure 2 and example | [13a_climate_change_figure.R](../R/stages/13a_climate_change_figure.R); [13b_fire_method_worked_example.R](../R/stages/13b_fire_method_worked_example.R) |
+| 19 | Offset-0 lake sensitivity | [10a_tracking_lake_sensitivity.R](../R/stages/10a_tracking_lake_sensitivity.R) |
+| 20 | Community trajectories: Figure 3 | [05a_cca_figure.R](../R/stages/05a_cca_figure.R) |
+| 21–22 | Tracking and fire-detection examples | [09a_tracking_example_and_visualizations.R](../R/stages/09a_tracking_example_and_visualizations.R); [12a_fire_event_detection_worked_example.R](../R/stages/12a_fire_event_detection_worked_example.R) |
+| 23–24 | Climate/fire display: Figure 2 and example | [13a_climate_change_figure.R](../R/stages/13a_climate_change_figure.R); [13b_fire_method_worked_example.R](../R/stages/13b_fire_method_worked_example.R) |
 
 | Prepared input | Rows | Plot/sample IDs | Taxa |
 | --- | --- | --- | --- |
@@ -1173,6 +1174,39 @@ Script: [10_tracking_era_models.R](../R/stages/10_tracking_era_models.R). [Compl
 
 ![Evaluate residuals for both covariance models at every offset. — PDF page 1](assets/analysis/tracking_model_residuals-p1.png)
 
+## Offset-0 lake sensitivity
+
+[Stage 10a](../R/stages/10a_tracking_lake_sensitivity.R) compares each Holocene
+lake separately with modern plots from its own park under AR1 and MA1. The
+eight fits use `estimate ~ era`, REML, era-specific residual variances and the
+original time gaps. The [16 coefficient rows](assets/analysis/tables/tracking_lake_coefficients.csv)
+and [eight contrasts](assets/analysis/tables/tracking_lake_contrasts.csv) retain
+lake identity, sample counts and correlation-boundary flags.
+
+Reflection Pond and Panther Potholes MA1 fits approach the parameter boundary;
+triangles identify absolute parameters above 0.98. These fits are retained.
+MORA lake comparisons reuse the same modern plots and are overlapping
+sensitivities. The workflow runs this sensitivity at offset 0 only, without
+choosing a final covariance model or maintaining MA(2).
+
+[Complete offset-0 lake sensitivity results](assets/analysis/lake_model_results.txt).
+
+### Compare individual-lake offset-0 coefficients under AR1 and MA1
+
+Each Holocene lake is compared with all finite modern responses from its own park. Fits use era fixed effects, REML, AR1/MA1 and separate residual variances by era. Bars show unadjusted 95% intervals. Triangles flag absolute correlation parameters above 0.98; Reflection Pond and Panther Potholes MA1 fits are near the boundary. MORA comparisons reuse modern plots and are not independent. Statistical choices remain provisional. **Provisional lake sensitivity**.
+
+Script: [10a_tracking_lake_sensitivity.R](../R/stages/10a_tracking_lake_sensitivity.R). [Complete PDF](../plot/test_figures/fig_tracking_lake_coefficients_lag_rate_per_century_offset_0.pdf) (1 page).
+
+![Compare individual-lake offset-0 coefficients under AR1 and MA1. — PDF page 1](assets/analysis/tracking_lake_coefficients-p1.png)
+
+### Compare Anthropocene minus Holocene separately for each lake at offset 0
+
+Each Holocene lake is compared with all finite modern responses from its own park. Fits use era fixed effects, REML, AR1/MA1 and separate residual variances by era. Bars show unadjusted 95% intervals. Triangles flag absolute correlation parameters above 0.98; Reflection Pond and Panther Potholes MA1 fits are near the boundary. MORA comparisons reuse modern plots and are not independent. Statistical choices remain provisional. **Provisional lake sensitivity**.
+
+Script: [10a_tracking_lake_sensitivity.R](../R/stages/10a_tracking_lake_sensitivity.R). [Complete PDF](../plot/test_figures/fig_tracking_lake_contrasts_lag_rate_per_century_offset_0.pdf) (1 page).
+
+![Compare Anthropocene minus Holocene separately for each lake at offset 0. — PDF page 1](assets/analysis/tracking_lake_contrasts-p1.png)
+
 ## Limitations and remaining questions
 
 The chronology controls, survey windows, GPS exclusions and paired CCA
@@ -1226,6 +1260,8 @@ current-results analysis.
 | [fig_tracking_model_coefficients_lag_rate_per_century.pdf](../plot/test_figures/fig_tracking_model_coefficients_lag_rate_per_century.pdf) | Compare provisional AR1 and MA1 coefficients across all ten offsets. | [10_tracking_era_models.R](../R/stages/10_tracking_era_models.R) | 1 | provisional |
 | [fig_tracking_model_contrasts_lag_rate_per_century.pdf](../plot/test_figures/fig_tracking_model_contrasts_lag_rate_per_century.pdf) | Compare Anthropocene minus Holocene within each park across offsets and covariance choices. | [10_tracking_era_models.R](../R/stages/10_tracking_era_models.R) | 1 | provisional |
 | [fig_tracking_model_residuals_lag_rate_per_century.pdf](../plot/test_figures/fig_tracking_model_residuals_lag_rate_per_century.pdf) | Evaluate residuals for both covariance models at every offset. | [10_tracking_era_models.R](../R/stages/10_tracking_era_models.R) | 1 | provisional |
+| [fig_tracking_lake_coefficients_lag_rate_per_century_offset_0.pdf](../plot/test_figures/fig_tracking_lake_coefficients_lag_rate_per_century_offset_0.pdf) | Compare individual-lake offset-0 coefficients under AR1 and MA1. | [10a_tracking_lake_sensitivity.R](../R/stages/10a_tracking_lake_sensitivity.R) | 1 | provisional lake sensitivity |
+| [fig_tracking_lake_contrasts_lag_rate_per_century_offset_0.pdf](../plot/test_figures/fig_tracking_lake_contrasts_lag_rate_per_century_offset_0.pdf) | Compare Anthropocene minus Holocene separately for each lake at offset 0. | [10a_tracking_lake_sensitivity.R](../R/stages/10a_tracking_lake_sensitivity.R) | 1 | provisional lake sensitivity |
 
 ## TraCE21k–V2.1 comparison and planned sensitivity
 

@@ -222,6 +222,29 @@ observations. Model inclusion, chronology uncertainty and distribution choices
 remain provisional. No lake random intercept or climate/fire fixed effects are
 added to this initial model.
 
+Stage `R/stages/10a_tracking_lake_sensitivity.R` then runs the agreed **offset-0
+lake sensitivity**: each of the four Holocene lakes versus modern pairs from
+its own park, under AR1 and MA1 (eight fits). The park is constant within each
+fit, so the formula is `estimate ~ era`, with REML and separate era residual
+SDs. Time gaps and response-specific finite-value selection remain unchanged.
+
+| Sensitivity output | Contents |
+|---|---|
+| `output/exploratory/tracking_lake_sensitivity/lag_rate_per_century/offset_0/model_coefficients.csv` | 16 rows: intercept and era coefficient for each lake and covariance type; lake/site identities, uncertainty, sample counts and correlation-boundary flags |
+| `output/exploratory/tracking_lake_sensitivity/lag_rate_per_century/offset_0/model_contrasts.csv` | Eight Anthropocene-minus-Holocene contrasts, with Satterthwaite intervals, sample counts and boundary flags |
+| `output/exploratory/tracking_lake_sensitivity/lag_rate_per_century/offset_0/model_results.txt` | All eight GLS summaries, era means, contrasts, warning records, boundary flags and provenance |
+| `plot/test_figures/fig_tracking_lake_coefficients_lag_rate_per_century_offset_0.pdf` | Lake coefficient comparison; separate scales for intercept and era effect |
+| `plot/test_figures/fig_tracking_lake_contrasts_lag_rate_per_century_offset_0.pdf` | Lake era-contrast comparison under AR1 and MA1 |
+
+Triangles and `near_correlation_boundary` flag an absolute fitted correlation
+parameter above 0.98; flagged fits remain in the outputs. The current Reflection
+Pond and Panther Potholes MA1 parameters approach -1. MORA fits reuse the same
+330 modern plots, so these are overlapping sensitivity comparisons. The workflow
+runs offset 0 only; manual `--offset=N`, `--metric=NAME` and
+`--bin-width-years=N` options write distinct offset/response/width products.
+The MA(1)-versus-MA(2) trial and the combined group-mean visualization remain
+outside the maintained workflow; MA(2) has not been added.
+
 The previous combined reporting-grid CSV, exploratory modeling script and its
 per-run inputs, model bundles, summaries and residual PDFs are retired. The
 23/21-column canonical source tables, uncertainty and calculation records remain.

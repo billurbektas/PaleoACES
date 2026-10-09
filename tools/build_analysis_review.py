@@ -99,7 +99,7 @@ def workflow_stages():
     workflow = (ROOT / 'R/workflow.R').read_text()
     paths = re.findall(r'run_script\("(R/[^\"]+[.]R)"', workflow)
     paths = [p for p in paths if p.startswith('R/stages/')]
-    if len(paths) != 23 or len(set(paths)) != 23: raise ValueError('Expected exactly 23 ordered workflow analysis stages.')
+    if len(paths) != 24 or len(set(paths)) != 24: raise ValueError('Expected exactly 24 ordered workflow analysis stages.')
     return paths
 
 def tracking_calculation_sections():
@@ -164,7 +164,7 @@ def script_map():
         ('Chronology (optional refit)', 1), ('Paleo vegetation and fire', 3),
         ('Paleo climate', 2), ('Taxonomy consolidation', 1),
         ('CCA eligibility, calibration and reference', 1),
-        ('Fire catalog and climate eras', 2), ('Canonical lake/plot tracking', 1), ('Combined transition input', 1), ('Provisional offset GLS comparisons', 1), ('Community trajectories: Figure 3', 1),
+        ('Fire catalog and climate eras', 2), ('Canonical lake/plot tracking', 1), ('Combined transition input', 1), ('Provisional offset GLS comparisons', 1), ('Offset-0 lake sensitivity', 1), ('Community trajectories: Figure 3', 1),
         ('Tracking and fire-detection examples', 2), ('Climate/fire display: Figure 2 and example', 2)]
     paths = workflow_stages(); index = 0; data = []
     for part,count in groups:
@@ -443,11 +443,13 @@ def build(mode):
         for name,x in registry.get('text_outputs', {}).items():
             source = ROOT/x['source']
             if not source.is_file(): raise FileNotFoundError('Missing registered text output: '+x['source'])
-            dst = out/source.name
+            dst = out/x.get('asset_name', source.name)
             dst.write_text('\n'.join(line.rstrip() for line in source.read_text().splitlines())+'\n')
             record(dst, x['producer'], x['source'], status=x.get('status', 'current fitted CCA output'))
-            if name == 'tracking_model_results':
-                text_blocks[name] = f'[Complete results for all offset/covariance fits](assets/analysis/{dst.name}).\n'
+            if name in ('tracking_model_results', 'tracking_lake_results'):
+                label = ('Complete offset-0 lake sensitivity results' if name == 'tracking_lake_results'
+                         else 'Complete results for all offset/covariance fits')
+                text_blocks[name] = f'[{label}](assets/analysis/{dst.name}).\n'
             elif name != 'cca_anova_output':
                 language = 'r' if name == 'cca_model_code' else 'text'
                 text_blocks[name] = f'```{language}\n{dst.read_text().rstrip()}\n```\n'

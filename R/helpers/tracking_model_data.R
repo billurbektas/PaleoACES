@@ -114,3 +114,18 @@ tracking_offset_model_input = function(combined,metric,offset) {
   d=d[order(d$series,d$time_index),,drop=FALSE]
   list(data=as.data.frame(d),excluded=selected |> filter(!response_valid),step_years=w)
 }
+
+# A lake sensitivity compares one Holocene series with its own park's modern
+# pairs. Keep the existing time indices and response-specific exclusions.
+tracking_lake_model_input = function(combined,metric,lake,offset=0) {
+  selected=tracking_offset_model_input(combined,metric,offset)
+  d=selected$data
+  park=unique(d$site[d$era=='Holocene' & !is.na(d$lake) & d$lake==lake])
+  if(length(park)!=1L) stop('Unknown lake or absent finite lake response: ',lake)
+  keep=function(x) x$site==park &
+    (x$era=='Anthropocene' | (!is.na(x$lake) & x$lake==lake))
+  d=droplevels(d[keep(d),,drop=FALSE])
+  if(any(table(d$era)<2L)) stop('Each lake/modern comparison needs two finite responses per era')
+  list(data=d,excluded=selected$excluded[keep(selected$excluded),,drop=FALSE],
+    step_years=selected$step_years,site=as.character(park),lake=lake)
+}

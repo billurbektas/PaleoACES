@@ -92,6 +92,7 @@ run_script("R/stages/09_tracking_metrics.R")
 run_script("R/stages/09b_tracking_model_data.R")
 # The maintained model runner remains a provisional sensitivity analysis.
 run_script("R/stages/10_tracking_era_models.R")
+run_script("R/stages/10a_tracking_lake_sensitivity.R")
 
 # Derived audit/visualization data. Mixed scripts still write their CSV audits
 # under --skip-figures; only their persistent PDF/PNG writes are suppressed.

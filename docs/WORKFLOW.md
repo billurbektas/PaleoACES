@@ -31,6 +31,7 @@ Rscript R/stages/05a_cca_figure.R
 Rscript R/stages/09_tracking_metrics.R
 Rscript R/stages/09b_tracking_model_data.R
 Rscript R/stages/10_tracking_era_models.R
+Rscript R/stages/10a_tracking_lake_sensitivity.R
 Rscript R/stages/12_walsh_fire_reproduction.R
 Rscript R/stages/12a_fire_event_detection_worked_example.R
 Rscript R/stages/13_holocene_climate_fire_eras.R
@@ -97,6 +98,7 @@ flowchart TD
   ER --> TM1
   TM1 --> MD[09b combined transition model input]
   MD --> GLS[10 provisional AR1 and MA1 models by offset]
+  MD --> LS[10a offset-0 lake sensitivity under AR1 and MA1]
   TM1 --> TV[09a tracking plots with climate bands]
   ER --> TV
   PE --> ER
@@ -127,6 +129,7 @@ flowchart TD
 | 10e | `R/stages/09_tracking_metrics.R` | Canonical lake/plot tracking | Published CCA reference, cached whole draws, own-lake climate, accepted charcoal events and coverage, cleaned plot coordinates | Compact 23/21-column model tables, long uncertainty, lake/modern calculation audits, seven-response reporting and support; base schema dictionary |
 | 10f | `R/stages/09b_tracking_model_data.R` | Combined transition model input | Canonical 23/21-column source tables, lake and cleaned plot coordinates | One 28-column long input with actual lake/offset transitions and modern pairs stored once per response; completed schema dictionary |
 | 10g | `R/stages/10_tracking_era_models.R` | Maintained provisional offset GLS exploration | Combined transition input only | Ten separate offsets × AR1/MA1; coefficient and within-park contrast CSVs, one full results TXT, coefficient and contrast PDFs, and one residual PDF when rendering; lag-change rate initially |
+| 10g-a | `R/stages/10a_tracking_lake_sensitivity.R` | Maintained offset-0 lake sensitivity | Combined transition input only | Four lakes × AR1/MA1; each lake versus its park's modern pairs; 16 coefficient rows, eight contrasts, one results TXT and two PDFs; near-boundary fits retained and flagged |
 | 10h | `R/stages/05a_cca_figure.R` | Selected CCA trajectory data and main render | Model, positioned Holocene samples, stage-13 frozen CC/S grid | `cca_trajectory_era_centroids.csv` and, when rendering, main-paper `fig_cca_trajectories.pdf/.png` |
 | 10i | `R/stages/09a_tracking_example_and_visualizations.R` | Tracking example and visualizations | Canonical lake realizations, lake-by-offset responses/predictors, reporting grid, aligned predictor medians reconstructed from source transitions, modern paired-plot model input and stage-13 frozen climate-era catalog/subphases | Three diagnostic PDFs: worked geometry and two tracking/climate/fire grids with four lake columns, established regional CC/S bands and CC1 subdivisions, complete-offset medians and an Anthropocene MORA/NOCA boxplot column |
 | 10j | `R/stages/12a_fire_event_detection_worked_example.R` | Accepted-event detection for all four cores | All-`tapas` source series with local thresholds, candidate/count-screen flags, and accepted events | `fire_event_detection_lake_audit.csv` and, when rendering, a PDF with all four residual/threshold plots on one page, alongside settings and the software comparison |
@@ -271,13 +274,20 @@ read `cca_tracking_anthropocene_plot_calculations.csv`. Stage 09b assembles the
 combined model input from the compact source tables; stage 10 reads only that
 combined CSV. Its initial lag-change exploration runs every offset separately
 with AR1 and MA1 while retaining all finite selected responses. Modern pairs
-are reused across offset fits. Final distribution, covariance, lake effects
+are reused across offset fits. Stage 10a follows with the agreed offset-0
+individual-lake sensitivity, using AR1 and MA1 with modern plots from each
+lake's own park. Its files live under `output/exploratory/tracking_lake_sensitivity/`.
+Reflection Pond and Panther Potholes MA1 fits approach the parameter boundary;
+tables and figures retain and flag them. The MA(2) comparison and group-mean
+visual remain previews outside the workflow. Final distribution, covariance, lake effects
 and chronology uncertainty treatment remain decisions for model development.
 
 ```bash
 # Primary combined input and all ten provisional offset/covariance fits
 Rscript R/stages/09b_tracking_model_data.R
 Rscript R/stages/10_tracking_era_models.R
+# Offset-0 lake sensitivity (also called by the full workflow)
+Rscript R/stages/10a_tracking_lake_sensitivity.R
 # Later exploration of another response, still running each offset separately
 Rscript R/stages/10_tracking_era_models.R --metric=observed_turnover_rate
 ```

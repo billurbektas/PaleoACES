@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: a3a337f9ba03332ac0fc8723da72aa4d -->
+<!-- paleoaces-source-md5: 07c673de95b0766fdc63129aaad3f8ae -->
 
 <html>
 
@@ -2030,6 +2030,28 @@ residual page shows normalized scatter, Q-Q and Holocene lag products
 for both covariance choices. Lag products match actual time gaps,
 exclude modern singleton series, and report pair counts; they are
 descriptive diagnostics without formal significance tests.</p>
+<p>Stage 10a maintains the offset-0 lake sensitivity authorized on
+2026-10-09. Each Holocene lake is compared separately with its own
+park’s modern plot pairs, trying AR1 and MA1 with
+<code>estimate ~ era</code>, REML and era-specific residual variances. A
+constant park factor is omitted within these individual fits. The three
+MORA comparisons reuse the same 330 modern plots; their estimates are
+overlapping sensitivity results, not independent park replicates. All
+finite responses remain eligible and actual within-lake time gaps
+remain. Reflection Pond and Panther Potholes MA1 fits have parameters
+near -1; fits with an absolute parameter above 0.98 are retained and
+explicitly flagged in tables and figures. This diagnostic flag does not
+select a covariance model. There is no automatic lake fit at additional
+offsets, no averaged lake result, and no comparison of AICs across
+different lake inputs. MA(2) is not maintained.</p>
+<p>The GLS models support estimated marginal means through
+<code>emmeans</code>, using Satterthwaite degrees of freedom.
+Within-park era means and their contrasts are already included in stage
+10’s TXT. The contrast is Anthropocene mean minus Holocene mean; its SE
+uses the fitted covariance of those means. Group-mean and contrast
+intervals are model-based intervals, not chronology quantiles. The
+offset-0 combined visual of group means and differences remains a
+preview pending a decision about integration.</p>
 <p>The 273 primary transition rows span ten alternative bin placements.
 <strong>Offsets are sensitivity realizations, not independent ecological
 replicates.</strong> The intended primary statistical approach is to

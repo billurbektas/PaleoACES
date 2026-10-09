@@ -575,6 +575,25 @@ distribution and inference remain provisional.
 
 {{tracking_models_diagnostics}}
 
+## Offset-0 lake sensitivity
+
+[Stage 10a](../R/stages/10a_tracking_lake_sensitivity.R) compares each Holocene
+lake separately with modern plots from its own park under AR1 and MA1. The
+eight fits use `estimate ~ era`, REML, era-specific residual variances and the
+original time gaps. The [16 coefficient rows](assets/analysis/tables/tracking_lake_coefficients.csv)
+and [eight contrasts](assets/analysis/tables/tracking_lake_contrasts.csv) retain
+lake identity, sample counts and correlation-boundary flags.
+
+Reflection Pond and Panther Potholes MA1 fits approach the parameter boundary;
+triangles identify absolute parameters above 0.98. These fits are retained.
+MORA lake comparisons reuse the same modern plots and are overlapping
+sensitivities. The workflow runs this sensitivity at offset 0 only, without
+choosing a final covariance model or maintaining MA(2).
+
+{{tracking_lake_results}}
+
+{{tracking_lake_diagnostics}}
+
 ## Limitations and remaining questions
 
 The chronology controls, survey windows, GPS exclusions and paired CCA

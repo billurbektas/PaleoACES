@@ -285,6 +285,30 @@
       "purpose": "Evaluate residuals for both covariance models at every offset.",
       "interpretation": "Each offset row shows AR1 scatter, normal Q-Q and Holocene residual lag products, then the same three checks for MA1. Normalized residuals account for the fitted variance/correlation structure. Lag products preserve actual within-lake gaps and exclude modern singleton series; pair counts are shown, without formal tests. Only 26\u201330 Holocene transitions support each fit; covariance and distribution remain provisional.",
       "status": "provisional"
+    },
+    {
+      "id": "tracking_lake_coefficients",
+      "section": "tracking_lake",
+      "pdf": "plot/test_figures/fig_tracking_lake_coefficients_lag_rate_per_century_offset_0.pdf",
+      "pages": [
+        1
+      ],
+      "producer": "R/stages/10a_tracking_lake_sensitivity.R",
+      "purpose": "Compare individual-lake offset-0 coefficients under AR1 and MA1.",
+      "interpretation": "Each Holocene lake is compared with all finite modern responses from its own park. Fits use era fixed effects, REML, AR1/MA1 and separate residual variances by era. Bars show unadjusted 95% intervals. Triangles flag absolute correlation parameters above 0.98; Reflection Pond and Panther Potholes MA1 fits are near the boundary. MORA comparisons reuse modern plots and are not independent. Statistical choices remain provisional.",
+      "status": "provisional lake sensitivity"
+    },
+    {
+      "id": "tracking_lake_contrasts",
+      "section": "tracking_lake",
+      "pdf": "plot/test_figures/fig_tracking_lake_contrasts_lag_rate_per_century_offset_0.pdf",
+      "pages": [
+        1
+      ],
+      "producer": "R/stages/10a_tracking_lake_sensitivity.R",
+      "purpose": "Compare Anthropocene minus Holocene separately for each lake at offset 0.",
+      "interpretation": "Each Holocene lake is compared with all finite modern responses from its own park. Fits use era fixed effects, REML, AR1/MA1 and separate residual variances by era. Bars show unadjusted 95% intervals. Triangles flag absolute correlation parameters above 0.98; Reflection Pond and Panther Potholes MA1 fits are near the boundary. MORA comparisons reuse modern plots and are not independent. Statistical choices remain provisional.",
+      "status": "provisional lake sensitivity"
     }
   ],
   "main_figures": [
@@ -485,6 +509,14 @@
     "tracking_model_contrasts": {
       "source": "output/exploratory/tracking_offset_models/lag_rate_per_century/model_contrasts.csv",
       "producer": "R/stages/10_tracking_era_models.R"
+    },
+    "tracking_lake_coefficients": {
+      "source": "output/exploratory/tracking_lake_sensitivity/lag_rate_per_century/offset_0/model_coefficients.csv",
+      "producer": "R/stages/10a_tracking_lake_sensitivity.R"
+    },
+    "tracking_lake_contrasts": {
+      "source": "output/exploratory/tracking_lake_sensitivity/lag_rate_per_century/offset_0/model_contrasts.csv",
+      "producer": "R/stages/10a_tracking_lake_sensitivity.R"
     }
   },
   "text_outputs": {
@@ -504,6 +536,12 @@
       "source": "output/exploratory/tracking_offset_models/lag_rate_per_century/model_results.txt",
       "producer": "R/stages/10_tracking_era_models.R",
       "status": "provisional GLS results"
+    },
+    "tracking_lake_results": {
+      "source": "output/exploratory/tracking_lake_sensitivity/lag_rate_per_century/offset_0/model_results.txt",
+      "producer": "R/stages/10a_tracking_lake_sensitivity.R",
+      "status": "provisional lake sensitivity results",
+      "asset_name": "lake_model_results.txt"
     }
   },
   "reference_bundles": {

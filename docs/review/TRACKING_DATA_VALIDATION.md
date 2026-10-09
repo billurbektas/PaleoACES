@@ -56,6 +56,19 @@ NOCA uses the era term plus the era/site interaction. Contrast signs, p values,
 converge without warnings. The three diagnostic PDFs each have one page.
 These checks validate implementation, without selecting a final statistical model.
 
+The maintained offset-0 lake sensitivity produces eight fits, 16 coefficients
+and eight era contrasts. The model gate independently matches each selected
+Holocene lake to its canonical transitions and its park's original modern IDs,
+checks coefficient/contrast signs, interval arithmetic and observation counts,
+and verifies that missing transitions retain their time gaps. MORA fits use
+330 modern pairs; NOCA uses 277. The Holocene counts are 7 Jay Bath, 7 Log
+Wallow, 6 Reflection Pond and 10 Panther Potholes. Reflection Pond and Panther
+Potholes MA1 fits approach -1; both are retained with explicit boundary flags.
+The two lake-sensitivity PDFs are single-page outputs. Existing combined
+offset-model results, source calculations, CCA, chronology inputs and approved
+figures remain byte-identical. MA(2) and the group-mean visualization remain
+outside the workflow.
+
 ## Observed support
 
 | Lake | Eligible samples | Transitions per offset, any draw | Transitions per offset, ≥50 draws | Minimum present draws | Transitions present in <10 draws, across offsets | Incomplete-climate realization exclusions, across offsets |
