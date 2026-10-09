@@ -29,3 +29,47 @@ tracking_model_plot_theme = function(base_size=12) {
     plot.title=ggplot2::element_text(face='bold'),
     plot.caption=ggplot2::element_text(hjust=0,size=10))
 }
+
+# Show the shared modern mean once per park. Its interval comes from offset 0;
+# retain each offset's own fitted uncertainty in the calculation tables/contrasts.
+tracking_model_group_means_plot = function(group_means,contrasts,metric,offsets) {
+  holocene=group_means[group_means$era=='Holocene',]
+  modern=group_means[group_means$era=='Anthropocene' & group_means$offset==0,]
+  if(nrow(modern)!=2L || anyDuplicated(modern$site))
+    stop('Expected one offset-0 Anthropocene mean per park')
+  color=unname(tracking_model_colors()[tracking_selected_model_type()])
+  panel_plot=function(x,label,offset_axis=TRUE) {
+    x$panel=label
+    x$site=factor(x$site,levels=c('MORA','NOCA'))
+    x$plot_x=if(offset_axis) x$offset else 0
+    p=ggplot2::ggplot(x,ggplot2::aes(plot_x,estimate))+
+      ggplot2::geom_hline(yintercept=0,color='grey65',linetype='dashed')+
+      ggplot2::geom_errorbar(ggplot2::aes(ymin=conf_low,ymax=conf_high),
+        width=if(offset_axis) 20 else .04,color=color,linewidth=.6)+
+      ggplot2::geom_point(color=color,size=2.8)+
+      ggplot2::facet_grid(panel ~ site,switch='y')+
+      ggplot2::labs(x=if(offset_axis) 'Bin offset (years)' else NULL,
+        y=tracking_model_response_unit(metric))+
+      tracking_model_plot_theme()+ggplot2::theme(strip.placement='outside',
+        strip.text.y.left=ggplot2::element_text(angle=0),
+        axis.text.x=ggplot2::element_text(angle=if(offset_axis) 45 else 0,
+          hjust=if(offset_axis) 1 else .5))
+    if(offset_axis) p+ggplot2::geom_line(color=color,linewidth=.6)+
+      ggplot2::scale_x_continuous(breaks=offsets) else
+      p+ggplot2::scale_x_continuous(breaks=0,labels='Shared modern plots',limits=c(-.5,.5))
+  }
+  patchwork::wrap_plots(
+    panel_plot(holocene,'Holocene fitted mean'),
+    panel_plot(modern,'Anthropocene fitted mean',FALSE),
+    panel_plot(contrasts,'Anthropocene - Holocene'),ncol=1,heights=c(1,.8,1))+
+    patchwork::plot_annotation(
+      title=paste('MA(1) fitted group means and contrasts:',tracking_model_response_label(metric)),
+      subtitle=paste(length(offsets),'separate offset models; REML, era × site and era/site residual variances'),
+      caption=paste('Anthropocene means appear once per park; their 95% intervals are from the offset 0 fit.',
+        'Holocene means and contrasts retain all offsets. Bars: unadjusted 95% Satterthwaite intervals.',
+        'Rows have separate y-scales; parks share scales within each row. Contrasts use each fit\'s covariance of the means.',
+        'Offsets reuse modern plots and are sensitivity fits, not independent replicates. Chronology uncertainty is not propagated.',sep='\n'),
+      theme=ggplot2::theme(plot.title=ggplot2::element_text(size=17,face='bold'),
+        plot.subtitle=ggplot2::element_text(size=11),
+        plot.caption=ggplot2::element_text(size=10,hjust=0)))
+}

@@ -460,13 +460,16 @@ are already included in stage 10's TXT. The contrast is Anthropocene mean minus
 Holocene mean; its SE uses the fitted covariance of those means. Group-mean
 and contrast intervals are model-based intervals, not chronology quantiles.
 The author requested integration of the group-mean display on 2026-10-09.
-The maintained MA1 figure now shows ten separate offsets in two park columns,
-with Holocene mean, Anthropocene mean and their difference in aligned rows.
+The maintained MA1 figure shows two park columns, with offset-specific Holocene
+means, one Anthropocene mean per park, and offset-specific differences in aligned rows.
 Rows use separate scales; parks share a scale within a row. Each response exports
 40 MA1 group means with 95% Satterthwaite intervals and observation counts.
 The differences retain covariance between the fitted means. Modern means are
-constant across offsets because the same modern pairs are reused; offsets
-remain sensitivity realizations and are not averaged into a new model.
+constant across offsets because the same modern pairs are reused. On 2026-10-09
+the author requested that the modern mean appear only once per park in each
+response figure. Its displayed interval comes from offset 0; fitted uncertainty
+can vary slightly across offsets and remains in the full tables and contrasts.
+Offsets remain sensitivity realizations and are not averaged into a new model.
 
 **Observed-turnover exercise (2026-10-09).** The author requested the same
 model exercise for `observed_turnover_rate`: observed CCA movement magnitude

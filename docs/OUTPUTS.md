@@ -223,7 +223,7 @@ separately to each response. The primary outputs are:
 | `output/exploratory/tracking_offset_models/lag_rate_per_century/model_results.txt` | One complete text record: provenance, fit overview, all 30 model summaries, park contrasts, residual SDs, warnings and diagnostic lag products |
 | `output/exploratory/tracking_offset_models/lag_rate_per_century/model_comparison.csv` | 30 rows × 15 columns: response, offset, covariance type, Holocene/modern/total counts, method, parameter count, restricted log-likelihood, AIC, within-offset ΔAIC, relative Akaike weight, rank, correlation parameter and convergence |
 | `output/exploratory/tracking_offset_models/lag_rate_per_century/model_group_means.csv` | 40 MA1-only rows × 11 columns: metric, offset, model_type, site, era, estimate, std_error, df, conf_low, conf_high, n |
-| `plot/test_figures/fig_tracking_model_group_means_lag_rate_per_century.pdf` | Two park columns and three aligned rows: Holocene mean, Anthropocene mean and their difference, across all ten MA1 offsets; 95% Satterthwaite intervals; separate row scales and shared park scales within each row |
+| `plot/test_figures/fig_tracking_model_group_means_lag_rate_per_century.pdf` | Two park columns and three aligned rows: Holocene means across ten MA1 offsets, one Anthropocene mean per park (offset-0 interval), and all ten era contrasts; 95% Satterthwaite intervals; separate row scales and shared park scales within each row |
 | `plot/test_figures/fig_tracking_model_coefficients_lag_rate_per_century.pdf` | MA1 only: 40 coefficients and unadjusted 95% t intervals across ten offsets |
 | `plot/test_figures/fig_tracking_model_contrasts_lag_rate_per_century.pdf` | MA1 only: 20 era contrasts and unadjusted 95% intervals across ten offsets, with separate MORA and NOCA panels |
 | `plot/test_figures/fig_tracking_model_residuals_lag_rate_per_century.pdf` | One page with one row per offset: scatter, Q-Q and Holocene lag products for the selected MA1 |
@@ -248,6 +248,11 @@ observations. The review shows the comparison first, followed by MA1-only
 group means, coefficients, contrasts and residuals. Model inclusion, chronology uncertainty
 and distribution choices remain exploratory. No lake random intercept or climate/fire fixed effects are
 added to this initial model.
+
+For all three response figures, each Anthropocene mean appears once per park,
+using the offset-0 fit's interval. All 40 fitted group means and their individual
+intervals remain in each response's CSV; Holocene means and contrasts remain
+offset-specific in the figures.
 
 Stage `R/stages/10a_tracking_lake_sensitivity.R` then runs the agreed **offset-0
 lake sensitivity**: each of the four Holocene lakes versus modern pairs from

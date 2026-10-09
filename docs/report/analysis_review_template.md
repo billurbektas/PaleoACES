@@ -637,11 +637,13 @@ replicates, and are not pooled into one coefficient or contrast.
 The [40 MA1 group means](assets/analysis/tables/tracking_model_group_means.csv)
 retain era, park, offset, estimate, SE, degrees of freedom, interval bounds and
 cell observation counts. The figure places MORA and NOCA in two columns and
-uses three aligned rows: Holocene mean, Anthropocene mean and their difference.
-Rows have separate y-scales; parks share a scale within each row. This keeps
-Holocene variation visible. The modern observations are reused unchanged,
-so their means stay constant across offsets. Contrasts use covariance between
-fitted means; their intervals are not obtained by subtracting mean bounds.
+uses three aligned rows: Holocene means across offsets, one Anthropocene mean
+per park, and the offset-specific differences. Rows have separate y-scales;
+parks share a scale within each row. The modern observations are reused unchanged,
+so their means stay constant across offsets and appear only once. The displayed
+modern interval comes from offset 0; each fit's interval remains in the table.
+Contrasts retain each offset's covariance between fitted means; their intervals
+are not obtained by subtracting mean bounds.
 
 {{tracking_groups_diagnostics}}
 
@@ -709,7 +711,9 @@ The [40 fitted group means](assets/analysis/tables/turnover_model_group_means.cs
 and contrast figure use the same aligned three-row layout as lag rate.
 Each mean is conditional on its own offset fit. The modern means stay constant
 because the same plots are reused: approximately 0.930 CCA units/century at
-MORA and 2.125 at NOCA. The fitted Anthropocene-minus-Holocene contrasts are
+MORA and 2.125 at NOCA. Each modern mean appears once per park with its offset-0
+interval; Holocene means and contrasts retain all ten offsets.
+The fitted Anthropocene-minus-Holocene contrasts are
 positive at every offset in both parks. The full
 [coefficient](assets/analysis/tables/turnover_model_coefficients.csv) and
 [contrast](assets/analysis/tables/turnover_model_contrasts.csv) records retain
@@ -788,8 +792,10 @@ from the lag-rate and turnover evidence.
 ### MA(1) fitted groups, coefficients and contrasts across offsets
 
 The [40 MA1 group means](assets/analysis/tables/climate_model_group_means.csv)
-use the same two-park, three-row layout: Holocene, Anthropocene and their
-difference, with separate row scales. Units are **calibration SD per century**.
+use the same two-park, three-row layout: offset-specific Holocene means, one
+Anthropocene mean per park, and offset-specific differences, with separate row
+scales. The modern interval displayed is from offset 0; all fitted intervals
+remain in the table. Units are **calibration SD per century**.
 Modern means remain constant across offsets: approximately 5.260 at MORA and
 3.644 at NOCA. The Anthropocene-minus-Holocene contrasts are positive in both
 parks at every offset. The full

@@ -194,26 +194,7 @@ for(response_metric in response_metrics) {
   plot_coefficients=tracking_selected_model_results(coefficients)
   plot_contrasts=tracking_selected_model_results(contrasts)
   selected_fits=fits[vapply(fits,function(x) x$model_type==selected_model_type,logical(1))]
-  # Keep group means visible at their own scales. Parks share a scale within each
-  # row; contrast intervals come from the model, not from subtracting mean bounds.
-  mean_plot_data=bind_rows(group_means |> mutate(panel=era),
-    plot_contrasts |> mutate(panel='Difference')) |>
-    mutate(panel=factor(panel,levels=c('Holocene','Anthropocene','Difference'),
-      labels=c('Holocene fitted mean','Anthropocene fitted mean','Anthropocene - Holocene')))
-  means_plot=ggplot(mean_plot_data,aes(offset,estimate))+
-    geom_hline(yintercept=0,color='grey65',linetype='dashed')+
-    geom_errorbar(aes(ymin=conf_low,ymax=conf_high),width=20,
-      color=unname(model_colors[selected_model_type]),linewidth=.6)+
-    geom_line(color=unname(model_colors[selected_model_type]),linewidth=.6)+
-    geom_point(color=unname(model_colors[selected_model_type]),size=2.8)+
-    facet_grid(panel ~ site,scales='free_y',switch='y')+
-    scale_x_continuous(breaks=offsets)+
-    labs(title=paste('MA(1) fitted group means and contrasts:',response_label),
-      subtitle=paste(length(offsets),'separate offset models; REML, era × site and era/site residual variances'),
-      x='Bin offset (years)',y=response_unit,
-      caption='Points: model-based group means or Anthropocene-minus-Holocene contrasts. Bars: unadjusted 95% Satterthwaite intervals.\nRows have separate y-scales; parks share the same scale within each row. Contrasts use the fitted covariance of the means.\nOffsets reuse modern plots and are sensitivity fits, not independent replicates. Chronology uncertainty is not propagated.')+
-    tracking_model_plot_theme()+theme(strip.placement='outside',
-      strip.text.y.left=element_text(angle=0),axis.text.x=element_text(angle=45,hjust=1))
+  means_plot=tracking_model_group_means_plot(group_means,plot_contrasts,response_metric,offsets)
   coef_plot=ggplot(plot_coefficients,aes(offset,estimate))+
     geom_hline(yintercept=0,color='grey65',linetype='dashed')+
     geom_errorbar(aes(ymin=conf_low,ymax=conf_high),width=20,

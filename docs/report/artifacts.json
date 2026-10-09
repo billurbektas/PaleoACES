@@ -259,7 +259,7 @@
       ],
       "producer": "R/stages/10_tracking_era_models.R",
       "purpose": "MA(1) fitted Holocene/Anthropocene group means and contrasts across offsets.",
-      "interpretation": "MORA and NOCA columns each show Holocene means, Anthropocene means and Anthropocene-minus-Holocene contrasts across ten separate MA1 fits. Bars are unadjusted 95% Satterthwaite intervals. Rows have separate y-scales; parks share a scale within each row. Contrast uncertainty uses the fitted covariance of the means. Modern pairs are unchanged across offsets, so their fitted means remain constant. Offsets are sensitivity realizations, not independent replicates.",
+      "interpretation": "MORA and NOCA columns show offset-specific Holocene means, one Anthropocene mean per park, and Anthropocene-minus-Holocene contrasts for all ten MA1 fits. The single modern interval is from offset 0; each fit's interval remains in the result table and each contrast uses its own fitted covariance. Bars are unadjusted 95% Satterthwaite intervals. Rows have separate y-scales; parks share a scale within each row. Units are CCA units per century. Modern means are constant because plots are reused across offsets; offsets are sensitivity realizations, not independent replicates.",
       "status": "MA1 selected; exploratory inference"
     },
     {
@@ -343,7 +343,7 @@
       ],
       "producer": "R/stages/10_tracking_era_models.R",
       "purpose": "Observed turnover: mA(1) fitted Holocene/Anthropocene group means and contrasts across offsets.",
-      "interpretation": "MORA and NOCA columns each show Holocene means, Anthropocene means and Anthropocene-minus-Holocene contrasts across ten separate MA1 fits. Bars are unadjusted 95% Satterthwaite intervals. Rows have separate y-scales; parks share a scale within each row. Contrast uncertainty uses the fitted covariance of the means. Modern pairs are unchanged across offsets, so their fitted means remain constant. Offsets are sensitivity realizations, not independent replicates.",
+      "interpretation": "MORA and NOCA columns show offset-specific Holocene means, one Anthropocene mean per park, and Anthropocene-minus-Holocene contrasts for all ten MA1 fits. The single modern interval is from offset 0; each fit's interval remains in the result table and each contrast uses its own fitted covariance. Bars are unadjusted 95% Satterthwaite intervals. Rows have separate y-scales; parks share a scale within each row. Units are CCA units per century. Modern means are constant because plots are reused across offsets; offsets are sensitivity realizations, not independent replicates.",
       "status": "MA1 working specification; exploratory turnover"
     },
     {
@@ -427,7 +427,7 @@
       ],
       "producer": "R/stages/10_tracking_era_models.R",
       "purpose": "Untransformed physical climate-change rate: MA(1) fitted Holocene/Anthropocene group means and contrasts across offsets.",
-      "interpretation": "Only MA1 is shown, with Holocene means, Anthropocene means and their contrasts in aligned rows and MORA/NOCA columns. The response is untransformed physical climate-change rate in calibration SD per century. Rows have separate scales; parks share scales within a row. Intervals use Satterthwaite degrees of freedom. Modern plots are reused across offsets; per-century scaling does not equalize temporal averaging.",
+      "interpretation": "MORA and NOCA columns show offset-specific Holocene means, one Anthropocene mean per park, and Anthropocene-minus-Holocene contrasts for all ten MA1 fits. The single modern interval is from offset 0; each fit's interval remains in the result table and each contrast uses its own fitted covariance. Bars are unadjusted 95% Satterthwaite intervals. Rows have separate y-scales; parks share a scale within each row. Units are calibration SD per century. Modern means are constant because plots are reused across offsets; offsets are sensitivity realizations, not independent replicates.",
       "status": "MA1 working specification; exploratory raw climate GLS"
     },
     {

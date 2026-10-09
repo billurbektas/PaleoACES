@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: 74d6e56a750eec34629b6e77b21bd7b7 -->
+<!-- paleoaces-source-md5: 08c8a8b0693d08e2a47ed3d3ee774648 -->
 
 <html>
 
@@ -2036,10 +2036,10 @@ era, estimate, std_error, df, conf_low, conf_high, n</td>
 </tr>
 <tr class="even">
 <td><code>plot/test_figures/fig_tracking_model_group_means_lag_rate_per_century.pdf</code></td>
-<td>Two park columns and three aligned rows: Holocene mean, Anthropocene
-mean and their difference, across all ten MA1 offsets; 95% Satterthwaite
-intervals; separate row scales and shared park scales within each
-row</td>
+<td>Two park columns and three aligned rows: Holocene means across ten
+MA1 offsets, one Anthropocene mean per park (offset-0 interval), and all
+ten era contrasts; 95% Satterthwaite intervals; separate row scales and
+shared park scales within each row</td>
 </tr>
 <tr class="odd">
 <td><code>plot/test_figures/fig_tracking_model_coefficients_lag_rate_per_century.pdf</code></td>
@@ -2085,6 +2085,10 @@ first, followed by MA1-only group means, coefficients, contrasts and
 residuals. Model inclusion, chronology uncertainty and distribution
 choices remain exploratory. No lake random intercept or climate/fire
 fixed effects are added to this initial model.</p>
+<p>For all three response figures, each Anthropocene mean appears once
+per park, using the offset-0 fit’s interval. All 40 fitted group means
+and their individual intervals remain in each response’s CSV; Holocene
+means and contrasts remain offset-specific in the figures.</p>
 <p>Stage <code>R/stages/10a_tracking_lake_sensitivity.R</code> then runs
 the agreed <strong>offset-0 lake sensitivity</strong>: each of the four
 Holocene lakes versus modern pairs from its own park, under AR1 and MA1

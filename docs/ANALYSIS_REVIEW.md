@@ -1220,15 +1220,17 @@ replicates, and are not pooled into one coefficient or contrast.
 The [40 MA1 group means](assets/analysis/tables/tracking_model_group_means.csv)
 retain era, park, offset, estimate, SE, degrees of freedom, interval bounds and
 cell observation counts. The figure places MORA and NOCA in two columns and
-uses three aligned rows: Holocene mean, Anthropocene mean and their difference.
-Rows have separate y-scales; parks share a scale within each row. This keeps
-Holocene variation visible. The modern observations are reused unchanged,
-so their means stay constant across offsets. Contrasts use covariance between
-fitted means; their intervals are not obtained by subtracting mean bounds.
+uses three aligned rows: Holocene means across offsets, one Anthropocene mean
+per park, and the offset-specific differences. Rows have separate y-scales;
+parks share a scale within each row. The modern observations are reused unchanged,
+so their means stay constant across offsets and appear only once. The displayed
+modern interval comes from offset 0; each fit's interval remains in the table.
+Contrasts retain each offset's covariance between fitted means; their intervals
+are not obtained by subtracting mean bounds.
 
 ### MA(1) fitted Holocene/Anthropocene group means and contrasts across offsets
 
-MORA and NOCA columns each show Holocene means, Anthropocene means and Anthropocene-minus-Holocene contrasts across ten separate MA1 fits. Bars are unadjusted 95% Satterthwaite intervals. Rows have separate y-scales; parks share a scale within each row. Contrast uncertainty uses the fitted covariance of the means. Modern pairs are unchanged across offsets, so their fitted means remain constant. Offsets are sensitivity realizations, not independent replicates. **MA1 selected; exploratory inference**.
+MORA and NOCA columns show offset-specific Holocene means, one Anthropocene mean per park, and Anthropocene-minus-Holocene contrasts for all ten MA1 fits. The single modern interval is from offset 0; each fit's interval remains in the result table and each contrast uses its own fitted covariance. Bars are unadjusted 95% Satterthwaite intervals. Rows have separate y-scales; parks share a scale within each row. Units are CCA units per century. Modern means are constant because plots are reused across offsets; offsets are sensitivity realizations, not independent replicates. **MA1 selected; exploratory inference**.
 
 Script: [10_tracking_era_models.R](../R/stages/10_tracking_era_models.R). [Complete PDF](../plot/test_figures/fig_tracking_model_group_means_lag_rate_per_century.pdf) (1 page).
 
@@ -1338,7 +1340,9 @@ The [40 fitted group means](assets/analysis/tables/turnover_model_group_means.cs
 and contrast figure use the same aligned three-row layout as lag rate.
 Each mean is conditional on its own offset fit. The modern means stay constant
 because the same plots are reused: approximately 0.930 CCA units/century at
-MORA and 2.125 at NOCA. The fitted Anthropocene-minus-Holocene contrasts are
+MORA and 2.125 at NOCA. Each modern mean appears once per park with its offset-0
+interval; Holocene means and contrasts retain all ten offsets.
+The fitted Anthropocene-minus-Holocene contrasts are
 positive at every offset in both parks. The full
 [coefficient](assets/analysis/tables/turnover_model_coefficients.csv) and
 [contrast](assets/analysis/tables/turnover_model_contrasts.csv) records retain
@@ -1346,7 +1350,7 @@ all comparison candidates; displayed results select `model_type == "MA1"`.
 
 ### Observed turnover: mA(1) fitted Holocene/Anthropocene group means and contrasts across offsets
 
-MORA and NOCA columns each show Holocene means, Anthropocene means and Anthropocene-minus-Holocene contrasts across ten separate MA1 fits. Bars are unadjusted 95% Satterthwaite intervals. Rows have separate y-scales; parks share a scale within each row. Contrast uncertainty uses the fitted covariance of the means. Modern pairs are unchanged across offsets, so their fitted means remain constant. Offsets are sensitivity realizations, not independent replicates. **MA1 working specification; exploratory turnover**.
+MORA and NOCA columns show offset-specific Holocene means, one Anthropocene mean per park, and Anthropocene-minus-Holocene contrasts for all ten MA1 fits. The single modern interval is from offset 0; each fit's interval remains in the result table and each contrast uses its own fitted covariance. Bars are unadjusted 95% Satterthwaite intervals. Rows have separate y-scales; parks share a scale within each row. Units are CCA units per century. Modern means are constant because plots are reused across offsets; offsets are sensitivity realizations, not independent replicates. **MA1 working specification; exploratory turnover**.
 
 Script: [10_tracking_era_models.R](../R/stages/10_tracking_era_models.R). [Complete PDF](../plot/test_figures/fig_tracking_model_group_means_observed_turnover_rate.pdf) (1 page).
 
@@ -1463,8 +1467,10 @@ Script: [10_tracking_era_models.R](../R/stages/10_tracking_era_models.R). [Compl
 ### MA(1) fitted groups, coefficients and contrasts across offsets
 
 The [40 MA1 group means](assets/analysis/tables/climate_model_group_means.csv)
-use the same two-park, three-row layout: Holocene, Anthropocene and their
-difference, with separate row scales. Units are **calibration SD per century**.
+use the same two-park, three-row layout: offset-specific Holocene means, one
+Anthropocene mean per park, and offset-specific differences, with separate row
+scales. The modern interval displayed is from offset 0; all fitted intervals
+remain in the table. Units are **calibration SD per century**.
 Modern means remain constant across offsets: approximately 5.260 at MORA and
 3.644 at NOCA. The Anthropocene-minus-Holocene contrasts are positive in both
 parks at every offset. The full
@@ -1474,7 +1480,7 @@ all covariance candidates; figures show MA1 only.
 
 ### Untransformed physical climate-change rate: MA(1) fitted Holocene/Anthropocene group means and contrasts across offsets
 
-Only MA1 is shown, with Holocene means, Anthropocene means and their contrasts in aligned rows and MORA/NOCA columns. The response is untransformed physical climate-change rate in calibration SD per century. Rows have separate scales; parks share scales within a row. Intervals use Satterthwaite degrees of freedom. Modern plots are reused across offsets; per-century scaling does not equalize temporal averaging. **MA1 working specification; exploratory raw climate GLS**.
+MORA and NOCA columns show offset-specific Holocene means, one Anthropocene mean per park, and Anthropocene-minus-Holocene contrasts for all ten MA1 fits. The single modern interval is from offset 0; each fit's interval remains in the result table and each contrast uses its own fitted covariance. Bars are unadjusted 95% Satterthwaite intervals. Rows have separate y-scales; parks share a scale within each row. Units are calibration SD per century. Modern means are constant because plots are reused across offsets; offsets are sensitivity realizations, not independent replicates. **MA1 working specification; exploratory raw climate GLS**.
 
 Script: [10_tracking_era_models.R](../R/stages/10_tracking_era_models.R). [Complete PDF](../plot/test_figures/fig_tracking_model_group_means_standardized_climate_change_rate.pdf) (1 page).
 
