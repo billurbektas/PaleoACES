@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: 54b0ac7137e2f81b1472f9fd757492de -->
+<!-- paleoaces-source-md5: a21130097cf5abe4aaef64513c173c8c -->
 
 <html>
 
@@ -1974,12 +1974,16 @@ retain original identities and normalized joins; missing or ambiguous
 locations stop export. The long layout does not add ecological
 replicates. Alternative widths receive <code>_Nyr</code> suffixes.</p>
 <p>Stage <code>R/stages/10_tracking_era_models.R</code> reads only the
-combined CSV and fits lag-change rate separately for all ten offsets
-under AR1, MA1 and no temporal autocorrelation
+combined CSV and fits lag-change rate and observed turnover separately
+for all ten offsets under AR1, MA1 and no temporal autocorrelation
 (<code>model_type=Independent</code>). Its initial fixed-effect
 specification remains exploratory: <code>estimate ~ era * site</code>,
-REML, and separate residual SDs by era/site. The primary outputs
-are:</p>
+REML, and separate residual SDs by era/site. Both responses run by
+default; <code>--metric=NAME</code> selects one standalone response.
+Files below show lag rate; the complete turnover set uses
+<code>observed_turnover_rate</code> in place of
+<code>lag_rate_per_century</code> in each directory and figure stem. Row
+counts apply separately to each response. The primary outputs are:</p>
 <table>
 <colgroup>
 <col width="50%" />
@@ -2018,6 +2022,18 @@ products</td>
 Holocene/modern/total counts, method, parameter count, restricted
 log-likelihood, AIC, within-offset ΔAIC, relative Akaike weight, rank,
 correlation parameter and convergence</td>
+</tr>
+<tr class="odd">
+<td><code>output/exploratory/tracking_offset_models/lag_rate_per_century/model_group_means.csv</code></td>
+<td>40 MA1-only rows × 11 columns: metric, offset, model_type, site,
+era, estimate, std_error, df, conf_low, conf_high, n</td>
+</tr>
+<tr class="even">
+<td><code>plot/test_figures/fig_tracking_model_group_means_lag_rate_per_century.pdf</code></td>
+<td>Two park columns and three aligned rows: Holocene mean, Anthropocene
+mean and their difference, across all ten MA1 offsets; 95% Satterthwaite
+intervals; separate row scales and shared park scales within each
+row</td>
 </tr>
 <tr class="odd">
 <td><code>plot/test_figures/fig_tracking_model_coefficients_lag_rate_per_century.pdf</code></td>
@@ -2059,18 +2075,18 @@ AIC.</p>
 retain gaps; MA1 correlates only observations one actual time step
 apart. AICs compare covariance choices within an offset; different
 offsets contain different observations. The review shows the comparison
-first, followed by MA1-only coefficients, contrasts and residuals. Model
-inclusion, chronology uncertainty and distribution choices remain
-exploratory. No lake random intercept or climate/fire fixed effects are
-added to this initial model.</p>
+first, followed by MA1-only group means, coefficients, contrasts and
+residuals. Model inclusion, chronology uncertainty and distribution
+choices remain exploratory. No lake random intercept or climate/fire
+fixed effects are added to this initial model.</p>
 <p>Stage <code>R/stages/10a_tracking_lake_sensitivity.R</code> then runs
 the agreed <strong>offset-0 lake sensitivity</strong>: each of the four
 Holocene lakes versus modern pairs from its own park, under AR1 and MA1
-(eight fits). The park is constant within each fit, so the formula is
-<code>estimate ~ era</code>, with REML and separate era residual SDs.
-The figures and review display MA1 only; the AR1 fits remain numerical
-audit records. Time gaps and response-specific finite-value selection
-remain unchanged.</p>
+(eight fits per response). The park is constant within each fit, so the
+formula is <code>estimate ~ era</code>, with REML and separate era
+residual SDs. The figures and review display MA1 only; the AR1 fits
+remain numerical audit records. Time gaps and response-specific
+finite-value selection remain unchanged.</p>
 <table>
 <colgroup>
 <col width="50%" />
@@ -2117,9 +2133,13 @@ approach -1. MORA fits reuse the same 330 modern plots, so these are
 overlapping sensitivity comparisons. The workflow runs offset 0 only;
 manual <code>--offset=N</code>, <code>--metric=NAME</code> and
 <code>--bin-width-years=N</code> options write distinct
-offset/response/width products. The MA(1)-versus-MA(2) trial and the
-combined group-mean visualization remain outside the maintained
-workflow; MA(2) has not been added.</p>
+offset/response/width products. The maintained group-mean figure now
+shows MA1 across all ten offsets for both responses; it supersedes the
+earlier offset-0 preview. MA(2) remains outside the workflow. Turnover
+has its own AIC comparison: independent residuals minimize AIC at all
+offsets, with MA1 within two units everywhere. The requested MA1
+turnover exercise remains exploratory; its nonnegative response is not
+transformed and unbounded Gaussian intervals are not clipped.</p>
 <p>The previous combined reporting-grid CSV, exploratory modeling script
 and its per-run inputs, model bundles, summaries and residual PDFs are
 retired. The 23/21-column canonical source tables, uncertainty and

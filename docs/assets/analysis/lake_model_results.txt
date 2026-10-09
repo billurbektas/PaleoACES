@@ -9,7 +9,7 @@ Near-boundary fits are retained and flagged when the absolute correlation parame
 No chronology propagation, support cutoff, lake random effect or climate/fire fixed effects.
 No pooled averaging of lake fits and no AIC comparisons between different lake inputs.
 Input MD5: b4c903acf64253f0225d8d8d448fe860
-Script MD5: c28f17ad468b96ce3efe3b84d559390e
+Script MD5: 489e4aa04885942702444ddc2f419253
 
 LAKE JayBath | PARK MORA | OFFSET 0 | MODEL AR1
 Holocene transitions: 7 | Modern pairs: 330 | Undefined selected responses: 0

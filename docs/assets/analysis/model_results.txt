@@ -17,10 +17,11 @@ Delta AIC is measured from the minimum within each offset; Akaike weights are re
 Boxplots show within-offset delta AIC and summarize offset sensitivity, not independent samples; raw AIC remains in the CSV.
 REML is retained because these covariance comparisons use identical fixed effects and observations within each offset.
 The comparison retains all candidates; reported coefficients, contrasts and residuals use the author-selected MA1.
-MA1 is competitive across offsets; AIC differences are small and do not uniquely identify the covariance structure.
+The MA1 reporting specification is applied to both requested responses; covariance comparisons and diagnostics are response-specific.
+Group means and era contrasts use emmeans with Satterthwaite degrees of freedom; contrast SEs use the fitted covariance of the means.
 Coefficient intervals and park contrasts are unadjusted exploratory intervals/tests.
 Input: cca_tracking_era_by_offset.csv | MD5: b4c903acf64253f0225d8d8d448fe860
-Script MD5: c3879c0b0283eaa8cbdcd6837bc5d333
+Script MD5: 300f0620cd701e59ea42b7b757d4582c
 Packages: nlme 3.1.170; emmeans 2.0.4
 
 Fit overview:

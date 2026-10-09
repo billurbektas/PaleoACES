@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: 99f45036afcc34f3cf08e35af8be3619 -->
+<!-- paleoaces-source-md5: 619e2b84db5a6d66243cd441d07ac777 -->
 
 <html>
 
@@ -1592,8 +1592,8 @@ regeneration is needed for stages 9–14.</p>
   CCA --&gt; ER[13 unified climate eras/fire classification]
   ER --&gt; TM1
   TM1 --&gt; MD[09b combined transition model input]
-  MD --&gt; GLS[10 covariance comparison and selected MA1 by offset]
-  MD --&gt; LS[10a selected MA1 lake reporting at offset 0]
+  MD --&gt; GLS[10 lag-rate and turnover comparison plus MA1 groups by offset]
+  MD --&gt; LS[10a lag-rate and turnover MA1 lake reporting at offset 0]
   TM1 --&gt; TV[09a tracking plots with climate bands]
   ER --&gt; TV
   PE --&gt; ER
@@ -1780,20 +1780,22 @@ modern pairs stored once per response; completed schema dictionary</td>
 <td><code>R/stages/10_tracking_era_models.R</code></td>
 <td>Maintained provisional offset GLS exploration</td>
 <td>Combined transition input only</td>
-<td>Ten separate offsets × AR1/MA1/Independent; coefficient, within-park
-contrast and paired AIC comparison CSVs, one full results TXT, MA1-only
-coefficient/contrast/residual PDFs and three-candidate within-offset
-ΔAIC boxplots when rendering; lag-change rate initially</td>
+<td>Lag rate and turnover, each with ten offsets × AR1/MA1/Independent;
+coefficient, within-park contrast, MA1 group-mean and paired AIC
+comparison CSVs, one full results TXT, MA1-only
+group-mean/coefficient/contrast/residual PDFs and three-candidate
+within-offset ΔAIC boxplots when rendering; both requested responses run
+by default</td>
 </tr>
 <tr class="odd">
 <td align="right">10g-a</td>
 <td><code>R/stages/10a_tracking_lake_sensitivity.R</code></td>
 <td>Maintained offset-0 lake sensitivity</td>
 <td>Combined transition input only</td>
-<td>Four lakes × AR1/MA1; each lake versus its park’s modern pairs; 16
-coefficient rows, eight contrasts, one results TXT and two PDFs;
-MA1-only figures show eight coefficients and four contrasts;
-near-boundary fits retained and flagged</td>
+<td>Lag rate and turnover, each with four lakes × AR1/MA1; each lake
+versus its park’s modern pairs; 16 coefficient rows, eight contrasts,
+one results TXT and two PDFs; MA1-only figures show eight coefficients
+and four contrasts; near-boundary fits retained and flagged</td>
 </tr>
 <tr class="even">
 <td align="right">10h</td>
@@ -1894,8 +1896,8 @@ presence</td>
 </tr>
 <tr class="even">
 <td><code>R/helpers/tracking_model_reporting.R</code></td>
-<td>Author-selected MA1 covariance, result filtering, shared colors and
-plot theme</td>
+<td>Requested lag-rate/turnover responses, MA1 reporting, result
+filtering, shared colors and plot theme</td>
 </tr>
 <tr class="odd">
 <td><code>R/helpers/tracking_model_data.R</code></td>
@@ -2023,8 +2025,9 @@ nearest-slice error</td>
 <td><code>test_tracking_offset_models.R</code></td>
 <td>Automatic offline gate after model fits</td>
 <td>Combined input reconstruction, singleton modern pairs, actual time
-gaps, AR1/MA1/independent covariance, coefficient/support integrity and
-paired AIC/weight reconstruction</td>
+gaps, AR1/MA1/independent covariance, coefficient/support integrity,
+paired AIC/weight reconstruction and covariance-aware group
+means/contrasts for both responses</td>
 </tr>
 <tr class="even">
 <td><code>test_cca_tracking_metrics.R</code></td>
@@ -2280,24 +2283,32 @@ Changed keys or exclusions stop execution with diagnostics.
 Plot-endpoint and seasonal-climate consumers read
 <code>cca_tracking_anthropocene_plot_calculations.csv</code>. Stage 09b
 assembles the combined model input from the compact source tables; stage
-10 reads only that combined CSV. Its initial lag-change exploration runs
-every offset separately with AR1, MA1 and independent residuals while
-retaining all finite selected responses. Each offset uses identical
-observations, fixed effects and era/site variances across its three
-covariance candidates. The comparison CSV exports AIC, within-offset
-ΔAIC and relative Akaike weights; the paired boxplots summarize
-sensitivity across offsets. The author selected MA1 for reporting on
-2026-10-09; the AIC comparison remains available. Coefficient, contrast
-and residual figures show only MA1, using a common plot theme. Modern
-pairs are reused across offset fits. Stage 10a follows with the agreed
-offset-0 individual-lake sensitivity; its figures show MA1 only with
-modern plots from each lake’s own park. Its files live under
+10 reads only that combined CSV. Both stages run lag rate and observed
+turnover by default. Each response uses the same maintained code and
+distinct output paths. The offset exploration runs every offset
+separately with AR1, MA1 and independent residuals while retaining all
+finite selected responses. Each offset uses identical observations,
+fixed effects and era/site variances across its three covariance
+candidates. The comparison CSV exports AIC, within-offset ΔAIC and
+relative Akaike weights; the paired boxplots summarize sensitivity
+across offsets. The author selected MA1 for reporting on 2026-10-09; the
+AIC comparison remains available. Coefficient, contrast and residual
+figures show only MA1, using a common plot theme. The group-mean figure
+aligns both parks and all offsets in three rows: Holocene, Anthropocene
+and their difference. Mean and contrast intervals use Satterthwaite
+degrees of freedom and the fitted covariance. Modern pairs are reused
+across offset fits. Stage 10a follows with the agreed offset-0
+individual-lake sensitivity; its figures show MA1 only with modern plots
+from each lake’s own park. Its files live under
 <code>output/exploratory/tracking_lake_sensitivity/</code>. Reflection
 Pond and Panther Potholes MA1 fits approach the parameter boundary;
-tables and figures retain and flag them. The MA(2) comparison and
-group-mean visual remain previews outside the workflow. MA1 is selected
-for reporting. Final distribution, lake effects and chronology
-uncertainty treatment remain decisions for model development.</p>
+tables and figures retain and flag them. The earlier group-mean preview
+is replaced by the maintained ten-offset MA1 figure. MA(2) stays outside
+the workflow. Turnover’s AIC comparison favors independent residuals at
+every offset, with MA1 within two AIC units; the requested Gaussian/MA1
+turnover exercise remains exploratory. MA1 is selected for reporting.
+Final distribution, lake effects and chronology uncertainty treatment
+remain decisions for model development.</p>
 <pre class="bash"><code># Primary combined input and all ten provisional offset/covariance fits
 Rscript R/stages/09b_tracking_model_data.R
 Rscript R/stages/10_tracking_era_models.R

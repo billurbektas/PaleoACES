@@ -389,15 +389,15 @@ Descriptive tracking plots still reconstruct their aligned predictor medians
 from source transitions using the existing response-specific reporting rule.
 
 Stage 10 runs the same provisional Gaussian GLS separately at all ten offsets
-for lag-change rate. It fits `estimate ~ era * site` with REML and era/site
+for lag-change rate and observed community turnover. It fits `estimate ~ era * site` with REML and era/site
 residual variances, trying AR1, MA1 and independent residuals. One combined coefficient
 CSV flags offset and `model_type`. A separate contrast CSV holds Anthropocene
-minus Holocene within MORA and within NOCA: 60 contrasts with unadjusted 95%
+minus Holocene within MORA and within NOCA: 60 contrasts per response with unadjusted 95%
 intervals and Satterthwaite degrees of freedom. Positive contrasts indicate a
 higher Anthropocene response. One TXT holds all fit summaries, park contrasts
 and fit comparisons. The AIC PDF compares all three covariance candidates.
-Following the author’s 2026-10-09 decision, coefficient, contrast and residual
-PDFs present MA1 only. Distribution and inference remain exploratory.
+Following the author’s 2026-10-09 decision, group-mean, coefficient, contrast
+and residual PDFs present MA1 only. Distribution and inference remain exploratory.
 
 Holocene time indices are spaced by the actual interval width; missing
 transitions keep their original gaps. Modern pairs are independent singleton
@@ -458,8 +458,32 @@ Satterthwaite degrees of freedom. Within-park era means and their contrasts
 are already included in stage 10's TXT. The contrast is Anthropocene mean minus
 Holocene mean; its SE uses the fitted covariance of those means. Group-mean
 and contrast intervals are model-based intervals, not chronology quantiles.
-The offset-0 combined visual of group means and differences remains a preview
-pending a decision about integration.
+The author requested integration of the group-mean display on 2026-10-09.
+The maintained MA1 figure now shows ten separate offsets in two park columns,
+with Holocene mean, Anthropocene mean and their difference in aligned rows.
+Rows use separate scales; parks share a scale within a row. Each response exports
+40 MA1 group means with 95% Satterthwaite intervals and observation counts.
+The differences retain covariance between the fitted means. Modern means are
+constant across offsets because the same modern pairs are reused; offsets
+remain sensitivity realizations and are not averaged into a new model.
+
+**Observed-turnover exercise (2026-10-09).** The author requested the same
+model exercise for `observed_turnover_rate`: observed CCA movement magnitude
+per century using vegetation elapsed time. Stages 10/10a now run both requested
+responses by default, preserving separate output folders and response-specific
+finite-value selection. Turnover gets the same three-candidate covariance
+comparison, MA1 group means/coefficients/contrasts/residuals, and offset-0 lake
+sensitivity. All 30 offset fits and eight lake fits converge without warnings.
+Independent residuals minimize turnover AIC at all ten offsets; MA1 is within
+two AIC units everywhere. This comparison is response-specific and does not
+inherit the evidence for the lag-rate MA1 decision. MA1 is retained as the
+requested working reporting specification. Jay Bath’s turnover MA1 lake fit
+approaches +1 and is explicitly flagged without removing it.
+
+Turnover is nonnegative. Gaussian GLS is the requested initial exercise,
+without a new distribution choice or response transformation. Some Holocene
+mean intervals extend below zero; intervals are not truncated. The eventual
+turnover distribution and covariance choice remain subjects for model development.
 
 The 273 primary transition rows span ten alternative bin placements. **Offsets
 are sensitivity realizations, not independent ecological replicates.** The

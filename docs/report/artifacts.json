@@ -251,6 +251,18 @@
       "status": "historical reference"
     },
     {
+      "id": "tracking_model_group_means",
+      "section": "tracking_groups",
+      "pdf": "plot/test_figures/fig_tracking_model_group_means_lag_rate_per_century.pdf",
+      "pages": [
+        1
+      ],
+      "producer": "R/stages/10_tracking_era_models.R",
+      "purpose": "MA(1) fitted Holocene/Anthropocene group means and contrasts across offsets.",
+      "interpretation": "MORA and NOCA columns each show Holocene means, Anthropocene means and Anthropocene-minus-Holocene contrasts across ten separate MA1 fits. Bars are unadjusted 95% Satterthwaite intervals. Rows have separate y-scales; parks share a scale within each row. Contrast uncertainty uses the fitted covariance of the means. Modern pairs are unchanged across offsets, so their fitted means remain constant. Offsets are sensitivity realizations, not independent replicates.",
+      "status": "MA1 selected; exploratory inference"
+    },
+    {
       "id": "tracking_model_coefficients",
       "section": "tracking_models",
       "pdf": "plot/test_figures/fig_tracking_model_coefficients_lag_rate_per_century.pdf",
@@ -321,6 +333,90 @@
       "purpose": "MA(1) Anthropocene-minus-Holocene lake contrasts at offset 0.",
       "interpretation": "Only MA1 is shown at offset 0: each Holocene lake is compared with modern responses from its own park, using era fixed effects, REML and separate residual variances by era. Bars show unadjusted 95% intervals. Triangles flag absolute correlation parameters above 0.98; Reflection Pond and Panther Potholes MA1 fits approach the boundary and are retained. MORA comparisons reuse modern plots and are overlapping sensitivities. AR1 fits remain in the calculation audit.",
       "status": "MA1 selected; offset-0 sensitivity"
+    },
+    {
+      "id": "turnover_model_group_means",
+      "section": "turnover_groups",
+      "pdf": "plot/test_figures/fig_tracking_model_group_means_observed_turnover_rate.pdf",
+      "pages": [
+        1
+      ],
+      "producer": "R/stages/10_tracking_era_models.R",
+      "purpose": "Observed turnover: mA(1) fitted Holocene/Anthropocene group means and contrasts across offsets.",
+      "interpretation": "MORA and NOCA columns each show Holocene means, Anthropocene means and Anthropocene-minus-Holocene contrasts across ten separate MA1 fits. Bars are unadjusted 95% Satterthwaite intervals. Rows have separate y-scales; parks share a scale within each row. Contrast uncertainty uses the fitted covariance of the means. Modern pairs are unchanged across offsets, so their fitted means remain constant. Offsets are sensitivity realizations, not independent replicates.",
+      "status": "MA1 working specification; exploratory turnover"
+    },
+    {
+      "id": "turnover_model_coefficients",
+      "section": "turnover_models",
+      "pdf": "plot/test_figures/fig_tracking_model_coefficients_observed_turnover_rate.pdf",
+      "pages": [
+        1
+      ],
+      "producer": "R/stages/10_tracking_era_models.R",
+      "purpose": "Observed turnover: mA(1) coefficients across all ten offsets.",
+      "interpretation": "Only the selected MA1 covariance is shown: four coefficients at each offset for era-by-site fixed effects, with REML and separate era/site residual variances. Points show estimates and bars unadjusted 95% t intervals. Reference categories are Holocene and MORA. Offsets reuse modern plots and are alternative sensitivity fits, not independent replicates. Comparison fits remain in the calculation records.",
+      "status": "MA1 working specification; exploratory turnover"
+    },
+    {
+      "id": "turnover_model_contrasts",
+      "section": "turnover_models",
+      "pdf": "plot/test_figures/fig_tracking_model_contrasts_observed_turnover_rate.pdf",
+      "pages": [
+        1
+      ],
+      "producer": "R/stages/10_tracking_era_models.R",
+      "purpose": "Observed turnover: mA(1) Anthropocene-minus-Holocene contrasts across offsets within each park.",
+      "interpretation": "Only MA1 contrasts are shown, with separate MORA/NOCA panels. Positive values indicate higher Anthropocene observed turnover rates. Bars show unadjusted 95% intervals with Satterthwaite degrees of freedom; park panels have separate y-scales. The ten offsets reuse modern pairs and are sensitivity fits, not independent replicates.",
+      "status": "MA1 working specification; exploratory turnover"
+    },
+    {
+      "id": "turnover_model_residuals",
+      "section": "turnover_model_checks",
+      "pdf": "plot/test_figures/fig_tracking_model_residuals_observed_turnover_rate.pdf",
+      "pages": [
+        1
+      ],
+      "producer": "R/stages/10_tracking_era_models.R",
+      "purpose": "Observed turnover: residual checks for the selected MA(1) at every offset.",
+      "interpretation": "Each offset row shows MA1 scatter, normal Q-Q and Holocene residual lag products. Normalized residuals account for the fitted variance/correlation structure. Lag products preserve actual within-lake gaps and exclude modern singleton series; pair counts are shown without formal tests. Only 26\u201330 Holocene transitions support each offset fit. Distribution and uncertainty treatment remain exploratory.",
+      "status": "MA1 working specification; exploratory turnover"
+    },
+    {
+      "id": "turnover_model_aic",
+      "section": "turnover_covariance",
+      "pdf": "plot/test_figures/fig_tracking_model_aic_observed_turnover_rate.pdf",
+      "pages": [
+        1
+      ],
+      "producer": "R/stages/10_tracking_era_models.R",
+      "purpose": "Observed turnover: compare AR1, MA1 and no temporal autocorrelation using AIC across all ten offsets.",
+      "interpretation": "Within-offset delta AIC compares AR1, MA1 and independent residuals using the same turnover observations and fixed effects. Independent residuals minimize AIC at all ten offsets; MA1 delta AIC ranges from 1.72 to 1.99. The requested MA1 exercise is shown for comparison, without treating the lag-rate choice as evidence for turnover. Offsets are sensitivity realizations, not independent replicates.",
+      "status": "response-specific covariance comparison"
+    },
+    {
+      "id": "turnover_lake_coefficients",
+      "section": "turnover_lake",
+      "pdf": "plot/test_figures/fig_tracking_lake_coefficients_observed_turnover_rate_offset_0.pdf",
+      "pages": [
+        1
+      ],
+      "producer": "R/stages/10a_tracking_lake_sensitivity.R",
+      "purpose": "Observed turnover: mA(1) individual-lake coefficients at offset 0.",
+      "interpretation": "MA1 results at offset 0 compare each Holocene lake with its own park\u2019s modern turnover responses, using era fixed effects, REML and era-specific residual variances. Bars show unadjusted 95% intervals. Jay Bath has an MA1 parameter above 0.98 in absolute value and is retained with a triangle. MORA fits reuse modern plots and are overlapping sensitivities. AR1 sensitivity fits remain in the calculation audit.",
+      "status": "MA1 working specification; exploratory turnover"
+    },
+    {
+      "id": "turnover_lake_contrasts",
+      "section": "turnover_lake",
+      "pdf": "plot/test_figures/fig_tracking_lake_contrasts_observed_turnover_rate_offset_0.pdf",
+      "pages": [
+        1
+      ],
+      "producer": "R/stages/10a_tracking_lake_sensitivity.R",
+      "purpose": "Observed turnover: mA(1) Anthropocene-minus-Holocene lake contrasts at offset 0.",
+      "interpretation": "MA1 results at offset 0 compare each Holocene lake with its own park\u2019s modern turnover responses, using era fixed effects, REML and era-specific residual variances. Bars show unadjusted 95% intervals. Jay Bath has an MA1 parameter above 0.98 in absolute value and is retained with a triangle. MORA fits reuse modern plots and are overlapping sensitivities. AR1 sensitivity fits remain in the calculation audit.",
+      "status": "MA1 working specification; exploratory turnover"
     }
   ],
   "main_figures": [
@@ -533,6 +629,34 @@
     "tracking_model_comparison": {
       "source": "output/exploratory/tracking_offset_models/lag_rate_per_century/model_comparison.csv",
       "producer": "R/stages/10_tracking_era_models.R"
+    },
+    "tracking_model_group_means": {
+      "source": "output/exploratory/tracking_offset_models/lag_rate_per_century/model_group_means.csv",
+      "producer": "R/stages/10_tracking_era_models.R"
+    },
+    "turnover_model_coefficients": {
+      "source": "output/exploratory/tracking_offset_models/observed_turnover_rate/model_coefficients.csv",
+      "producer": "R/stages/10_tracking_era_models.R"
+    },
+    "turnover_model_contrasts": {
+      "source": "output/exploratory/tracking_offset_models/observed_turnover_rate/model_contrasts.csv",
+      "producer": "R/stages/10_tracking_era_models.R"
+    },
+    "turnover_lake_coefficients": {
+      "source": "output/exploratory/tracking_lake_sensitivity/observed_turnover_rate/offset_0/model_coefficients.csv",
+      "producer": "R/stages/10a_tracking_lake_sensitivity.R"
+    },
+    "turnover_lake_contrasts": {
+      "source": "output/exploratory/tracking_lake_sensitivity/observed_turnover_rate/offset_0/model_contrasts.csv",
+      "producer": "R/stages/10a_tracking_lake_sensitivity.R"
+    },
+    "turnover_model_comparison": {
+      "source": "output/exploratory/tracking_offset_models/observed_turnover_rate/model_comparison.csv",
+      "producer": "R/stages/10_tracking_era_models.R"
+    },
+    "turnover_model_group_means": {
+      "source": "output/exploratory/tracking_offset_models/observed_turnover_rate/model_group_means.csv",
+      "producer": "R/stages/10_tracking_era_models.R"
     }
   },
   "text_outputs": {
@@ -558,6 +682,20 @@
       "producer": "R/stages/10a_tracking_lake_sensitivity.R",
       "status": "provisional lake sensitivity results",
       "asset_name": "lake_model_results.txt"
+    },
+    "turnover_model_results": {
+      "source": "output/exploratory/tracking_offset_models/observed_turnover_rate/model_results.txt",
+      "producer": "R/stages/10_tracking_era_models.R",
+      "asset_name": "turnover_model_results.txt",
+      "link_label": "Complete observed-turnover offset/covariance fit results",
+      "status": "exploratory turnover GLS results"
+    },
+    "turnover_lake_results": {
+      "source": "output/exploratory/tracking_lake_sensitivity/observed_turnover_rate/offset_0/model_results.txt",
+      "producer": "R/stages/10a_tracking_lake_sensitivity.R",
+      "asset_name": "turnover_lake_results.txt",
+      "link_label": "Complete observed-turnover offset-0 lake sensitivity results",
+      "status": "exploratory turnover lake sensitivity"
     }
   },
   "reference_bundles": {

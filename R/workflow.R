@@ -91,7 +91,8 @@ run_script("R/stages/13_holocene_climate_fire_eras.R")
 run_script("R/stages/09_tracking_metrics.R")
 run_script("R/stages/09b_tracking_model_data.R")
 # Compare covariance candidates, then present the author-selected MA1; inference
-# and model development remain exploratory. Lake reporting uses offset 0 only.
+# and model development remain exploratory. Both lag-change rate and observed
+# turnover run in the same stages. Lake reporting uses offset 0 only.
 run_script("R/stages/10_tracking_era_models.R")
 run_script("R/stages/10a_tracking_lake_sensitivity.R")
 

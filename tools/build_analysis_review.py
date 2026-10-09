@@ -446,8 +446,8 @@ def build(mode):
             dst = out/x.get('asset_name', source.name)
             dst.write_text('\n'.join(line.rstrip() for line in source.read_text().splitlines())+'\n')
             record(dst, x['producer'], x['source'], status=x.get('status', 'current fitted CCA output'))
-            if name in ('tracking_model_results', 'tracking_lake_results'):
-                label = ('Complete offset-0 lake sensitivity results' if name == 'tracking_lake_results'
+            if name in ('tracking_model_results', 'tracking_lake_results') or x.get('link_label'):
+                label = x.get('link_label') or ('Complete offset-0 lake sensitivity results' if name == 'tracking_lake_results'
                          else 'Complete results for all offset/covariance fits')
                 text_blocks[name] = f'[{label}](assets/analysis/{dst.name}).\n'
             elif name != 'cca_anova_output':

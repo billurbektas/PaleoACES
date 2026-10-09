@@ -3,6 +3,7 @@ suppressPackageStartupMessages({library(here);library(tidyverse);library(nlme)})
 source(here('R/helpers/tracking_data.R'),local=TRUE)
 source(here('R/helpers/tracking_model_data.R'),local=TRUE)
 source(here('R/helpers/tracking_model_reporting.R'),local=TRUE)
+stopifnot(identical(tracking_model_response_names(),c('lag_rate_per_century','observed_turnover_rate')))
 equal=function(a,b) stopifnot(isTRUE(all.equal(a,b,tolerance=1e-9,check.attributes=FALSE)))
 fail=function(x) stopifnot(inherits(tryCatch({force(x);NULL},error=identity),'error'))
 read_tracking=function(stem) read_csv(here('output',paste0('cca_tracking_',stem,'.csv')),show_col_types=FALSE)
@@ -72,7 +73,8 @@ if(is.list(ma)) ma=ma[[1]];if(is.list(ar)) ar=ar[[1]]
 equal(ma[1,2],.4/(1+.4^2));equal(ma[1,3],0);equal(ma[2,3],0)
 equal(ar[1,3],.4^3);equal(ar[2,3],.4^2)
 
-coeff=read_csv(here('output/exploratory/tracking_offset_models/lag_rate_per_century/model_coefficients.csv'),
+for(metric in tracking_model_response_names()) {
+coeff=read_csv(here('output/exploratory/tracking_offset_models',metric,'model_coefficients.csv'),
   show_col_types=FALSE)
 stopifnot(nrow(coeff)==120L,setequal(coeff$model_type,c('AR1','MA1','Independent')),
   setequal(coeff$offset,seq(0,900,100)),all(coeff$converged),
@@ -86,7 +88,7 @@ equal(coeff$conf_high,coeff$estimate+qt(.975,coeff$df)*coeff$std_error)
 stopifnot(tracking_selected_model_type()=='MA1',
   nrow(tracking_selected_model_results(coeff))==40L)
 for(offset in seq(0,900,100)) {
-  d=tracking_offset_model_input(c,'lag_rate_per_century',offset)$data
+  d=tracking_offset_model_input(c,metric,offset)$data
   co=coeff[coeff$offset==offset,]
   stopifnot(all(co$n_holocene==sum(d$era=='Holocene')),all(co$n_anthropocene==607L),
     all(co$df==nrow(d)-4L))
@@ -96,7 +98,7 @@ for(offset in seq(0,900,100)) {
   reference=coef(lm(estimate ~ era * site,data=d))
   equal(independent$estimate,unname(reference[independent$term]))
 }
-contrasts=read_csv(here('output/exploratory/tracking_offset_models/lag_rate_per_century/model_contrasts.csv'),
+contrasts=read_csv(here('output/exploratory/tracking_offset_models',metric,'model_contrasts.csv'),
   show_col_types=FALSE)
 stopifnot(nrow(contrasts)==60L,!anyDuplicated(contrasts[c('metric','offset','model_type','site')]),
   all(contrasts$contrast=='Anthropocene - Holocene'))
@@ -110,12 +112,12 @@ for(i in seq_len(nrow(contrasts))) {
   expected=co$estimate[co$term=='eraAnthropocene']
   if(ct$site=='NOCA') expected=expected+co$estimate[co$term=='eraAnthropocene:siteNOCA']
   equal(ct$estimate,expected)
-  d=tracking_offset_model_input(c,'lag_rate_per_century',ct$offset)$data
+  d=tracking_offset_model_input(c,metric,ct$offset)$data
   equal(ct$n_holocene,sum(d$era=='Holocene' & d$site==ct$site))
   equal(ct$n_anthropocene,sum(d$era=='Anthropocene' & d$site==ct$site))
 }
 # Reconstruct penalized likelihoods, paired comparisons and relative weights.
-comparison=read_csv(here('output/exploratory/tracking_offset_models/lag_rate_per_century/model_comparison.csv'),
+comparison=read_csv(here('output/exploratory/tracking_offset_models',metric,'model_comparison.csv'),
   show_col_types=FALSE)
 stopifnot(nrow(comparison)==30L,
   !anyDuplicated(comparison[c('metric','offset','model_type')]),
@@ -125,7 +127,7 @@ stopifnot(nrow(comparison)==30L,
   all(comparison$n_parameters==ifelse(comparison$model_type=='Independent',8L,9L)))
 equal(comparison$AIC,-2*comparison$log_likelihood+2*comparison$n_parameters)
 for(offset in seq(0,900,100)) {
-  d=tracking_offset_model_input(c,'lag_rate_per_century',offset)$data
+  d=tracking_offset_model_input(c,metric,offset)$data
   x=comparison[comparison$offset==offset,]
   stopifnot(nrow(x)==3L,setequal(x$model_type,c('AR1','MA1','Independent')),
     all(x$n==nrow(d)),all(x$n_holocene==sum(d$era=='Holocene')),
@@ -149,8 +151,47 @@ for(offset in seq(0,900,100)) {
       mean(cell$estimate[cell$era=='Anthropocene'])-mean(cell$estimate[cell$era=='Holocene']))
   }
 }
-for(stem in c('coefficients','contrasts','residuals','aic')) {
-  pdf=here('plot/test_figures',paste0('fig_tracking_model_',stem,'_lag_rate_per_century.pdf'))
+# Group means are reported only for MA1, with no averaging across offsets.
+group_means=read_csv(here('output/exploratory/tracking_offset_models',metric,'model_group_means.csv'),show_col_types=FALSE)
+stopifnot(identical(names(group_means),c('metric','offset','model_type','site','era',
+  'estimate','std_error','df','conf_low','conf_high','n')),
+  nrow(group_means)==40L,all(group_means$metric==metric),all(group_means$model_type=='MA1'),
+  !anyDuplicated(group_means[c('offset','site','era')]),all(group_means$df>0))
+equal(group_means$conf_low,group_means$estimate-qt(.975,group_means$df)*group_means$std_error)
+equal(group_means$conf_high,group_means$estimate+qt(.975,group_means$df)*group_means$std_error)
+for(offset in seq(0,900,100)) {
+  d=tracking_offset_model_input(c,metric,offset)$data
+  gm=group_means[group_means$offset==offset,]
+  co=coeff[coeff$offset==offset & coeff$model_type=='MA1',]
+  for(i in seq_len(nrow(gm))) {
+    terms=c('(Intercept)',if(gm$era[i]=='Anthropocene') 'eraAnthropocene',
+      if(gm$site[i]=='NOCA') 'siteNOCA',
+      if(gm$site[i]=='NOCA' && gm$era[i]=='Anthropocene') 'eraAnthropocene:siteNOCA')
+    equal(gm$estimate[i],sum(co$estimate[co$term %in% terms]))
+    equal(gm$n[i],sum(d$era==gm$era[i] & d$site==gm$site[i]))
+  }
+  ct=contrasts[contrasts$offset==offset & contrasts$model_type=='MA1',]
+  for(site in ct$site) equal(ct$estimate[ct$site==site],
+    gm$estimate[gm$site==site & gm$era=='Anthropocene']-
+      gm$estimate[gm$site==site & gm$era=='Holocene'])
+}
+# Check the means and differences against X V X' from an independent MA1 fit.
+# Contrast variance must retain covariance between the two fitted means.
+d=tracking_offset_model_input(c,metric,0)$data
+ref=gls(estimate ~ era * site,data=d,correlation=corARMA(p=0,q=1,form=~time_index | series),
+  weights=varIdent(form=~1 | era_site),method='REML',na.action=na.fail,
+  control=glsControl(msMaxIter=200))
+gm=group_means[group_means$offset==0,]
+grid=data.frame(era=factor(gm$era,levels=levels(d$era)),site=factor(gm$site,levels=levels(d$site)))
+X=model.matrix(~era * site,grid);V=vcov(ref)
+equal(gm$std_error,sqrt(diag(X %*% V %*% t(X))))
+ct=contrasts[contrasts$offset==0 & contrasts$model_type=='MA1',]
+for(site in ct$site) {
+  L=X[gm$site==site & gm$era=='Anthropocene',]-X[gm$site==site & gm$era=='Holocene',]
+  equal(ct$std_error[ct$site==site],sqrt(as.numeric(L %*% V %*% L)))
+}
+for(stem in c('coefficients','contrasts','residuals','aic','group_means')) {
+  pdf=here('plot/test_figures',paste0('fig_tracking_model_',stem,'_',metric,'.pdf'))
   if(isTRUE(getOption('paleoaces.render_figures',TRUE))) {
     stopifnot(file.exists(pdf))
     info=system2('pdfinfo',shQuote(pdf),stdout=TRUE)
@@ -163,7 +204,7 @@ stopifnot(!file.exists(here('R/diagnostics/explore_tracking_era_models.R')),
 
 # Lake sensitivity is exactly the offset-0 comparison, using its own park's
 # modern plots. Independently match selections to canonical source records.
-lake_out=here('output/exploratory/tracking_lake_sensitivity/lag_rate_per_century/offset_0')
+lake_out=here('output/exploratory/tracking_lake_sensitivity',metric,'offset_0')
 lc=read_csv(file.path(lake_out,'model_coefficients.csv'),show_col_types=FALSE)
 lt=read_csv(file.path(lake_out,'model_contrasts.csv'),show_col_types=FALSE)
 stopifnot(nrow(tracking_selected_model_results(lc))==8L,
@@ -173,10 +214,10 @@ stopifnot(nrow(lc)==16L,nrow(lt)==8L,all(lc$offset==0),all(lt$offset==0),
   !anyDuplicated(lc[c('site','lake','model_type','term')]),
   !anyDuplicated(lt[c('site','lake','model_type')]))
 for(lake in unique(b$lake)) {
-  selected=tracking_lake_model_input(c,'lag_rate_per_century',lake,0)$data
-  bh=b[b$lake==lake & b$offset==0 & is.finite(b$lag_rate_per_century),]
+  selected=tracking_lake_model_input(c,metric,lake,0)$data
+  bh=b[b$lake==lake & b$offset==0 & is.finite(b[[metric]]),]
   park=unique(bh$site)
-  ma=a[a$site==park & is.finite(a$lag_rate_per_century),]
+  ma=a[a$site==park & is.finite(a[[metric]]),]
   stopifnot(all(selected$site==park),all(selected$lake[selected$era=='Holocene']==lake),
     setequal(selected$plot_id[selected$era=='Anthropocene'],ma$plot_id),
     setequal(key(selected[selected$era=='Holocene',],tracking_transition_keys()),
@@ -185,7 +226,7 @@ for(lake in unique(b$lake)) {
     co=lc[lc$lake==lake & lc$model_type==type,]
     ct=lt[lt$lake==lake & lt$model_type==type,]
     equal(ct$estimate,co$estimate[co$term=='eraAnthropocene'])
-    equal(co$estimate[co$term=='(Intercept)']+ct$estimate,mean(ma$lag_rate_per_century))
+    equal(co$estimate[co$term=='(Intercept)']+ct$estimate,mean(ma[[metric]]))
     stopifnot(all(co$n_holocene==nrow(bh)),all(co$n_anthropocene==nrow(ma)),
       all(ct$n_holocene==nrow(bh)),all(ct$n_anthropocene==nrow(ma)),
       all(co$df==nrow(selected)-2L))
@@ -199,16 +240,19 @@ for(x in list(lc,lt)) {
   stopifnot(identical(x$near_correlation_boundary,abs(x$correlation_parameter)>.98))
 }
 flagged=lt |> filter(near_correlation_boundary)
-stopifnot(nrow(flagged)==2L,all(flagged$model_type=='MA1'),
-  setequal(flagged$lake,c('ReflectionPond','PantherPotholes')))
-fail(tracking_lake_model_input(c,'lag_rate_per_century','UnknownLake',0))
+expected_boundary=if(metric=='lag_rate_per_century') c('ReflectionPond','PantherPotholes') else 'JayBath'
+stopifnot(nrow(flagged)==length(expected_boundary),all(flagged$model_type=='MA1'),
+  setequal(flagged$lake,expected_boundary))
+fail(tracking_lake_model_input(c,metric,'UnknownLake',0))
 lgap=c |> filter(!(era=='Holocene' & lake=='LogWallow' & offset==0 & interval_mid_cal_bp==2000))
-lg=tracking_lake_model_input(lgap,'lag_rate_per_century','LogWallow',0)$data
+lg=tracking_lake_model_input(lgap,metric,'LogWallow',0)$data
 stopifnot(identical(lg$time_index[lg$era=='Holocene'],c(1L,3L,4L,5L,6L,7L)))
 if(isTRUE(getOption('paleoaces.render_figures',TRUE))) for(stem in c('coefficients','contrasts')) {
-  pdf=here('plot/test_figures',paste0('fig_tracking_lake_',stem,'_lag_rate_per_century_offset_0.pdf'))
+  pdf=here('plot/test_figures',paste0('fig_tracking_lake_',stem,'_',metric,'_offset_0.pdf'))
   info=system2('pdfinfo',shQuote(pdf),stdout=TRUE)
   stopifnot(as.integer(sub('^Pages:\\s*','',grep('^Pages:',info,value=TRUE)))==1L)
 }
-cat('PASS: offset-0 lake selections, within-park modern identities, retained gaps, 16 coefficients, 8 correctly signed contrasts and explicit boundary flags.\n')
-cat('PASS: combined input, all offsets/responses, original dates/fire/coordinates, preserved gaps, three covariance types, 120 coefficients, 60 correctly signed park contrasts, 30 paired AIC comparisons, independent cell means / likelihoods and retired modeling artifacts.\n')
+cat('PASS:',metric,'comparison fits, selected MA1 group means / covariance-based contrasts and offset-0 lake sensitivity.\n')
+}
+cat('PASS: both requested responses use actual transitions and original modern identities, dates, fire and coordinates; reporting does not pool offsets.\n')
+cat('PASS: per response, 120 coefficients, 60 contrasts, 30 AIC comparisons, 40 MA1 group means, 16 lake coefficients and 8 lake contrasts; all intervals, signs, counts and retained time gaps verified.\n')

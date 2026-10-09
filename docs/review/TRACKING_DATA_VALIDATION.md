@@ -84,8 +84,37 @@ The two lake-sensitivity PDFs are single-page MA1-only outputs at offset 0.
 All offset/lake coefficient, contrast and comparison CSVs remain byte-identical
 to their pre-selection calculations, as do source calculations, CCA, chronology
 inputs and approved main figures. The changes affect reported figures,
-selection/provenance notes and review presentation. MA(2) and the group-mean
-visualization remain outside the workflow.
+selection/provenance notes and review presentation. MA(2) remains outside the workflow; the group-mean display is now maintained
+for both responses across all ten offsets.
+
+## Group means and observed-turnover extension
+
+The author requested MA1 fitted groups across all offsets and the same complete
+exercise for `observed_turnover_rate` on 2026-10-09. The two model stages now
+run both responses by default, without changing the combined input or the
+23/21-column canonical model tables. Each response exports 40 MA1 group means
+in an 11-column table and the same five offset PDFs: means/differences,
+coefficients, contrasts, residuals and ΔAIC. The lake sensitivity remains
+at offset 0, with two MA1-only PDFs and complete AR1/MA1 audit records.
+
+The gate independently reconstructs group means from the four fixed-effect
+coefficients, matches observation counts to actual inputs and verifies every
+mean/contrast interval. At offset 0 it checks SEs against X V X′ and verifies
+that contrast variance includes covariance between fitted means. It repeats
+coefficient, contrast, AIC, gap, lake-selection and interval checks for turnover.
+All pre-existing lag coefficient, contrast and AIC CSVs remain byte-identical.
+Scientific inputs, calibration, chronology, canonical tracking calculations
+and Figures 2/3 remain unchanged.
+
+All 60 offset fits and 16 lake fits converge without warnings. For turnover,
+independent residuals minimize AIC at every offset and MA1 is within two units
+of the minimum everywhere. MA1 is displayed as the requested working exercise,
+with response-specific covariance evidence retained. Jay Bath’s turnover MA1
+lake parameter approaches +1 and is retained with the boundary flag. Turnover
+is nonnegative; some Gaussian Holocene mean intervals extend below zero and
+remain visible without clipping. Distribution and final covariance treatment
+remain open for turnover. Chronology uncertainty is not propagated and offsets
+are not independent replicates.
 
 ## Observed support
 

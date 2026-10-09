@@ -1,6 +1,13 @@
 # Covariance selected by the author on 2026-10-09; comparison fits remain audits.
 tracking_selected_model_type = function() 'MA1'
 
+# Responses requested for the maintained exploratory workflow. Other responses
+# remain available through an explicit --metric=NAME standalone run.
+tracking_model_response_names = function() c('lag_rate_per_century','observed_turnover_rate')
+
+tracking_model_response_label = function(metric) switch(metric,
+  lag_rate_per_century='Lag-change rate',observed_turnover_rate='Observed community turnover',metric)
+
 tracking_selected_model_results = function(x) {
   selected=x[x$model_type==tracking_selected_model_type(),,drop=FALSE]
   if(!nrow(selected)) stop('No results for the selected tracking covariance')

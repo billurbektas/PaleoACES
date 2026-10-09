@@ -33,7 +33,7 @@ node(.25,.57,"Unchanged pooled CCA + reference",c("05_cca_model.R","607 plots, 1
 node(.75,.57,"Frozen climate/fire classifications",c("13_holocene_climate_fire_eras.R","Independent 1,000-year framework"),fill="#e7f0e9",height=.08)
 node(.25,.40,"Tracking and combined model input",c("09_tracking_metrics.R; 09b_tracking_model_data.R","Transitions, uncertainty, support; one 28-column input"),fill="#e7f0e9",height=.10)
 node(.75,.40,"Preserved community trajectory",c("05a_cca_figure.R — Figure 3","Existing species and climate contribution panels"),fill="#fbf0df",height=.10)
-node(.25,.22,"MA(1) results and diagnostics",c("10 covariance comparison; MA1 offsets / 10a lakes","09a tracking plots with frozen climate bands","12a/13b fire worked examples"),fill="#fbf0df",height=.12)
+node(.25,.22,"MA(1) results and diagnostics",c("10 / 10a: lag rate and turnover; MA1 groups","09a tracking plots with frozen climate bands","12a/13b fire worked examples"),fill="#fbf0df",height=.12)
 node(.75,.22,"Climate/fire display",c("13a_climate_change_figure.R — Figure 2","Reads modern calculation records"),fill="#fbf0df",height=.10)
 grid.text("Scientific Decisions and generated Analysis Review",.5,.065,gp=gpar(col=ink,fontsize=15,fontface='bold'))
 dev.off()
