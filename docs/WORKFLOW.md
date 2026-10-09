@@ -97,8 +97,8 @@ flowchart TD
   CCA --> ER[13 unified climate eras/fire classification]
   ER --> TM1
   TM1 --> MD[09b combined transition model input]
-  MD --> GLS[10 lag-rate and turnover comparison plus MA1 groups by offset]
-  MD --> LS[10a lag-rate and turnover MA1 lake reporting at offset 0]
+  MD --> GLS[10 lag-rate, turnover and raw climate GLS plus MA1 groups by offset]
+  MD --> LS[10a lag-rate, turnover and raw climate MA1 lake reporting at offset 0]
   TM1 --> TV[09a tracking plots with climate bands]
   ER --> TV
   PE --> ER
@@ -128,8 +128,8 @@ flowchart TD
 | 10d | `R/stages/13_holocene_climate_fire_eras.R` | Authoritative literature-blind climate-era and independent high-fire classification | Native pond climate, pooled legacy CCA scaling, stage-12 source series/events | Four-variable signed 1,000-year changes, thresholds, frozen CC/S grid/catalog, subphases, composite, normalized fire frequency/high-fire runs, and audit tables |
 | 10e | `R/stages/09_tracking_metrics.R` | Canonical lake/plot tracking | Published CCA reference, cached whole draws, own-lake climate, accepted charcoal events and coverage, cleaned plot coordinates | Compact 23/21-column model tables, long uncertainty, lake/modern calculation audits, seven-response reporting and support; base schema dictionary |
 | 10f | `R/stages/09b_tracking_model_data.R` | Combined transition model input | Canonical 23/21-column source tables, lake and cleaned plot coordinates | One 28-column long input with actual lake/offset transitions and modern pairs stored once per response; completed schema dictionary |
-| 10g | `R/stages/10_tracking_era_models.R` | Maintained provisional offset GLS exploration | Combined transition input only | Lag rate and turnover, each with ten offsets × AR1/MA1/Independent; coefficient, within-park contrast, MA1 group-mean and paired AIC comparison CSVs, one full results TXT, MA1-only group-mean/coefficient/contrast/residual PDFs and three-candidate within-offset ΔAIC boxplots when rendering; both requested responses run by default |
-| 10g-a | `R/stages/10a_tracking_lake_sensitivity.R` | Maintained offset-0 lake sensitivity | Combined transition input only | Lag rate and turnover, each with four lakes × AR1/MA1; each lake versus its park's modern pairs; 16 coefficient rows, eight contrasts, one results TXT and two PDFs; MA1-only figures show eight coefficients and four contrasts; near-boundary fits retained and flagged |
+| 10g | `R/stages/10_tracking_era_models.R` | Maintained provisional offset GLS exploration | Combined transition input only | Lag rate, turnover and raw climate rate, each with ten offsets × AR1/MA1/Independent; coefficient, within-park contrast, MA1 group-mean and paired AIC comparison CSVs, one full results TXT, MA1-only group-mean/coefficient/contrast/residual PDFs and three-candidate within-offset ΔAIC boxplots when rendering; all three requested responses run by default |
+| 10g-a | `R/stages/10a_tracking_lake_sensitivity.R` | Maintained offset-0 lake sensitivity | Combined transition input only | Lag rate, turnover and raw climate rate, each with four lakes × AR1/MA1; each lake versus its park's modern pairs; 16 coefficient rows, eight contrasts, one results TXT and two PDFs; MA1-only figures show eight coefficients and four contrasts; near-boundary fits retained and flagged |
 | 10h | `R/stages/05a_cca_figure.R` | Selected CCA trajectory data and main render | Model, positioned Holocene samples, stage-13 frozen CC/S grid | `cca_trajectory_era_centroids.csv` and, when rendering, main-paper `fig_cca_trajectories.pdf/.png` |
 | 10i | `R/stages/09a_tracking_example_and_visualizations.R` | Tracking example and visualizations | Canonical lake realizations, lake-by-offset responses/predictors, reporting grid, aligned predictor medians reconstructed from source transitions, modern paired-plot model input and stage-13 frozen climate-era catalog/subphases | Three diagnostic PDFs: worked geometry and two tracking/climate/fire grids with four lake columns, established regional CC/S bands and CC1 subdivisions, complete-offset medians and an Anthropocene MORA/NOCA boxplot column |
 | 10j | `R/stages/12a_fire_event_detection_worked_example.R` | Accepted-event detection for all four cores | All-`tapas` source series with local thresholds, candidate/count-screen flags, and accepted events | `fire_event_detection_lake_audit.csv` and, when rendering, a PDF with all four residual/threshold plots on one page, alongside settings and the software comparison |
@@ -156,7 +156,7 @@ Both dates must pass eligibility before the legacy observation enters fitting.
 | `R/helpers/config.R` | Species threshold 20, active climate variables, units, fire interval, cache fingerprints |
 | `R/helpers/functions.R` | Occurrence/turnover helpers; only `occurrence == 1` is presence |
 | `R/helpers/climate_variables.R` | Central seasonal climate derivation |
-| `R/helpers/tracking_model_reporting.R` | Requested lag-rate/turnover responses, MA1 reporting, result filtering, shared colors and plot theme |
+| `R/helpers/tracking_model_reporting.R` | Requested lag-rate/turnover/raw-climate responses and units, MA1 reporting, result filtering, shared colors and plot theme |
 | `R/helpers/tracking_model_data.R` | Combined 28-column assembly, era-specific missingness, coordinate identities and response-specific offset selection |
 | `R/helpers/tracking_metrics.R` | Focused vector geometry, guarded internal angle calculation, physical-climate rates and validity flags |
 | `R/helpers/fire_detection_functions.R` | Shared all-core tapas preparation/detection, record settings, series, count-screen, and accepted-event extraction |
@@ -185,7 +185,7 @@ the verification needed to use the existing posteriors.
 | `test_paleo_split_validation.R` | Automatic offline gate after paleo fire | Vegetation/fire refactor changes intended sample/species/fire content |
 | `test_bacon_provenance.R` | Automatic provenance gate | Seed/settings/control/version/posterior/age or chronology-code fingerprint drift; exact path-only relocations are accepted through verified historical source snapshots. Other whole-script differences require the explicit figure-output-only revision recorded in the manifest. |
 | `test_paleo_climate_age_match.R` | Automatic offline climate gate | Missing/orphan climate, NA constraints, clamping, or >50-year nearest-slice error |
-| `test_tracking_offset_models.R` | Automatic offline gate after model fits | Combined input reconstruction, singleton modern pairs, actual time gaps, AR1/MA1/independent covariance, coefficient/support integrity, paired AIC/weight reconstruction and covariance-aware group means/contrasts for both responses |
+| `test_tracking_offset_models.R` | Automatic offline gate after model fits | Combined input reconstruction, singleton modern pairs, actual time gaps, AR1/MA1/independent covariance, coefficient/support integrity, paired AIC/weight reconstruction and covariance-aware group means/contrasts for all three responses; raw climate selection checks repeated copies and response-specific missingness |
 | `test_cca_tracking_metrics.R` | Automatic offline gate after tracking | Independent geometry and counterfactual errors, incorrect lake/interval joins, fire coverage or comparable-window normalization, missing draw support, incorrect distributions, interval configuration or CCA drift |
 | `test_review_edge_cases.R` | Automatic independent review gate | Known geometric values and invariances, unequal elapsed times, missing turnover classes, invalid monthly values/keys/caches, and climate/fire coverage gaps |
 | `test_walsh_fire_reproduction.R` | Automatic scientific/provenance gate | Any non-tapas primary event, wrong settings/counts, lost sensitivity/catalog, modified protected outputs, stale manifest, or—when rendering—missing audit figures |
@@ -273,7 +273,11 @@ uncertainty rows before replacing primary exports. Changed keys or exclusions
 stop execution with diagnostics. Plot-endpoint and seasonal-climate consumers
 read `cca_tracking_anthropocene_plot_calculations.csv`. Stage 09b assembles the
 combined model input from the compact source tables; stage 10 reads only that
-combined CSV. Both stages run lag rate and observed turnover by default.
+combined CSV. Stages 10/10a run lag rate, observed turnover and raw physical
+climate-change rate by default. The climate response is selected from the fixed
+physical-rate field once per observation, independently of tracking validity;
+its repeated seven-response copies are checked for consistency and reduced
+without changing the combined CSV schema.
 Each response uses the same maintained code and distinct output paths.
 The offset exploration runs every offset separately
 with AR1, MA1 and independent residuals while retaining all finite selected
@@ -304,6 +308,9 @@ Rscript R/stages/10_tracking_era_models.R
 Rscript R/stages/10a_tracking_lake_sensitivity.R
 # Later exploration of another response, still running each offset separately
 Rscript R/stages/10_tracking_era_models.R --metric=observed_turnover_rate
+# Same untransformed model exercise for physical climate-change rate
+Rscript R/stages/10_tracking_era_models.R --metric=standardized_climate_change_rate
+Rscript R/stages/10a_tracking_lake_sensitivity.R --metric=standardized_climate_change_rate
 ```
 
 The previous reporting-grid comparison CSV and diagnostic model runner/results

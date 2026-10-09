@@ -389,7 +389,8 @@ Descriptive tracking plots still reconstruct their aligned predictor medians
 from source transitions using the existing response-specific reporting rule.
 
 Stage 10 runs the same provisional Gaussian GLS separately at all ten offsets
-for lag-change rate and observed community turnover. It fits `estimate ~ era * site` with REML and era/site
+for lag-change rate, observed community turnover and raw physical climate-change
+rate. It fits `estimate ~ era * site` with REML and era/site
 residual variances, trying AR1, MA1 and independent residuals. One combined coefficient
 CSV flags offset and `model_type`. A separate contrast CSV holds Anthropocene
 minus Holocene within MORA and within NOCA: 60 contrasts per response with unadjusted 95%
@@ -469,7 +470,7 @@ remain sensitivity realizations and are not averaged into a new model.
 
 **Observed-turnover exercise (2026-10-09).** The author requested the same
 model exercise for `observed_turnover_rate`: observed CCA movement magnitude
-per century using vegetation elapsed time. Stages 10/10a now run both requested
+per century using vegetation elapsed time. Stages 10/10a include both tracking
 responses by default, preserving separate output folders and response-specific
 finite-value selection. Turnover gets the same three-candidate covariance
 comparison, MA1 group means/coefficients/contrasts/residuals, and offset-0 lake
@@ -484,6 +485,31 @@ Turnover is nonnegative. Gaussian GLS is the requested initial exercise,
 without a new distribution choice or response transformation. Some Holocene
 mean intervals extend below zero; intervals are not truncated. The eventual
 turnover distribution and covariance choice remain subjects for model development.
+
+**Untransformed climate-rate exercise (2026-10-09).** The author requested the
+same offset models and outputs for `standardized_climate_change_rate`, explicitly
+without logging. Stages 10/10a now run this third response by default. The response
+is the existing standardized physical climate-change rate in calibration SD per
+century; it is not predicted CCA displacement. One copy of each actual transition
+or modern plot is selected from the repeated fixed fields in the combined CSV.
+Conflicting copies stop selection. Climate validity is checked independently of
+tracking-response validity, and the seven-response CSV contracts are unchanged.
+
+The same raw-scale Gaussian GLS, `era * site`, REML and era/site residual variances
+are compared under AR1, MA1 and independent residuals for each of ten offsets.
+All 30 offset fits and eight offset-0 lake fits converge without warnings. AIC
+minima favor independent residuals at four offsets, MA1 at three and AR1 at three;
+MA1 remains the requested reporting specification, with delta AIC up to 2.65.
+Each response exports its own coefficients, means, contrasts, comparisons,
+complete TXT and diagnostic PDFs. Panther Potholes' MA1 climate lake parameter
+approaches +1 and is retained with the existing boundary flag.
+
+This extension selects no transformation or new distribution. Per-century units
+do not equalize temporal averaging between 1,000-year Holocene transitions and
+shorter modern intervals. Modern spatial dependence and chronology uncertainty
+are not addressed by this initial GLS. The same modern observations are reused
+across offsets and MORA lake sensitivities; these runs are not independent
+replicates. Continuous fire activity is outside this response-model extension.
 
 The 273 primary transition rows span ten alternative bin placements. **Offsets
 are sensitivity realizations, not independent ecological replicates.** The

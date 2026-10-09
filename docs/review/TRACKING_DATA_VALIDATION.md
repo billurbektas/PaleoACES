@@ -85,13 +85,13 @@ All offset/lake coefficient, contrast and comparison CSVs remain byte-identical
 to their pre-selection calculations, as do source calculations, CCA, chronology
 inputs and approved main figures. The changes affect reported figures,
 selection/provenance notes and review presentation. MA(2) remains outside the workflow; the group-mean display is now maintained
-for both responses across all ten offsets.
+for all maintained responses across all ten offsets.
 
 ## Group means and observed-turnover extension
 
 The author requested MA1 fitted groups across all offsets and the same complete
-exercise for `observed_turnover_rate` on 2026-10-09. The two model stages now
-run both responses by default, without changing the combined input or the
+exercise for `observed_turnover_rate` on 2026-10-09. This extension added turnover
+to the two model stages' default responses, without changing the combined input or the
 23/21-column canonical model tables. Each response exports 40 MA1 group means
 in an 11-column table and the same five offset PDFs: means/differences,
 coefficients, contrasts, residuals and ΔAIC. The lake sensitivity remains
@@ -205,6 +205,35 @@ angle are undefined. The other 465 plots have defined angles and pace effects.
 The old tracking visualization and target-alignment stages, dedicated tests,
 generated tables and Figures 4/5 are retired through Git history. The worked
 example now reads a Panther Potholes realization from the canonical lake table.
+
+## Raw physical climate-rate GLS extension (2026-10-09)
+
+The same maintained model stages now include `standardized_climate_change_rate`
+on its original scale. Stage 10 fits ten offsets under AR1, MA1 and independent
+residuals; stage 10a fits four offset-0 lake sensitivities under AR1 and MA1.
+All 38 climate fits converge without warnings. MA1 results use the same figure
+layouts and covariance-based group means and era contrasts as the two tracking
+responses, with calibration SD per century replacing CCA units per century.
+
+Focused checks in `R/tests/test_tracking_offset_models.R` verify all three
+response sets: 120 coefficient rows, 60 contrasts, 30 comparison rows, 40 MA1
+group means, 16 lake coefficients and eight lake contrasts per response.
+Climate estimates match the canonical source column without transformation.
+Repeated seven-response copies reduce to one observation, conflicting copies
+stop selection, and tracking invalidity cannot exclude a finite climate value.
+A missing climate value excludes only its own response and retains its identity
+in the exclusion record. Independent fits verify cell means and AIC; a separate
+MA1 fit verifies group-mean and contrast covariance. Time gaps remain intact.
+
+All 1,443 pre-existing data/cache, output, model-result, figure and calibration
+configuration files remain byte-identical to the pre-extension snapshot. No
+canonical CSV schema, chronology, CCA calibration or Figure 3 output is changed.
+The new climate set adds seven single-page diagnostic PDFs and separate CSV/TXT
+outputs. Its covariance comparison favors independent residuals at four offsets,
+MA1 at three and AR1 at three; MA1 remains the requested reporting specification.
+Panther Potholes has a near-boundary MA1 lake fit and remains flagged. The raw-scale
+Gaussian exercise does not select a transformation, propagate chronology uncertainty
+or equalize the temporal averaging of Holocene and modern climate intervals.
 
 ## Limits for later modeling
 

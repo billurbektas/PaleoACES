@@ -92,12 +92,24 @@ validate_tracking_model_data = function(x) {
 
 # Modern pairs occur once in the CSV and are reused in each offset sensitivity.
 # Filtering concerns only the selected response; preserve actual gaps in time.
+tracking_model_available_names = function() c(tracking_response_names(),
+  'standardized_climate_change_rate')
+
 tracking_offset_model_input = function(combined,metric,offset) {
   w=validate_tracking_model_data(combined)
-  if(!metric %in% tracking_response_names() || !offset %in% seq(0,w-100,100))
+  if(!metric %in% tracking_model_available_names() || !offset %in% seq(0,w-100,100))
     stop('Unknown response or configured offset')
-  selected=combined |> filter(.data$metric==.env$metric,
-    era=='Anthropocene' | .data$offset==.env$offset)
+  selected=combined |> filter(era=='Anthropocene' | .data$offset==.env$offset)
+  if(metric=='standardized_climate_change_rate') {
+    # Climate is a fixed field repeated on seven tracking-response rows. Reduce
+    # those copies to one observation, independently of tracking validity, and
+    # stop if the fixed fields disagree within an observation identity.
+    selected=selected |> select(-metric,-estimate,-response_valid) |> distinct()
+    if(anyDuplicated(selected[c('era','site','lake','plot_id','offset','age_hi','age_lo')]))
+      stop('Conflicting fixed fields in repeated climate observation records')
+    selected=selected |> mutate(metric=.env$metric,estimate=standardized_climate_change_rate,
+      response_valid=is.finite(estimate)) |> select(all_of(tracking_model_data_columns()))
+  } else selected=selected |> filter(.data$metric==.env$metric)
   d=selected |> filter(response_valid)
   d$era=factor(d$era,levels=c('Holocene','Anthropocene'))
   d$site=factor(d$site,levels=c('MORA','NOCA'))

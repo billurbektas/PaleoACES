@@ -1,5 +1,5 @@
 # Maintained sensitivity: offset 0, one Holocene lake versus its park's modern pairs.
-# Default responses: lag-change rate and observed turnover; offset 0 only.
+# Default: lag-change rate, observed turnover and raw physical climate-change rate; offset 0 only.
 # Rscript R/stages/10a_tracking_lake_sensitivity.R [--metric=NAME]
 # Optional manual runs: --metric=NAME --offset=N --bin-width-years=N.
 suppressPackageStartupMessages({
@@ -18,7 +18,7 @@ argument=function(name,default) {
 }
 response_metrics=trimws(strsplit(argument('metric',paste(tracking_model_response_names(),collapse=',')),
   ',',fixed=TRUE)[[1]])
-if(!length(response_metrics) || any(!response_metrics %in% tracking_response_names()) ||
+if(!length(response_metrics) || any(!response_metrics %in% tracking_model_available_names()) ||
    anyDuplicated(response_metrics)) stop('Specify distinct known responses with --metric')
 width=validate_tracking_width(as.numeric(argument('bin-width-years','1000')))
 offset=as.numeric(argument('offset','0'))
@@ -102,6 +102,7 @@ for(response_metric in response_metrics) {
   write_csv(contrasts,file.path(out,'model_contrasts.csv'))
   notes=c('Lake sensitivity; MA1 selected by the author on 2026-10-09; inference remains exploratory.',
     paste('Response:',response_metric,'| Offset:',offset,'| Holocene interval:',width,'years'),
+    paste('Response units:',tracking_model_response_unit(response_metric),'| Transformation: none'),
     'Each fit compares one Holocene lake with all finite modern responses from the same park.',
     'Constant site is removed: estimate ~ era; REML; separate residual variances by era.',
     'AR1 or MA1 correlation retains actual within-lake gaps; modern pairs are singleton series.',

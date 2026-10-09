@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: 619e2b84db5a6d66243cd441d07ac777 -->
+<!-- paleoaces-source-md5: 76a2f9ba3cc0aae80b215ceff2b991a9 -->
 
 <html>
 
@@ -1592,8 +1592,8 @@ regeneration is needed for stages 9–14.</p>
   CCA --&gt; ER[13 unified climate eras/fire classification]
   ER --&gt; TM1
   TM1 --&gt; MD[09b combined transition model input]
-  MD --&gt; GLS[10 lag-rate and turnover comparison plus MA1 groups by offset]
-  MD --&gt; LS[10a lag-rate and turnover MA1 lake reporting at offset 0]
+  MD --&gt; GLS[10 lag-rate, turnover and raw climate GLS plus MA1 groups by offset]
+  MD --&gt; LS[10a lag-rate, turnover and raw climate MA1 lake reporting at offset 0]
   TM1 --&gt; TV[09a tracking plots with climate bands]
   ER --&gt; TV
   PE --&gt; ER
@@ -1780,22 +1780,23 @@ modern pairs stored once per response; completed schema dictionary</td>
 <td><code>R/stages/10_tracking_era_models.R</code></td>
 <td>Maintained provisional offset GLS exploration</td>
 <td>Combined transition input only</td>
-<td>Lag rate and turnover, each with ten offsets × AR1/MA1/Independent;
-coefficient, within-park contrast, MA1 group-mean and paired AIC
-comparison CSVs, one full results TXT, MA1-only
+<td>Lag rate, turnover and raw climate rate, each with ten offsets ×
+AR1/MA1/Independent; coefficient, within-park contrast, MA1 group-mean
+and paired AIC comparison CSVs, one full results TXT, MA1-only
 group-mean/coefficient/contrast/residual PDFs and three-candidate
-within-offset ΔAIC boxplots when rendering; both requested responses run
-by default</td>
+within-offset ΔAIC boxplots when rendering; all three requested
+responses run by default</td>
 </tr>
 <tr class="odd">
 <td align="right">10g-a</td>
 <td><code>R/stages/10a_tracking_lake_sensitivity.R</code></td>
 <td>Maintained offset-0 lake sensitivity</td>
 <td>Combined transition input only</td>
-<td>Lag rate and turnover, each with four lakes × AR1/MA1; each lake
-versus its park’s modern pairs; 16 coefficient rows, eight contrasts,
-one results TXT and two PDFs; MA1-only figures show eight coefficients
-and four contrasts; near-boundary fits retained and flagged</td>
+<td>Lag rate, turnover and raw climate rate, each with four lakes ×
+AR1/MA1; each lake versus its park’s modern pairs; 16 coefficient rows,
+eight contrasts, one results TXT and two PDFs; MA1-only figures show
+eight coefficients and four contrasts; near-boundary fits retained and
+flagged</td>
 </tr>
 <tr class="even">
 <td align="right">10h</td>
@@ -1896,8 +1897,8 @@ presence</td>
 </tr>
 <tr class="even">
 <td><code>R/helpers/tracking_model_reporting.R</code></td>
-<td>Requested lag-rate/turnover responses, MA1 reporting, result
-filtering, shared colors and plot theme</td>
+<td>Requested lag-rate/turnover/raw-climate responses and units, MA1
+reporting, result filtering, shared colors and plot theme</td>
 </tr>
 <tr class="odd">
 <td><code>R/helpers/tracking_model_data.R</code></td>
@@ -2027,7 +2028,8 @@ nearest-slice error</td>
 <td>Combined input reconstruction, singleton modern pairs, actual time
 gaps, AR1/MA1/independent covariance, coefficient/support integrity,
 paired AIC/weight reconstruction and covariance-aware group
-means/contrasts for both responses</td>
+means/contrasts for all three responses; raw climate selection checks
+repeated copies and response-specific missingness</td>
 </tr>
 <tr class="even">
 <td><code>test_cca_tracking_metrics.R</code></td>
@@ -2283,9 +2285,13 @@ Changed keys or exclusions stop execution with diagnostics.
 Plot-endpoint and seasonal-climate consumers read
 <code>cca_tracking_anthropocene_plot_calculations.csv</code>. Stage 09b
 assembles the combined model input from the compact source tables; stage
-10 reads only that combined CSV. Both stages run lag rate and observed
-turnover by default. Each response uses the same maintained code and
-distinct output paths. The offset exploration runs every offset
+10 reads only that combined CSV. Stages 10/10a run lag rate, observed
+turnover and raw physical climate-change rate by default. The climate
+response is selected from the fixed physical-rate field once per
+observation, independently of tracking validity; its repeated
+seven-response copies are checked for consistency and reduced without
+changing the combined CSV schema. Each response uses the same maintained
+code and distinct output paths. The offset exploration runs every offset
 separately with AR1, MA1 and independent residuals while retaining all
 finite selected responses. Each offset uses identical observations,
 fixed effects and era/site variances across its three covariance
@@ -2315,7 +2321,10 @@ Rscript R/stages/10_tracking_era_models.R
 # Offset-0 lake sensitivity (also called by the full workflow)
 Rscript R/stages/10a_tracking_lake_sensitivity.R
 # Later exploration of another response, still running each offset separately
-Rscript R/stages/10_tracking_era_models.R --metric=observed_turnover_rate</code></pre>
+Rscript R/stages/10_tracking_era_models.R --metric=observed_turnover_rate
+# Same untransformed model exercise for physical climate-change rate
+Rscript R/stages/10_tracking_era_models.R --metric=standardized_climate_change_rate
+Rscript R/stages/10a_tracking_lake_sensitivity.R --metric=standardized_climate_change_rate</code></pre>
 <p>The previous reporting-grid comparison CSV and diagnostic model
 runner/results are retired. Canonical source, uncertainty and
 calculation tables remain. The model stage honors

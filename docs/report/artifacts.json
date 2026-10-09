@@ -417,6 +417,90 @@
       "purpose": "Observed turnover: mA(1) Anthropocene-minus-Holocene lake contrasts at offset 0.",
       "interpretation": "MA1 results at offset 0 compare each Holocene lake with its own park\u2019s modern turnover responses, using era fixed effects, REML and era-specific residual variances. Bars show unadjusted 95% intervals. Jay Bath has an MA1 parameter above 0.98 in absolute value and is retained with a triangle. MORA fits reuse modern plots and are overlapping sensitivities. AR1 sensitivity fits remain in the calculation audit.",
       "status": "MA1 working specification; exploratory turnover"
+    },
+    {
+      "id": "climate_model_group_means",
+      "section": "climate_groups",
+      "pdf": "plot/test_figures/fig_tracking_model_group_means_standardized_climate_change_rate.pdf",
+      "pages": [
+        1
+      ],
+      "producer": "R/stages/10_tracking_era_models.R",
+      "purpose": "Untransformed physical climate-change rate: MA(1) fitted Holocene/Anthropocene group means and contrasts across offsets.",
+      "interpretation": "Only MA1 is shown, with Holocene means, Anthropocene means and their contrasts in aligned rows and MORA/NOCA columns. The response is untransformed physical climate-change rate in calibration SD per century. Rows have separate scales; parks share scales within a row. Intervals use Satterthwaite degrees of freedom. Modern plots are reused across offsets; per-century scaling does not equalize temporal averaging.",
+      "status": "MA1 working specification; exploratory raw climate GLS"
+    },
+    {
+      "id": "climate_model_coefficients",
+      "section": "climate_models",
+      "pdf": "plot/test_figures/fig_tracking_model_coefficients_standardized_climate_change_rate.pdf",
+      "pages": [
+        1
+      ],
+      "producer": "R/stages/10_tracking_era_models.R",
+      "purpose": "Untransformed physical climate-change rate: MA(1) coefficients across all ten offsets.",
+      "interpretation": "Only MA1 coefficients are shown across ten offsets, on the original physical climate-rate scale. Reference categories are Holocene and MORA; units are calibration SD per century. Bars are unadjusted 95% t intervals. The ten offsets reuse modern plots and are sensitivity fits, not independent replicates.",
+      "status": "MA1 working specification; exploratory raw climate GLS"
+    },
+    {
+      "id": "climate_model_contrasts",
+      "section": "climate_models",
+      "pdf": "plot/test_figures/fig_tracking_model_contrasts_standardized_climate_change_rate.pdf",
+      "pages": [
+        1
+      ],
+      "producer": "R/stages/10_tracking_era_models.R",
+      "purpose": "Untransformed physical climate-change rate: MA(1) Anthropocene-minus-Holocene contrasts across offsets within each park.",
+      "interpretation": "Only MA1 Anthropocene-minus-Holocene contrasts are shown, with separate MORA/NOCA panels. Positive values indicate higher Anthropocene physical climate-change rates. Units are calibration SD per century, with no response transformation. Bars show unadjusted 95% Satterthwaite intervals. Different temporal averaging is retained.",
+      "status": "MA1 working specification; exploratory raw climate GLS"
+    },
+    {
+      "id": "climate_model_residuals",
+      "section": "climate_model_checks",
+      "pdf": "plot/test_figures/fig_tracking_model_residuals_standardized_climate_change_rate.pdf",
+      "pages": [
+        1
+      ],
+      "producer": "R/stages/10_tracking_era_models.R",
+      "purpose": "Untransformed physical climate-change rate: residual checks for the selected MA(1) at every offset.",
+      "interpretation": "Only MA1 normalized residuals are shown, one row per offset: fitted scatter, normal Q-Q and Holocene residual lag products. Actual time gaps are retained and modern singleton series are excluded from lag products. Gaussian GLS uses the raw physical climate-rate response; chronology and modern spatial dependence are not modeled.",
+      "status": "MA1 working specification; exploratory raw climate GLS"
+    },
+    {
+      "id": "climate_model_aic",
+      "section": "climate_covariance",
+      "pdf": "plot/test_figures/fig_tracking_model_aic_standardized_climate_change_rate.pdf",
+      "pages": [
+        1
+      ],
+      "producer": "R/stages/10_tracking_era_models.R",
+      "purpose": "Untransformed physical climate-change rate: compare AR1, MA1 and no temporal autocorrelation using AIC across all ten offsets.",
+      "interpretation": "Within-offset delta AIC compares AR1, MA1 and independent residuals using identical raw climate-rate observations, fixed effects and residual variance groups. Independent residuals minimize AIC at four offsets, MA1 at three and AR1 at three. MA1 delta AIC ranges from zero to about 2.65. The requested MA1 reporting specification is retained; offsets are sensitivity fits.",
+      "status": "MA1 working specification; exploratory raw climate GLS"
+    },
+    {
+      "id": "climate_lake_coefficients",
+      "section": "climate_lake",
+      "pdf": "plot/test_figures/fig_tracking_lake_coefficients_standardized_climate_change_rate_offset_0.pdf",
+      "pages": [
+        1
+      ],
+      "producer": "R/stages/10a_tracking_lake_sensitivity.R",
+      "purpose": "Untransformed physical climate-change rate: MA(1) individual-lake coefficients at offset 0.",
+      "interpretation": "MA1 results at offset 0 compare each Holocene lake with its own park's modern physical climate-change rates, using era fixed effects, REML and era-specific residual variances. The response is untransformed, in calibration SD per century. Panther Potholes has an MA1 parameter above 0.98 in absolute value and is retained with a triangle. MORA fits reuse modern plots and are overlapping sensitivities. AR1 fits remain in the audit.",
+      "status": "MA1 working specification; exploratory raw climate GLS"
+    },
+    {
+      "id": "climate_lake_contrasts",
+      "section": "climate_lake",
+      "pdf": "plot/test_figures/fig_tracking_lake_contrasts_standardized_climate_change_rate_offset_0.pdf",
+      "pages": [
+        1
+      ],
+      "producer": "R/stages/10a_tracking_lake_sensitivity.R",
+      "purpose": "Untransformed physical climate-change rate: MA(1) Anthropocene-minus-Holocene lake contrasts at offset 0.",
+      "interpretation": "MA1 results at offset 0 compare each Holocene lake with its own park's modern physical climate-change rates, using era fixed effects, REML and era-specific residual variances. The response is untransformed, in calibration SD per century. Panther Potholes has an MA1 parameter above 0.98 in absolute value and is retained with a triangle. MORA fits reuse modern plots and are overlapping sensitivities. AR1 fits remain in the audit.",
+      "status": "MA1 working specification; exploratory raw climate GLS"
     }
   ],
   "main_figures": [
@@ -657,6 +741,30 @@
     "turnover_model_group_means": {
       "source": "output/exploratory/tracking_offset_models/observed_turnover_rate/model_group_means.csv",
       "producer": "R/stages/10_tracking_era_models.R"
+    },
+    "climate_model_coefficients": {
+      "source": "output/exploratory/tracking_offset_models/standardized_climate_change_rate/model_coefficients.csv",
+      "producer": "R/stages/10_tracking_era_models.R"
+    },
+    "climate_model_contrasts": {
+      "source": "output/exploratory/tracking_offset_models/standardized_climate_change_rate/model_contrasts.csv",
+      "producer": "R/stages/10_tracking_era_models.R"
+    },
+    "climate_lake_coefficients": {
+      "source": "output/exploratory/tracking_lake_sensitivity/standardized_climate_change_rate/offset_0/model_coefficients.csv",
+      "producer": "R/stages/10a_tracking_lake_sensitivity.R"
+    },
+    "climate_lake_contrasts": {
+      "source": "output/exploratory/tracking_lake_sensitivity/standardized_climate_change_rate/offset_0/model_contrasts.csv",
+      "producer": "R/stages/10a_tracking_lake_sensitivity.R"
+    },
+    "climate_model_comparison": {
+      "source": "output/exploratory/tracking_offset_models/standardized_climate_change_rate/model_comparison.csv",
+      "producer": "R/stages/10_tracking_era_models.R"
+    },
+    "climate_model_group_means": {
+      "source": "output/exploratory/tracking_offset_models/standardized_climate_change_rate/model_group_means.csv",
+      "producer": "R/stages/10_tracking_era_models.R"
     }
   },
   "text_outputs": {
@@ -696,6 +804,20 @@
       "asset_name": "turnover_lake_results.txt",
       "link_label": "Complete observed-turnover offset-0 lake sensitivity results",
       "status": "exploratory turnover lake sensitivity"
+    },
+    "climate_model_results": {
+      "source": "output/exploratory/tracking_offset_models/standardized_climate_change_rate/model_results.txt",
+      "producer": "R/stages/10_tracking_era_models.R",
+      "asset_name": "climate_model_results.txt",
+      "link_label": "Complete raw climate-rate offset/covariance fit results",
+      "status": "exploratory raw climate-rate GLS results"
+    },
+    "climate_lake_results": {
+      "source": "output/exploratory/tracking_lake_sensitivity/standardized_climate_change_rate/offset_0/model_results.txt",
+      "producer": "R/stages/10a_tracking_lake_sensitivity.R",
+      "asset_name": "climate_lake_results.txt",
+      "link_label": "Complete raw climate-rate offset-0 lake sensitivity results",
+      "status": "exploratory raw climate-rate lake sensitivity"
     }
   },
   "reference_bundles": {

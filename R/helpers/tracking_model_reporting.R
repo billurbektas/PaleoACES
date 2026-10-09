@@ -3,10 +3,16 @@ tracking_selected_model_type = function() 'MA1'
 
 # Responses requested for the maintained exploratory workflow. Other responses
 # remain available through an explicit --metric=NAME standalone run.
-tracking_model_response_names = function() c('lag_rate_per_century','observed_turnover_rate')
+tracking_model_response_names = function() c('lag_rate_per_century','observed_turnover_rate',
+  'standardized_climate_change_rate')
 
 tracking_model_response_label = function(metric) switch(metric,
-  lag_rate_per_century='Lag-change rate',observed_turnover_rate='Observed community turnover',metric)
+  lag_rate_per_century='Lag-change rate',observed_turnover_rate='Observed community turnover',
+  standardized_climate_change_rate='Physical climate-change rate',metric)
+
+tracking_model_response_unit = function(metric) switch(metric,
+  lag_rate_per_century='CCA units / century',observed_turnover_rate='CCA units / century',
+  standardized_climate_change_rate='Calibration SD / century','Response units')
 
 tracking_selected_model_results = function(x) {
   selected=x[x$model_type==tracking_selected_model_type(),,drop=FALSE]

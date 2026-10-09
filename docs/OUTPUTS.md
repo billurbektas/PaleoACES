@@ -202,13 +202,18 @@ normalized joins; missing or ambiguous locations stop export. The long layout
 does not add ecological replicates. Alternative widths receive `_Nyr` suffixes.
 
 Stage `R/stages/10_tracking_era_models.R` reads only the combined CSV and fits
-lag-change rate and observed turnover separately for all ten offsets under AR1,
+lag-change rate, observed turnover and untransformed physical climate-change rate
+separately for all ten offsets under AR1,
 MA1 and no temporal autocorrelation
 (`model_type=Independent`). Its initial fixed-effect specification remains exploratory: `estimate ~ era * site`,
-REML, and separate residual SDs by era/site. Both responses run by default;
+REML, and separate residual SDs by era/site. All three responses run by default;
 `--metric=NAME` selects one standalone response. Files below show lag rate;
-the complete turnover set uses `observed_turnover_rate` in place of
-`lag_rate_per_century` in each directory and figure stem. Row counts apply
+the complete turnover and climate sets use `observed_turnover_rate` and
+`standardized_climate_change_rate`, respectively, in place of `lag_rate_per_century`
+in each directory and figure stem. Climate uses the existing physical-rate field
+directly as the response, with one observation per transition or plot; the seven
+tracking-response rows are not duplicate climate observations. No CSV schema
+changes or response transformations are applied. Row counts apply
 separately to each response. The primary outputs are:
 
 | Output | Contents |
@@ -265,12 +270,24 @@ Pond and Panther Potholes MA1 parameters approach -1. MORA fits reuse the same
 330 modern plots, so these are overlapping sensitivity comparisons. The workflow
 runs offset 0 only; manual `--offset=N`, `--metric=NAME` and
 `--bin-width-years=N` options write distinct offset/response/width products.
-The maintained group-mean figure now shows MA1 across all ten offsets for both
+The maintained group-mean figure now shows MA1 across all ten offsets for all three
 responses; it supersedes the earlier offset-0 preview. MA(2) remains outside
 the workflow. Turnover has its own AIC comparison: independent residuals
 minimize AIC at all offsets, with MA1 within two units everywhere. The requested
 MA1 turnover exercise remains exploratory; its nonnegative response is not
 transformed and unbounded Gaussian intervals are not clipped.
+
+The climate exercise uses calibration SD per century, with the same 120
+coefficients, 60 contrasts, 30 covariance comparisons, 40 MA1 group means,
+one results TXT and five offset PDFs. Its offset-0 lake exercise adds 16
+coefficients, eight contrasts, one TXT and two PDFs. Main results are under
+`output/exploratory/tracking_offset_models/standardized_climate_change_rate/`;
+lake results are under
+`output/exploratory/tracking_lake_sensitivity/standardized_climate_change_rate/offset_0/`.
+Independent residuals minimize climate AIC at four offsets, MA1 at three and
+AR1 at three; MA1 remains the requested display choice. Panther Potholes has
+a near-boundary MA1 lake parameter and is retained with its flag. Common
+per-century units do not equalize Holocene and modern temporal averaging.
 
 The previous combined reporting-grid CSV, exploratory modeling script and its
 per-run inputs, model bundles, summaries and residual PDFs are retired. The

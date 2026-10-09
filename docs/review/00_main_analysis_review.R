@@ -5518,7 +5518,8 @@ cat('Combined model input:',nrow(combined),'rows;',ncol(combined),'columns;',
 # BEGIN R/stages/10_tracking_era_models.R
 # ============================================================================
 # Covariance comparison and selected MA1 results: one transition offset per fit.
-# Default: lag-change rate and observed turnover. --metric=NAME selects one.
+# Default: lag-change rate, observed turnover and raw physical climate-change rate.
+# --metric=NAME selects one response; no response transformation is applied.
 # Rscript R/stages/10_tracking_era_models.R [--metric=observed_turnover_rate]
 # Optional later width experiments: --bin-width-years=N; never run automatically.
 # Same fixed effects and variance groups for AR1, MA1 and independent residuals.
@@ -5538,7 +5539,7 @@ argument=function(name,default) {
 }
 response_metrics=trimws(strsplit(argument('metric',paste(tracking_model_response_names(),collapse=',')),
   ',',fixed=TRUE)[[1]])
-if(!length(response_metrics) || any(!response_metrics %in% tracking_response_names()) ||
+if(!length(response_metrics) || any(!response_metrics %in% tracking_model_available_names()) ||
    anyDuplicated(response_metrics)) stop('Specify distinct known responses with --metric')
 width=validate_tracking_width(as.numeric(argument('bin-width-years','1000')))
 suffix=if(width==1000L) '' else paste0('_',width,'yr')
@@ -5551,6 +5552,7 @@ selected_model_type=tracking_selected_model_type()
 
 for(response_metric in response_metrics) {
   response_label=tracking_model_response_label(response_metric)
+  response_unit=tracking_model_response_unit(response_metric)
 
   fit_offset=function(offset,model_type) {
     selected=tracking_offset_model_input(combined,response_metric,offset)
@@ -5671,6 +5673,7 @@ for(response_metric in response_metrics) {
       n_parameters,log_likelihood,AIC,delta_AIC,akaike_weight,aic_rank,correlation_parameter,converged)
   notes=c('MA1 covariance selected by the author on 2026-10-09; model development and inference remain exploratory.',
     paste('Response:',response_metric,'| Holocene interval / time step:',width,'years'),
+    paste('Response units:',response_unit,'| Transformation: none'),
     'Fixed effects: estimate ~ era * site; REML; separate residual SDs by era/site.',
     'Reference categories: Holocene and MORA. Coefficient units follow the selected response.',
     'AR1: corAR1(~ time_index | series). MA1: corARMA(p=0, q=1, ~ time_index | series).',
@@ -5688,7 +5691,7 @@ for(response_metric in response_metrics) {
     'Boxplots show within-offset delta AIC and summarize offset sensitivity, not independent samples; raw AIC remains in the CSV.',
     'REML is retained because these covariance comparisons use identical fixed effects and observations within each offset.',
     'The comparison retains all candidates; reported coefficients, contrasts and residuals use the author-selected MA1.',
-    'The MA1 reporting specification is applied to both requested responses; covariance comparisons and diagnostics are response-specific.',
+    'The MA1 reporting specification is applied to every requested response; covariance comparisons and diagnostics are response-specific.',
     'Group means and era contrasts use emmeans with Satterthwaite degrees of freedom; contrast SEs use the fitted covariance of the means.',
     'Coefficient intervals and park contrasts are unadjusted exploratory intervals/tests.',
     paste('Input:',basename(input_path),'| MD5:',unname(tools::md5sum(input_path))),
@@ -5726,7 +5729,7 @@ for(response_metric in response_metrics) {
     scale_x_continuous(breaks=offsets)+
     labs(title=paste('MA(1) fitted group means and contrasts:',response_label),
       subtitle=paste(length(offsets),'separate offset models; REML, era × site and era/site residual variances'),
-      x='Bin offset (years)',y=if(response_metric %in% tracking_model_response_names()) 'CCA units / century' else 'Response units',
+      x='Bin offset (years)',y=response_unit,
       caption='Points: model-based group means or Anthropocene-minus-Holocene contrasts. Bars: unadjusted 95% Satterthwaite intervals.\nRows have separate y-scales; parks share the same scale within each row. Contrasts use the fitted covariance of the means.\nOffsets reuse modern plots and are sensitivity fits, not independent replicates. Chronology uncertainty is not propagated.')+
     tracking_model_plot_theme()+theme(strip.placement='outside',
       strip.text.y.left=element_text(angle=0),axis.text.x=element_text(angle=45,hjust=1))
@@ -5833,7 +5836,7 @@ for(response_metric in response_metrics) {
 # BEGIN R/stages/10a_tracking_lake_sensitivity.R
 # ============================================================================
 # Maintained sensitivity: offset 0, one Holocene lake versus its park's modern pairs.
-# Default responses: lag-change rate and observed turnover; offset 0 only.
+# Default: lag-change rate, observed turnover and raw physical climate-change rate; offset 0 only.
 # Rscript R/stages/10a_tracking_lake_sensitivity.R [--metric=NAME]
 # Optional manual runs: --metric=NAME --offset=N --bin-width-years=N.
 suppressPackageStartupMessages({
@@ -5852,7 +5855,7 @@ argument=function(name,default) {
 }
 response_metrics=trimws(strsplit(argument('metric',paste(tracking_model_response_names(),collapse=',')),
   ',',fixed=TRUE)[[1]])
-if(!length(response_metrics) || any(!response_metrics %in% tracking_response_names()) ||
+if(!length(response_metrics) || any(!response_metrics %in% tracking_model_available_names()) ||
    anyDuplicated(response_metrics)) stop('Specify distinct known responses with --metric')
 width=validate_tracking_width(as.numeric(argument('bin-width-years','1000')))
 offset=as.numeric(argument('offset','0'))
@@ -5936,6 +5939,7 @@ for(response_metric in response_metrics) {
   write_csv(contrasts,file.path(out,'model_contrasts.csv'))
   notes=c('Lake sensitivity; MA1 selected by the author on 2026-10-09; inference remains exploratory.',
     paste('Response:',response_metric,'| Offset:',offset,'| Holocene interval:',width,'years'),
+    paste('Response units:',tracking_model_response_unit(response_metric),'| Transformation: none'),
     'Each fit compares one Holocene lake with all finite modern responses from the same park.',
     'Constant site is removed: estimate ~ era; REML; separate residual variances by era.',
     'AR1 or MA1 correlation retains actual within-lake gaps; modern pairs are singleton series.',

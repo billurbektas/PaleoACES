@@ -3,7 +3,9 @@ suppressPackageStartupMessages({library(here);library(tidyverse);library(nlme)})
 source(here('R/helpers/tracking_data.R'),local=TRUE)
 source(here('R/helpers/tracking_model_data.R'),local=TRUE)
 source(here('R/helpers/tracking_model_reporting.R'),local=TRUE)
-stopifnot(identical(tracking_model_response_names(),c('lag_rate_per_century','observed_turnover_rate')))
+stopifnot(identical(tracking_model_response_names(),c('lag_rate_per_century','observed_turnover_rate',
+  'standardized_climate_change_rate')),
+  tracking_model_response_unit('standardized_climate_change_rate')=='Calibration SD / century')
 equal=function(a,b) stopifnot(isTRUE(all.equal(a,b,tolerance=1e-9,check.attributes=FALSE)))
 fail=function(x) stopifnot(inherits(tryCatch({force(x);NULL},error=identity),'error'))
 read_tracking=function(stem) read_csv(here('output',paste0('cca_tracking_',stem,'.csv')),show_col_types=FALSE)
@@ -41,6 +43,38 @@ for(metric in tracking_response_names()) {
         (d$interval_mid_cal_bp[d$era=='Holocene']-offset)/1000))
   }
 }
+for(offset in seq(0,900,100)) {
+  d=tracking_offset_model_input(c,'standardized_climate_change_rate',offset)$data
+  dh=d[d$era=='Holocene',];da=d[d$era=='Anthropocene',]
+  bh=b[b$offset==offset,]
+  dh=dh[match(key(bh,tracking_transition_keys()),key(dh,tracking_transition_keys())),]
+  da=da[match(key(a,c('site','plot_id')),key(da,c('site','plot_id'))),]
+  stopifnot(nrow(d)==nrow(bh)+nrow(a),all(d$metric=='standardized_climate_change_rate'),
+    !anyDuplicated(d[c('series','time_index')]),all(d$response_valid))
+  equal(dh$estimate,bh$standardized_climate_change_rate)
+  equal(da$estimate,a$standardized_climate_change_rate)
+}
+# Undefined tracking responses cannot filter a finite climate observation.
+undefined_tracking=c
+index=undefined_tracking$era=='Anthropocene' & undefined_tracking$plot_id==a$plot_id[1] &
+  undefined_tracking$metric=='lag_rate_per_century'
+index[is.na(index)]=FALSE
+undefined_tracking$estimate[index]=NA_real_;undefined_tracking$response_valid[index]=FALSE
+climate=tracking_offset_model_input(undefined_tracking,'standardized_climate_change_rate',0)
+stopifnot(nrow(climate$data)==nrow(b[b$offset==0,])+nrow(a),!nrow(climate$excluded))
+# A missing physical rate excludes just that climate response, with its identity.
+missing_climate=c
+index=missing_climate$era=='Anthropocene' & missing_climate$plot_id==a$plot_id[1]
+index[is.na(index)]=FALSE
+missing_climate$standardized_climate_change_rate[index]=NA_real_
+climate=tracking_offset_model_input(missing_climate,'standardized_climate_change_rate',0)
+stopifnot(sum(climate$data$era=='Anthropocene')==nrow(a)-1L,nrow(climate$excluded)==1L,
+  climate$excluded$plot_id==a$plot_id[1])
+conflicting_climate=c
+index=which(conflicting_climate$era=='Anthropocene')[1]
+conflicting_climate$standardized_climate_change_rate[index]=
+  conflicting_climate$standardized_climate_change_rate[index]+1
+fail(tracking_offset_model_input(conflicting_climate,'standardized_climate_change_rate',0))
 lake_locations=read_csv(here('output/chelsa_paleo_ponds.csv'),show_col_types=FALSE) |>
   distinct(site,lake,longitude=lon,latitude=lat)
 plot_locations=bind_rows(
@@ -240,7 +274,8 @@ for(x in list(lc,lt)) {
   stopifnot(identical(x$near_correlation_boundary,abs(x$correlation_parameter)>.98))
 }
 flagged=lt |> filter(near_correlation_boundary)
-expected_boundary=if(metric=='lag_rate_per_century') c('ReflectionPond','PantherPotholes') else 'JayBath'
+expected_boundary=switch(metric,lag_rate_per_century=c('ReflectionPond','PantherPotholes'),
+  observed_turnover_rate='JayBath',standardized_climate_change_rate='PantherPotholes')
 stopifnot(nrow(flagged)==length(expected_boundary),all(flagged$model_type=='MA1'),
   setequal(flagged$lake,expected_boundary))
 fail(tracking_lake_model_input(c,metric,'UnknownLake',0))
@@ -254,5 +289,6 @@ if(isTRUE(getOption('paleoaces.render_figures',TRUE))) for(stem in c('coefficien
 }
 cat('PASS:',metric,'comparison fits, selected MA1 group means / covariance-based contrasts and offset-0 lake sensitivity.\n')
 }
-cat('PASS: both requested responses use actual transitions and original modern identities, dates, fire and coordinates; reporting does not pool offsets.\n')
+cat('PASS: all three requested responses use actual transitions and original modern identities, dates, fire and coordinates; reporting does not pool offsets.\n')
+cat('PASS: raw physical climate rates match canonical source values without duplicate observations, transformations or tracking-validity filtering.\n')
 cat('PASS: per response, 120 coefficients, 60 contrasts, 30 AIC comparisons, 40 MA1 group means, 16 lake coefficients and 8 lake contrasts; all intervals, signs, counts and retained time gaps verified.\n')
