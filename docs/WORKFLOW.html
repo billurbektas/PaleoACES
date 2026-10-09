@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: 333061b49e6b7b18f85b4b60b7bb77a3 -->
+<!-- paleoaces-source-md5: 08c32977a519b1eda804e65ed0bd13b8 -->
 
 <html>
 
@@ -1592,7 +1592,7 @@ regeneration is needed for stages 9–14.</p>
   CCA --&gt; ER[13 unified climate eras/fire classification]
   ER --&gt; TM1
   TM1 --&gt; MD[09b combined transition model input]
-  MD --&gt; GLS[10 provisional AR1 and MA1 models by offset]
+  MD --&gt; GLS[10 provisional AR1, MA1 and independent models by offset]
   MD --&gt; LS[10a offset-0 lake sensitivity under AR1 and MA1]
   TM1 --&gt; TV[09a tracking plots with climate bands]
   ER --&gt; TV
@@ -1780,9 +1780,10 @@ modern pairs stored once per response; completed schema dictionary</td>
 <td><code>R/stages/10_tracking_era_models.R</code></td>
 <td>Maintained provisional offset GLS exploration</td>
 <td>Combined transition input only</td>
-<td>Ten separate offsets × AR1/MA1; coefficient and within-park contrast
-CSVs, one full results TXT, coefficient and contrast PDFs, and one
-residual PDF when rendering; lag-change rate initially</td>
+<td>Ten separate offsets × AR1/MA1/Independent; coefficient, within-park
+contrast and paired AIC comparison CSVs, one full results TXT,
+coefficient/contrast/residual PDFs and raw-AIC/within-offset ΔAIC
+boxplots when rendering; lag-change rate initially</td>
 </tr>
 <tr class="odd">
 <td align="right">10g-a</td>
@@ -2016,7 +2017,8 @@ nearest-slice error</td>
 <td><code>test_tracking_offset_models.R</code></td>
 <td>Automatic offline gate after model fits</td>
 <td>Combined input reconstruction, singleton modern pairs, actual time
-gaps, AR1/MA1 covariance and coefficient/support integrity</td>
+gaps, AR1/MA1/independent covariance, coefficient/support integrity and
+paired AIC/weight reconstruction</td>
 </tr>
 <tr class="even">
 <td><code>test_cca_tracking_metrics.R</code></td>
@@ -2273,14 +2275,19 @@ Plot-endpoint and seasonal-climate consumers read
 <code>cca_tracking_anthropocene_plot_calculations.csv</code>. Stage 09b
 assembles the combined model input from the compact source tables; stage
 10 reads only that combined CSV. Its initial lag-change exploration runs
-every offset separately with AR1 and MA1 while retaining all finite
-selected responses. Modern pairs are reused across offset fits. Stage
-10a follows with the agreed offset-0 individual-lake sensitivity, using
-AR1 and MA1 with modern plots from each lake’s own park. Its files live
-under <code>output/exploratory/tracking_lake_sensitivity/</code>.
-Reflection Pond and Panther Potholes MA1 fits approach the parameter
-boundary; tables and figures retain and flag them. The MA(2) comparison
-and group-mean visual remain previews outside the workflow. Final
+every offset separately with AR1, MA1 and independent residuals while
+retaining all finite selected responses. Each offset uses identical
+observations, fixed effects and era/site variances across its three
+covariance candidates. The comparison CSV exports AIC, within-offset
+ΔAIC and relative Akaike weights; the paired boxplots summarize
+sensitivity across offsets without automatically selecting a model.
+Modern pairs are reused across offset fits. Stage 10a follows with the
+agreed offset-0 individual-lake sensitivity, using AR1 and MA1 with
+modern plots from each lake’s own park. Its files live under
+<code>output/exploratory/tracking_lake_sensitivity/</code>. Reflection
+Pond and Panther Potholes MA1 fits approach the parameter boundary;
+tables and figures retain and flag them. The MA(2) comparison and
+group-mean visual remain previews outside the workflow. Final
 distribution, covariance, lake effects and chronology uncertainty
 treatment remain decisions for model development.</p>
 <pre class="bash"><code># Primary combined input and all ten provisional offset/covariance fits

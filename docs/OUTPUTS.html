@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: 860914f3c4c612f9b601235aacbc72d5 -->
+<!-- paleoaces-source-md5: fd3d4bf41cad75e702038dbcfc731815 -->
 
 <html>
 
@@ -1975,7 +1975,8 @@ locations stop export. The long layout does not add ecological
 replicates. Alternative widths receive <code>_Nyr</code> suffixes.</p>
 <p>Stage <code>R/stages/10_tracking_era_models.R</code> reads only the
 combined CSV and fits lag-change rate separately for all ten offsets
-with both AR1 and MA1 residual correlation. Its specification remains
+under AR1, MA1 and no temporal autocorrelation
+(<code>model_type=Independent</code>). Its specification remains
 provisional: <code>estimate ~ era * site</code>, REML, and separate
 residual SDs by era/site. The primary outputs are:</p>
 <table>
@@ -1992,41 +1993,64 @@ residual SDs by era/site. The primary outputs are:</p>
 <tbody>
 <tr class="odd">
 <td><code>output/exploratory/tracking_offset_models/lag_rate_per_century/model_coefficients.csv</code></td>
-<td>80 coefficient rows: four terms × ten offsets × two covariance
+<td>120 coefficient rows: four terms × ten offsets × three covariance
 types, flagged by <code>model_type</code>, with SEs, degrees of freedom,
 t statistics, p values, 95% intervals, group counts and fitted
 correlation parameter</td>
 </tr>
 <tr class="even">
 <td><code>output/exploratory/tracking_offset_models/lag_rate_per_century/model_contrasts.csv</code></td>
-<td>40 within-park Anthropocene-minus-Holocene contrasts: two parks ×
-ten offsets × two covariance types, with SEs, Satterthwaite degrees of
+<td>60 within-park Anthropocene-minus-Holocene contrasts: two parks ×
+ten offsets × three covariance types, with SEs, Satterthwaite degrees of
 freedom, t statistics, unadjusted p values and 95% intervals, and
 park-specific observation counts</td>
 </tr>
 <tr class="odd">
 <td><code>output/exploratory/tracking_offset_models/lag_rate_per_century/model_results.txt</code></td>
-<td>One complete text record: provenance, fit overview, all 20 model
+<td>One complete text record: provenance, fit overview, all 30 model
 summaries, park contrasts, residual SDs, warnings and diagnostic lag
 products</td>
 </tr>
 <tr class="even">
-<td><code>plot/test_figures/fig_tracking_model_coefficients_lag_rate_per_century.pdf</code></td>
-<td>One page comparing coefficients and unadjusted 95% t intervals
-across offsets for AR1 and MA1</td>
+<td><code>output/exploratory/tracking_offset_models/lag_rate_per_century/model_comparison.csv</code></td>
+<td>30 rows × 15 columns: response, offset, covariance type,
+Holocene/modern/total counts, method, parameter count, restricted
+log-likelihood, AIC, within-offset ΔAIC, relative Akaike weight, rank,
+correlation parameter and convergence</td>
 </tr>
 <tr class="odd">
-<td><code>plot/test_figures/fig_tracking_model_contrasts_lag_rate_per_century.pdf</code></td>
-<td>One page comparing era contrasts and unadjusted 95% intervals across
-offsets for AR1 and MA1, with separate MORA and NOCA panels</td>
+<td><code>plot/test_figures/fig_tracking_model_coefficients_lag_rate_per_century.pdf</code></td>
+<td>One page comparing coefficients and unadjusted 95% t intervals
+across offsets for AR1, MA1 and independent residuals</td>
 </tr>
 <tr class="even">
+<td><code>plot/test_figures/fig_tracking_model_contrasts_lag_rate_per_century.pdf</code></td>
+<td>One page comparing era contrasts and unadjusted 95% intervals across
+offsets for AR1, MA1 and independent residuals, with separate MORA and
+NOCA panels</td>
+</tr>
+<tr class="odd">
 <td><code>plot/test_figures/fig_tracking_model_residuals_lag_rate_per_century.pdf</code></td>
 <td>One page with one row per offset: scatter, Q-Q and Holocene lag
 products for each covariance type</td>
 </tr>
 </tbody>
 </table>
+<div class="line-block"><code>plot/test_figures/fig_tracking_model_aic_lag_rate_per_century.pdf</code>
+| Raw-AIC and within-offset ΔAIC boxplots for the three candidates, with
+paired dots/lines for each offset |</div>
+<p>The independent candidate uses <code>correlation=NULL</code> and
+retains the same era/site residual variances. Its correlation parameter
+is <code>NA</code>. Each offset must use identical observations across
+candidates before any results are exported. AIC is
+<code>-2 × logLik + 2 × n_parameters</code>: nine parameters for AR1/MA1
+and eight for independent residuals. ΔAIC is relative to that offset’s
+lowest AIC, and relative Akaike weights sum to one within its three
+candidates. REML is retained with identical fixed effects and
+observations. No candidate is automatically selected. The boxes
+summarize sensitivity across offsets, not independent replicates;
+selection uses paired within-offset differences rather than pooled raw
+AIC.</p>
 <p>Modern pairs are singleton series. Holocene integer time indices
 retain gaps; MA1 correlates only observations one actual time step
 apart. AICs compare covariance choices within an offset; different

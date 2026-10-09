@@ -73,9 +73,11 @@ equal(ar[1,3],.4^3);equal(ar[2,3],.4^2)
 
 coeff=read_csv(here('output/exploratory/tracking_offset_models/lag_rate_per_century/model_coefficients.csv'),
   show_col_types=FALSE)
-stopifnot(nrow(coeff)==80L,setequal(coeff$model_type,c('AR1','MA1')),
+stopifnot(nrow(coeff)==120L,setequal(coeff$model_type,c('AR1','MA1','Independent')),
   setequal(coeff$offset,seq(0,900,100)),all(coeff$converged),
-  !anyDuplicated(coeff[c('metric','offset','model_type','term')]))
+  !anyDuplicated(coeff[c('metric','offset','model_type','term')]),
+  all(is.na(coeff$correlation_parameter[coeff$model_type=='Independent'])),
+  all(is.finite(coeff$correlation_parameter[coeff$model_type!='Independent'])))
 equal(coeff$t_value,coeff$estimate/coeff$std_error)
 equal(coeff$p_value,2*pt(-abs(coeff$t_value),df=coeff$df))
 equal(coeff$conf_low,coeff$estimate-qt(.975,coeff$df)*coeff$std_error)
@@ -85,10 +87,15 @@ for(offset in seq(0,900,100)) {
   co=coeff[coeff$offset==offset,]
   stopifnot(all(co$n_holocene==sum(d$era=='Holocene')),all(co$n_anthropocene==607L),
     all(co$df==nrow(d)-4L))
+  # Independent residuals with constant variance within each saturated era/site
+  # cell have the same point estimates as ordinary cell means / lm coefficients.
+  independent=co[co$model_type=='Independent',]
+  reference=coef(lm(estimate ~ era * site,data=d))
+  equal(independent$estimate,unname(reference[independent$term]))
 }
 contrasts=read_csv(here('output/exploratory/tracking_offset_models/lag_rate_per_century/model_contrasts.csv'),
   show_col_types=FALSE)
-stopifnot(nrow(contrasts)==40L,!anyDuplicated(contrasts[c('metric','offset','model_type','site')]),
+stopifnot(nrow(contrasts)==60L,!anyDuplicated(contrasts[c('metric','offset','model_type','site')]),
   all(contrasts$contrast=='Anthropocene - Holocene'))
 equal(contrasts$t_value,contrasts$estimate/contrasts$std_error)
 equal(contrasts$p_value,2*pt(-abs(contrasts$t_value),df=contrasts$df))
@@ -103,7 +110,42 @@ for(i in seq_len(nrow(contrasts))) {
   equal(ct$n_holocene,sum(d$era=='Holocene' & d$site==ct$site))
   equal(ct$n_anthropocene,sum(d$era=='Anthropocene' & d$site==ct$site))
 }
-for(stem in c('coefficients','contrasts','residuals')) {
+# Reconstruct penalized likelihoods, paired comparisons and relative weights.
+comparison=read_csv(here('output/exploratory/tracking_offset_models/lag_rate_per_century/model_comparison.csv'),
+  show_col_types=FALSE)
+stopifnot(nrow(comparison)==30L,
+  !anyDuplicated(comparison[c('metric','offset','model_type')]),
+  setequal(comparison$model_type,c('AR1','MA1','Independent')),
+  all(comparison$method=='REML'),all(comparison$converged),
+  all(is.finite(comparison$log_likelihood)),all(is.finite(comparison$AIC)),
+  all(comparison$n_parameters==ifelse(comparison$model_type=='Independent',8L,9L)))
+equal(comparison$AIC,-2*comparison$log_likelihood+2*comparison$n_parameters)
+for(offset in seq(0,900,100)) {
+  d=tracking_offset_model_input(c,'lag_rate_per_century',offset)$data
+  x=comparison[comparison$offset==offset,]
+  stopifnot(nrow(x)==3L,setequal(x$model_type,c('AR1','MA1','Independent')),
+    all(x$n==nrow(d)),all(x$n_holocene==sum(d$era=='Holocene')),
+    all(x$n_anthropocene==607L))
+  equal(x$delta_AIC,x$AIC-min(x$AIC))
+  w=exp(-(x$AIC-min(x$AIC))/2)
+  equal(x$akaike_weight,w/sum(w));equal(sum(x$akaike_weight),1)
+  equal(x$aic_rank,rank(x$AIC,ties.method='min'))
+  # A separate explicit NULL-correlation fit checks the new covariance candidate,
+  # its exported likelihood and parameter count without relying on table arithmetic.
+  ref=gls(estimate ~ era * site,data=d,correlation=NULL,
+    weights=varIdent(form=~1 | era_site),method='REML',na.action=na.fail,
+    control=glsControl(msMaxIter=200))
+  stopifnot(is.null(ref$modelStruct$corStruct),attr(logLik(ref),'df')==8L)
+  equal(x$log_likelihood[x$model_type=='Independent'],as.numeric(logLik(ref)))
+  equal(x$AIC[x$model_type=='Independent'],AIC(ref))
+  ct=contrasts[contrasts$offset==offset & contrasts$model_type=='Independent',]
+  for(site in ct$site) {
+    cell=d[d$site==site,]
+    equal(ct$estimate[ct$site==site],
+      mean(cell$estimate[cell$era=='Anthropocene'])-mean(cell$estimate[cell$era=='Holocene']))
+  }
+}
+for(stem in c('coefficients','contrasts','residuals','aic')) {
   pdf=here('plot/test_figures',paste0('fig_tracking_model_',stem,'_lag_rate_per_century.pdf'))
   if(isTRUE(getOption('paleoaces.render_figures',TRUE))) {
     stopifnot(file.exists(pdf))
@@ -163,4 +205,4 @@ if(isTRUE(getOption('paleoaces.render_figures',TRUE))) for(stem in c('coefficien
   stopifnot(as.integer(sub('^Pages:\\s*','',grep('^Pages:',info,value=TRUE)))==1L)
 }
 cat('PASS: offset-0 lake selections, within-park modern identities, retained gaps, 16 coefficients, 8 correctly signed contrasts and explicit boundary flags.\n')
-cat('PASS: combined input, all offsets/responses, original dates/fire/coordinates, preserved gaps, AR1/MA1 covariance, 80 coefficients, 40 correctly signed park contrasts and retired modeling artifacts.\n')
+cat('PASS: combined input, all offsets/responses, original dates/fire/coordinates, preserved gaps, three covariance types, 120 coefficients, 60 correctly signed park contrasts, 30 paired AIC comparisons, independent cell means / likelihoods and retired modeling artifacts.\n')

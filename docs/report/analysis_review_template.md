@@ -500,7 +500,7 @@ model development. Adjacent transitions share endpoint information.
 There are approximately 5–6 majority-supported transitions per MORA lake per
 offset and 9–10 for Panther Potholes. Four lakes and two fire histories provide
 limited independent support for a later three-way interaction. Provisional
-AR1/MA1 GLS comparisons are shown below; final distributions, covariance choices
+AR1/MA1/independent GLS comparisons are shown below; final distributions, covariance choices
 and lake/chronology uncertainty treatment remain open.
 
 Each MORA vegetation lake uses its own climate but shares regional fire exposure.
@@ -551,25 +551,35 @@ Figures 2 and 3 and the lake/plot tracking datasets use the updated inputs.
 
 [Stage 10](../R/stages/10_tracking_era_models.R) fits lag-change rate separately
 at offsets 0–900 years, using actual 1,000-year transitions plus all 607 modern
-pairs. AR1 and MA1 share the same `estimate ~ era * site` fixed effects, REML
-and separate era/site residual variances. All 20 fits converged in the current
-run. The [80 coefficient rows](assets/analysis/tables/tracking_model_coefficients.csv)
+pairs. AR1, MA1 and independent residuals share the same `estimate ~ era * site` fixed effects, REML
+and separate era/site residual variances. All 30 fits converged in the current
+run. The [120 coefficient rows](assets/analysis/tables/tracking_model_coefficients.csv)
 flag offset and `model_type` and include standard errors, unadjusted 95% t
 intervals, group counts and the fitted correlation parameter.
 
-The [40 park contrasts](assets/analysis/tables/tracking_model_contrasts.csv)
+The [60 park contrasts](assets/analysis/tables/tracking_model_contrasts.csv)
 compare Anthropocene minus Holocene within MORA and within NOCA for every
 offset and covariance type. Positive estimates indicate a higher Anthropocene
 lag-change rate. Their unadjusted 95% intervals use Satterthwaite degrees of
-freedom. The contrast figure places AR1 and MA1 together in each park panel.
+freedom. The contrast figure places all three covariance types together in each park panel.
 
 MA1 restricts residual correlation to observations one actual time step apart
 within a lake; missing transitions retain their original indices. Modern pairs
-are singleton series. AR1 permits longer-lag correlation. AIC comparisons are
+are singleton series. AR1 permits longer-lag correlation. The independent
+candidate retains era/site residual variances with `correlation=NULL`. AIC comparisons are
 between covariance types within the same offset; the ten offsets are sensitivity
 fits that reuse modern pairs. These models do not propagate chronology uncertainty,
 add lake random intercepts or include climate/fire fixed effects. Their covariance,
 distribution and inference remain provisional.
+
+The [30 fit comparisons](assets/analysis/tables/tracking_model_comparison.csv)
+include likelihoods, parameter counts, AIC, within-offset ΔAIC and relative
+Akaike weights. The AIC figure shows raw-AIC and paired ΔAIC boxplots.
+Select using comparisons within the same offset: raw AICs across offsets
+involve different observations, and the offsets are not independent samples.
+MA1 has the lowest AIC at five offsets, independent residuals at four and AR1
+at one. AR1–MA1 differences are below 1.2 AIC units at all offsets. No candidate
+is automatically selected.
 
 {{tracking_model_results}}
 

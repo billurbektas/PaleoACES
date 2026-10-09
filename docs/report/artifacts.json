@@ -258,7 +258,7 @@
         1
       ],
       "producer": "R/stages/10_tracking_era_models.R",
-      "purpose": "Compare provisional AR1 and MA1 coefficients across all ten offsets.",
+      "purpose": "Compare provisional AR1, MA1 and independent-residual coefficients across all ten offsets.",
       "interpretation": "Lag-change rate is fitted with identical era-by-site fixed effects, REML and era/site residual variances for each offset and covariance type. Points show coefficients and bars unadjusted 95% t intervals. Offsets reuse the same modern plots and are sensitivity fits, not independent replications.",
       "status": "provisional"
     },
@@ -271,7 +271,7 @@
       ],
       "producer": "R/stages/10_tracking_era_models.R",
       "purpose": "Compare Anthropocene minus Holocene within each park across offsets and covariance choices.",
-      "interpretation": "Each MORA/NOCA panel shows model-based era contrasts for AR1 and MA1 at all ten offsets. Positive estimates indicate higher Anthropocene lag-change rates. Bars are unadjusted 95% intervals using Satterthwaite degrees of freedom; park panels have separate y-scales. Offsets reuse modern pairs and are sensitivity fits, not independent replications. Inference remains provisional.",
+      "interpretation": "Each MORA/NOCA panel shows model-based era contrasts for AR1, MA1 and independent residuals at all ten offsets. Positive estimates indicate higher Anthropocene lag-change rates. Bars are unadjusted 95% intervals using Satterthwaite degrees of freedom; park panels have separate y-scales. Offsets reuse modern pairs and are sensitivity fits, not independent replications. Inference remains provisional.",
       "status": "provisional"
     },
     {
@@ -282,9 +282,21 @@
         1
       ],
       "producer": "R/stages/10_tracking_era_models.R",
-      "purpose": "Evaluate residuals for both covariance models at every offset.",
-      "interpretation": "Each offset row shows AR1 scatter, normal Q-Q and Holocene residual lag products, then the same three checks for MA1. Normalized residuals account for the fitted variance/correlation structure. Lag products preserve actual within-lake gaps and exclude modern singleton series; pair counts are shown, without formal tests. Only 26\u201330 Holocene transitions support each fit; covariance and distribution remain provisional.",
+      "purpose": "Evaluate residuals for all three covariance models at every offset.",
+      "interpretation": "Each offset row shows AR1 scatter, normal Q-Q and Holocene residual lag products, then the same three checks for MA1 and independent residuals. Normalized residuals account for the fitted variance/correlation structure. Lag products preserve actual within-lake gaps and exclude modern singleton series; pair counts are shown, without formal tests. Only 26\u201330 Holocene transitions support each fit; covariance and distribution remain provisional.",
       "status": "provisional"
+    },
+    {
+      "id": "tracking_model_aic",
+      "section": "tracking_models",
+      "pdf": "plot/test_figures/fig_tracking_model_aic_lag_rate_per_century.pdf",
+      "pages": [
+        1
+      ],
+      "producer": "R/stages/10_tracking_era_models.R",
+      "purpose": "Compare AR1, MA1 and no temporal autocorrelation using AIC across all ten offsets.",
+      "interpretation": "Boxes summarize raw AIC and within-offset delta AIC; dots show each fit and lines link the same offset. All candidates within an offset share observations, fixed effects, REML and era/site residual variances. Use paired within-offset differences for selection: offsets have different observations and are sensitivity fits, not independent replicates. MA1 minimizes AIC at five offsets, independent residuals at four and AR1 at one; AR1-MA1 differences remain below 1.2. No covariance choice is automatically selected.",
+      "status": "provisional covariance comparison"
     },
     {
       "id": "tracking_lake_coefficients",
@@ -517,6 +529,10 @@
     "tracking_lake_contrasts": {
       "source": "output/exploratory/tracking_lake_sensitivity/lag_rate_per_century/offset_0/model_contrasts.csv",
       "producer": "R/stages/10a_tracking_lake_sensitivity.R"
+    },
+    "tracking_model_comparison": {
+      "source": "output/exploratory/tracking_offset_models/lag_rate_per_century/model_comparison.csv",
+      "producer": "R/stages/10_tracking_era_models.R"
     }
   },
   "text_outputs": {

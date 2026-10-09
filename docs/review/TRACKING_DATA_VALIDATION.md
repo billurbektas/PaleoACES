@@ -5,7 +5,7 @@ draws and ten offsets. No climate downloads, chronology regeneration, additional
 interval runs or statistical response models were performed.
 
 The 2026-10-09 extension assembles a combined actual-transition input and
-maintains provisional AR1/MA1 era/site comparisons separately at every offset.
+maintains provisional AR1/MA1/independent era/site comparisons separately at every offset.
 It retires the earlier reporting-grid comparison input and exploratory model
 script/outputs while preserving the source calculations and descriptive plots.
 
@@ -48,12 +48,22 @@ The new offset-0 AR1 coefficients and standard errors exactly reproduce the
 previous offset-0 exploration (maximum absolute coefficient difference: zero).
 Independent covariance checks confirm that MA1 correlations are zero at lags
 greater than one, while AR1 preserves correlations across actual missing-time
-gaps. The new gate checks all 80 coefficient rows, model type/offset keys,
+gaps. The model gate checks all 120 coefficient rows, model type/offset keys,
 t statistics, p values, interval bounds and observation counts. It also checks
-all 40 park contrasts against the fitted coefficients: MORA uses the era term;
+all 60 park contrasts against the fitted coefficients: MORA uses the era term;
 NOCA uses the era term plus the era/site interaction. Contrast signs, p values,
-95% intervals and park-specific counts are verified. Current AR1/MA1 fits all
-converge without warnings. The three diagnostic PDFs each have one page.
+95% intervals and park-specific counts are verified. All 30 current fits
+converge without warnings. The four diagnostic PDFs each have one page.
+The new independent coefficients and era contrasts reconstruct the raw era/site
+cell means. Explicit independent GLS refits reproduce their exported likelihoods.
+The 30-row AIC comparison is checked against `-2 × logLik + 2 × n_parameters`
+and its paired ΔAIC, weights and ranks are independently reconstructed.
+Each candidate within an offset uses identical data and fixed effects.
+All 80 pre-existing AR1/MA1 coefficient rows and 40 park-contrast rows are
+exactly preserved (maximum absolute numerical differences: zero).
+MA1 minimizes AIC at five offsets, independent residuals at four and AR1 at
+one. AR1–MA1 AIC differences remain below 1.2 at every offset; the independent
+candidate is within 1.71 of the minimum except at offset 900 (ΔAIC 3.30).
 These checks validate implementation, without selecting a final statistical model.
 
 The maintained offset-0 lake sensitivity produces eight fits, 16 coefficients
@@ -64,9 +74,9 @@ and verifies that missing transitions retain their time gaps. MORA fits use
 330 modern pairs; NOCA uses 277. The Holocene counts are 7 Jay Bath, 7 Log
 Wallow, 6 Reflection Pond and 10 Panther Potholes. Reflection Pond and Panther
 Potholes MA1 fits approach -1; both are retained with explicit boundary flags.
-The two lake-sensitivity PDFs are single-page outputs. Existing combined
-offset-model results, source calculations, CCA, chronology inputs and approved
-figures remain byte-identical. MA(2) and the group-mean visualization remain
+The two lake-sensitivity PDFs are single-page outputs. The lake-sensitivity products, source calculations, CCA, chronology inputs and
+approved figures remain byte-identical. Adding the independent covariance
+candidate changes only the main model products and their review copies. MA(2) and the group-mean visualization remain
 outside the workflow.
 
 ## Observed support

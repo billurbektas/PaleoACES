@@ -390,12 +390,12 @@ from source transitions using the existing response-specific reporting rule.
 
 Stage 10 runs the same provisional Gaussian GLS separately at all ten offsets
 for lag-change rate. It fits `estimate ~ era * site` with REML and era/site
-residual variances, trying both AR1 and MA1 covariance. One combined coefficient
+residual variances, trying AR1, MA1 and independent residuals. One combined coefficient
 CSV flags offset and `model_type`. A separate contrast CSV holds Anthropocene
-minus Holocene within MORA and within NOCA: 40 contrasts with unadjusted 95%
+minus Holocene within MORA and within NOCA: 60 contrasts with unadjusted 95%
 intervals and Satterthwaite degrees of freedom. Positive contrasts indicate a
 higher Anthropocene response. One TXT holds all fit summaries, park contrasts
-and fit comparisons. Coefficient, contrast and residual PDFs include both
+and fit comparisons. Coefficient, contrast and residual PDFs include all three
 covariance choices across all offsets. This is a maintained exploration;
 distribution, covariance and inference remain provisional.
 
@@ -407,14 +407,25 @@ time step within a series. Its fitted moving-average parameter is not directly
 the neighboring residual correlation: rho(1) = theta / (1 + theta²).
 [The official nlme documentation](https://stat.ethz.ch/R-manual/R-devel/library/nlme/html/corARMA.html)
 defines its integer time covariate and series grouping. AR1 permits correlations
-at longer lags. AIC comparisons between the two covariance choices use identical
-observations and fixed effects within an offset; offsets are sensitivity fits
-with different observations, so their AICs are not selection comparisons.
+at longer lags. The independent candidate uses `correlation=NULL` while
+retaining era/site residual variances. AIC comparisons between these three
+covariance choices use identical observations and fixed effects within an
+offset. REML is retained for this covariance comparison; likelihood comparisons
+under REML require the same fixed effects, as described in the
+[official nlme comparison documentation](https://stat.ethz.ch/R-manual/R-devel/library/nlme/html/anova.gls.html).
+
+The 30-row comparison CSV records likelihoods, parameter counts, AIC, ΔAIC,
+relative Akaike weights and ranks. ΔAIC is measured from the lowest AIC within
+each offset. Weights are relative to these three candidates, not probabilities
+that one is the true model. The AIC figure shows raw values and paired
+within-offset differences. Offsets have different observations and are
+sensitivity fits, so the raw-AIC boxplot median is not a model-selection
+criterion across offsets. No covariance choice is automatically made.
 
 These fits retain all finite selected responses without a draw-support cutoff.
 They do not propagate chronology uncertainty, add a lake random intercept or
 include climate/fire fixed effects. The residual page shows normalized scatter,
-Q-Q and Holocene lag products for both covariance choices. Lag products match
+Q-Q and Holocene lag products for all three covariance choices. Lag products match
 actual time gaps, exclude modern singleton series, and report pair counts;
 they are descriptive diagnostics without formal significance tests.
 
@@ -449,7 +460,7 @@ replicates. Final model inclusion, covariance and uncertainty treatment remain f
 Approximately 5–6 majority-supported transitions per MORA lake per offset and
 9–10 for Panther Potholes imply limited support for a later three-way interaction;
 four lakes and shared fire histories must not be treated as abundant independent
-replication. The AR1/MA1 GLS fits above remain provisional; no final distribution,
+replication. The AR1/MA1/independent GLS fits above remain provisional; no final distribution,
 lake random effect, power analysis or contribution attribution is selected here. See [output schemas](OUTPUTS.md#canonical-tracking-schemas).
 
 ## Unified 1,000-year climate eras

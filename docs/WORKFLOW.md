@@ -97,7 +97,7 @@ flowchart TD
   CCA --> ER[13 unified climate eras/fire classification]
   ER --> TM1
   TM1 --> MD[09b combined transition model input]
-  MD --> GLS[10 provisional AR1 and MA1 models by offset]
+  MD --> GLS[10 provisional AR1, MA1 and independent models by offset]
   MD --> LS[10a offset-0 lake sensitivity under AR1 and MA1]
   TM1 --> TV[09a tracking plots with climate bands]
   ER --> TV
@@ -128,7 +128,7 @@ flowchart TD
 | 10d | `R/stages/13_holocene_climate_fire_eras.R` | Authoritative literature-blind climate-era and independent high-fire classification | Native pond climate, pooled legacy CCA scaling, stage-12 source series/events | Four-variable signed 1,000-year changes, thresholds, frozen CC/S grid/catalog, subphases, composite, normalized fire frequency/high-fire runs, and audit tables |
 | 10e | `R/stages/09_tracking_metrics.R` | Canonical lake/plot tracking | Published CCA reference, cached whole draws, own-lake climate, accepted charcoal events and coverage, cleaned plot coordinates | Compact 23/21-column model tables, long uncertainty, lake/modern calculation audits, seven-response reporting and support; base schema dictionary |
 | 10f | `R/stages/09b_tracking_model_data.R` | Combined transition model input | Canonical 23/21-column source tables, lake and cleaned plot coordinates | One 28-column long input with actual lake/offset transitions and modern pairs stored once per response; completed schema dictionary |
-| 10g | `R/stages/10_tracking_era_models.R` | Maintained provisional offset GLS exploration | Combined transition input only | Ten separate offsets × AR1/MA1; coefficient and within-park contrast CSVs, one full results TXT, coefficient and contrast PDFs, and one residual PDF when rendering; lag-change rate initially |
+| 10g | `R/stages/10_tracking_era_models.R` | Maintained provisional offset GLS exploration | Combined transition input only | Ten separate offsets × AR1/MA1/Independent; coefficient, within-park contrast and paired AIC comparison CSVs, one full results TXT, coefficient/contrast/residual PDFs and raw-AIC/within-offset ΔAIC boxplots when rendering; lag-change rate initially |
 | 10g-a | `R/stages/10a_tracking_lake_sensitivity.R` | Maintained offset-0 lake sensitivity | Combined transition input only | Four lakes × AR1/MA1; each lake versus its park's modern pairs; 16 coefficient rows, eight contrasts, one results TXT and two PDFs; near-boundary fits retained and flagged |
 | 10h | `R/stages/05a_cca_figure.R` | Selected CCA trajectory data and main render | Model, positioned Holocene samples, stage-13 frozen CC/S grid | `cca_trajectory_era_centroids.csv` and, when rendering, main-paper `fig_cca_trajectories.pdf/.png` |
 | 10i | `R/stages/09a_tracking_example_and_visualizations.R` | Tracking example and visualizations | Canonical lake realizations, lake-by-offset responses/predictors, reporting grid, aligned predictor medians reconstructed from source transitions, modern paired-plot model input and stage-13 frozen climate-era catalog/subphases | Three diagnostic PDFs: worked geometry and two tracking/climate/fire grids with four lake columns, established regional CC/S bands and CC1 subdivisions, complete-offset medians and an Anthropocene MORA/NOCA boxplot column |
@@ -184,7 +184,7 @@ the verification needed to use the existing posteriors.
 | `test_paleo_split_validation.R` | Automatic offline gate after paleo fire | Vegetation/fire refactor changes intended sample/species/fire content |
 | `test_bacon_provenance.R` | Automatic provenance gate | Seed/settings/control/version/posterior/age or chronology-code fingerprint drift; exact path-only relocations are accepted through verified historical source snapshots. Other whole-script differences require the explicit figure-output-only revision recorded in the manifest. |
 | `test_paleo_climate_age_match.R` | Automatic offline climate gate | Missing/orphan climate, NA constraints, clamping, or >50-year nearest-slice error |
-| `test_tracking_offset_models.R` | Automatic offline gate after model fits | Combined input reconstruction, singleton modern pairs, actual time gaps, AR1/MA1 covariance and coefficient/support integrity |
+| `test_tracking_offset_models.R` | Automatic offline gate after model fits | Combined input reconstruction, singleton modern pairs, actual time gaps, AR1/MA1/independent covariance, coefficient/support integrity and paired AIC/weight reconstruction |
 | `test_cca_tracking_metrics.R` | Automatic offline gate after tracking | Independent geometry and counterfactual errors, incorrect lake/interval joins, fire coverage or comparable-window normalization, missing draw support, incorrect distributions, interval configuration or CCA drift |
 | `test_review_edge_cases.R` | Automatic independent review gate | Known geometric values and invariances, unequal elapsed times, missing turnover classes, invalid monthly values/keys/caches, and climate/fire coverage gaps |
 | `test_walsh_fire_reproduction.R` | Automatic scientific/provenance gate | Any non-tapas primary event, wrong settings/counts, lost sensitivity/catalog, modified protected outputs, stale manifest, or—when rendering—missing audit figures |
@@ -273,7 +273,11 @@ stop execution with diagnostics. Plot-endpoint and seasonal-climate consumers
 read `cca_tracking_anthropocene_plot_calculations.csv`. Stage 09b assembles the
 combined model input from the compact source tables; stage 10 reads only that
 combined CSV. Its initial lag-change exploration runs every offset separately
-with AR1 and MA1 while retaining all finite selected responses. Modern pairs
+with AR1, MA1 and independent residuals while retaining all finite selected
+responses. Each offset uses identical observations, fixed effects and era/site
+variances across its three covariance candidates. The comparison CSV exports
+AIC, within-offset ΔAIC and relative Akaike weights; the paired boxplots
+summarize sensitivity across offsets without automatically selecting a model. Modern pairs
 are reused across offset fits. Stage 10a follows with the agreed offset-0
 individual-lake sensitivity, using AR1 and MA1 with modern plots from each
 lake's own park. Its files live under `output/exploratory/tracking_lake_sensitivity/`.
