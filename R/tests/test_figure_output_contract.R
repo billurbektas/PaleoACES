@@ -1,9 +1,10 @@
-# Publication figure-output contract: two main PDF/PNG stems, PDF-only audits.
+# Publication figure-output contract: three main PDF/PNG stems, PDF-only audits.
 suppressPackageStartupMessages(library(here))
 
 main_stems = c(
   "fig_standardized_climate_change_eras_fire",
-  "fig_cca_trajectories")
+  "fig_cca_trajectories",
+  "fig_tracking_era_distributions")
 expected_root = sort(as.vector(outer(main_stems, c("pdf", "png"), paste, sep = ".")))
 actual_root = sort(list.files(here("plot"), pattern = "\\.(pdf|png)$",
                               recursive = FALSE))
@@ -30,5 +31,4 @@ if (nzchar(Sys.which("pdfinfo"))) {
   stopifnot(all(pages == 1L))
 }
 
-cat("Figure output contract passed: two main PDF/PNG stems and PDF-only audits.\n")
-
+cat("Figure output contract passed: three main PDF/PNG stems and PDF-only audits.\n")

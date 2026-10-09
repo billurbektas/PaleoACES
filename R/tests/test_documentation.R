@@ -92,18 +92,19 @@ if (file.exists(caption_path)) {
   caption_flat = str_squish(caption_text)
   heading_matches = str_match_all(
     caption_text, regex("^## Figure ([2-5]) —", multiline = TRUE))[[1]]
-  if (!identical(heading_matches[, 2], as.character(2:3)))
-    fail("docs/FIGURE_CAPTIONS.md does not order Figures 2 and 3 exactly once")
-  if (str_count(caption_text, fixed("**Method summary.**")) != 2L)
-    fail("docs/FIGURE_CAPTIONS.md must contain two separate method summaries")
+  if (!identical(heading_matches[, 2], as.character(2:4)))
+    fail("docs/FIGURE_CAPTIONS.md does not order Figures 2–4 exactly once")
+  if (str_count(caption_text, fixed("**Method summary.**")) != 3L)
+    fail("docs/FIGURE_CAPTIONS.md must contain three separate method summaries")
   if (str_count(caption_text,
-                fixed("**Publication-ready caption.**")) != 2L)
-    fail("docs/FIGURE_CAPTIONS.md must contain two publication-ready captions")
-  if (str_count(caption_text, "!\\[Figure [2-5]\\.") != 2L)
-    fail("docs/FIGURE_CAPTIONS.md must embed two figure previews")
+                fixed("**Publication-ready caption.**")) != 3L)
+    fail("docs/FIGURE_CAPTIONS.md must contain three publication-ready captions")
+  if (str_count(caption_text, "!\\[Figure [2-5]\\.") != 3L)
+    fail("docs/FIGURE_CAPTIONS.md must embed three figure previews")
   expected_pdfs = c(
     "plot/fig_standardized_climate_change_eras_fire.pdf",
-    "plot/fig_cca_trajectories.pdf")
+    "plot/fig_cca_trajectories.pdf",
+    "plot/fig_tracking_era_distributions.pdf")
   if (!all(vapply(expected_pdfs, function(x) str_detect(caption_text, fixed(x)),
                   logical(1))))
     fail("docs/FIGURE_CAPTIONS.md does not link every publication PDF")

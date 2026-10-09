@@ -45,6 +45,7 @@ Active data and cache locations are preserved. See [repository inventory](REPOSI
 | `plot/test_figures/fig_walsh_charanalysis_reproduction.pdf` | PDF-only three-page official Walsh reconstruction and publication discrepancy audit |
 | `plot/test_figures/fig_fire_event_detection_workflow.pdf` | PDF-only three-page explanation: detection settings, all four lake residual/threshold plots in a 2 × 2 grid, and the separate MORA software/publication comparison |
 | `plot/fig_cca_trajectories.*` | Main-paper PDF/PNG with A. pooled trajectories, B. biplot inset, C. climate contributions, D. species contributions, eight independently positioned two-line path names, transparent predicted paths/annotations, and an arrow-only observed/predicted legend |
+| `plot/fig_tracking_era_distributions.*` | Manuscript Figure 4: offset-0 raw climate-change, turnover and lag-rate violins/dots, connected MA1 era means and 95% intervals, with Anthropocene-minus-Holocene contrasts and their intervals above each pair; three response rows × MORA/NOCA columns |
 | `cca_trajectory_era_centroids.csv` | Site × CC1–S4 observed WA and predicted LC centroids used by the selected trajectories |
 | `cca_trajectory_anthropocene_centroids.csv` | Exact legacy/resurvey WA and LC site means from identical valid paired plots at both dates, plus pair counts |
 | `bacon_run_manifest.csv` | Seed, versions, settings/control/output hashes, the historical whole-script hash used for five chronology runs, and a separately checked chronology-code fingerprint; the recorded post-run revision is limited to PDF location and PNG persistence |
@@ -293,6 +294,15 @@ Independent residuals minimize climate AIC at four offsets, MA1 at three and
 AR1 at three; MA1 remains the requested display choice. Panther Potholes has
 a near-boundary MA1 lake parameter and is retained with its flag. Common
 per-century units do not equalize Holocene and modern temporal averaging.
+
+Stage `R/stages/10b_tracking_manuscript_figure.R` reads the combined transition
+input and each response's existing MA1 mean/contrast tables to draw manuscript
+Figure 4 at offset 0. It validates all 12 group counts and six mean differences
+before writing the PDF and PNG. It exports no additional model-input CSV and
+performs no fitting or response transformation. The violin widths are scaled
+within each distribution; the figure shows actual counts and includes every
+raw value. Holocene raw inputs remain chronology-draw medians for individual
+transitions, rather than reporting-grid or across-offset summaries.
 
 The previous combined reporting-grid CSV, exploratory modeling script and its
 per-run inputs, model bundles, summaries and residual PDFs are retired. The

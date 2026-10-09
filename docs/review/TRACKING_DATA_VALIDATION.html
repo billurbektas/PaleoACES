@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: 9af48f958cfc6fe37e8f80211523b74f -->
+<!-- paleoaces-source-md5: d2cab1cca76dbb2cfc2504a51b711d6d -->
 
 <html>
 
@@ -1837,12 +1837,12 @@ audit passes <a href="TRACKING_INDEPENDENT_CHECKS.csv">564 checks</a>,
 including independently reconstructed CCA inertia, physical climate
 changes and the draw-to-offset-to-reporting hierarchy. Documentation and
 report validation check links, generated source code, registries and the
-two active figures.</li>
+active manuscript figures.</li>
 </ul>
 <p>The old tracking visualization and target-alignment stages, dedicated
-tests, generated tables and Figures 4/5 are retired through Git history.
-The worked example now reads a Panther Potholes realization from the
-canonical lake table.</p>
+tests, generated tables and former Figures 4/5 are retired through Git
+history. The worked example now reads a Panther Potholes realization
+from the canonical lake table.</p>
 </div>
 <div id="raw-physical-climate-rate-gls-extension-2026-10-09" class="section level2">
 <h2>Raw physical climate-rate GLS extension (2026-10-09)</h2>
@@ -1897,6 +1897,22 @@ predictor overlap and independent support, and an uncertainty/inclusion
 strategy. This validation does not fit that interaction, choose a final
 distribution/covariance, calculate contribution attribution or replace
 the retired figures.</p>
+</div>
+<div id="offset-0-manuscript-figure-2026-10-09" class="section level2">
+<h2>Offset-0 manuscript figure (2026-10-09)</h2>
+<p>Stage <code>R/stages/10b_tracking_manuscript_figure.R</code> reads
+the maintained combined input and existing MA1 group-mean/contrast
+tables. The figure contains 1,911 untransformed input values across the
+three responses, 12 fitted means and six contrasts. For each response,
+MORA has 20 Holocene transitions and 330 modern pairs; NOCA has 10
+Holocene transitions and 277 pairs. The stage checks group identities
+and sample counts, confirms each contrast equals its fitted mean
+difference, and reads confidence bounds directly from the model records.
+No fits or source CSVs are replaced. The preserved-file snapshot
+verifies all 1,457 prior data, cache, output and figure files remain
+byte-identical, including Figures 2/3 and every model result. The new
+Figure 4 is a distinct producer; historical tracking visualizations
+remain retired.</p>
 </div>
 </div>
 

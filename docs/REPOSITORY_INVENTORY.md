@@ -7,7 +7,7 @@ the maintained code, scientific documents and authoritative local inputs.
 |---|---|
 | Root | Project README, RStudio project and reference material. |
 | `R/` | Workflow and documentation/report entrypoints. |
-| `R/stages/` | The 21 analysis stages, in the workflow's execution order; chronology fitting is optional. |
+| `R/stages/` | The 25 analysis stages, in the workflow's execution order; chronology fitting is optional. |
 | `R/helpers/` | Shared settings and functions for vegetation, climate, chronology, fire, CCA metrics, figures and reporting. |
 | `R/tests/` | The 14 automatic analysis gates and an additional report check. |
 | `R/diagnostics/` | Scientific diagnostics and optional sensitivities; five diagnostics are refreshed with the report, including the counts from starting plots and samples to CCA. |
@@ -17,7 +17,7 @@ the maintained code, scientific documents and authoritative local inputs.
 | `Cores/` | Controls, settings, stored posteriors and ages; existing sensitivity models are retained. |
 | `Cores/provenance/` | Original chronology source snapshots and records needed to verify unchanged stored models. |
 | `output/` | Active tables, native climate caches, age draws and model/report summaries. |
-| `plot/` | Manuscript Figures 2 and 3, each as a PDF and PNG. |
+| `plot/` | Manuscript Figures 2–4, each as a PDF and PNG. |
 | `plot/test_figures/` | Diagnostic PDFs. |
 | `docs/` | Scientific review, decisions, captions, workflow, indexes and HTML companions. |
 | `docs/methods/`, `docs/references/` | Detailed cleaning, consolidation, metric methods and literature context. |

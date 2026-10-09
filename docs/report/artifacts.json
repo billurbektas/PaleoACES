@@ -515,6 +515,12 @@
       "stem": "fig_cca_trajectories",
       "section": "trajectories",
       "producer": "R/stages/05a_cca_figure.R"
+    },
+    {
+      "number": 4,
+      "stem": "fig_tracking_era_distributions",
+      "section": "tracking_manuscript",
+      "producer": "R/stages/10b_tracking_manuscript_figure.R"
     }
   ],
   "tables": {

@@ -57,8 +57,9 @@ model-derived tables, audits, and non-visual regression checks still run. It
 does not delete or refresh existing figure files. Scripts run directly render
 by default.
 
-The publication-output contract reserves root `plot/` for two stems only:
-`fig_standardized_climate_change_eras_fire` and `fig_cca_trajectories`. Each has a
+The publication-output contract reserves root `plot/` for three stems:
+`fig_standardized_climate_change_eras_fire`, `fig_cca_trajectories` and
+`fig_tracking_era_distributions`. Each has a
 single-page PDF and PNG. Every other maintained figure is PDF-only under
 `plot/test_figures/`; temporary rasters used while composing a PDF are not
 retained.
@@ -99,6 +100,8 @@ flowchart TD
   TM1 --> MD[09b combined transition model input]
   MD --> GLS[10 lag-rate, turnover and raw climate GLS plus MA1 groups by offset]
   MD --> LS[10a lag-rate, turnover and raw climate MA1 lake reporting at offset 0]
+  MD --> MF[10b offset-0 raw distributions, MA1 means and annotated contrasts: Figure 4]
+  GLS --> MF
   TM1 --> TV[09a tracking plots with climate bands]
   ER --> TV
   PE --> ER
@@ -130,6 +133,7 @@ flowchart TD
 | 10f | `R/stages/09b_tracking_model_data.R` | Combined transition model input | Canonical 23/21-column source tables, lake and cleaned plot coordinates | One 28-column long input with actual lake/offset transitions and modern pairs stored once per response; completed schema dictionary |
 | 10g | `R/stages/10_tracking_era_models.R` | Maintained provisional offset GLS exploration | Combined transition input only | Lag rate, turnover and raw climate rate, each with ten offsets × AR1/MA1/Independent; coefficient, within-park contrast, MA1 group-mean and paired AIC comparison CSVs, one full results TXT, MA1-only group-mean/coefficient/contrast/residual PDFs and three-candidate within-offset ΔAIC boxplots when rendering; all three requested responses run by default |
 | 10g-a | `R/stages/10a_tracking_lake_sensitivity.R` | Maintained offset-0 lake sensitivity | Combined transition input only | Lag rate, turnover and raw climate rate, each with four lakes × AR1/MA1; each lake versus its park's modern pairs; 16 coefficient rows, eight contrasts, one results TXT and two PDFs; MA1-only figures show eight coefficients and four contrasts; near-boundary fits retained and flagged |
+| 10g-b | `R/stages/10b_tracking_manuscript_figure.R` | Manuscript Figure 4; offset 0 only | Combined transition input and stage-10 MA1 group means/contrasts | Three response rows × two parks; untransformed violins/dots, connected fitted era means, 95% intervals and annotated contrasts; primary PDF/PNG; no refitting |
 | 10h | `R/stages/05a_cca_figure.R` | Selected CCA trajectory data and main render | Model, positioned Holocene samples, stage-13 frozen CC/S grid | `cca_trajectory_era_centroids.csv` and, when rendering, main-paper `fig_cca_trajectories.pdf/.png` |
 | 10i | `R/stages/09a_tracking_example_and_visualizations.R` | Tracking example and visualizations | Canonical lake realizations, lake-by-offset responses/predictors, reporting grid, aligned predictor medians reconstructed from source transitions, modern paired-plot model input and stage-13 frozen climate-era catalog/subphases | Three diagnostic PDFs: worked geometry and two tracking/climate/fire grids with four lake columns, established regional CC/S bands and CC1 subdivisions, complete-offset medians and an Anthropocene MORA/NOCA boxplot column |
 | 10j | `R/stages/12a_fire_event_detection_worked_example.R` | Accepted-event detection for all four cores | All-`tapas` source series with local thresholds, candidate/count-screen flags, and accepted events | `fire_event_detection_lake_audit.csv` and, when rendering, a PDF with all four residual/threshold plots on one page, alongside settings and the software comparison |
@@ -191,7 +195,7 @@ the verification needed to use the existing posteriors.
 | `test_walsh_fire_reproduction.R` | Automatic scientific/provenance gate | Any non-tapas primary event, wrong settings/counts, lost sensitivity/catalog, modified protected outputs, stale manifest, or—when rendering—missing audit figures |
 | `test_holocene_climate_fire_eras.R` | Automatic unified-era gate | Wrong scaling, threshold arithmetic, phase support, era sequence, composite, fire aggregation/threshold, audit, protected hashes, or—when rendering—missing figures |
 | `test_cca_trajectory_figure.R` | Automatic trajectory data/render gate | Changed scaling/Hill/axes, incorrect CC1–S4 centroids, missing A–D labels or any of the eight independently positioned two-line path names, incorrect named anchors, unfaded predicted annotations, non-arrow legend glyphs, boxed series labels, retired duplicate artifacts, or missing main outputs |
-| `test_figure_output_contract.R` | Automatic publication-output gate | Root `plot/` differs from the two approved PDF/PNG stems, diagnostic PNGs exist, a main PDF is multipage, or retired trajectory artifacts return |
+| `test_figure_output_contract.R` | Automatic publication-output gate | Root `plot/` differs from the three approved PDF/PNG stems, diagnostic PNGs exist, a main PDF is multipage, or retired trajectory artifacts return |
 | `test_workflow_contract.R` | Automatic structural gate | Producer/consumer order drifts, analysis is placed behind `--skip-figures`, a required gate disappears, or a plotting stage ignores the shared render option |
 | `test_cca_scaling_comparison.R` | Offline model diagnostic | Reassesses site/scaling-1 geometry after model/species changes |
 | `test_climate_change_variables.R` | Offline decision diagnostic | Reassesses units/redundancy and the four active constraints |
@@ -207,7 +211,7 @@ the verification needed to use the existing posteriors.
 |---|---|
 | [README](../README.md) | Project landing page and principal outputs |
 | [Scientific decisions](SCIENTIFIC_DECISIONS.md) | Current rationale, results, caveats, and unresolved sensitivities |
-| [Figure captions](FIGURE_CAPTIONS.md) | Separate method summaries, previews, and publication-ready captions for Figures 2 and 3 |
+| [Figure captions](FIGURE_CAPTIONS.md) | Separate method summaries, previews, and publication-ready captions for Figures 2–4 |
 | [Tracking definitions](SCIENTIFIC_DECISIONS.md#lake-tracking-metrics) | Canonical formulas, signs, units and support conventions |
 | [Tracking validation](review/TRACKING_DATA_VALIDATION.md) | Current schemas, support, migration checks and modeling limits |
 | [Holocene evidence summary](references/Holocene_period_choices_MORA_NOCA_summary.pdf) | Literature/context source review retained outside the classification stage |
@@ -287,8 +291,9 @@ AIC, within-offset ΔAIC and relative Akaike weights; the paired boxplots
 summarize sensitivity across offsets. The author selected MA1 for reporting
 on 2026-10-09; the AIC comparison remains available. Coefficient, contrast
 and residual figures show only MA1, using a common plot theme. The group-mean
-figure aligns both parks and all offsets in three rows: Holocene, Anthropocene
-and their difference. Mean and contrast intervals use Satterthwaite degrees
+figure aligns both parks in three rows: Holocene means across offsets, one
+Anthropocene mean per park with its offset-0 interval, and all offset-specific
+differences. Mean and contrast intervals use Satterthwaite degrees
 of freedom and the fitted covariance. Modern pairs
 are reused across offset fits. Stage 10a follows with the agreed offset-0
 individual-lake sensitivity; its figures show MA1 only with modern plots from each
@@ -300,12 +305,24 @@ independent residuals at every offset, with MA1 within two AIC units; the
 requested Gaussian/MA1 turnover exercise remains exploratory. MA1 is selected for reporting. Final distribution, lake effects
 and chronology uncertainty treatment remain decisions for model development.
 
+Stage 10b produces the new manuscript Figure 4 using offset 0 only. Three
+response rows (raw climate-change rate, turnover and lag-change rate) and two
+park columns combine raw input distributions with connected MA1 means and
+95% confidence intervals. Each pair is annotated with its
+Anthropocene-minus-Holocene contrast and covariance-based interval. It reads
+the existing input and model CSVs, verifies sample counts and differences,
+and redraws without fitting models. Fonts are 17–26 points for axes, strips
+and headings; annotations are approximately 16 points. Figures 2 and 3 and
+all model results remain unchanged.
+
 ```bash
 # Primary combined input and all ten provisional offset/covariance fits
 Rscript R/stages/09b_tracking_model_data.R
 Rscript R/stages/10_tracking_era_models.R
 # Offset-0 lake sensitivity (also called by the full workflow)
 Rscript R/stages/10a_tracking_lake_sensitivity.R
+# Manuscript distributions, means and annotated contrasts; offset 0 only
+Rscript R/stages/10b_tracking_manuscript_figure.R
 # Later exploration of another response, still running each offset separately
 Rscript R/stages/10_tracking_era_models.R --metric=observed_turnover_rate
 # Same untransformed model exercise for physical climate-change rate

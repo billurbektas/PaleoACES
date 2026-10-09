@@ -45,9 +45,10 @@ verbatim for reading. Run the workflow for an analysis rebuild.
 | 17 | Combined transition input | [09b_tracking_model_data.R](../R/stages/09b_tracking_model_data.R) |
 | 18 | Covariance comparison and selected MA1 | [10_tracking_era_models.R](../R/stages/10_tracking_era_models.R) |
 | 19 | Offset-0 lake sensitivity | [10a_tracking_lake_sensitivity.R](../R/stages/10a_tracking_lake_sensitivity.R) |
-| 20 | Community trajectories: Figure 3 | [05a_cca_figure.R](../R/stages/05a_cca_figure.R) |
-| 21–22 | Tracking and fire-detection examples | [09a_tracking_example_and_visualizations.R](../R/stages/09a_tracking_example_and_visualizations.R); [12a_fire_event_detection_worked_example.R](../R/stages/12a_fire_event_detection_worked_example.R) |
-| 23–24 | Climate/fire display: Figure 2 and example | [13a_climate_change_figure.R](../R/stages/13a_climate_change_figure.R); [13b_fire_method_worked_example.R](../R/stages/13b_fire_method_worked_example.R) |
+| 20 | Offset-0 manuscript comparison: Figure 4 | [10b_tracking_manuscript_figure.R](../R/stages/10b_tracking_manuscript_figure.R) |
+| 21 | Community trajectories: Figure 3 | [05a_cca_figure.R](../R/stages/05a_cca_figure.R) |
+| 22–23 | Tracking and fire-detection examples | [09a_tracking_example_and_visualizations.R](../R/stages/09a_tracking_example_and_visualizations.R); [12a_fire_event_detection_worked_example.R](../R/stages/12a_fire_event_detection_worked_example.R) |
+| 24–25 | Climate/fire display: Figure 2 and example | [13a_climate_change_figure.R](../R/stages/13a_climate_change_figure.R); [13b_fire_method_worked_example.R](../R/stages/13b_fire_method_worked_example.R) |
 
 | Prepared input | Rows | Plot/sample IDs | Taxa |
 | --- | --- | --- | --- |
@@ -1549,6 +1550,31 @@ shorter modern climate intervals. Covariance comparison and residual checks
 are response-specific. These models do not propagate chronology uncertainty,
 model modern spatial dependence or add lake random effects. Offsets remain
 separate sensitivity fits. Continuous fire activity is outside this extension.
+
+## Manuscript comparison at offset 0
+
+The manuscript figure uses **only offset 0**, with the same untransformed
+climate-change, turnover and lag-rate inputs used in the maintained MA1 models.
+Violins and dots display each actual input value. Holocene inputs are medians
+over valid chronology draws within individual lake transitions; the figure
+does not add reporting-grid dates or combine offsets. MORA contributes 20
+Holocene transitions from three lakes and 330 modern pairs; NOCA contributes
+10 Panther Potholes transitions and 277 modern pairs, for each response.
+
+Connected open circles show fitted Holocene and Anthropocene means, with
+95% confidence intervals. The annotation above each pair is its
+**Anthropocene-minus-Holocene contrast and 95% interval**, read directly from
+the offset-0 MA1 contrast table. The contrast interval uses covariance between
+the means; it is not the difference between their confidence bounds. All
+intervals use Satterthwaite degrees of freedom. Linear scales include all raw
+values and are shared between parks within each response; narrow Holocene
+distributions remain narrow on these common scales.
+
+### Figure 4. Offset-0 raw distributions, fitted era means and contrasts
+
+![Figure 4. fig tracking era distributions](assets/analysis/figure-4.png)
+
+[Full PDF](../plot/fig_tracking_era_distributions.pdf) · [Figure script](../R/stages/10b_tracking_manuscript_figure.R) · [Publication captions](FIGURE_CAPTIONS.md).
 
 ## Limitations and remaining questions
 

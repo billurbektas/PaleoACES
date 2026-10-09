@@ -835,6 +835,27 @@ are response-specific. These models do not propagate chronology uncertainty,
 model modern spatial dependence or add lake random effects. Offsets remain
 separate sensitivity fits. Continuous fire activity is outside this extension.
 
+## Manuscript comparison at offset 0
+
+The manuscript figure uses **only offset 0**, with the same untransformed
+climate-change, turnover and lag-rate inputs used in the maintained MA1 models.
+Violins and dots display each actual input value. Holocene inputs are medians
+over valid chronology draws within individual lake transitions; the figure
+does not add reporting-grid dates or combine offsets. MORA contributes 20
+Holocene transitions from three lakes and 330 modern pairs; NOCA contributes
+10 Panther Potholes transitions and 277 modern pairs, for each response.
+
+Connected open circles show fitted Holocene and Anthropocene means, with
+95% confidence intervals. The annotation above each pair is its
+**Anthropocene-minus-Holocene contrast and 95% interval**, read directly from
+the offset-0 MA1 contrast table. The contrast interval uses covariance between
+the means; it is not the difference between their confidence bounds. All
+intervals use Satterthwaite degrees of freedom. Linear scales include all raw
+values and are shared between parks within each response; narrow Holocene
+distributions remain narrow on these common scales.
+
+{{figure_4}}
+
 ## Limitations and remaining questions
 
 The chronology controls, survey windows, GPS exclusions and paired CCA

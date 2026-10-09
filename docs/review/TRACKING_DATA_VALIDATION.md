@@ -200,10 +200,10 @@ angle are undefined. The other 465 plots have defined angles and pace effects.
   [564 checks](TRACKING_INDEPENDENT_CHECKS.csv), including independently
   reconstructed CCA inertia, physical climate changes and the
   draw-to-offset-to-reporting hierarchy. Documentation and report validation
-  check links, generated source code, registries and the two active figures.
+  check links, generated source code, registries and the active manuscript figures.
 
 The old tracking visualization and target-alignment stages, dedicated tests,
-generated tables and Figures 4/5 are retired through Git history. The worked
+generated tables and former Figures 4/5 are retired through Git history. The worked
 example now reads a Panther Potholes realization from the canonical lake table.
 
 ## Raw physical climate-rate GLS extension (2026-10-09)
@@ -254,3 +254,17 @@ an explicit estimand, an assessment of predictor overlap and independent
 support, and an uncertainty/inclusion strategy. This validation does not fit
 that interaction, choose a final distribution/covariance, calculate contribution
 attribution or replace the retired figures.
+
+## Offset-0 manuscript figure (2026-10-09)
+
+Stage `R/stages/10b_tracking_manuscript_figure.R` reads the maintained combined
+input and existing MA1 group-mean/contrast tables. The figure contains 1,911
+untransformed input values across the three responses, 12 fitted means and
+six contrasts. For each response, MORA has 20 Holocene transitions and 330
+modern pairs; NOCA has 10 Holocene transitions and 277 pairs. The stage checks
+group identities and sample counts, confirms each contrast equals its fitted
+mean difference, and reads confidence bounds directly from the model records.
+No fits or source CSVs are replaced. The preserved-file snapshot verifies
+all 1,457 prior data, cache, output and figure files remain byte-identical,
+including Figures 2/3 and every model result. The new Figure 4 is a distinct
+producer; historical tracking visualizations remain retired.

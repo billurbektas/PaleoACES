@@ -99,7 +99,7 @@ def workflow_stages():
     workflow = (ROOT / 'R/workflow.R').read_text()
     paths = re.findall(r'run_script\("(R/[^\"]+[.]R)"', workflow)
     paths = [p for p in paths if p.startswith('R/stages/')]
-    if len(paths) != 24 or len(set(paths)) != 24: raise ValueError('Expected exactly 24 ordered workflow analysis stages.')
+    if len(paths) != 25 or len(set(paths)) != 25: raise ValueError('Expected exactly 25 ordered workflow analysis stages.')
     return paths
 
 def tracking_calculation_sections():
@@ -164,7 +164,7 @@ def script_map():
         ('Chronology (optional refit)', 1), ('Paleo vegetation and fire', 3),
         ('Paleo climate', 2), ('Taxonomy consolidation', 1),
         ('CCA eligibility, calibration and reference', 1),
-        ('Fire catalog and climate eras', 2), ('Canonical lake/plot tracking', 1), ('Combined transition input', 1), ('Covariance comparison and selected MA1', 1), ('Offset-0 lake sensitivity', 1), ('Community trajectories: Figure 3', 1),
+        ('Fire catalog and climate eras', 2), ('Canonical lake/plot tracking', 1), ('Combined transition input', 1), ('Covariance comparison and selected MA1', 1), ('Offset-0 lake sensitivity', 1), ('Offset-0 manuscript comparison: Figure 4', 1), ('Community trajectories: Figure 3', 1),
         ('Tracking and fire-detection examples', 2), ('Climate/fire display: Figure 2 and example', 2)]
     paths = workflow_stages(); index = 0; data = []
     for part,count in groups:
@@ -300,8 +300,10 @@ def validate(root=ROOT):
         raise ValueError('Review omitted maintained calculation code or support definitions.')
     if (ROOT/'R/helpers/tracking_metrics.R').read_text().rstrip() in text:
         raise ValueError('Review embeds the whole tracking helper instead of calculation excerpts.')
-    if any(f'### Figure {n}.' in text for n in [4,5]):
-        raise ValueError('Retired manuscript figure remains active.')
+    if '### Figure 5.' in text:
+        raise ValueError('Retired manuscript Figure 5 remains active.')
+    if '### Figure 4.' not in text or '../R/stages/10b_tracking_manuscript_figure.R)' not in text:
+        raise ValueError('Review omitted the new offset-0 manuscript figure.')
     stages = workflow_stages()
     if any(f'../{p})' not in text for p in stages): raise ValueError('Report script map omits an active workflow stage.')
     review = root/'docs/review/00_main_analysis_review.R'
@@ -371,7 +373,7 @@ def validate(root=ROOT):
     if sha(root/ASSETS/'inputs.csv') != meta['input_manifest_sha256']: raise ValueError('Input manifest changed.')
     if sha(root/ASSETS/'sources.csv') != meta['source_manifest_sha256']: raise ValueError('Source manifest changed.')
     if sha(root/ASSETS/'results.csv') != meta['result_manifest_sha256']: raise ValueError('Result manifest changed.')
-    print('Report integrity passed: links, hashes, synchronized self-contained HTML, figures 2 and 3, and readable previews.', flush=True)
+    print('Report integrity passed: links, hashes, synchronized self-contained HTML, figures 2–4, and readable previews.', flush=True)
 
 def build(mode):
     for name in ['pdfinfo','pdftoppm','Rscript']:
@@ -510,7 +512,8 @@ def build(mode):
             diagnostic_blocks[section]=diagnostic_blocks.get(section,'')+block
             inventory.append(dict(diagnostic=f'[{Path(x["pdf"]).name}](../{x["pdf"]})',purpose=x['purpose'],producer=f'[{Path(x["producer"]).name}](../{x["producer"]})',pages=', '.join(map(str,x['pages'])) or 'Full PDF only',interpretation=x['interpretation'],status=status))
         fig_blocks={}
-        titles={2:'Climate eras, climate rates and high-fire periods',3:'Observed and climate-predicted community trajectories'}
+        titles={2:'Climate eras, climate rates and high-fire periods',3:'Observed and climate-predicted community trajectories',
+                4:'Offset-0 raw distributions, fitted era means and contrasts'}
         for x in registry['main_figures']:
             src=ROOT/'plot'/(x['stem']+'.png'); dest=out/f'figure-{x["number"]}.png'; shutil.copyfile(src,dest)
             record(dest,x['producer'],relative(src),status='manuscript figure')

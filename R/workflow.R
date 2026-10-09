@@ -96,6 +96,7 @@ run_script("R/stages/09b_tracking_model_data.R")
 # Lake reporting uses offset 0 only.
 run_script("R/stages/10_tracking_era_models.R")
 run_script("R/stages/10a_tracking_lake_sensitivity.R")
+run_script("R/stages/10b_tracking_manuscript_figure.R")
 
 # Derived audit/visualization data. Mixed scripts still write their CSV audits
 # under --skip-figures; only their persistent PDF/PNG writes are suppressed.

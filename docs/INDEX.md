@@ -12,7 +12,7 @@ The [analysis review](ANALYSIS_REVIEW.md) connects current results to intermedia
 | [TRACKING_DATA_VALIDATION](review/TRACKING_DATA_VALIDATION.md) | Canonical schemas, draw support, preservation checks and future modeling limits |
 | [WORKFLOW](WORKFLOW.md) | Executable order, commands, and checks |
 | [SCIENTIFIC_DECISIONS](SCIENTIFIC_DECISIONS.md) | Scientific rationale and open questions |
-| [FIGURE_CAPTIONS](FIGURE_CAPTIONS.md) | Manuscript Figures 2 and 3 captions |
+| [FIGURE_CAPTIONS](FIGURE_CAPTIONS.md) | Manuscript Figures 2–4 captions |
 | [CONTROL_POINTS](../Cores/CONTROL_POINTS.md) | Methods or input provenance |
 | [SOURCES_MORA](../Cores/SOURCES_MORA.md) | Methods or input provenance |
 | [000_NOCA_cleaning_guide](methods/000_NOCA_cleaning_guide.md) | Methods or input provenance |
