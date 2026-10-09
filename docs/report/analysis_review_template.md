@@ -405,10 +405,10 @@ fitted model; they do not change the selected axes or the analysis settings.
 
 {{figure_3}}
 
-## Tracking example, exploratory visualizations and climate/fire display
+## Tracking example, descriptive visualizations and climate/fire display
 
 The metric example below shows how displacement, lag, ratio and angle follow
-from WA and LC endpoints. The next two exploratory figures use four lake columns
+from WA and LC endpoints. The next two descriptive figures use four lake columns
 with aligned cal-BP axes. Thin trajectories show offsets at actual transition
 midpoints; thick response lines reuse the maintained complete-offset medians.
 Climate/fire predictor medians read the canonical era-comparison table, mapped
@@ -418,6 +418,14 @@ The rates figure has rows for tracking responses together, standardized climate
 rate and fire activity. The other figure gives magnitude ratio, angle, climate
 and fire one row each, omitting the duplicate Holocene rate-ratio display.
 Both ratios remain in the model inputs and can differ for modern plots.
+
+Both figures reuse the regional climate-period catalog and subdivisions shown
+in Figure 2. Darker gray marks climate change (CC) and lighter gray relative
+stability (S) across all Holocene rows. Top-row labels include CC1a, CC1b and
+CC1c; dotted lines mark their internal boundaries. These are shared regional
+annotations, with unshaded margins outside the classified 9,600–1,300 cal-BP
+domain. Adding these bands does not change response values, predictors or
+climate classifications. The modern boxplots have no climate-period bands.
 
 A fifth column shows MORA/NOCA paired-plot boxplots with matching colors and
 separate labeled y-scales. It uses all 607 pairs, retaining finite values per

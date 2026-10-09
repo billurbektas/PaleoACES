@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: 1519f6cba80cf781ac058f367041ecb3 -->
+<!-- paleoaces-source-md5: 7219717fbd86f00d90beee6ccd787c75 -->
 
 <html>
 
@@ -1622,14 +1622,16 @@ endpoints, seven responses and chronology-draw distributions</td>
 <tr class="even">
 <td><code>plot/test_figures/fig_tracking_offset_rates.pdf</code></td>
 <td>Four lake columns × three rows: tracking rates together,
-standardized climate-change rate, and continuous fire activity; a fifth
-column shows MORA/NOCA modern boxplots</td>
+standardized climate-change rate, and continuous fire activity, with
+established regional climate-period bands; a fifth column shows
+MORA/NOCA modern boxplots</td>
 </tr>
 <tr class="odd">
 <td><code>plot/test_figures/fig_tracking_offset_ratios_angles.pdf</code></td>
 <td>Four lake columns × four rows: magnitude ratio, angle, standardized
-climate-change rate, and fire activity; a fifth column shows MORA/NOCA
-modern boxplots</td>
+climate-change rate, and fire activity, with the same regional
+climate-period bands; a fifth column shows MORA/NOCA modern
+boxplots</td>
 </tr>
 <tr class="even">
 <td><code>cca_tracking_anthropocene_*.csv</code></td>
@@ -2007,11 +2009,11 @@ registers a <a href="assets/analysis/cca_calibration_reference.rds">versioned co
 this reference bundle</a> so the existing fitted calibration remains
 available from the branch.</p>
 </div>
-<div id="tracking-example-and-exploratory-visualizations" class="section level2">
-<h2>Tracking example and exploratory visualizations</h2>
+<div id="tracking-example-and-descriptive-visualizations" class="section level2">
+<h2>Tracking example and descriptive visualizations</h2>
 <p><code>R/stages/09a_tracking_example_and_visualizations.R</code> reads
 the canonical stage-09 products and writes the three diagnostic PDFs
-listed above. Both exploratory figures use four Holocene lake columns
+listed above. Both descriptive figures use four Holocene lake columns
 with aligned cal-BP axes and shared scales across lakes within each row.
 The rates figure has three rows: the four tracking rates together,
 standardized physical climate-change rate, and continuous fire activity.
@@ -2019,6 +2021,17 @@ The second figure gives magnitude ratio, angle, climate rate and fire
 activity one row each. The duplicate Holocene rate-ratio display is
 omitted; both ratios remain in both model tables and can differ in the
 Anthropocene.</p>
+<p>Both figures read the established stage-13
+<code>holocene_era_catalog.csv</code> and
+<code>holocene_era_climate_change_subphases.csv</code>, the same sources
+as Figure 2. Darker gray marks climate change (CC) and lighter gray
+relative stability (S) across every Holocene row. Top-row labels show
+CC1a, CC1b and CC1c and the other CC/S periods; dotted lines mark
+internal CC1 boundaries. These are regional annotations shared across
+the four lakes. The margins outside the classified 9,600–1,300 cal-BP
+domain are unshaded. Bands are not added to modern boxplots. The
+plotting stage does not recalculate eras, alter responses or add model
+fields.</p>
 <p>Thin trajectories use each offset’s transition values at
 <code>interval_mid_cal_bp</code>. Response values are finite-draw
 medians. Thick response lines reuse the existing 100-year reporting-grid

@@ -775,10 +775,10 @@ fitted model; they do not change the selected axes or the analysis settings.
 
 [Full PDF](../plot/fig_cca_trajectories.pdf) · [Figure script](../R/stages/05a_cca_figure.R) · [Publication captions](FIGURE_CAPTIONS.md).
 
-## Tracking example, exploratory visualizations and climate/fire display
+## Tracking example, descriptive visualizations and climate/fire display
 
 The metric example below shows how displacement, lag, ratio and angle follow
-from WA and LC endpoints. The next two exploratory figures use four lake columns
+from WA and LC endpoints. The next two descriptive figures use four lake columns
 with aligned cal-BP axes. Thin trajectories show offsets at actual transition
 midpoints; thick response lines reuse the maintained complete-offset medians.
 Climate/fire predictor medians read the canonical era-comparison table, mapped
@@ -788,6 +788,14 @@ The rates figure has rows for tracking responses together, standardized climate
 rate and fire activity. The other figure gives magnitude ratio, angle, climate
 and fire one row each, omitting the duplicate Holocene rate-ratio display.
 Both ratios remain in the model inputs and can differ for modern plots.
+
+Both figures reuse the regional climate-period catalog and subdivisions shown
+in Figure 2. Darker gray marks climate change (CC) and lighter gray relative
+stability (S) across all Holocene rows. Top-row labels include CC1a, CC1b and
+CC1c; dotted lines mark their internal boundaries. These are shared regional
+annotations, with unshaded margins outside the classified 9,600–1,300 cal-BP
+domain. Adding these bands does not change response values, predictors or
+climate classifications. The modern boxplots have no climate-period bands.
 
 A fifth column shows MORA/NOCA paired-plot boxplots with matching colors and
 separate labeled y-scales. It uses all 607 pairs, retaining finite values per
@@ -807,21 +815,21 @@ Script: [09a_tracking_example_and_visualizations.R](../R/stages/09a_tracking_exa
 
 ![Work through WA/LC movement, lag, ratio, and angle. — PDF page 1](assets/analysis/tracking_example-p1.png)
 
-### Compare tracking responses, climate and fire in four lake columns with Anthropocene boxplots
+### Compare tracking responses, climate and fire under established regional climate-period bands, with Anthropocene boxplots
 
-Rows show four tracking rates together, standardized physical climate-change rate, and continuous fire activity. Four Holocene lake columns share aligned cal-BP axes and scales by row; thin lines show offsets and thick lines show complete-offset medians. A fifth column shows identically colored MORA/NOCA paired-plot boxplots using separate labeled y-scales. Modern continuous fire activity is unavailable and is annotated. MORA vegetation lakes share regional fire exposure. Offsets are sensitivity placements, not independent replicates. **Exploratory**.
+Rows show four tracking rates together, standardized physical climate-change rate, and continuous fire activity. Four Holocene lake columns share aligned cal-BP axes and scales by row; thin lines show offsets and thick lines show complete-offset medians. Frozen Figure 2 era/subphase products supply darker CC and lighter stability bands across all Holocene rows, including CC1a/CC1b/CC1c labels and internal boundaries; margins outside the classified domain are unshaded. A fifth column shows identically colored MORA/NOCA paired-plot boxplots using separate labeled y-scales. Modern continuous fire activity is unavailable and is annotated. MORA vegetation lakes share regional fire exposure. Offsets are sensitivity placements, not independent replicates.
 
 Script: [09a_tracking_example_and_visualizations.R](../R/stages/09a_tracking_example_and_visualizations.R). [Complete PDF](../plot/test_figures/fig_tracking_offset_rates.pdf) (1 page).
 
-![Compare tracking responses, climate and fire in four lake columns with Anthropocene boxplots. — PDF page 1](assets/analysis/tracking_offset_rates-p1.png)
+![Compare tracking responses, climate and fire under established regional climate-period bands, with Anthropocene boxplots. — PDF page 1](assets/analysis/tracking_offset_rates-p1.png)
 
-### Compare magnitude tracking ratio, angle, climate and fire, one variable per row
+### Compare magnitude tracking ratio, angle, climate and fire under the same regional climate-period bands, one variable per row
 
-Four lake columns show magnitude tracking ratio, movement angle, standardized climate-change rate and fire activity in separate rows. The duplicate Holocene rate-ratio display is omitted; both ratios remain in the model inputs and can differ in the Anthropocene. A fifth column shows MORA/NOCA plot boxplots with matching colors and separate labeled y-scales; modern continuous fire activity is unavailable and annotated. Thin offset trajectories and thick complete-offset medians retain actual gaps and observed ranges. **Exploratory**.
+Four lake columns show magnitude tracking ratio, movement angle, standardized climate-change rate and fire activity in separate rows. The same frozen Figure 2 era/subphase products annotate all Holocene rows with darker CC and lighter stability bands, CC1 subdivisions and unshaded margins outside the classified domain. The duplicate Holocene rate-ratio display is omitted; both ratios remain in the model inputs and can differ in the Anthropocene. A fifth column shows MORA/NOCA plot boxplots with matching colors and separate labeled y-scales; modern continuous fire activity is unavailable and annotated. Thin offset trajectories and thick complete-offset medians retain actual gaps and observed ranges.
 
 Script: [09a_tracking_example_and_visualizations.R](../R/stages/09a_tracking_example_and_visualizations.R). [Complete PDF](../plot/test_figures/fig_tracking_offset_ratios_angles.pdf) (1 page).
 
-![Compare magnitude tracking ratio, angle, climate and fire, one variable per row. — PDF page 1](assets/analysis/tracking_offset_ratios_angles-p1.png)
+![Compare magnitude tracking ratio, angle, climate and fire under the same regional climate-period bands, one variable per row. — PDF page 1](assets/analysis/tracking_offset_ratios_angles-p1.png)
 
 ### Compare fire-event detection in all four lake records
 
@@ -1159,8 +1167,8 @@ current-results analysis.
 | [fig_holocene_climate_period_method_worked_example.pdf](../plot/test_figures/fig_holocene_climate_period_method_worked_example.pdf) | Expose signed changes, phase support, and era construction. | [13_holocene_climate_fire_eras.R](../R/stages/13_holocene_climate_fire_eras.R) | 1 | current |
 | [fig_holocene_fire_method_worked_example.pdf](../plot/test_figures/fig_holocene_fire_method_worked_example.pdf) | Work through centered event frequencies at 2,300 cal BP. | [13b_fire_method_worked_example.R](../R/stages/13b_fire_method_worked_example.R) | 1 | current |
 | [fig_method_worked_example.pdf](../plot/test_figures/fig_method_worked_example.pdf) | Work through WA/LC movement, lag, ratio, and angle. | [09a_tracking_example_and_visualizations.R](../R/stages/09a_tracking_example_and_visualizations.R) | 1 | current |
-| [fig_tracking_offset_rates.pdf](../plot/test_figures/fig_tracking_offset_rates.pdf) | Compare tracking responses, climate and fire in four lake columns with Anthropocene boxplots. | [09a_tracking_example_and_visualizations.R](../R/stages/09a_tracking_example_and_visualizations.R) | 1 | exploratory |
-| [fig_tracking_offset_ratios_angles.pdf](../plot/test_figures/fig_tracking_offset_ratios_angles.pdf) | Compare magnitude tracking ratio, angle, climate and fire, one variable per row. | [09a_tracking_example_and_visualizations.R](../R/stages/09a_tracking_example_and_visualizations.R) | 1 | exploratory |
+| [fig_tracking_offset_rates.pdf](../plot/test_figures/fig_tracking_offset_rates.pdf) | Compare tracking responses, climate and fire under established regional climate-period bands, with Anthropocene boxplots. | [09a_tracking_example_and_visualizations.R](../R/stages/09a_tracking_example_and_visualizations.R) | 1 | current |
+| [fig_tracking_offset_ratios_angles.pdf](../plot/test_figures/fig_tracking_offset_ratios_angles.pdf) | Compare magnitude tracking ratio, angle, climate and fire under the same regional climate-period bands, one variable per row. | [09a_tracking_example_and_visualizations.R](../R/stages/09a_tracking_example_and_visualizations.R) | 1 | current |
 | [test_chelsa_cruts_vs_present.pdf](../plot/test_figures/test_chelsa_cruts_vs_present.pdf) | Retain the older product-comparison reference outside current results. | [test_chelsa_cruts_vs_present.R](../R/diagnostics/test_chelsa_cruts_vs_present.R) | Full PDF only | historical reference |
 
 ## TraCE21k–V2.1 comparison and planned sensitivity

@@ -25,8 +25,8 @@ Active data and cache locations are preserved. See [repository inventory](REPOSI
 | `report/cca_model_code.R`, `report/cca_model_output.txt`, `report/cca_anova_output.txt` | Current fitting/projection code excerpt and readable model/permutation-test outputs displayed or linked immediately before Figure 3 |
 | `plot/test_figures/plots_to_cca.pdf` | Single-page diagram showing starting counts, exclusion reasons, combined sample depths, legacy calibration counts and final paired/projection counts |
 | `plot/test_figures/fig_method_worked_example.pdf` | Panther Potholes realization: WA/LC geometry, counterfactual endpoints, seven responses and chronology-draw distributions |
-| `plot/test_figures/fig_tracking_offset_rates.pdf` | Four lake columns × three rows: tracking rates together, standardized climate-change rate, and continuous fire activity; a fifth column shows MORA/NOCA modern boxplots |
-| `plot/test_figures/fig_tracking_offset_ratios_angles.pdf` | Four lake columns × four rows: magnitude ratio, angle, standardized climate-change rate, and fire activity; a fifth column shows MORA/NOCA modern boxplots |
+| `plot/test_figures/fig_tracking_offset_rates.pdf` | Four lake columns × three rows: tracking rates together, standardized climate-change rate, and continuous fire activity, with established regional climate-period bands; a fifth column shows MORA/NOCA modern boxplots |
+| `plot/test_figures/fig_tracking_offset_ratios_angles.pdf` | Four lake columns × four rows: magnitude ratio, angle, standardized climate-change rate, and fire activity, with the same regional climate-period bands; a fifth column shows MORA/NOCA modern boxplots |
 | `cca_tracking_anthropocene_*.csv` | Compact paired-plot model input and separate detailed calculation records |
 | `cca_tracking_holocene_*.csv` | Primary lake realizations, compact model input, long uncertainty, seven-response reporting and support; later width experiments receive `_Nyr` suffixes |
 | `cca_tracking_climate_scaling.csv` | Fixed pooled-legacy means, SDs, units, and sample sizes used for standardized climate rates |
@@ -233,16 +233,25 @@ prediction without refitting. No future contribution analysis is implemented.
 The report registers a [versioned copy of this reference bundle](assets/analysis/cca_calibration_reference.rds)
 so the existing fitted calibration remains available from the branch.
 
-## Tracking example and exploratory visualizations
+## Tracking example and descriptive visualizations
 
 `R/stages/09a_tracking_example_and_visualizations.R` reads the canonical stage-09
-products and writes the three diagnostic PDFs listed above. Both exploratory
+products and writes the three diagnostic PDFs listed above. Both descriptive
 figures use four Holocene lake columns with aligned cal-BP axes and shared
 scales across lakes within each row. The rates figure has three rows: the four
 tracking rates together, standardized physical climate-change rate, and continuous
 fire activity. The second figure gives magnitude ratio, angle, climate rate and
 fire activity one row each. The duplicate Holocene rate-ratio display is omitted;
 both ratios remain in both model tables and can differ in the Anthropocene.
+
+Both figures read the established stage-13 `holocene_era_catalog.csv` and
+`holocene_era_climate_change_subphases.csv`, the same sources as Figure 2.
+Darker gray marks climate change (CC) and lighter gray relative stability (S)
+across every Holocene row. Top-row labels show CC1a, CC1b and CC1c and the other
+CC/S periods; dotted lines mark internal CC1 boundaries. These are regional
+annotations shared across the four lakes. The margins outside the classified
+9,600–1,300 cal-BP domain are unshaded. Bands are not added to modern boxplots.
+The plotting stage does not recalculate eras, alter responses or add model fields.
 
 Thin trajectories use each offset's transition values at `interval_mid_cal_bp`.
 Response values are finite-draw medians. Thick response lines reuse the existing

@@ -364,6 +364,15 @@ cannot remove valid lag, turnover or tracking-ratio values. At Reflection Pond,
 only those two reporting values are excluded. Their transition-level model and
 uncertainty records remain available. No matching coverage across lakes is required.
 
+Both maintained tracking visualizations annotate every Holocene row with the
+regional climate-era bands already used in Figure 2. They read the frozen
+stage-13 era catalog and climate-change subphases: darker gray denotes CC,
+lighter gray denotes relative stability, and CC1a–CC1c retain their existing
+internal boundaries. These shared regional annotations do not classify lakes
+individually or enter the model tables as predictors. The plotting stage
+preserves response estimates and leaves dates outside the classified
+9,600–1,300 cal-BP domain unshaded. Modern boxplots retain their existing layout.
+
 ### Long era comparison and aligned predictors
 
 `cca_tracking_era_comparison.csv` adds a 16-column descriptive view while

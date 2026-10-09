@@ -92,6 +92,7 @@ run_script("R/stages/09_tracking_metrics.R")
 
 # Derived audit/visualization data. Mixed scripts still write their CSV audits
 # under --skip-figures; only their persistent PDF/PNG writes are suppressed.
+# Stage 09a reuses stage 13's frozen climate-era catalog in both tracking figures.
 run_script("R/stages/05a_cca_figure.R")
 run_script("R/stages/09a_tracking_example_and_visualizations.R")
 run_script("R/stages/12a_fire_event_detection_worked_example.R")
