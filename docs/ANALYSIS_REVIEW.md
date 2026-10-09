@@ -1569,6 +1569,9 @@ the means; it is not the difference between their confidence bounds. All
 intervals use Satterthwaite degrees of freedom. Linear scales include all raw
 values and are shared between parks within each response; narrow Holocene
 distributions remain narrow on these common scales.
+Grey violins and points show distributions; smaller mean circles, connecting
+lines and intervals use grey. Labels name each response as a rate without
+displaying units. A star identifies a contrast with unadjusted `p < 0.05`.
 
 ### Figure 4. Offset-0 raw distributions, fitted era means and contrasts
 

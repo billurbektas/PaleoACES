@@ -24,7 +24,8 @@ if(nrow(means)!=12L || anyDuplicated(means[keys]) ||
    nrow(contrasts)!=6L || anyDuplicated(contrasts[c('metric','site')]) ||
    nrow(check)!=12L || anyNA(check[c('n','n_raw')]) || any(check$n!=check$n_raw) ||
    any(!is.finite(as.matrix(means[c('estimate','conf_low','conf_high')]))) ||
-   any(!is.finite(as.matrix(contrasts[c('estimate','conf_low','conf_high')]))))
+   any(!is.finite(as.matrix(contrasts[c('estimate','conf_low','conf_high','p_value')]))) ||
+   any(contrasts$p_value<0 | contrasts$p_value>1))
   stop('Missing, duplicate or inconsistent offset-0 model results and raw inputs')
 differences=means |> select(all_of(keys),estimate) |>
   pivot_wider(names_from=era,values_from=estimate) |>
@@ -40,28 +41,28 @@ ranges=bind_rows(raw |> select(metric,estimate),
   mutate(span=pmax(hi-lo,1e-6),bracket_y=hi+.08*span,label_y=hi+.23*span,
     count_y=lo-.08*span,plot_top=hi+.35*span,plot_bottom=lo-.13*span)
 annotations=contrasts |> left_join(ranges,by='metric',relationship='many-to-one') |>
-  mutate(label=sprintf('A - H = %+.3f\n95%% CI [%+.3f, %+.3f]',estimate,conf_low,conf_high))
+  mutate(label=sprintf('A - H = %+.3f%s\n95%% CI [%+.3f, %+.3f]',
+    estimate,if_else(p_value<.05,' *',''),conf_low,conf_high))
 counts=counts |> left_join(ranges,by='metric',relationship='many-to-one')
 panel_labels=c(
-  standardized_climate_change_rate='A. Climate-change rate\n(calibration SD / century)',
-  observed_turnover_rate='B. Community turnover\n(CCA units / century)',
-  lag_rate_per_century='C. Lag-change rate\n(CCA units / century)')
+  standardized_climate_change_rate='A. Climate-change rate',
+  observed_turnover_rate='B. Community turnover rate',
+  lag_rate_per_century='C. Lag-change rate')
 prepare=function(x) x |> mutate(metric=factor(metric,levels=metrics),
   site=factor(site,levels=c('MORA','NOCA')))
 raw=prepare(raw);means=prepare(means);annotations=prepare(annotations)
 counts=prepare(counts);ranges=ranges |> mutate(metric=factor(metric,levels=metrics))
-park_colors=c(MORA='#218c84',NOCA='#c47a29')
-mean_color=unname(tracking_model_colors()[tracking_selected_model_type()])
+mean_color='grey25'
 figure=ggplot(raw,aes(era,estimate))+
   geom_hline(yintercept=0,color='grey70',linetype='dashed',linewidth=.6)+
-  geom_violin(aes(fill=site),trim=TRUE,scale='width',width=.7,
-    color='grey45',alpha=.25,linewidth=.65)+
-  geom_point(aes(color=site),position=position_jitter(width=.09,height=0,seed=20261009),
+  geom_violin(trim=TRUE,scale='width',width=.7,
+    fill='grey85',color='grey50',linewidth=.65)+
+  geom_point(color='grey50',position=position_jitter(width=.09,height=0,seed=20261009),
     size=1.4,alpha=.3)+
   geom_line(data=means,aes(group=site),color=mean_color,linewidth=1.1)+
   geom_errorbar(data=means,aes(ymin=conf_low,ymax=conf_high),width=.14,
     color=mean_color,linewidth=1.15)+
-  geom_point(data=means,shape=21,fill='white',color=mean_color,size=4.8,stroke=1.3)+
+  geom_point(data=means,shape=21,fill='white',color=mean_color,size=2.8,stroke=.85)+
   geom_segment(data=annotations,aes(x=1,xend=2,y=bracket_y,yend=bracket_y),
     inherit.aes=FALSE,color='grey30',linewidth=.7)+
   geom_segment(data=annotations,aes(x=1,xend=1,y=bracket_y,yend=bracket_y-.025*span),
@@ -76,14 +77,14 @@ figure=ggplot(raw,aes(era,estimate))+
   geom_blank(data=ranges,aes(x=1,y=plot_bottom),inherit.aes=FALSE)+
   facet_grid(metric ~ site,scales='free_y',switch='y',
     labeller=labeller(metric=as_labeller(panel_labels)))+
-  scale_fill_manual(values=park_colors)+scale_color_manual(values=park_colors)+
   scale_x_discrete(limits=c('Holocene','Anthropocene'),expand=expansion(add=.6))+
   scale_y_continuous(expand=expansion(mult=.01))+
-  labs(title='Climate change, community turnover and lag change',
+  labs(title='Climate-change, community turnover and lag-change rates',
     subtitle='Offset 0 · Raw input distributions and MA(1) GLS estimates',x=NULL,y=NULL,
     caption=paste('Violins and dots: untransformed model inputs. Open circles and connecting lines: fitted era means; bars: 95% confidence intervals.',
       'A - H: Anthropocene minus Holocene, with its covariance-based 95% interval. All model intervals use Satterthwaite degrees of freedom.',
-      'Holocene inputs are chronology-draw medians for actual lake transitions; Anthropocene inputs are individual paired plots.',sep='\n'))+
+      'Holocene inputs are chronology-draw medians for actual lake transitions; Anthropocene inputs are individual paired plots.',
+      '* p < 0.05 for the unadjusted Anthropocene-minus-Holocene contrast.',sep='\n'))+
   theme_minimal(base_size=18)+theme(legend.position='none',
     panel.grid.minor=element_blank(),panel.grid.major.x=element_blank(),
     panel.spacing=grid::unit(1.1,'lines'),strip.placement='outside',

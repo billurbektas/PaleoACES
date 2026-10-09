@@ -529,6 +529,11 @@ width and do not encode sample count; counts are printed. These are model-based
 intervals and do not propagate chronology uncertainty. This new figure reads
 existing results without refitting, preserves Figures 2/3, and does not restore
 the historical tracking-visualization pipeline.
+The author refined the display to use grey distributions and model overlays,
+smaller mean circles, and response names ending in "rate" without units on the
+plot. Units remain defined in the methods. A single star marks an existing
+unadjusted within-park era contrast with `p < 0.05`; estimates and intervals
+remain unchanged.
 
 The 273 primary transition rows span ten alternative bin placements. **Offsets
 are sensitivity realizations, not independent ecological replicates.** The

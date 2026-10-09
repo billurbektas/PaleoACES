@@ -82,7 +82,7 @@ the constraints share explanatory variation. **D.** Taxon-specific partition
 of constrained inertia; shading indicates occurrence in the 607 calibration
 plots.
 
-## Figure 4 — Climate change, community turnover and lag change
+## Figure 4 — Climate-change, community turnover and lag-change rates
 
 **Method summary.** Untransformed values from the primary 1,000-year analysis
 were selected at offset 0. Each Holocene value is the median over valid whole
@@ -94,7 +94,9 @@ means and contrasts from the existing model outputs without refitting.
 Intervals use Satterthwaite degrees of freedom and contrast intervals retain
 covariance between fitted means. Violins have equal maximum width, with actual
 sample counts shown. All raw values remain on linear scales shared between
-parks within each response.
+parks within each response. The figure uses grey distributions and model
+overlays, with smaller mean markers and response-only rate labels. A star marks
+an unadjusted Anthropocene-minus-Holocene contrast with `p < 0.05`.
 
 [Open the publication PDF](../plot/fig_tracking_era_distributions.pdf)
 
@@ -105,13 +107,13 @@ climate-change rates and forest community responses at Mount Rainier (MORA)
 and North Cascades (NOCA). **A.** Standardized physical climate-change rate,
 the Euclidean magnitude of changes in the four seasonal climate variables
 divided by their pooled legacy-calibration standard deviations and expressed
-per century. **B.** Observed community turnover, measured as WA displacement
+per century. **B.** Observed community turnover rate, measured as WA displacement
 in CCA space per vegetation century. **C.** Lag-change rate, the change in
 observed-to-climate-predicted CCA distance per climate century. Violins and
 points show untransformed input values. Connected open circles and error bars
 show MA(1) GLS fitted era means and 95% confidence intervals. Bracket annotations
 report the Anthropocene-minus-Holocene contrast (A − H) and its covariance-based
-95% interval. Offset 0 contributes 20 Holocene transitions across the three
+95% interval; * denotes an unadjusted contrast with p < 0.05. Offset 0 contributes 20 Holocene transitions across the three
 MORA lakes and 10 Panther Potholes transitions at NOCA; modern samples comprise
 330 MORA and 277 NOCA plot pairs. Chronology uncertainty is summarized within
 transitions and is not propagated through these model intervals. Per-century

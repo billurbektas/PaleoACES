@@ -303,6 +303,9 @@ performs no fitting or response transformation. The violin widths are scaled
 within each distribution; the figure shows actual counts and includes every
 raw value. Holocene raw inputs remain chronology-draw medians for individual
 transitions, rather than reporting-grid or across-offset summaries.
+The display uses grey distributions and model overlays, smaller mean markers,
+and rate labels without units. Contrast annotations retain their estimate and
+95% interval, with a star for the existing unadjusted `p < 0.05` result.
 
 The previous combined reporting-grid CSV, exploratory modeling script and its
 per-run inputs, model bundles, summaries and residual PDFs are retired. The
