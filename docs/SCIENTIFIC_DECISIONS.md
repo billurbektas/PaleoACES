@@ -783,16 +783,20 @@ figures, residual diagnostics and full results.
 ### Holocene reconstruction-ensemble coefficients (2026-10-11)
 
 The author requested equal-weight integration of the existing explanatory GLS
-results across all ten 1,000-year bin offsets, after their separate fits.
+results after their separate fits, then requested exclusion of offset 800 from
+the ensemble for all three responses. The ensemble now uses nine 1,000-year
+bin offsets (0–700 and 900), each weighted 1/9. All ten individual-offset fits
+and sensitivity diagnostics remain unchanged; offset 800 has zero ensemble weight
+and an explicit exclusion flag and reason in the audit.
 The fixed/covariance specifications, response medians, predictor calculations
 and valid-transition selection remain unchanged. For each response, every
-offset contributes 50,000 samples from a joint multivariate-normal approximation
+included offset contributes 50,000 samples to a 450,000-sample mixture from a joint multivariate-normal approximation
 using its fitted coefficients and full fixed-effect variance–covariance matrix.
 The exact mean of offset coefficients is the ensemble point estimate; 2.5 and
 97.5 percentiles of the equally weighted mixture define
 **reconstruction-ensemble uncertainty**. These are not conventional confidence
 intervals or a newly fitted common-effect model. There are no pooled p-values,
-independent-offset assumptions, AIC/R² weights or √10 uncertainty reduction.
+independent-offset assumptions, AIC/R² weights or √9 uncertainty reduction.
 
 Only bin placement is integrated as reconstruction uncertainty. Existing
 conditional GLS coefficient uncertainty remains in each component; Bacon
@@ -800,15 +804,16 @@ chronology uncertainty is not propagated by fitting the chronology draws.
 The offset range and sign counts remain visible. Sign consistency is a
 descriptive proportion of offsets, not a probability that the effect exists.
 Temporal coverage and sample support vary among offsets; equal weights express
-equal plausibility of origins rather than equivalent coverage or replicates.
+equal plausibility of the nine included origins rather than equivalent coverage or replicates.
 
 Every configured offset must have a converged, compatible GLS fit and a finite
 positive-definite fixed-effect covariance. Missing or failed fits stop ensemble
 generation rather than silently changing weights. Residual covariance status,
 MA1 boundary estimates, lake/park support and differences in phase-aligned
-transition coverage are audited separately. The two pace-corrected boundary
-fits and the unusual direction-corrected offset 800 remain equally weighted.
-The latter reflects climate-direction rotation around 3,800 BP and opposing
+transition coverage are audited separately for all ten fits. The two pace-corrected boundary
+fits remain included. The unusual direction-corrected offset 800 is retained
+in individual-offset diagnostics and excluded from the ensemble at the author's request.
+It reflects climate-direction rotation around 3,800 BP and opposing
 park relationships under a shared slope; its negative descriptive R² remains
 visible. The compact coefficient figure and results table supplement rather
 than replace the individual-offset sensitivity diagnostics.

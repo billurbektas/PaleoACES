@@ -196,25 +196,36 @@ stopifnot(ensemble_record$input_md5==stored$input_md5,nrow(ensemble_table)==12L,
   !anyDuplicated(ensemble_vcov[c('metric','offset','term_row','term_col')]),
   all(ensemble_table$interval_type=='reconstruction-ensemble uncertainty'),
   !any(grepl('p_value|conf_low|conf_high',names(ensemble_table))),
-  all(ensemble_audit$included_in_ensemble),all(ensemble_audit$converged),
-  all(ensemble_audit$fixed_vcov_positive_definite),all(ensemble_audit$offset_weight==.1),
+  all(ensemble_table$n_offsets==9L),all(ensemble_table$excluded_offsets=='800'),
+  all(ensemble_audit$included_in_ensemble==(ensemble_audit$offset!=800)),
+  all(ensemble_audit$converged),all(ensemble_audit$fixed_vcov_positive_definite),
+  all(ensemble_audit$offset_weight==ifelse(ensemble_audit$offset==800,0,1/9)),
+  all(ensemble_audit$ensemble_exclusion==ifelse(ensemble_audit$offset==800,
+    'author_requested_offset_exclusion','none')),
+  all(ensemble_vcov$offset_weight==ifelse(ensemble_vcov$offset==800,0,1/9)),
   sum(ensemble_audit$near_correlation_boundary)==2L,
   sum(ensemble_audit$offset800_direction_review)==1L)
 for(metric in tracking_predictor_responses()) {
   entries=stored$fits[paste(metric,seq(0,900,100),sep='_')]
+  included_entries=entries[seq(0,900,100)!=800];n_offsets=length(included_entries)
   record=ensemble_record$responses[[metric]]; settings=record$settings
   set.seed(73);before=.Random.seed;kind=RNGkind()
   simulated=tracking_reconstruction_ensemble(entries,seq(0,900,100),
-    samples_per_offset=settings$samples_per_offset,seed=settings$seed)
+    samples_per_offset=settings$samples_per_offset,seed=settings$seed,excluded_offsets=800)
   stopifnot(identical(.Random.seed,before),identical(RNGkind(),kind),
-    settings$samples_per_offset==50000L,settings$total_samples==500000L,
+    settings$samples_per_offset==50000L,settings$total_samples==450000L,
+    settings$n_offsets==9L,identical(as.numeric(settings$excluded_offsets),800),
+    identical(as.numeric(settings$configured_offsets),seq(0,900,100)),
+    identical(as.numeric(settings$included_offsets),seq(0,900,100)[seq(0,900,100)!=800]),
+    identical(names(simulated$draws),as.character(settings$included_offsets)),
+    length(simulated$draws)==9L,
     !settings$chronology_uncertainty_propagated,
     all(vapply(simulated$draws,nrow,integer(1))==50000L))
   terms=names(coef(entries[[1]]$fit))
-  beta=sapply(entries,function(e) coef(e$fit)[terms])
+  beta=sapply(included_entries,function(e) coef(e$fit)[terms])
   average=rowMeans(beta); centered=beta-average
-  within=Reduce(`+`,lapply(entries,function(e) vcov(e$fit)[terms,terms]))/10
-  between=tcrossprod(centered)/10
+  within=Reduce(`+`,lapply(included_entries,function(e) vcov(e$fit)[terms,terms]))/n_offsets
+  between=tcrossprod(centered)/n_offsets
   close(as.numeric(record$within_covariance),as.numeric(within),tol=1e-12)
   close(as.numeric(record$between_covariance),as.numeric(between),tol=1e-12)
   close(as.numeric(record$ensemble_covariance),as.numeric(within+between),tol=1e-12)
@@ -225,7 +236,7 @@ for(metric in tracking_predictor_responses()) {
   close(table$offset_estimate_max,apply(beta,1,max),tol=1e-12)
   close(table$n_positive_offsets,rowSums(beta>0));close(table$n_negative_offsets,rowSums(beta<0))
   close(table$n_zero_offsets,rowSums(beta==0))
-  close(table$sign_consistency,pmax(rowSums(beta>0),rowSums(beta<0),rowSums(beta==0))/10)
+  close(table$sign_consistency,pmax(rowSums(beta>0),rowSums(beta<0),rowSums(beta==0))/n_offsets)
   joint=do.call(rbind,simulated$draws)
   bounds=apply(joint,2,quantile,probs=c(.025,.975),names=FALSE)
   close(table$ensemble_lower,bounds[1,],tol=1e-12)
@@ -237,7 +248,10 @@ for(metric in tracking_predictor_responses()) {
     close(as.numeric(record$components[[i]]$vcov),as.numeric(V),tol=1e-12)
     # Joint sampling must preserve off-diagonal coefficient covariances.
     scale=outer(sqrt(diag(V)),sqrt(diag(V)))
-    stopifnot(max(abs(cov(simulated$draws[[i]])-V)/scale)<.04)
+    component=record$components[[i]];offset=e$performance$offset
+    stopifnot(component$included==(offset!=800),component$weight==if(offset==800) 0 else 1/9)
+    if(offset!=800)
+      stopifnot(max(abs(cov(simulated$draws[[as.character(offset)]])-V)/scale)<.04)
     rows=ensemble_vcov |> filter(.data$metric==.env$metric,offset==e$performance$offset)
     close(rows$covariance,mapply(function(a,b) V[a,b],rows$term_row,rows$term_col),tol=1e-12)
     audit_row=ensemble_audit |> filter(.data$metric==.env$metric,offset==e$performance$offset)
@@ -249,10 +263,10 @@ for(metric in tracking_predictor_responses()) {
       audit_row$n_phases_only_in_offset0==length(setdiff(keys(baseline),keys(e$data))))
   }
   # Exact normal-mixture quantiles provide an independent Monte Carlo check.
-  se=sqrt(sapply(entries,function(e) diag(vcov(e$fit)[terms,terms])))
+  se=sqrt(sapply(included_entries,function(e) diag(vcov(e$fit)[terms,terms])))
   for(j in seq_along(terms)) {
     cdf=function(z) mean(pnorm(z,mean=beta[j,],sd=se[j,]))
-    interval=range(beta[j,]+rep(c(-10,10),each=10)*rep(se[j,],2))
+    interval=range(beta[j,]+rep(c(-10,10),each=n_offsets)*rep(se[j,],2))
     exact=vapply(c(.025,.975),function(p)
       uniroot(function(z) cdf(z)-p,interval=interval,tol=1e-12)$root,numeric(1))
     close(c(table$ensemble_lower[j],table$ensemble_upper[j]),exact,
@@ -260,13 +274,14 @@ for(metric in tracking_predictor_responses()) {
   }
 }
 # Identical reconstructions retain the original coefficient uncertainty: no
-# artificial sqrt(10) precision gain. Missing/failed fits cannot change weights.
+# artificial sqrt(9) precision gain. Missing/failed fits cannot change weights.
 identical_entries=rep(list(stored$fits[['lag_rate_per_century_0']]),10)
 for(i in seq_along(identical_entries)) {
   identical_entries[[i]]$performance$offset=(i-1L)*100
   identical_entries[[i]]$data$offset=(i-1L)*100
 }
-identical_ensemble=tracking_reconstruction_ensemble(identical_entries,seq(0,900,100),samples_per_offset=5000L)
+identical_ensemble=tracking_reconstruction_ensemble(identical_entries,seq(0,900,100),
+  samples_per_offset=5000L,excluded_offsets=800)
 V=vcov(identical_entries[[1]]$fit)
 close(as.numeric(identical_ensemble$ensemble_covariance),as.numeric(V),tol=1e-12)
 stopifnot(max(abs((identical_ensemble$summary$ensemble_upper-
@@ -278,10 +293,18 @@ assign('.Random.seed',before,envir=.GlobalEnv)
 fail_ensemble=function(entries) stopifnot(inherits(tryCatch(
   tracking_reconstruction_ensemble(entries,seq(0,900,100),samples_per_offset=2L),error=identity),'error'))
 fail_ensemble(identical_entries[-1])
+# An explicit exclusion does not hide a missing configured fit or accept
+# unconfigured/duplicate exclusions, or permit an empty ensemble.
+for(excluded in list(c(800,800),1000,seq(0,900,100),NA_real_))
+  stopifnot(inherits(tryCatch(tracking_reconstruction_ensemble(identical_entries,
+    seq(0,900,100),samples_per_offset=2L,excluded_offsets=excluded),error=identity),'error'))
+missing_excluded=identical_entries;missing_excluded[9]=list(NULL)
+stopifnot(inherits(tryCatch(tracking_reconstruction_ensemble(missing_excluded,
+  seq(0,900,100),samples_per_offset=2L,excluded_offsets=800),error=identity),'error'))
 failed=identical_entries;failed[[1]]$performance$converged=FALSE;fail_ensemble(failed)
 bad_covariance=identical_entries;bad_covariance[[1]]$fit$varBeta[1,1]=-1;fail_ensemble(bad_covariance)
 cat('Reconstruction ensemble passed: exact equal weights, full joint covariance, mixture quantiles,',
-  'unshrunk uncertainty, complete fit/support audits, retained offset 800 and unchanged RNG.\n')
+  'unshrunk uncertainty, complete fit/support audits, explicit offset-800 exclusion with its fit retained, and unchanged RNG.\n')
 stopifnot(grepl('Non-positive',sens$covariance_status[sens$metric=='lag_rate_per_century']),
   !is.na(sens$variance_interval_error[sens$metric=='lag_rate_per_century']))
 # Missing fire coverage and covered zero events are distinct, without changing

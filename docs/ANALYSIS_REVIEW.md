@@ -1801,22 +1801,24 @@ Script: [10c_tracking_predictor_models.R](../R/stages/10c_tracking_predictor_mod
 ### Holocene reconstruction-ensemble averaging
 
 Immediately after the Holocene fits, stage 10c combines their **coefficients**
-with equal offset weights. It retains the existing observations, responses,
+with equal weights across **nine offsets, excluding offset 800** at the author's
+request for all three responses. All ten individual-offset fits and their
+sensitivity diagnostics remain available. It retains the existing observations, responses,
 predictors, MA(1), site variances and REML fits. For each response and offset,
 the component distribution is a joint multivariate-normal approximation
-centered on `coef(fit)`, with the full `vcov(fit)`. Each of the ten components
-contributes exactly 50,000 joint samples to a 500,000-sample mixture. Fixed
+centered on `coef(fit)`, with the full `vcov(fit)`. Each of the nine included components
+has weight 1/9 and contributes exactly 50,000 joint samples to a 450,000-sample mixture. Fixed
 seeds are recorded; sampling restores the caller's RNG state.
 
-The point estimate is the exact arithmetic mean of the ten coefficients.
+The point estimate is the exact arithmetic mean of the nine included coefficients.
 Bounds are the mixture's 2.5 and 97.5 percentiles, labelled
 **reconstruction-ensemble uncertainty**, not conventional confidence intervals.
 The mixture retains conditional GLS coefficient uncertainty and variation
 between bin placements. Its covariance is the mean component covariance plus
 the population covariance of component means; there is no division of
-uncertainty by √10 and no pooled p-value. Bacon chronology uncertainty is
+uncertainty by √9 and no pooled p-value. Bacon chronology uncertainty is
 **not propagated**: each model still uses the existing transition-level medians
-over chronology draws. Equal weighting assumes the configured bin origins are
+over chronology draws. Equal weighting assumes the nine included bin origins are
 equally plausible; it does not establish that the models target identical
 temporal coverage or that offsets are independent ecological replicates.
 
@@ -1824,14 +1826,16 @@ This calculation excerpt comes directly from the maintained helper:
 
 ```r
   # Each component retains coef(fit) and the full vcov(fit).
-  draws=lapply(components,function(component) {
+  sampling_components=components[included]
+  draws=lapply(sampling_components,function(component) {
     z=matrix(rnorm(samples_per_offset*k),nrow=samples_per_offset,ncol=k)
     sweep(z %*% chol(component$vcov),2,component$beta,'+')
   })
+  names(draws)=as.character(offsets[included])
   mixture=do.call(rbind,draws);colnames(mixture)=terms
-  betas=do.call(rbind,lapply(components,`[[`,'beta'))
+  betas=do.call(rbind,lapply(sampling_components,`[[`,'beta'))
   estimate=colMeans(betas) # exact equal-weight mean, not a Monte Carlo mean
-  within=Reduce(`+`,lapply(components,`[[`,'vcov'))/n_offsets
+  within=Reduce(`+`,lapply(sampling_components,`[[`,'vcov'))/n_offsets
   centered=sweep(betas,2,estimate,'-')
   between=crossprod(centered)/n_offsets
   bounds=apply(mixture,2,quantile,probs=c(.025,.975),names=FALSE)
@@ -1839,26 +1843,26 @@ This calculation excerpt comes directly from the maintained helper:
 
 The compact results table retains the full range of offset estimates and
 positive/negative/zero sign counts. Sign consistency is the largest of those
-counts divided by ten, a sensitivity summary rather than a significance test.
+counts divided by nine, a sensitivity summary rather than a significance test.
 The intercept is available in the CSV; the figure focuses on the three
 predictors. All three climate and fire ensemble intervals span zero in this
 run, even where some individual-offset coefficients have narrow intervals.
 
 | Response | Predictor | Ensemble estimate | 2.5% | 97.5% | Offset minimum | Offset maximum | Positive offsets | Negative offsets |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| lag_rate_per_century | siteNOCA | -0.003968 | -0.01564 | 0.008547 | -0.007698 | -0.0007178 | 0 | 10 |
-| lag_rate_per_century | climate_rate | 0.4939 | -1.047 | 2.001 | -0.5594 | 1.513 | 8 | 2 |
-| lag_rate_per_century | fire_activity | 0.001099 | -0.03592 | 0.05077 | -0.01705 | 0.03513 | 6 | 4 |
-| pace_corrected_lag_rate_per_century | siteNOCA | 0.002573 | -0.006153 | 0.01629 | -0.002317 | 0.007484 | 6 | 4 |
-| pace_corrected_lag_rate_per_century | climate_rate | -0.07437 | -1.151 | 0.6004 | -0.972 | 0.2973 | 6 | 4 |
-| pace_corrected_lag_rate_per_century | fire_activity | 0.004932 | -0.006607 | 0.03011 | -0.0005308 | 0.01939 | 9 | 1 |
-| direction_corrected_lag_rate_per_century | siteNOCA | 0.006258 | -0.01105 | 0.02333 | 0.002114 | 0.01324 | 10 | 0 |
-| direction_corrected_lag_rate_per_century | climate_rate | 0.5253 | -1.984 | 2.077 | -1.791 | 1.497 | 8 | 2 |
-| direction_corrected_lag_rate_per_century | fire_activity | -0.001605 | -0.03792 | 0.04444 | -0.02205 | 0.02692 | 4 | 6 |
+| lag_rate_per_century | siteNOCA | -0.003794 | -0.01552 | 0.008821 | -0.007698 | -0.0007178 | 0 | 9 |
+| lag_rate_per_century | climate_rate | 0.485 | -1.067 | 2.014 | -0.5594 | 1.513 | 7 | 2 |
+| lag_rate_per_century | fire_activity | 0.000669 | -0.03606 | 0.05135 | -0.01705 | 0.03513 | 5 | 4 |
+| pace_corrected_lag_rate_per_century | siteNOCA | 0.003117 | -0.00624 | 0.01668 | -0.002185 | 0.007484 | 6 | 3 |
+| pace_corrected_lag_rate_per_century | climate_rate | -0.1147 | -1.171 | 0.5686 | -0.972 | 0.2973 | 5 | 4 |
+| pace_corrected_lag_rate_per_century | fire_activity | 0.004932 | -0.006749 | 0.03077 | -0.0005308 | 0.01939 | 8 | 1 |
+| direction_corrected_lag_rate_per_century | siteNOCA | 0.006465 | -0.008323 | 0.02191 | 0.002114 | 0.01324 | 9 | 0 |
+| direction_corrected_lag_rate_per_century | climate_rate | 0.7827 | -0.556 | 2.108 | -0.2014 | 1.497 | 8 | 1 |
+| direction_corrected_lag_rate_per_century | fire_activity | 0.0004234 | -0.03598 | 0.04555 | -0.02205 | 0.02692 | 4 | 5 |
 
 ### Holocene reconstruction-ensemble coefficients
 
-Exact equal-weight means of coefficients from all ten unchanged Holocene MA1 GLS fits. Bars are 2.5–97.5% reconstruction-ensemble uncertainty from an equal mixture of joint multivariate-normal coefficient distributions using each fit's full fixed-effect covariance. Predictor panels have separate scales. Offsets are dependent reconstructions; uncertainty is not divided by sqrt(10), p-values are not pooled and Bacon chronology uncertainty is not propagated. Offset 800 and flagged correlation-boundary fits remain included. **Reconstruction-ensemble sensitivity; conditional coefficient uncertainty**.
+Exact equal-weight means of coefficients from nine unchanged Holocene MA1 GLS fits, excluding offset 800 for all responses at the author's request. Each included offset has weight 1/9; the unchanged offset-800 fits remain in individual sensitivity diagnostics and the full audit at weight zero. Bars are 2.5–97.5% reconstruction-ensemble uncertainty from an equal mixture of joint multivariate-normal coefficient distributions using each fit's full fixed-effect covariance. Predictor panels have separate scales. Offsets are dependent reconstructions; uncertainty is not divided by sqrt(9), p-values are not pooled and Bacon chronology uncertainty is not propagated. Flagged correlation-boundary fits remain included. **Reconstruction-ensemble sensitivity excluding offset 800; conditional coefficient uncertainty**.
 
 Script: [10c_tracking_predictor_models.R](../R/stages/10c_tracking_predictor_models.R). [Complete PDF](../plot/test_figures/fig_tracking_predictor_ensemble_coefficients.pdf) (1 page).
 
@@ -1870,15 +1874,20 @@ residual SDs, descriptive R² and climate coefficients/response correlations.
 Its comparison with offset 0 uses lake/site/time-index phase keys: shared
 phase keys identify shifted alternative intervals, not equal endpoint ages.
 There are 26–30 valid transitions per fit. No failed or unavailable offset is
-silently dropped and no weights are adjusted to compensate.
+silently dropped. All ten configured fits and their full covariance matrices
+remain in the audit; offset 800 has `included_in_ensemble = FALSE`, weight zero
+and an explicit author-requested exclusion reason. The ensemble table records
+`n_offsets = 9` and `excluded_offsets = 800`.
 
-The unusual direction-corrected offset 800 remains at weight 0.1. Near 3,800 BP,
+The unusual direction-corrected offset 800 remains in the individual-offset
+diagnostics, although it is excluded from this ensemble. Near 3,800 BP,
 its MORA climate-predicted directions rotate about 117–142° relative to offset
 700, reversing the sign of the three corrected transition rates. Those
 transitions have all 100 chronology draws. At offset 800 the climate–response
 relationship differs between parks, and the fitted common slope and variance
 weights favor MORA, producing poor unweighted fit in NOCA and R² about −0.78.
-The ensemble therefore retains this bin-placement sensitivity. The two
+The exclusion is a requested bin-placement sensitivity decision, not a
+convergence failure or an upstream calculation change. The two
 pace-corrected MA(1) boundary fits at offsets 400 and 900 also remain included.
 
 `--ensemble-only` reproduces just these additional outputs from saved fits
@@ -2244,7 +2253,7 @@ current-results analysis.
 | [fig_tracking_lake_contrasts_direction_corrected_lag_rate_per_century_offset_0.pdf](../plot/test_figures/fig_tracking_lake_contrasts_direction_corrected_lag_rate_per_century_offset_0.pdf) | Direction-corrected lag-change rate: offset-0 lake sensitivity contrasts. | [10a_tracking_lake_sensitivity.R](../R/stages/10a_tracking_lake_sensitivity.R) | 1 | MA1 working specification; corrected lag lake sensitivity |
 | [fig_tracking_corrected_lag_contrasts_offset_0.pdf](../plot/test_figures/fig_tracking_corrected_lag_contrasts_offset_0.pdf) | Offset-0 corrected lag-change contrasts | [10b_tracking_manuscript_figure.R](../R/stages/10b_tracking_manuscript_figure.R) | 1 | MA1 working specification; descriptive counterfactual responses |
 | [fig_tracking_predictor_offset_coefficients.pdf](../plot/test_figures/fig_tracking_predictor_offset_coefficients.pdf) | Holocene offset coefficients and R² | [10c_tracking_predictor_models.R](../R/stages/10c_tracking_predictor_models.R) | 1 | exploratory |
-| [fig_tracking_predictor_ensemble_coefficients.pdf](../plot/test_figures/fig_tracking_predictor_ensemble_coefficients.pdf) | Holocene reconstruction-ensemble coefficients | [10c_tracking_predictor_models.R](../R/stages/10c_tracking_predictor_models.R) | 1 | reconstruction-ensemble sensitivity; conditional coefficient uncertainty |
+| [fig_tracking_predictor_ensemble_coefficients.pdf](../plot/test_figures/fig_tracking_predictor_ensemble_coefficients.pdf) | Holocene reconstruction-ensemble coefficients | [10c_tracking_predictor_models.R](../R/stages/10c_tracking_predictor_models.R) | 1 | reconstruction-ensemble sensitivity excluding offset 800; conditional coefficient uncertainty |
 | [fig_tracking_predictor_era_coefficients_offset_0.pdf](../plot/test_figures/fig_tracking_predictor_era_coefficients_offset_0.pdf) | Holocene offset-0 and Anthropocene predictor coefficients | [10c_tracking_predictor_models.R](../R/stages/10c_tracking_predictor_models.R) | 1 | exploratory |
 | [fig_tracking_predictor_holocene_predictions.pdf](../plot/test_figures/fig_tracking_predictor_holocene_predictions.pdf) | Holocene predicted lag-change trajectories | [10c_tracking_predictor_models.R](../R/stages/10c_tracking_predictor_models.R) | 1 | exploratory |
 | [fig_tracking_predictor_R2.pdf](../plot/test_figures/fig_tracking_predictor_R2.pdf) | Descriptive R² for the predictor models | [10c_tracking_predictor_models.R](../R/stages/10c_tracking_predictor_models.R) | 1 | exploratory |

@@ -701,8 +701,8 @@
       "pages": [1],
       "producer": "R/stages/10c_tracking_predictor_models.R",
       "purpose": "Holocene reconstruction-ensemble coefficients",
-      "interpretation": "Exact equal-weight means of coefficients from all ten unchanged Holocene MA1 GLS fits. Bars are 2.5–97.5% reconstruction-ensemble uncertainty from an equal mixture of joint multivariate-normal coefficient distributions using each fit's full fixed-effect covariance. Predictor panels have separate scales. Offsets are dependent reconstructions; uncertainty is not divided by sqrt(10), p-values are not pooled and Bacon chronology uncertainty is not propagated. Offset 800 and flagged correlation-boundary fits remain included.",
-      "status": "reconstruction-ensemble sensitivity; conditional coefficient uncertainty"
+      "interpretation": "Exact equal-weight means of coefficients from nine unchanged Holocene MA1 GLS fits, excluding offset 800 for all responses at the author's request. Each included offset has weight 1/9; the unchanged offset-800 fits remain in individual sensitivity diagnostics and the full audit at weight zero. Bars are 2.5–97.5% reconstruction-ensemble uncertainty from an equal mixture of joint multivariate-normal coefficient distributions using each fit's full fixed-effect covariance. Predictor panels have separate scales. Offsets are dependent reconstructions; uncertainty is not divided by sqrt(9), p-values are not pooled and Bacon chronology uncertainty is not propagated. Flagged correlation-boundary fits remain included.",
+      "status": "reconstruction-ensemble sensitivity excluding offset 800; conditional coefficient uncertainty"
     },
     {
       "id": "tracking_predictor_era_coefficients_offset_0",

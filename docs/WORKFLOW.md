@@ -374,13 +374,16 @@ modern residual maps. Spatial Moran checks retain the initially independent
 modern specification and identify remaining spatial pattern for later review.
 
 Immediately after each response's Holocene fits, an equal-weight mixture uses
-50,000 joint multivariate-normal coefficient samples per offset and the full
+50,000 joint multivariate-normal coefficient samples per included offset and the full
 fitted covariance matrices. The point estimate is the exact offset mean;
 2.5–97.5% bounds are reconstruction-ensemble uncertainty, not conventional
 confidence intervals. Bacon chronology uncertainty is not propagated and
-there is no √10 precision gain or pooled p-value. Separate summary, full
-covariance and support/convergence-audit tables retain all ten offsets,
-including direction-corrected offset 800 and flagged MA1 boundaries.
+there is no √9 precision gain or pooled p-value. At the author's request,
+offset 800 is excluded from the ensemble for all responses; the other nine
+offsets have equal weights of 1/9. Full covariance and support/convergence-audit
+tables retain all ten fits, including offset 800 at weight zero with an explicit
+exclusion reason and flagged MA1 boundaries. The existing individual-offset
+fits, predictions, coefficients and figures remain unchanged.
 
 A 100-year prediction date repeats its supported transition's fitted rate on
 `[age_lo, age_hi)`; no gaps are filled and offsets are never averaged for fits

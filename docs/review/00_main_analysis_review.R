@@ -6225,6 +6225,8 @@ input_path=here('output',paste0('cca_tracking_era_by_offset',suffix,'.csv'))
 combined=read_csv(input_path,show_col_types=FALSE)
 if(validate_tracking_model_data(combined)!=width) stop('Requested width differs from input')
 offsets=seq(0,width-100,100)
+# Author-requested ensemble exclusion; all ten primary offset fits stay unchanged.
+ensemble_excluded_offsets=if(width==1000L) 800L else numeric()
 metrics=tracking_predictor_responses()
 labels=tracking_predictor_labels()
 out=here('output/exploratory',paste0('tracking_predictor_models',suffix))
@@ -6243,7 +6245,11 @@ export_ensembles=function(ensembles) {
   saveRDS(list(responses=ensembles,input_md5=unname(tools::md5sum(input_path))),
     file.path(out,'holocene_ensemble_components.rds'))
   notes=c('Holocene reconstruction-ensemble averaging; existing explanatory GLS fits are unchanged.',
-    paste(length(offsets),'offsets, equally weighted; 50,000 joint coefficient samples per offset and response.'),
+    paste(length(offsets)-length(ensemble_excluded_offsets),
+      'included offsets, equally weighted; 50,000 joint coefficient samples per included offset and response.'),
+    paste('Excluded ensemble offsets:',if(length(ensemble_excluded_offsets))
+      paste(ensemble_excluded_offsets,collapse=', ') else 'none'),
+    'All configured offset fits and full covariance matrices remain in the audit; excluded offsets receive zero ensemble weight.',
     'Component distribution: multivariate normal centered on fitted coefficients, with the full fitted fixed-effect vcov.',
     'Point estimates are exact means of offset coefficients. Bounds are 2.5 and 97.5 percentiles of the equal mixture.',
     'Intervals are reconstruction-ensemble uncertainty, not conventional confidence intervals. No pooled p-values.',
@@ -6252,7 +6258,7 @@ export_ensembles=function(ensembles) {
     'Transition support and temporal coverage differ among offsets; phase-key comparisons align site/lake/time_index with offset 0.',
     'An aligned phase key identifies shifted alternative intervals, not identical ages or independent observations.',
     'All configured fits are required; failed fits or invalid fixed-effect covariance stop the ensemble rather than changing weights.',
-    'MA1 boundary fits and direction-corrected offset 800 remain included at the same weight and are flagged in the audit.',
+    'MA1 boundary fits are retained; offset 800 is excluded from the primary ensemble for all responses at the author\'s request, and its unchanged fit remains flagged in the audit.',
     'Sign consistency is the largest positive/negative/zero coefficient count divided by the number of offsets; it is not a probability or significance test.',
     if(width==1000L) 'Offset 800: direction correction is sensitive to climate-vector rotation around 3,800 BP; the shared slope and site weights amplify the difference.',
     paste('Input MD5:',unname(tools::md5sum(input_path))),
@@ -6275,7 +6281,8 @@ if('--ensemble-only' %in% args) {
   for(i in seq_along(metrics)) {
     metric=metrics[i]
     ensembles[[metric]]=tracking_reconstruction_ensemble(
-      stored$fits[paste(metric,offsets,sep='_')],offsets,width,seed=20261011L+i-1L)
+      stored$fits[paste(metric,offsets,sep='_')],offsets,width,seed=20261011L+i-1L,
+      excluded_offsets=ensemble_excluded_offsets)
     ensembles[[metric]]$draws=NULL
   }
   export_ensembles(ensembles)
@@ -6338,11 +6345,11 @@ for(metric in metrics) {
           capture.output(VarCorr(sensitivity$captured$fit))), '')
     }
   }
-  # Integrate this response's ten reconstructions immediately after its Holocene
+  # Integrate this response's selected reconstructions immediately after its Holocene
   # fits. The sampler restores RNG state and never changes a fit or its data.
   ensembles[[metric]]=tracking_reconstruction_ensemble(
     fits[paste(metric,offsets,sep='_')],offsets,width,
-    seed=20261011L+match(metric,metrics)-1L)
+    seed=20261011L+match(metric,metrics)-1L,excluded_offsets=ensemble_excluded_offsets)
   ensembles[[metric]]$draws=NULL
   for(type in c('Anthropocene_basic','Anthropocene_extended')) {
     cat('Anthropocene predictors:',metric,'|',type,'\n')

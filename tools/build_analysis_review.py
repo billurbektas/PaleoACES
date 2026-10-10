@@ -342,7 +342,11 @@ def validate(root=ROOT):
     if (len(ensemble)!=12 or len(audit)!=30 or
             len(rows(root/ASSETS/'tables/predictor_holocene_ensemble_offset_vcov.csv'))!=480 or
             any(row['interval_type']!='reconstruction-ensemble uncertainty' for row in ensemble) or
-            any(row['included_in_ensemble']!='TRUE' for row in audit) or
+            any(int(row['n_offsets'])!=9 or row['excluded_offsets']!='800' for row in ensemble) or
+            any(row['included_in_ensemble']!=('FALSE' if float(row['offset'])==800 else 'TRUE') or
+                abs(float(row['offset_weight'])-(0 if float(row['offset'])==800 else 1/9))>1e-12 or
+                row['ensemble_exclusion']!=('author_requested_offset_exclusion' if float(row['offset'])==800 else 'none')
+                for row in audit) or
             '### Holocene reconstruction-ensemble averaging' not in text):
         raise ValueError('Predictor review omits complete, correctly labelled reconstruction ensembles.')
     stages = workflow_stages()

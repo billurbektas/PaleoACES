@@ -953,22 +953,24 @@ offsets. These panels use separate scales; the R² panel has no interval.
 ### Holocene reconstruction-ensemble averaging
 
 Immediately after the Holocene fits, stage 10c combines their **coefficients**
-with equal offset weights. It retains the existing observations, responses,
+with equal weights across **nine offsets, excluding offset 800** at the author's
+request for all three responses. All ten individual-offset fits and their
+sensitivity diagnostics remain available. It retains the existing observations, responses,
 predictors, MA(1), site variances and REML fits. For each response and offset,
 the component distribution is a joint multivariate-normal approximation
-centered on `coef(fit)`, with the full `vcov(fit)`. Each of the ten components
-contributes exactly 50,000 joint samples to a 500,000-sample mixture. Fixed
+centered on `coef(fit)`, with the full `vcov(fit)`. Each of the nine included components
+has weight 1/9 and contributes exactly 50,000 joint samples to a 450,000-sample mixture. Fixed
 seeds are recorded; sampling restores the caller's RNG state.
 
-The point estimate is the exact arithmetic mean of the ten coefficients.
+The point estimate is the exact arithmetic mean of the nine included coefficients.
 Bounds are the mixture's 2.5 and 97.5 percentiles, labelled
 **reconstruction-ensemble uncertainty**, not conventional confidence intervals.
 The mixture retains conditional GLS coefficient uncertainty and variation
 between bin placements. Its covariance is the mean component covariance plus
 the population covariance of component means; there is no division of
-uncertainty by √10 and no pooled p-value. Bacon chronology uncertainty is
+uncertainty by √9 and no pooled p-value. Bacon chronology uncertainty is
 **not propagated**: each model still uses the existing transition-level medians
-over chronology draws. Equal weighting assumes the configured bin origins are
+over chronology draws. Equal weighting assumes the nine included bin origins are
 equally plausible; it does not establish that the models target identical
 temporal coverage or that offsets are independent ecological replicates.
 
@@ -978,7 +980,7 @@ This calculation excerpt comes directly from the maintained helper:
 
 The compact results table retains the full range of offset estimates and
 positive/negative/zero sign counts. Sign consistency is the largest of those
-counts divided by ten, a sensitivity summary rather than a significance test.
+counts divided by nine, a sensitivity summary rather than a significance test.
 The intercept is available in the CSV; the figure focuses on the three
 predictors. All three climate and fire ensemble intervals span zero in this
 run, even where some individual-offset coefficients have narrow intervals.
@@ -993,15 +995,20 @@ residual SDs, descriptive R² and climate coefficients/response correlations.
 Its comparison with offset 0 uses lake/site/time-index phase keys: shared
 phase keys identify shifted alternative intervals, not equal endpoint ages.
 There are 26–30 valid transitions per fit. No failed or unavailable offset is
-silently dropped and no weights are adjusted to compensate.
+silently dropped. All ten configured fits and their full covariance matrices
+remain in the audit; offset 800 has `included_in_ensemble = FALSE`, weight zero
+and an explicit author-requested exclusion reason. The ensemble table records
+`n_offsets = 9` and `excluded_offsets = 800`.
 
-The unusual direction-corrected offset 800 remains at weight 0.1. Near 3,800 BP,
+The unusual direction-corrected offset 800 remains in the individual-offset
+diagnostics, although it is excluded from this ensemble. Near 3,800 BP,
 its MORA climate-predicted directions rotate about 117–142° relative to offset
 700, reversing the sign of the three corrected transition rates. Those
 transitions have all 100 chronology draws. At offset 800 the climate–response
 relationship differs between parks, and the fitted common slope and variance
 weights favor MORA, producing poor unweighted fit in NOCA and R² about −0.78.
-The ensemble therefore retains this bin-placement sensitivity. The two
+The exclusion is a requested bin-placement sensitivity decision, not a
+convergence failure or an upstream calculation change. The two
 pace-corrected MA(1) boundary fits at offsets 400 and 900 also remain included.
 
 `--ensemble-only` reproduces just these additional outputs from saved fits
