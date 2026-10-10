@@ -6028,6 +6028,7 @@ cl=contrasts |> left_join(ratios,by=c('metric','site'),relationship='one-to-one'
   mutate(metric=factor(metric,levels=metrics),site=factor(site,levels=names(site_colors)),
     kind=unname(metric_kind[as.character(metric)]),
     error_alpha=if_else(p_value<.05,1,.20),
+    point_label_alpha=if_else(site=='NOCA' & p_value>=.05,.20,1),
     label=sprintf('%+.2f%s',estimate,if_else(p_value<.05,' *','')),
     fold_label=if_else(is.finite(ratio),sprintf('%.1f\u00d7',ratio),'undefined'))
 base_theme=theme_minimal(base_size=22)+theme(panel.grid.minor=element_blank(),
@@ -6059,10 +6060,12 @@ contrast_plot=function(climate=FALSE) {
     geom_hline(yintercept=0,linetype='dashed',color='grey55',linewidth=.6)+
     geom_errorbar(aes(ymin=conf_low,ymax=conf_high,alpha=error_alpha,color=site),
       position=pd,width=.10,linewidth=1.3,show.legend=FALSE)+
-    geom_point(aes(color=site,fill=site),position=pd,shape=21,size=3.8,stroke=1.1,
+    geom_point(aes(color=site,fill=site,alpha=point_label_alpha),position=pd,shape=21,size=3.8,stroke=1.1,
       show.legend=FALSE)+
-    geom_text(aes(y=label_y,label=label,color=site),position=pd,size=5.7,show.legend=FALSE)+
-    geom_text(aes(y=fold_y,label=fold_label,color=site),position=pd,vjust=1,size=5.5,show.legend=FALSE)+
+    geom_text(aes(y=label_y,label=label,color=site,alpha=point_label_alpha),
+      position=pd,size=7,show.legend=FALSE)+
+    geom_text(aes(y=fold_y,label=fold_label,color=site,alpha=point_label_alpha),
+      position=pd,vjust=1,size=6.8,show.legend=FALSE)+
     geom_text(data=axis_labels,aes(x=metric,y=axis_y,label=axis_label,color=axis_color),
       inherit.aes=FALSE,vjust=1,size=7,lineheight=1.05,show.legend=FALSE)+
     scale_color_manual(values=c(site_colors,response_colors,Axis='grey20'),guide='none')+

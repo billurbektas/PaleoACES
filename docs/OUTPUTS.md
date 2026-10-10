@@ -315,7 +315,9 @@ with side-by-side parks, separate unit scales and aligned zeros. Lag types share
 a grouped x-axis with teal/pink/purple labels. Contrast dots, bars and numeric
 annotations identify MORA/NOCA in blue/orange. Both contrast y-axes are on the
 left. Bars are 95% contrast intervals, with a star for unadjusted `p < 0.05`;
-nonsignificant bars are faint. Labels below bars are point ratios of fitted era
+nonsignificant bars are faint. Nonsignificant NOCA dots and numeric annotations
+use the same opacity, without an opacity legend. Contrast and fold-change numbers
+use larger type. Labels below bars are point ratios of fitted era
 means without ratio bounds; signed or near-zero lag denominators limit their
 interpretation. The second row shows observed-versus-corrected lag scatter
 panels for each era, with descriptive trend lines and nominal Spearman labels.

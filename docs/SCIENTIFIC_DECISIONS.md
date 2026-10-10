@@ -543,7 +543,8 @@ aligned zeros. Observed, pace-corrected and direction-corrected lag changes shar
 a grouped x-axis with teal/pink/purple label text. Contrast dots, error bars and
 numeric annotations identify MORA/NOCA in blue/orange. Both contrast
 y-axes are on the left. Stars mark unadjusted contrast `p < 0.05`; nonsignificant error bars
-are faint without an opacity legend. Point ratios of fitted Anthropocene to
+are faint, as are nonsignificant NOCA dots and numeric annotations, without an
+opacity legend. Point ratios of fitted Anthropocene to
 Holocene means are printed below bars without ratio uncertainty. Lag ratios
 may be negative on sign reversal or unstable near a zero denominator; these
 labels support description, while the absolute contrast retains its model

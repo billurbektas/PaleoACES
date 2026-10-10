@@ -920,8 +920,10 @@ NOCA; the observed, pace-corrected and direction-corrected x-axis labels are tea
 pink and purple, respectively. Climate and CCA
 responses retain separate unit scales with aligned zeros and both y-axes on the left. All bars are the
 original covariance-based 95% Satterthwaite contrast intervals. A star marks
-unadjusted `p < 0.05`; nonsignificant error bars are faint, with no transparency
-legend. The number below each bar is the fitted Anthropocene/Holocene mean
+unadjusted `p < 0.05`; nonsignificant error bars are faint. Nonsignificant NOCA
+dots and numeric annotations use the same opacity, with no transparency legend.
+Contrast and fold-change numbers use larger type. The number below each bar is
+the fitted Anthropocene/Holocene mean
 ratio without a ratio interval. Signed lag ratios can be negative because the
 means have opposite signs, and can be unstable when the Holocene mean is near
 zero; they are descriptive annotations, not multiplicative-effect inference.

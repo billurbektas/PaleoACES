@@ -106,7 +106,8 @@ and direction-corrected lag changes. Contrast dots, bars and numeric annotations
 identify MORA/NOCA in blue/orange; the lag x-axis labels are teal, pink and purple,
 respectively. Climate uses a separate scale; zero baselines
 are aligned and both y-axes are on the left. * denotes unadjusted contrast
-p < 0.05; nonsignificant interval bars are faint. Numbers beneath intervals
+p < 0.05; nonsignificant interval bars are faint, as are the dots and numeric
+annotations for nonsignificant NOCA contrasts. Numbers beneath intervals
 are ratios of fitted Anthropocene to Holocene means, without ratio intervals.
 Signed lag ratios may reflect sign reversals and become unstable near zero;
 they are descriptive annotations, not multiplicative-effect inference.
