@@ -1829,7 +1829,9 @@ site, physical climate rate and fire activity. Predictions span that lake's
 supported intervals; unsupported periods stay blank. The plotting grid repeats
 each fitted rate within `[age_lo, age_hi)` at 100-year display dates, without
 interpolating endpoints or adding model observations. Ten offset trajectories
-are retained separately. They are **predicted lag-change rates**, not a
+are retained separately as stepped paths. Adjacent supported intervals are
+joined by vertical jumps at their shared boundary; missing intervals break the
+path. They are **predicted lag-change rates**, not a
 reconstruction of absolute lag over the whole Holocene. Grey backgrounds reuse
 the previously defined regional CC/S catalog and CC1 subdivisions; they are
 context, not extra predictors or new lake-specific classifications.
@@ -1843,7 +1845,7 @@ or describe future-observation prediction intervals.
 
 ### Holocene predicted lag-change trajectories
 
-One fitted line per offset over supported actual intervals, without extrapolation or averaging offsets. Grey CC/S bands and CC1 subdivisions reuse the frozen regional climate catalog. These are predicted rates, not cumulative lag levels or 100-year independent observations. **Exploratory**.
+One stepped fitted trajectory per offset over supported actual intervals. Adjacent intervals join at their shared boundary; missing intervals break the line. There is no interpolation, extrapolation or averaging offsets. Grey CC/S bands and CC1 subdivisions reuse the frozen regional climate catalog. These are predicted rates, not cumulative lag levels or 100-year independent observations. **Exploratory**.
 
 Script: [10c_tracking_predictor_models.R](../R/stages/10c_tracking_predictor_models.R). [Complete PDF](../plot/test_figures/fig_tracking_predictor_holocene_predictions.pdf) (1 page).
 

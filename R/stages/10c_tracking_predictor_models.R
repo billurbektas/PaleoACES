@@ -186,15 +186,24 @@ if(render_figures) {
     mutate(midpoint=(older_cal_bp+younger_cal_bp)/2)
   lakes=c('JayBath','LogWallow','ReflectionPond','PantherPotholes')
   grid=holocene_predictions |> mutate(response=response_factor(metric),lake=factor(lake,levels=lakes))
+  # Follow each offset from older to younger intervals. Duplicate a shared
+  # boundary to draw a vertical jump; a missing interval starts a new path.
+  # Horizontal sections retain the interval's fitted rate without interpolation.
+  trajectories=predictions |> filter(era=='Holocene') |>
+    mutate(response=response_factor(metric),lake=factor(lake,levels=lakes)) |>
+    arrange(metric,site,lake,offset,desc(age_hi)) |>
+    group_by(metric,site,lake,offset) |>
+    mutate(path_segment=cumsum(row_number()==1L | age_hi!=lag(age_lo))) |>
+    ungroup() |> mutate(path_age=map2(age_hi,age_lo,~c(.x,.y))) |> unnest(path_age)
   periods=ggplot(grid,aes(t,predicted_lag_rate))+
     geom_rect(data=eras,aes(xmin=younger_cal_bp,xmax=older_cal_bp,ymin=-Inf,ymax=Inf,fill=era_class),
       inherit.aes=FALSE,alpha=.55,color=NA)+
     geom_text(data=period_labels,aes(x=midpoint,y=Inf,label=label),inherit.aes=FALSE,
       size=3.5,angle=90,hjust=1.1,vjust=.5,color='grey35')+
     geom_hline(yintercept=0,color='grey50',linetype='dashed',linewidth=.4)+
-    geom_segment(data=predictions |> filter(era=='Holocene') |>
-      mutate(response=response_factor(metric),lake=factor(lake,levels=lakes)),
-      aes(x=age_hi,xend=age_lo,y=predicted_lag_rate,yend=predicted_lag_rate,color=factor(offset)),
+    geom_path(data=trajectories,
+      aes(x=path_age,y=predicted_lag_rate,color=factor(offset),
+        group=interaction(metric,site,lake,offset,path_segment)),
       linewidth=.65,alpha=.8)+
     facet_grid(response~lake,scales='free_y')+scale_x_reverse(breaks=seq(0,10000,2000))+
     scale_fill_manual(values=c(`climate change`='#D3D3D6',`relative stability`='#EEEEF0'),guide='none')+

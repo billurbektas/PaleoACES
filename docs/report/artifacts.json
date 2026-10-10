@@ -715,7 +715,7 @@
       ],
       "producer": "R/stages/10c_tracking_predictor_models.R",
       "purpose": "Holocene predicted lag-change trajectories",
-      "interpretation": "One fitted line per offset over supported actual intervals, without extrapolation or averaging offsets. Grey CC/S bands and CC1 subdivisions reuse the frozen regional climate catalog. These are predicted rates, not cumulative lag levels or 100-year independent observations.",
+      "interpretation": "One stepped fitted trajectory per offset over supported actual intervals. Adjacent intervals join at their shared boundary; missing intervals break the line. There is no interpolation, extrapolation or averaging offsets. Grey CC/S bands and CC1 subdivisions reuse the frozen regional climate catalog. These are predicted rates, not cumulative lag levels or 100-year independent observations.",
       "status": "exploratory"
     },
     {

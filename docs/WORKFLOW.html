@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: 95aeea71ff3070d1e45937f680358593 -->
+<!-- paleoaces-source-md5: efc57cf83bdb89ca65a753aaa9ba967e -->
 
 <html>
 
@@ -2420,7 +2420,9 @@ identify remaining spatial pattern for later review.</p>
 rate on <code>[age_lo, age_hi)</code>; no gaps are filled and offsets
 are never averaged for fits or trajectories. R² means unweighted
 in-sample <code>1 - SSE/SST</code>, including negative values. It is not
-a model significance test or independent predictive validation. A manual
+a model significance test or independent predictive validation. Temporal
+trajectories connect adjacent fitted intervals with vertical steps;
+missing intervals break the path rather than being bridged. A manual
 nondefault <code>--bin-width-years=N</code> run requires the separately
 suffixed combined input and writes suffixed results and PDFs; only 1,000
 years runs by default.</p>

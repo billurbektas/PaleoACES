@@ -375,5 +375,7 @@ A 100-year prediction date repeats its supported transition's fitted rate on
 `[age_lo, age_hi)`; no gaps are filled and offsets are never averaged for fits
 or trajectories. R² means unweighted in-sample `1 - SSE/SST`, including negative
 values. It is not a model significance test or independent predictive validation.
+Temporal trajectories connect adjacent fitted intervals with vertical steps;
+missing intervals break the path rather than being bridged.
 A manual nondefault `--bin-width-years=N` run requires the separately suffixed
 combined input and writes suffixed results and PDFs; only 1,000 years runs by default.
