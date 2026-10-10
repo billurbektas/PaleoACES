@@ -332,8 +332,8 @@ contrasts are written separately to
 `plot/test_figures/fig_tracking_corrected_lag_contrasts_offset_0.pdf`, with
 pink/purple correction labels and the same blue/orange park colors, intervals
 and significance opacity. This PDF is embedded alongside Figure 4 in the review.
-Definitions and limitations stay in the review and
-publication caption. Figure 2/3 and calibration/chronology inputs are unchanged.
+Definitions and limitations stay in the review. Figure 2/3 and
+calibration/chronology inputs are unchanged.
 
 The previous combined reporting-grid CSV, exploratory modeling script and its
 per-run inputs, model bundles, summaries and residual PDFs are retired. The

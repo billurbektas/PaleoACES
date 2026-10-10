@@ -564,7 +564,7 @@ with equal x/y distance scales. No corrected density,
 figure caption, overall title or count subtitle is drawn. Scatter axes identify
 observed lag-change rate and lag-change rate after correction without unit
 suffixes; both remain in CCA distance per century. Definitions and limitations
-are maintained in the review and publication caption. The figures reuse results,
+are maintained in the review. The figures reuse results,
 validates 20 means and ten contrasts, and preserves calibration, chronology and
 Figures 2/3 without refitting or response transformations.
 
@@ -794,7 +794,6 @@ notes; any future chronology revision is separate work.
 
 - [README](../README.md)
 - [Workflow](WORKFLOW.md)
-- [Figure methods and captions](FIGURE_CAPTIONS.md)
 - [Tracking data validation](review/TRACKING_DATA_VALIDATION.md)
 - [Holocene literature summary](references/Holocene_period_choices_MORA_NOCA_summary.pdf)
 - [Bacon controls](../Cores/CONTROL_POINTS.md)

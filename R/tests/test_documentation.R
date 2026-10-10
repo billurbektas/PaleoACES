@@ -83,45 +83,6 @@ for (index in c("README.md", "docs/WORKFLOW.md")) {
     fail(paste(index, "does not link the documentation index"))
 }
 
-# The publication-caption document has one method summary, image, and formal
-# caption for each empirical figure, ordered after conceptual Figure 1.
-caption_path = here("docs/FIGURE_CAPTIONS.md")
-if (file.exists(caption_path)) {
-  caption_text = paste(readLines(caption_path, warn = FALSE,
-                                 encoding = "UTF-8"), collapse = "\n")
-  caption_flat = str_squish(caption_text)
-  heading_matches = str_match_all(
-    caption_text, regex("^## Figure ([2-5]) —", multiline = TRUE))[[1]]
-  if (!identical(heading_matches[, 2], as.character(2:4)))
-    fail("docs/FIGURE_CAPTIONS.md does not order Figures 2–4 exactly once")
-  if (str_count(caption_text, fixed("**Method summary.**")) != 3L)
-    fail("docs/FIGURE_CAPTIONS.md must contain three separate method summaries")
-  if (str_count(caption_text,
-                fixed("**Publication-ready caption.**")) != 3L)
-    fail("docs/FIGURE_CAPTIONS.md must contain three publication-ready captions")
-  if (str_count(caption_text, "!\\[Figure [2-5]\\.") != 3L)
-    fail("docs/FIGURE_CAPTIONS.md must embed three figure previews")
-  expected_pdfs = c(
-    "plot/fig_standardized_climate_change_eras_fire.pdf",
-    "plot/fig_cca_trajectories.pdf",
-    "plot/fig_tracking_era_distributions.pdf")
-  if (!all(vapply(expected_pdfs, function(x) str_detect(caption_text, fixed(x)),
-                  logical(1))))
-    fail("docs/FIGURE_CAPTIONS.md does not link every publication PDF")
-  figure2_contract = c(
-    "Y−5 through Y",
-    "27.5–32.5 midpoint years",
-    "27.5–28.5 midpoint years",
-    "annualized short-window contrasts",
-    "maximum-absolute Holocene regional median",
-    "post-2010 CHELSA inhomogeneity"
-  )
-  if (!all(vapply(figure2_contract, function(x) str_detect(caption_flat, fixed(x)),
-                  logical(1))))
-    fail("docs/FIGURE_CAPTIONS.md lacks exact Figure 2 window/rate semantics")
-
-}
-
 decisions_text = paste(readLines(here("docs/SCIENTIFIC_DECISIONS.md"), warn = FALSE,
                                  encoding = "UTF-8"), collapse = "\n")
 remaining_questions = c(

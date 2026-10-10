@@ -1,6 +1,6 @@
 # Documentation index
 
-The [analysis review](ANALYSIS_REVIEW.md) connects current results to intermediate diagnostics. Scientific decisions and publication captions remain authoritative in their respective documents. Provenance stays beside its source data and chronology products.
+The [analysis review](ANALYSIS_REVIEW.md) connects current results to intermediate diagnostics and manuscript figures. [Scientific decisions](SCIENTIFIC_DECISIONS.md) records the adopted choices. Provenance stays beside its source data and chronology products.
 
 | Document | Role |
 |---|---|
@@ -12,7 +12,6 @@ The [analysis review](ANALYSIS_REVIEW.md) connects current results to intermedia
 | [TRACKING_DATA_VALIDATION](review/TRACKING_DATA_VALIDATION.md) | Canonical schemas, draw support, preservation checks and future modeling limits |
 | [WORKFLOW](WORKFLOW.md) | Executable order, commands, and checks |
 | [SCIENTIFIC_DECISIONS](SCIENTIFIC_DECISIONS.md) | Scientific rationale and open questions |
-| [FIGURE_CAPTIONS](FIGURE_CAPTIONS.md) | Manuscript Figures 2–4 captions |
 | [CONTROL_POINTS](../Cores/CONTROL_POINTS.md) | Methods or input provenance |
 | [SOURCES_MORA](../Cores/SOURCES_MORA.md) | Methods or input provenance |
 | [000_NOCA_cleaning_guide](methods/000_NOCA_cleaning_guide.md) | Methods or input provenance |

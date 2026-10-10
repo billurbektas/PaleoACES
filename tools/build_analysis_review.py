@@ -44,7 +44,7 @@ def input_files():
     files += list((ROOT / 'Cores/provenance').glob('*.json'))
     files += list((ROOT / 'Cores/provenance/chronology_sources_before_move').glob('*.txt'))
     files += list((ROOT/'R/tests/fixtures').glob('*.csv'))
-    files += [ROOT/p for p in ['docs/SCIENTIFIC_DECISIONS.md', 'docs/FIGURE_CAPTIONS.md', 'docs/methods/000_NOCA_cleaning_guide.md', 'docs/methods/README_occurrence_consolidation.md', 'docs/review/NOCA_GPS_EXCLUSION.md', 'docs/review/TRACKING_DATA_VALIDATION.md', 'docs/review/NOCA_TRACKING_MIGRATION_CHECK.csv', 'docs/review/TRACKING_COMPACT_PRESERVATION.csv', 'docs/review/TRACKING_INDEPENDENT_CHECKS.csv']]
+    files += [ROOT/p for p in ['docs/SCIENTIFIC_DECISIONS.md', 'docs/methods/000_NOCA_cleaning_guide.md', 'docs/methods/README_occurrence_consolidation.md', 'docs/review/NOCA_GPS_EXCLUSION.md', 'docs/review/TRACKING_DATA_VALIDATION.md', 'docs/review/NOCA_TRACKING_MIGRATION_CHECK.csv', 'docs/review/TRACKING_COMPACT_PRESERVATION.csv', 'docs/review/TRACKING_INDEPENDENT_CHECKS.csv']]
     return sorted(set(files))
 
 def manifest(files): return [dict(path=relative(p), bytes=p.stat().st_size, sha256=sha(p)) for p in files]
@@ -538,7 +538,7 @@ def build(mode):
             src=ROOT/'plot'/(x['stem']+'.png'); dest=out/f'figure-{x["number"]}.png'; shutil.copyfile(src,dest)
             record(dest,x['producer'],relative(src),status='manuscript figure')
             record(ROOT/'plot'/(x['stem']+'.pdf'),x['producer'],'plot/'+x['stem']+'.pdf',status='manuscript PDF')
-            fig_blocks['figure_'+str(x['number'])]=f'### Figure {x["number"]}. {titles[x["number"]]}\n\n![Figure {x["number"]}. {x["stem"].replace("_"," ")}](assets/analysis/figure-{x["number"]}.png)\n\n[Full PDF](../plot/{x["stem"]}.pdf) · [Figure script](../{x["producer"]}) · [Publication captions](FIGURE_CAPTIONS.md).\n'
+            fig_blocks['figure_'+str(x['number'])]=f'### Figure {x["number"]}. {titles[x["number"]]}\n\n![Figure {x["number"]}. {x["stem"].replace("_"," ")}](assets/analysis/figure-{x["number"]}.png)\n\n[Full PDF](../plot/{x["stem"]}.pdf) · [Figure script](../{x["producer"]}).\n'
         command(['Rscript',ROOT/'tools/render_review_diagram.R',out/'dependencies.png'])
         record(out/'dependencies.png','tools/render_review_diagram.R',status='documentation diagram')
         decisions=(ROOT/'docs/SCIENTIFIC_DECISIONS.md').read_text()

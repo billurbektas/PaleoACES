@@ -211,7 +211,6 @@ the verification needed to use the existing posteriors.
 |---|---|
 | [README](../README.md) | Project landing page and principal outputs |
 | [Scientific decisions](SCIENTIFIC_DECISIONS.md) | Current rationale, results, caveats, and unresolved sensitivities |
-| [Figure captions](FIGURE_CAPTIONS.md) | Separate method summaries, previews, and publication-ready captions for Figures 2–4 |
 | [Tracking definitions](SCIENTIFIC_DECISIONS.md#lake-tracking-metrics) | Canonical formulas, signs, units and support conventions |
 | [Tracking validation](review/TRACKING_DATA_VALIDATION.md) | Current schemas, support, migration checks and modeling limits |
 | [Holocene evidence summary](references/Holocene_period_choices_MORA_NOCA_summary.pdf) | Literature/context source review retained outside the classification stage |

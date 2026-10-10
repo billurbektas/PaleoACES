@@ -8,8 +8,7 @@ PaleoACES asks how observed forest composition moves relative to the composition
 predicted by climate, comparing modern forest resurveys with four Holocene
 records. This review follows the [workflow](WORKFLOW.md), showing preparation,
 methods, diagnostics and manuscript figures. [Scientific decisions](SCIENTIFIC_DECISIONS.md)
-records the adopted choices; [figure captions](FIGURE_CAPTIONS.md) provides the
-publication text.
+records the adopted choices.
 
 ## Study design and inputs
 
@@ -777,7 +776,7 @@ fitted model; they do not change the selected axes or the analysis settings.
 
 ![Figure 3. fig cca trajectories](assets/analysis/figure-3.png)
 
-[Full PDF](../plot/fig_cca_trajectories.pdf) · [Figure script](../R/stages/05a_cca_figure.R) · [Publication captions](FIGURE_CAPTIONS.md).
+[Full PDF](../plot/fig_cca_trajectories.pdf) · [Figure script](../R/stages/05a_cca_figure.R).
 
 ## Tracking example, descriptive visualizations and climate/fire display
 
@@ -860,7 +859,7 @@ in mm/century. Modern rates describe the agreed survey-window contrasts.
 
 ![Figure 2. fig standardized climate change eras fire](assets/analysis/figure-2.png)
 
-[Full PDF](../plot/fig_standardized_climate_change_eras_fire.pdf) · [Figure script](../R/stages/13a_climate_change_figure.R) · [Publication captions](FIGURE_CAPTIONS.md).
+[Full PDF](../plot/fig_standardized_climate_change_eras_fire.pdf) · [Figure script](../R/stages/13a_climate_change_figure.R).
 
 ### Expose signed changes, phase support, and era construction
 
@@ -1780,7 +1779,7 @@ labels. There are no corrected-lag density curves. Actual offset-0 counts are
 20 MORA/10 NOCA Holocene transitions, 330/277 observed and direction-corrected
 modern pairs, and 254/211 pace-corrected modern pairs. The figure has no overall
 title, caption or sample-count subtitles; definitions and limitations stay in this
-review and the [publication caption](FIGURE_CAPTIONS.md).
+review.
 
 Stage 10b reads the combined model input and existing results without fitting,
 transforming responses or reconstructing geometry. It validates 20 group means
@@ -1792,7 +1791,7 @@ and the calibration/chronology inputs remain unchanged.
 
 ![Figure 4. fig tracking era distributions](assets/analysis/figure-4.png)
 
-[Full PDF](../plot/fig_tracking_era_distributions.pdf) · [Figure script](../R/stages/10b_tracking_manuscript_figure.R) · [Publication captions](FIGURE_CAPTIONS.md).
+[Full PDF](../plot/fig_tracking_era_distributions.pdf) · [Figure script](../R/stages/10b_tracking_manuscript_figure.R).
 
 The pace- and direction-corrected lag contrasts are shown separately below,
 using the same offset-0 MA1 estimates, confidence intervals, park colors and

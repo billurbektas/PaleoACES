@@ -8,8 +8,7 @@ PaleoACES asks how observed forest composition moves relative to the composition
 predicted by climate, comparing modern forest resurveys with four Holocene
 records. This review follows the [workflow](WORKFLOW.md), showing preparation,
 methods, diagnostics and manuscript figures. [Scientific decisions](SCIENTIFIC_DECISIONS.md)
-records the adopted choices; [figure captions](FIGURE_CAPTIONS.md) provides the
-publication text.
+records the adopted choices.
 
 ## Study design and inputs
 
@@ -963,7 +962,7 @@ labels. There are no corrected-lag density curves. Actual offset-0 counts are
 20 MORA/10 NOCA Holocene transitions, 330/277 observed and direction-corrected
 modern pairs, and 254/211 pace-corrected modern pairs. The figure has no overall
 title, caption or sample-count subtitles; definitions and limitations stay in this
-review and the [publication caption](FIGURE_CAPTIONS.md).
+review.
 
 Stage 10b reads the combined model input and existing results without fitting,
 transforming responses or reconstructing geometry. It validates 20 group means
