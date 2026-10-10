@@ -6052,7 +6052,7 @@ corrected_metrics=tracking_corrected_response_names()
 corrected_limits=contrast_limits(filter(cl,metric %in% corrected_metrics))
 contrast_plot=function(response_metrics,bounds,correction_labels=FALSE) {
   dd=filter(cl,metric %in% response_metrics)
-  dd=dd |> mutate(label_y=conf_high+.045*bounds$span,fold_y=conf_low-.055*bounds$span)
+  dd=dd |> mutate(label_y=conf_high+.085*bounds$span,fold_y=conf_low-.055*bounds$span)
   # Keep enlarged fold labels clear of the zero reference line.
   if(correction_labels) dd=dd |> mutate(fold_y=if_else(
     fold_y>=0 & fold_y<.10*bounds$span,-.035*bounds$span,fold_y))
@@ -6115,7 +6115,7 @@ scatter=function(era_name) {
     p_text=if_else(p_value<.001,sprintf('%.1e',p_value),sprintf('%.3f',p_value)),
     label=sprintf('\u03c1 = %.2f, p = %s',rho,p_text),
     label_x=lim[1]+.04*diff(lim),
-    label_y=lim[2]-(.055+.11*(match(correction,c('Direction','Pace'))-1))*diff(lim))
+    label_y=lim[2]-(.055+.075*(match(correction,c('Direction','Pace'))-1))*diff(lim))
   scatter_stats[[era_name]] <<- stats
   p=ggplot(ds,aes(lag_rate_per_century,corrected_rate))+
     geom_hline(yintercept=0,linetype='dashed',color='grey55',linewidth=.6)+
@@ -6173,14 +6173,14 @@ first_row=wrap_plots(
   contrast_plot(primary_metrics[2:3],filter(primary_limits,panel=='CCA')),
   nrow=1,widths=c(1.2,2),guides='auto')
 second_row=wrap_plots(scatter('Holocene'),scatter('Anthropocene'),nrow=1,guides='auto')
-figure=wrap_plots(first_row,second_row,ncol=1,heights=c(1,1.35),guides='collect') &
+figure=wrap_plots(first_row,second_row,ncol=1,heights=c(1,1.65),guides='collect') &
   theme(legend.position='bottom',plot.background=element_rect(fill='white',color=NA))
 corrected_figure=contrast_plot(corrected_metrics,corrected_limits,correction_labels=TRUE)+
   theme(legend.position='bottom',plot.background=element_rect(fill='white',color=NA))
 if(render_figures) {
   stem=here('plot/fig_tracking_era_distributions')
-  ggsave(paste0(stem,'.pdf'),figure,width=19,height=17.5,device=cairo_pdf,bg='white')
-  ggsave(paste0(stem,'.png'),figure,width=19,height=17.5,dpi=300,bg='white')
+  ggsave(paste0(stem,'.pdf'),figure,width=19,height=18.5,device=cairo_pdf,bg='white')
+  ggsave(paste0(stem,'.png'),figure,width=19,height=18.5,dpi=300,bg='white')
   ggsave(here('plot/test_figures/fig_tracking_corrected_lag_contrasts_offset_0.pdf'),
     corrected_figure,width=12,height=7.5,device=cairo_pdf,bg='white')
 }
