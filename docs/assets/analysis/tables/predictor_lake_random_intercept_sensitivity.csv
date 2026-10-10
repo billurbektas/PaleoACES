@@ -1,0 +1,5 @@
+metric,offset,n,n_lakes,converged,random_intercept_sd,random_intercept_variance,random_sd_relative_to_residual,max_abs_coefficient_difference,max_abs_fixed_prediction_difference,covariance_status,random_sd_conf_low,random_sd_conf_high,variance_intervals_finite,variance_interval_error,warnings,fit_error
+lag_rate_per_century,0,30,4,TRUE,3.791893e-7,1.4378452523449e-13,3.0579481909163684e-5,3.2830880281053965e-7,9.718928417265515e-9,Non-positive definite approximate variance-covariance,NA,NA,FALSE,"cannot get confidence intervals on var-cov components: Non-positive definite approximate variance-covariance
+ Consider 'which = ""fixed""'",none,NA
+pace_corrected_lag_rate_per_century,0,30,4,TRUE,2.514954e-7,6.324993622115999e-14,3.071972478154066e-5,2.746898644101492e-7,2.79252000581591e-8,positive_definite,0,Inf,FALSE,NA,none,NA
+direction_corrected_lag_rate_per_century,0,30,4,TRUE,1.837638e-7,3.376913419044e-14,2.115046997909432e-5,1.3530874642952995e-8,2.7271378818388703e-10,positive_definite,0,Inf,FALSE,NA,none,NA

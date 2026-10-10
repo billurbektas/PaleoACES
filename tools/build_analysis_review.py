@@ -99,7 +99,7 @@ def workflow_stages():
     workflow = (ROOT / 'R/workflow.R').read_text()
     paths = re.findall(r'run_script\("(R/[^\"]+[.]R)"', workflow)
     paths = [p for p in paths if p.startswith('R/stages/')]
-    if len(paths) != 25 or len(set(paths)) != 25: raise ValueError('Expected exactly 25 ordered workflow analysis stages.')
+    if len(paths) != 26 or len(set(paths)) != 26: raise ValueError('Expected exactly 26 ordered workflow analysis stages.')
     return paths
 
 def tracking_calculation_sections():
@@ -166,7 +166,7 @@ def script_map():
         ('Chronology (optional refit)', 1), ('Paleo vegetation and fire', 3),
         ('Paleo climate', 2), ('Taxonomy consolidation', 1),
         ('CCA eligibility, calibration and reference', 1),
-        ('Fire catalog and climate eras', 2), ('Canonical lake/plot tracking', 1), ('Combined transition input', 1), ('Covariance comparison and selected MA1', 1), ('Offset-0 lake sensitivity', 1), ('Offset-0 manuscript comparison: Figure 4', 1), ('Community trajectories: Figure 3', 1),
+        ('Fire catalog and climate eras', 2), ('Canonical lake/plot tracking', 1), ('Combined transition input', 1), ('Covariance comparison and selected MA1', 1), ('Offset-0 lake sensitivity', 1), ('Offset-0 manuscript comparison: Figure 4', 1), ('Era-specific predictor models and lake-intercept sensitivity', 1), ('Community trajectories: Figure 3', 1),
         ('Tracking and fire-detection examples', 2), ('Climate/fire display: Figure 2 and example', 2)]
     paths = workflow_stages(); index = 0; data = []
     for part,count in groups:
@@ -324,6 +324,16 @@ def validate(root=ROOT):
         raise ValueError('Retired manuscript Figure 5 remains active.')
     if '### Figure 4.' not in text or '../R/stages/10b_tracking_manuscript_figure.R)' not in text:
         raise ValueError('Review omitted the new offset-0 manuscript figure.')
+    helper = (ROOT/'R/helpers/tracking_predictor_models.R').read_text()
+    predictor_code = helper.split('# BEGIN PREDICTOR MODEL STRUCTURES\n',1)[1].split('# END PREDICTOR MODEL STRUCTURES',1)[0].rstrip()
+    if predictor_code not in text or '## Within-era climate, fire and elevation predictor models' not in text:
+        raise ValueError('Review omitted maintained predictor-model structures or interpretation.')
+    coefficients = rows(root/ASSETS/'tables/predictor_model_coefficients.csv')
+    performance = rows(root/ASSETS/'tables/predictor_model_performance.csv')
+    if len(coefficients)!=144 or len(performance)!=36:
+        raise ValueError('Predictor review omits fitted specifications.')
+    if len(rows(root/ASSETS/'tables/predictor_lake_random_intercept_sensitivity.csv'))!=3 or len(rows(root/ASSETS/'tables/predictor_anthropocene_spatial_checks.csv'))!=12:
+        raise ValueError('Predictor review omits lake or spatial sensitivity evidence.')
     stages = workflow_stages()
     if any(f'../{p})' not in text for p in stages): raise ValueError('Report script map omits an active workflow stage.')
     review = root/'docs/review/00_main_analysis_review.R'
@@ -476,6 +486,15 @@ def build(mode):
                 language = 'r' if name == 'cca_model_code' else 'text'
                 text_blocks[name] = f'```{language}\n{dst.read_text().rstrip()}\n```\n'
         text_blocks['tracking_metrics_code'] = tracking_calculation_markdown()
+        predictor_helper = (ROOT/'R/helpers/tracking_predictor_models.R').read_text()
+        predictor_code = predictor_helper.split('# BEGIN PREDICTOR MODEL STRUCTURES\n',1)[1].split('# END PREDICTOR MODEL STRUCTURES',1)[0].rstrip()
+        text_blocks['predictor_model_code'] = f'```r\n{predictor_code}\n```\n'
+        predictor_names = [name for name in tables if name.startswith('predictor_')]
+        text_blocks['predictor_tables'] = '\n'.join(f'- [{name.removeprefix("predictor_").replace("_", " ")}](assets/analysis/tables/{name}.csv)' for name in predictor_names)+'\n'
+        focal = [row for row in tables['predictor_model_performance'] if row['era']=='Anthropocene' or row['offset']=='0']
+        text_blocks['predictor_focal_performance'] = mdtable(focal,[('metric','Response'),('model_type','Specification'),('n','Observations'),('R2','Descriptive R²')])
+        text_blocks['predictor_random_sensitivity'] = mdtable(tables['predictor_lake_random_intercept_sensitivity'],[('metric','Response'),('random_intercept_sd','Lake SD'),('max_abs_coefficient_difference','Maximum coefficient change'),('covariance_status','Covariance uncertainty'),('variance_intervals_finite','Finite lake-SD interval')])
+        text_blocks['predictor_spatial_table'] = mdtable(tables['predictor_anthropocene_spatial_checks'],[('metric','Response'),('model_type','Specification'),('site','Park'),('moran_I','Moran I'),('p_permutation_two_sided','Nominal permutation p')])
         table_blocks={}
         for name,cols in COLUMNS.items():
             data=tables[name]

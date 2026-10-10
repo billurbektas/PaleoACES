@@ -1,0 +1,2737 @@
+Exploratory era-specific predictor models; no response transformations.
+Responses: observed, pace-corrected and direction-corrected lag-change rates (CCA distance per century).
+Holocene: estimate ~ site + climate_rate + fire_activity; REML; MA1 within each lake; site residual SDs.
+Each offset uses actual transition medians over valid chronology draws; offsets are sensitivities, not replicates.
+Observed and corrected responses have independent validity selection. No draw-support threshold is imposed.
+Climate rate is physical seasonal change standardized by pooled legacy calibration SDs per century.
+Fire activity is unitless same-window normalized accepted event frequency. MORA lakes share regional fire exposure.
+Missing fire coverage excludes that transition from the predictor model, never converts it to zero.
+Temporal indices retain actual gaps. MA1 theta gives rho(1)=theta/(1+theta^2), with rho(k)=0 for k>1.
+Offset-0 LME: random intercept by lake, same rows and fixed/correlation/variance structure; actual apVar/interval outcomes reported.
+A returned covariance matrix does not establish reliable random variance estimation when its estimate is essentially zero.
+Predictions are fixed-effect fitted lag-change rates, not cumulative lag levels or newly observed vegetation.
+100-year prediction displays repeat supported transition predictions on [age_lo, age_hi); gaps are not filled or extrapolated.
+Prediction intervals in the CSV are fixed-effect mean intervals conditional on estimated residual covariance; no chronology propagation.
+R2 is descriptive, unweighted, in-sample 1-SSE/SST; it can be negative and does not assess independent validation or model significance.
+Modern basic: estimate ~ site + burned; extended: estimate ~ site + elevation + climate_rate + burned.
+Both modern models use REML, independent residuals and separate site SDs; no temporal or spatial covariance is fitted.
+Elevation is in meters, joined by normalized site/plot identity to original sources; modern inputs are used once per response/model.
+Modern references: MORA and Unburned; burned coefficient assumes the same additive effect in both parks.
+Only two burned MORA plots: the burn association is mostly supported by NOCA; no site-by-burn interaction is fitted.
+Spatial checks: within-park Moran I of normalized residuals, UTM 10N symmetric 8-nearest-neighbor graph, 999 permutations.
+Spatial p values are exploratory, conditional on estimated models; no multiplicity correction or automatic covariance change.
+Different fixed-effect models are not ranked using REML AIC. Coefficient intervals/tests are unadjusted.
+Only four Holocene lakes and two fire histories; site and fire effects are not independent lake-level exposures.
+Input MD5: 2e3fcf5d47d7b2f2303618c69c01a26b
+Elevation MD5s: 2b22430be0a24599d0e5d288e94a3244, 4bf9fb4be7ec2639fda8704f679b86ed
+
+Performance:
+                                     metric          era offset
+1                      lag_rate_per_century     Holocene      0
+2                      lag_rate_per_century     Holocene    100
+3                      lag_rate_per_century     Holocene    200
+4                      lag_rate_per_century     Holocene    300
+5                      lag_rate_per_century     Holocene    400
+6                      lag_rate_per_century     Holocene    500
+7                      lag_rate_per_century     Holocene    600
+8                      lag_rate_per_century     Holocene    700
+9                      lag_rate_per_century     Holocene    800
+10                     lag_rate_per_century     Holocene    900
+11                     lag_rate_per_century Anthropocene     NA
+12                     lag_rate_per_century Anthropocene     NA
+13      pace_corrected_lag_rate_per_century     Holocene      0
+14      pace_corrected_lag_rate_per_century     Holocene    100
+15      pace_corrected_lag_rate_per_century     Holocene    200
+16      pace_corrected_lag_rate_per_century     Holocene    300
+17      pace_corrected_lag_rate_per_century     Holocene    400
+18      pace_corrected_lag_rate_per_century     Holocene    500
+19      pace_corrected_lag_rate_per_century     Holocene    600
+20      pace_corrected_lag_rate_per_century     Holocene    700
+21      pace_corrected_lag_rate_per_century     Holocene    800
+22      pace_corrected_lag_rate_per_century     Holocene    900
+23      pace_corrected_lag_rate_per_century Anthropocene     NA
+24      pace_corrected_lag_rate_per_century Anthropocene     NA
+25 direction_corrected_lag_rate_per_century     Holocene      0
+26 direction_corrected_lag_rate_per_century     Holocene    100
+27 direction_corrected_lag_rate_per_century     Holocene    200
+28 direction_corrected_lag_rate_per_century     Holocene    300
+29 direction_corrected_lag_rate_per_century     Holocene    400
+30 direction_corrected_lag_rate_per_century     Holocene    500
+31 direction_corrected_lag_rate_per_century     Holocene    600
+32 direction_corrected_lag_rate_per_century     Holocene    700
+33 direction_corrected_lag_rate_per_century     Holocene    800
+34 direction_corrected_lag_rate_per_century     Holocene    900
+35 direction_corrected_lag_rate_per_century Anthropocene     NA
+36 direction_corrected_lag_rate_per_century Anthropocene     NA
+              model_type   n n_MORA n_NOCA n_excluded           R2       theta
+1           Holocene_MA1  30     20     10          0  0.024796951 -0.19803831
+2           Holocene_MA1  28     19      9          0  0.007337136 -0.19919829
+3           Holocene_MA1  27     18      9          0  0.109144705 -0.45201962
+4           Holocene_MA1  27     18      9          0  0.159863846 -0.39669395
+5           Holocene_MA1  27     18      9          0  0.196613879 -0.36019940
+6           Holocene_MA1  26     17      9          0  0.099774511 -0.38911424
+7           Holocene_MA1  26     17      9          0 -0.002052220 -0.48747724
+8           Holocene_MA1  26     17      9          0  0.060262670 -0.46650863
+9           Holocene_MA1  26     17      9          0  0.014768171 -0.45690288
+10          Holocene_MA1  30     20     10          0  0.014631222 -0.46408217
+11    Anthropocene_basic 607    330    277          0  0.046913958          NA
+12 Anthropocene_extended 607    330    277          0  0.050360982          NA
+13          Holocene_MA1  30     20     10          0 -0.004745712 -0.20255107
+14          Holocene_MA1  28     19      9          0  0.180634804  0.28278653
+15          Holocene_MA1  27     18      9          0  0.113105554  0.02547680
+16          Holocene_MA1  27     18      9          0  0.087599850 -0.02505080
+17          Holocene_MA1  26     17      9          1  0.132787918 -0.99992463
+18          Holocene_MA1  26     17      9          0 -0.054134402 -0.34900425
+19          Holocene_MA1  26     17      9          0 -0.047773723 -0.21221828
+20          Holocene_MA1  26     17      9          0  0.039617572 -0.29154753
+21          Holocene_MA1  26     17      9          0  0.037103405 -0.46276463
+22          Holocene_MA1  30     20     10          0  0.057097874 -0.99991074
+23    Anthropocene_basic 465    254    211        142  0.047973369          NA
+24 Anthropocene_extended 465    254    211        142  0.046781237          NA
+25          Holocene_MA1  30     20     10          0  0.263133401 -0.58234488
+26          Holocene_MA1  28     19      9          0  0.135652000 -0.32011248
+27          Holocene_MA1  27     18      9          0  0.126134963  0.01218622
+28          Holocene_MA1  27     18      9          0  0.225888744 -0.11969745
+29          Holocene_MA1  27     18      9          0  0.241868606  0.04295470
+30          Holocene_MA1  26     17      9          0  0.131143032  0.21474128
+31          Holocene_MA1  26     17      9          0  0.200812505  0.27067233
+32          Holocene_MA1  26     17      9          0  0.251323644  0.18412536
+33          Holocene_MA1  26     17      9          0 -0.777830752  0.74955795
+34          Holocene_MA1  30     20     10          0  0.220036261  0.28120090
+35    Anthropocene_basic 607    330    277          0  0.001562397          NA
+36 Anthropocene_extended 607    330    277          0  0.006556793          NA
+   lag1_residual_correlation near_correlation_boundary covariance_status
+1                -0.19056453                     FALSE positive_definite
+2                -0.19159578                     FALSE positive_definite
+3                -0.37533128                     FALSE positive_definite
+4                -0.34275581                     FALSE positive_definite
+5                -0.31883287                     FALSE positive_definite
+6                -0.33794589                     FALSE positive_definite
+7                -0.39387834                     FALSE positive_definite
+8                -0.38312830                     FALSE positive_definite
+9                -0.37799298                     FALSE positive_definite
+10               -0.38184364                     FALSE positive_definite
+11                        NA                     FALSE positive_definite
+12                        NA                     FALSE positive_definite
+13               -0.19456852                     FALSE positive_definite
+14                0.26184709                     FALSE positive_definite
+15                0.02546027                     FALSE positive_definite
+16               -0.02503509                     FALSE positive_definite
+17               -0.50000000                      TRUE positive_definite
+18               -0.31110984                     FALSE positive_definite
+19               -0.20307258                     FALSE positive_definite
+20               -0.26870741                     FALSE positive_definite
+21               -0.38114253                     FALSE positive_definite
+22               -0.50000000                      TRUE positive_definite
+23                        NA                     FALSE positive_definite
+24                        NA                     FALSE positive_definite
+25               -0.43486951                     FALSE positive_definite
+26               -0.29035883                     FALSE positive_definite
+27                0.01218441                     FALSE positive_definite
+28               -0.11800672                     FALSE positive_definite
+29                0.04287559                     FALSE positive_definite
+30                0.20527526                     FALSE positive_definite
+31                0.25219559                     FALSE positive_definite
+32                0.17808781                     FALSE positive_definite
+33                0.47992069                     FALSE positive_definite
+34                0.26059465                     FALSE positive_definite
+35                        NA                     FALSE positive_definite
+36                        NA                     FALSE positive_definite
+   converged warnings
+1       TRUE     none
+2       TRUE     none
+3       TRUE     none
+4       TRUE     none
+5       TRUE     none
+6       TRUE     none
+7       TRUE     none
+8       TRUE     none
+9       TRUE     none
+10      TRUE     none
+11      TRUE     none
+12      TRUE     none
+13      TRUE     none
+14      TRUE     none
+15      TRUE     none
+16      TRUE     none
+17      TRUE     none
+18      TRUE     none
+19      TRUE     none
+20      TRUE     none
+21      TRUE     none
+22      TRUE     none
+23      TRUE     none
+24      TRUE     none
+25      TRUE     none
+26      TRUE     none
+27      TRUE     none
+28      TRUE     none
+29      TRUE     none
+30      TRUE     none
+31      TRUE     none
+32      TRUE     none
+33      TRUE     none
+34      TRUE     none
+35      TRUE     none
+36      TRUE     none
+Spatial diagnostics:
+                                     metric            model_type site   n k
+1                      lag_rate_per_century    Anthropocene_basic MORA 330 8
+2                      lag_rate_per_century    Anthropocene_basic NOCA 277 8
+3                      lag_rate_per_century Anthropocene_extended MORA 330 8
+4                      lag_rate_per_century Anthropocene_extended NOCA 277 8
+5       pace_corrected_lag_rate_per_century    Anthropocene_basic MORA 254 8
+6       pace_corrected_lag_rate_per_century    Anthropocene_basic NOCA 211 8
+7       pace_corrected_lag_rate_per_century Anthropocene_extended MORA 254 8
+8       pace_corrected_lag_rate_per_century Anthropocene_extended NOCA 211 8
+9  direction_corrected_lag_rate_per_century    Anthropocene_basic MORA 330 8
+10 direction_corrected_lag_rate_per_century    Anthropocene_basic NOCA 277 8
+11 direction_corrected_lag_rate_per_century Anthropocene_extended MORA 330 8
+12 direction_corrected_lag_rate_per_century Anthropocene_extended NOCA 277 8
+   n_permutations   seed     moran_I   expected_I p_permutation_two_sided
+1             999 104729  0.07502824 -0.003039514                   0.002
+2             999 104729  0.05419832 -0.003623188                   0.028
+3             999 104729  0.07731870 -0.003039514                   0.002
+4             999 104729  0.05037517 -0.003623188                   0.043
+5             999 104729  0.04153949 -0.003952569                   0.109
+6             999 104729  0.06853144 -0.004761905                   0.018
+7             999 104729  0.04541210 -0.003952569                   0.087
+8             999 104729  0.05375698 -0.004761905                   0.050
+9             999 104729 -0.01612552 -0.003039514                   0.603
+10            999 104729  0.11390475 -0.003623188                   0.001
+11            999 104729 -0.01435993 -0.003039514                   0.656
+12            999 104729  0.10892283 -0.003623188                   0.001
+   median_edge_distance_m        crs
+1                1376.538 EPSG:32610
+2                2402.325 EPSG:32610
+3                1376.538 EPSG:32610
+4                2402.325 EPSG:32610
+5                1673.947 EPSG:32610
+6                3034.055 EPSG:32610
+7                1673.947 EPSG:32610
+8                3034.055 EPSG:32610
+9                1376.538 EPSG:32610
+10               2402.325 EPSG:32610
+11               1376.538 EPSG:32610
+12               2402.325 EPSG:32610
+                                                weights
+1  symmetric 8-nearest-neighbor graph, row standardized
+2  symmetric 8-nearest-neighbor graph, row standardized
+3  symmetric 8-nearest-neighbor graph, row standardized
+4  symmetric 8-nearest-neighbor graph, row standardized
+5  symmetric 8-nearest-neighbor graph, row standardized
+6  symmetric 8-nearest-neighbor graph, row standardized
+7  symmetric 8-nearest-neighbor graph, row standardized
+8  symmetric 8-nearest-neighbor graph, row standardized
+9  symmetric 8-nearest-neighbor graph, row standardized
+10 symmetric 8-nearest-neighbor graph, row standardized
+11 symmetric 8-nearest-neighbor graph, row standardized
+12 symmetric 8-nearest-neighbor graph, row standardized
+lag_rate_per_century | Holocene | 0 | Holocene_MA1
+Input rows: 30 | Excluded: 0
+Warnings: none
+Covariance uncertainty: positive_definite
+Generalized least squares fit by REML
+  Model: estimate ~ site + climate_rate + fire_activity
+  Data: d
+        AIC       BIC   logLik
+  -128.7771 -119.9705 71.38857
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+    Theta1
+-0.1980383
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | site
+ Parameter estimates:
+    MORA     NOCA
+1.000000 2.208339
+
+Coefficients:
+                   Value Std.Error    t-value p-value
+(Intercept)   -0.0160340 0.0083214 -1.9268303  0.0650
+siteNOCA      -0.0007395 0.0074507 -0.0992525  0.9217
+climate_rate  -0.5593978 0.4699403 -1.1903592  0.2447
+fire_activity  0.0351336 0.0178506  1.9682049  0.0598
+
+ Correlation:
+              (Intr) stNOCA clmt_r
+siteNOCA       0.034
+climate_rate  -0.159 -0.133
+fire_activity -0.724 -0.016 -0.525
+
+Standardized residuals:
+       Min         Q1        Med         Q3        Max
+-2.3522549 -0.6553418  0.3155984  0.6660587  1.6095009
+
+Residual standard error: 0.01240012
+Degrees of freedom: 30 total; 26 residual
+Residual SDs:
+      MORA       NOCA
+0.01240012 0.02738367
+Descriptive in-sample R2 = 1 - SSE/SST: 0.024796951
+Unadjusted coefficient intervals:
+                metric      era offset   model_type          term      estimate
+1 lag_rate_per_century Holocene      0 Holocene_MA1   (Intercept) -0.0160339963
+2 lag_rate_per_century Holocene      0 Holocene_MA1      siteNOCA -0.0007394969
+3 lag_rate_per_century Holocene      0 Holocene_MA1  climate_rate -0.5593978105
+4 lag_rate_per_century Holocene      0 Holocene_MA1 fire_activity  0.0351335712
+    std_error df     t_value    p_value     conf_low   conf_high
+1 0.008321437 26 -1.92683032 0.06499661 -0.033138954 0.001070962
+2 0.007450664 26 -0.09925249 0.92169911 -0.016054556 0.014575562
+3 0.469940330 26 -1.19035923 0.24466077 -1.525373993 0.406578372
+4 0.017850566 26  1.96820487 0.05979418 -0.001558793 0.071825935
+Input group support:
+  site burned  n
+1 MORA     NA 20
+2 NOCA     NA 10
+
+OFFSET-0 RANDOM LAKE INTERCEPT SENSITIVITY: lag_rate_per_century
+                metric offset  n n_lakes converged random_intercept_sd
+1 lag_rate_per_century      0 30       4      TRUE        3.791893e-07
+  random_intercept_variance random_sd_relative_to_residual
+1              1.437845e-13                   3.057948e-05
+  max_abs_coefficient_difference max_abs_fixed_prediction_difference
+1                   3.283088e-07                        9.718928e-09
+                                      covariance_status random_sd_conf_low
+1 Non-positive definite approximate variance-covariance                 NA
+  random_sd_conf_high variance_intervals_finite
+1                  NA                     FALSE
+                                                                                                                    variance_interval_error
+1 cannot get confidence intervals on var-cov components: Non-positive definite approximate variance-covariance\n Consider 'which = "fixed"'
+  warnings fit_error
+1     none      <NA>
+Linear mixed-effects model fit by REML
+  Data: d
+        AIC       BIC   logLik
+  -126.7771 -116.7124 71.38857
+
+Random effects:
+ Formula: ~1 | series
+         (Intercept)   Residual
+StdDev: 3.791893e-07 0.01240012
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+    Theta1
+-0.1980388
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | site
+ Parameter estimates:
+    MORA     NOCA
+1.000000 2.208338
+Fixed effects:  estimate ~ site + climate_rate + fire_activity
+                   Value Std.Error DF    t-value p-value
+(Intercept)   -0.0160340 0.0083214 24 -1.9268290  0.0659
+siteNOCA      -0.0007395 0.0074507  2 -0.0992527  0.9300
+climate_rate  -0.5593975 0.4699404 24 -1.1903584  0.2455
+fire_activity  0.0351335 0.0178506 24  1.9682029  0.0607
+ Correlation:
+              (Intr) stNOCA clmt_r
+siteNOCA       0.034
+climate_rate  -0.159 -0.133
+fire_activity -0.724 -0.016 -0.525
+
+Standardized Within-Group Residuals:
+       Min         Q1        Med         Q3        Max
+-2.3522544 -0.6553417  0.3155982  0.6660584  1.6095015
+
+Number of Observations: 30
+Number of Groups: 4
+series = pdLogChol(1)
+            Variance     StdDev
+(Intercept) 1.437845e-13 3.791893e-07
+Residual    1.537630e-04 1.240012e-02
+
+lag_rate_per_century | Holocene | 100 | Holocene_MA1
+Input rows: 28 | Excluded: 0
+Warnings: none
+Covariance uncertainty: positive_definite
+Generalized least squares fit by REML
+  Model: estimate ~ site + climate_rate + fire_activity
+  Data: d
+        AIC       BIC   logLik
+  -117.9372 -109.6908 65.96861
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+    Theta1
+-0.1991983
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | site
+ Parameter estimates:
+    MORA     NOCA
+1.000000 2.108155
+
+Coefficients:
+                    Value Std.Error    t-value p-value
+(Intercept)   -0.01216282 0.0096503 -1.2603605  0.2197
+siteNOCA      -0.00260168 0.0078007 -0.3335201  0.7416
+climate_rate   0.20660748 0.6606653  0.3127264  0.7572
+fire_activity  0.00655517 0.0173042  0.3788192  0.7082
+
+ Correlation:
+              (Intr) stNOCA clmt_r
+siteNOCA       0.049
+climate_rate  -0.535 -0.036
+fire_activity -0.514 -0.106 -0.412
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-1.93349500 -0.52110233  0.09407619  0.63489020  2.14145668
+
+Residual standard error: 0.01291932
+Degrees of freedom: 28 total; 24 residual
+Residual SDs:
+      MORA       NOCA
+0.01291932 0.02723593
+Descriptive in-sample R2 = 1 - SSE/SST: 0.0073371359
+Unadjusted coefficient intervals:
+                metric      era offset   model_type          term     estimate
+1 lag_rate_per_century Holocene    100 Holocene_MA1   (Intercept) -0.012162821
+2 lag_rate_per_century Holocene    100 Holocene_MA1      siteNOCA -0.002601676
+3 lag_rate_per_century Holocene    100 Holocene_MA1  climate_rate  0.206607482
+4 lag_rate_per_century Holocene    100 Holocene_MA1 fire_activity  0.006555174
+    std_error df    t_value   p_value    conf_low  conf_high
+1 0.009650271 24 -1.2603605 0.2196562 -0.03208000 0.00775436
+2 0.007800657 24 -0.3335201 0.7416381 -0.01870144 0.01349809
+3 0.660665260 24  0.3127264 0.7571898 -1.15693860 1.57015356
+4 0.017304229 24  0.3788192 0.7081528 -0.02915900 0.04226935
+Input group support:
+  site burned  n
+1 MORA     NA 19
+2 NOCA     NA  9
+
+lag_rate_per_century | Holocene | 200 | Holocene_MA1
+Input rows: 27 | Excluded: 0
+Warnings: none
+Covariance uncertainty: positive_definite
+Generalized least squares fit by REML
+  Model: estimate ~ site + climate_rate + fire_activity
+  Data: d
+        AIC       BIC   logLik
+  -120.7645 -112.8161 67.38227
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+    Theta1
+-0.4520196
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | site
+ Parameter estimates:
+    MORA     NOCA
+1.000000 2.167041
+
+Coefficients:
+                   Value Std.Error    t-value p-value
+(Intercept)   -0.0129020 0.0101596 -1.2699352  0.2168
+siteNOCA      -0.0033448 0.0047364 -0.7062061  0.4872
+climate_rate   0.9023904 0.5155544  1.7503302  0.0934
+fire_activity -0.0094174 0.0135087 -0.6971348  0.4927
+
+ Correlation:
+              (Intr) stNOCA clmt_r
+siteNOCA       0.157
+climate_rate  -0.739 -0.146
+fire_activity -0.774 -0.170  0.171
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-2.34478153 -0.51600520 -0.06239453  0.74883410  1.39032966
+
+Residual standard error: 0.01097343
+Degrees of freedom: 27 total; 23 residual
+Residual SDs:
+      MORA       NOCA
+0.01097343 0.02377986
+Descriptive in-sample R2 = 1 - SSE/SST: 0.1091447
+Unadjusted coefficient intervals:
+                metric      era offset   model_type          term     estimate
+1 lag_rate_per_century Holocene    200 Holocene_MA1   (Intercept) -0.012902005
+2 lag_rate_per_century Holocene    200 Holocene_MA1      siteNOCA -0.003344845
+3 lag_rate_per_century Holocene    200 Holocene_MA1  climate_rate  0.902390367
+4 lag_rate_per_century Holocene    200 Holocene_MA1 fire_activity -0.009417361
+    std_error df    t_value    p_value    conf_low   conf_high
+1 0.010159577 23 -1.2699352 0.21680599 -0.03391869 0.008114682
+2 0.004736358 23 -0.7062061 0.48715269 -0.01314275 0.006453058
+3 0.515554353 23  1.7503302 0.09339176 -0.16411507 1.968895804
+4 0.013508666 23 -0.6971348 0.49270545 -0.03736217 0.018527444
+Input group support:
+  site burned  n
+1 MORA     NA 18
+2 NOCA     NA  9
+
+lag_rate_per_century | Holocene | 300 | Holocene_MA1
+Input rows: 27 | Excluded: 0
+Warnings: none
+Covariance uncertainty: positive_definite
+Generalized least squares fit by REML
+  Model: estimate ~ site + climate_rate + fire_activity
+  Data: d
+        AIC       BIC   logLik
+  -117.6573 -109.7088 65.82864
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+    Theta1
+-0.3966939
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | site
+ Parameter estimates:
+    MORA     NOCA
+1.000000 2.020953
+
+Coefficients:
+                   Value Std.Error    t-value p-value
+(Intercept)   -0.0146199 0.0096389 -1.5167534  0.1430
+siteNOCA      -0.0032069 0.0053063 -0.6043521  0.5515
+climate_rate   1.0925478 0.4980770  2.1935319  0.0386
+fire_activity -0.0145793 0.0127680 -1.1418659  0.2653
+
+ Correlation:
+              (Intr) stNOCA clmt_r
+siteNOCA       0.190
+climate_rate  -0.751 -0.196
+fire_activity -0.686 -0.178  0.071
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-2.63683118 -0.31880761  0.07346849  0.82027697  1.65919892
+
+Residual standard error: 0.01178591
+Degrees of freedom: 27 total; 23 residual
+Residual SDs:
+      MORA       NOCA
+0.01178591 0.02381876
+Descriptive in-sample R2 = 1 - SSE/SST: 0.15986385
+Unadjusted coefficient intervals:
+                metric      era offset   model_type          term     estimate
+1 lag_rate_per_century Holocene    300 Holocene_MA1   (Intercept) -0.014619885
+2 lag_rate_per_century Holocene    300 Holocene_MA1      siteNOCA -0.003206857
+3 lag_rate_per_century Holocene    300 Holocene_MA1  climate_rate  1.092547800
+4 lag_rate_per_century Holocene    300 Holocene_MA1 fire_activity -0.014579343
+    std_error df    t_value    p_value    conf_low   conf_high
+1 0.009638934 23 -1.5167534 0.14295424 -0.03455954 0.005319769
+2 0.005306272 23 -0.6043521 0.55152518 -0.01418372 0.007770003
+3 0.498077002 23  2.1935319 0.03864016  0.06219702 2.122898580
+4 0.012767999 23 -1.1418659 0.26525873 -0.04099196 0.011833276
+Input group support:
+  site burned  n
+1 MORA     NA 18
+2 NOCA     NA  9
+
+lag_rate_per_century | Holocene | 400 | Holocene_MA1
+Input rows: 27 | Excluded: 0
+Warnings: none
+Covariance uncertainty: positive_definite
+Generalized least squares fit by REML
+  Model: estimate ~ site + climate_rate + fire_activity
+  Data: d
+        AIC       BIC   logLik
+  -119.2491 -111.3007 66.62456
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+    Theta1
+-0.3601994
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | site
+ Parameter estimates:
+    MORA     NOCA
+1.000000 2.107995
+
+Coefficients:
+                   Value Std.Error   t-value p-value
+(Intercept)   -0.0147553 0.0062290 -2.368796  0.0266
+siteNOCA      -0.0054793 0.0054213 -1.010698  0.3227
+climate_rate   1.5130898 0.5213703  2.902140  0.0080
+fire_activity -0.0170471 0.0122094 -1.396232  0.1760
+
+ Correlation:
+              (Intr) stNOCA clmt_r
+siteNOCA       0.067
+climate_rate  -0.473 -0.155
+fire_activity -0.469 -0.006 -0.517
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-2.35821620 -0.47327272  0.07159853  0.76586325  1.51816346
+
+Residual standard error: 0.01112756
+Degrees of freedom: 27 total; 23 residual
+Residual SDs:
+      MORA       NOCA
+0.01112756 0.02345684
+Descriptive in-sample R2 = 1 - SSE/SST: 0.19661388
+Unadjusted coefficient intervals:
+                metric      era offset   model_type          term     estimate
+1 lag_rate_per_century Holocene    400 Holocene_MA1   (Intercept) -0.014755284
+2 lag_rate_per_century Holocene    400 Holocene_MA1      siteNOCA -0.005479337
+3 lag_rate_per_century Holocene    400 Holocene_MA1  climate_rate  1.513089750
+4 lag_rate_per_century Holocene    400 Holocene_MA1 fire_activity -0.017047141
+    std_error df   t_value     p_value    conf_low    conf_high
+1 0.006229022 23 -2.368796 0.026623996 -0.02764100 -0.001869569
+2 0.005421342 23 -1.010697 0.322676478 -0.01669424  0.005735564
+3 0.521370326 23  2.902140 0.008031694  0.43455306  2.591626442
+4 0.012209394 23 -1.396231 0.175976044 -0.04230420  0.008209915
+Input group support:
+  site burned  n
+1 MORA     NA 18
+2 NOCA     NA  9
+
+lag_rate_per_century | Holocene | 500 | Holocene_MA1
+Input rows: 26 | Excluded: 0
+Warnings: none
+Covariance uncertainty: positive_definite
+Generalized least squares fit by REML
+  Model: estimate ~ site + climate_rate + fire_activity
+  Data: d
+        AIC       BIC   logLik
+  -113.7337 -106.0964 63.86684
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+    Theta1
+-0.3891142
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | site
+ Parameter estimates:
+    MORA     NOCA
+1.000000 1.697351
+
+Coefficients:
+                   Value Std.Error    t-value p-value
+(Intercept)   -0.0058914 0.0071807 -0.8204467  0.4208
+siteNOCA      -0.0056574 0.0046973 -1.2044059  0.2412
+climate_rate   0.6231030 0.3711194  1.6789828  0.1073
+fire_activity -0.0134296 0.0135589 -0.9904688  0.3327
+
+ Correlation:
+              (Intr) stNOCA clmt_r
+siteNOCA       0.068
+climate_rate  -0.313 -0.279
+fire_activity -0.774  0.001 -0.307
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-1.79448381 -0.55684661  0.07669703  0.75755408  1.82926284
+
+Residual standard error: 0.01178001
+Degrees of freedom: 26 total; 22 residual
+Residual SDs:
+      MORA       NOCA
+0.01178001 0.01999481
+Descriptive in-sample R2 = 1 - SSE/SST: 0.099774511
+Unadjusted coefficient intervals:
+                metric      era offset   model_type          term     estimate
+1 lag_rate_per_century Holocene    500 Holocene_MA1   (Intercept) -0.005891358
+2 lag_rate_per_century Holocene    500 Holocene_MA1      siteNOCA -0.005657425
+3 lag_rate_per_century Holocene    500 Holocene_MA1  climate_rate  0.623103043
+4 lag_rate_per_century Holocene    500 Holocene_MA1 fire_activity -0.013429640
+    std_error df    t_value   p_value    conf_low   conf_high
+1 0.007180672 22 -0.8204467 0.4207627 -0.02078316 0.009000443
+2 0.004697274 22 -1.2044059 0.2412307 -0.01539898 0.004084126
+3 0.371119364 22  1.6789828 0.1073042 -0.14655141 1.392757497
+4 0.013558873 22 -0.9904688 0.3327145 -0.04154902 0.014689742
+Input group support:
+  site burned  n
+1 MORA     NA 17
+2 NOCA     NA  9
+
+lag_rate_per_century | Holocene | 600 | Holocene_MA1
+Input rows: 26 | Excluded: 0
+Warnings: none
+Covariance uncertainty: positive_definite
+Generalized least squares fit by REML
+  Model: estimate ~ site + climate_rate + fire_activity
+  Data: d
+        AIC       BIC   logLik
+  -105.8931 -98.25581 59.94655
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+    Theta1
+-0.4874772
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | site
+ Parameter estimates:
+    MORA     NOCA
+1.000000 1.403387
+
+Coefficients:
+                    Value Std.Error    t-value p-value
+(Intercept)   -0.00848141 0.0094007 -0.9022124  0.3767
+siteNOCA      -0.00470088 0.0044870 -1.0476688  0.3062
+climate_rate   0.21657323 0.3651816  0.5930563  0.5592
+fire_activity  0.00126043 0.0187953  0.0670607  0.9471
+
+ Correlation:
+              (Intr) stNOCA clmt_r
+siteNOCA       0.044
+climate_rate  -0.171 -0.315
+fire_activity -0.851  0.013 -0.328
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-1.57978931 -0.65034858 -0.02501369  0.77708889  2.26343612
+
+Residual standard error: 0.01522677
+Degrees of freedom: 26 total; 22 residual
+Residual SDs:
+      MORA       NOCA
+0.01522677 0.02136906
+Descriptive in-sample R2 = 1 - SSE/SST: -0.0020522205
+Unadjusted coefficient intervals:
+                metric      era offset   model_type          term     estimate
+1 lag_rate_per_century Holocene    600 Holocene_MA1   (Intercept) -0.008481406
+2 lag_rate_per_century Holocene    600 Holocene_MA1      siteNOCA -0.004700884
+3 lag_rate_per_century Holocene    600 Holocene_MA1  climate_rate  0.216573232
+4 lag_rate_per_century Holocene    600 Holocene_MA1 fire_activity  0.001260426
+    std_error df     t_value   p_value    conf_low   conf_high
+1 0.009400675 22 -0.90221243 0.3767162 -0.02797721 0.011014400
+2 0.004486994 22 -1.04766884 0.3061655 -0.01400634 0.004604572
+3 0.365181600 22  0.59305626 0.5591914 -0.54076705 0.973913518
+4 0.018795284 22  0.06706073 0.9471391 -0.03771861 0.040239459
+Input group support:
+  site burned  n
+1 MORA     NA 17
+2 NOCA     NA  9
+
+lag_rate_per_century | Holocene | 700 | Holocene_MA1
+Input rows: 26 | Excluded: 0
+Warnings: none
+Covariance uncertainty: positive_definite
+Generalized least squares fit by REML
+  Model: estimate ~ site + climate_rate + fire_activity
+  Data: d
+        AIC       BIC   logLik
+  -105.2106 -97.57326 59.60528
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+    Theta1
+-0.4665086
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | site
+ Parameter estimates:
+    MORA     NOCA
+1.000000 1.787615
+
+Coefficients:
+                   Value Std.Error    t-value p-value
+(Intercept)   -0.0150611 0.0081266 -1.8533085  0.0773
+siteNOCA      -0.0076977 0.0055614 -1.3841262  0.1802
+climate_rate   0.7272320 0.4895677  1.4854574  0.1516
+fire_activity  0.0043494 0.0162558  0.2675626  0.7915
+
+ Correlation:
+              (Intr) stNOCA clmt_r
+siteNOCA       0.208
+climate_rate  -0.364 -0.405
+fire_activity -0.715 -0.015 -0.349
+
+Standardized residuals:
+          Min            Q1           Med            Q3           Max
+-1.6866359097 -0.5317077083 -0.0001118459  0.6474566882  1.9003293221
+
+Residual standard error: 0.01427639
+Degrees of freedom: 26 total; 22 residual
+Residual SDs:
+      MORA       NOCA
+0.01427639 0.02552069
+Descriptive in-sample R2 = 1 - SSE/SST: 0.06026267
+Unadjusted coefficient intervals:
+                metric      era offset   model_type          term     estimate
+1 lag_rate_per_century Holocene    700 Holocene_MA1   (Intercept) -0.015061056
+2 lag_rate_per_century Holocene    700 Holocene_MA1      siteNOCA -0.007697679
+3 lag_rate_per_century Holocene    700 Holocene_MA1  climate_rate  0.727231983
+4 lag_rate_per_century Holocene    700 Holocene_MA1 fire_activity  0.004349434
+    std_error df    t_value   p_value    conf_low   conf_high
+1 0.008126578 22 -1.8533085 0.0772984 -0.03191455 0.001792435
+2 0.005561399 22 -1.3841262 0.1802014 -0.01923132 0.003835958
+3 0.489567716 22  1.4854574 0.1516124 -0.28806932 1.742533285
+4 0.016255762 22  0.2675626 0.7915285 -0.02936295 0.038061822
+Input group support:
+  site burned  n
+1 MORA     NA 17
+2 NOCA     NA  9
+
+lag_rate_per_century | Holocene | 800 | Holocene_MA1
+Input rows: 26 | Excluded: 0
+Warnings: none
+Covariance uncertainty: positive_definite
+Generalized least squares fit by REML
+  Model: estimate ~ site + climate_rate + fire_activity
+  Data: d
+        AIC       BIC  logLik
+  -101.5096 -93.87231 57.7548
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+    Theta1
+-0.4569029
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | site
+ Parameter estimates:
+    MORA     NOCA
+1.000000 1.562484
+
+Coefficients:
+                   Value Std.Error    t-value p-value
+(Intercept)   -0.0139501 0.0084498 -1.6509422  0.1130
+siteNOCA      -0.0055296 0.0055076 -1.0039975  0.3263
+climate_rate   0.5746048 0.6552833  0.8768799  0.3900
+fire_activity  0.0049700 0.0199946  0.2485675  0.8060
+
+ Correlation:
+              (Intr) stNOCA clmt_r
+siteNOCA       0.140
+climate_rate  -0.264 -0.251
+fire_activity -0.597 -0.020 -0.584
+
+Standardized residuals:
+       Min         Q1        Med         Q3        Max
+-1.8847726 -0.6063391  0.1757799  0.6819110  1.8111534
+
+Residual standard error: 0.01634043
+Degrees of freedom: 26 total; 22 residual
+Residual SDs:
+      MORA       NOCA
+0.01634043 0.02553166
+Descriptive in-sample R2 = 1 - SSE/SST: 0.014768171
+Unadjusted coefficient intervals:
+                metric      era offset   model_type          term     estimate
+1 lag_rate_per_century Holocene    800 Holocene_MA1   (Intercept) -0.013950118
+2 lag_rate_per_century Holocene    800 Holocene_MA1      siteNOCA -0.005529648
+3 lag_rate_per_century Holocene    800 Holocene_MA1  climate_rate  0.574604760
+4 lag_rate_per_century Holocene    800 Holocene_MA1 fire_activity  0.004970019
+    std_error df    t_value   p_value    conf_low   conf_high
+1 0.008449792 22 -1.6509422 0.1129550 -0.03147391 0.003573678
+2 0.005507631 22 -1.0039975 0.3262956 -0.01695178 0.005892480
+3 0.655283315 22  0.8768799 0.3900270 -0.78436966 1.933579179
+4 0.019994643 22  0.2485675 0.8060010 -0.03649633 0.046436370
+Input group support:
+  site burned  n
+1 MORA     NA 17
+2 NOCA     NA  9
+
+lag_rate_per_century | Holocene | 900 | Holocene_MA1
+Input rows: 30 | Excluded: 0
+Warnings: none
+Covariance uncertainty: positive_definite
+Generalized least squares fit by REML
+  Model: estimate ~ site + climate_rate + fire_activity
+  Data: d
+        AIC       BIC   logLik
+  -122.8488 -114.0421 68.42439
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+    Theta1
+-0.4640822
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | site
+ Parameter estimates:
+    MORA     NOCA
+1.000000 1.714509
+
+Coefficients:
+                   Value Std.Error    t-value p-value
+(Intercept)   -0.0076548 0.0084624 -0.9045750  0.3740
+siteNOCA      -0.0007178 0.0050218 -0.1429286  0.8874
+climate_rate  -0.3573578 0.4568416 -0.7822358  0.4411
+fire_activity  0.0131960 0.0207323  0.6364960  0.5300
+
+ Correlation:
+              (Intr) stNOCA clmt_r
+siteNOCA       0.069
+climate_rate   0.055 -0.086
+fire_activity -0.782 -0.076 -0.639
+
+Standardized residuals:
+       Min         Q1        Med         Q3        Max
+-2.0517211 -0.6489538  0.1377902  0.7658317  1.5506328
+
+Residual standard error: 0.01559734
+Degrees of freedom: 30 total; 26 residual
+Residual SDs:
+      MORA       NOCA
+0.01559734 0.02674178
+Descriptive in-sample R2 = 1 - SSE/SST: 0.014631222
+Unadjusted coefficient intervals:
+                metric      era offset   model_type          term      estimate
+1 lag_rate_per_century Holocene    900 Holocene_MA1   (Intercept) -0.0076548449
+2 lag_rate_per_century Holocene    900 Holocene_MA1      siteNOCA -0.0007177562
+3 lag_rate_per_century Holocene    900 Holocene_MA1  climate_rate -0.3573578333
+4 lag_rate_per_century Holocene    900 Holocene_MA1 fire_activity  0.0131959970
+    std_error df    t_value   p_value    conf_low   conf_high
+1 0.008462366 26 -0.9045750 0.3739965 -0.02504949 0.009739797
+2 0.005021781 26 -0.1429286 0.8874485 -0.01104017 0.009604662
+3 0.456841594 26 -0.7822358 0.4411423 -1.29640918 0.581693511
+4 0.020732255 26  0.6364960 0.5300175 -0.02941976 0.055811757
+Input group support:
+  site burned  n
+1 MORA     NA 20
+2 NOCA     NA 10
+
+lag_rate_per_century | Anthropocene | NA | Anthropocene_basic
+Input rows: 607 | Excluded: 0
+Warnings: none
+Covariance uncertainty: positive_definite
+Generalized least squares fit by REML
+  Model: estimate ~ site + burned
+  Data: d
+       AIC      BIC    logLik
+  2320.516 2342.533 -1155.258
+
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | site
+ Parameter estimates:
+    MORA     NOCA
+1.000000 1.784338
+
+Coefficients:
+                  Value Std.Error   t-value p-value
+(Intercept)   0.5738422 0.0684956  8.377791  0.0000
+siteNOCA     -0.5972208 0.1535844 -3.888551  0.0001
+burnedBurned -0.9497306 0.4174396 -2.275133  0.0232
+
+ Correlation:
+             (Intr) stNOCA
+siteNOCA     -0.437
+burnedBurned -0.037 -0.219
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-3.87320542 -0.50688777  0.06965667  0.60887998  4.00917268
+
+Residual standard error: 1.243436
+Degrees of freedom: 607 total; 604 residual
+Residual SDs:
+    MORA     NOCA
+1.243436 2.218711
+Descriptive in-sample R2 = 1 - SSE/SST: 0.046913958
+Unadjusted coefficient intervals:
+                metric          era offset         model_type         term
+1 lag_rate_per_century Anthropocene     NA Anthropocene_basic  (Intercept)
+2 lag_rate_per_century Anthropocene     NA Anthropocene_basic     siteNOCA
+3 lag_rate_per_century Anthropocene     NA Anthropocene_basic burnedBurned
+    estimate  std_error  df   t_value      p_value   conf_low  conf_high
+1  0.5738422 0.06849565 604  8.377791 3.783973e-16  0.4393237  0.7083608
+2 -0.5972208 0.15358441 604 -3.888551 1.120292e-04 -0.8988452 -0.2955965
+3 -0.9497306 0.41743961 604 -2.275133 2.324753e-02 -1.7695400 -0.1299212
+Input group support:
+  site   burned   n
+1 MORA Unburned 328
+2 MORA   Burned   2
+3 NOCA Unburned 253
+4 NOCA   Burned  24
+
+lag_rate_per_century | Anthropocene | NA | Anthropocene_extended
+Input rows: 607 | Excluded: 0
+Warnings: none
+Covariance uncertainty: positive_definite
+Generalized least squares fit by REML
+  Model: estimate ~ site + elevation + climate_rate + burned
+  Data: d
+       AIC      BIC    logLik
+  2342.955 2373.757 -1164.478
+
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | site
+ Parameter estimates:
+    MORA     NOCA
+1.000000 1.774683
+
+Coefficients:
+                  Value Std.Error   t-value p-value
+(Intercept)   0.7994019 0.3414491  2.341204  0.0195
+siteNOCA     -0.6489264 0.1907091 -3.402702  0.0007
+elevation    -0.0000744 0.0001991 -0.373825  0.7087
+climate_rate -0.0270533 0.0677148 -0.399518  0.6897
+burnedBurned -0.9081988 0.4296381 -2.113869  0.0349
+
+ Correlation:
+             (Intr) stNOCA elevtn clmt_r
+siteNOCA     -0.565
+elevation    -0.232 -0.184
+climate_rate -0.776  0.590 -0.406
+burnedBurned  0.181 -0.312  0.093 -0.239
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-3.90381651 -0.49846146  0.06804636  0.61200182  3.97668052
+
+Residual standard error: 1.24807
+Degrees of freedom: 607 total; 602 residual
+Residual SDs:
+   MORA    NOCA
+1.24807 2.21493
+Descriptive in-sample R2 = 1 - SSE/SST: 0.050360982
+Unadjusted coefficient intervals:
+                metric          era offset            model_type         term
+1 lag_rate_per_century Anthropocene     NA Anthropocene_extended  (Intercept)
+2 lag_rate_per_century Anthropocene     NA Anthropocene_extended     siteNOCA
+3 lag_rate_per_century Anthropocene     NA Anthropocene_extended    elevation
+4 lag_rate_per_century Anthropocene     NA Anthropocene_extended climate_rate
+5 lag_rate_per_century Anthropocene     NA Anthropocene_extended burnedBurned
+       estimate    std_error  df    t_value      p_value      conf_low
+1  7.994019e-01 0.3414490987 602  2.3412038 0.0195469935  0.1288257985
+2 -6.489264e-01 0.1907091423 602 -3.4027021 0.0007115094 -1.0234624607
+3 -7.441852e-05 0.0001990734 602 -0.3738245 0.7086665039 -0.0004653813
+4 -2.705328e-02 0.0677147825 602 -0.3995181 0.6896531772 -0.1600391857
+5 -9.081988e-01 0.4296381336 602 -2.1138691 0.0349371015 -1.7519704547
+      conf_high
+1  1.4699780600
+2 -0.2743903488
+3  0.0003165442
+4  0.1059326209
+5 -0.0644271088
+Input group support:
+  site   burned   n
+1 MORA Unburned 328
+2 MORA   Burned   2
+3 NOCA Unburned 253
+4 NOCA   Burned  24
+
+pace_corrected_lag_rate_per_century | Holocene | 0 | Holocene_MA1
+Input rows: 30 | Excluded: 0
+Warnings: none
+Covariance uncertainty: positive_definite
+Generalized least squares fit by REML
+  Model: estimate ~ site + climate_rate + fire_activity
+  Data: d
+        AIC       BIC   logLik
+  -149.1888 -140.3821 81.59438
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+    Theta1
+-0.2025511
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | site
+ Parameter estimates:
+    MORA     NOCA
+1.000000 2.364497
+
+Coefficients:
+                   Value  Std.Error    t-value p-value
+(Intercept)   -0.0017791 0.00551051 -0.3228488  0.7494
+siteNOCA       0.0071827 0.00519825  1.3817618  0.1788
+climate_rate  -0.5037271 0.31403323 -1.6040567  0.1208
+fire_activity  0.0139520 0.01181817  1.1805566  0.2485
+
+ Correlation:
+              (Intr) stNOCA clmt_r
+siteNOCA       0.035
+climate_rate  -0.166 -0.128
+fire_activity -0.720 -0.015 -0.525
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-2.64184965 -0.38339700 -0.02706123  0.59403090  2.59814393
+
+Residual standard error: 0.008186771
+Degrees of freedom: 30 total; 26 residual
+Residual SDs:
+       MORA        NOCA
+0.008186771 0.019357595
+Descriptive in-sample R2 = 1 - SSE/SST: -0.004745712
+Unadjusted coefficient intervals:
+                               metric      era offset   model_type
+1 pace_corrected_lag_rate_per_century Holocene      0 Holocene_MA1
+2 pace_corrected_lag_rate_per_century Holocene      0 Holocene_MA1
+3 pace_corrected_lag_rate_per_century Holocene      0 Holocene_MA1
+4 pace_corrected_lag_rate_per_century Holocene      0 Holocene_MA1
+           term     estimate   std_error df    t_value   p_value     conf_low
+1   (Intercept) -0.001779062 0.005510512 26 -0.3228488 0.7493918 -0.013106081
+2      siteNOCA  0.007182742 0.005198249 26  1.3817618 0.1788034 -0.003502412
+3  climate_rate -0.503727102 0.314033232 26 -1.6040567 0.1207816 -1.149231656
+4 fire_activity  0.013952014 0.011818167 26  1.1805566 0.2484669 -0.010340575
+    conf_high
+1 0.009547957
+2 0.017867897
+3 0.141777451
+4 0.038244604
+Input group support:
+  site burned  n
+1 MORA     NA 20
+2 NOCA     NA 10
+
+OFFSET-0 RANDOM LAKE INTERCEPT SENSITIVITY: pace_corrected_lag_rate_per_century
+                               metric offset  n n_lakes converged
+1 pace_corrected_lag_rate_per_century      0 30       4      TRUE
+  random_intercept_sd random_intercept_variance random_sd_relative_to_residual
+1        2.514954e-07              6.324994e-14                   3.071972e-05
+  max_abs_coefficient_difference max_abs_fixed_prediction_difference
+1                   2.746899e-07                         2.79252e-08
+  covariance_status random_sd_conf_low random_sd_conf_high
+1 positive_definite                  0                 Inf
+  variance_intervals_finite variance_interval_error warnings fit_error
+1                     FALSE                    <NA>     none      <NA>
+Linear mixed-effects model fit by REML
+  Data: d
+        AIC      BIC   logLik
+  -147.1888 -137.124 81.59438
+
+Random effects:
+ Formula: ~1 | series
+         (Intercept)    Residual
+StdDev: 2.514954e-07 0.008186773
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+   Theta1
+-0.202548
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | site
+ Parameter estimates:
+    MORA     NOCA
+1.000000 2.364494
+Fixed effects:  estimate ~ site + climate_rate + fire_activity
+                   Value  Std.Error DF    t-value p-value
+(Intercept)   -0.0017791 0.00551052 24 -0.3228574  0.7496
+siteNOCA       0.0071827 0.00519826  2  1.3817588  0.3011
+climate_rate  -0.5037268 0.31403325 24 -1.6040557  0.1218
+fire_activity  0.0139521 0.01181817 24  1.1805627  0.2493
+ Correlation:
+              (Intr) stNOCA clmt_r
+siteNOCA       0.035
+climate_rate  -0.166 -0.128
+fire_activity -0.720 -0.015 -0.525
+
+Standardized Within-Group Residuals:
+        Min          Q1         Med          Q3         Max
+-2.64184920 -0.38339672 -0.02706091  0.59402842  2.59814599
+
+Number of Observations: 30
+Number of Groups: 4
+series = pdLogChol(1)
+            Variance     StdDev
+(Intercept) 6.324993e-14 2.514954e-07
+Residual    6.702325e-05 8.186773e-03
+
+pace_corrected_lag_rate_per_century | Holocene | 100 | Holocene_MA1
+Input rows: 28 | Excluded: 0
+Warnings: none
+Covariance uncertainty: positive_definite
+Generalized least squares fit by REML
+  Model: estimate ~ site + climate_rate + fire_activity
+  Data: d
+        AIC       BIC   logLik
+  -142.6261 -134.3797 78.31304
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+   Theta1
+0.2827865
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | site
+ Parameter estimates:
+    MORA     NOCA
+1.000000 2.805586
+
+Coefficients:
+                    Value Std.Error    t-value p-value
+(Intercept)   -0.00994018 0.0047427 -2.0959060  0.0468
+siteNOCA       0.00748377 0.0085222  0.8781480  0.3886
+climate_rate   0.29729176 0.3414904  0.8705713  0.3926
+fire_activity  0.00874275 0.0089962  0.9718287  0.3408
+
+ Correlation:
+              (Intr) stNOCA clmt_r
+siteNOCA      -0.019
+climate_rate  -0.451 -0.038
+fire_activity -0.447 -0.050 -0.509
+
+Standardized residuals:
+       Min         Q1        Med         Q3        Max
+-1.3921427 -0.4250664 -0.1392455  0.3052055  2.8944685
+
+Residual standard error: 0.007318104
+Degrees of freedom: 28 total; 24 residual
+Residual SDs:
+       MORA        NOCA
+0.007318104 0.020531574
+Descriptive in-sample R2 = 1 - SSE/SST: 0.1806348
+Unadjusted coefficient intervals:
+                               metric      era offset   model_type
+1 pace_corrected_lag_rate_per_century Holocene    100 Holocene_MA1
+2 pace_corrected_lag_rate_per_century Holocene    100 Holocene_MA1
+3 pace_corrected_lag_rate_per_century Holocene    100 Holocene_MA1
+4 pace_corrected_lag_rate_per_century Holocene    100 Holocene_MA1
+           term     estimate   std_error df    t_value    p_value     conf_low
+1   (Intercept) -0.009940179 0.004742664 24 -2.0959060 0.04681546 -0.019728557
+2      siteNOCA  0.007483770 0.008522220 24  0.8781480 0.38857037 -0.010105227
+3  climate_rate  0.297291759 0.341490434 24  0.8705713 0.39261304 -0.407509856
+4 fire_activity  0.008742746 0.008996181 24  0.9718287 0.34082922 -0.009824458
+      conf_high
+1 -0.0001518008
+2  0.0250727676
+3  1.0020933740
+4  0.0273099503
+Input group support:
+  site burned  n
+1 MORA     NA 19
+2 NOCA     NA  9
+
+pace_corrected_lag_rate_per_century | Holocene | 200 | Holocene_MA1
+Input rows: 27 | Excluded: 0
+Warnings: none
+Covariance uncertainty: positive_definite
+Generalized least squares fit by REML
+  Model: estimate ~ site + climate_rate + fire_activity
+  Data: d
+        AIC       BIC   logLik
+  -163.0943 -155.1459 88.54716
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+   Theta1
+0.0254768
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | site
+ Parameter estimates:
+    MORA     NOCA
+1.000000 5.786906
+
+Coefficients:
+                    Value  Std.Error    t-value p-value
+(Intercept)   -0.00242114 0.00331631 -0.7300698  0.4727
+siteNOCA       0.00580185 0.00599748  0.9673822  0.3434
+climate_rate   0.08766331 0.16380817  0.5351584  0.5977
+fire_activity  0.00098929 0.00388370  0.2547284  0.8012
+
+ Correlation:
+              (Intr) stNOCA clmt_r
+siteNOCA       0.042
+climate_rate  -0.803 -0.058
+fire_activity -0.781 -0.057  0.317
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-1.54360323 -0.48995897  0.08214961  0.56839432  2.34720892
+
+Residual standard error: 0.00301137
+Degrees of freedom: 27 total; 23 residual
+Residual SDs:
+      MORA       NOCA
+0.00301137 0.01742652
+Descriptive in-sample R2 = 1 - SSE/SST: 0.11310555
+Unadjusted coefficient intervals:
+                               metric      era offset   model_type
+1 pace_corrected_lag_rate_per_century Holocene    200 Holocene_MA1
+2 pace_corrected_lag_rate_per_century Holocene    200 Holocene_MA1
+3 pace_corrected_lag_rate_per_century Holocene    200 Holocene_MA1
+4 pace_corrected_lag_rate_per_century Holocene    200 Holocene_MA1
+           term      estimate   std_error df    t_value   p_value     conf_low
+1   (Intercept) -0.0024211385 0.003316311 23 -0.7300698 0.4727186 -0.009281450
+2      siteNOCA  0.0058018535 0.005997478 23  0.9673822 0.3434160 -0.006604875
+3  climate_rate  0.0876633139 0.163808169 23  0.5351584 0.5976771 -0.251199701
+4 fire_activity  0.0009892888 0.003883701 23  0.2547284 0.8011967 -0.007044759
+    conf_high
+1 0.004439173
+2 0.018208582
+3 0.426526329
+4 0.009023336
+Input group support:
+  site burned  n
+1 MORA     NA 18
+2 NOCA     NA  9
+
+pace_corrected_lag_rate_per_century | Holocene | 300 | Holocene_MA1
+Input rows: 27 | Excluded: 0
+Warnings: none
+Covariance uncertainty: positive_definite
+Generalized least squares fit by REML
+  Model: estimate ~ site + climate_rate + fire_activity
+  Data: d
+        AIC       BIC  logLik
+  -157.7372 -149.7887 85.8686
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+    Theta1
+-0.0250508
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | site
+ Parameter estimates:
+   MORA    NOCA
+1.00000 5.28298
+
+Coefficients:
+                    Value  Std.Error    t-value p-value
+(Intercept)   -0.00175011 0.00340996 -0.5132345  0.6127
+siteNOCA       0.00399037 0.00603040  0.6617094  0.5147
+climate_rate   0.11802012 0.18334314  0.6437117  0.5261
+fire_activity  0.00053081 0.00390572  0.1359060  0.8931
+
+ Correlation:
+              (Intr) stNOCA clmt_r
+siteNOCA       0.044
+climate_rate  -0.802 -0.060
+fire_activity -0.619 -0.053  0.090
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-2.20318637 -0.38433893 -0.01041723  0.49891230  2.43409915
+
+Residual standard error: 0.003462147
+Degrees of freedom: 27 total; 23 residual
+Residual SDs:
+       MORA        NOCA
+0.003462147 0.018290454
+Descriptive in-sample R2 = 1 - SSE/SST: 0.08759985
+Unadjusted coefficient intervals:
+                               metric      era offset   model_type
+1 pace_corrected_lag_rate_per_century Holocene    300 Holocene_MA1
+2 pace_corrected_lag_rate_per_century Holocene    300 Holocene_MA1
+3 pace_corrected_lag_rate_per_century Holocene    300 Holocene_MA1
+4 pace_corrected_lag_rate_per_century Holocene    300 Holocene_MA1
+           term      estimate   std_error df    t_value   p_value     conf_low
+1   (Intercept) -0.0017501099 0.003409962 23 -0.5132345 0.6126822 -0.008804153
+2      siteNOCA  0.0039903743 0.006030403 23  0.6617094 0.5147329 -0.008484464
+3  climate_rate  0.1180201224 0.183343145 23  0.6437117 0.5261297 -0.261254070
+4 fire_activity  0.0005308115 0.003905725 23  0.1359060 0.8930781 -0.007548796
+    conf_high
+1 0.005303933
+2 0.016465213
+3 0.497294314
+4 0.008610419
+Input group support:
+  site burned  n
+1 MORA     NA 18
+2 NOCA     NA  9
+
+pace_corrected_lag_rate_per_century | Holocene | 400 | Holocene_MA1
+Input rows: 26 | Excluded: 1
+Warnings: none
+Covariance uncertainty: positive_definite
+Generalized least squares fit by REML
+  Model: estimate ~ site + climate_rate + fire_activity
+  Data: d
+        AIC       BIC   logLik
+  -162.4579 -154.8206 88.22896
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+    Theta1
+-0.9999246
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | site
+ Parameter estimates:
+    MORA     NOCA
+1.000000 8.904079
+
+Coefficients:
+                    Value  Std.Error    t-value p-value
+(Intercept)   -0.00144624 0.00134366 -1.0763419  0.2934
+siteNOCA      -0.00012144 0.00167044 -0.0727016  0.9427
+climate_rate   0.21669067 0.12265945  1.7666040  0.0912
+fire_activity  0.00055034 0.00246109  0.2236163  0.8251
+
+ Correlation:
+              (Intr) stNOCA clmt_r
+siteNOCA       0.136
+climate_rate  -0.618 -0.149
+fire_activity -0.402 -0.002 -0.460
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-2.77324602 -0.35610747 -0.03485249  0.38860343  2.31400065
+
+Residual standard error: 0.002358592
+Degrees of freedom: 26 total; 22 residual
+Residual SDs:
+       MORA        NOCA
+0.002358592 0.021001092
+Descriptive in-sample R2 = 1 - SSE/SST: 0.13278792
+Unadjusted coefficient intervals:
+                               metric      era offset   model_type
+1 pace_corrected_lag_rate_per_century Holocene    400 Holocene_MA1
+2 pace_corrected_lag_rate_per_century Holocene    400 Holocene_MA1
+3 pace_corrected_lag_rate_per_century Holocene    400 Holocene_MA1
+4 pace_corrected_lag_rate_per_century Holocene    400 Holocene_MA1
+           term      estimate   std_error df     t_value    p_value
+1   (Intercept) -0.0014462377 0.001343660 22 -1.07634188 0.29343665
+2      siteNOCA -0.0001214436 0.001670440 22 -0.07270156 0.94270054
+3  climate_rate  0.2166906662 0.122659448 22  1.76660396 0.09116762
+4 fire_activity  0.0005503393 0.002461087 22  0.22361635 0.82511929
+      conf_low   conf_high
+1 -0.004232818 0.001340343
+2 -0.003585724 0.003342837
+3 -0.037689459 0.471070791
+4 -0.004553643 0.005654321
+Input group support:
+  site burned  n
+1 MORA     NA 17
+2 NOCA     NA  9
+
+pace_corrected_lag_rate_per_century | Holocene | 500 | Holocene_MA1
+Input rows: 26 | Excluded: 0
+Warnings: none
+Covariance uncertainty: positive_definite
+Generalized least squares fit by REML
+  Model: estimate ~ site + climate_rate + fire_activity
+  Data: d
+        AIC       BIC   logLik
+  -160.2217 -152.5844 87.11086
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+    Theta1
+-0.3490042
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | site
+ Parameter estimates:
+    MORA     NOCA
+1.000000 6.715025
+
+Coefficients:
+                    Value  Std.Error    t-value p-value
+(Intercept)    0.00285909 0.00179410  1.5936083  0.1253
+siteNOCA       0.00058025 0.00371572  0.1561601  0.8773
+climate_rate  -0.13601631 0.10343089 -1.3150453  0.2020
+fire_activity -0.00053084 0.00300976 -0.1763746  0.8616
+
+ Correlation:
+              (Intr) stNOCA clmt_r
+siteNOCA       0.046
+climate_rate  -0.497 -0.102
+fire_activity -0.711 -0.003 -0.214
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-2.59859541 -0.50524182 -0.09824825  0.50720982  2.33274212
+
+Residual standard error: 0.002505037
+Degrees of freedom: 26 total; 22 residual
+Residual SDs:
+       MORA        NOCA
+0.002505037 0.016821386
+Descriptive in-sample R2 = 1 - SSE/SST: -0.054134402
+Unadjusted coefficient intervals:
+                               metric      era offset   model_type
+1 pace_corrected_lag_rate_per_century Holocene    500 Holocene_MA1
+2 pace_corrected_lag_rate_per_century Holocene    500 Holocene_MA1
+3 pace_corrected_lag_rate_per_century Holocene    500 Holocene_MA1
+4 pace_corrected_lag_rate_per_century Holocene    500 Holocene_MA1
+           term      estimate   std_error df    t_value   p_value      conf_low
+1   (Intercept)  0.0028590894 0.001794098 22  1.5936083 0.1252909 -0.0008616421
+2      siteNOCA  0.0005802479 0.003715723 22  0.1561601 0.8773309 -0.0071256902
+3  climate_rate -0.1360163071 0.103430888 22 -1.3150453 0.2020378 -0.3505188397
+4 fire_activity -0.0005308448 0.003009757 22 -0.1763746 0.8616132 -0.0067726984
+    conf_high
+1 0.006579821
+2 0.008286186
+3 0.078486225
+4 0.005711009
+Input group support:
+  site burned  n
+1 MORA     NA 17
+2 NOCA     NA  9
+
+pace_corrected_lag_rate_per_century | Holocene | 600 | Holocene_MA1
+Input rows: 26 | Excluded: 0
+Warnings: none
+Covariance uncertainty: positive_definite
+Generalized least squares fit by REML
+  Model: estimate ~ site + climate_rate + fire_activity
+  Data: d
+       AIC       BIC   logLik
+  -162.261 -154.6237 88.13048
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+    Theta1
+-0.2122183
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | site
+ Parameter estimates:
+   MORA    NOCA
+1.00000 4.19932
+
+Coefficients:
+                    Value  Std.Error    t-value p-value
+(Intercept)    0.00303929 0.00233664  1.3007087  0.2068
+siteNOCA      -0.00040465 0.00318496 -0.1270503  0.9001
+climate_rate  -0.15677552 0.10367744 -1.5121468  0.1447
+fire_activity  0.00022446 0.00394796  0.0568538  0.9552
+
+ Correlation:
+              (Intr) stNOCA clmt_r
+siteNOCA       0.033
+climate_rate  -0.441 -0.129
+fire_activity -0.781  0.002 -0.165
+
+Standardized residuals:
+       Min         Q1        Med         Q3        Max
+-1.5223992 -0.4506018 -0.1571493  0.6047246  2.4863881
+
+Residual standard error: 0.002795199
+Degrees of freedom: 26 total; 22 residual
+Residual SDs:
+       MORA        NOCA
+0.002795199 0.011737934
+Descriptive in-sample R2 = 1 - SSE/SST: -0.047773723
+Unadjusted coefficient intervals:
+                               metric      era offset   model_type
+1 pace_corrected_lag_rate_per_century Holocene    600 Holocene_MA1
+2 pace_corrected_lag_rate_per_century Holocene    600 Holocene_MA1
+3 pace_corrected_lag_rate_per_century Holocene    600 Holocene_MA1
+4 pace_corrected_lag_rate_per_century Holocene    600 Holocene_MA1
+           term      estimate   std_error df     t_value   p_value     conf_low
+1   (Intercept)  0.0030392924 0.002336643 22  1.30070868 0.2068185 -0.001806609
+2      siteNOCA -0.0004046497 0.003184956 22 -0.12705033 0.9000547 -0.007009843
+3  climate_rate -0.1567755153 0.103677443 22 -1.51214681 0.1447294 -0.371789373
+4 fire_activity  0.0002244562 0.003947955 22  0.05685379 0.9551749 -0.007963102
+    conf_high
+1 0.007885194
+2 0.006200544
+3 0.058238342
+4 0.008412014
+Input group support:
+  site burned  n
+1 MORA     NA 17
+2 NOCA     NA  9
+
+pace_corrected_lag_rate_per_century | Holocene | 700 | Holocene_MA1
+Input rows: 26 | Excluded: 0
+Warnings: none
+Covariance uncertainty: positive_definite
+Generalized least squares fit by REML
+  Model: estimate ~ site + climate_rate + fire_activity
+  Data: d
+        AIC       BIC   logLik
+  -166.2038 -158.5665 90.10192
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+    Theta1
+-0.2915475
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | site
+ Parameter estimates:
+    MORA     NOCA
+1.000000 2.967878
+
+Coefficients:
+                     Value  Std.Error    t-value p-value
+(Intercept)    0.001073873 0.00211185  0.5084994  0.6162
+siteNOCA      -0.002184641 0.00225749 -0.9677287  0.3437
+climate_rate   0.016287835 0.14077573  0.1157006  0.9089
+fire_activity  0.000539879 0.00352708  0.1530667  0.8797
+
+ Correlation:
+              (Intr) stNOCA clmt_r
+siteNOCA       0.181
+climate_rate  -0.564 -0.312
+fire_activity -0.610  0.006 -0.266
+
+Standardized residuals:
+       Min         Q1        Med         Q3        Max
+-1.3542805 -0.7159265 -0.1220366  0.7430062  1.8511495
+
+Residual standard error: 0.002935275
+Degrees of freedom: 26 total; 22 residual
+Residual SDs:
+       MORA        NOCA
+0.002935275 0.008711539
+Descriptive in-sample R2 = 1 - SSE/SST: 0.039617572
+Unadjusted coefficient intervals:
+                               metric      era offset   model_type
+1 pace_corrected_lag_rate_per_century Holocene    700 Holocene_MA1
+2 pace_corrected_lag_rate_per_century Holocene    700 Holocene_MA1
+3 pace_corrected_lag_rate_per_century Holocene    700 Holocene_MA1
+4 pace_corrected_lag_rate_per_century Holocene    700 Holocene_MA1
+           term      estimate   std_error df    t_value   p_value     conf_low
+1   (Intercept)  0.0010738728 0.002111847 22  0.5084994 0.6161646 -0.003305829
+2      siteNOCA -0.0021846405 0.002257493 22 -0.9677287 0.3436989 -0.006866394
+3  climate_rate  0.0162878353 0.140775728 22  0.1157006 0.9089394 -0.275663156
+4 fire_activity  0.0005398787 0.003527081 22  0.1530667 0.8797409 -0.006774839
+    conf_high
+1 0.005453574
+2 0.002497113
+3 0.308238827
+4 0.007854597
+Input group support:
+  site burned  n
+1 MORA     NA 17
+2 NOCA     NA  9
+
+pace_corrected_lag_rate_per_century | Holocene | 800 | Holocene_MA1
+Input rows: 26 | Excluded: 0
+Warnings: none
+Covariance uncertainty: positive_definite
+Generalized least squares fit by REML
+  Model: estimate ~ site + climate_rate + fire_activity
+  Data: d
+        AIC       BIC   logLik
+  -159.5619 -151.9246 86.78095
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+    Theta1
+-0.4627646
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | site
+ Parameter estimates:
+    MORA     NOCA
+1.000000 2.294485
+
+Coefficients:
+                    Value  Std.Error   t-value p-value
+(Intercept)   -0.00484899 0.00218583 -2.218376  0.0372
+siteNOCA      -0.00231687 0.00176502 -1.312660  0.2028
+climate_rate   0.28884593 0.19363194  1.491727  0.1500
+fire_activity  0.00492933 0.00488922  1.008203  0.3243
+
+ Correlation:
+              (Intr) stNOCA clmt_r
+siteNOCA       0.167
+climate_rate  -0.427 -0.253
+fire_activity -0.451  0.022 -0.589
+
+Standardized residuals:
+       Min         Q1        Med         Q3        Max
+-1.6015765 -0.4405629  0.1153261  0.6814817  1.6437845
+
+Residual standard error: 0.003847925
+Degrees of freedom: 26 total; 22 residual
+Residual SDs:
+       MORA        NOCA
+0.003847925 0.008829003
+Descriptive in-sample R2 = 1 - SSE/SST: 0.037103405
+Unadjusted coefficient intervals:
+                               metric      era offset   model_type
+1 pace_corrected_lag_rate_per_century Holocene    800 Holocene_MA1
+2 pace_corrected_lag_rate_per_century Holocene    800 Holocene_MA1
+3 pace_corrected_lag_rate_per_century Holocene    800 Holocene_MA1
+4 pace_corrected_lag_rate_per_century Holocene    800 Holocene_MA1
+           term     estimate   std_error df   t_value    p_value     conf_low
+1   (Intercept) -0.004848991 0.002185829 22 -2.218376 0.03715922 -0.009382123
+2      siteNOCA -0.002316868 0.001765017 22 -1.312660 0.20282713 -0.005977289
+3  climate_rate  0.288845926 0.193631943 22  1.491727 0.14997212 -0.112722145
+4 fire_activity  0.004929326 0.004889218 22  1.008203 0.32431777 -0.005210292
+      conf_high
+1 -0.0003158578
+2  0.0013435540
+3  0.6904139979
+4  0.0150689440
+Input group support:
+  site burned  n
+1 MORA     NA 17
+2 NOCA     NA  9
+
+pace_corrected_lag_rate_per_century | Holocene | 900 | Holocene_MA1
+Input rows: 30 | Excluded: 0
+Warnings: none
+Covariance uncertainty: positive_definite
+Generalized least squares fit by REML
+  Model: estimate ~ site + climate_rate + fire_activity
+  Data: d
+        AIC       BIC   logLik
+  -150.2687 -141.4621 82.13437
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+    Theta1
+-0.9999107
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | site
+ Parameter estimates:
+    MORA     NOCA
+1.000000 3.291242
+
+Coefficients:
+                   Value  Std.Error   t-value p-value
+(Intercept)    0.0025281 0.00390957  0.646639  0.5235
+siteNOCA       0.0057228 0.00188113  3.042213  0.0053
+climate_rate  -0.9720159 0.24348402 -3.992114  0.0005
+fire_activity  0.0193908 0.01067681  1.816158  0.0809
+
+ Correlation:
+              (Intr) stNOCA clmt_r
+siteNOCA       0.137
+climate_rate   0.133 -0.049
+fire_activity -0.787 -0.096 -0.709
+
+Standardized residuals:
+       Min         Q1        Med         Q3        Max
+-2.4599283 -0.5201183 -0.1533714  0.4621819  1.9739800
+
+Residual standard error: 0.007967444
+Degrees of freedom: 30 total; 26 residual
+Residual SDs:
+       MORA        NOCA
+0.007967444 0.026222786
+Descriptive in-sample R2 = 1 - SSE/SST: 0.057097874
+Unadjusted coefficient intervals:
+                               metric      era offset   model_type
+1 pace_corrected_lag_rate_per_century Holocene    900 Holocene_MA1
+2 pace_corrected_lag_rate_per_century Holocene    900 Holocene_MA1
+3 pace_corrected_lag_rate_per_century Holocene    900 Holocene_MA1
+4 pace_corrected_lag_rate_per_century Holocene    900 Holocene_MA1
+           term     estimate   std_error df    t_value      p_value
+1   (Intercept)  0.002528079 0.003909569 26  0.6466387 0.5235337051
+2      siteNOCA  0.005722803 0.001881132 26  3.0422130 0.0053108811
+3  climate_rate -0.972015901 0.243484016 26 -3.9921138 0.0004772173
+4 fire_activity  0.019390779 0.010676813 26  1.8161580 0.0808947889
+      conf_low    conf_high
+1 -0.005508156  0.010564313
+2  0.001856082  0.009589525
+3 -1.472504464 -0.471527338
+4 -0.002555724  0.041337281
+Input group support:
+  site burned  n
+1 MORA     NA 20
+2 NOCA     NA 10
+
+pace_corrected_lag_rate_per_century | Anthropocene | NA | Anthropocene_basic
+Input rows: 465 | Excluded: 142
+Warnings: none
+Covariance uncertainty: positive_definite
+Generalized least squares fit by REML
+  Model: estimate ~ site + burned
+  Data: d
+       AIC      BIC    logLik
+  1333.523 1354.201 -661.7614
+
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | site
+ Parameter estimates:
+     MORA      NOCA
+1.0000000 0.5431194
+
+Coefficients:
+                  Value  Std.Error   t-value p-value
+(Intercept)   0.5199424 0.08260102  6.294625  0.0000
+siteNOCA     -0.4670806 0.09700311 -4.815110  0.0000
+burnedBurned -0.1989814 0.17752859 -1.120841  0.2629
+
+ Correlation:
+             (Intr) stNOCA
+siteNOCA     -0.849
+burnedBurned -0.017 -0.133
+
+Standardized residuals:
+       Min         Q1        Med         Q3        Max
+-2.7650707 -0.5075501 -0.0846729  0.6067909  3.1551927
+
+Residual standard error: 1.316255
+Degrees of freedom: 465 total; 462 residual
+Residual SDs:
+     MORA      NOCA
+1.3162551 0.7148837
+Descriptive in-sample R2 = 1 - SSE/SST: 0.047973369
+Unadjusted coefficient intervals:
+                               metric          era offset         model_type
+1 pace_corrected_lag_rate_per_century Anthropocene     NA Anthropocene_basic
+2 pace_corrected_lag_rate_per_century Anthropocene     NA Anthropocene_basic
+3 pace_corrected_lag_rate_per_century Anthropocene     NA Anthropocene_basic
+          term   estimate  std_error  df   t_value      p_value   conf_low
+1  (Intercept)  0.5199424 0.08260102 462  6.294625 7.170460e-10  0.3576222
+2     siteNOCA -0.4670806 0.09700311 462 -4.815110 1.997027e-06 -0.6577026
+3 burnedBurned -0.1989814 0.17752859 462 -1.120841 2.629377e-01 -0.5478449
+   conf_high
+1  0.6822627
+2 -0.2764586
+3  0.1498822
+Input group support:
+  site   burned   n
+1 MORA Unburned 252
+2 MORA   Burned   2
+3 NOCA Unburned 194
+4 NOCA   Burned  17
+
+pace_corrected_lag_rate_per_century | Anthropocene | NA | Anthropocene_extended
+Input rows: 465 | Excluded: 142
+Warnings: none
+Covariance uncertainty: positive_definite
+Generalized least squares fit by REML
+  Model: estimate ~ site + elevation + climate_rate + burned
+  Data: d
+       AIC      BIC    logLik
+  1357.277 1386.196 -671.6387
+
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | site
+ Parameter estimates:
+     MORA      NOCA
+1.0000000 0.5400173
+
+Coefficients:
+                  Value  Std.Error   t-value p-value
+(Intercept)   0.6952517 0.18703053  3.717316  0.0002
+siteNOCA     -0.5430161 0.11343542 -4.787007  0.0000
+elevation     0.0000582 0.00011389  0.511313  0.6094
+climate_rate -0.0456949 0.03539732 -1.290915  0.1974
+burnedBurned -0.1104089 0.18997888 -0.581164  0.5614
+
+ Correlation:
+             (Intr) stNOCA elevtn clmt_r
+siteNOCA     -0.687
+elevation    -0.202 -0.218
+climate_rate -0.669  0.515 -0.480
+burnedBurned  0.277 -0.291  0.100 -0.353
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-2.80409379 -0.51392687 -0.07496747  0.59671660  3.16830646
+
+Residual standard error: 1.320137
+Degrees of freedom: 465 total; 460 residual
+Residual SDs:
+     MORA      NOCA
+1.3201366 0.7128966
+Descriptive in-sample R2 = 1 - SSE/SST: 0.046781237
+Unadjusted coefficient intervals:
+                               metric          era offset            model_type
+1 pace_corrected_lag_rate_per_century Anthropocene     NA Anthropocene_extended
+2 pace_corrected_lag_rate_per_century Anthropocene     NA Anthropocene_extended
+3 pace_corrected_lag_rate_per_century Anthropocene     NA Anthropocene_extended
+4 pace_corrected_lag_rate_per_century Anthropocene     NA Anthropocene_extended
+5 pace_corrected_lag_rate_per_century Anthropocene     NA Anthropocene_extended
+          term      estimate    std_error  df    t_value      p_value
+1  (Intercept)  0.6952516521 0.1870305275 460  3.7173164 0.0002261616
+2     siteNOCA -0.5430161216 0.1134354209 460 -4.7870067 0.0000022855
+3    elevation  0.0000582338 0.0001138907 460  0.5113131 0.6093771823
+4 climate_rate -0.0456949325 0.0353973240 460 -1.2909149 0.1973815863
+5 burnedBurned -0.1104089199 0.1899788843 460 -0.5811642 0.5614144561
+       conf_low     conf_high
+1  0.3277115173  1.0627917868
+2 -0.7659319763 -0.3201002670
+3 -0.0001655767  0.0002820443
+4 -0.1152554337  0.0238655688
+5 -0.4837429723  0.2629251324
+Input group support:
+  site   burned   n
+1 MORA Unburned 252
+2 MORA   Burned   2
+3 NOCA Unburned 194
+4 NOCA   Burned  17
+
+direction_corrected_lag_rate_per_century | Holocene | 0 | Holocene_MA1
+Input rows: 30 | Excluded: 0
+Warnings: none
+Covariance uncertainty: positive_definite
+Generalized least squares fit by REML
+  Model: estimate ~ site + climate_rate + fire_activity
+  Data: d
+        AIC       BIC   logLik
+  -157.7955 -148.9889 85.89777
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+    Theta1
+-0.5823449
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | site
+ Parameter estimates:
+    MORA     NOCA
+1.000000 1.441987
+
+Coefficients:
+                   Value  Std.Error   t-value p-value
+(Intercept)   -0.0043581 0.00443038 -0.983691  0.3343
+siteNOCA       0.0050713 0.00197255  2.570916  0.0162
+climate_rate   0.8834847 0.26975329  3.275158  0.0030
+fire_activity -0.0220499 0.01101034 -2.002654  0.0557
+
+ Correlation:
+              (Intr) stNOCA clmt_r
+siteNOCA       0.106
+climate_rate   0.009 -0.143
+fire_activity -0.760 -0.068 -0.637
+
+Standardized residuals:
+       Min         Q1        Med         Q3        Max
+-2.0577712 -0.6187623 -0.1315744  0.5647649  2.4991163
+
+Residual standard error: 0.008688403
+Degrees of freedom: 30 total; 26 residual
+Residual SDs:
+       MORA        NOCA
+0.008688403 0.012528561
+Descriptive in-sample R2 = 1 - SSE/SST: 0.2631334
+Unadjusted coefficient intervals:
+                                    metric      era offset   model_type
+1 direction_corrected_lag_rate_per_century Holocene      0 Holocene_MA1
+2 direction_corrected_lag_rate_per_century Holocene      0 Holocene_MA1
+3 direction_corrected_lag_rate_per_century Holocene      0 Holocene_MA1
+4 direction_corrected_lag_rate_per_century Holocene      0 Holocene_MA1
+           term     estimate   std_error df    t_value     p_value     conf_low
+1   (Intercept) -0.004358126 0.004430380 26 -0.9836912 0.334333330 -0.013464902
+2      siteNOCA  0.005071258 0.001972549 26  2.5709163 0.016216351  0.001016626
+3  climate_rate  0.883484656 0.269753295 26  3.2751580 0.002988439  0.328998817
+4 fire_activity -0.022049911 0.011010343 26 -2.0026543 0.055745017 -0.044681995
+    conf_high
+1 0.004748651
+2 0.009125890
+3 1.437970494
+4 0.000582173
+Input group support:
+  site burned  n
+1 MORA     NA 20
+2 NOCA     NA 10
+
+OFFSET-0 RANDOM LAKE INTERCEPT SENSITIVITY: direction_corrected_lag_rate_per_century
+                                    metric offset  n n_lakes converged
+1 direction_corrected_lag_rate_per_century      0 30       4      TRUE
+  random_intercept_sd random_intercept_variance random_sd_relative_to_residual
+1        1.837638e-07              3.376913e-14                   2.115047e-05
+  max_abs_coefficient_difference max_abs_fixed_prediction_difference
+1                   1.353087e-08                        2.727138e-10
+  covariance_status random_sd_conf_low random_sd_conf_high
+1 positive_definite                  0                 Inf
+  variance_intervals_finite variance_interval_error warnings fit_error
+1                     FALSE                    <NA>     none      <NA>
+Linear mixed-effects model fit by REML
+  Data: d
+        AIC       BIC   logLik
+  -155.7955 -145.7308 85.89777
+
+Random effects:
+ Formula: ~1 | series
+         (Intercept)    Residual
+StdDev: 1.837638e-07 0.008688403
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+    Theta1
+-0.5823449
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | site
+ Parameter estimates:
+    MORA     NOCA
+1.000000 1.441987
+Fixed effects:  estimate ~ site + climate_rate + fire_activity
+                   Value  Std.Error DF   t-value p-value
+(Intercept)   -0.0043581 0.00443038 24 -0.983691  0.3351
+siteNOCA       0.0050713 0.00197255  2  2.570917  0.1238
+climate_rate   0.8834847 0.26975329 24  3.275158  0.0032
+fire_activity -0.0220499 0.01101034 24 -2.002654  0.0566
+ Correlation:
+              (Intr) stNOCA clmt_r
+siteNOCA       0.106
+climate_rate   0.009 -0.143
+fire_activity -0.760 -0.068 -0.637
+
+Standardized Within-Group Residuals:
+       Min         Q1        Med         Q3        Max
+-2.0577712 -0.6187623 -0.1315744  0.5647649  2.4991162
+
+Number of Observations: 30
+Number of Groups: 4
+series = pdLogChol(1)
+            Variance     StdDev
+(Intercept) 3.376915e-14 1.837638e-07
+Residual    7.548834e-05 8.688403e-03
+
+direction_corrected_lag_rate_per_century | Holocene | 100 | Holocene_MA1
+Input rows: 28 | Excluded: 0
+Warnings: none
+Covariance uncertainty: positive_definite
+Generalized least squares fit by REML
+  Model: estimate ~ site + climate_rate + fire_activity
+  Data: d
+        AIC      BIC  logLik
+  -131.9344 -123.688 72.9672
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+    Theta1
+-0.3201125
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | site
+ Parameter estimates:
+    MORA     NOCA
+1.000000 1.270962
+
+Coefficients:
+                   Value Std.Error    t-value p-value
+(Intercept)   -0.0083201 0.0073765 -1.1279099  0.2705
+siteNOCA       0.0057220 0.0038838  1.4733051  0.1537
+climate_rate   0.5268809 0.4690661  1.1232551  0.2724
+fire_activity -0.0008435 0.0145742 -0.0578793  0.9543
+
+ Correlation:
+              (Intr) stNOCA clmt_r
+siteNOCA       0.064
+climate_rate  -0.411 -0.006
+fire_activity -0.608 -0.182 -0.438
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-2.57188788 -0.38306428  0.08467817  0.49596420  2.33795068
+
+Residual standard error: 0.01146184
+Degrees of freedom: 28 total; 24 residual
+Residual SDs:
+      MORA       NOCA
+0.01146184 0.01456757
+Descriptive in-sample R2 = 1 - SSE/SST: 0.135652
+Unadjusted coefficient intervals:
+                                    metric      era offset   model_type
+1 direction_corrected_lag_rate_per_century Holocene    100 Holocene_MA1
+2 direction_corrected_lag_rate_per_century Holocene    100 Holocene_MA1
+3 direction_corrected_lag_rate_per_century Holocene    100 Holocene_MA1
+4 direction_corrected_lag_rate_per_century Holocene    100 Holocene_MA1
+           term      estimate   std_error df     t_value   p_value     conf_low
+1   (Intercept) -0.0083200661 0.007376534 24 -1.12790989 0.2705079 -0.023544485
+2      siteNOCA  0.0057220167 0.003883796 24  1.47330513 0.1536643 -0.002293744
+3  climate_rate  0.5268808794 0.469066081 24  1.12325513 0.2724401 -0.441223930
+4 fire_activity -0.0008435444 0.014574195 24 -0.05787931 0.9543240 -0.030923205
+    conf_high
+1 0.006904353
+2 0.013737778
+3 1.494985689
+4 0.029236117
+Input group support:
+  site burned  n
+1 MORA     NA 19
+2 NOCA     NA  9
+
+direction_corrected_lag_rate_per_century | Holocene | 200 | Holocene_MA1
+Input rows: 27 | Excluded: 0
+Warnings: none
+Covariance uncertainty: positive_definite
+Generalized least squares fit by REML
+  Model: estimate ~ site + climate_rate + fire_activity
+  Data: d
+        AIC      BIC   logLik
+  -117.8935 -109.945 65.94674
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+    Theta1
+0.01218622
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | site
+ Parameter estimates:
+    MORA     NOCA
+1.000000 1.856123
+
+Coefficients:
+                   Value Std.Error    t-value p-value
+(Intercept)   -0.0289336 0.0111802 -2.5879280  0.0164
+siteNOCA       0.0021141 0.0080389  0.2629822  0.7949
+climate_rate   1.3245042 0.5532278  2.3941390  0.0252
+fire_activity  0.0111159 0.0140604  0.7905842  0.4373
+
+ Correlation:
+              (Intr) stNOCA clmt_r
+siteNOCA       0.081
+climate_rate  -0.747 -0.133
+fire_activity -0.755 -0.138  0.205
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-2.33734411 -0.40745320 -0.04558679  0.54053103  1.87644882
+
+Residual standard error: 0.01182932
+Degrees of freedom: 27 total; 23 residual
+Residual SDs:
+      MORA       NOCA
+0.01182932 0.02195667
+Descriptive in-sample R2 = 1 - SSE/SST: 0.12613496
+Unadjusted coefficient intervals:
+                                    metric      era offset   model_type
+1 direction_corrected_lag_rate_per_century Holocene    200 Holocene_MA1
+2 direction_corrected_lag_rate_per_century Holocene    200 Holocene_MA1
+3 direction_corrected_lag_rate_per_century Holocene    200 Holocene_MA1
+4 direction_corrected_lag_rate_per_century Holocene    200 Holocene_MA1
+           term     estimate   std_error df    t_value    p_value    conf_low
+1   (Intercept) -0.028933644 0.011180235 23 -2.5879280 0.01644806 -0.05206172
+2      siteNOCA  0.002114091 0.008038915 23  0.2629822 0.79490580 -0.01451567
+3  climate_rate  1.324504170 0.553227760 23  2.3941390 0.02520341  0.18006535
+4 fire_activity  0.011115944 0.014060418 23  0.7905842 0.43726309 -0.01797025
+     conf_high
+1 -0.005805565
+2  0.018743855
+3  2.468942987
+4  0.040202136
+Input group support:
+  site burned  n
+1 MORA     NA 18
+2 NOCA     NA  9
+
+direction_corrected_lag_rate_per_century | Holocene | 300 | Holocene_MA1
+Input rows: 27 | Excluded: 0
+Warnings: none
+Covariance uncertainty: positive_definite
+Generalized least squares fit by REML
+  Model: estimate ~ site + climate_rate + fire_activity
+  Data: d
+        AIC       BIC  logLik
+  -118.5718 -110.6233 66.2859
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+    Theta1
+-0.1196975
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | site
+ Parameter estimates:
+    MORA     NOCA
+1.000000 1.832024
+
+Coefficients:
+                   Value Std.Error   t-value p-value
+(Intercept)   -0.0228628 0.0101171 -2.259809  0.0336
+siteNOCA       0.0069831 0.0068908  1.013392  0.3214
+climate_rate   1.4965292 0.5228666  2.862162  0.0088
+fire_activity -0.0154267 0.0126286 -1.221571  0.2342
+
+ Correlation:
+              (Intr) stNOCA clmt_r
+siteNOCA       0.108
+climate_rate  -0.762 -0.149
+fire_activity -0.653 -0.143  0.071
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-2.75751364 -0.49081342  0.01047171  0.68403795  2.15565125
+
+Residual standard error: 0.01160921
+Degrees of freedom: 27 total; 23 residual
+Residual SDs:
+      MORA       NOCA
+0.01160921 0.02126835
+Descriptive in-sample R2 = 1 - SSE/SST: 0.22588874
+Unadjusted coefficient intervals:
+                                    metric      era offset   model_type
+1 direction_corrected_lag_rate_per_century Holocene    300 Holocene_MA1
+2 direction_corrected_lag_rate_per_century Holocene    300 Holocene_MA1
+3 direction_corrected_lag_rate_per_century Holocene    300 Holocene_MA1
+4 direction_corrected_lag_rate_per_century Holocene    300 Holocene_MA1
+           term     estimate   std_error df   t_value     p_value     conf_low
+1   (Intercept) -0.022862796 0.010117134 23 -2.259809 0.033611149 -0.043791683
+2      siteNOCA  0.006983111 0.006890827 23  1.013392 0.321415555 -0.007271651
+3  climate_rate  1.496529211 0.522866635 23  2.862162 0.008811956  0.414897167
+4 fire_activity -0.015426727 0.012628599 23 -1.221571 0.234243595 -0.041550975
+     conf_high
+1 -0.001933908
+2  0.021237873
+3  2.578161255
+4  0.010697520
+Input group support:
+  site burned  n
+1 MORA     NA 18
+2 NOCA     NA  9
+
+direction_corrected_lag_rate_per_century | Holocene | 400 | Holocene_MA1
+Input rows: 27 | Excluded: 0
+Warnings: none
+Covariance uncertainty: positive_definite
+Generalized least squares fit by REML
+  Model: estimate ~ site + climate_rate + fire_activity
+  Data: d
+        AIC       BIC   logLik
+  -127.4896 -119.5412 70.74481
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+   Theta1
+0.0429547
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | site
+ Parameter estimates:
+    MORA     NOCA
+1.000000 1.842253
+
+Coefficients:
+                   Value Std.Error   t-value p-value
+(Intercept)   -0.0240801 0.0062510 -3.852169  0.0008
+siteNOCA       0.0080779 0.0066164  1.220901  0.2345
+climate_rate   1.1607816 0.4728341  2.454945  0.0221
+fire_activity  0.0017032 0.0108557  0.156898  0.8767
+
+ Correlation:
+              (Intr) stNOCA clmt_r
+siteNOCA      -0.032
+climate_rate  -0.482 -0.127
+fire_activity -0.461  0.017 -0.482
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-2.33144626 -0.52297260  0.08511889  0.37646607  2.01866706
+
+Residual standard error: 0.0096097
+Degrees of freedom: 27 total; 23 residual
+Residual SDs:
+     MORA      NOCA
+0.0096097 0.0177035
+Descriptive in-sample R2 = 1 - SSE/SST: 0.24186861
+Unadjusted coefficient intervals:
+                                    metric      era offset   model_type
+1 direction_corrected_lag_rate_per_century Holocene    400 Holocene_MA1
+2 direction_corrected_lag_rate_per_century Holocene    400 Holocene_MA1
+3 direction_corrected_lag_rate_per_century Holocene    400 Holocene_MA1
+4 direction_corrected_lag_rate_per_century Holocene    400 Holocene_MA1
+           term     estimate   std_error df    t_value      p_value
+1   (Intercept) -0.024080065 0.006251040 23 -3.8521693 0.0008115157
+2      siteNOCA  0.008077908 0.006616351 23  1.2209008 0.2344923963
+3  climate_rate  1.160781600 0.472834135 23  2.4549446 0.0220754669
+4 fire_activity  0.001703233 0.010855658 23  0.1568982 0.8766942212
+      conf_low   conf_high
+1 -0.037011327 -0.01114880
+2 -0.005609057  0.02176487
+3  0.182649668  2.13891353
+4 -0.020753406  0.02415987
+Input group support:
+  site burned  n
+1 MORA     NA 18
+2 NOCA     NA  9
+
+direction_corrected_lag_rate_per_century | Holocene | 500 | Holocene_MA1
+Input rows: 26 | Excluded: 0
+Warnings: none
+Covariance uncertainty: positive_definite
+Generalized least squares fit by REML
+  Model: estimate ~ site + climate_rate + fire_activity
+  Data: d
+        AIC       BIC   logLik
+  -112.8288 -105.1915 63.41439
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+   Theta1
+0.2147413
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | site
+ Parameter estimates:
+    MORA     NOCA
+1.000000 1.334607
+
+Coefficients:
+                   Value Std.Error   t-value p-value
+(Intercept)   -0.0147113 0.0097600 -1.507308  0.1460
+siteNOCA       0.0085013 0.0080606  1.054665  0.3030
+climate_rate   0.6034742 0.5115677  1.179657  0.2507
+fire_activity -0.0042249 0.0169969 -0.248571  0.8060
+
+ Correlation:
+              (Intr) stNOCA clmt_r
+siteNOCA      -0.086
+climate_rate  -0.331 -0.198
+fire_activity -0.693  0.039 -0.348
+
+Standardized residuals:
+       Min         Q1        Med         Q3        Max
+-1.7343434 -0.7860916  0.2030983  0.5190099  1.3562016
+
+Residual standard error: 0.0134119
+Degrees of freedom: 26 total; 22 residual
+Residual SDs:
+      MORA       NOCA
+0.01341190 0.01789961
+Descriptive in-sample R2 = 1 - SSE/SST: 0.13114303
+Unadjusted coefficient intervals:
+                                    metric      era offset   model_type
+1 direction_corrected_lag_rate_per_century Holocene    500 Holocene_MA1
+2 direction_corrected_lag_rate_per_century Holocene    500 Holocene_MA1
+3 direction_corrected_lag_rate_per_century Holocene    500 Holocene_MA1
+4 direction_corrected_lag_rate_per_century Holocene    500 Holocene_MA1
+           term     estimate   std_error df   t_value   p_value     conf_low
+1   (Intercept) -0.014711296 0.009759979 22 -1.507308 0.1459579 -0.034952253
+2      siteNOCA  0.008501286 0.008060650 22  1.054665 0.3030240 -0.008215478
+3  climate_rate  0.603474216 0.511567736 22  1.179657 0.2507365 -0.457452334
+4 fire_activity -0.004224940 0.016996914 22 -0.248571 0.8059984 -0.039474382
+    conf_high
+1 0.005529661
+2 0.025218050
+3 1.664400765
+4 0.031024502
+Input group support:
+  site burned  n
+1 MORA     NA 17
+2 NOCA     NA  9
+
+direction_corrected_lag_rate_per_century | Holocene | 600 | Holocene_MA1
+Input rows: 26 | Excluded: 0
+Warnings: none
+Covariance uncertainty: positive_definite
+Generalized least squares fit by REML
+  Model: estimate ~ site + climate_rate + fire_activity
+  Data: d
+       AIC       BIC   logLik
+  -111.583 -103.9457 62.79149
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+   Theta1
+0.2706723
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | site
+ Parameter estimates:
+     MORA      NOCA
+1.0000000 0.9690695
+
+Coefficients:
+                    Value Std.Error   t-value p-value
+(Intercept)   -0.02109843 0.0117054 -1.802453  0.0852
+siteNOCA       0.01324307 0.0076657  1.727566  0.0981
+climate_rate  -0.20140493 0.4247230 -0.474203  0.6400
+fire_activity  0.02691747 0.0205331  1.310932  0.2034
+
+ Correlation:
+              (Intr) stNOCA clmt_r
+siteNOCA      -0.195
+climate_rate  -0.207 -0.213
+fire_activity -0.797  0.083 -0.301
+
+Standardized residuals:
+       Min         Q1        Med         Q3        Max
+-1.4643182 -0.9254996  0.2781902  0.6112014  1.4736607
+
+Residual standard error: 0.01553914
+Degrees of freedom: 26 total; 22 residual
+Residual SDs:
+      MORA       NOCA
+0.01553914 0.01505851
+Descriptive in-sample R2 = 1 - SSE/SST: 0.2008125
+Unadjusted coefficient intervals:
+                                    metric      era offset   model_type
+1 direction_corrected_lag_rate_per_century Holocene    600 Holocene_MA1
+2 direction_corrected_lag_rate_per_century Holocene    600 Holocene_MA1
+3 direction_corrected_lag_rate_per_century Holocene    600 Holocene_MA1
+4 direction_corrected_lag_rate_per_century Holocene    600 Holocene_MA1
+           term    estimate  std_error df   t_value    p_value     conf_low
+1   (Intercept) -0.02109843 0.01170540 22 -1.802453 0.08519250 -0.045373935
+2      siteNOCA  0.01324307 0.00766574 22  1.727566 0.09808057 -0.002654703
+3  climate_rate -0.20140493 0.42472304 22 -0.474203 0.64002791 -1.082226596
+4 fire_activity  0.02691747 0.02053308 22  1.310932 0.20340058 -0.015665534
+    conf_high
+1 0.003177082
+2 0.029140840
+3 0.679416736
+4 0.069500471
+Input group support:
+  site burned  n
+1 MORA     NA 17
+2 NOCA     NA  9
+
+direction_corrected_lag_rate_per_century | Holocene | 700 | Holocene_MA1
+Input rows: 26 | Excluded: 0
+Warnings: none
+Covariance uncertainty: positive_definite
+Generalized least squares fit by REML
+  Model: estimate ~ site + climate_rate + fire_activity
+  Data: d
+        AIC       BIC   logLik
+  -124.0067 -116.3694 69.00337
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+   Theta1
+0.1841254
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | site
+ Parameter estimates:
+    MORA     NOCA
+1.000000 2.118729
+
+Coefficients:
+                   Value Std.Error   t-value p-value
+(Intercept)   -0.0314518 0.0074015 -4.249407  0.0003
+siteNOCA       0.0024475 0.0078858  0.310371  0.7592
+climate_rate   0.8690478 0.4402532  1.973973  0.0611
+fire_activity  0.0246338 0.0115643  2.130162  0.0446
+
+ Correlation:
+              (Intr) stNOCA clmt_r
+siteNOCA       0.072
+climate_rate  -0.520 -0.279
+fire_activity -0.632  0.035 -0.252
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-1.66658848 -0.70099651 -0.08420348  0.62676119  2.08473296
+
+Residual standard error: 0.008859812
+Degrees of freedom: 26 total; 22 residual
+Residual SDs:
+       MORA        NOCA
+0.008859812 0.018771545
+Descriptive in-sample R2 = 1 - SSE/SST: 0.25132364
+Unadjusted coefficient intervals:
+                                    metric      era offset   model_type
+1 direction_corrected_lag_rate_per_century Holocene    700 Holocene_MA1
+2 direction_corrected_lag_rate_per_century Holocene    700 Holocene_MA1
+3 direction_corrected_lag_rate_per_century Holocene    700 Holocene_MA1
+4 direction_corrected_lag_rate_per_century Holocene    700 Holocene_MA1
+           term     estimate   std_error df    t_value      p_value
+1   (Intercept) -0.031451842 0.007401466 22 -4.2494070 0.0003281051
+2      siteNOCA  0.002447541 0.007885846 22  0.3103713 0.7591998432
+3  climate_rate  0.869047787 0.440253205 22  1.9739727 0.0610725847
+4 fire_activity  0.024633844 0.011564307 22  2.1301618 0.0445861264
+       conf_low   conf_high
+1 -0.0468015437 -0.01610214
+2 -0.0139067039  0.01880178
+3 -0.0439814775  1.78207705
+4  0.0006509401  0.04861675
+Input group support:
+  site burned  n
+1 MORA     NA 17
+2 NOCA     NA  9
+
+direction_corrected_lag_rate_per_century | Holocene | 800 | Holocene_MA1
+Input rows: 26 | Excluded: 0
+Warnings: none
+Covariance uncertainty: positive_definite
+Generalized least squares fit by REML
+  Model: estimate ~ site + climate_rate + fire_activity
+  Data: d
+        AIC       BIC   logLik
+  -123.2948 -115.6575 68.64738
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+   Theta1
+0.7495579
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | site
+ Parameter estimates:
+    MORA     NOCA
+1.000000 3.669522
+
+Coefficients:
+                   Value  Std.Error   t-value p-value
+(Intercept)    0.0338440 0.00593616  5.701321  0.0000
+siteNOCA       0.0043923 0.01446368  0.303679  0.7642
+climate_rate  -1.7910674 0.28458555 -6.293599  0.0000
+fire_activity -0.0198572 0.01345164 -1.476189  0.1541
+
+ Correlation:
+              (Intr) stNOCA clmt_r
+siteNOCA      -0.077
+climate_rate   0.258 -0.052
+fire_activity -0.783  0.016 -0.705
+
+Standardized residuals:
+       Min         Q1        Med         Q3        Max
+-2.0858433 -0.2189056  0.1450644  0.7091317  1.5742035
+
+Residual standard error: 0.008669477
+Degrees of freedom: 26 total; 22 residual
+Residual SDs:
+       MORA        NOCA
+0.008669477 0.031812835
+Descriptive in-sample R2 = 1 - SSE/SST: -0.77783075
+Unadjusted coefficient intervals:
+                                    metric      era offset   model_type
+1 direction_corrected_lag_rate_per_century Holocene    800 Holocene_MA1
+2 direction_corrected_lag_rate_per_century Holocene    800 Holocene_MA1
+3 direction_corrected_lag_rate_per_century Holocene    800 Holocene_MA1
+4 direction_corrected_lag_rate_per_century Holocene    800 Holocene_MA1
+           term     estimate   std_error df    t_value      p_value    conf_low
+1   (Intercept)  0.033843959 0.005936161 22  5.7013210 9.825152e-06  0.02153311
+2      siteNOCA  0.004392317 0.014463677 22  0.3036792 7.642258e-01 -0.02560351
+3  climate_rate -1.791067422 0.284585551 22 -6.2935993 2.469932e-06 -2.38126173
+4 fire_activity -0.019857156 0.013451639 22 -1.4761886 1.540643e-01 -0.04775415
+     conf_high
+1  0.046154803
+2  0.034388147
+3 -1.200873113
+4  0.008039837
+Input group support:
+  site burned  n
+1 MORA     NA 17
+2 NOCA     NA  9
+
+direction_corrected_lag_rate_per_century | Holocene | 900 | Holocene_MA1
+Input rows: 30 | Excluded: 0
+Warnings: none
+Covariance uncertainty: positive_definite
+Generalized least squares fit by REML
+  Model: estimate ~ site + climate_rate + fire_activity
+  Data: d
+        AIC       BIC   logLik
+  -165.0579 -156.2512 89.52893
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+   Theta1
+0.2812009
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | site
+ Parameter estimates:
+    MORA     NOCA
+1.000000 1.885696
+
+Coefficients:
+                   Value  Std.Error    t-value p-value
+(Intercept)    0.0004594 0.00478184  0.0960693  0.9242
+siteNOCA       0.0060258 0.00524098  1.1497547  0.2607
+climate_rate   0.3808067 0.19827481  1.9206004  0.0658
+fire_activity -0.0180144 0.00958294 -1.8798432  0.0714
+
+ Correlation:
+              (Intr) stNOCA clmt_r
+siteNOCA      -0.028
+climate_rate  -0.106 -0.050
+fire_activity -0.758 -0.069 -0.476
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-2.03288965 -0.57743872  0.05068212  0.52054431  1.70011222
+
+Residual standard error: 0.006778787
+Degrees of freedom: 30 total; 26 residual
+Residual SDs:
+       MORA        NOCA
+0.006778787 0.012782728
+Descriptive in-sample R2 = 1 - SSE/SST: 0.22003626
+Unadjusted coefficient intervals:
+                                    metric      era offset   model_type
+1 direction_corrected_lag_rate_per_century Holocene    900 Holocene_MA1
+2 direction_corrected_lag_rate_per_century Holocene    900 Holocene_MA1
+3 direction_corrected_lag_rate_per_century Holocene    900 Holocene_MA1
+4 direction_corrected_lag_rate_per_century Holocene    900 Holocene_MA1
+           term      estimate   std_error df     t_value    p_value
+1   (Intercept)  0.0004593876 0.004781836 26  0.09606929 0.92420221
+2      siteNOCA  0.0060258464 0.005240984 26  1.14975472 0.26071133
+3  climate_rate  0.3808066763 0.198274810 26  1.92060038 0.06581328
+4 fire_activity -0.0180144177 0.009582936 26 -1.87984319 0.07137993
+      conf_low  conf_high
+1 -0.009369818 0.01028859
+2 -0.004747151 0.01679884
+3 -0.026753033 0.78836639
+4 -0.037712425 0.00168359
+Input group support:
+  site burned  n
+1 MORA     NA 20
+2 NOCA     NA 10
+
+direction_corrected_lag_rate_per_century | Anthropocene | NA | Anthropocene_basic
+Input rows: 607 | Excluded: 0
+Warnings: none
+Covariance uncertainty: positive_definite
+Generalized least squares fit by REML
+  Model: estimate ~ site + burned
+  Data: d
+       AIC      BIC    logLik
+  1865.625 1887.643 -927.8126
+
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | site
+ Parameter estimates:
+    MORA     NOCA
+1.000000 2.144237
+
+Coefficients:
+                  Value  Std.Error   t-value p-value
+(Intercept)   0.3018917 0.04323654  6.982327  0.0000
+siteNOCA     -0.0023327 0.11260187 -0.020717  0.9835
+burnedBurned -0.3993392 0.30191743 -1.322677  0.1864
+
+ Correlation:
+             (Intr) stNOCA
+siteNOCA     -0.374
+burnedBurned -0.042 -0.216
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-4.13818271 -0.49687495 -0.09971172  0.48553908  5.83071768
+
+Residual standard error: 0.784727
+Degrees of freedom: 607 total; 604 residual
+Residual SDs:
+    MORA     NOCA
+0.784727 1.682641
+Descriptive in-sample R2 = 1 - SSE/SST: 0.0015623967
+Unadjusted coefficient intervals:
+                                    metric          era offset
+1 direction_corrected_lag_rate_per_century Anthropocene     NA
+2 direction_corrected_lag_rate_per_century Anthropocene     NA
+3 direction_corrected_lag_rate_per_century Anthropocene     NA
+          model_type         term     estimate  std_error  df     t_value
+1 Anthropocene_basic  (Intercept)  0.301891650 0.04323654 604  6.98232706
+2 Anthropocene_basic     siteNOCA -0.002332736 0.11260187 604 -0.02071667
+3 Anthropocene_basic burnedBurned -0.399339236 0.30191743 604 -1.32267698
+       p_value   conf_low conf_high
+1 7.676554e-12  0.2169794 0.3868039
+2 9.834785e-01 -0.2234715 0.2188060
+3 1.864434e-01 -0.9922747 0.1935962
+Input group support:
+  site   burned   n
+1 MORA Unburned 328
+2 MORA   Burned   2
+3 NOCA Unburned 253
+4 NOCA   Burned  24
+
+direction_corrected_lag_rate_per_century | Anthropocene | NA | Anthropocene_extended
+Input rows: 607 | Excluded: 0
+Warnings: none
+Covariance uncertainty: positive_definite
+Generalized least squares fit by REML
+  Model: estimate ~ site + elevation + climate_rate + burned
+  Data: d
+       AIC      BIC    logLik
+  1889.107 1919.908 -937.5533
+
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | site
+ Parameter estimates:
+    MORA     NOCA
+1.000000 2.131985
+
+Coefficients:
+                  Value  Std.Error    t-value p-value
+(Intercept)   0.5331275 0.23252654  2.2927599  0.0222
+siteNOCA     -0.0709862 0.13590460 -0.5223235  0.6016
+elevation    -0.0000244 0.00013336 -0.1827762  0.8550
+climate_rate -0.0388250 0.04587578 -0.8463069  0.3977
+burnedBurned -0.3445891 0.30832268 -1.1176247  0.2642
+
+ Correlation:
+             (Intr) stNOCA elevtn clmt_r
+siteNOCA     -0.529
+elevation    -0.238 -0.167
+climate_rate -0.784  0.559 -0.392
+burnedBurned  0.152 -0.290  0.083 -0.206
+
+Standardized residuals:
+       Min         Q1        Med         Q3        Max
+-4.0808119 -0.4893917 -0.1148775  0.4802933  5.7599857
+
+Residual standard error: 0.787419
+Degrees of freedom: 607 total; 602 residual
+Residual SDs:
+    MORA     NOCA
+0.787419 1.678765
+Descriptive in-sample R2 = 1 - SSE/SST: 0.0065567926
+Unadjusted coefficient intervals:
+                                    metric          era offset
+1 direction_corrected_lag_rate_per_century Anthropocene     NA
+2 direction_corrected_lag_rate_per_century Anthropocene     NA
+3 direction_corrected_lag_rate_per_century Anthropocene     NA
+4 direction_corrected_lag_rate_per_century Anthropocene     NA
+5 direction_corrected_lag_rate_per_century Anthropocene     NA
+             model_type         term      estimate   std_error  df    t_value
+1 Anthropocene_extended  (Intercept)  5.331275e-01 0.232526543 602  2.2927599
+2 Anthropocene_extended     siteNOCA -7.098617e-02 0.135904602 602 -0.5223235
+3 Anthropocene_extended    elevation -2.437522e-05 0.000133361 602 -0.1827762
+4 Anthropocene_extended climate_rate -3.882499e-02 0.045875780 602 -0.8463069
+5 Anthropocene_extended burnedBurned -3.445891e-01 0.308322681 602 -1.1176247
+    p_value      conf_low    conf_high
+1 0.0222058  0.0764657734 0.9897893135
+2 0.6016372 -0.3378909091 0.1959185677
+3 0.8550352 -0.0002862846 0.0002375342
+4 0.3977179 -0.1289210030 0.0512710281
+5 0.2641731 -0.9501077974 0.2609296954
+Input group support:
+  site   burned   n
+1 MORA Unburned 328
+2 MORA   Burned   2
+3 NOCA Unburned 253
+4 NOCA   Burned  24
+
+R version 4.6.1 (2026-06-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.7.1
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] C.UTF-8/C.UTF-8/C.UTF-8/C/C.UTF-8/C.UTF-8
+
+time zone: Europe/Zurich
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base
+
+other attached packages:
+ [1] patchwork_1.3.2 nlme_3.1-170    lubridate_1.9.5 forcats_1.0.1
+ [5] stringr_1.6.0   dplyr_1.2.1     purrr_1.2.2     readr_2.2.0
+ [9] tidyr_1.3.2     tibble_3.3.1    ggplot2_4.0.3   tidyverse_2.0.0
+[13] here_1.0.2
+
+loaded via a namespace (and not attached):
+ [1] generics_0.1.4     class_7.3-23       KernSmooth_2.23-26 stringi_1.8.9
+ [5] lattice_0.22-9     hms_1.1.4          magrittr_2.0.5     grid_4.6.1
+ [9] timechange_0.4.0   RColorBrewer_1.1-3 rprojroot_2.1.1    e1071_1.7-17
+[13] DBI_1.3.0          scales_1.4.0       cli_3.6.6          rlang_1.3.0
+[17] crayon_1.5.3       units_1.0-1        bit64_4.8.2        withr_3.0.3
+[21] otel_0.2.0         tools_4.6.1        parallel_4.6.1     tzdb_0.5.0
+[25] vctrs_0.7.3        R6_2.6.1           proxy_0.4-29       lifecycle_1.0.5
+[29] classInt_0.4-11    bit_4.6.0          vroom_1.7.1        pkgconfig_2.0.3
+[33] pillar_1.11.1      gtable_0.3.6       Rcpp_1.1.2         glue_1.8.1
+[37] sf_1.1-2           tidyselect_1.2.1   farver_2.1.2       compiler_4.6.1
+[41] S7_0.2.2

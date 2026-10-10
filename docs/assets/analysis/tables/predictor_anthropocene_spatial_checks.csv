@@ -1,0 +1,13 @@
+metric,model_type,site,n,k,n_permutations,seed,moran_I,expected_I,p_permutation_two_sided,median_edge_distance_m,crs,weights
+lag_rate_per_century,Anthropocene_basic,MORA,330,8,999,104729,0.07502823582274414,-0.00303951367781155,0.002,1376.537527302469,EPSG:32610,"symmetric 8-nearest-neighbor graph, row standardized"
+lag_rate_per_century,Anthropocene_basic,NOCA,277,8,999,104729,0.05419832139284098,-0.0036231884057971015,0.028,2402.325451822742,EPSG:32610,"symmetric 8-nearest-neighbor graph, row standardized"
+lag_rate_per_century,Anthropocene_extended,MORA,330,8,999,104729,0.07731870089596649,-0.00303951367781155,0.002,1376.537527302469,EPSG:32610,"symmetric 8-nearest-neighbor graph, row standardized"
+lag_rate_per_century,Anthropocene_extended,NOCA,277,8,999,104729,0.050375171245407316,-0.0036231884057971015,0.043,2402.325451822742,EPSG:32610,"symmetric 8-nearest-neighbor graph, row standardized"
+pace_corrected_lag_rate_per_century,Anthropocene_basic,MORA,254,8,999,104729,0.04153948699611558,-0.003952569169960474,0.109,1673.947280302184,EPSG:32610,"symmetric 8-nearest-neighbor graph, row standardized"
+pace_corrected_lag_rate_per_century,Anthropocene_basic,NOCA,211,8,999,104729,0.06853143654621074,-0.004761904761904762,0.018,3034.054682408837,EPSG:32610,"symmetric 8-nearest-neighbor graph, row standardized"
+pace_corrected_lag_rate_per_century,Anthropocene_extended,MORA,254,8,999,104729,0.045412101679517675,-0.003952569169960474,0.087,1673.947280302184,EPSG:32610,"symmetric 8-nearest-neighbor graph, row standardized"
+pace_corrected_lag_rate_per_century,Anthropocene_extended,NOCA,211,8,999,104729,0.053756979809915215,-0.004761904761904762,0.05,3034.054682408837,EPSG:32610,"symmetric 8-nearest-neighbor graph, row standardized"
+direction_corrected_lag_rate_per_century,Anthropocene_basic,MORA,330,8,999,104729,-0.016125520024446064,-0.00303951367781155,0.603,1376.537527302469,EPSG:32610,"symmetric 8-nearest-neighbor graph, row standardized"
+direction_corrected_lag_rate_per_century,Anthropocene_basic,NOCA,277,8,999,104729,0.11390475135281351,-0.0036231884057971015,0.001,2402.325451822742,EPSG:32610,"symmetric 8-nearest-neighbor graph, row standardized"
+direction_corrected_lag_rate_per_century,Anthropocene_extended,MORA,330,8,999,104729,-0.014359931342256663,-0.00303951367781155,0.656,1376.537527302469,EPSG:32610,"symmetric 8-nearest-neighbor graph, row standardized"
+direction_corrected_lag_rate_per_century,Anthropocene_extended,NOCA,277,8,999,104729,0.10892283460579132,-0.0036231884057971015,0.001,2402.325451822742,EPSG:32610,"symmetric 8-nearest-neighbor graph, row standardized"

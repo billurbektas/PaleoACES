@@ -356,12 +356,16 @@ cat('PASS: per response, 120 coefficients, 60 contrasts, 30 AIC comparisons, 40 
 
 # Verify the final manuscript figure reuses every model result and each finite
 # corrected observation; drawing the figure never fits another model.
+previous_render_option=getOption('paleoaces.render_figures')
 options(paleoaces.render_figures=FALSE)
 e=new.env();sys.source(here('R/stages/10b_tracking_manuscript_figure.R'),envir=e)
+options(paleoaces.render_figures=previous_render_option)
 stopifnot(nrow(e$means)==20L,nrow(e$contrasts)==10L,nrow(e$d)==1132L,
   all(e$means$model_type=='MA1'),all(e$contrasts$model_type=='MA1'),
-  is.null(e$figure$patches$annotation$title),is.null(e$figure$patches$annotation$caption),
-  diff(range(-e$limits$lower/(e$limits$upper-e$limits$lower)))<1e-12)
+  is.null(e$figure$patches$annotation$title),is.null(e$figure$patches$annotation$caption))
+for(bounds in list(e$primary_limits,e$corrected_limits))
+  stopifnot(is.data.frame(bounds),nrow(bounds)>0L,
+    diff(range(-bounds$lower/(bounds$upper-bounds$lower)))<1e-12)
 for(era in c('Holocene','Anthropocene')) for(correction in c('Direction','Pace')) {
   dd=e$d[e$d$era==era & e$d$correction==correction,]
   ss=e$scatter_stats[[era]] |> filter(.data$correction==.env$correction)
@@ -369,4 +373,4 @@ for(era in c('Holocene','Anthropocene')) for(correction in c('Direction','Pace')
   equal(ss$rho,unname(ref$estimate));equal(ss$p_value,ref$p.value)
   equal(ss$n_pairs,nrow(dd))
 }
-cat('PASS: five offset-0 contrast categories, grouped corrected lag labels, aligned zeros and reproducible scatter/density inputs.\n')
+cat('PASS: primary and separate corrected offset-0 contrasts, aligned zeros and reproducible scatter/density inputs.\n')

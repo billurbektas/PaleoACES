@@ -723,6 +723,63 @@ lake random effect, power analysis or contribution attribution is selected here.
   climate/species biplot inset, C. climate contributions, and D. species
   contributions. Individual Holocene dates, the pooled full-record centroid,
   and the duplicate era-centroid compatibility render are not active displays.
+### Within-era lag predictor models (2026-10-11)
+
+The author requested a separate stage 10c for observed, pace-corrected and
+direction-corrected lag-change rates. Each Holocene offset uses
+`site + climate_rate + fire_activity`, REML, MA(1) within lake and separate
+park residual variances. Responses retain their original CCA distance per
+century scales, independently filtered mathematical validity and existing
+chronology-draw medians. No interaction, transformation, draw-support cutoff
+or aggregation across offsets is added. MORA lakes remain separate vegetation
+responses to the same regional fire exposure; adjacent transitions share
+endpoints and offsets are sensitivity realizations.
+
+At offset 0 only, each response receives a random lake-intercept LME sensitivity
+on identical observations. All three lake SD estimates are effectively zero
+(approximately 1.8–3.8×10⁻⁷), with coefficient changes below 3.3×10⁻⁷.
+Observed lag has a non-positive-definite approximate covariance and failed
+variance intervals. The corrected fits return covariance matrices but lake-SD
+intervals from zero to infinity. These are uninformative variance-boundary
+results, not optimizer failures or evidence of no ecological lake differences.
+The main specification remains GLS; no random-effect fit is repeated at other offsets.
+
+Temporal predictions use each fit's actual interval predictors. Supported
+intervals alone are mapped onto 100-year display dates via `[age_lo, age_hi)`;
+the dates repeat interval predictions and do not add measurements or independent
+samples. There is no extrapolation or offset median. Predicted lag-change rates
+are not integrated into an absolute lag trajectory. CC/S grey bands reuse the
+frozen regional catalog solely as context. R² is explicitly descriptive,
+unweighted and in sample (`1 - SSE/SST`); negative values are retained because
+GLS optimizes a different, covariance-weighted objective. No claim of model
+significance or validated predictive performance follows from this R².
+
+The initial modern model is `site + burned`, with REML, independent residuals
+and site residual variances. The author also requested
+`site + elevation + climate_rate + burned` for all three lag responses.
+Elevation remains in meters and is joined from native sources by normalized
+site/plot identity. All 607 paired plots have elevation. Corrected pace alone
+has 465 finite responses. The burn term is additive and common across parks;
+only two MORA plots are burned, so the effect is chiefly supported by NOCA.
+Binary modern burning is not treated as comparable to Holocene charcoal activity.
+Different fixed-effect specifications are not compared by REML AIC.
+
+The author chose independent modern residuals first, with a spatial diagnostic.
+Stage 10c checks normalized residual Moran I separately within each park using
+UTM 10N coordinates, symmetric row-standardized eight-neighbor graphs and 999
+fixed-seed permutations. Several fits show positive spatial residual association,
+including observed lag in both parks. The nominal permutation tests are
+exploratory and do not adjust for multiple checks or covariance-estimation
+uncertainty. This result motivates a later spatial sensitivity; it does not
+silently replace the specified independent models. Coefficient intervals remain
+provisional given spatial pattern, response diagnostics and limited lake/fire support.
+
+The [workflow](WORKFLOW.md#within-era-predictor-models),
+[output contracts](OUTPUTS.md#within-era-predictor-model-records) and
+[Analysis Review](ANALYSIS_REVIEW.md#within-era-climate-fire-and-elevation-predictor-models)
+identify maintained code, coefficients across offsets, joint offset-0/modern
+figures, residual diagnostics and full results.
+
 ## Remaining scientific questions
 
 CCA sample eligibility, balanced observed/predicted exclusions and paired

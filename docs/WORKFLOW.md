@@ -101,6 +101,8 @@ flowchart TD
   MD --> GLS[10 five rate responses with selected MA1 groups and diagnostics by offset]
   MD --> LS[10a five rate responses in MA1 lake reporting at offset 0]
   MD --> MF[10b offset-0 MA1 contrasts and corrected-lag scatter: Figure 4]
+  MD --> PM[10c within-era lag predictors: ten Holocene MA1 offsets and two modern specifications]
+  ER --> PM
   GLS --> MF
   TM1 --> TV[09a tracking plots with climate bands]
   ER --> TV
@@ -134,6 +136,7 @@ flowchart TD
 | 10g | `R/stages/10_tracking_era_models.R` | Maintained provisional offset GLS exploration | Combined transition input only | Observed/corrected lag rates, turnover and raw climate rate, each with ten offsets × AR1/MA1/Independent; coefficient, within-park contrast, MA1 group-mean and paired AIC comparison CSVs, one full results TXT, MA1-only group-mean/coefficient/contrast/residual PDFs and three-candidate within-offset ΔAIC boxplots when rendering; all five requested responses run by default |
 | 10g-a | `R/stages/10a_tracking_lake_sensitivity.R` | Maintained offset-0 lake sensitivity | Combined transition input only | Lag rate, turnover and raw climate rate, each with four lakes × AR1/MA1; each lake versus its park's modern pairs; 16 coefficient rows, eight contrasts, one results TXT and two PDFs; MA1-only figures show eight coefficients and four contrasts; near-boundary fits retained and flagged |
 | 10g-b | `R/stages/10b_tracking_manuscript_figure.R` | Manuscript Figure 4 and separate corrected contrasts; offset 0 only | Combined transition input and stage-10 MA1 group means/contrasts | Three observed contrast categories above two era scatter panels; observed marginal densities and model mean intervals; primary PDF/PNG plus corrected-contrast PDF; no refitting |
+| 10g-c | `R/stages/10c_tracking_predictor_models.R` | Separate within-era predictor models | Combined transition input, native modern elevation sources and frozen CC/S catalog | Three lag responses: ten Holocene MA1 GLS offsets, offset-0 random lake intercept sensitivities, modern site-plus-burned and elevation/climate-extended independent GLS; coefficients, supported rate predictions, descriptive R², residual/spatial checks, six diagnostic PDFs and full TXT |
 | 10h | `R/stages/05a_cca_figure.R` | Selected CCA trajectory data and main render | Model, positioned Holocene samples, stage-13 frozen CC/S grid | `cca_trajectory_era_centroids.csv` and, when rendering, main-paper `fig_cca_trajectories.pdf/.png` |
 | 10i | `R/stages/09a_tracking_example_and_visualizations.R` | Tracking example and visualizations | Canonical lake realizations, lake-by-offset responses/predictors, reporting grid, aligned predictor medians reconstructed from source transitions, modern paired-plot model input and stage-13 frozen climate-era catalog/subphases | Three diagnostic PDFs: worked geometry and two tracking/climate/fire grids with four lake columns, established regional CC/S bands and CC1 subdivisions, complete-offset medians and an Anthropocene MORA/NOCA boxplot column |
 | 10j | `R/stages/12a_fire_event_detection_worked_example.R` | Accepted-event detection for all four cores | All-`tapas` source series with local thresholds, candidate/count-screen flags, and accepted events | `fire_event_detection_lake_audit.csv` and, when rendering, a PDF with all four residual/threshold plots on one page, alongside settings and the software comparison |
@@ -162,6 +165,7 @@ Both dates must pass eligibility before the legacy observation enters fitting.
 | `R/helpers/climate_variables.R` | Central seasonal climate derivation |
 | `R/helpers/tracking_model_reporting.R` | Five requested rate responses, including pace/direction corrected lag, and units, MA1 reporting, result filtering, shared colors and plot theme |
 | `R/helpers/tracking_model_data.R` | Combined 28-column assembly, era-specific missingness, coordinate identities and response-specific offset selection |
+| `R/helpers/tracking_predictor_models.R` | Within-era GLS/LME fitting, supported prediction mapping, modern elevation joins, explicit descriptive R² and spatial residual checks |
 | `R/helpers/tracking_metrics.R` | Focused vector geometry, guarded internal angle calculation, physical-climate rates and validity flags |
 | `R/helpers/fire_detection_functions.R` | Shared all-core tapas preparation/detection, record settings, series, count-screen, and accepted-event extraction |
 | `R/helpers/paleo_runs.R` | Whole-chronology draws and parameterized bin/offset assignment |
@@ -190,6 +194,7 @@ the verification needed to use the existing posteriors.
 | `test_bacon_provenance.R` | Automatic provenance gate | Seed/settings/control/version/posterior/age or chronology-code fingerprint drift; exact path-only relocations are accepted through verified historical source snapshots. Other whole-script differences require the explicit figure-output-only revision recorded in the manifest. |
 | `test_paleo_climate_age_match.R` | Automatic offline climate gate | Missing/orphan climate, NA constraints, clamping, or >50-year nearest-slice error |
 | `test_tracking_offset_models.R` | Automatic offline gate after model fits | Combined input reconstruction, singleton modern pairs, actual time gaps, AR1/MA1/independent covariance, coefficient/support integrity, paired AIC/weight reconstruction and covariance-aware group means/contrasts for all five responses; raw climate selection checks repeated copies and response-specific missingness |
+| `test_tracking_predictor_models.R` | Automatic offline gate after predictor fits | Independent GLS covariance algebra, response-specific identities and exclusions, unfilled temporal support, coefficient/prediction intervals, R² reconstruction, actual lake variance uncertainty, elevation joins and deterministic spatial diagnostics |
 | `test_cca_tracking_metrics.R` | Automatic offline gate after tracking | Independent geometry and counterfactual errors, incorrect lake/interval joins, fire coverage or comparable-window normalization, missing draw support, incorrect distributions, interval configuration or CCA drift |
 | `test_review_edge_cases.R` | Automatic independent review gate | Known geometric values and invariances, unequal elapsed times, missing turnover classes, invalid monthly values/keys/caches, and climate/fire coverage gaps |
 | `test_walsh_fire_reproduction.R` | Automatic scientific/provenance gate | Any non-tapas primary event, wrong settings/counts, lost sensitivity/catalog, modified protected outputs, stale manifest, or—when rendering—missing audit figures |
@@ -340,3 +345,35 @@ The previous reporting-grid comparison CSV and diagnostic model runner/results
 are retired. Canonical source, uncertainty and calculation tables remain.
 The model stage honors `--skip-figures`: coefficients and TXT still refresh,
 while persistent coefficient/residual PDF writes are suppressed.
+
+## Within-era predictor models
+
+Stage [10c_tracking_predictor_models.R](../R/stages/10c_tracking_predictor_models.R)
+runs after the combined transition producer. It fits observed, pace-corrected
+and direction-corrected lag-change rates separately. Holocene models use
+`site + climate_rate + fire_activity`, MA(1) within each lake, site residual
+variances and REML, once at every configured offset. Each response has one
+offset-0 random lake-intercept sensitivity on identical input rows.
+Modern models use independent residuals and site residual variances with
+`site + burned` and `site + elevation + climate_rate + burned`. Elevation joins
+preserve the 607 paired identities; undefined pace correction excludes only
+that response. The main figures and earlier era models are not rerun by this stage.
+
+```sh
+Rscript R/stages/10c_tracking_predictor_models.R
+Rscript R/tests/test_tracking_predictor_models.R
+```
+
+Results reside in `output/exploratory/tracking_predictor_models/`, with one
+coefficient CSV, performance CSV and full results TXT for all specifications.
+The local fit bundle supports independent checks. Six PDFs show offset coefficients alongside R², combined offset-0/modern coefficients, supported temporal
+predictions with CC/S backgrounds, descriptive R², normalized residuals and
+modern residual maps. Spatial Moran checks retain the initially independent
+modern specification and identify remaining spatial pattern for later review.
+
+A 100-year prediction date repeats its supported transition's fitted rate on
+`[age_lo, age_hi)`; no gaps are filled and offsets are never averaged for fits
+or trajectories. R² means unweighted in-sample `1 - SSE/SST`, including negative
+values. It is not a model significance test or independent predictive validation.
+A manual nondefault `--bin-width-years=N` run requires the separately suffixed
+combined input and writes suffixed results and PDFs; only 1,000 years runs by default.

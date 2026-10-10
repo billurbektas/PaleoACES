@@ -7,9 +7,9 @@ the maintained code, scientific documents and authoritative local inputs.
 |---|---|
 | Root | Project README, RStudio project and reference material. |
 | `R/` | Workflow and documentation/report entrypoints. |
-| `R/stages/` | The 25 analysis stages, in the workflow's execution order; chronology fitting is optional. |
+| `R/stages/` | The 26 analysis stages, in the workflow's execution order; chronology fitting is optional. |
 | `R/helpers/` | Shared settings and functions for vegetation, climate, chronology, fire, CCA metrics, figures and reporting. |
-| `R/tests/` | The 14 automatic analysis gates and an additional report check. |
+| `R/tests/` | The 15 automatic analysis gates and an additional report check. |
 | `R/diagnostics/` | Scientific diagnostics and optional sensitivities; five diagnostics are refreshed with the report, including the counts from starting plots and samples to CCA. |
 | `R/vendor/` | Preserved CHELSA downloader and Torres reference script. |
 | `tools/` | Report construction, dependency diagram and reusable independent verification tools. |

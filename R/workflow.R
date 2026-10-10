@@ -98,6 +98,8 @@ run_script("R/stages/09b_tracking_model_data.R")
 run_script("R/stages/10_tracking_era_models.R")
 run_script("R/stages/10a_tracking_lake_sensitivity.R")
 run_script("R/stages/10b_tracking_manuscript_figure.R")
+# Separate within-era predictor models, preserving the era-comparison products.
+run_script("R/stages/10c_tracking_predictor_models.R")
 
 # Derived audit/visualization data. Mixed scripts still write their CSV audits
 # under --skip-figures; only their persistent PDF/PNG writes are suppressed.
@@ -131,6 +133,7 @@ if (!skip_tests) {
   run_script("R/tests/test_bacon_provenance.R")
   run_script("R/tests/test_cca_tracking_metrics.R")
   run_script("R/tests/test_tracking_offset_models.R")
+  run_script("R/tests/test_tracking_predictor_models.R")
   run_script("R/tests/test_review_edge_cases.R")
   run_script("R/tests/test_walsh_fire_reproduction.R")
   run_script("R/tests/test_holocene_climate_fire_eras.R")

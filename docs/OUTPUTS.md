@@ -406,3 +406,37 @@ so that panel contains an annotation with no numeric fire axis. The original
 binary `burned` assignments remain in the model input and are not substituted
 for charcoal activity. MORA lakes share one regional fire history. Offsets are
 sensitivity realizations, not independent ecological replicates.
+
+## Within-era predictor model records
+
+Producer: [R/stages/10c_tracking_predictor_models.R](../R/stages/10c_tracking_predictor_models.R).
+The primary directory is `output/exploratory/tracking_predictor_models/`.
+These records are derived from the existing combined model input; canonical
+tracking schemas and calculation tables remain unchanged.
+
+| File in that directory | Contents and key |
+|---|---|
+| `model_coefficients.csv` | 144 rows; response × era × offset × model_type × term. Estimate, SE, df, t, p and unadjusted 95% coefficient intervals. Modern offset is `NA`. |
+| `model_performance.csv` | 36 GLS fits: 30 Holocene MA1 and six modern independent fits. Sample/exclusion counts, descriptive unweighted `R2 = 1 - SSE/SST`, theta/rho1, boundary flag, covariance uncertainty and warnings. |
+| `lake_random_intercept_sensitivity.csv` | Three offset-0 LME sensitivities. Lake SD/variance, relative scale, coefficient/prediction changes, actual covariance/variance-interval status and optimizer messages. |
+| `transition_predictions.csv` | One fitted transition or plot per response/model. Original identities, endpoints, predictors, modern elevation source, response, fixed-effect prediction, mean interval, support and normalized/raw residuals. |
+| `holocene_prediction_timeseries.csv` | Supported transition predictions repeated on `[age_lo, age_hi)` at 100-year dates, separately by response/lake/offset. Display only; no interpolation, offset median, missing-period fill or new observation. |
+| `model_exclusions.csv` | Undefined responses or missing predictors/charcoal coverage, retaining observation identity and model key. The two modern specifications each report their own response exclusions. |
+| `anthropocene_elevations.csv` | All 607 original paired site/plot identities, elevation in meters and native source identity. |
+| `anthropocene_spatial_checks.csv` | Twelve within-park normalized-residual Moran checks: three responses × two modern specifications × two parks, projected symmetric 8-neighbor graphs and 999 fixed-seed permutations. Nominal p values; no fitted spatial covariance. |
+| `model_results.txt` | All 36 GLS summaries, three LME sensitivities, coefficient intervals, support, spatial checks, definitions and provenance. |
+| `model_fits.rds` | Local computational audit: fitted objects and exact input rows, width and input fingerprint. CSVs/TXT and review copies are the portable results. |
+
+Holocene specifications are `site + climate_rate + fire_activity`, with MA1
+within lake and site residual variances. Modern specifications are
+`site + burned` and `site + elevation + climate_rate + burned`, with independent
+residuals and site variances. All use REML, original response scales and separate
+response validity. Corrected responses are corrected **lag-change rates**, not
+final lag levels or counterfactual effects. Modern fits have no offset and are
+not repeated ten times. The fire exposures have different meanings across eras.
+
+Diagnostic PDFs use the `fig_tracking_predictor_` prefix under
+`plot/test_figures/`: `offset_coefficients` (four coefficient panels plus R² per response), `era_coefficients_offset_0`,
+`holocene_predictions`, `R2`, `residuals` (nine pages) and `spatial_residuals`.
+The Analysis Review registers every table and PDF. Optional nondefault widths
+add `_Nyr` to the directory and PDF names and cannot overwrite primary results.

@@ -674,11 +674,87 @@
       "id": "tracking_corrected_lag_contrasts",
       "section": "tracking_corrected_contrasts",
       "pdf": "plot/test_figures/fig_tracking_corrected_lag_contrasts_offset_0.pdf",
-      "pages": [1],
+      "pages": [
+        1
+      ],
       "producer": "R/stages/10b_tracking_manuscript_figure.R",
       "purpose": "Offset-0 corrected lag-change contrasts",
       "interpretation": "Existing MA1 Anthropocene-minus-Holocene contrasts for pace- and direction-corrected lag-change rates, with 95% Satterthwaite intervals, in CCA distance per century. MORA/NOCA are blue/orange; pink/purple labels identify corrections. Stars mark unadjusted p < 0.05; nonsignificant NOCA dots, bars and numbers are faint. Numbers below bars are signed fitted-mean ratios without ratio intervals, which become unstable near zero. Responses are descriptive and chronology uncertainty is not propagated. This figure reuses the fitted results without refitting.",
       "status": "MA1 working specification; descriptive counterfactual responses"
+    },
+    {
+      "id": "tracking_predictor_offset_coefficients",
+      "section": "predictor_offsets",
+      "pdf": "plot/test_figures/fig_tracking_predictor_offset_coefficients.pdf",
+      "pages": [
+        1
+      ],
+      "producer": "R/stages/10c_tracking_predictor_models.R",
+      "purpose": "Holocene offset coefficients and R\u00b2",
+      "interpretation": "One row per observed or corrected lag-change response, with the four coefficient panels and descriptive R\u00b2 side by side across ten offsets. Coefficient bars are unadjusted 95% intervals; R\u00b2 has no interval. Panels have separate scales, and offsets are alternative bin placements.",
+      "status": "exploratory"
+    },
+    {
+      "id": "tracking_predictor_era_coefficients_offset_0",
+      "section": "predictor_era",
+      "pdf": "plot/test_figures/fig_tracking_predictor_era_coefficients_offset_0.pdf",
+      "pages": [
+        1
+      ],
+      "producer": "R/stages/10c_tracking_predictor_models.R",
+      "purpose": "Holocene offset-0 and Anthropocene predictor coefficients",
+      "interpretation": "Rows distinguish observed, pace-corrected and direction-corrected lag changes. Columns distinguish Holocene MA1, modern site-plus-burned, and the extended modern model. Predictors retain their original scales; coefficients have different units and are not directly comparable across predictors.",
+      "status": "exploratory"
+    },
+    {
+      "id": "tracking_predictor_holocene_predictions",
+      "section": "predictor_predictions",
+      "pdf": "plot/test_figures/fig_tracking_predictor_holocene_predictions.pdf",
+      "pages": [
+        1
+      ],
+      "producer": "R/stages/10c_tracking_predictor_models.R",
+      "purpose": "Holocene predicted lag-change trajectories",
+      "interpretation": "One fitted line per offset over supported actual intervals, without extrapolation or averaging offsets. Grey CC/S bands and CC1 subdivisions reuse the frozen regional climate catalog. These are predicted rates, not cumulative lag levels or 100-year independent observations.",
+      "status": "exploratory"
+    },
+    {
+      "id": "tracking_predictor_R2",
+      "section": "predictor_performance",
+      "pdf": "plot/test_figures/fig_tracking_predictor_R2.pdf",
+      "pages": [
+        1
+      ],
+      "producer": "R/stages/10c_tracking_predictor_models.R",
+      "purpose": "Descriptive R\u00b2 for the predictor models",
+      "interpretation": "Holocene offset sensitivity above, modern basic and extended fits below. R\u00b2 = 1 \u2212 unweighted SSE/SST. Negative values remain visible because GLS optimizes a covariance-weighted objective, not unweighted SSE. This is in-sample descriptive performance, not validation or a significance test.",
+      "status": "exploratory"
+    },
+    {
+      "id": "tracking_predictor_residuals",
+      "section": "predictor_residuals",
+      "pdf": "plot/test_figures/fig_tracking_predictor_residuals.pdf",
+      "pages": [
+        1,
+        2,
+        3
+      ],
+      "producer": "R/stages/10c_tracking_predictor_models.R",
+      "purpose": "Predictor-model normalized residual diagnostics",
+      "interpretation": "Response-specific Holocene Q-Q and residual/fitted pages for every offset, plus modern basic/extended diagnostics by park. Complete PDF contains nine pages; selected pages show observed-lag fits.",
+      "status": "exploratory"
+    },
+    {
+      "id": "tracking_predictor_spatial_residuals",
+      "section": "predictor_spatial",
+      "pdf": "plot/test_figures/fig_tracking_predictor_spatial_residuals.pdf",
+      "pages": [
+        1
+      ],
+      "producer": "R/stages/10c_tracking_predictor_models.R",
+      "purpose": "Anthropocene residual spatial pattern",
+      "interpretation": "Projected plot maps of normalized residuals, with separate parks and specifications. Independent residuals remain the initial model; within-park Moran checks record remaining spatial dependence separately.",
+      "status": "exploratory"
     }
   ],
   "main_figures": [
@@ -997,6 +1073,38 @@
     "direction_lake_contrasts": {
       "source": "output/exploratory/tracking_lake_sensitivity/direction_corrected_lag_rate_per_century/offset_0/model_contrasts.csv",
       "producer": "R/stages/10a_tracking_lake_sensitivity.R"
+    },
+    "predictor_model_coefficients": {
+      "source": "output/exploratory/tracking_predictor_models/model_coefficients.csv",
+      "producer": "R/stages/10c_tracking_predictor_models.R"
+    },
+    "predictor_model_performance": {
+      "source": "output/exploratory/tracking_predictor_models/model_performance.csv",
+      "producer": "R/stages/10c_tracking_predictor_models.R"
+    },
+    "predictor_lake_random_intercept_sensitivity": {
+      "source": "output/exploratory/tracking_predictor_models/lake_random_intercept_sensitivity.csv",
+      "producer": "R/stages/10c_tracking_predictor_models.R"
+    },
+    "predictor_transition_predictions": {
+      "source": "output/exploratory/tracking_predictor_models/transition_predictions.csv",
+      "producer": "R/stages/10c_tracking_predictor_models.R"
+    },
+    "predictor_holocene_prediction_timeseries": {
+      "source": "output/exploratory/tracking_predictor_models/holocene_prediction_timeseries.csv",
+      "producer": "R/stages/10c_tracking_predictor_models.R"
+    },
+    "predictor_model_exclusions": {
+      "source": "output/exploratory/tracking_predictor_models/model_exclusions.csv",
+      "producer": "R/stages/10c_tracking_predictor_models.R"
+    },
+    "predictor_anthropocene_spatial_checks": {
+      "source": "output/exploratory/tracking_predictor_models/anthropocene_spatial_checks.csv",
+      "producer": "R/stages/10c_tracking_predictor_models.R"
+    },
+    "predictor_anthropocene_elevations": {
+      "source": "output/exploratory/tracking_predictor_models/anthropocene_elevations.csv",
+      "producer": "R/stages/10c_tracking_predictor_models.R"
     }
   },
   "text_outputs": {
@@ -1078,6 +1186,13 @@
       "asset_name": "direction_lake_results.txt",
       "link_label": "Complete direction-corrected lag-change rate lake results",
       "status": "exploratory corrected lag GLS results"
+    },
+    "predictor_model_results": {
+      "source": "output/exploratory/tracking_predictor_models/model_results.txt",
+      "producer": "R/stages/10c_tracking_predictor_models.R",
+      "asset_name": "predictor_model_results.txt",
+      "link_label": "Complete era-specific predictor results, lake sensitivity and spatial diagnostics",
+      "status": "exploratory predictor GLS and LME sensitivity results"
     }
   },
   "reference_bundles": {

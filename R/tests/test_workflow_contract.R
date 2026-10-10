@@ -30,6 +30,7 @@ stopifnot(
   position("R/stages/09b_tracking_model_data.R") < position("R/stages/10_tracking_era_models.R"),
   position("R/stages/10_tracking_era_models.R") < position("R/stages/10a_tracking_lake_sensitivity.R"),
   position("R/stages/10_tracking_era_models.R") < position("R/stages/10b_tracking_manuscript_figure.R"),
+  position("R/stages/09b_tracking_model_data.R") < position("R/stages/10c_tracking_predictor_models.R"),
   position("R/stages/09_tracking_metrics.R") < position("R/stages/09a_tracking_example_and_visualizations.R"))
 
 # --skip-figures is a render option, not an analysis-stage branch.
@@ -44,6 +45,7 @@ analysis_stages = c(
   "R/stages/10_tracking_era_models.R",
   "R/stages/10a_tracking_lake_sensitivity.R",
   "R/stages/10b_tracking_manuscript_figure.R",
+  "R/stages/10c_tracking_predictor_models.R",
   "R/stages/12_walsh_fire_reproduction.R",
   "R/stages/13_holocene_climate_fire_eras.R",
   "R/stages/05a_cca_figure.R",
@@ -54,6 +56,7 @@ analysis_stages = c(
 stopifnot(all(analysis_stages %in% calls))
 
 automatic_gates = c(
+  "R/tests/test_tracking_predictor_models.R",
   "R/tests/test_tracking_offset_models.R",
   "R/tests/test_walsh_fire_reproduction.R",
   "R/tests/test_holocene_climate_fire_eras.R",
@@ -71,6 +74,7 @@ render_aware = c(
   "R/stages/10_tracking_era_models.R",
   "R/stages/10a_tracking_lake_sensitivity.R",
   "R/stages/10b_tracking_manuscript_figure.R",
+  "R/stages/10c_tracking_predictor_models.R",
   "R/stages/12_walsh_fire_reproduction.R", "R/stages/12a_fire_event_detection_worked_example.R",
   "R/stages/13_holocene_climate_fire_eras.R", "R/stages/13a_climate_change_figure.R",
   "R/stages/13b_fire_method_worked_example.R")

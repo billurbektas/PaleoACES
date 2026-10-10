@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: 0ed6807790c6fc8c957583e055b2a9de -->
+<!-- paleoaces-source-md5: 529fe45f6a64aad2d7a9ea86ce94c754 -->
 
 <html>
 
@@ -2296,6 +2296,109 @@ an annotation with no numeric fire axis. The original binary
 substituted for charcoal activity. MORA lakes share one regional fire
 history. Offsets are sensitivity realizations, not independent
 ecological replicates.</p>
+</div>
+<div id="within-era-predictor-model-records" class="section level2">
+<h2>Within-era predictor model records</h2>
+<p>Producer: <a href="../R/stages/10c_tracking_predictor_models.R">R/stages/10c_tracking_predictor_models.R</a>.
+The primary directory is
+<code>output/exploratory/tracking_predictor_models/</code>. These
+records are derived from the existing combined model input; canonical
+tracking schemas and calculation tables remain unchanged.</p>
+<table>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>File in that directory</th>
+<th>Contents and key</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>model_coefficients.csv</code></td>
+<td>144 rows; response × era × offset × model_type × term. Estimate, SE,
+df, t, p and unadjusted 95% coefficient intervals. Modern offset is
+<code>NA</code>.</td>
+</tr>
+<tr class="even">
+<td><code>model_performance.csv</code></td>
+<td>36 GLS fits: 30 Holocene MA1 and six modern independent fits.
+Sample/exclusion counts, descriptive unweighted
+<code>R2 = 1 - SSE/SST</code>, theta/rho1, boundary flag, covariance
+uncertainty and warnings.</td>
+</tr>
+<tr class="odd">
+<td><code>lake_random_intercept_sensitivity.csv</code></td>
+<td>Three offset-0 LME sensitivities. Lake SD/variance, relative scale,
+coefficient/prediction changes, actual covariance/variance-interval
+status and optimizer messages.</td>
+</tr>
+<tr class="even">
+<td><code>transition_predictions.csv</code></td>
+<td>One fitted transition or plot per response/model. Original
+identities, endpoints, predictors, modern elevation source, response,
+fixed-effect prediction, mean interval, support and normalized/raw
+residuals.</td>
+</tr>
+<tr class="odd">
+<td><code>holocene_prediction_timeseries.csv</code></td>
+<td>Supported transition predictions repeated on
+<code>[age_lo, age_hi)</code> at 100-year dates, separately by
+response/lake/offset. Display only; no interpolation, offset median,
+missing-period fill or new observation.</td>
+</tr>
+<tr class="even">
+<td><code>model_exclusions.csv</code></td>
+<td>Undefined responses or missing predictors/charcoal coverage,
+retaining observation identity and model key. The two modern
+specifications each report their own response exclusions.</td>
+</tr>
+<tr class="odd">
+<td><code>anthropocene_elevations.csv</code></td>
+<td>All 607 original paired site/plot identities, elevation in meters
+and native source identity.</td>
+</tr>
+<tr class="even">
+<td><code>anthropocene_spatial_checks.csv</code></td>
+<td>Twelve within-park normalized-residual Moran checks: three responses
+× two modern specifications × two parks, projected symmetric 8-neighbor
+graphs and 999 fixed-seed permutations. Nominal p values; no fitted
+spatial covariance.</td>
+</tr>
+<tr class="odd">
+<td><code>model_results.txt</code></td>
+<td>All 36 GLS summaries, three LME sensitivities, coefficient
+intervals, support, spatial checks, definitions and provenance.</td>
+</tr>
+<tr class="even">
+<td><code>model_fits.rds</code></td>
+<td>Local computational audit: fitted objects and exact input rows,
+width and input fingerprint. CSVs/TXT and review copies are the portable
+results.</td>
+</tr>
+</tbody>
+</table>
+<p>Holocene specifications are
+<code>site + climate_rate + fire_activity</code>, with MA1 within lake
+and site residual variances. Modern specifications are
+<code>site + burned</code> and
+<code>site + elevation + climate_rate + burned</code>, with independent
+residuals and site variances. All use REML, original response scales and
+separate response validity. Corrected responses are corrected
+<strong>lag-change rates</strong>, not final lag levels or
+counterfactual effects. Modern fits have no offset and are not repeated
+ten times. The fire exposures have different meanings across eras.</p>
+<p>Diagnostic PDFs use the <code>fig_tracking_predictor_</code> prefix
+under <code>plot/test_figures/</code>: <code>offset_coefficients</code>
+(four coefficient panels plus R² per response),
+<code>era_coefficients_offset_0</code>,
+<code>holocene_predictions</code>, <code>R2</code>,
+<code>residuals</code> (nine pages) and <code>spatial_residuals</code>.
+The Analysis Review registers every table and PDF. Optional nondefault
+widths add <code>_Nyr</code> to the directory and PDF names and cannot
+overwrite primary results.</p>
 </div>
 </div>
 

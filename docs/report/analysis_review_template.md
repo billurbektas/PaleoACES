@@ -909,6 +909,163 @@ retain the same schemas used for the observed lag models.
 
 {{direction_lake_results}}
 
+## Within-era climate, fire and elevation predictor models
+
+[Stage 10c](../R/stages/10c_tracking_predictor_models.R) is a separate analysis of
+observed, pace-corrected and direction-corrected **lag-change rates**. These
+responses are signed CCA distance per century, not the unsigned final lag or
+the effect of a correction. The two correction rates retain the actual initial
+lag and the original magnitude-based counterfactual calculations. No response
+transformation is applied. Stage 10c reads the canonical combined transition
+input and leaves the era-comparison models and manuscript figures unchanged.
+
+The maintained fitting functions below are extracted directly from
+[the predictor helper](../R/helpers/tracking_predictor_models.R).
+
+{{predictor_model_code}}
+
+### Holocene: ten separate offset fits
+
+For each response, the additive GLS uses `site + climate_rate + fire_activity`,
+MA(1) residual correlation within each lake, separate park residual variances
+and REML. `climate_rate` is the unchanged standardized physical climate-change
+rate per century; `fire_activity` is the unchanged unitless normalized event
+frequency. The three MORA lakes share regional fire exposure. Their repeated
+responses do not provide three independent regional fire histories.
+
+Every offset uses actual non-overlapping transitions and their finite
+chronology-draw medians. Original time-index gaps remain. There is no second
+median across offsets, draw-support cutoff or filling of missing transitions.
+Missing charcoal coverage excludes a transition from these predictor fits;
+covered zero-event windows retain `fire_activity = 0`. Response validity remains
+separate. Offset 0 has 30 observations for each response: 20 MORA and ten NOCA.
+The single undefined Holocene pace-corrected transition at offset 400 is
+excluded only from its own response fit. The two pace fits at offsets 400 and
+900 have MA parameters near −1; this boundary is retained and flagged in the
+performance CSV. It does not remove an offset or trigger a different model.
+
+Each response occupies one figure row: its four predictor coefficients, with
+95% intervals, followed by the corresponding descriptive R² across the same
+offsets. These panels use separate scales; the R² panel has no interval.
+
+{{predictor_offsets_diagnostics}}
+
+### Offset-0 random lake intercept sensitivity
+
+Only offset 0 is refitted with an LME random intercept for the four lake series,
+using precisely the same observations, predictors, MA(1) and residual variance
+structure. All three fits return without optimizer warnings. Estimated lake SDs
+are approximately 3.8×10⁻⁷, 2.5×10⁻⁷ and 1.8×10⁻⁷ for observed, pace-corrected
+and direction-corrected rates. The maximum coefficient changes relative to GLS
+are less than 3.3×10⁻⁷; fixed predictions change by less than 2.8×10⁻⁸.
+
+For observed lag, the approximate covariance calculation is non-positive
+definite and variance-component intervals fail. For the corrected responses,
+`apVar` returns positive-definite matrices, but the lake-SD intervals run from
+zero to infinity. Thus those intervals also provide no useful precision for
+the essentially zero lake variance. This is an estimated variance boundary,
+not an optimizer failure or evidence that lake differences are biologically
+absent. With only four lakes, the random-intercept sensitivity does not establish
+general independence between lake responses. The primary fits remain GLS.
+
+{{predictor_random_sensitivity}}
+
+### Supported temporal predictions and descriptive R²
+
+Each Holocene model predicts its response using the corresponding interval's
+site, physical climate rate and fire activity. Predictions span that lake's
+supported intervals; unsupported periods stay blank. The plotting grid repeats
+each fitted rate within `[age_lo, age_hi)` at 100-year display dates, without
+interpolating endpoints or adding model observations. Ten offset trajectories
+are retained separately. They are **predicted lag-change rates**, not a
+reconstruction of absolute lag over the whole Holocene. Grey backgrounds reuse
+the previously defined regional CC/S catalog and CC1 subdivisions; they are
+context, not extra predictors or new lake-specific classifications.
+
+MORA fitted trajectories can coincide wherever their predictors coincide:
+the GLS has park, climate and fire effects, without a lake intercept. This does
+not replace the separate lake response observations used to estimate it.
+The prediction CSV includes fixed-effect mean intervals conditional on the
+estimated residual covariance. These do not propagate chronology uncertainty
+or describe future-observation prediction intervals.
+
+{{predictor_predictions_diagnostics}}
+
+Performance is reported as one explicit descriptive R²:
+`1 - sum((observed - fitted)^2) / sum((observed - mean(observed))^2)`.
+It is unweighted and in sample. GLS fits a covariance-weighted objective, so
+this R² can be negative; the direction-corrected offset-800 value is about
+−0.78 and remains visible. R² does not test model significance or demonstrate
+predictive performance on independent data. Offset-0 R² is about 0.025 for
+observed lag, −0.005 for pace correction and 0.263 for direction correction.
+
+{{predictor_focal_performance}}
+
+{{predictor_performance_diagnostics}}
+
+### Anthropocene: binary burn and extended predictor models
+
+Each response has two additive modern GLS specifications: `site + burned`
+and `site + elevation + climate_rate + burned`. Both use independent plot
+residuals, separate residual SDs by park and REML. Elevation remains in meters;
+it is joined by normalized site/plot identity from MORA's cleaned `plot_info`
+and NOCA's Wilson coordinate table. All 607 paired identities have elevation.
+The observed and direction-corrected fits use 607 plots; pace-corrected fits
+use 465 because 142 stationary observed displacements make that correction
+undefined. Other responses retain those plots. Modern records are fitted once
+per specification/response and have no offset.
+
+References are MORA and Unburned. `burnedBurned` estimates one additive
+burn association shared between parks; there is no site-by-burn interaction.
+Observed and direction-corrected inputs have two burned MORA and 24 burned
+NOCA plots; pace correction retains two and 17, respectively. Burn estimates
+are consequently supported chiefly by NOCA and are associations, not causal
+fire effects. Continuous charcoal activity is not assigned to modern plots.
+REML AICs are not used to rank the two different fixed-effect specifications.
+
+The following figure places the three Holocene offset-0 coefficient sets beside
+both modern specifications. Bars show unadjusted 95% coefficient intervals.
+Original predictor scales remain visible in the tables: per meter for elevation,
+per unit climate rate for its slope, normalized charcoal activity in Holocene
+and a binary burn difference in Anthropocene. Their coefficients do not
+measure equivalent exposure effects across eras or across predictors.
+
+{{predictor_era_diagnostics}}
+
+### Residual and spatial checks
+
+Normalized Q-Q and residual-versus-fitted plots are produced for every
+Holocene offset and both modern models. The linked nine-page PDF has three
+pages per response; the review previews observed-lag diagnostics. These
+Gaussian fits remain exploratory if their residual distributions are unsuitable.
+
+{{predictor_residuals_diagnostics}}
+
+Following the author's choice, spatial covariance is not yet fitted.
+Within each park, a symmetric eight-nearest-neighbor graph in UTM zone 10N
+coordinates, row-standardized, is used for Moran I of normalized residuals.
+The fixed-seed diagnostic uses 999 permutations and nominal two-sided p values.
+Observed-lag residuals show positive spatial association in both parks under
+both specifications (nominal p ≤ 0.043). NOCA also shows association in several
+corrected-rate fits. These exploratory diagnostics do not adjust for twelve
+checks or fitted-model uncertainty, but they show that residual independence
+deserves further spatial sensitivity before treating modern coefficient
+intervals as final inference. The requested independent models remain intact.
+
+{{predictor_spatial_table}}
+
+{{predictor_spatial_diagnostics}}
+
+{{predictor_model_results}}
+
+Stage 10c saves 36 primary GLS fits (30 Holocene and six modern), three offset-0
+lake sensitivities, 144 coefficient rows, response-specific exclusions, original
+prediction inputs, support, spatial diagnostics and one full TXT. A local RDS
+retains fits for independent numerical checks. The following portable CSVs are
+calculation/report records; the canonical model-ready tables stay unchanged.
+
+{{predictor_tables}}
+
 ## Manuscript comparison at offset 0
 
 The first row shows offset-0 MA1 **Anthropocene-minus-Holocene contrasts** for
