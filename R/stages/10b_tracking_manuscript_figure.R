@@ -72,15 +72,16 @@ contrast_plot=function(climate=FALSE) {
       axis_y=bounds$lower-.025*(bounds$upper-bounds$lower))
   p=ggplot(dd,aes(metric,estimate,group=site))+
     geom_hline(yintercept=0,linetype='dashed',color='grey55',linewidth=.6)+
-    geom_errorbar(aes(ymin=conf_low,ymax=conf_high,alpha=error_alpha),color='grey45',
+    geom_errorbar(aes(ymin=conf_low,ymax=conf_high,alpha=error_alpha,color=site),
       position=pd,width=.10,linewidth=1.3,show.legend=FALSE)+
-    geom_point(position=pd,shape=21,size=3.8,stroke=1.1,
-      color='grey40',fill='grey70',show.legend=FALSE)+
+    geom_point(aes(color=site,fill=site),position=pd,shape=21,size=3.8,stroke=1.1,
+      show.legend=FALSE)+
     geom_text(aes(y=label_y,label=label,color=site),position=pd,size=5.7,show.legend=FALSE)+
     geom_text(aes(y=fold_y,label=fold_label,color=site),position=pd,vjust=1,size=5.5,show.legend=FALSE)+
     geom_text(data=axis_labels,aes(x=metric,y=axis_y,label=axis_label,color=axis_color),
       inherit.aes=FALSE,vjust=1,size=7,lineheight=1.05,show.legend=FALSE)+
     scale_color_manual(values=c(site_colors,response_colors,Axis='grey20'),guide='none')+
+    scale_fill_manual(values=site_colors,guide='none')+
     scale_alpha_identity(guide='none')+
     scale_x_discrete(labels=c(standardized_climate_change_rate='Climate-change\nrate',
       observed_turnover_rate='Community\nturnover rate',lag_rate_per_century='Observed',
