@@ -6107,6 +6107,10 @@ scatter=function(era_name) {
   mt=means |> filter(metric=='lag_rate_per_century',era==era_name)
   lim=range(c(ds$corrected_rate,ds$lag_rate_per_century,mt$conf_low,mt$conf_high,0))
   lim=lim+c(-1,1)*diff(lim)*.055
+  scatter_ylim=c(lim[1]-.20*diff(lim),lim[2])
+  reference_label=paste('Below 1:1: Correction reduces final lag',
+    'Above 1:1: Correction increases final lag',
+    'On 1:1: No effect on final lag',sep='\n')
   stats=ds |> group_by(correction) |> group_modify(function(g,key) {
     test=cor.test(g$lag_rate_per_century,g$corrected_rate,method='spearman',
       alternative='two.sided',exact=FALSE)
@@ -6129,13 +6133,16 @@ scatter=function(era_name) {
     geom_label(data=stats,aes(x=label_x,y=label_y,label=label,color=correction),inherit.aes=FALSE,
       hjust=0,vjust=1,size=8,fill='white',linewidth=0,
       label.padding=grid::unit(.10,'lines'),show.legend=FALSE)+
+    annotate('label',x=lim[1]+.035*diff(lim),y=scatter_ylim[1]+.025*diff(lim),
+      label=reference_label,hjust=0,vjust=0,size=7,lineheight=1.05,
+      color='grey40',fill='white',linewidth=0,label.padding=grid::unit(.05,'lines'))+
     scale_fill_manual(name='Park',values=site_colors)+
     scale_color_manual(name='Lag change',values=response_colors,
       breaks=c('Pace','Direction'),labels=c('Pace corrected','Direction corrected'))+
     scale_shape_manual(values=c(Direction=21,Pace=24),guide='none')+
     guides(color=guide_legend(override.aes=list(fill='white',alpha=1,size=4)),
       fill=guide_legend(override.aes=list(color='grey50',shape=21,alpha=1,size=4)))+
-    coord_cartesian(xlim=lim,ylim=lim,expand=FALSE)+
+    coord_cartesian(xlim=lim,ylim=scatter_ylim,expand=FALSE)+
     labs(x='Observed lag-change rate',y='Lag-change rate after correction')+base_theme+
     theme(panel.grid.major.x=element_line(color='grey92',linewidth=.4),
       plot.margin=margin(0,14,12,14))
@@ -6179,8 +6186,8 @@ corrected_figure=contrast_plot(corrected_metrics,corrected_limits,correction_lab
   theme(legend.position='bottom',plot.background=element_rect(fill='white',color=NA))
 if(render_figures) {
   stem=here('plot/fig_tracking_era_distributions')
-  ggsave(paste0(stem,'.pdf'),figure,width=19,height=18.5,device=cairo_pdf,bg='white')
-  ggsave(paste0(stem,'.png'),figure,width=19,height=18.5,dpi=300,bg='white')
+  ggsave(paste0(stem,'.pdf'),figure,width=19,height=19.5,device=cairo_pdf,bg='white')
+  ggsave(paste0(stem,'.png'),figure,width=19,height=19.5,dpi=300,bg='white')
   ggsave(here('plot/test_figures/fig_tracking_corrected_lag_contrasts_offset_0.pdf'),
     corrected_figure,width=12,height=7.5,device=cairo_pdf,bg='white')
 }

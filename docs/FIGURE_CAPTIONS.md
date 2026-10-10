@@ -121,6 +121,12 @@ correction, both in CCA distance per century, separately for each era, pooling
 parks. Small transparent points retain park fills and correction
 outlines; colored straight lines are descriptive linear fits, dashed diagonals
 are 1:1, and colored text gives Spearman rho and nominal two-sided p values.
+Below 1:1, correction reduces final lag; above it, correction increases final
+lag; on it, final lag is unchanged. A grey key gives these three interpretations
+inside each scatter panel, below the observations. This interpretation follows within each
+calculated transition from the shared initial lag and climate elapsed time.
+Holocene points compare response-specific chronology-draw medians, rather than
+directly summarizing the draw-level correction effects.
 Top densities show observed lag rates once per observation, with their original
 MA1 fitted means and 95% intervals. Holocene values are chronology-draw medians
 for actual offset-0 transitions: 20 MORA and 10 NOCA. Observed/direction modern

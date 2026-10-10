@@ -1757,6 +1757,21 @@ nominal p values do not adjust for lake, temporal dependence or the mathematical
 coupling of observed and corrected changes. A strong correlation therefore
 does not establish a mechanism or a causal contribution.
 
+The 1:1 reference has the following interpretation:
+
+- **Below 1:1:** Correction reduces final lag.
+- **Above 1:1:** Correction increases final lag.
+- **On 1:1:** No effect on final lag.
+
+The same three statements appear in grey within each scatter panel, in a
+reserved band below the observations.
+
+Within each calculated transition, observed and corrected rates share the actual
+initial lag and climate elapsed time, so comparing their rates is equivalent to
+comparing final lags. Holocene points summarize finite chronology draws separately
+for each response; their placement is a descriptive comparison of summarized
+rates, rather than a substitute for the draw-level correction effects.
+
 Only observed lag rates have top marginal densities, with each transition or
 plot counted once. The marginal bars reuse the existing offset-0 observed-lag
 GLS means and 95% intervals, placed near the scatter border with rounded mean
