@@ -326,8 +326,8 @@ Only observed lag has marginal densities, counted once per input and overlaid
 with the original observed-lag MA1 means and 95% intervals. No title, caption or
 count subtitles are drawn. Top-panel CCA response axes specify CCA distance per
 century; scatter axes omit unit suffixes and the scatter y-axis reads
-"Lag-change rate after correction." Each scatter panel includes a grey 1:1
-interpretation key in a reserved band below the observations. The corrected-lag
+"Lag-change rate after correction." Each scatter panel includes grey annotations
+above, below and along the 1:1 diagonal, with equal x/y distance scales. The corrected-lag
 contrasts are written separately to
 `plot/test_figures/fig_tracking_corrected_lag_contrasts_offset_0.pdf`, with
 pink/purple correction labels and the same blue/orange park colors, intervals

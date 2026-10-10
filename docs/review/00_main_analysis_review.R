@@ -6107,10 +6107,13 @@ scatter=function(era_name) {
   mt=means |> filter(metric=='lag_rate_per_century',era==era_name)
   lim=range(c(ds$corrected_rate,ds$lag_rate_per_century,mt$conf_low,mt$conf_high,0))
   lim=lim+c(-1,1)*diff(lim)*.055
-  scatter_ylim=c(lim[1]-.20*diff(lim),lim[2])
-  reference_label=paste('Below 1:1: Correction reduces final lag',
-    'Above 1:1: Correction increases final lag',
-    'On 1:1: No effect on final lag',sep='\n')
+  reference_annotations=tibble(
+    x=lim[1]+c(.05,.95,.78)*diff(lim),
+    y=lim[1]+c(.70,.12,.78)*diff(lim),
+    label=c('Above 1:1:\nCorrection increases\nfinal lag',
+      'Below 1:1:\nCorrection reduces\nfinal lag',
+      'On 1:1:\nNo effect on final lag'),
+    hjust=c(0,1,.5),vjust=c(1,0,.5),angle=c(0,0,45))
   stats=ds |> group_by(correction) |> group_modify(function(g,key) {
     test=cor.test(g$lag_rate_per_century,g$corrected_rate,method='spearman',
       alternative='two.sided',exact=FALSE)
@@ -6133,16 +6136,16 @@ scatter=function(era_name) {
     geom_label(data=stats,aes(x=label_x,y=label_y,label=label,color=correction),inherit.aes=FALSE,
       hjust=0,vjust=1,size=8,fill='white',linewidth=0,
       label.padding=grid::unit(.10,'lines'),show.legend=FALSE)+
-    annotate('label',x=lim[1]+.035*diff(lim),y=scatter_ylim[1]+.025*diff(lim),
-      label=reference_label,hjust=0,vjust=0,size=7,lineheight=1.05,
-      color='grey40',fill='white',linewidth=0,label.padding=grid::unit(.05,'lines'))+
+    geom_text(data=reference_annotations,
+      aes(x=x,y=y,label=label,hjust=hjust,vjust=vjust,angle=angle),
+      inherit.aes=FALSE,size=7,lineheight=1.05,color='grey40',show.legend=FALSE)+
     scale_fill_manual(name='Park',values=site_colors)+
     scale_color_manual(name='Lag change',values=response_colors,
       breaks=c('Pace','Direction'),labels=c('Pace corrected','Direction corrected'))+
     scale_shape_manual(values=c(Direction=21,Pace=24),guide='none')+
     guides(color=guide_legend(override.aes=list(fill='white',alpha=1,size=4)),
       fill=guide_legend(override.aes=list(color='grey50',shape=21,alpha=1,size=4)))+
-    coord_cartesian(xlim=lim,ylim=scatter_ylim,expand=FALSE)+
+    coord_fixed(ratio=1,xlim=lim,ylim=lim,expand=FALSE)+
     labs(x='Observed lag-change rate',y='Lag-change rate after correction')+base_theme+
     theme(panel.grid.major.x=element_line(color='grey92',linewidth=.4),
       plot.margin=margin(0,14,12,14))

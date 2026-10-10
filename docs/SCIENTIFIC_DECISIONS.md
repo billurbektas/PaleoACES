@@ -559,7 +559,8 @@ Spearman rho and nominal p values do not adjust for lake/temporal dependence or
 mathematical coupling between observed and corrected responses. Only observed
 lag rates have top densities; each input appears once, with the original MA1
 park/era means and 95% intervals beside the scatter border. Each scatter panel
-has a grey key for below/on/above the 1:1 reference. No corrected density,
+has grey interpretation labels below/above the diagonal and on the 1:1 reference,
+with equal x/y distance scales. No corrected density,
 figure caption, overall title or count subtitle is drawn. Scatter axes identify
 observed lag-change rate and lag-change rate after correction without unit
 suffixes; both remain in CCA distance per century. Definitions and limitations

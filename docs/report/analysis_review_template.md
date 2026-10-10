@@ -946,8 +946,9 @@ The 1:1 reference has the following interpretation:
 - **Above 1:1:** Correction increases final lag.
 - **On 1:1:** No effect on final lag.
 
-The same three statements appear in grey within each scatter panel, in a
-reserved band below the observations.
+The same three statements appear in grey within each scatter panel: increased
+final lag above the diagonal, reduced final lag below it, and no effect directly
+along the 1:1 line. Equal x/y distance scales keep the diagonal and its text at 45°.
 
 Within each calculated transition, observed and corrected rates share the actual
 initial lag and climate elapsed time, so comparing their rates is equivalent to

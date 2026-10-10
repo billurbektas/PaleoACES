@@ -122,8 +122,9 @@ parks. Small transparent points retain park fills and correction
 outlines; colored straight lines are descriptive linear fits, dashed diagonals
 are 1:1, and colored text gives Spearman rho and nominal two-sided p values.
 Below 1:1, correction reduces final lag; above it, correction increases final
-lag; on it, final lag is unchanged. A grey key gives these three interpretations
-inside each scatter panel, below the observations. This interpretation follows within each
+lag; on it, final lag is unchanged. Grey annotations appear in the corresponding
+regions and along the 1:1 line in each scatter panel. Equal x/y distance scales
+keep the diagonal at 45°. This interpretation follows within each
 calculated transition from the shared initial lag and climate elapsed time.
 Holocene points compare response-specific chronology-draw medians, rather than
 directly summarizing the draw-level correction effects.
