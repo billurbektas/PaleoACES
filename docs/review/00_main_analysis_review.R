@@ -5983,7 +5983,7 @@ for(response_metric in response_metrics) {
 # ============================================================================
 # BEGIN R/stages/10b_tracking_manuscript_figure.R
 # ============================================================================
-# Manuscript Figure 4: offset-0 MA1 contrasts and corrected-lag scatter panels.
+# Manuscript Figure 4 and separate corrected-lag contrasts at offset 0.
 # Read maintained model input/results; no refitting, transforms or geometry calculations.
 # Rscript R/stages/10b_tracking_manuscript_figure.R
 suppressPackageStartupMessages({library(here);library(tidyverse);library(patchwork)})
@@ -6031,61 +6031,64 @@ cl=contrasts |> left_join(ratios,by=c('metric','site'),relationship='one-to-one'
     point_label_alpha=if_else(site=='NOCA' & p_value>=.05,.20,1),
     label=sprintf('%+.2f%s',estimate,if_else(p_value<.05,' *','')),
     fold_label=if_else(is.finite(ratio),sprintf('%.1f\u00d7',ratio),'undefined'))
-base_theme=theme_minimal(base_size=22)+theme(panel.grid.minor=element_blank(),
-  panel.grid.major.x=element_blank(),axis.text=element_text(size=20,color='grey20'),
-  axis.title=element_text(size=23),legend.title=element_text(size=22),
-  legend.text=element_text(size=21),plot.margin=margin(10,14,12,14))
+base_theme=theme_minimal(base_size=27)+theme(panel.grid.minor=element_blank(),
+  panel.grid.major.x=element_blank(),axis.text=element_text(size=24,color='grey20'),
+  axis.title=element_text(size=27),legend.title=element_text(size=26),
+  legend.text=element_text(size=25),plot.margin=margin(10,14,12,14))
 pd=position_dodge(width=.64)
-# Use two unit scales, but align zero at the same physical height in both panels.
-limits=cl |> mutate(panel=if_else(metric=='standardized_climate_change_rate','Climate','CCA')) |>
-  group_by(panel) |> summarise(lo=min(c(conf_low,0)),hi=max(c(conf_high,0)),.groups='drop') |>
-  mutate(span=pmax(hi-lo,1e-6),upper=hi+.22*span,lower=lo-.22*span)
-zero_fraction=max(-limits$lower/(limits$upper-limits$lower))
-limits=limits |> mutate(lower=-upper*zero_fraction/(1-zero_fraction))
-stopifnot(diff(range(-limits$lower/(limits$upper-limits$lower)))<1e-12)
-contrast_plot=function(climate=FALSE) {
-  dd=if(climate) filter(cl,metric=='standardized_climate_change_rate') else
-    filter(cl,metric!='standardized_climate_change_rate')
-  bounds=filter(limits,panel==if(climate) 'Climate' else 'CCA')
+# Align the primary climate and CCA zero baselines despite their different units.
+contrast_limits=function(data) {
+  limits=data |> mutate(panel=if_else(metric=='standardized_climate_change_rate','Climate','CCA')) |>
+    group_by(panel) |> summarise(lo=min(c(conf_low,0)),hi=max(c(conf_high,0)),.groups='drop') |>
+    mutate(span=pmax(hi-lo,1e-6),upper=hi+.25*span,lower=lo-.25*span)
+  zero_fraction=max(-limits$lower/(limits$upper-limits$lower))
+  limits=limits |> mutate(lower=-upper*zero_fraction/(1-zero_fraction))
+  stopifnot(diff(range(-limits$lower/(limits$upper-limits$lower)))<1e-12)
+  limits
+}
+primary_metrics=metrics[1:3]
+primary_limits=contrast_limits(filter(cl,metric %in% primary_metrics))
+corrected_metrics=tracking_corrected_response_names()
+corrected_limits=contrast_limits(filter(cl,metric %in% corrected_metrics))
+contrast_plot=function(response_metrics,bounds,correction_labels=FALSE) {
+  dd=filter(cl,metric %in% response_metrics)
   dd=dd |> mutate(label_y=conf_high+.045*bounds$span,fold_y=conf_low-.055*bounds$span)
+  # Keep enlarged fold labels clear of the zero reference line.
+  if(correction_labels) dd=dd |> mutate(fold_y=if_else(
+    fold_y>=0 & fold_y<.10*bounds$span,-.035*bounds$span,fold_y))
   axis_labels=dd |> distinct(metric,kind) |>
     mutate(axis_label=recode(as.character(metric),
-      standardized_climate_change_rate='Climate-change\nrate',
-      observed_turnover_rate='Community\nturnover rate',lag_rate_per_century='Observed',
+      standardized_climate_change_rate='Standardized climate change\nper century',
+      observed_turnover_rate='Community turnover rate\n(CCA distance per century)',
+      lag_rate_per_century='Observed lag change\n(CCA distance per century)',
       pace_corrected_lag_rate_per_century='Pace corrected',
       direction_corrected_lag_rate_per_century='Direction corrected'),
-      axis_color=if_else(is.na(kind),'Axis',kind),
+      axis_color=if(correction_labels) kind else 'Axis',
       axis_y=bounds$lower-.025*(bounds$upper-bounds$lower))
   p=ggplot(dd,aes(metric,estimate,group=site))+
     geom_hline(yintercept=0,linetype='dashed',color='grey55',linewidth=.6)+
     geom_errorbar(aes(ymin=conf_low,ymax=conf_high,alpha=error_alpha,color=site),
       position=pd,width=.10,linewidth=1.3,show.legend=FALSE)+
     geom_point(aes(color=site,fill=site,alpha=point_label_alpha),position=pd,shape=21,size=3.8,stroke=1.1,
-      show.legend=FALSE)+
+      show.legend=if(correction_labels) c(fill=TRUE,color=FALSE,alpha=FALSE) else FALSE)+
     geom_text(aes(y=label_y,label=label,color=site,alpha=point_label_alpha),
-      position=pd,size=7,show.legend=FALSE)+
+      position=pd,size=9,show.legend=FALSE)+
     geom_text(aes(y=fold_y,label=fold_label,color=site,alpha=point_label_alpha),
-      position=pd,vjust=1,size=6.8,show.legend=FALSE)+
+      position=pd,vjust=1,size=8.6,show.legend=FALSE)+
     geom_text(data=axis_labels,aes(x=metric,y=axis_y,label=axis_label,color=axis_color),
-      inherit.aes=FALSE,vjust=1,size=7,lineheight=1.05,show.legend=FALSE)+
+      inherit.aes=FALSE,vjust=1,size=8.2,lineheight=1.05,show.legend=FALSE)+
     scale_color_manual(values=c(site_colors,response_colors,Axis='grey20'),guide='none')+
-    scale_fill_manual(values=site_colors,guide='none')+
+    scale_fill_manual(name='Park',values=site_colors,guide=if(correction_labels)
+      guide_legend(override.aes=list(alpha=1)) else 'none')+
     scale_alpha_identity(guide='none')+
-    scale_x_discrete(labels=c(standardized_climate_change_rate='Climate-change\nrate',
-      observed_turnover_rate='Community\nturnover rate',lag_rate_per_century='Observed',
-      pace_corrected_lag_rate_per_century='Pace corrected',
-      direction_corrected_lag_rate_per_century='Direction corrected'),expand=expansion(add=.55))+
+    scale_x_discrete(expand=expansion(add=.55))+
     scale_y_continuous(position='left',expand=expansion(mult=0))+
     coord_cartesian(ylim=c(bounds$lower,bounds$upper),expand=FALSE,clip='off')+
-    labs(x=NULL,y='Anthropocene − Holocene')+base_theme+
+    labs(x=NULL,y=if(correction_labels)
+      'Difference between\nAnthropocene vs. Holocene\n(CCA distance per century)' else
+      'Difference between\nAnthropocene vs. Holocene')+base_theme+
     theme(axis.text.x=element_blank())
-  if(!climate) {
-    y= bounds$lower-.155*(bounds$upper-bounds$lower)
-    p=p+annotate('segment',x=1.65,xend=4.35,y=y,yend=y,color='grey45',linewidth=.55)+
-      annotate('text',x=3,y=y-.06*(bounds$upper-bounds$lower),label='Lag change',size=7)+
-      theme(plot.margin=margin(10,14,104,14))
-  } else p=p+theme(plot.margin=margin(10,14,104,14))
-  p
+  p+theme(plot.margin=margin(10,14,if(correction_labels) 58 else 86,14))
 }
 # Each pair is an actual transition/plot; corrected medians were calculated from
 # draw-level geometry by stage 09b, never as a difference between two medians.
@@ -6124,7 +6127,7 @@ scatter=function(era_name) {
     geom_smooth(aes(color=correction,group=correction),method='lm',formula=y~x,
       se=FALSE,linewidth=1.15,show.legend=FALSE)+
     geom_label(data=stats,aes(x=label_x,y=label_y,label=label,color=correction),inherit.aes=FALSE,
-      hjust=0,vjust=1,size=6.1,fill='white',linewidth=0,
+      hjust=0,vjust=1,size=8,fill='white',linewidth=0,
       label.padding=grid::unit(.10,'lines'),show.legend=FALSE)+
     scale_fill_manual(name='Park',values=site_colors)+
     scale_color_manual(name='Lag change',values=response_colors,
@@ -6133,7 +6136,7 @@ scatter=function(era_name) {
     guides(color=guide_legend(override.aes=list(fill='white',alpha=1,size=4)),
       fill=guide_legend(override.aes=list(color='grey50',shape=21,alpha=1,size=4)))+
     coord_cartesian(xlim=lim,ylim=lim,expand=FALSE)+
-    labs(x='Observed lag-change rate',y='Corrected lag-change rate')+base_theme+
+    labs(x='Observed lag-change rate',y='Lag-change rate after correction')+base_theme+
     theme(panel.grid.major.x=element_line(color='grey92',linewidth=.4),
       plot.margin=margin(0,14,12,14))
   den=observed |> group_by(site) |> group_modify(function(g,key) {
@@ -6157,22 +6160,29 @@ scatter=function(era_name) {
     geom_point(data=mt,aes(x=estimate,y=error_y,color=site),inherit.aes=FALSE,
       shape=21,fill='white',size=3.5,stroke=.9)+
     geom_text(data=mt,aes(x=label_x,y=error_y,label=mean_label,color=site),
-      inherit.aes=FALSE,hjust=0,vjust=.5,size=5.5,fontface='bold')+
+      inherit.aes=FALSE,hjust=0,vjust=.5,size=7.5,fontface='bold')+
     scale_color_manual(values=site_colors,guide='none')+scale_fill_manual(values=site_colors,guide='none')+
     scale_x_continuous(limits=lim,expand=expansion(mult=0))+
     scale_y_continuous(limits=c(0,NA),expand=expansion(mult=c(0,.08)))+
-    labs(title=era_name)+theme_void(base_size=22)+theme(legend.position='none',
-      plot.title=element_text(size=26,face='bold'),plot.margin=margin(10,14,0,14))
-  wrap_plots(top,p,ncol=1,heights=c(.23,1),guides='auto')
+    labs(title=era_name)+theme_void(base_size=27)+theme(legend.position='none',
+      plot.title=element_text(size=30,face='bold'),plot.margin=margin(10,14,0,14))
+  wrap_plots(top,p,ncol=1,heights=c(.30,1),guides='auto')
 }
-first_row=wrap_plots(contrast_plot(TRUE),contrast_plot(FALSE),nrow=1,widths=c(1,4),guides='auto')
+first_row=wrap_plots(
+  contrast_plot(primary_metrics[1],filter(primary_limits,panel=='Climate')),
+  contrast_plot(primary_metrics[2:3],filter(primary_limits,panel=='CCA')),
+  nrow=1,widths=c(1.2,2),guides='auto')
 second_row=wrap_plots(scatter('Holocene'),scatter('Anthropocene'),nrow=1,guides='auto')
 figure=wrap_plots(first_row,second_row,ncol=1,heights=c(1,1.35),guides='collect') &
   theme(legend.position='bottom',plot.background=element_rect(fill='white',color=NA))
+corrected_figure=contrast_plot(corrected_metrics,corrected_limits,correction_labels=TRUE)+
+  theme(legend.position='bottom',plot.background=element_rect(fill='white',color=NA))
 if(render_figures) {
   stem=here('plot/fig_tracking_era_distributions')
-  ggsave(paste0(stem,'.pdf'),figure,width=19,height=15,device=cairo_pdf,bg='white')
-  ggsave(paste0(stem,'.png'),figure,width=19,height=15,dpi=300,bg='white')
+  ggsave(paste0(stem,'.pdf'),figure,width=19,height=17.5,device=cairo_pdf,bg='white')
+  ggsave(paste0(stem,'.png'),figure,width=19,height=17.5,dpi=300,bg='white')
+  ggsave(here('plot/test_figures/fig_tracking_corrected_lag_contrasts_offset_0.pdf'),
+    corrected_figure,width=12,height=7.5,device=cairo_pdf,bg='white')
 }
 cat('Manuscript figure verified: offset 0; 20 MA1 means, ten covariance-based contrasts;',
   nrow(raw),'untransformed input values.\n')

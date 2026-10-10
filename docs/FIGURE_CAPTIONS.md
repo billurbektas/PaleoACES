@@ -101,10 +101,10 @@ nominal, without adjustment for lake/temporal dependence or mathematical couplin
 **Publication-ready caption.** Figure 4. Holocene–Anthropocene comparisons at
 Mount Rainier (MORA, blue) and North Cascades (NOCA, orange). The upper row
 shows Anthropocene-minus-Holocene MA(1) GLS contrasts and 95% confidence intervals
-for physical climate-change rate, community turnover and observed, pace-corrected
-and direction-corrected lag changes. Contrast dots, bars and numeric annotations
-identify MORA/NOCA in blue/orange; the lag x-axis labels are teal, pink and purple,
-respectively. Climate uses a separate scale; zero baselines
+for standardized climate change per century, community turnover rate and observed
+lag change. Contrast dots, bars and numeric annotations identify MORA/NOCA in
+blue/orange; response labels are uncolored. Climate uses a separate scale from
+the CCA distance-per-century responses; zero baselines
 are aligned and both y-axes are on the left. * denotes unadjusted contrast
 p < 0.05; nonsignificant interval bars are faint, as are the dots and numeric
 annotations for nonsignificant NOCA contrasts. Numbers beneath intervals
@@ -116,8 +116,9 @@ legacy-calibration SDs per climate century. Turnover is observed CCA displacemen
 per vegetation century. Observed lag change is the change in observed-to-predicted
 CCA distance per climate century; corrected rates substitute the maintained
 counterfactual final lag while preserving the actual initial lag.
-The lower row plots observed against corrected lag-change rates separately for
-each era, pooling parks. Small transparent points retain park fills and correction
+The lower row plots observed lag-change rate against lag-change rate after
+correction, both in CCA distance per century, separately for each era, pooling
+parks. Small transparent points retain park fills and correction
 outlines; colored straight lines are descriptive linear fits, dashed diagonals
 are 1:1, and colored text gives Spearman rho and nominal two-sided p values.
 Top densities show observed lag rates once per observation, with their original
@@ -127,3 +128,12 @@ values comprise 330 MORA and 277 NOCA pairs; pace retains 254 and 211, respectiv
 after excluding undefined stationary directions. The geometric corrections are
 descriptive, not causal, and model intervals do not propagate chronology
 uncertainty. Per-century units do not equalize temporal averaging across eras.
+
+**Separate corrected-lag contrast figure.** The offset-0 pace- and
+direction-corrected lag-change contrasts are retained in
+[their own PDF](../plot/test_figures/fig_tracking_corrected_lag_contrasts_offset_0.pdf)
+and embedded in the Analysis Review. The dots, bars and numeric annotations
+identify MORA/NOCA in blue/orange, while pink/purple x-axis labels identify the
+corrections. Intervals, stars, significance opacity and fold annotations follow
+the Figure 4 conventions. These contrasts reuse the existing MA1 results and
+are expressed in CCA distance per century.

@@ -537,12 +537,15 @@ for 142 stationary modern plots (76 MORA, 66 NOCA); its model uses 254 MORA and
 observations. Original time gaps, lake identities and finite-draw medians remain.
 The same scale conventions and model limitations apply to all five responses.
 
-Stage 10b now shows five offset-0 MA1 era contrasts in the first row, with MORA
-and NOCA side by side. Climate and community/lag rates use separate scales with
-aligned zeros. Observed, pace-corrected and direction-corrected lag changes share
-a grouped x-axis with teal/pink/purple label text. Contrast dots, error bars and
-numeric annotations identify MORA/NOCA in blue/orange. Both contrast
-y-axes are on the left. Stars mark unadjusted contrast `p < 0.05`; nonsignificant error bars
+Stage 10b shows three offset-0 MA1 era contrasts in the first row of Figure 4:
+standardized climate change per century, community turnover rate and observed
+lag change. MORA and NOCA appear side by side, with blue/orange dots, error bars
+and numeric annotations. Response labels have no additional color. Climate and
+community/lag rates use separate scales with aligned zeros and left-side y-axes.
+CCA axes specify CCA distance per century. Pace- and direction-corrected lag
+contrasts are retained in a separate PDF registered in the Analysis Review,
+with pink/purple correction labels and the same model results. Both figures use
+larger fonts. Stars mark unadjusted contrast `p < 0.05`; nonsignificant error bars
 are faint, as are nonsignificant NOCA dots and numeric annotations, without an
 opacity legend. Point ratios of fitted Anthropocene to
 Holocene means are printed below bars without ratio uncertainty. Lag ratios
@@ -556,8 +559,10 @@ Spearman rho and nominal p values do not adjust for lake/temporal dependence or
 mathematical coupling between observed and corrected responses. Only observed
 lag rates have top densities; each input appears once, with the original MA1
 park/era means and 95% intervals beside the scatter border. No corrected density,
-figure caption, overall title or count subtitle is drawn. Units and limitations
-are maintained in the review and publication caption. The figure reuses results,
+figure caption, overall title or count subtitle is drawn. Scatter axes identify
+observed lag-change rate and lag-change rate after correction without unit
+suffixes; both remain in CCA distance per century. Definitions and limitations
+are maintained in the review and publication caption. The figures reuse results,
 validates 20 means and ten contrasts, and preserves calibration, chronology and
 Figures 2/3 without refitting or response transformations.
 

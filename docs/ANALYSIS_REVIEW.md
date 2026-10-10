@@ -1730,16 +1730,18 @@ Script: [10a_tracking_lake_sensitivity.R](../R/stages/10a_tracking_lake_sensitiv
 ## Manuscript comparison at offset 0
 
 The first row shows offset-0 MA1 **Anthropocene-minus-Holocene contrasts** for
-climate-change rate, community turnover, observed lag change, pace-corrected
-lag change and direction-corrected lag change. Parks appear side by side,
-with dots, error bars and numeric annotations in blue for MORA and orange for
-NOCA; the observed, pace-corrected and direction-corrected x-axis labels are teal,
-pink and purple, respectively. Climate and CCA
-responses retain separate unit scales with aligned zeros and both y-axes on the left. All bars are the
+standardized climate change per century, community turnover rate and observed
+lag change. Parks appear side by side, with dots, error bars and numeric
+annotations in blue for MORA and orange for NOCA. The three response labels are
+uncolored. Climate and CCA responses retain separate scales with aligned zeros
+and both y-axes on the left. Community turnover and lag axes specify **CCA
+distance per century**. The top row labels the difference between Anthropocene
+and Holocene. All bars are the
 original covariance-based 95% Satterthwaite contrast intervals. A star marks
 unadjusted `p < 0.05`; nonsignificant error bars are faint. Nonsignificant NOCA
 dots and numeric annotations use the same opacity, with no transparency legend.
-Contrast and fold-change numbers use larger type. The number below each bar is
+Both manuscript figures use larger fonts, including numeric annotations and
+axis text. The number below each bar is
 the fitted Anthropocene/Holocene mean
 ratio without a ratio interval. Signed lag ratios can be negative because the
 means have opposite signs, and can be unstable when the Holocene mean is near
@@ -1747,7 +1749,8 @@ zero; they are descriptive annotations, not multiplicative-effect inference.
 
 The second row contains separate Holocene and Anthropocene scatter panels on
 their own scales, pooling parks. The x-axis is observed lag-change rate;
-the y-axis is the pace- or direction-corrected lag-change rate. Small transparent
+the y-axis is **Lag-change rate after correction**, with no unit suffixes on
+the scatter axes. Both quantities are CCA distance per century. Small transparent
 points retain park fills and correction outlines. Colored straight lines are
 descriptive linear fits; the dashed diagonal is 1:1. Colored Spearman rho and
 nominal p values do not adjust for lake, temporal dependence or the mathematical
@@ -1760,12 +1763,13 @@ GLS means and 95% intervals, placed near the scatter border with rounded mean
 labels. There are no corrected-lag density curves. Actual offset-0 counts are
 20 MORA/10 NOCA Holocene transitions, 330/277 observed and direction-corrected
 modern pairs, and 254/211 pace-corrected modern pairs. The figure has no overall
-title, caption or sample-count subtitles; definitions and units stay in this
+title, caption or sample-count subtitles; definitions and limitations stay in this
 review and the [publication caption](FIGURE_CAPTIONS.md).
 
 Stage 10b reads the combined model input and existing results without fitting,
 transforming responses or reconstructing geometry. It validates 20 group means
-and ten contrasts before writing the primary PDF and PNG. Figure 2/3 assets
+and ten contrasts before writing the primary PDF/PNG and the separate corrected
+contrast PDF. Figure 2/3 assets
 and the calibration/chronology inputs remain unchanged.
 
 ### Figure 4. Offset-0 era contrasts and observed-versus-corrected lag changes
@@ -1773,6 +1777,20 @@ and the calibration/chronology inputs remain unchanged.
 ![Figure 4. fig tracking era distributions](assets/analysis/figure-4.png)
 
 [Full PDF](../plot/fig_tracking_era_distributions.pdf) · [Figure script](../R/stages/10b_tracking_manuscript_figure.R) · [Publication captions](FIGURE_CAPTIONS.md).
+
+The pace- and direction-corrected lag contrasts are shown separately below,
+using the same offset-0 MA1 estimates, confidence intervals, park colors and
+significance opacity. Pink and purple x-axis labels identify the two corrections.
+These are signed changes in CCA distance per century, not corrected final lag
+levels. The fold annotations remain point ratios without ratio intervals.
+
+### Offset-0 corrected lag-change contrasts
+
+Existing MA1 Anthropocene-minus-Holocene contrasts for pace- and direction-corrected lag-change rates, with 95% Satterthwaite intervals, in CCA distance per century. MORA/NOCA are blue/orange; pink/purple labels identify corrections. Stars mark unadjusted p < 0.05; nonsignificant NOCA dots, bars and numbers are faint. Numbers below bars are signed fitted-mean ratios without ratio intervals, which become unstable near zero. Responses are descriptive and chronology uncertainty is not propagated. This figure reuses the fitted results without refitting. **MA1 working specification; descriptive counterfactual responses**.
+
+Script: [10b_tracking_manuscript_figure.R](../R/stages/10b_tracking_manuscript_figure.R). [Complete PDF](../plot/test_figures/fig_tracking_corrected_lag_contrasts_offset_0.pdf) (1 page).
+
+![Offset-0 corrected lag-change contrasts — PDF page 1](assets/analysis/tracking_corrected_lag_contrasts-p1.png)
 
 ## Limitations and remaining questions
 
@@ -1859,6 +1877,7 @@ current-results analysis.
 | [fig_tracking_model_aic_direction_corrected_lag_rate_per_century.pdf](../plot/test_figures/fig_tracking_model_aic_direction_corrected_lag_rate_per_century.pdf) | Direction-corrected lag-change rate: aic across ten offsets. | [10_tracking_era_models.R](../R/stages/10_tracking_era_models.R) | 1 | MA1 working specification; descriptive counterfactual responses |
 | [fig_tracking_lake_coefficients_direction_corrected_lag_rate_per_century_offset_0.pdf](../plot/test_figures/fig_tracking_lake_coefficients_direction_corrected_lag_rate_per_century_offset_0.pdf) | Direction-corrected lag-change rate: offset-0 lake sensitivity coefficients. | [10a_tracking_lake_sensitivity.R](../R/stages/10a_tracking_lake_sensitivity.R) | 1 | MA1 working specification; corrected lag lake sensitivity |
 | [fig_tracking_lake_contrasts_direction_corrected_lag_rate_per_century_offset_0.pdf](../plot/test_figures/fig_tracking_lake_contrasts_direction_corrected_lag_rate_per_century_offset_0.pdf) | Direction-corrected lag-change rate: offset-0 lake sensitivity contrasts. | [10a_tracking_lake_sensitivity.R](../R/stages/10a_tracking_lake_sensitivity.R) | 1 | MA1 working specification; corrected lag lake sensitivity |
+| [fig_tracking_corrected_lag_contrasts_offset_0.pdf](../plot/test_figures/fig_tracking_corrected_lag_contrasts_offset_0.pdf) | Offset-0 corrected lag-change contrasts | [10b_tracking_manuscript_figure.R](../R/stages/10b_tracking_manuscript_figure.R) | 1 | MA1 working specification; descriptive counterfactual responses |
 
 ## TraCE21k–V2.1 comparison and planned sensitivity
 

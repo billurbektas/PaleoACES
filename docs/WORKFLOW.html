@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: dde0a38ed0dfb987769083658e715414 -->
+<!-- paleoaces-source-md5: e97a8a8e386661d8abfe0d231f8230fb -->
 
 <html>
 
@@ -1804,12 +1804,13 @@ flagged</td>
 <tr class="even">
 <td align="right">10g-b</td>
 <td><code>R/stages/10b_tracking_manuscript_figure.R</code></td>
-<td>Manuscript Figure 4; offset 0 only</td>
+<td>Manuscript Figure 4 and separate corrected contrasts; offset 0
+only</td>
 <td>Combined transition input and stage-10 MA1 group
 means/contrasts</td>
-<td>Five contrast categories above two era scatter panels; corrected lag
-models, observed marginal densities and model mean intervals; primary
-PDF/PNG; no refitting</td>
+<td>Three observed contrast categories above two era scatter panels;
+observed marginal densities and model mean intervals; primary PDF/PNG
+plus corrected-contrast PDF; no refitting</td>
 </tr>
 <tr class="odd">
 <td align="right">10h</td>
@@ -2336,14 +2337,19 @@ Corrected lag-change rates are calculated from stored endpoints within
 each chronology draw before medians. Stages 10/10a run all five
 requested rate models and their diagnostics by default, reporting MA1.
 The pace response alone excludes 142 stationary modern pairs. Stage 10b
-reads offset-0 results for five contrast categories in its first row;
-climate and community/lag have distinct scales with aligned zeros. Its
-second row shows observed-versus-corrected lag scatter panels by era,
-and observed-rate top densities with original GLS means/95% intervals.
-No overall title, caption or count subtitles are rendered. The corrected
-comparisons retain MORA/NOCA identity and the existing descriptive
-counterfactual geometry. No refitting occurs in the figure stage.
-Calibration, chronology and Figure 2/3 are preserved.</p>
+shows three offset-0 contrast categories in Figure 4’s first row:
+standardized climate change per century, community turnover rate and
+observed lag change. Climate and community/lag have distinct scales with
+aligned zeros. The pace- and direction-corrected contrasts are written
+to a separate PDF and embedded alongside Figure 4 in the Analysis
+Review. Both figures use larger fonts and CCA distance-per-century
+labels where appropriate. Figure 4’s second row shows
+observed-versus-corrected lag scatter panels by era, and observed-rate
+top densities with original GLS means/95% intervals. No overall title,
+caption or count subtitles are rendered. The corrected comparisons
+retain MORA/NOCA identity and the existing descriptive counterfactual
+geometry. No refitting occurs in the figure stage. Calibration,
+chronology and Figure 2/3 are preserved.</p>
 <pre class="bash"><code># Primary combined input and all ten provisional offset/covariance fits
 Rscript R/stages/09b_tracking_model_data.R
 Rscript R/stages/10_tracking_era_models.R

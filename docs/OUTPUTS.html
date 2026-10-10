@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: 38001e50b7fa438405a713c0c1ac395e -->
+<!-- paleoaces-source-md5: a5159620e6e4a70adea80d4c2035cdcb -->
 
 <html>
 
@@ -1744,20 +1744,25 @@ and an arrow-only observed/predicted legend</td>
 <tr class="even">
 <td><code>plot/fig_tracking_era_distributions.*</code></td>
 <td>Manuscript Figure 4: offset-0 MA1 contrasts for climate, turnover
-and three lag-change variants above separate-era corrected-lag scatter
-panels; observed-rate top densities with GLS means/95% intervals</td>
+and observed lag change above separate-era corrected-lag scatter panels;
+observed-rate top densities with GLS means/95% intervals</td>
 </tr>
 <tr class="odd">
+<td><code>plot/test_figures/fig_tracking_corrected_lag_contrasts_offset_0.pdf</code></td>
+<td>Separate offset-0 MA1 pace- and direction-corrected lag-change
+contrasts; embedded in the Analysis Review</td>
+</tr>
+<tr class="even">
 <td><code>cca_trajectory_era_centroids.csv</code></td>
 <td>Site × CC1–S4 observed WA and predicted LC centroids used by the
 selected trajectories</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>cca_trajectory_anthropocene_centroids.csv</code></td>
 <td>Exact legacy/resurvey WA and LC site means from identical valid
 paired plots at both dates, plus pair counts</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>bacon_run_manifest.csv</code></td>
 <td>Seed, versions, settings/control/output hashes, the historical
 whole-script hash used for five chronology runs, and a separately
@@ -2187,24 +2192,31 @@ stationary directions; direction models retain all 607 pairs. The
 remain.</p>
 <p>Stage <code>R/stages/10b_tracking_manuscript_figure.R</code> reads
 combined inputs and existing MA1 results without fitting. It validates
-20 group counts and ten mean differences. The first row shows climate,
-turnover and observed/pace/direction lag contrasts, with side-by-side
-parks, separate unit scales and aligned zeros. Lag types share a grouped
-x-axis with teal/pink/purple labels. Contrast dots, bars and numeric
-annotations identify MORA/NOCA in blue/orange. Both contrast y-axes are
-on the left. Bars are 95% contrast intervals, with a star for unadjusted
-<code>p &lt; 0.05</code>; nonsignificant bars are faint. Nonsignificant
-NOCA dots and numeric annotations use the same opacity, without an
-opacity legend. Contrast and fold-change numbers use larger type. Labels
-below bars are point ratios of fitted era means without ratio bounds;
-signed or near-zero lag denominators limit their interpretation. The
-second row shows observed-versus-corrected lag scatter panels for each
-era, with descriptive trend lines and nominal Spearman labels. Only
-observed lag has marginal densities, counted once per input and overlaid
-with the original observed-lag MA1 means and 95% intervals. No title,
-caption or count subtitles are drawn. Definitions and limitations stay
-in the review and publication caption. Figure 2/3 and
-calibration/chronology inputs are unchanged.</p>
+20 group counts and ten mean differences. The first row of Figure 4
+shows standardized climate change per century, community turnover rate
+and observed lag change, with side-by-side parks, separate scales,
+aligned zeros and uncolored response labels. Contrast dots, bars and
+numeric annotations identify MORA/NOCA in blue/orange. Both contrast
+y-axes are on the left. Bars are 95% contrast intervals, with a star for
+unadjusted <code>p &lt; 0.05</code>; nonsignificant bars are faint.
+Nonsignificant NOCA dots and numeric annotations use the same opacity,
+without an opacity legend. Both manuscript figures use larger fonts
+throughout. Labels below bars are point ratios of fitted era means
+without ratio bounds; signed or near-zero lag denominators limit their
+interpretation. The second row shows observed-versus-corrected lag
+scatter panels for each era, with descriptive trend lines and nominal
+Spearman labels. Only observed lag has marginal densities, counted once
+per input and overlaid with the original observed-lag MA1 means and 95%
+intervals. No title, caption or count subtitles are drawn. Top-panel CCA
+response axes specify CCA distance per century; scatter axes omit unit
+suffixes and the scatter y-axis reads “Lag-change rate after
+correction.” The corrected-lag contrasts are written separately to
+<code>plot/test_figures/fig_tracking_corrected_lag_contrasts_offset_0.pdf</code>,
+with pink/purple correction labels and the same blue/orange park colors,
+intervals and significance opacity. This PDF is embedded alongside
+Figure 4 in the review. Definitions and limitations stay in the review
+and publication caption. Figure 2/3 and calibration/chronology inputs
+are unchanged.</p>
 <p>The previous combined reporting-grid CSV, exploratory modeling script
 and its per-run inputs, model bundles, summaries and residual PDFs are
 retired. The 23/21-column canonical source tables, uncertainty and

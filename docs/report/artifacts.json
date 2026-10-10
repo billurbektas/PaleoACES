@@ -669,6 +669,16 @@
       "purpose": "Direction-corrected lag-change rate: offset-0 lake sensitivity contrasts.",
       "interpretation": "Each lake is compared with its own park\u2019s finite modern responses under era fixed effects, REML and era-specific variances. Figures report MA1 only; AR1 stays in the audit. Near-boundary parameters are flagged. MORA comparisons reuse the same modern pairs; corrected responses are descriptive, not causal interventions.",
       "status": "MA1 working specification; corrected lag lake sensitivity"
+    },
+    {
+      "id": "tracking_corrected_lag_contrasts",
+      "section": "tracking_corrected_contrasts",
+      "pdf": "plot/test_figures/fig_tracking_corrected_lag_contrasts_offset_0.pdf",
+      "pages": [1],
+      "producer": "R/stages/10b_tracking_manuscript_figure.R",
+      "purpose": "Offset-0 corrected lag-change contrasts",
+      "interpretation": "Existing MA1 Anthropocene-minus-Holocene contrasts for pace- and direction-corrected lag-change rates, with 95% Satterthwaite intervals, in CCA distance per century. MORA/NOCA are blue/orange; pink/purple labels identify corrections. Stars mark unadjusted p < 0.05; nonsignificant NOCA dots, bars and numbers are faint. Numbers below bars are signed fitted-mean ratios without ratio intervals, which become unstable near zero. Responses are descriptive and chronology uncertainty is not propagated. This figure reuses the fitted results without refitting.",
+      "status": "MA1 working specification; descriptive counterfactual responses"
     }
   ],
   "main_figures": [

@@ -133,7 +133,7 @@ flowchart TD
 | 10f | `R/stages/09b_tracking_model_data.R` | Combined transition model input | Canonical 23/21-column tables, detailed calculations, lake and cleaned plot coordinates | One 28-column long input with actual lake/offset transitions and modern pairs stored once per response; completed schema dictionary |
 | 10g | `R/stages/10_tracking_era_models.R` | Maintained provisional offset GLS exploration | Combined transition input only | Observed/corrected lag rates, turnover and raw climate rate, each with ten offsets × AR1/MA1/Independent; coefficient, within-park contrast, MA1 group-mean and paired AIC comparison CSVs, one full results TXT, MA1-only group-mean/coefficient/contrast/residual PDFs and three-candidate within-offset ΔAIC boxplots when rendering; all five requested responses run by default |
 | 10g-a | `R/stages/10a_tracking_lake_sensitivity.R` | Maintained offset-0 lake sensitivity | Combined transition input only | Lag rate, turnover and raw climate rate, each with four lakes × AR1/MA1; each lake versus its park's modern pairs; 16 coefficient rows, eight contrasts, one results TXT and two PDFs; MA1-only figures show eight coefficients and four contrasts; near-boundary fits retained and flagged |
-| 10g-b | `R/stages/10b_tracking_manuscript_figure.R` | Manuscript Figure 4; offset 0 only | Combined transition input and stage-10 MA1 group means/contrasts | Five contrast categories above two era scatter panels; corrected lag models, observed marginal densities and model mean intervals; primary PDF/PNG; no refitting |
+| 10g-b | `R/stages/10b_tracking_manuscript_figure.R` | Manuscript Figure 4 and separate corrected contrasts; offset 0 only | Combined transition input and stage-10 MA1 group means/contrasts | Three observed contrast categories above two era scatter panels; observed marginal densities and model mean intervals; primary PDF/PNG plus corrected-contrast PDF; no refitting |
 | 10h | `R/stages/05a_cca_figure.R` | Selected CCA trajectory data and main render | Model, positioned Holocene samples, stage-13 frozen CC/S grid | `cca_trajectory_era_centroids.csv` and, when rendering, main-paper `fig_cca_trajectories.pdf/.png` |
 | 10i | `R/stages/09a_tracking_example_and_visualizations.R` | Tracking example and visualizations | Canonical lake realizations, lake-by-offset responses/predictors, reporting grid, aligned predictor medians reconstructed from source transitions, modern paired-plot model input and stage-13 frozen climate-era catalog/subphases | Three diagnostic PDFs: worked geometry and two tracking/climate/fire grids with four lake columns, established regional CC/S bands and CC1 subdivisions, complete-offset medians and an Anthropocene MORA/NOCA boxplot column |
 | 10j | `R/stages/12a_fire_event_detection_worked_example.R` | Accepted-event detection for all four cores | All-`tapas` source series with local thresholds, candidate/count-screen flags, and accepted events | `fire_event_detection_lake_audit.csv` and, when rendering, a PDF with all four residual/threshold plots on one page, alongside settings and the software comparison |
@@ -310,8 +310,12 @@ columns and the original canonical table contracts. Corrected lag-change rates
 are calculated from stored endpoints within each chronology draw before medians.
 Stages 10/10a run all five requested rate models and their diagnostics by default,
 reporting MA1. The pace response alone excludes 142 stationary modern pairs.
-Stage 10b reads offset-0 results for five contrast categories in its first row;
-climate and community/lag have distinct scales with aligned zeros. Its second
+Stage 10b shows three offset-0 contrast categories in Figure 4's first row:
+standardized climate change per century, community turnover rate and observed
+lag change. Climate and community/lag have distinct scales with aligned zeros.
+The pace- and direction-corrected contrasts are written to a separate PDF and
+embedded alongside Figure 4 in the Analysis Review. Both figures use larger
+fonts and CCA distance-per-century labels where appropriate. Figure 4's second
 row shows observed-versus-corrected lag scatter panels by era, and observed-rate
 top densities with original GLS means/95% intervals. No overall title, caption
 or count subtitles are rendered. The corrected comparisons retain MORA/NOCA

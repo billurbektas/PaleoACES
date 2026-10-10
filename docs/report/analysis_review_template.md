@@ -913,16 +913,18 @@ retain the same schemas used for the observed lag models.
 ## Manuscript comparison at offset 0
 
 The first row shows offset-0 MA1 **Anthropocene-minus-Holocene contrasts** for
-climate-change rate, community turnover, observed lag change, pace-corrected
-lag change and direction-corrected lag change. Parks appear side by side,
-with dots, error bars and numeric annotations in blue for MORA and orange for
-NOCA; the observed, pace-corrected and direction-corrected x-axis labels are teal,
-pink and purple, respectively. Climate and CCA
-responses retain separate unit scales with aligned zeros and both y-axes on the left. All bars are the
+standardized climate change per century, community turnover rate and observed
+lag change. Parks appear side by side, with dots, error bars and numeric
+annotations in blue for MORA and orange for NOCA. The three response labels are
+uncolored. Climate and CCA responses retain separate scales with aligned zeros
+and both y-axes on the left. Community turnover and lag axes specify **CCA
+distance per century**. The top row labels the difference between Anthropocene
+and Holocene. All bars are the
 original covariance-based 95% Satterthwaite contrast intervals. A star marks
 unadjusted `p < 0.05`; nonsignificant error bars are faint. Nonsignificant NOCA
 dots and numeric annotations use the same opacity, with no transparency legend.
-Contrast and fold-change numbers use larger type. The number below each bar is
+Both manuscript figures use larger fonts, including numeric annotations and
+axis text. The number below each bar is
 the fitted Anthropocene/Holocene mean
 ratio without a ratio interval. Signed lag ratios can be negative because the
 means have opposite signs, and can be unstable when the Holocene mean is near
@@ -930,7 +932,8 @@ zero; they are descriptive annotations, not multiplicative-effect inference.
 
 The second row contains separate Holocene and Anthropocene scatter panels on
 their own scales, pooling parks. The x-axis is observed lag-change rate;
-the y-axis is the pace- or direction-corrected lag-change rate. Small transparent
+the y-axis is **Lag-change rate after correction**, with no unit suffixes on
+the scatter axes. Both quantities are CCA distance per century. Small transparent
 points retain park fills and correction outlines. Colored straight lines are
 descriptive linear fits; the dashed diagonal is 1:1. Colored Spearman rho and
 nominal p values do not adjust for lake, temporal dependence or the mathematical
@@ -943,15 +946,24 @@ GLS means and 95% intervals, placed near the scatter border with rounded mean
 labels. There are no corrected-lag density curves. Actual offset-0 counts are
 20 MORA/10 NOCA Holocene transitions, 330/277 observed and direction-corrected
 modern pairs, and 254/211 pace-corrected modern pairs. The figure has no overall
-title, caption or sample-count subtitles; definitions and units stay in this
+title, caption or sample-count subtitles; definitions and limitations stay in this
 review and the [publication caption](FIGURE_CAPTIONS.md).
 
 Stage 10b reads the combined model input and existing results without fitting,
 transforming responses or reconstructing geometry. It validates 20 group means
-and ten contrasts before writing the primary PDF and PNG. Figure 2/3 assets
+and ten contrasts before writing the primary PDF/PNG and the separate corrected
+contrast PDF. Figure 2/3 assets
 and the calibration/chronology inputs remain unchanged.
 
 {{figure_4}}
+
+The pace- and direction-corrected lag contrasts are shown separately below,
+using the same offset-0 MA1 estimates, confidence intervals, park colors and
+significance opacity. Pink and purple x-axis labels identify the two corrections.
+These are signed changes in CCA distance per century, not corrected final lag
+levels. The fold annotations remain point ratios without ratio intervals.
+
+{{tracking_corrected_contrasts_diagnostics}}
 
 ## Limitations and remaining questions
 

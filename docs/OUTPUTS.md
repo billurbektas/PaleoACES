@@ -45,7 +45,8 @@ Active data and cache locations are preserved. See [repository inventory](REPOSI
 | `plot/test_figures/fig_walsh_charanalysis_reproduction.pdf` | PDF-only three-page official Walsh reconstruction and publication discrepancy audit |
 | `plot/test_figures/fig_fire_event_detection_workflow.pdf` | PDF-only three-page explanation: detection settings, all four lake residual/threshold plots in a 2 × 2 grid, and the separate MORA software/publication comparison |
 | `plot/fig_cca_trajectories.*` | Main-paper PDF/PNG with A. pooled trajectories, B. biplot inset, C. climate contributions, D. species contributions, eight independently positioned two-line path names, transparent predicted paths/annotations, and an arrow-only observed/predicted legend |
-| `plot/fig_tracking_era_distributions.*` | Manuscript Figure 4: offset-0 MA1 contrasts for climate, turnover and three lag-change variants above separate-era corrected-lag scatter panels; observed-rate top densities with GLS means/95% intervals |
+| `plot/fig_tracking_era_distributions.*` | Manuscript Figure 4: offset-0 MA1 contrasts for climate, turnover and observed lag change above separate-era corrected-lag scatter panels; observed-rate top densities with GLS means/95% intervals |
+| `plot/test_figures/fig_tracking_corrected_lag_contrasts_offset_0.pdf` | Separate offset-0 MA1 pace- and direction-corrected lag-change contrasts; embedded in the Analysis Review |
 | `cca_trajectory_era_centroids.csv` | Site × CC1–S4 observed WA and predicted LC centroids used by the selected trajectories |
 | `cca_trajectory_anthropocene_centroids.csv` | Exact legacy/resurvey WA and LC site means from identical valid paired plots at both dates, plus pair counts |
 | `bacon_run_manifest.csv` | Seed, versions, settings/control/output hashes, the historical whole-script hash used for five chronology runs, and a separately checked chronology-code fingerprint; the recorded post-run revision is limited to PDF location and PNG persistence |
@@ -310,20 +311,27 @@ The 23/21/15-column canonical contracts and original calculation records remain.
 
 Stage `R/stages/10b_tracking_manuscript_figure.R` reads combined inputs and existing
 MA1 results without fitting. It validates 20 group counts and ten mean differences.
-The first row shows climate, turnover and observed/pace/direction lag contrasts,
-with side-by-side parks, separate unit scales and aligned zeros. Lag types share
-a grouped x-axis with teal/pink/purple labels. Contrast dots, bars and numeric
+The first row of Figure 4 shows standardized climate change per century,
+community turnover rate and observed lag change, with side-by-side parks,
+separate scales, aligned zeros and uncolored response labels. Contrast dots, bars and numeric
 annotations identify MORA/NOCA in blue/orange. Both contrast y-axes are on the
 left. Bars are 95% contrast intervals, with a star for unadjusted `p < 0.05`;
 nonsignificant bars are faint. Nonsignificant NOCA dots and numeric annotations
-use the same opacity, without an opacity legend. Contrast and fold-change numbers
-use larger type. Labels below bars are point ratios of fitted era
+use the same opacity, without an opacity legend. Both manuscript figures use
+larger fonts throughout. Labels below bars are point ratios of fitted era
 means without ratio bounds; signed or near-zero lag denominators limit their
 interpretation. The second row shows observed-versus-corrected lag scatter
 panels for each era, with descriptive trend lines and nominal Spearman labels.
 Only observed lag has marginal densities, counted once per input and overlaid
 with the original observed-lag MA1 means and 95% intervals. No title, caption or
-count subtitles are drawn. Definitions and limitations stay in the review and
+count subtitles are drawn. Top-panel CCA response axes specify CCA distance per
+century; scatter axes omit unit suffixes and the scatter y-axis reads
+"Lag-change rate after correction." The corrected-lag
+contrasts are written separately to
+`plot/test_figures/fig_tracking_corrected_lag_contrasts_offset_0.pdf`, with
+pink/purple correction labels and the same blue/orange park colors, intervals
+and significance opacity. This PDF is embedded alongside Figure 4 in the review.
+Definitions and limitations stay in the review and
 publication caption. Figure 2/3 and calibration/chronology inputs are unchanged.
 
 The previous combined reporting-grid CSV, exploratory modeling script and its
