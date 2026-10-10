@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: 529fe45f6a64aad2d7a9ea86ce94c754 -->
+<!-- paleoaces-source-md5: 89ccba48c63654a95f30b76df67e5d64 -->
 
 <html>
 
@@ -2378,6 +2378,37 @@ intervals, support, spatial checks, definitions and provenance.</td>
 width and input fingerprint. CSVs/TXT and review copies are the portable
 results.</td>
 </tr>
+<tr class="odd">
+<td><code>holocene_ensemble_coefficients.csv</code></td>
+<td>12 rows: response × term, including intercepts. Exact equal-weight
+coefficient means, 2.5–97.5% reconstruction-ensemble uncertainty, offset
+estimate range, positive/negative/zero counts and sign consistency. No
+pooled p-values.</td>
+</tr>
+<tr class="even">
+<td><code>holocene_ensemble_offset_audit.csv</code></td>
+<td>30 rows: response × offset. Equal weights, support/exclusions,
+phase-key differences relative to offset 0, convergence,
+fixed/covariance checks, MA1 boundaries, residual SDs, climate–response
+correlations and the retained offset-800 flag.</td>
+</tr>
+<tr class="odd">
+<td><code>holocene_ensemble_offset_vcov.csv</code></td>
+<td>480 rows: response × offset × term_row × term_col. Full fixed-effect
+variance–covariance matrices, including off-diagonal entries, with equal
+weights.</td>
+</tr>
+<tr class="even">
+<td><code>holocene_ensemble_components.rds</code></td>
+<td>Reproducible local audit: coefficients and full covariance matrices,
+exact within/between/total mixture covariances, seeds, sampling settings
+and input fingerprint. No duplication of fitted model objects.</td>
+</tr>
+<tr class="odd">
+<td><code>holocene_ensemble_results.txt</code></td>
+<td>Ensemble definitions, coefficient summaries and complete offset
+support/convergence audit.</td>
+</tr>
 </tbody>
 </table>
 <p>Holocene specifications are
@@ -2395,10 +2426,20 @@ under <code>plot/test_figures/</code>: <code>offset_coefficients</code>
 (four coefficient panels plus R² per response),
 <code>era_coefficients_offset_0</code>,
 <code>holocene_predictions</code>, <code>R2</code>,
-<code>residuals</code> (nine pages) and <code>spatial_residuals</code>.
-The Analysis Review registers every table and PDF. Optional nondefault
-widths add <code>_Nyr</code> to the directory and PDF names and cannot
-overwrite primary results.</p>
+<code>residuals</code> (nine pages), <code>spatial_residuals</code> and
+<code>ensemble_coefficients</code> (three predictor panels with
+reconstruction-ensemble uncertainty). The Analysis Review registers
+every table and PDF. Optional nondefault widths add <code>_Nyr</code> to
+the directory and PDF names and cannot overwrite primary results.</p>
+<p>The primary ensemble mixes 50,000 joint multivariate-normal
+coefficient samples from each of ten unchanged offset fits, with each
+full fitted <code>vcov</code>. Point estimates are exact means across
+offsets; intervals are mixture percentiles, not conventional confidence
+intervals. Offsets are sensitivity reconstructions, and uncertainty is
+not divided by √10. Bacon chronology uncertainty is not propagated.
+<code>Rscript R/stages/10c_tracking_predictor_models.R --ensemble-only</code>
+adds/reproduces only the ensemble products from matching stored fits,
+without refitting or changing existing outputs.</p>
 </div>
 </div>
 

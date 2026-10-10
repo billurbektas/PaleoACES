@@ -1,6 +1,7 @@
 # Era-specific predictor models for observed and two corrected lag-change rates.
 # Rscript R/stages/10c_tracking_predictor_models.R
 # --bin-width-years=N uses separately suffixed inputs/outputs; default 1000 only.
+# --ensemble-only adds reconstruction summaries from stored fits without refitting.
 # Holocene: each offset, MA1 within lake, site residual variances; offset-0
 # random-intercept sensitivity. Modern: independent plot residuals, site variances,
 # both site + burned and site + elevation + climate_rate + burned; spatial checks.
@@ -22,6 +23,61 @@ if(validate_tracking_model_data(combined)!=width) stop('Requested width differs 
 offsets=seq(0,width-100,100)
 metrics=tracking_predictor_responses()
 labels=tracking_predictor_labels()
+out=here('output/exploratory',paste0('tracking_predictor_models',suffix))
+export_ensembles=function(ensembles) {
+  dir.create(out,recursive=TRUE,showWarnings=FALSE)
+  summary=bind_rows(map(ensembles,'summary'))
+  audit=bind_rows(map(ensembles,'offset_audit'))
+  covariance=bind_rows(map(ensembles,'offset_vcov'))
+  if(nrow(summary)!=length(metrics)*4L || nrow(audit)!=length(metrics)*length(offsets) ||
+     nrow(covariance)!=length(metrics)*length(offsets)*16L ||
+     anyDuplicated(summary[c('metric','term')]) || anyDuplicated(audit[c('metric','offset')]))
+    stop('Missing or duplicate reconstruction-ensemble results')
+  write_csv(summary,file.path(out,'holocene_ensemble_coefficients.csv'))
+  write_csv(audit,file.path(out,'holocene_ensemble_offset_audit.csv'))
+  write_csv(covariance,file.path(out,'holocene_ensemble_offset_vcov.csv'))
+  saveRDS(list(responses=ensembles,input_md5=unname(tools::md5sum(input_path))),
+    file.path(out,'holocene_ensemble_components.rds'))
+  notes=c('Holocene reconstruction-ensemble averaging; existing explanatory GLS fits are unchanged.',
+    paste(length(offsets),'offsets, equally weighted; 50,000 joint coefficient samples per offset and response.'),
+    'Component distribution: multivariate normal centered on fitted coefficients, with the full fitted fixed-effect vcov.',
+    'Point estimates are exact means of offset coefficients. Bounds are 2.5 and 97.5 percentiles of the equal mixture.',
+    'Intervals are reconstruction-ensemble uncertainty, not conventional confidence intervals. No pooled p-values.',
+    'No independence assumption for offsets and no division of uncertainty by sqrt(number of offsets).',
+    'Bacon chronology uncertainty is not propagated: transition responses remain their existing chronology-draw medians.',
+    'Transition support and temporal coverage differ among offsets; phase-key comparisons align site/lake/time_index with offset 0.',
+    'An aligned phase key identifies shifted alternative intervals, not identical ages or independent observations.',
+    'All configured fits are required; failed fits or invalid fixed-effect covariance stop the ensemble rather than changing weights.',
+    'MA1 boundary fits and direction-corrected offset 800 remain included at the same weight and are flagged in the audit.',
+    'Sign consistency is the largest positive/negative/zero coefficient count divided by the number of offsets; it is not a probability or significance test.',
+    if(width==1000L) 'Offset 800: direction correction is sensitive to climate-vector rotation around 3,800 BP; the shared slope and site weights amplify the difference.',
+    paste('Input MD5:',unname(tools::md5sum(input_path))),
+    paste('Seeds by response:',paste(map_int(ensembles,~.x$settings$seed),collapse=', ')))
+  writeLines(c(notes,'','Ensemble coefficients:',capture.output(print(as.data.frame(summary))),
+    'Offset support, covariance and convergence audit:',capture.output(print(as.data.frame(audit)))),
+    file.path(out,'holocene_ensemble_results.txt'))
+  if(render_figures) {
+    dir.create(here('plot/test_figures'),recursive=TRUE,showWarnings=FALSE)
+    ggsave(here('plot/test_figures',paste0('fig_tracking_predictor_ensemble_coefficients',suffix,'.pdf')),
+      tracking_reconstruction_ensemble_plot(summary),width=17,height=6.5,device=cairo_pdf,bg='white')
+  }
+  invisible(summary)
+}
+ensembles=list()
+if('--ensemble-only' %in% args) {
+  stored=readRDS(file.path(out,'model_fits.rds'))
+  if(stored$width!=width || stored$input_md5!=unname(tools::md5sum(input_path)))
+    stop('Stored fits do not match the configured width and current canonical input')
+  for(i in seq_along(metrics)) {
+    metric=metrics[i]
+    ensembles[[metric]]=tracking_reconstruction_ensemble(
+      stored$fits[paste(metric,offsets,sep='_')],offsets,width,seed=20261011L+i-1L)
+    ensembles[[metric]]$draws=NULL
+  }
+  export_ensembles(ensembles)
+  cat('Reconstruction ensemble completed from unchanged stored fits:',out,'\n')
+  quit(save='no',status=0)
+}
 elevation_env=new.env(parent=emptyenv())
 load(here('data/MORA_plots.rda'),envir=elevation_env)
 elevations=tracking_modern_elevations(elevation_env$plot_info,
@@ -78,6 +134,12 @@ for(metric in metrics) {
           capture.output(VarCorr(sensitivity$captured$fit))), '')
     }
   }
+  # Integrate this response's ten reconstructions immediately after its Holocene
+  # fits. The sampler restores RNG state and never changes a fit or its data.
+  ensembles[[metric]]=tracking_reconstruction_ensemble(
+    fits[paste(metric,offsets,sep='_')],offsets,width,
+    seed=20261011L+match(metric,metrics)-1L)
+  ensembles[[metric]]$draws=NULL
   for(type in c('Anthropocene_basic','Anthropocene_extended')) {
     cat('Anthropocene predictors:',metric,'|',type,'\n')
     fits[[paste(metric,type,sep='_')]]=run_fit(metric,'Anthropocene',NA_real_,type)
@@ -99,8 +161,8 @@ if(nrow(coefficients)!=length(metrics)*(length(offsets)*4L+3L+5L) ||
    anyDuplicated(performance[c('metric','era','offset','model_type')]) ||
    nrow(lake_sensitivity)!=length(metrics)) stop('Missing or duplicate predictor model results')
 
-out=here('output/exploratory',paste0('tracking_predictor_models',suffix))
 dir.create(out,recursive=TRUE,showWarnings=FALSE)
+export_ensembles(ensembles)
 tables=list(model_coefficients=coefficients,model_performance=performance,
   lake_random_intercept_sensitivity=lake_sensitivity,transition_predictions=predictions,
   holocene_prediction_timeseries=holocene_predictions,model_exclusions=all_exclusions,

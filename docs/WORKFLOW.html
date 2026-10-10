@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: efc57cf83bdb89ca65a753aaa9ba967e -->
+<!-- paleoaces-source-md5: 78eade928c4e6ff9054b895532f1d238 -->
 
 <html>
 
@@ -1820,10 +1820,11 @@ plus corrected-contrast PDF; no refitting</td>
 <td>Separate within-era predictor models</td>
 <td>Combined transition input, native modern elevation sources and
 frozen CC/S catalog</td>
-<td>Three lag responses: ten Holocene MA1 GLS offsets, offset-0 random
-lake intercept sensitivities, modern site-plus-burned and
-elevation/climate-extended independent GLS; coefficients, supported rate
-predictions, descriptive R², residual/spatial checks, six diagnostic
+<td>Three lag responses: ten Holocene MA1 GLS offsets, equal-weight
+reconstruction-ensemble coefficients and support/convergence audit,
+offset-0 random lake intercept sensitivities, modern site-plus-burned
+and elevation/climate-extended independent GLS; supported rate
+predictions, descriptive R², residual/spatial checks, seven diagnostic
 PDFs and full TXT</td>
 </tr>
 <tr class="even">
@@ -2406,16 +2407,28 @@ joins preserve the 607 paired identities; undefined pace correction
 excludes only that response. The main figures and earlier era models are
 not rerun by this stage.</p>
 <pre class="sh"><code>Rscript R/stages/10c_tracking_predictor_models.R
+# Reproduce only the ensemble from matching stored fits:
+Rscript R/stages/10c_tracking_predictor_models.R --ensemble-only
 Rscript R/tests/test_tracking_predictor_models.R</code></pre>
 <p>Results reside in
 <code>output/exploratory/tracking_predictor_models/</code>, with one
 coefficient CSV, performance CSV and full results TXT for all
-specifications. The local fit bundle supports independent checks. Six
-PDFs show offset coefficients alongside R², combined offset-0/modern
-coefficients, supported temporal predictions with CC/S backgrounds,
-descriptive R², normalized residuals and modern residual maps. Spatial
-Moran checks retain the initially independent modern specification and
-identify remaining spatial pattern for later review.</p>
+specifications. The local fit bundle supports independent checks. Seven
+PDFs show offset coefficients alongside R², reconstruction-ensemble
+coefficients, combined offset-0/modern coefficients, supported temporal
+predictions with CC/S backgrounds, descriptive R², normalized residuals
+and modern residual maps. Spatial Moran checks retain the initially
+independent modern specification and identify remaining spatial pattern
+for later review.</p>
+<p>Immediately after each response’s Holocene fits, an equal-weight
+mixture uses 50,000 joint multivariate-normal coefficient samples per
+offset and the full fitted covariance matrices. The point estimate is
+the exact offset mean; 2.5–97.5% bounds are reconstruction-ensemble
+uncertainty, not conventional confidence intervals. Bacon chronology
+uncertainty is not propagated and there is no √10 precision gain or
+pooled p-value. Separate summary, full covariance and
+support/convergence-audit tables retain all ten offsets, including
+direction-corrected offset 800 and flagged MA1 boundaries.</p>
 <p>A 100-year prediction date repeats its supported transition’s fitted
 rate on <code>[age_lo, age_hi)</code>; no gaps are filled and offsets
 are never averaged for fits or trajectories. R² means unweighted

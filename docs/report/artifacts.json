@@ -695,6 +695,16 @@
       "status": "exploratory"
     },
     {
+      "id": "tracking_predictor_ensemble_coefficients",
+      "section": "predictor_ensemble",
+      "pdf": "plot/test_figures/fig_tracking_predictor_ensemble_coefficients.pdf",
+      "pages": [1],
+      "producer": "R/stages/10c_tracking_predictor_models.R",
+      "purpose": "Holocene reconstruction-ensemble coefficients",
+      "interpretation": "Exact equal-weight means of coefficients from all ten unchanged Holocene MA1 GLS fits. Bars are 2.5–97.5% reconstruction-ensemble uncertainty from an equal mixture of joint multivariate-normal coefficient distributions using each fit's full fixed-effect covariance. Predictor panels have separate scales. Offsets are dependent reconstructions; uncertainty is not divided by sqrt(10), p-values are not pooled and Bacon chronology uncertainty is not propagated. Offset 800 and flagged correlation-boundary fits remain included.",
+      "status": "reconstruction-ensemble sensitivity; conditional coefficient uncertainty"
+    },
+    {
       "id": "tracking_predictor_era_coefficients_offset_0",
       "section": "predictor_era",
       "pdf": "plot/test_figures/fig_tracking_predictor_era_coefficients_offset_0.pdf",
@@ -1082,6 +1092,18 @@
       "source": "output/exploratory/tracking_predictor_models/model_performance.csv",
       "producer": "R/stages/10c_tracking_predictor_models.R"
     },
+    "predictor_holocene_ensemble_coefficients": {
+      "source": "output/exploratory/tracking_predictor_models/holocene_ensemble_coefficients.csv",
+      "producer": "R/stages/10c_tracking_predictor_models.R"
+    },
+    "predictor_holocene_ensemble_offset_audit": {
+      "source": "output/exploratory/tracking_predictor_models/holocene_ensemble_offset_audit.csv",
+      "producer": "R/stages/10c_tracking_predictor_models.R"
+    },
+    "predictor_holocene_ensemble_offset_vcov": {
+      "source": "output/exploratory/tracking_predictor_models/holocene_ensemble_offset_vcov.csv",
+      "producer": "R/stages/10c_tracking_predictor_models.R"
+    },
     "predictor_lake_random_intercept_sensitivity": {
       "source": "output/exploratory/tracking_predictor_models/lake_random_intercept_sensitivity.csv",
       "producer": "R/stages/10c_tracking_predictor_models.R"
@@ -1193,6 +1215,13 @@
       "asset_name": "predictor_model_results.txt",
       "link_label": "Complete era-specific predictor results, lake sensitivity and spatial diagnostics",
       "status": "exploratory predictor GLS and LME sensitivity results"
+    },
+    "predictor_ensemble_results": {
+      "source": "output/exploratory/tracking_predictor_models/holocene_ensemble_results.txt",
+      "producer": "R/stages/10c_tracking_predictor_models.R",
+      "asset_name": "predictor_ensemble_results.txt",
+      "link_label": "Reconstruction-ensemble method, coefficients and offset audit",
+      "status": "bin-placement ensemble; no Bacon chronology propagation"
     }
   },
   "reference_bundles": {

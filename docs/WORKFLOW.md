@@ -136,7 +136,7 @@ flowchart TD
 | 10g | `R/stages/10_tracking_era_models.R` | Maintained provisional offset GLS exploration | Combined transition input only | Observed/corrected lag rates, turnover and raw climate rate, each with ten offsets × AR1/MA1/Independent; coefficient, within-park contrast, MA1 group-mean and paired AIC comparison CSVs, one full results TXT, MA1-only group-mean/coefficient/contrast/residual PDFs and three-candidate within-offset ΔAIC boxplots when rendering; all five requested responses run by default |
 | 10g-a | `R/stages/10a_tracking_lake_sensitivity.R` | Maintained offset-0 lake sensitivity | Combined transition input only | Lag rate, turnover and raw climate rate, each with four lakes × AR1/MA1; each lake versus its park's modern pairs; 16 coefficient rows, eight contrasts, one results TXT and two PDFs; MA1-only figures show eight coefficients and four contrasts; near-boundary fits retained and flagged |
 | 10g-b | `R/stages/10b_tracking_manuscript_figure.R` | Manuscript Figure 4 and separate corrected contrasts; offset 0 only | Combined transition input and stage-10 MA1 group means/contrasts | Three observed contrast categories above two era scatter panels; observed marginal densities and model mean intervals; primary PDF/PNG plus corrected-contrast PDF; no refitting |
-| 10g-c | `R/stages/10c_tracking_predictor_models.R` | Separate within-era predictor models | Combined transition input, native modern elevation sources and frozen CC/S catalog | Three lag responses: ten Holocene MA1 GLS offsets, offset-0 random lake intercept sensitivities, modern site-plus-burned and elevation/climate-extended independent GLS; coefficients, supported rate predictions, descriptive R², residual/spatial checks, six diagnostic PDFs and full TXT |
+| 10g-c | `R/stages/10c_tracking_predictor_models.R` | Separate within-era predictor models | Combined transition input, native modern elevation sources and frozen CC/S catalog | Three lag responses: ten Holocene MA1 GLS offsets, equal-weight reconstruction-ensemble coefficients and support/convergence audit, offset-0 random lake intercept sensitivities, modern site-plus-burned and elevation/climate-extended independent GLS; supported rate predictions, descriptive R², residual/spatial checks, seven diagnostic PDFs and full TXT |
 | 10h | `R/stages/05a_cca_figure.R` | Selected CCA trajectory data and main render | Model, positioned Holocene samples, stage-13 frozen CC/S grid | `cca_trajectory_era_centroids.csv` and, when rendering, main-paper `fig_cca_trajectories.pdf/.png` |
 | 10i | `R/stages/09a_tracking_example_and_visualizations.R` | Tracking example and visualizations | Canonical lake realizations, lake-by-offset responses/predictors, reporting grid, aligned predictor medians reconstructed from source transitions, modern paired-plot model input and stage-13 frozen climate-era catalog/subphases | Three diagnostic PDFs: worked geometry and two tracking/climate/fire grids with four lake columns, established regional CC/S bands and CC1 subdivisions, complete-offset medians and an Anthropocene MORA/NOCA boxplot column |
 | 10j | `R/stages/12a_fire_event_detection_worked_example.R` | Accepted-event detection for all four cores | All-`tapas` source series with local thresholds, candidate/count-screen flags, and accepted events | `fire_event_detection_lake_audit.csv` and, when rendering, a PDF with all four residual/threshold plots on one page, alongside settings and the software comparison |
@@ -361,15 +361,26 @@ that response. The main figures and earlier era models are not rerun by this sta
 
 ```sh
 Rscript R/stages/10c_tracking_predictor_models.R
+# Reproduce only the ensemble from matching stored fits:
+Rscript R/stages/10c_tracking_predictor_models.R --ensemble-only
 Rscript R/tests/test_tracking_predictor_models.R
 ```
 
 Results reside in `output/exploratory/tracking_predictor_models/`, with one
 coefficient CSV, performance CSV and full results TXT for all specifications.
-The local fit bundle supports independent checks. Six PDFs show offset coefficients alongside R², combined offset-0/modern coefficients, supported temporal
+The local fit bundle supports independent checks. Seven PDFs show offset coefficients alongside R², reconstruction-ensemble coefficients, combined offset-0/modern coefficients, supported temporal
 predictions with CC/S backgrounds, descriptive R², normalized residuals and
 modern residual maps. Spatial Moran checks retain the initially independent
 modern specification and identify remaining spatial pattern for later review.
+
+Immediately after each response's Holocene fits, an equal-weight mixture uses
+50,000 joint multivariate-normal coefficient samples per offset and the full
+fitted covariance matrices. The point estimate is the exact offset mean;
+2.5–97.5% bounds are reconstruction-ensemble uncertainty, not conventional
+confidence intervals. Bacon chronology uncertainty is not propagated and
+there is no √10 precision gain or pooled p-value. Separate summary, full
+covariance and support/convergence-audit tables retain all ten offsets,
+including direction-corrected offset 800 and flagged MA1 boundaries.
 
 A 100-year prediction date repeats its supported transition's fitted rate on
 `[age_lo, age_hi)`; no gaps are filled and offsets are never averaged for fits

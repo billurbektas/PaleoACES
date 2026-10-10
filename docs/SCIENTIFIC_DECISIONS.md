@@ -731,7 +731,7 @@ direction-corrected lag-change rates. Each Holocene offset uses
 park residual variances. Responses retain their original CCA distance per
 century scales, independently filtered mathematical validity and existing
 chronology-draw medians. No interaction, transformation, draw-support cutoff
-or aggregation across offsets is added. MORA lakes remain separate vegetation
+or aggregation of observations across offsets is added. MORA lakes remain separate vegetation
 responses to the same regional fire exposure; adjacent transitions share
 endpoints and offsets are sensitivity realizations.
 
@@ -779,6 +779,39 @@ The [workflow](WORKFLOW.md#within-era-predictor-models),
 [Analysis Review](ANALYSIS_REVIEW.md#within-era-climate-fire-and-elevation-predictor-models)
 identify maintained code, coefficients across offsets, joint offset-0/modern
 figures, residual diagnostics and full results.
+
+### Holocene reconstruction-ensemble coefficients (2026-10-11)
+
+The author requested equal-weight integration of the existing explanatory GLS
+results across all ten 1,000-year bin offsets, after their separate fits.
+The fixed/covariance specifications, response medians, predictor calculations
+and valid-transition selection remain unchanged. For each response, every
+offset contributes 50,000 samples from a joint multivariate-normal approximation
+using its fitted coefficients and full fixed-effect variance–covariance matrix.
+The exact mean of offset coefficients is the ensemble point estimate; 2.5 and
+97.5 percentiles of the equally weighted mixture define
+**reconstruction-ensemble uncertainty**. These are not conventional confidence
+intervals or a newly fitted common-effect model. There are no pooled p-values,
+independent-offset assumptions, AIC/R² weights or √10 uncertainty reduction.
+
+Only bin placement is integrated as reconstruction uncertainty. Existing
+conditional GLS coefficient uncertainty remains in each component; Bacon
+chronology uncertainty is not propagated by fitting the chronology draws.
+The offset range and sign counts remain visible. Sign consistency is a
+descriptive proportion of offsets, not a probability that the effect exists.
+Temporal coverage and sample support vary among offsets; equal weights express
+equal plausibility of origins rather than equivalent coverage or replicates.
+
+Every configured offset must have a converged, compatible GLS fit and a finite
+positive-definite fixed-effect covariance. Missing or failed fits stop ensemble
+generation rather than silently changing weights. Residual covariance status,
+MA1 boundary estimates, lake/park support and differences in phase-aligned
+transition coverage are audited separately. The two pace-corrected boundary
+fits and the unusual direction-corrected offset 800 remain equally weighted.
+The latter reflects climate-direction rotation around 3,800 BP and opposing
+park relationships under a shared slope; its negative descriptive R² remains
+visible. The compact coefficient figure and results table supplement rather
+than replace the individual-offset sensitivity diagnostics.
 
 ## Remaining scientific questions
 

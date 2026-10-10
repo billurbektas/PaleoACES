@@ -23,6 +23,98 @@ stopifnot(stored$width==1000L,stored$input_md5==unname(tools::md5sum(here('outpu
   !anyDuplicated(grid[c('metric','offset','site','lake','t')]))
 close=function(a,b,tol=1e-7) stopifnot(length(a)==length(b),
   all(is.finite(a)),all(is.finite(b)),max(abs(a-b))<tol)
+# Trace every offset-specific predictor back to the original sources, without
+# calling the climate-binning or fire-frequency calculation helpers.
+source(here('R/helpers/config.R'),local=TRUE)
+reference=readRDS(here('output/cca_calibration_reference.rds'))
+variables=c('MSpT','MWT','SP','WP')
+calibration_sd=vapply(as.data.frame(reference$legacy_climate)[variables],sd,numeric(1))
+close(calibration_sd,reference$climate_scaling$sd[
+  match(variables,reference$climate_scaling$variable)],tol=1e-12)
+ponds=read_csv(here('output/chelsa_paleo_ponds.csv'),show_col_types=FALSE)
+monthly=ponds |> transmute(site,lake,age=1950-slice*100,variable,month,
+  value=if(PALEO_USE_BIAS_CORRECTED) value_corrected else value_raw)
+stopifnot(!anyDuplicated(monthly[c('site','lake','age','variable','month')]),
+  all(is.finite(monthly$value)))
+# Mean-extrema temperatures use six values (three months x tasmin/tasmax).
+# Seasonal precipitation is the sum of three monthly values.
+native=monthly |> group_by(site,lake,age) |> summarize(
+  MSpT=mean(value[variable %in% c('tasmin','tasmax') & month %in% 3:5]),
+  MWT=mean(value[variable %in% c('tasmin','tasmax') & month %in% c(12,1,2)]),
+  SP=sum(value[variable=='pr' & month %in% 6:8]),
+  WP=sum(value[variable=='pr' & month %in% c(12,1,2)]),
+  complete=sum(variable %in% c('tasmin','tasmax') & month %in% 3:5)==6L &
+    sum(variable %in% c('tasmin','tasmax') & month %in% c(12,1,2))==6L &
+    sum(variable=='pr' & month %in% 6:8)==3L &
+    sum(variable=='pr' & month %in% c(12,1,2))==3L,.groups='drop')
+stopifnot(all(native$complete))
+events=read_csv(here('output/holocene_fire_source_events.csv'),show_col_types=FALSE)
+continuous=read_csv(here('output/holocene_fire_source_series.csv'),show_col_types=FALSE)
+fire_reference=read_csv(here('output/holocene_era_fire_core_frequency.csv'),show_col_types=FALSE)
+cores=continuous |> group_by(site,lake) |> summarize(
+  younger=min(age_cal_yr_BP),older=max(age_cal_yr_BP),.groups='drop') |>
+  mutate(denominator=NA_real_)
+stopifnot(all(fire_reference$window_years==1000L))
+for(i in seq_len(nrow(cores))) {
+  core=cores[i,]
+  ages=events$age_cal_yr_BP[events$site==core$site & events$lake==core$lake]
+  centers=seq(ceiling((core$younger+500)/100)*100,
+    floor((core$older-500)/100)*100,by=100)
+  counts=vapply(centers,function(t) sum(ages>=t-500 & ages<t+500),integer(1))
+  recorded=fire_reference |> filter(site==core$site,lake==core$lake) |> arrange(cal_bp)
+  close(recorded$cal_bp,centers);close(recorded$accepted_event_count,counts)
+  close(recorded$core_max_frequency,rep(max(counts),length(counts)))
+  close(recorded$normalized_frequency,counts/max(counts))
+  cores$denominator[i]=max(counts) # events per 1,000 years in full reference windows
+}
+by_offset=read_csv(here('output/cca_tracking_holocene_lake_by_offset.csv'),show_col_types=FALSE)
+audit=by_offset |> select(all_of(tracking_transition_keys()))
+for(field in c(variables,paste0(variables,'_2'),'standardized_climate_change_rate','fire_activity'))
+  audit[[field]]=rep(NA_real_,nrow(audit))
+audit$fire_coverage_valid=rep(NA,nrow(audit))
+for(i in seq_len(nrow(audit))) {
+  row=audit[i,]
+  stopifnot(row$age_hi-row$age_lo==1000L,
+    (row$age_hi-row$offset-500) %% 1000==0,
+    (row$age_lo-row$offset-500) %% 1000==0)
+  endpoints=lapply(c(row$age_hi,row$age_lo),function(mid) {
+    slices=native |> filter(site==row$site,lake==row$lake,age>=mid-500,age<mid+500)
+    stopifnot(nrow(slices)==10L,all(diff(sort(slices$age))==100))
+    vapply(slices[variables],mean,numeric(1))
+  })
+  for(j in seq_along(variables)) {
+    audit[[variables[j]]][i]=endpoints[[1]][j]
+    audit[[paste0(variables[j],'_2')]][i]=endpoints[[2]][j]
+  }
+  audit$standardized_climate_change_rate[i]=
+    sqrt(sum(((endpoints[[2]]-endpoints[[1]])/calibration_sd)^2))*100/1000
+  regional=cores[cores$site==row$site,]
+  covered=regional$younger<=row$age_lo & regional$older>=row$age_hi
+  audit$fire_coverage_valid[i]=sum(covered)>=if(row$site=='MORA') 2L else 1L
+  activity=vapply(which(covered),function(j) {
+    ages=events$age_cal_yr_BP[events$site==row$site & events$lake==regional$lake[j]]
+    sum(ages>=row$age_lo & ages<row$age_hi)/regional$denominator[j]
+  },numeric(1))
+  audit$fire_activity[i]=if(audit$fire_coverage_valid[i]) mean(activity) else NA_real_
+}
+compare_predictors=function(data,fields) {
+  expected=left_join(data |> select(all_of(tracking_transition_keys())),audit,
+    by=tracking_transition_keys(),relationship='many-to-one')
+  stopifnot(nrow(expected)==nrow(data),!anyNA(expected$standardized_climate_change_rate))
+  for(field in fields) {
+    stopifnot(identical(is.na(data[[field]]),is.na(expected[[field]])))
+    valid=!is.na(expected[[field]])
+    if(is.logical(expected[[field]])) stopifnot(all(data[[field]][valid]==expected[[field]][valid]))
+    else if(any(valid)) close(data[[field]][valid],expected[[field]][valid],tol=1e-10)
+  }
+}
+predictors=c('standardized_climate_change_rate','fire_activity','fire_coverage_valid')
+compare_predictors(by_offset,predictors)
+realizations=read_csv(here('output/cca_tracking_holocene_lake_realizations.csv'),show_col_types=FALSE)
+compare_predictors(realizations,c(variables,paste0(variables,'_2'),predictors))
+compare_predictors(x[x$era=='Holocene',],predictors)
+cat('Source alignment passed:',nrow(audit),'lake/offset transitions; all monthly climate endpoints,',
+  'accepted-event counts, full-window normalization references and combined-input predictors.\n')
 same_model=function(table,metric,era,offset,type) {
   table |> filter(.data$metric==.env$metric,.data$era==.env$era,.data$model_type==.env$type,
     if(is.na(.env$offset)) is.na(.data$offset) else .data$offset==.env$offset)
@@ -68,6 +160,10 @@ for(entry in stored$fits) {
   close(sum(p$normalized_residual^2),as.numeric(crossprod(residual,invV %*% residual)),tol=2e-5)
   close(p$prediction_se,sqrt(rowSums((X %*% expected_vcov)*X)),tol=2e-6)
   if(era=='Holocene') {
+    compare_predictors(d,predictors)
+    close(d$climate_rate,d$standardized_climate_change_rate,tol=1e-12)
+    close(p$climate_rate,d$climate_rate,tol=1e-12)
+    close(p$fire_activity,d$fire_activity,tol=1e-12)
     g=grid |> filter(.data$metric==.env$metric,.data$offset==.env$offset)
     stopifnot(nrow(g)==nrow(d)*10L,all(g$t>=g$age_lo),all(g$t<g$age_hi))
     # Half-open boundaries: one present source interval per displayed date.
@@ -88,6 +184,104 @@ for(metric in tracking_predictor_responses()) {
   stopifnot(row$random_intercept_sd<1e-5,
     row$covariance_status==tracking_covariance_status(s$captured$fit))
 }
+# Reconstruct the equal mixture independently from the unchanged offset fits.
+ensemble_record=readRDS(file.path(root,'holocene_ensemble_components.rds'))
+ensemble_table=read_csv(file.path(root,'holocene_ensemble_coefficients.csv'),show_col_types=FALSE)
+ensemble_audit=read_csv(file.path(root,'holocene_ensemble_offset_audit.csv'),show_col_types=FALSE)
+ensemble_vcov=read_csv(file.path(root,'holocene_ensemble_offset_vcov.csv'),show_col_types=FALSE)
+stopifnot(ensemble_record$input_md5==stored$input_md5,nrow(ensemble_table)==12L,
+  nrow(ensemble_audit)==30L,nrow(ensemble_vcov)==480L,
+  !anyDuplicated(ensemble_table[c('metric','term')]),
+  !anyDuplicated(ensemble_audit[c('metric','offset')]),
+  !anyDuplicated(ensemble_vcov[c('metric','offset','term_row','term_col')]),
+  all(ensemble_table$interval_type=='reconstruction-ensemble uncertainty'),
+  !any(grepl('p_value|conf_low|conf_high',names(ensemble_table))),
+  all(ensemble_audit$included_in_ensemble),all(ensemble_audit$converged),
+  all(ensemble_audit$fixed_vcov_positive_definite),all(ensemble_audit$offset_weight==.1),
+  sum(ensemble_audit$near_correlation_boundary)==2L,
+  sum(ensemble_audit$offset800_direction_review)==1L)
+for(metric in tracking_predictor_responses()) {
+  entries=stored$fits[paste(metric,seq(0,900,100),sep='_')]
+  record=ensemble_record$responses[[metric]]; settings=record$settings
+  set.seed(73);before=.Random.seed;kind=RNGkind()
+  simulated=tracking_reconstruction_ensemble(entries,seq(0,900,100),
+    samples_per_offset=settings$samples_per_offset,seed=settings$seed)
+  stopifnot(identical(.Random.seed,before),identical(RNGkind(),kind),
+    settings$samples_per_offset==50000L,settings$total_samples==500000L,
+    !settings$chronology_uncertainty_propagated,
+    all(vapply(simulated$draws,nrow,integer(1))==50000L))
+  terms=names(coef(entries[[1]]$fit))
+  beta=sapply(entries,function(e) coef(e$fit)[terms])
+  average=rowMeans(beta); centered=beta-average
+  within=Reduce(`+`,lapply(entries,function(e) vcov(e$fit)[terms,terms]))/10
+  between=tcrossprod(centered)/10
+  close(as.numeric(record$within_covariance),as.numeric(within),tol=1e-12)
+  close(as.numeric(record$between_covariance),as.numeric(between),tol=1e-12)
+  close(as.numeric(record$ensemble_covariance),as.numeric(within+between),tol=1e-12)
+  table=ensemble_table |> filter(.data$metric==.env$metric)
+  table=table[match(terms,table$term),]
+  close(table$ensemble_estimate,average,tol=1e-12)
+  close(table$offset_estimate_min,apply(beta,1,min),tol=1e-12)
+  close(table$offset_estimate_max,apply(beta,1,max),tol=1e-12)
+  close(table$n_positive_offsets,rowSums(beta>0));close(table$n_negative_offsets,rowSums(beta<0))
+  close(table$n_zero_offsets,rowSums(beta==0))
+  close(table$sign_consistency,pmax(rowSums(beta>0),rowSums(beta<0),rowSums(beta==0))/10)
+  joint=do.call(rbind,simulated$draws)
+  bounds=apply(joint,2,quantile,probs=c(.025,.975),names=FALSE)
+  close(table$ensemble_lower,bounds[1,],tol=1e-12)
+  close(table$ensemble_upper,bounds[2,],tol=1e-12)
+  scale=outer(sqrt(diag(within+between)),sqrt(diag(within+between)))
+  stopifnot(max(abs(cov(joint)-(within+between))/scale)<.025)
+  for(i in seq_along(entries)) {
+    e=entries[[i]]; V=vcov(e$fit)[terms,terms]
+    close(as.numeric(record$components[[i]]$vcov),as.numeric(V),tol=1e-12)
+    # Joint sampling must preserve off-diagonal coefficient covariances.
+    scale=outer(sqrt(diag(V)),sqrt(diag(V)))
+    stopifnot(max(abs(cov(simulated$draws[[i]])-V)/scale)<.04)
+    rows=ensemble_vcov |> filter(.data$metric==.env$metric,offset==e$performance$offset)
+    close(rows$covariance,mapply(function(a,b) V[a,b],rows$term_row,rows$term_col),tol=1e-12)
+    audit_row=ensemble_audit |> filter(.data$metric==.env$metric,offset==e$performance$offset)
+    baseline=entries[[1]]$data
+    keys=function(d) paste(d$site,d$lake,d$time_index)
+    stopifnot(audit_row$n==nrow(e$data),audit_row$n_excluded==e$performance$n_excluded,
+      audit_row$n_shared_phases_offset0==length(intersect(keys(e$data),keys(baseline))),
+      audit_row$n_phases_only_in_offset==length(setdiff(keys(e$data),keys(baseline))),
+      audit_row$n_phases_only_in_offset0==length(setdiff(keys(baseline),keys(e$data))))
+  }
+  # Exact normal-mixture quantiles provide an independent Monte Carlo check.
+  se=sqrt(sapply(entries,function(e) diag(vcov(e$fit)[terms,terms])))
+  for(j in seq_along(terms)) {
+    cdf=function(z) mean(pnorm(z,mean=beta[j,],sd=se[j,]))
+    interval=range(beta[j,]+rep(c(-10,10),each=10)*rep(se[j,],2))
+    exact=vapply(c(.025,.975),function(p)
+      uniroot(function(z) cdf(z)-p,interval=interval,tol=1e-12)$root,numeric(1))
+    close(c(table$ensemble_lower[j],table$ensemble_upper[j]),exact,
+      tol=.025*sqrt((within+between)[j,j]))
+  }
+}
+# Identical reconstructions retain the original coefficient uncertainty: no
+# artificial sqrt(10) precision gain. Missing/failed fits cannot change weights.
+identical_entries=rep(list(stored$fits[['lag_rate_per_century_0']]),10)
+for(i in seq_along(identical_entries)) {
+  identical_entries[[i]]$performance$offset=(i-1L)*100
+  identical_entries[[i]]$data$offset=(i-1L)*100
+}
+identical_ensemble=tracking_reconstruction_ensemble(identical_entries,seq(0,900,100),samples_per_offset=5000L)
+V=vcov(identical_entries[[1]]$fit)
+close(as.numeric(identical_ensemble$ensemble_covariance),as.numeric(V),tol=1e-12)
+stopifnot(max(abs((identical_ensemble$summary$ensemble_upper-
+  identical_ensemble$summary$ensemble_lower)/sqrt(diag(V))-2*qnorm(.975)))<.08)
+before=.Random.seed;rm('.Random.seed',envir=.GlobalEnv)
+invisible(tracking_reconstruction_ensemble(identical_entries,seq(0,900,100),samples_per_offset=2L))
+stopifnot(!exists('.Random.seed',envir=.GlobalEnv,inherits=FALSE))
+assign('.Random.seed',before,envir=.GlobalEnv)
+fail_ensemble=function(entries) stopifnot(inherits(tryCatch(
+  tracking_reconstruction_ensemble(entries,seq(0,900,100),samples_per_offset=2L),error=identity),'error'))
+fail_ensemble(identical_entries[-1])
+failed=identical_entries;failed[[1]]$performance$converged=FALSE;fail_ensemble(failed)
+bad_covariance=identical_entries;bad_covariance[[1]]$fit$varBeta[1,1]=-1;fail_ensemble(bad_covariance)
+cat('Reconstruction ensemble passed: exact equal weights, full joint covariance, mixture quantiles,',
+  'unshrunk uncertainty, complete fit/support audits, retained offset 800 and unchanged RNG.\n')
 stopifnot(grepl('Non-positive',sens$covariance_status[sens$metric=='lag_rate_per_century']),
   !is.na(sens$variance_interval_error[sens$metric=='lag_rate_per_century']))
 # Missing fire coverage and covered zero events are distinct, without changing
@@ -125,6 +319,6 @@ close(check$checks$moran_I,recorded$moran_I);close(check$checks$p_permutation_tw
 stopifnot(all(spatial$n_permutations==999L),all(spatial$p_permutation_two_sided>=.001),
   all(spatial$p_permutation_two_sided<=1),all(spatial$crs=='EPSG:32610'))
 if(isTRUE(getOption('paleoaces.render_figures',TRUE)))
-for(stem in c('offset_coefficients','era_coefficients_offset_0','holocene_predictions','R2','residuals','spatial_residuals'))
+for(stem in c('offset_coefficients','ensemble_coefficients','era_coefficients_offset_0','holocene_predictions','R2','residuals','spatial_residuals'))
   stopifnot(file.exists(here('plot/test_figures',paste0('fig_tracking_predictor_',stem,'.pdf'))))
 cat('Predictor models passed: 36 GLS fits, three lake sensitivities, independent GLS algebra, exact support, elevation joins, temporal predictions, R2 and spatial diagnostics.\n')

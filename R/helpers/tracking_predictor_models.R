@@ -149,6 +149,141 @@ tracking_lake_intercept_sensitivity = function(gls_fit,d,metric) {
     fit_error=captured$error) |> list(summary=_,captured=captured)
 }
 
+# Equal mixture of reconstruction-specific coefficient distributions. This is
+# bin-placement sensitivity, conditional on each estimated GLS covariance;
+# chronology draws are not refitted and offsets are never independent replicates.
+tracking_reconstruction_ensemble = function(entries,offsets,bin_width_years=1000L,
+    samples_per_offset=50000L,seed=20261011L) {
+  width=validate_tracking_width(bin_width_years)
+  if(!identical(as.numeric(offsets),as.numeric(seq(0,width-100,100))) ||
+     length(entries)!=length(offsets) || any(vapply(entries,is.null,logical(1))))
+    stop('Reconstruction ensemble requires every configured offset fit')
+  if(length(samples_per_offset)!=1L || !is.finite(samples_per_offset) ||
+     samples_per_offset<2 || samples_per_offset!=as.integer(samples_per_offset))
+    stop('samples_per_offset must be an integer of at least two')
+  actual=vapply(entries,function(e) e$performance$offset,numeric(1))
+  if(anyDuplicated(actual) || !setequal(actual,offsets))
+    stop('Missing or duplicate reconstruction offset')
+  entries=entries[match(offsets,actual)]
+  metric=unique(vapply(entries,function(e) e$performance$metric,character(1)))
+  if(length(metric)!=1L) stop('Mix one response at a time')
+  terms=names(coef(entries[[1]]$fit)); k=length(terms); n_offsets=length(offsets)
+  if(!setequal(terms,c('(Intercept)','siteNOCA','climate_rate','fire_activity')))
+    stop('Unexpected explanatory GLS coefficients')
+  phase_keys=function(d) paste(d$site,d$lake,d$time_index,sep='|')
+  baseline=phase_keys(entries[[1]]$data)
+  components=vector('list',n_offsets); audits=vector('list',n_offsets)
+  for(i in seq_along(entries)) {
+    e=entries[[i]]; p=e$performance; d=e$data; fit=e$fit
+    beta=coef(fit); V=vcov(fit)
+    if(!inherits(fit,'gls') || nrow(p)!=1L || !isTRUE(p$converged) ||
+       p$era!='Holocene' || p$model_type!='Holocene_MA1' || fit$method!='REML' ||
+       any(d$offset!=offsets[i]) || any(d$climate_dt_years!=width) ||
+       any(d$vegetation_dt_years!=width) || !setequal(names(beta),terms) ||
+       !setequal(rownames(V),terms) || !setequal(colnames(V),terms))
+      stop('Incompatible or unconverged ensemble fit at offset ',offsets[i])
+    beta=beta[terms]; V=V[terms,terms,drop=FALSE]
+    if(any(!is.finite(beta)) || any(!is.finite(V)) ||
+       !isTRUE(all.equal(V,t(V),tolerance=1e-12)) ||
+       inherits(try(chol(V),silent=TRUE),'try-error'))
+      stop('Invalid fixed-effect covariance at offset ',offsets[i])
+    components[[i]]=list(offset=offsets[i],weight=1/n_offsets,beta=beta,vcov=V)
+    current=phase_keys(d)
+    if(anyDuplicated(current)) stop('Duplicate phase-aligned transition identity')
+    sigma_site=fit$sigma*coef(fit$modelStruct$varStruct,unconstrained=FALSE,allCoef=TRUE)
+    park_cor=function(park) {
+      z=d[d$site==park,,drop=FALSE]
+      if(nrow(z)<2L || sd(z$climate_rate)==0 || sd(z$estimate)==0) NA_real_
+      else cor(z$climate_rate,z$estimate)
+    }
+    audits[[i]]=p |> mutate(bin_width_years=width,offset_weight=1/n_offsets,
+      n_shared_phases_offset0=length(intersect(current,baseline)),
+      n_phases_only_in_offset=length(setdiff(current,baseline)),
+      n_phases_only_in_offset0=length(setdiff(baseline,current)),
+      min_draws_present=min(d$n_draws_present),median_draws_present=median(d$n_draws_present),
+      climate_coefficient=unname(beta['climate_rate']),fire_coefficient=unname(beta['fire_activity']),
+      residual_sd_MORA=unname(sigma_site['MORA']),residual_sd_NOCA=unname(sigma_site['NOCA']),
+      climate_response_cor_MORA=park_cor('MORA'),climate_response_cor_NOCA=park_cor('NOCA'),
+      fixed_vcov_positive_definite=TRUE,
+      offset800_direction_review=width==1000L && offsets[i]==800L &&
+        metric=='direction_corrected_lag_rate_per_century',
+      included_in_ensemble=TRUE)
+  }
+  # Preserve the caller's RNG, including its absence; use a recorded generator.
+  had_seed=exists('.Random.seed',envir=.GlobalEnv,inherits=FALSE)
+  if(had_seed) old_seed=get('.Random.seed',envir=.GlobalEnv)
+  old_kind=RNGkind()
+  on.exit({do.call(RNGkind,as.list(old_kind))
+    if(had_seed) assign('.Random.seed',old_seed,envir=.GlobalEnv) else
+      if(exists('.Random.seed',envir=.GlobalEnv,inherits=FALSE)) rm('.Random.seed',envir=.GlobalEnv)})
+  RNGkind('Mersenne-Twister','Inversion','Rejection');set.seed(seed)
+  # BEGIN RECONSTRUCTION ENSEMBLE SAMPLING
+  # Each component retains coef(fit) and the full vcov(fit).
+  draws=lapply(components,function(component) {
+    z=matrix(rnorm(samples_per_offset*k),nrow=samples_per_offset,ncol=k)
+    sweep(z %*% chol(component$vcov),2,component$beta,'+')
+  })
+  mixture=do.call(rbind,draws);colnames(mixture)=terms
+  betas=do.call(rbind,lapply(components,`[[`,'beta'))
+  estimate=colMeans(betas) # exact equal-weight mean, not a Monte Carlo mean
+  within=Reduce(`+`,lapply(components,`[[`,'vcov'))/n_offsets
+  centered=sweep(betas,2,estimate,'-')
+  between=crossprod(centered)/n_offsets
+  bounds=apply(mixture,2,quantile,probs=c(.025,.975),names=FALSE)
+  # END RECONSTRUCTION ENSEMBLE SAMPLING
+  positive=colSums(betas>0);negative=colSums(betas<0);zero=colSums(betas==0)
+  dominant=ifelse(positive>negative & positive>zero,'positive',
+    ifelse(negative>positive & negative>zero,'negative',
+      ifelse(zero>positive & zero>negative,'zero','mixed')))
+  label='reconstruction-ensemble uncertainty'
+  summary=tibble(metric,term=terms,ensemble_estimate=unname(estimate),
+    ensemble_lower=bounds[1,],ensemble_upper=bounds[2,],
+    offset_estimate_min=apply(betas,2,min),offset_estimate_max=apply(betas,2,max),
+    n_positive_offsets=unname(positive),n_negative_offsets=unname(negative),
+    n_zero_offsets=unname(zero),dominant_sign=unname(dominant),
+    sign_consistency=pmax(positive,negative,zero)/n_offsets,n_offsets,
+    interval_type=label)
+  covariance=map_dfr(components,function(component) {
+    expand_grid(term_row=terms,term_col=terms) |> mutate(metric=.env$metric,
+      offset=component$offset,offset_weight=component$weight,
+      covariance=map2_dbl(term_row,term_col,~component$vcov[.x,.y])) |>
+      select(metric,offset,offset_weight,term_row,term_col,covariance)
+  })
+  list(summary=summary,offset_audit=bind_rows(audits),offset_vcov=covariance,
+    components=components,within_covariance=within,between_covariance=between,
+    ensemble_covariance=within+between,
+    settings=list(bin_width_years=width,n_offsets=n_offsets,samples_per_offset=samples_per_offset,
+      total_samples=n_offsets*samples_per_offset,seed=seed,
+      distribution='joint multivariate normal: fitted beta and full vcov',
+      rng_kind=c('Mersenne-Twister','Inversion','Rejection'),interval_type=label,
+      chronology_uncertainty_propagated=FALSE),draws=draws)
+}
+
+tracking_reconstruction_ensemble_plot = function(summary) {
+  labels=tracking_predictor_labels()
+  palette=c(lag_rate_per_century='#43AA9C',pace_corrected_lag_rate_per_century='#DE85F0',
+    direction_corrected_lag_rate_per_century='#8B85F1')
+  data=summary |> filter(term!='(Intercept)') |>
+    mutate(response=factor(unname(labels[metric]),levels=rev(unname(labels))),
+      predictor=factor(term,levels=c('siteNOCA','climate_rate','fire_activity'),
+        labels=c('NOCA versus MORA','Climate-change rate','Fire activity')))
+  ggplot(data,aes(ensemble_estimate,response,color=metric))+
+    geom_vline(xintercept=0,color='grey65',linetype='dashed')+
+    geom_errorbar(aes(xmin=ensemble_lower,xmax=ensemble_upper),
+      orientation='y',width=.15,linewidth=.85)+geom_point(size=3)+
+    facet_wrap(~predictor,scales='free_x',nrow=1)+scale_color_manual(values=palette,guide='none')+
+    labs(title='Holocene reconstruction-ensemble coefficients',
+      subtitle=paste('Equal weights across',unique(summary$n_offsets),
+        'bin offsets; bars: 2.5–97.5% reconstruction-ensemble uncertainty'),
+      x='Ensemble-averaged coefficient (original predictor scales)',y=NULL,
+      caption='Conditional GLS coefficient uncertainty and bin-placement sensitivity; Bacon chronology uncertainty is not propagated.')+
+    theme_bw(base_size=18)+theme(panel.grid.minor=element_blank(),
+      strip.background=element_rect(fill='#f0f2f5',color=NA),strip.text=element_text(size=18,face='bold'),
+      axis.text=element_text(size=16),plot.title=element_text(size=23,face='bold'),
+      plot.subtitle=element_text(size=16),plot.caption=element_text(size=13,hjust=0),
+      plot.margin=margin(12,15,12,12))
+}
+
 tracking_spatial_residual_check = function(d,k=8L,n_permutations=999L,seed=104729L) {
   # Separate graphs by park; symmetric k-nearest-neighbor edges in UTM 10N.
   # Permutations describe remaining spatial pattern, not fitted spatial covariance.

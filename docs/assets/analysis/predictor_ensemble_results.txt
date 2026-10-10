@@ -1,0 +1,318 @@
+Holocene reconstruction-ensemble averaging; existing explanatory GLS fits are unchanged.
+10 offsets, equally weighted; 50,000 joint coefficient samples per offset and response.
+Component distribution: multivariate normal centered on fitted coefficients, with the full fitted fixed-effect vcov.
+Point estimates are exact means of offset coefficients. Bounds are 2.5 and 97.5 percentiles of the equal mixture.
+Intervals are reconstruction-ensemble uncertainty, not conventional confidence intervals. No pooled p-values.
+No independence assumption for offsets and no division of uncertainty by sqrt(number of offsets).
+Bacon chronology uncertainty is not propagated: transition responses remain their existing chronology-draw medians.
+Transition support and temporal coverage differ among offsets; phase-key comparisons align site/lake/time_index with offset 0.
+An aligned phase key identifies shifted alternative intervals, not identical ages or independent observations.
+All configured fits are required; failed fits or invalid fixed-effect covariance stop the ensemble rather than changing weights.
+MA1 boundary fits and direction-corrected offset 800 remain included at the same weight and are flagged in the audit.
+Sign consistency is the largest positive/negative/zero coefficient count divided by the number of offsets; it is not a probability or significance test.
+Offset 800: direction correction is sensitive to climate-vector rotation around 3,800 BP; the shared slope and site weights amplify the difference.
+Input MD5: 2e3fcf5d47d7b2f2303618c69c01a26b
+Seeds by response: 20261011, 20261012, 20261013
+
+Ensemble coefficients:
+                                     metric          term ensemble_estimate
+1                      lag_rate_per_century   (Intercept)      -0.012151278
+2                      lag_rate_per_century      siteNOCA      -0.003967560
+3                      lag_rate_per_century  climate_rate       0.493939277
+4                      lag_rate_per_century fire_activity       0.001099113
+5       pace_corrected_lag_rate_per_century   (Intercept)      -0.001268538
+6       pace_corrected_lag_rate_per_century      siteNOCA       0.002573419
+7       pace_corrected_lag_rate_per_century  climate_rate      -0.074373520
+8       pace_corrected_lag_rate_per_century fire_activity       0.004931879
+9  direction_corrected_lag_rate_per_century   (Intercept)      -0.012151291
+10 direction_corrected_lag_rate_per_century      siteNOCA       0.006257844
+11 direction_corrected_lag_rate_per_century  climate_rate       0.525303684
+12 direction_corrected_lag_rate_per_century fire_activity      -0.001604621
+   ensemble_lower ensemble_upper offset_estimate_min offset_estimate_max
+1    -0.030231486    0.006186236       -0.0160339963       -0.0058913585
+2    -0.015636369    0.008547418       -0.0076976787       -0.0007177562
+3    -1.047088263    2.000733463       -0.5593978105        1.5130897502
+4    -0.035923453    0.050766507       -0.0170471406        0.0351335712
+5    -0.013427683    0.006996211       -0.0099401789        0.0030392924
+6    -0.006152776    0.016287854       -0.0023168677        0.0074837701
+7    -1.150994465    0.600400873       -0.9720159007        0.2972917591
+8    -0.006606660    0.030112447       -0.0005308448        0.0193907786
+9    -0.042368344    0.037851126       -0.0314518422        0.0338439589
+10   -0.011054500    0.023328641        0.0021140914        0.0132430684
+11   -1.984415290    2.077449919       -1.7910674222        1.4965292110
+12   -0.037920489    0.044439244       -0.0220499109        0.0269174682
+   n_positive_offsets n_negative_offsets n_zero_offsets dominant_sign
+1                   0                 10              0      negative
+2                   0                 10              0      negative
+3                   8                  2              0      positive
+4                   6                  4              0      positive
+5                   4                  6              0      negative
+6                   6                  4              0      positive
+7                   6                  4              0      positive
+8                   9                  1              0      positive
+9                   2                  8              0      negative
+10                 10                  0              0      positive
+11                  8                  2              0      positive
+12                  4                  6              0      negative
+   sign_consistency n_offsets                       interval_type
+1               1.0        10 reconstruction-ensemble uncertainty
+2               1.0        10 reconstruction-ensemble uncertainty
+3               0.8        10 reconstruction-ensemble uncertainty
+4               0.6        10 reconstruction-ensemble uncertainty
+5               0.6        10 reconstruction-ensemble uncertainty
+6               0.6        10 reconstruction-ensemble uncertainty
+7               0.6        10 reconstruction-ensemble uncertainty
+8               0.9        10 reconstruction-ensemble uncertainty
+9               0.8        10 reconstruction-ensemble uncertainty
+10              1.0        10 reconstruction-ensemble uncertainty
+11              0.8        10 reconstruction-ensemble uncertainty
+12              0.6        10 reconstruction-ensemble uncertainty
+Offset support, covariance and convergence audit:
+                                     metric      era offset   model_type  n
+1                      lag_rate_per_century Holocene      0 Holocene_MA1 30
+2                      lag_rate_per_century Holocene    100 Holocene_MA1 28
+3                      lag_rate_per_century Holocene    200 Holocene_MA1 27
+4                      lag_rate_per_century Holocene    300 Holocene_MA1 27
+5                      lag_rate_per_century Holocene    400 Holocene_MA1 27
+6                      lag_rate_per_century Holocene    500 Holocene_MA1 26
+7                      lag_rate_per_century Holocene    600 Holocene_MA1 26
+8                      lag_rate_per_century Holocene    700 Holocene_MA1 26
+9                      lag_rate_per_century Holocene    800 Holocene_MA1 26
+10                     lag_rate_per_century Holocene    900 Holocene_MA1 30
+11      pace_corrected_lag_rate_per_century Holocene      0 Holocene_MA1 30
+12      pace_corrected_lag_rate_per_century Holocene    100 Holocene_MA1 28
+13      pace_corrected_lag_rate_per_century Holocene    200 Holocene_MA1 27
+14      pace_corrected_lag_rate_per_century Holocene    300 Holocene_MA1 27
+15      pace_corrected_lag_rate_per_century Holocene    400 Holocene_MA1 26
+16      pace_corrected_lag_rate_per_century Holocene    500 Holocene_MA1 26
+17      pace_corrected_lag_rate_per_century Holocene    600 Holocene_MA1 26
+18      pace_corrected_lag_rate_per_century Holocene    700 Holocene_MA1 26
+19      pace_corrected_lag_rate_per_century Holocene    800 Holocene_MA1 26
+20      pace_corrected_lag_rate_per_century Holocene    900 Holocene_MA1 30
+21 direction_corrected_lag_rate_per_century Holocene      0 Holocene_MA1 30
+22 direction_corrected_lag_rate_per_century Holocene    100 Holocene_MA1 28
+23 direction_corrected_lag_rate_per_century Holocene    200 Holocene_MA1 27
+24 direction_corrected_lag_rate_per_century Holocene    300 Holocene_MA1 27
+25 direction_corrected_lag_rate_per_century Holocene    400 Holocene_MA1 27
+26 direction_corrected_lag_rate_per_century Holocene    500 Holocene_MA1 26
+27 direction_corrected_lag_rate_per_century Holocene    600 Holocene_MA1 26
+28 direction_corrected_lag_rate_per_century Holocene    700 Holocene_MA1 26
+29 direction_corrected_lag_rate_per_century Holocene    800 Holocene_MA1 26
+30 direction_corrected_lag_rate_per_century Holocene    900 Holocene_MA1 30
+   n_MORA n_NOCA n_excluded           R2       theta lag1_residual_correlation
+1      20     10          0  0.024796951 -0.19803831               -0.19056453
+2      19      9          0  0.007337136 -0.19919829               -0.19159578
+3      18      9          0  0.109144705 -0.45201962               -0.37533128
+4      18      9          0  0.159863846 -0.39669395               -0.34275581
+5      18      9          0  0.196613879 -0.36019940               -0.31883287
+6      17      9          0  0.099774511 -0.38911424               -0.33794589
+7      17      9          0 -0.002052220 -0.48747724               -0.39387834
+8      17      9          0  0.060262670 -0.46650863               -0.38312830
+9      17      9          0  0.014768171 -0.45690288               -0.37799298
+10     20     10          0  0.014631222 -0.46408217               -0.38184364
+11     20     10          0 -0.004745712 -0.20255107               -0.19456852
+12     19      9          0  0.180634804  0.28278653                0.26184709
+13     18      9          0  0.113105554  0.02547680                0.02546027
+14     18      9          0  0.087599850 -0.02505080               -0.02503509
+15     17      9          1  0.132787918 -0.99992463               -0.50000000
+16     17      9          0 -0.054134402 -0.34900425               -0.31110984
+17     17      9          0 -0.047773723 -0.21221828               -0.20307258
+18     17      9          0  0.039617572 -0.29154753               -0.26870741
+19     17      9          0  0.037103405 -0.46276463               -0.38114253
+20     20     10          0  0.057097874 -0.99991074               -0.50000000
+21     20     10          0  0.263133401 -0.58234488               -0.43486951
+22     19      9          0  0.135652000 -0.32011248               -0.29035883
+23     18      9          0  0.126134963  0.01218622                0.01218441
+24     18      9          0  0.225888744 -0.11969745               -0.11800672
+25     18      9          0  0.241868606  0.04295470                0.04287559
+26     17      9          0  0.131143032  0.21474128                0.20527526
+27     17      9          0  0.200812505  0.27067233                0.25219559
+28     17      9          0  0.251323644  0.18412536                0.17808781
+29     17      9          0 -0.777830752  0.74955795                0.47992069
+30     20     10          0  0.220036261  0.28120090                0.26059465
+   near_correlation_boundary covariance_status converged warnings
+1                      FALSE positive_definite      TRUE     none
+2                      FALSE positive_definite      TRUE     none
+3                      FALSE positive_definite      TRUE     none
+4                      FALSE positive_definite      TRUE     none
+5                      FALSE positive_definite      TRUE     none
+6                      FALSE positive_definite      TRUE     none
+7                      FALSE positive_definite      TRUE     none
+8                      FALSE positive_definite      TRUE     none
+9                      FALSE positive_definite      TRUE     none
+10                     FALSE positive_definite      TRUE     none
+11                     FALSE positive_definite      TRUE     none
+12                     FALSE positive_definite      TRUE     none
+13                     FALSE positive_definite      TRUE     none
+14                     FALSE positive_definite      TRUE     none
+15                      TRUE positive_definite      TRUE     none
+16                     FALSE positive_definite      TRUE     none
+17                     FALSE positive_definite      TRUE     none
+18                     FALSE positive_definite      TRUE     none
+19                     FALSE positive_definite      TRUE     none
+20                      TRUE positive_definite      TRUE     none
+21                     FALSE positive_definite      TRUE     none
+22                     FALSE positive_definite      TRUE     none
+23                     FALSE positive_definite      TRUE     none
+24                     FALSE positive_definite      TRUE     none
+25                     FALSE positive_definite      TRUE     none
+26                     FALSE positive_definite      TRUE     none
+27                     FALSE positive_definite      TRUE     none
+28                     FALSE positive_definite      TRUE     none
+29                     FALSE positive_definite      TRUE     none
+30                     FALSE positive_definite      TRUE     none
+   bin_width_years offset_weight n_shared_phases_offset0
+1             1000           0.1                      30
+2             1000           0.1                      28
+3             1000           0.1                      27
+4             1000           0.1                      27
+5             1000           0.1                      27
+6             1000           0.1                      26
+7             1000           0.1                      26
+8             1000           0.1                      26
+9             1000           0.1                      26
+10            1000           0.1                      26
+11            1000           0.1                      30
+12            1000           0.1                      28
+13            1000           0.1                      27
+14            1000           0.1                      27
+15            1000           0.1                      26
+16            1000           0.1                      26
+17            1000           0.1                      26
+18            1000           0.1                      26
+19            1000           0.1                      26
+20            1000           0.1                      26
+21            1000           0.1                      30
+22            1000           0.1                      28
+23            1000           0.1                      27
+24            1000           0.1                      27
+25            1000           0.1                      27
+26            1000           0.1                      26
+27            1000           0.1                      26
+28            1000           0.1                      26
+29            1000           0.1                      26
+30            1000           0.1                      26
+   n_phases_only_in_offset n_phases_only_in_offset0 min_draws_present
+1                        0                        0                 2
+2                        0                        2                13
+3                        0                        3                 9
+4                        0                        3                 6
+5                        0                        3                 1
+6                        0                        4                90
+7                        0                        4                85
+8                        0                        4                76
+9                        0                        4                57
+10                       4                        4                19
+11                       0                        0                 2
+12                       0                        2                13
+13                       0                        3                 9
+14                       0                        3                 6
+15                       0                        4                95
+16                       0                        4                90
+17                       0                        4                85
+18                       0                        4                76
+19                       0                        4                57
+20                       4                        4                19
+21                       0                        0                 2
+22                       0                        2                13
+23                       0                        3                 9
+24                       0                        3                 6
+25                       0                        3                 1
+26                       0                        4                90
+27                       0                        4                85
+28                       0                        4                76
+29                       0                        4                57
+30                       4                        4                19
+   median_draws_present climate_coefficient fire_coefficient residual_sd_MORA
+1                   100         -0.55939781     0.0351335712      0.012400119
+2                   100          0.20660748     0.0065551737      0.012919324
+3                   100          0.90239037    -0.0094173614      0.010973427
+4                   100          1.09254780    -0.0145793432      0.011785907
+5                   100          1.51308975    -0.0170471406      0.011127559
+6                   100          0.62310304    -0.0134296405      0.011780006
+7                   100          0.21657323     0.0012604255      0.015226770
+8                   100          0.72723198     0.0043494339      0.014276390
+9                   100          0.57460476     0.0049700185      0.016340431
+10                  100         -0.35735783     0.0131959970      0.015597341
+11                  100         -0.50372710     0.0139520143      0.008186771
+12                  100          0.29729176     0.0087427461      0.007318104
+13                  100          0.08766331     0.0009892888      0.003011370
+14                  100          0.11802012     0.0005308115      0.003462147
+15                  100          0.21669067     0.0005503393      0.002358592
+16                  100         -0.13601631    -0.0005308448      0.002505037
+17                  100         -0.15677552     0.0002244562      0.002795199
+18                  100          0.01628784     0.0005398787      0.002935275
+19                  100          0.28884593     0.0049293262      0.003847925
+20                  100         -0.97201590     0.0193907786      0.007967444
+21                  100          0.88348466    -0.0220499109      0.008688403
+22                  100          0.52688088    -0.0008435444      0.011461844
+23                  100          1.32450417     0.0111159445      0.011829316
+24                  100          1.49652921    -0.0154267274      0.011609209
+25                  100          1.16078160     0.0017032334      0.009609700
+26                  100          0.60347422    -0.0042249397      0.013411901
+27                  100         -0.20140493     0.0269174682      0.015539139
+28                  100          0.86904779     0.0246338441      0.008859812
+29                  100         -1.79106742    -0.0198571561      0.008669477
+30                  100          0.38080668    -0.0180144177      0.006778787
+   residual_sd_NOCA climate_response_cor_MORA climate_response_cor_NOCA
+1       0.027383666               -0.03045694                0.04598905
+2       0.027235935                0.16750620                0.02969033
+3       0.023779863                0.40037027                0.20964089
+4       0.023818758                0.44901342                0.24446609
+5       0.023456840                0.43885740                0.33037734
+6       0.019994808                0.27019749                0.14504905
+7       0.021369058               -0.09981053                0.09896190
+8       0.025520690                0.36691253                0.18722298
+9       0.025531660                0.27259095                0.01591446
+10      0.026741780               -0.21112833                0.01426460
+11      0.019357595               -0.30474526                0.41405216
+12      0.020531574                0.13100037                0.57931290
+13      0.017426516                0.01773319                0.72161384
+14      0.018290454                0.08049027                0.61544692
+15      0.021001092                0.34015303                0.70309071
+16      0.016821386               -0.33307792                0.32081089
+17      0.011737934               -0.39361563                0.17621884
+18      0.008711539                0.12337338                0.05352602
+19      0.008829003                0.62546045               -0.02933622
+20      0.026222786               -0.55296391                0.30030088
+21      0.012528561                0.19386032                0.67032414
+22      0.014567569                0.13448925                0.48042907
+23      0.021956668                0.49957929                0.20508061
+24      0.021268351                0.58193571                0.22578892
+25      0.017703502                0.65023281                0.22427775
+26      0.017899611                0.54918119               -0.19738675
+27      0.015058506                0.30896415               -0.22554610
+28      0.018771545                0.58355576                0.34756377
+29      0.031812835               -0.83676794                0.69232610
+30      0.012782728                0.04322574                0.79347585
+   fixed_vcov_positive_definite offset800_direction_review included_in_ensemble
+1                          TRUE                      FALSE                 TRUE
+2                          TRUE                      FALSE                 TRUE
+3                          TRUE                      FALSE                 TRUE
+4                          TRUE                      FALSE                 TRUE
+5                          TRUE                      FALSE                 TRUE
+6                          TRUE                      FALSE                 TRUE
+7                          TRUE                      FALSE                 TRUE
+8                          TRUE                      FALSE                 TRUE
+9                          TRUE                      FALSE                 TRUE
+10                         TRUE                      FALSE                 TRUE
+11                         TRUE                      FALSE                 TRUE
+12                         TRUE                      FALSE                 TRUE
+13                         TRUE                      FALSE                 TRUE
+14                         TRUE                      FALSE                 TRUE
+15                         TRUE                      FALSE                 TRUE
+16                         TRUE                      FALSE                 TRUE
+17                         TRUE                      FALSE                 TRUE
+18                         TRUE                      FALSE                 TRUE
+19                         TRUE                      FALSE                 TRUE
+20                         TRUE                      FALSE                 TRUE
+21                         TRUE                      FALSE                 TRUE
+22                         TRUE                      FALSE                 TRUE
+23                         TRUE                      FALSE                 TRUE
+24                         TRUE                      FALSE                 TRUE
+25                         TRUE                      FALSE                 TRUE
+26                         TRUE                      FALSE                 TRUE
+27                         TRUE                      FALSE                 TRUE
+28                         TRUE                      FALSE                 TRUE
+29                         TRUE                       TRUE                 TRUE
+30                         TRUE                      FALSE                 TRUE

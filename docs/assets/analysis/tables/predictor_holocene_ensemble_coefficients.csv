@@ -1,0 +1,13 @@
+metric,term,ensemble_estimate,ensemble_lower,ensemble_upper,offset_estimate_min,offset_estimate_max,n_positive_offsets,n_negative_offsets,n_zero_offsets,dominant_sign,sign_consistency,n_offsets,interval_type
+lag_rate_per_century,(Intercept),-0.012151277500032387,-0.030231486092300072,0.0061862355958051006,-0.01603399625645034,-0.005891358487207753,0,10,0,negative,1,10,reconstruction-ensemble uncertainty
+lag_rate_per_century,siteNOCA,-0.003967560249606653,-0.01563636945883738,0.008547417883327092,-0.007697678665596461,-7.177562207446535e-4,0,10,0,negative,1,10,reconstruction-ensemble uncertainty
+lag_rate_per_century,climate_rate,0.49393927738441923,-1.047088262575771,2.0007334627603948,-0.5593978105201315,1.5130897502287233,8,2,0,positive,0.8,10,reconstruction-ensemble uncertainty
+lag_rate_per_century,fire_activity,0.0010991134278491607,-0.035923452782816605,0.050766506676576506,-0.017047140619671577,0.03513357121665569,6,4,0,positive,0.6,10,reconstruction-ensemble uncertainty
+pace_corrected_lag_rate_per_century,(Intercept),-0.00126853845979697,-0.013427682961187293,0.006996211400770455,-0.009940178859895682,0.0030392924231184104,4,6,0,negative,0.6,10,reconstruction-ensemble uncertainty
+pace_corrected_lag_rate_per_century,siteNOCA,0.0025734189855303076,-0.006152776013635779,0.016287853612856933,-0.0023168677032008077,0.0074837701254081256,6,4,0,positive,0.6,10,reconstruction-ensemble uncertainty
+pace_corrected_lag_rate_per_century,climate_rate,-0.07437352022161305,-1.1509944650356134,0.6004008727993696,-0.9720159007097136,0.2972917591335934,6,4,0,positive,0.6,10,reconstruction-ensemble uncertainty
+pace_corrected_lag_rate_per_century,fire_activity,0.004931879483912853,-0.006606660462442327,0.03011244691285681,-5.308447824231419e-4,0.019390778587931517,9,1,0,positive,0.9,10,reconstruction-ensemble uncertainty
+direction_corrected_lag_rate_per_century,(Intercept),-0.01215129146431387,-0.04236834362052601,0.03785112595872626,-0.03145184218637627,0.03384395894954502,2,8,0,negative,0.8,10,reconstruction-ensemble uncertainty
+direction_corrected_lag_rate_per_century,siteNOCA,0.006257844362779347,-0.011054499836519491,0.023328640615832587,0.002114091379751752,0.013243068371099525,10,0,0,positive,1,10,reconstruction-ensemble uncertainty
+direction_corrected_lag_rate_per_century,climate_rate,0.5253036842138292,-1.984415290152982,2.0774499192101183,-1.7910674222064467,1.496529211040323,8,2,0,positive,0.8,10,reconstruction-ensemble uncertainty
+direction_corrected_lag_rate_per_century,fire_activity,-0.0016046206036030158,-0.037920488770521954,0.044439243789337016,-0.02204991085023635,0.02691746816783457,4,6,0,negative,0.6,10,reconstruction-ensemble uncertainty

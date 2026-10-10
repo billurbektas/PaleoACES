@@ -426,6 +426,11 @@ tracking schemas and calculation tables remain unchanged.
 | `anthropocene_spatial_checks.csv` | Twelve within-park normalized-residual Moran checks: three responses × two modern specifications × two parks, projected symmetric 8-neighbor graphs and 999 fixed-seed permutations. Nominal p values; no fitted spatial covariance. |
 | `model_results.txt` | All 36 GLS summaries, three LME sensitivities, coefficient intervals, support, spatial checks, definitions and provenance. |
 | `model_fits.rds` | Local computational audit: fitted objects and exact input rows, width and input fingerprint. CSVs/TXT and review copies are the portable results. |
+| `holocene_ensemble_coefficients.csv` | 12 rows: response × term, including intercepts. Exact equal-weight coefficient means, 2.5–97.5% reconstruction-ensemble uncertainty, offset estimate range, positive/negative/zero counts and sign consistency. No pooled p-values. |
+| `holocene_ensemble_offset_audit.csv` | 30 rows: response × offset. Equal weights, support/exclusions, phase-key differences relative to offset 0, convergence, fixed/covariance checks, MA1 boundaries, residual SDs, climate–response correlations and the retained offset-800 flag. |
+| `holocene_ensemble_offset_vcov.csv` | 480 rows: response × offset × term_row × term_col. Full fixed-effect variance–covariance matrices, including off-diagonal entries, with equal weights. |
+| `holocene_ensemble_components.rds` | Reproducible local audit: coefficients and full covariance matrices, exact within/between/total mixture covariances, seeds, sampling settings and input fingerprint. No duplication of fitted model objects. |
+| `holocene_ensemble_results.txt` | Ensemble definitions, coefficient summaries and complete offset support/convergence audit. |
 
 Holocene specifications are `site + climate_rate + fire_activity`, with MA1
 within lake and site residual variances. Modern specifications are
@@ -437,6 +442,16 @@ not repeated ten times. The fire exposures have different meanings across eras.
 
 Diagnostic PDFs use the `fig_tracking_predictor_` prefix under
 `plot/test_figures/`: `offset_coefficients` (four coefficient panels plus R² per response), `era_coefficients_offset_0`,
-`holocene_predictions`, `R2`, `residuals` (nine pages) and `spatial_residuals`.
+`holocene_predictions`, `R2`, `residuals` (nine pages), `spatial_residuals` and
+`ensemble_coefficients` (three predictor panels with reconstruction-ensemble uncertainty).
 The Analysis Review registers every table and PDF. Optional nondefault widths
 add `_Nyr` to the directory and PDF names and cannot overwrite primary results.
+
+The primary ensemble mixes 50,000 joint multivariate-normal coefficient samples
+from each of ten unchanged offset fits, with each full fitted `vcov`. Point
+estimates are exact means across offsets; intervals are mixture percentiles,
+not conventional confidence intervals. Offsets are sensitivity reconstructions,
+and uncertainty is not divided by √10. Bacon chronology uncertainty is not
+propagated. `Rscript R/stages/10c_tracking_predictor_models.R --ensemble-only`
+adds/reproduces only the ensemble products from matching stored fits, without
+refitting or changing existing outputs.

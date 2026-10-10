@@ -328,12 +328,23 @@ def validate(root=ROOT):
     predictor_code = helper.split('# BEGIN PREDICTOR MODEL STRUCTURES\n',1)[1].split('# END PREDICTOR MODEL STRUCTURES',1)[0].rstrip()
     if predictor_code not in text or '## Within-era climate, fire and elevation predictor models' not in text:
         raise ValueError('Review omitted maintained predictor-model structures or interpretation.')
+    ensemble_code = helper.split('# BEGIN RECONSTRUCTION ENSEMBLE SAMPLING\n',1)[1].split('# END RECONSTRUCTION ENSEMBLE SAMPLING',1)[0].rstrip()
+    if ensemble_code not in text:
+        raise ValueError('Review omitted the maintained reconstruction-ensemble calculation excerpt.')
     coefficients = rows(root/ASSETS/'tables/predictor_model_coefficients.csv')
     performance = rows(root/ASSETS/'tables/predictor_model_performance.csv')
     if len(coefficients)!=144 or len(performance)!=36:
         raise ValueError('Predictor review omits fitted specifications.')
     if len(rows(root/ASSETS/'tables/predictor_lake_random_intercept_sensitivity.csv'))!=3 or len(rows(root/ASSETS/'tables/predictor_anthropocene_spatial_checks.csv'))!=12:
         raise ValueError('Predictor review omits lake or spatial sensitivity evidence.')
+    ensemble = rows(root/ASSETS/'tables/predictor_holocene_ensemble_coefficients.csv')
+    audit = rows(root/ASSETS/'tables/predictor_holocene_ensemble_offset_audit.csv')
+    if (len(ensemble)!=12 or len(audit)!=30 or
+            len(rows(root/ASSETS/'tables/predictor_holocene_ensemble_offset_vcov.csv'))!=480 or
+            any(row['interval_type']!='reconstruction-ensemble uncertainty' for row in ensemble) or
+            any(row['included_in_ensemble']!='TRUE' for row in audit) or
+            '### Holocene reconstruction-ensemble averaging' not in text):
+        raise ValueError('Predictor review omits complete, correctly labelled reconstruction ensembles.')
     stages = workflow_stages()
     if any(f'../{p})' not in text for p in stages): raise ValueError('Report script map omits an active workflow stage.')
     review = root/'docs/review/00_main_analysis_review.R'
@@ -489,12 +500,16 @@ def build(mode):
         predictor_helper = (ROOT/'R/helpers/tracking_predictor_models.R').read_text()
         predictor_code = predictor_helper.split('# BEGIN PREDICTOR MODEL STRUCTURES\n',1)[1].split('# END PREDICTOR MODEL STRUCTURES',1)[0].rstrip()
         text_blocks['predictor_model_code'] = f'```r\n{predictor_code}\n```\n'
+        ensemble_code = predictor_helper.split('# BEGIN RECONSTRUCTION ENSEMBLE SAMPLING\n',1)[1].split('# END RECONSTRUCTION ENSEMBLE SAMPLING',1)[0].rstrip()
+        text_blocks['predictor_ensemble_code'] = f'```r\n{ensemble_code}\n```\n'
         predictor_names = [name for name in tables if name.startswith('predictor_')]
         text_blocks['predictor_tables'] = '\n'.join(f'- [{name.removeprefix("predictor_").replace("_", " ")}](assets/analysis/tables/{name}.csv)' for name in predictor_names)+'\n'
         focal = [row for row in tables['predictor_model_performance'] if row['era']=='Anthropocene' or row['offset']=='0']
         text_blocks['predictor_focal_performance'] = mdtable(focal,[('metric','Response'),('model_type','Specification'),('n','Observations'),('R2','Descriptive R²')])
         text_blocks['predictor_random_sensitivity'] = mdtable(tables['predictor_lake_random_intercept_sensitivity'],[('metric','Response'),('random_intercept_sd','Lake SD'),('max_abs_coefficient_difference','Maximum coefficient change'),('covariance_status','Covariance uncertainty'),('variance_intervals_finite','Finite lake-SD interval')])
         text_blocks['predictor_spatial_table'] = mdtable(tables['predictor_anthropocene_spatial_checks'],[('metric','Response'),('model_type','Specification'),('site','Park'),('moran_I','Moran I'),('p_permutation_two_sided','Nominal permutation p')])
+        ensemble = [row for row in tables['predictor_holocene_ensemble_coefficients'] if row['term']!='(Intercept)']
+        text_blocks['predictor_ensemble_table'] = mdtable(ensemble,[('metric','Response'),('term','Predictor'),('ensemble_estimate','Ensemble estimate'),('ensemble_lower','2.5%'),('ensemble_upper','97.5%'),('offset_estimate_min','Offset minimum'),('offset_estimate_max','Offset maximum'),('n_positive_offsets','Positive offsets'),('n_negative_offsets','Negative offsets')])
         table_blocks={}
         for name,cols in COLUMNS.items():
             data=tables[name]
