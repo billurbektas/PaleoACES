@@ -540,8 +540,9 @@ The same scale conventions and model limitations apply to all five responses.
 Stage 10b now shows five offset-0 MA1 era contrasts in the first row, with MORA
 and NOCA side by side. Climate and community/lag rates use separate scales with
 aligned zeros. Observed, pace-corrected and direction-corrected lag changes share
-a grouped x-axis and teal/pink/purple outlines and intervals. Park fills stay
-blue/orange. Stars mark unadjusted contrast `p < 0.05`; nonsignificant error bars
+a grouped x-axis with teal/pink/purple label text. Contrast dots and error bars
+are grey; numeric annotations identify MORA/NOCA in blue/orange. Both contrast
+y-axes are on the left. Stars mark unadjusted contrast `p < 0.05`; nonsignificant error bars
 are faint without an opacity legend. Point ratios of fitted Anthropocene to
 Holocene means are printed below bars without ratio uncertainty. Lag ratios
 may be negative on sign reversal or unstable near a zero denominator; these

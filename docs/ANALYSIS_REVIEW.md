@@ -1732,9 +1732,10 @@ Script: [10a_tracking_lake_sensitivity.R](../R/stages/10a_tracking_lake_sensitiv
 The first row shows offset-0 MA1 **Anthropocene-minus-Holocene contrasts** for
 climate-change rate, community turnover, observed lag change, pace-corrected
 lag change and direction-corrected lag change. Parks appear side by side,
-with blue MORA and orange NOCA mean markers; the three lag contrasts have
-teal, pink and purple outlines/error bars, respectively. Climate and CCA
-responses retain separate unit scales with aligned zeros. All bars are the
+with grey dots and error bars; the observed, pace-corrected and direction-corrected
+x-axis labels are teal, pink and purple, respectively. Numeric annotations remain
+blue for MORA and orange for NOCA. Climate and CCA
+responses retain separate unit scales with aligned zeros and both y-axes on the left. All bars are the
 original covariance-based 95% Satterthwaite contrast intervals. A star marks
 unadjusted `p < 0.05`; nonsignificant error bars are faint, with no transparency
 legend. The number below each bar is the fitted Anthropocene/Holocene mean

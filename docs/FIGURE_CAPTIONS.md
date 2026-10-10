@@ -101,9 +101,11 @@ nominal, without adjustment for lake/temporal dependence or mathematical couplin
 **Publication-ready caption.** Figure 4. Holocene–Anthropocene comparisons at
 Mount Rainier (MORA, blue) and North Cascades (NOCA, orange). The upper row
 shows Anthropocene-minus-Holocene MA(1) GLS contrasts and 95% confidence intervals
-for physical climate-change rate, community turnover and observed (teal),
-pace-corrected (pink) and direction-corrected (purple) lag changes. Climate uses
-a separate scale; zero baselines are aligned. * denotes unadjusted contrast
+for physical climate-change rate, community turnover and observed, pace-corrected
+and direction-corrected lag changes. Contrast dots and bars are grey; the lag
+x-axis labels are teal, pink and purple, respectively. Numeric annotations
+identify MORA/NOCA in blue/orange. Climate uses a separate scale; zero baselines
+are aligned and both y-axes are on the left. * denotes unadjusted contrast
 p < 0.05; nonsignificant interval bars are faint. Numbers beneath intervals
 are ratios of fitted Anthropocene to Holocene means, without ratio intervals.
 Signed lag ratios may reflect sign reversals and become unstable near zero;

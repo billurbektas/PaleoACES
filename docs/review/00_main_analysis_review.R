@@ -6047,36 +6047,40 @@ contrast_plot=function(climate=FALSE) {
     filter(cl,metric!='standardized_climate_change_rate')
   bounds=filter(limits,panel==if(climate) 'Climate' else 'CCA')
   dd=dd |> mutate(label_y=conf_high+.045*bounds$span,fold_y=conf_low-.055*bounds$span)
-  context=dd |> filter(is.na(kind));lag=dd |> filter(!is.na(kind))
-  p=ggplot(dd,aes(metric,estimate,group=site,fill=site))+
+  axis_labels=dd |> distinct(metric,kind) |>
+    mutate(axis_label=recode(as.character(metric),
+      standardized_climate_change_rate='Climate-change\nrate',
+      observed_turnover_rate='Community\nturnover rate',lag_rate_per_century='Observed',
+      pace_corrected_lag_rate_per_century='Pace corrected',
+      direction_corrected_lag_rate_per_century='Direction corrected'),
+      axis_color=if_else(is.na(kind),'Axis',kind),
+      axis_y=bounds$lower-.025*(bounds$upper-bounds$lower))
+  p=ggplot(dd,aes(metric,estimate,group=site))+
     geom_hline(yintercept=0,linetype='dashed',color='grey55',linewidth=.6)+
-    geom_errorbar(data=context,aes(ymin=conf_low,ymax=conf_high,alpha=error_alpha,color=site),
+    geom_errorbar(aes(ymin=conf_low,ymax=conf_high,alpha=error_alpha),color='grey45',
       position=pd,width=.10,linewidth=1.3,show.legend=FALSE)+
-    geom_errorbar(data=lag,aes(ymin=conf_low,ymax=conf_high,alpha=error_alpha,color=kind),
-      position=pd,width=.10,linewidth=1.3,show.legend=FALSE)+
-    geom_point(data=context,aes(color=site),position=pd,shape=21,size=3.8,stroke=1.1,show.legend=FALSE)+
-    geom_point(data=lag,aes(color=kind),position=pd,shape=21,size=3.8,stroke=1.1)+
+    geom_point(position=pd,shape=21,size=3.8,stroke=1.1,
+      color='grey40',fill='grey70',show.legend=FALSE)+
     geom_text(aes(y=label_y,label=label,color=site),position=pd,size=5.7,show.legend=FALSE)+
     geom_text(aes(y=fold_y,label=fold_label,color=site),position=pd,vjust=1,size=5.5,show.legend=FALSE)+
-    scale_fill_manual(name='Park',values=site_colors)+
-    scale_color_manual(name='Lag change',values=c(site_colors,response_colors),
-      breaks=c('Observed','Pace','Direction'),labels=c('Observed','Pace corrected','Direction corrected'))+
-    guides(color=guide_legend(override.aes=list(fill='white',alpha=1,size=4)),
-      fill=guide_legend(override.aes=list(color='grey50',shape=21,size=4)))+
+    geom_text(data=axis_labels,aes(x=metric,y=axis_y,label=axis_label,color=axis_color),
+      inherit.aes=FALSE,vjust=1,size=7,lineheight=1.05,show.legend=FALSE)+
+    scale_color_manual(values=c(site_colors,response_colors,Axis='grey20'),guide='none')+
     scale_alpha_identity(guide='none')+
     scale_x_discrete(labels=c(standardized_climate_change_rate='Climate-change\nrate',
       observed_turnover_rate='Community\nturnover rate',lag_rate_per_century='Observed',
       pace_corrected_lag_rate_per_century='Pace corrected',
       direction_corrected_lag_rate_per_century='Direction corrected'),expand=expansion(add=.55))+
-    scale_y_continuous(position=if(climate) 'left' else 'right',expand=expansion(mult=0))+
+    scale_y_continuous(position='left',expand=expansion(mult=0))+
     coord_cartesian(ylim=c(bounds$lower,bounds$upper),expand=FALSE,clip='off')+
-    labs(x=NULL,y='Anthropocene − Holocene')+base_theme
+    labs(x=NULL,y='Anthropocene − Holocene')+base_theme+
+    theme(axis.text.x=element_blank())
   if(!climate) {
     y= bounds$lower-.155*(bounds$upper-bounds$lower)
     p=p+annotate('segment',x=1.65,xend=4.35,y=y,yend=y,color='grey45',linewidth=.55)+
       annotate('text',x=3,y=y-.06*(bounds$upper-bounds$lower),label='Lag change',size=7)+
-      theme(plot.margin=margin(10,14,76,14))
-  } else p=p+theme(plot.margin=margin(10,14,76,14))
+      theme(plot.margin=margin(10,14,104,14))
+  } else p=p+theme(plot.margin=margin(10,14,104,14))
   p
 }
 # Each pair is an actual transition/plot; corrected medians were calculated from
@@ -6111,15 +6115,19 @@ scatter=function(era_name) {
     geom_vline(xintercept=0,linetype='dashed',color='grey55',linewidth=.6)+
     geom_abline(intercept=0,slope=1,linetype='dashed',color='grey50',linewidth=.6)+
     geom_point(aes(fill=site,color=correction,shape=correction),
-      size=if(era_name=='Holocene') 2.1 else 1.7,alpha=.35,stroke=.5,show.legend=FALSE)+
+      size=if(era_name=='Holocene') 2.1 else 1.7,alpha=.35,stroke=.5,
+      show.legend=c(fill=TRUE,color=TRUE,shape=FALSE))+
     geom_smooth(aes(color=correction,group=correction),method='lm',formula=y~x,
       se=FALSE,linewidth=1.15,show.legend=FALSE)+
     geom_label(data=stats,aes(x=label_x,y=label_y,label=label,color=correction),inherit.aes=FALSE,
       hjust=0,vjust=1,size=6.1,fill='white',linewidth=0,
       label.padding=grid::unit(.10,'lines'),show.legend=FALSE)+
-    scale_fill_manual(values=site_colors,guide='none')+
-    scale_color_manual(values=response_colors,guide='none')+
+    scale_fill_manual(name='Park',values=site_colors)+
+    scale_color_manual(name='Lag change',values=response_colors,
+      breaks=c('Pace','Direction'),labels=c('Pace corrected','Direction corrected'))+
     scale_shape_manual(values=c(Direction=21,Pace=24),guide='none')+
+    guides(color=guide_legend(override.aes=list(fill='white',alpha=1,size=4)),
+      fill=guide_legend(override.aes=list(color='grey50',shape=21,alpha=1,size=4)))+
     coord_cartesian(xlim=lim,ylim=lim,expand=FALSE)+
     labs(x='Observed lag-change rate',y='Corrected lag-change rate')+base_theme+
     theme(panel.grid.major.x=element_line(color='grey92',linewidth=.4),

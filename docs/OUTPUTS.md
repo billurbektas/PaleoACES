@@ -312,8 +312,8 @@ Stage `R/stages/10b_tracking_manuscript_figure.R` reads combined inputs and exis
 MA1 results without fitting. It validates 20 group counts and ten mean differences.
 The first row shows climate, turnover and observed/pace/direction lag contrasts,
 with side-by-side parks, separate unit scales and aligned zeros. Lag types share
-a grouped x-axis with teal/pink/purple outlines and bars; MORA/NOCA fills remain
-blue/orange. Bars are 95% contrast intervals, with a star for unadjusted `p < 0.05`;
+a grouped x-axis with teal/pink/purple labels. Contrast dots and bars are grey;
+MORA/NOCA numeric annotations remain blue/orange. Both contrast y-axes are on the left. Bars are 95% contrast intervals, with a star for unadjusted `p < 0.05`;
 nonsignificant bars are faint. Labels below bars are point ratios of fitted era
 means without ratio bounds; signed or near-zero lag denominators limit their
 interpretation. The second row shows observed-versus-corrected lag scatter
