@@ -1,5 +1,6 @@
 Lake sensitivity; MA1 selected by the author on 2026-10-09; inference remains exploratory.
 Response: observed_turnover_rate | Offset: 0 | Holocene interval: 1000 years
+Response units: CCA units / century | Transformation: none
 Each fit compares one Holocene lake with all finite modern responses from the same park.
 Constant site is removed: estimate ~ era; REML; separate residual variances by era.
 AR1 or MA1 correlation retains actual within-lake gaps; modern pairs are singleton series.
@@ -8,8 +9,8 @@ MORA lake fits reuse the same modern plots; they are not independent comparisons
 Near-boundary fits are retained and flagged when the absolute correlation parameter exceeds 0.98.
 No chronology propagation, support cutoff, lake random effect or climate/fire fixed effects.
 No pooled averaging of lake fits and no AIC comparisons between different lake inputs.
-Input MD5: b4c903acf64253f0225d8d8d448fe860
-Script MD5: 489e4aa04885942702444ddc2f419253
+Input MD5: 2e3fcf5d47d7b2f2303618c69c01a26b
+Script MD5: 7a1c077cc03c32e59609c78e37e71e63
 
 LAKE JayBath | PARK MORA | OFFSET 0 | MODEL AR1
 Holocene transitions: 7 | Modern pairs: 330 | Undefined selected responses: 0

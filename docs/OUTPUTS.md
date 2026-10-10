@@ -45,7 +45,7 @@ Active data and cache locations are preserved. See [repository inventory](REPOSI
 | `plot/test_figures/fig_walsh_charanalysis_reproduction.pdf` | PDF-only three-page official Walsh reconstruction and publication discrepancy audit |
 | `plot/test_figures/fig_fire_event_detection_workflow.pdf` | PDF-only three-page explanation: detection settings, all four lake residual/threshold plots in a 2 × 2 grid, and the separate MORA software/publication comparison |
 | `plot/fig_cca_trajectories.*` | Main-paper PDF/PNG with A. pooled trajectories, B. biplot inset, C. climate contributions, D. species contributions, eight independently positioned two-line path names, transparent predicted paths/annotations, and an arrow-only observed/predicted legend |
-| `plot/fig_tracking_era_distributions.*` | Manuscript Figure 4: offset-0 raw climate-change, turnover and lag-rate violins/dots, connected MA1 era means and 95% intervals, with Anthropocene-minus-Holocene contrasts and their intervals above each pair; three response rows × MORA/NOCA columns |
+| `plot/fig_tracking_era_distributions.*` | Manuscript Figure 4: offset-0 MA1 contrasts for climate, turnover and three lag-change variants above separate-era corrected-lag scatter panels; observed-rate top densities with GLS means/95% intervals |
 | `cca_trajectory_era_centroids.csv` | Site × CC1–S4 observed WA and predicted LC centroids used by the selected trajectories |
 | `cca_trajectory_anthropocene_centroids.csv` | Exact legacy/resurvey WA and LC site means from identical valid paired plots at both dates, plus pair counts |
 | `bacon_run_manifest.csv` | Seed, versions, settings/control/output hashes, the historical whole-script hash used for five chronology runs, and a separately checked chronology-code fingerprint; the recorded post-run revision is limited to PDF location and PNG persistence |
@@ -76,7 +76,8 @@ Historical climate and Holocene values remain unchanged in the mixed tables.
 Stage `R/stages/09_tracking_metrics.R` calculates lake and plot records once,
 then separates the seven source, uncertainty, descriptive and audit tables.
 Stage `R/stages/09b_tracking_model_data.R` assembles one combined transition
-input from these calculations without recalculating responses.
+input from these calculations, deriving the two corrected lag-change rates
+within each draw before transition medians.
 The complete ordered column dictionary is `output/cca_tracking_schema.csv`,
 also exposed in the Analysis Review. One metric implementation serves both eras.
 
@@ -186,8 +187,10 @@ longitude, latitude
 ```
 
 One row is one response for an actual lake/offset transition or modern pair.
-The current file contains 6,160 rows: 273 transitions × seven responses plus
-607 modern pairs × seven responses. Modern rows are stored once per response,
+The seven canonical responses are joined by pace- and direction-corrected
+lag-change rates derived from the detailed calculation records.
+The current file contains 7,920 rows: 273 transitions × nine responses plus
+607 modern pairs × nine responses. Modern rows are stored once per response,
 with `offset = NA`; every offset fit reuses the same modern observations.
 Holocene estimates retain the finite-draw median within their actual transition;
 there is no across-offset median or 100-year reporting-grid mapping. The physical
@@ -203,18 +206,18 @@ normalized joins; missing or ambiguous locations stop export. The long layout
 does not add ecological replicates. Alternative widths receive `_Nyr` suffixes.
 
 Stage `R/stages/10_tracking_era_models.R` reads only the combined CSV and fits
-lag-change rate, observed turnover and untransformed physical climate-change rate
-separately for all ten offsets under AR1,
+observed/pace-corrected/direction-corrected lag-change rates, observed turnover
+and untransformed physical climate-change rate separately for all ten offsets under AR1,
 MA1 and no temporal autocorrelation
 (`model_type=Independent`). Its initial fixed-effect specification remains exploratory: `estimate ~ era * site`,
-REML, and separate residual SDs by era/site. All three responses run by default;
+REML, and separate residual SDs by era/site. All five model responses run by default;
 `--metric=NAME` selects one standalone response. Files below show lag rate;
 the complete turnover and climate sets use `observed_turnover_rate` and
 `standardized_climate_change_rate`, respectively, in place of `lag_rate_per_century`
 in each directory and figure stem. Climate uses the existing physical-rate field
-directly as the response, with one observation per transition or plot; the seven
-tracking-response rows are not duplicate climate observations. No CSV schema
-changes or response transformations are applied. Row counts apply
+directly as the response, with one observation per transition or plot; the nine
+response rows are not duplicate climate observations. The 28-column schema
+is retained; corrected response names add rows, not columns or observations. Row counts apply
 separately to each response. The primary outputs are:
 
 | Output | Contents |
@@ -250,7 +253,7 @@ group means, coefficients, contrasts and residuals. Model inclusion, chronology 
 and distribution choices remain exploratory. No lake random intercept or climate/fire fixed effects are
 added to this initial model.
 
-For all three response figures, each Anthropocene mean appears once per park,
+For all five response figures, each Anthropocene mean appears once per park,
 using the offset-0 fit's interval. All 40 fitted group means and their individual
 intervals remain in each response's CSV; Holocene means and contrasts remain
 offset-specific in the figures.
@@ -276,7 +279,7 @@ Pond and Panther Potholes MA1 parameters approach -1. MORA fits reuse the same
 330 modern plots, so these are overlapping sensitivity comparisons. The workflow
 runs offset 0 only; manual `--offset=N`, `--metric=NAME` and
 `--bin-width-years=N` options write distinct offset/response/width products.
-The maintained group-mean figure now shows MA1 across all ten offsets for all three
+The maintained group-mean figure now shows MA1 across all ten offsets for all five
 responses; it supersedes the earlier offset-0 preview. MA(2) remains outside
 the workflow. Turnover has its own AIC comparison: independent residuals
 minimize AIC at all offsets, with MA1 within two units everywhere. The requested
@@ -295,17 +298,30 @@ AR1 at three; MA1 remains the requested display choice. Panther Potholes has
 a near-boundary MA1 lake parameter and is retained with its flag. Common
 per-century units do not equalize Holocene and modern temporal averaging.
 
-Stage `R/stages/10b_tracking_manuscript_figure.R` reads the combined transition
-input and each response's existing MA1 mean/contrast tables to draw manuscript
-Figure 4 at offset 0. It validates all 12 group counts and six mean differences
-before writing the PDF and PNG. It exports no additional model-input CSV and
-performs no fitting or response transformation. The violin widths are scaled
-within each distribution; the figure shows actual counts and includes every
-raw value. Holocene raw inputs remain chronology-draw medians for individual
-transitions, rather than reporting-grid or across-offset summaries.
-The display uses grey distributions and model overlays, smaller mean markers,
-and rate labels without units. Contrast annotations retain their estimate and
-95% interval, with a star for the existing unadjusted `p < 0.05` result.
+The two additional model response names are
+`pace_corrected_lag_rate_per_century` and
+`direction_corrected_lag_rate_per_century`. Stage 09b computes
+`(corrected final lag - initial lag) * 100 / climate_dt_years` from detailed
+records within each draw before transition medians. They have the same ten-offset
+CSV/TXT/diagnostic PDF set and offset-0 lake sensitivity, using their metric names
+in the directory/figure stems above. Modern pace models use 465 pairs, excluding
+142 undefined stationary directions; direction models retain all 607 pairs.
+The 23/21/15-column canonical contracts and original calculation records remain.
+
+Stage `R/stages/10b_tracking_manuscript_figure.R` reads combined inputs and existing
+MA1 results without fitting. It validates 20 group counts and ten mean differences.
+The first row shows climate, turnover and observed/pace/direction lag contrasts,
+with side-by-side parks, separate unit scales and aligned zeros. Lag types share
+a grouped x-axis with teal/pink/purple outlines and bars; MORA/NOCA fills remain
+blue/orange. Bars are 95% contrast intervals, with a star for unadjusted `p < 0.05`;
+nonsignificant bars are faint. Labels below bars are point ratios of fitted era
+means without ratio bounds; signed or near-zero lag denominators limit their
+interpretation. The second row shows observed-versus-corrected lag scatter
+panels for each era, with descriptive trend lines and nominal Spearman labels.
+Only observed lag has marginal densities, counted once per input and overlaid
+with the original observed-lag MA1 means and 95% intervals. No title, caption or
+count subtitles are drawn. Definitions and limitations stay in the review and
+publication caption. Figure 2/3 and calibration/chronology inputs are unchanged.
 
 The previous combined reporting-grid CSV, exploratory modeling script and its
 per-run inputs, model bundles, summaries and residual PDFs are retired. The

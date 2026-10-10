@@ -132,6 +132,22 @@ calculate_tracking_metrics = function(x, epsilon = TRACKING_EPSILON) {
   x
 }
 
+# Additional modeling responses derived from the maintained counterfactual
+# geometry. Apply within each realization before taking chronology medians;
+# subtracting medians of lag rate and effect does not preserve this identity.
+add_corrected_lag_rates = function(x) {
+  needed = c('lag_t1', 'lag_t2_pace_corrected', 'lag_t2_direction_corrected',
+    'climate_dt_years', 'pace_counterfactual_valid', 'direction_counterfactual_valid')
+  if (!all(needed %in% names(x)) ||
+      any(!is.finite(x$climate_dt_years) | x$climate_dt_years <= 0))
+    stop('Missing corrected-lag calculations or invalid climate elapsed time')
+  x$pace_corrected_lag_rate_per_century = ifelse(x$pace_counterfactual_valid,
+    (x$lag_t2_pace_corrected-x$lag_t1)*100/x$climate_dt_years, NA_real_)
+  x$direction_corrected_lag_rate_per_century = ifelse(x$direction_counterfactual_valid,
+    (x$lag_t2_direction_corrected-x$lag_t1)*100/x$climate_dt_years, NA_real_)
+  x
+}
+
 # Actual climate change in predictor space, kept separate from LC movement.
 # Per-variable rates remain signed and in physical units. The combined index is
 # the Euclidean norm after scaling every variable by its pooled legacy SD:

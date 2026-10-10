@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: 92a57ddef6d6ccccbb2da15b6a1a2409 -->
+<!-- paleoaces-source-md5: dde0a38ed0dfb987769083658e715414 -->
 
 <html>
 
@@ -1593,9 +1593,9 @@ regeneration is needed for stages 9–14.</p>
   CCA --&gt; ER[13 unified climate eras/fire classification]
   ER --&gt; TM1
   TM1 --&gt; MD[09b combined transition model input]
-  MD --&gt; GLS[10 lag-rate, turnover and raw climate GLS plus MA1 groups by offset]
-  MD --&gt; LS[10a lag-rate, turnover and raw climate MA1 lake reporting at offset 0]
-  MD --&gt; MF[10b offset-0 raw distributions, MA1 means and annotated contrasts: Figure 4]
+  MD --&gt; GLS[10 five rate responses with selected MA1 groups and diagnostics by offset]
+  MD --&gt; LS[10a five rate responses in MA1 lake reporting at offset 0]
+  MD --&gt; MF[10b offset-0 MA1 contrasts and corrected-lag scatter: Figure 4]
   GLS --&gt; MF
   TM1 --&gt; TV[09a tracking plots with climate bands]
   ER --&gt; TV
@@ -1773,8 +1773,8 @@ dictionary</td>
 <td align="right">10f</td>
 <td><code>R/stages/09b_tracking_model_data.R</code></td>
 <td>Combined transition model input</td>
-<td>Canonical 23/21-column source tables, lake and cleaned plot
-coordinates</td>
+<td>Canonical 23/21-column tables, detailed calculations, lake and
+cleaned plot coordinates</td>
 <td>One 28-column long input with actual lake/offset transitions and
 modern pairs stored once per response; completed schema dictionary</td>
 </tr>
@@ -1783,12 +1783,12 @@ modern pairs stored once per response; completed schema dictionary</td>
 <td><code>R/stages/10_tracking_era_models.R</code></td>
 <td>Maintained provisional offset GLS exploration</td>
 <td>Combined transition input only</td>
-<td>Lag rate, turnover and raw climate rate, each with ten offsets ×
-AR1/MA1/Independent; coefficient, within-park contrast, MA1 group-mean
-and paired AIC comparison CSVs, one full results TXT, MA1-only
-group-mean/coefficient/contrast/residual PDFs and three-candidate
-within-offset ΔAIC boxplots when rendering; all three requested
-responses run by default</td>
+<td>Observed/corrected lag rates, turnover and raw climate rate, each
+with ten offsets × AR1/MA1/Independent; coefficient, within-park
+contrast, MA1 group-mean and paired AIC comparison CSVs, one full
+results TXT, MA1-only group-mean/coefficient/contrast/residual PDFs and
+three-candidate within-offset ΔAIC boxplots when rendering; all five
+requested responses run by default</td>
 </tr>
 <tr class="odd">
 <td align="right">10g-a</td>
@@ -1807,9 +1807,9 @@ flagged</td>
 <td>Manuscript Figure 4; offset 0 only</td>
 <td>Combined transition input and stage-10 MA1 group
 means/contrasts</td>
-<td>Three response rows × two parks; untransformed violins/dots,
-connected fitted era means, 95% intervals and annotated contrasts;
-primary PDF/PNG; no refitting</td>
+<td>Five contrast categories above two era scatter panels; corrected lag
+models, observed marginal densities and model mean intervals; primary
+PDF/PNG; no refitting</td>
 </tr>
 <tr class="odd">
 <td align="right">10h</td>
@@ -1910,8 +1910,9 @@ presence</td>
 </tr>
 <tr class="even">
 <td><code>R/helpers/tracking_model_reporting.R</code></td>
-<td>Requested lag-rate/turnover/raw-climate responses and units, MA1
-reporting, result filtering, shared colors and plot theme</td>
+<td>Five requested rate responses, including pace/direction corrected
+lag, and units, MA1 reporting, result filtering, shared colors and plot
+theme</td>
 </tr>
 <tr class="odd">
 <td><code>R/helpers/tracking_model_data.R</code></td>
@@ -2041,7 +2042,7 @@ nearest-slice error</td>
 <td>Combined input reconstruction, singleton modern pairs, actual time
 gaps, AR1/MA1/independent covariance, coefficient/support integrity,
 paired AIC/weight reconstruction and covariance-aware group
-means/contrasts for all three responses; raw climate selection checks
+means/contrasts for all five responses; raw climate selection checks
 repeated copies and response-specific missingness</td>
 </tr>
 <tr class="even">
@@ -2298,11 +2299,11 @@ Changed keys or exclusions stop execution with diagnostics.
 Plot-endpoint and seasonal-climate consumers read
 <code>cca_tracking_anthropocene_plot_calculations.csv</code>. Stage 09b
 assembles the combined model input from the compact source tables; stage
-10 reads only that combined CSV. Stages 10/10a run lag rate, observed
-turnover and raw physical climate-change rate by default. The climate
-response is selected from the fixed physical-rate field once per
+10 reads only that combined CSV. Stages 10/10a run observed/corrected
+lag rates, turnover and raw physical climate-change rate by default. The
+climate response is selected from the fixed physical-rate field once per
 observation, independently of tracking validity; its repeated
-seven-response copies are checked for consistency and reduced without
+nine-response copies are checked for consistency and reduced without
 changing the combined CSV schema. Each response uses the same maintained
 code and distinct output paths. The offset exploration runs every offset
 separately with AR1, MA1 and independent residuals while retaining all
@@ -2329,22 +2330,26 @@ every offset, with MA1 within two AIC units; the requested Gaussian/MA1
 turnover exercise remains exploratory. MA1 is selected for reporting.
 Final distribution, lake effects and chronology uncertainty treatment
 remain decisions for model development.</p>
-<p>Stage 10b produces the new manuscript Figure 4 using offset 0 only.
-Three response rows (raw climate-change rate, turnover and lag-change
-rate) and two park columns combine raw input distributions with
-connected MA1 means and 95% confidence intervals. Each pair is annotated
-with its Anthropocene-minus-Holocene contrast and covariance-based
-interval. It reads the existing input and model CSVs, verifies sample
-counts and differences, and redraws without fitting models. Fonts are
-17–26 points for axes, strips and headings; annotations are
-approximately 16 points. Figures 2 and 3 and all model results remain
-unchanged.</p>
+<p>Stage 09b extends the combined input to nine response names,
+retaining 28 columns and the original canonical table contracts.
+Corrected lag-change rates are calculated from stored endpoints within
+each chronology draw before medians. Stages 10/10a run all five
+requested rate models and their diagnostics by default, reporting MA1.
+The pace response alone excludes 142 stationary modern pairs. Stage 10b
+reads offset-0 results for five contrast categories in its first row;
+climate and community/lag have distinct scales with aligned zeros. Its
+second row shows observed-versus-corrected lag scatter panels by era,
+and observed-rate top densities with original GLS means/95% intervals.
+No overall title, caption or count subtitles are rendered. The corrected
+comparisons retain MORA/NOCA identity and the existing descriptive
+counterfactual geometry. No refitting occurs in the figure stage.
+Calibration, chronology and Figure 2/3 are preserved.</p>
 <pre class="bash"><code># Primary combined input and all ten provisional offset/covariance fits
 Rscript R/stages/09b_tracking_model_data.R
 Rscript R/stages/10_tracking_era_models.R
 # Offset-0 lake sensitivity (also called by the full workflow)
 Rscript R/stages/10a_tracking_lake_sensitivity.R
-# Manuscript distributions, means and annotated contrasts; offset 0 only
+# Manuscript contrasts and corrected-lag scatter; offset 0 only
 Rscript R/stages/10b_tracking_manuscript_figure.R
 # Later exploration of another response, still running each offset separately
 Rscript R/stages/10_tracking_era_models.R --metric=observed_turnover_rate

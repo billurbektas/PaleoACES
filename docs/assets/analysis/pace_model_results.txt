@@ -1,0 +1,2995 @@
+MA1 covariance selected by the author on 2026-10-09; model development and inference remain exploratory.
+Response: pace_corrected_lag_rate_per_century | Holocene interval / time step: 1000 years
+Response units: CCA units / century | Transformation: none
+Fixed effects: estimate ~ era * site; REML; separate residual SDs by era/site.
+Reference categories: Holocene and MORA. Coefficient units follow the selected response.
+AR1: corAR1(~ time_index | series). MA1: corARMA(p=0, q=1, ~ time_index | series).
+Independent: correlation=NULL; the same era/site residual SDs and fixed effects are retained.
+MA1 correlates only observations one actual time step apart within a series; gaps are retained.
+For MA1, theta is not the lag-1 correlation: rho(1) = theta/(1 + theta^2); rho(k)=0 for k>1.
+Each fit uses one offset and all original modern pairs with a finite selected response.
+Modern pairs are singleton series; their internal time index is 0 and their actual dates are retained.
+Offsets are sensitivity realizations; the same modern data are reused, so fits are not independent.
+Holocene responses are finite chronology-draw medians within actual transitions, without offset aggregation.
+Corrected lag rates use (corrected final lag - initial lag)*100/climate elapsed years within each draw before summarizing.
+Pace correction remains magnitude-based. Its undefined directions exclude only the pace-corrected response.
+No chronology uncertainty propagation, lake random intercept, climate/fire fixed effects or support threshold.
+Adjacent Holocene transitions share endpoints; only four lakes and two fire histories are available.
+AIC comparisons are meaningful between covariance types within the same offset, not across offsets.
+Delta AIC is measured from the minimum within each offset; Akaike weights are relative to these three candidates only.
+Boxplots show within-offset delta AIC and summarize offset sensitivity, not independent samples; raw AIC remains in the CSV.
+REML is retained because these covariance comparisons use identical fixed effects and observations within each offset.
+The comparison retains all candidates; reported coefficients, contrasts and residuals use the author-selected MA1.
+The MA1 reporting specification is applied to every requested response; covariance comparisons and diagnostics are response-specific.
+Group means and era contrasts use emmeans with Satterthwaite degrees of freedom; contrast SEs use the fitted covariance of the means.
+Coefficient intervals and park contrasts are unadjusted exploratory intervals/tests.
+Input: cca_tracking_era_by_offset.csv | MD5: 2e3fcf5d47d7b2f2303618c69c01a26b
+Script MD5: c635510e6f9cb22b38fe42e8e0611472
+Packages: nlme 3.1.170; emmeans 2.0.4
+
+Fit overview:
+                              metric offset  model_type n_holocene
+ pace_corrected_lag_rate_per_century      0         AR1         30
+ pace_corrected_lag_rate_per_century      0         MA1         30
+ pace_corrected_lag_rate_per_century      0 Independent         30
+ pace_corrected_lag_rate_per_century    100         AR1         28
+ pace_corrected_lag_rate_per_century    100         MA1         28
+ pace_corrected_lag_rate_per_century    100 Independent         28
+ pace_corrected_lag_rate_per_century    200         AR1         27
+ pace_corrected_lag_rate_per_century    200         MA1         27
+ pace_corrected_lag_rate_per_century    200 Independent         27
+ pace_corrected_lag_rate_per_century    300         AR1         27
+ pace_corrected_lag_rate_per_century    300         MA1         27
+ pace_corrected_lag_rate_per_century    300 Independent         27
+ pace_corrected_lag_rate_per_century    400         AR1         26
+ pace_corrected_lag_rate_per_century    400         MA1         26
+ pace_corrected_lag_rate_per_century    400 Independent         26
+ pace_corrected_lag_rate_per_century    500         AR1         26
+ pace_corrected_lag_rate_per_century    500         MA1         26
+ pace_corrected_lag_rate_per_century    500 Independent         26
+ pace_corrected_lag_rate_per_century    600         AR1         26
+ pace_corrected_lag_rate_per_century    600         MA1         26
+ pace_corrected_lag_rate_per_century    600 Independent         26
+ pace_corrected_lag_rate_per_century    700         AR1         26
+ pace_corrected_lag_rate_per_century    700         MA1         26
+ pace_corrected_lag_rate_per_century    700 Independent         26
+ pace_corrected_lag_rate_per_century    800         AR1         26
+ pace_corrected_lag_rate_per_century    800         MA1         26
+ pace_corrected_lag_rate_per_century    800 Independent         26
+ pace_corrected_lag_rate_per_century    900         AR1         30
+ pace_corrected_lag_rate_per_century    900         MA1         30
+ pace_corrected_lag_rate_per_century    900 Independent         30
+ n_anthropocene   n method n_parameters log_likelihood       AIC  delta_AIC
+            465 495   REML            9     -576.85035 1171.7007 0.21424521
+            465 495   REML            9     -576.95034 1171.9007 0.41422452
+            465 495   REML            8     -577.74323 1171.4865 0.00000000
+            465 493   REML            9     -580.80216 1179.6043 1.89495412
+            465 493   REML            9     -580.80201 1179.6040 1.89466159
+            465 493   REML            8     -580.85468 1177.7094 0.00000000
+            465 492   REML            9     -567.51676 1153.0335 1.98860782
+            465 492   REML            9     -567.51712 1153.0342 1.98932979
+            465 492   REML            8     -567.52245 1151.0449 0.00000000
+            465 492   REML            9     -570.25812 1158.5162 1.54173924
+            465 492   REML            9     -570.38858 1158.7772 1.80267004
+            465 492   REML            8     -570.48725 1156.9745 0.00000000
+            465 491   REML            9     -569.95264 1157.9053 1.70376825
+            465 491   REML            9     -569.10076 1156.2015 0.00000000
+            465 491   REML            8     -570.57580 1157.1516 0.95008977
+            465 491   REML            9     -569.21461 1156.4292 1.16082123
+            465 491   REML            9     -569.13651 1156.2730 1.00461492
+            465 491   REML            8     -569.63420 1155.2684 0.00000000
+            465 491   REML            9     -568.66941 1155.3388 1.87927785
+            465 491   REML            9     -568.59307 1155.1861 1.72660386
+            465 491   REML            8     -568.72977 1153.4595 0.00000000
+            465 491   REML            9     -565.92498 1149.8500 1.60622727
+            465 491   REML            9     -565.61770 1149.2354 0.99167233
+            465 491   REML            8     -566.12186 1148.2437 0.00000000
+            465 491   REML            9     -572.82855 1163.6571 0.77617715
+            465 491   REML            9     -572.71179 1163.4236 0.54265246
+            465 491   REML            8     -573.44046 1162.8809 0.00000000
+            465 495   REML            9     -578.96582 1175.9316 0.00000000
+            465 495   REML            9     -579.26977 1176.5395 0.60790273
+            465 495   REML            8     -580.66237 1177.3247 1.39308681
+ akaike_weight aic_rank correlation_parameter converged
+    0.33135432        2          -0.367935601      TRUE
+    0.29982489        3          -0.346997496      TRUE
+    0.36882079        1                    NA      TRUE
+    0.21837205        3           0.137815851      TRUE
+    0.21840400        2           0.132587411      TRUE
+    0.56322395        1                    NA      TRUE
+    0.21265369        2          -0.032324495      TRUE
+    0.21257694        3          -0.030606561      TRUE
+    0.57476938        1                    NA      TRUE
+    0.24756568        2          -0.229961393      TRUE
+    0.21728514        3          -0.102814802      TRUE
+    0.53514918        1                    NA      TRUE
+    0.20825831        3          -0.390609202      TRUE
+    0.48816981        1          -0.999730066      TRUE
+    0.30357188        2                    NA      TRUE
+    0.25853113        3          -0.322380101      TRUE
+    0.27953270        2          -0.461363753      TRUE
+    0.46193617        1                    NA      TRUE
+    0.21559235        3          -0.095021783      TRUE
+    0.23269448        2          -0.228761749      TRUE
+    0.55171317        1                    NA      TRUE
+    0.21776058        3          -0.153829014      TRUE
+    0.29609302        2          -0.383007907      TRUE
+    0.48614640        1                    NA      TRUE
+    0.27793121        3          -0.290958406      TRUE
+    0.31235363        2          -0.360913665      TRUE
+    0.40971517        1                    NA      TRUE
+    0.44718689        1          -0.496145364      TRUE
+    0.32997775        2          -0.475935692      TRUE
+    0.22283536        3                    NA      TRUE
+
+OFFSET 0 | MODEL AR1
+Selected rows: 637 | Finite rows: 495 | Undefined selected responses: 142
+Correlation parameter: -0.3679356 (phi; lag-1 correlation)
+Warnings: none
+           era site   n
+1     Holocene MORA  20
+2 Anthropocene MORA 254
+3     Holocene NOCA  10
+4 Anthropocene NOCA 211
+Generalized least squares fit by REML
+  Model: estimate ~ era * site
+  Data: d
+       AIC      BIC    logLik
+  1171.701 1209.469 -576.8503
+
+Correlation Structure: AR(1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+       Phi
+-0.3679356
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | era_site
+ Parameter estimates:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.000000000       0.543343230       0.006834414       0.013289508
+
+Coefficients:
+                              Value  Std.Error   t-value p-value
+(Intercept)              -0.0009806 0.00142621 -0.687558  0.4921
+eraAnthropocene           0.5193562 0.08260892  6.286927  0.0000
+siteNOCA                  0.0062154 0.00412052  1.508393  0.1321
+eraAnthropocene:siteNOCA -0.4877609 0.09624806 -5.067748  0.0000
+
+ Correlation:
+                         (Intr) erAnth stNOCA
+eraAnthropocene          -0.017
+siteNOCA                 -0.346  0.006
+eraAnthropocene:siteNOCA  0.015 -0.858 -0.043
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-2.74126925 -0.50111625 -0.06385379  0.58745783  3.15609970
+
+Residual standard error: 1.316373
+Degrees of freedom: 495 total; 491 residual
+Era means within each park:
+site = MORA:
+ era             emmean      SE     df lower.CL upper.CL
+ Holocene     -0.000981 0.00143   6.30 -0.00443  0.00247
+ Anthropocene  0.518376 0.08260 252.99  0.35571  0.68104
+
+site = NOCA:
+ era             emmean      SE     df lower.CL upper.CL
+ Holocene      0.005235 0.00387   6.52 -0.00405  0.01452
+ Anthropocene  0.036830 0.04920 210.00 -0.06024  0.13390
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Anthropocene - Holocene within each park (unadjusted exploratory contrasts):
+site = MORA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.5194 0.0826 253   0.3567    0.682   6.287 <0.0001
+
+site = NOCA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.0316 0.0494 212  -0.0658    0.129   0.640  0.5231
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Residual SDs:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+       1.31637330        0.71524252        0.00899664        0.01749395
+Holocene normalized residual lag products (diagnostic, not significance tests):
+# A tibble: 3 × 4
+    lag lag_years n_pairs lag_product
+  <int>     <int>   <int>       <dbl>
+1     1      1000      26     0.0899
+2     2      2000      22    -0.123
+3     3      3000      18    -0.00541
+Undefined response identities:
+# A tibble: 142 × 6
+   era          site  lake  plot_id  age_hi age_lo
+   <chr>        <chr> <chr> <chr>     <dbl>  <dbl>
+ 1 Anthropocene MORA  <NA>  AURO-215     NA     NA
+ 2 Anthropocene MORA  <NA>  BACK-454     NA     NA
+ 3 Anthropocene MORA  <NA>  CARB-128     NA     NA
+ 4 Anthropocene MORA  <NA>  CAYU-059     NA     NA
+ 5 Anthropocene MORA  <NA>  CHIN-084     NA     NA
+ 6 Anthropocene MORA  <NA>  CHIN-086     NA     NA
+ 7 Anthropocene MORA  <NA>  CHIN-246     NA     NA
+ 8 Anthropocene MORA  <NA>  CHIN-247     NA     NA
+ 9 Anthropocene MORA  <NA>  CLOV-369     NA     NA
+10 Anthropocene MORA  <NA>  COLD-108     NA     NA
+# ℹ 132 more rows
+
+OFFSET 0 | MODEL MA1
+Selected rows: 637 | Finite rows: 495 | Undefined selected responses: 142
+Correlation parameter: -0.3469975 (theta; lag-1 correlation = -0.30970657)
+Warnings: none
+           era site   n
+1     Holocene MORA  20
+2 Anthropocene MORA 254
+3     Holocene NOCA  10
+4 Anthropocene NOCA 211
+Generalized least squares fit by REML
+  Model: estimate ~ era * site
+  Data: d
+       AIC      BIC    logLik
+  1171.901 1209.669 -576.9503
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+    Theta1
+-0.3469975
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | era_site
+ Parameter estimates:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.000000000       0.543343230       0.006781077       0.012833617
+
+Coefficients:
+                              Value  Std.Error   t-value p-value
+(Intercept)              -0.0010044 0.00134290 -0.747933  0.4549
+eraAnthropocene           0.5193800 0.08260752  6.287321  0.0000
+siteNOCA                  0.0059371 0.00373591  1.589203  0.1127
+eraAnthropocene:siteNOCA -0.4874826 0.09623236 -5.065683  0.0000
+
+ Correlation:
+                         (Intr) erAnth stNOCA
+eraAnthropocene          -0.016
+siteNOCA                 -0.359  0.006
+eraAnthropocene:siteNOCA  0.014 -0.858 -0.039
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-2.75203146 -0.50111625 -0.06385379  0.58745783  3.15609970
+
+Residual standard error: 1.316373
+Degrees of freedom: 495 total; 491 residual
+Era means within each park:
+site = MORA:
+ era            emmean      SE     df lower.CL upper.CL
+ Holocene     -0.00100 0.00134   2.88 -0.00538  0.00338
+ Anthropocene  0.51838 0.08260 252.98  0.35571  0.68104
+
+site = NOCA:
+ era            emmean      SE     df lower.CL upper.CL
+ Holocene      0.00493 0.00349   2.57 -0.00730  0.01716
+ Anthropocene  0.03683 0.04920 209.99 -0.06024  0.13390
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Anthropocene - Holocene within each park (unadjusted exploratory contrasts):
+site = MORA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.5194 0.0826 253   0.3567    0.682   6.287 <0.0001
+
+site = NOCA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.0319 0.0494 212  -0.0654    0.129   0.646  0.5189
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Residual SDs:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.316373293       0.715242517       0.008926428       0.016893831
+Holocene normalized residual lag products (diagnostic, not significance tests):
+# A tibble: 3 × 4
+    lag lag_years n_pairs lag_product
+  <int>     <int>   <int>       <dbl>
+1     1      1000      26      0.0412
+2     2      2000      22     -0.0366
+3     3      3000      18     -0.0104
+Undefined response identities:
+# A tibble: 142 × 6
+   era          site  lake  plot_id  age_hi age_lo
+   <chr>        <chr> <chr> <chr>     <dbl>  <dbl>
+ 1 Anthropocene MORA  <NA>  AURO-215     NA     NA
+ 2 Anthropocene MORA  <NA>  BACK-454     NA     NA
+ 3 Anthropocene MORA  <NA>  CARB-128     NA     NA
+ 4 Anthropocene MORA  <NA>  CAYU-059     NA     NA
+ 5 Anthropocene MORA  <NA>  CHIN-084     NA     NA
+ 6 Anthropocene MORA  <NA>  CHIN-086     NA     NA
+ 7 Anthropocene MORA  <NA>  CHIN-246     NA     NA
+ 8 Anthropocene MORA  <NA>  CHIN-247     NA     NA
+ 9 Anthropocene MORA  <NA>  CLOV-369     NA     NA
+10 Anthropocene MORA  <NA>  COLD-108     NA     NA
+# ℹ 132 more rows
+
+OFFSET 0 | MODEL Independent
+Selected rows: 637 | Finite rows: 495 | Undefined selected responses: 142
+Temporal correlation: none; era/site residual variances retained
+Warnings: none
+           era site   n
+1     Holocene MORA  20
+2 Anthropocene MORA 254
+3     Holocene NOCA  10
+4 Anthropocene NOCA 211
+Generalized least squares fit by REML
+  Model: estimate ~ era * site
+  Data: d
+       AIC      BIC    logLik
+  1171.486 1205.058 -577.7432
+
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | era_site
+ Parameter estimates:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.000000000       0.543343191       0.006895789       0.012619431
+
+Coefficients:
+                              Value  Std.Error   t-value p-value
+(Intercept)              -0.0014571 0.00202978 -0.717866  0.4732
+eraAnthropocene           0.5198327 0.08262155  6.291733  0.0000
+siteNOCA                  0.0067552 0.00563165  1.199499  0.2309
+eraAnthropocene:siteNOCA -0.4883007 0.09632459 -5.069325  0.0000
+
+ Correlation:
+                         (Intr) erAnth stNOCA
+eraAnthropocene          -0.025
+siteNOCA                 -0.360  0.009
+eraAnthropocene:siteNOCA  0.021 -0.858 -0.058
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-2.74126935 -0.50312519 -0.06299609  0.58745785  3.15609959
+
+Residual standard error: 1.316373
+Degrees of freedom: 495 total; 491 residual
+Era means within each park:
+site = MORA:
+ era            emmean      SE  df lower.CL upper.CL
+ Holocene     -0.00146 0.00203  19 -0.00571  0.00279
+ Anthropocene  0.51838 0.08260 253  0.35571  0.68104
+
+site = NOCA:
+ era            emmean      SE  df lower.CL upper.CL
+ Holocene      0.00530 0.00525   9 -0.00659  0.01718
+ Anthropocene  0.03683 0.04920 210 -0.06024  0.13390
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Anthropocene - Holocene within each park (unadjusted exploratory contrasts):
+site = MORA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.5198 0.0826 253   0.3571    0.683   6.292 <0.0001
+
+site = NOCA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.0315 0.0495 214  -0.0661    0.129   0.637  0.5250
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Residual SDs:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.316373338       0.715242491       0.009077433       0.016611883
+Holocene normalized residual lag products (diagnostic, not significance tests):
+# A tibble: 3 × 4
+    lag lag_years n_pairs lag_product
+  <int>     <int>   <int>       <dbl>
+1     1      1000      26     -0.262
+2     2      2000      22     -0.0147
+3     3      3000      18      0.0492
+Undefined response identities:
+# A tibble: 142 × 6
+   era          site  lake  plot_id  age_hi age_lo
+   <chr>        <chr> <chr> <chr>     <dbl>  <dbl>
+ 1 Anthropocene MORA  <NA>  AURO-215     NA     NA
+ 2 Anthropocene MORA  <NA>  BACK-454     NA     NA
+ 3 Anthropocene MORA  <NA>  CARB-128     NA     NA
+ 4 Anthropocene MORA  <NA>  CAYU-059     NA     NA
+ 5 Anthropocene MORA  <NA>  CHIN-084     NA     NA
+ 6 Anthropocene MORA  <NA>  CHIN-086     NA     NA
+ 7 Anthropocene MORA  <NA>  CHIN-246     NA     NA
+ 8 Anthropocene MORA  <NA>  CHIN-247     NA     NA
+ 9 Anthropocene MORA  <NA>  CLOV-369     NA     NA
+10 Anthropocene MORA  <NA>  COLD-108     NA     NA
+# ℹ 132 more rows
+
+OFFSET 100 | MODEL AR1
+Selected rows: 635 | Finite rows: 493 | Undefined selected responses: 142
+Correlation parameter: 0.13781585 (phi; lag-1 correlation)
+Warnings: none
+           era site   n
+1     Holocene MORA  19
+2 Anthropocene MORA 254
+3     Holocene NOCA   9
+4 Anthropocene NOCA 211
+Generalized least squares fit by REML
+  Model: estimate ~ era * site
+  Data: d
+       AIC      BIC    logLik
+  1179.604 1217.336 -580.8022
+
+Correlation Structure: AR(1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+      Phi
+0.1378159
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | era_site
+ Parameter estimates:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.000000000       0.543343145       0.005533626       0.015417623
+
+Coefficients:
+                              Value  Std.Error   t-value p-value
+(Intercept)              -0.0018726 0.00187307 -0.999768  0.3179
+eraAnthropocene           0.5202483 0.08261785  6.297045  0.0000
+siteNOCA                  0.0079074 0.00786350  1.005586  0.3151
+eraAnthropocene:siteNOCA -0.4894529 0.09648080 -5.073060  0.0000
+
+ Correlation:
+                         (Intr) erAnth stNOCA
+eraAnthropocene          -0.023
+siteNOCA                 -0.238  0.005
+eraAnthropocene:siteNOCA  0.019 -0.856 -0.082
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-2.74126950 -0.52340375 -0.06385379  0.55910401  3.15609949
+
+Residual standard error: 1.316373
+Degrees of freedom: 493 total; 489 residual
+Era means within each park:
+site = MORA:
+ era            emmean      SE     df lower.CL upper.CL
+ Holocene     -0.00187 0.00187   2.65 -0.00831  0.00456
+ Anthropocene  0.51838 0.08260 253.02  0.35571  0.68104
+
+site = NOCA:
+ era            emmean      SE     df lower.CL upper.CL
+ Holocene      0.00603 0.00764   1.72 -0.03246  0.04453
+ Anthropocene  0.03683 0.04920 209.98 -0.06024  0.13390
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Anthropocene - Holocene within each park (unadjusted exploratory contrasts):
+site = MORA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.5202 0.0826 253   0.3575    0.683   6.297 <0.0001
+
+site = NOCA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.0308 0.0498 206  -0.0674    0.129   0.618  0.5372
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Residual SDs:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.316373383       0.715242453       0.007284317       0.020295349
+Holocene normalized residual lag products (diagnostic, not significance tests):
+# A tibble: 3 × 4
+    lag lag_years n_pairs lag_product
+  <int>     <int>   <int>       <dbl>
+1     1      1000      24     -0.0861
+2     2      2000      20     -0.0854
+3     3      3000      16     -0.0415
+Undefined response identities:
+# A tibble: 142 × 6
+   era          site  lake  plot_id  age_hi age_lo
+   <chr>        <chr> <chr> <chr>     <dbl>  <dbl>
+ 1 Anthropocene MORA  <NA>  AURO-215     NA     NA
+ 2 Anthropocene MORA  <NA>  BACK-454     NA     NA
+ 3 Anthropocene MORA  <NA>  CARB-128     NA     NA
+ 4 Anthropocene MORA  <NA>  CAYU-059     NA     NA
+ 5 Anthropocene MORA  <NA>  CHIN-084     NA     NA
+ 6 Anthropocene MORA  <NA>  CHIN-086     NA     NA
+ 7 Anthropocene MORA  <NA>  CHIN-246     NA     NA
+ 8 Anthropocene MORA  <NA>  CHIN-247     NA     NA
+ 9 Anthropocene MORA  <NA>  CLOV-369     NA     NA
+10 Anthropocene MORA  <NA>  COLD-108     NA     NA
+# ℹ 132 more rows
+
+OFFSET 100 | MODEL MA1
+Selected rows: 635 | Finite rows: 493 | Undefined selected responses: 142
+Correlation parameter: 0.13258741 (theta; lag-1 correlation = 0.13029687)
+Warnings: none
+           era site   n
+1     Holocene MORA  19
+2 Anthropocene MORA 254
+3     Holocene NOCA   9
+4 Anthropocene NOCA 211
+Generalized least squares fit by REML
+  Model: estimate ~ era * site
+  Data: d
+       AIC      BIC   logLik
+  1179.604 1217.335 -580.802
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+   Theta1
+0.1325874
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | era_site
+ Parameter estimates:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.000000000       0.543343078       0.005523275       0.015373740
+
+Coefficients:
+                              Value  Std.Error   t-value p-value
+(Intercept)              -0.0018599 0.00183909 -1.011317  0.3124
+eraAnthropocene           0.5202355 0.08261709  6.296948  0.0000
+siteNOCA                  0.0078195 0.00770020  1.015490  0.3104
+eraAnthropocene:siteNOCA -0.4893650 0.09646764 -5.072841  0.0000
+
+ Correlation:
+                         (Intr) erAnth stNOCA
+eraAnthropocene          -0.022
+siteNOCA                 -0.239  0.005
+eraAnthropocene:siteNOCA  0.019 -0.856 -0.080
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-2.74126958 -0.52340370 -0.06385378  0.55910396  3.15609920
+
+Residual standard error: 1.316374
+Degrees of freedom: 493 total; 489 residual
+Era means within each park:
+site = MORA:
+ era            emmean      SE     df lower.CL upper.CL
+ Holocene     -0.00186 0.00184   3.55 -0.00723  0.00351
+ Anthropocene  0.51838 0.08260 253.06  0.35571  0.68104
+
+site = NOCA:
+ era            emmean      SE     df lower.CL upper.CL
+ Holocene      0.00596 0.00748   2.22 -0.02338  0.03530
+ Anthropocene  0.03683 0.04920 209.98 -0.06024  0.13390
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Anthropocene - Holocene within each park (unadjusted exploratory contrasts):
+site = MORA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.5202 0.0826 253   0.3575    0.683   6.297 <0.0001
+
+site = NOCA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.0309 0.0498 210  -0.0673    0.129   0.620  0.5360
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Residual SDs:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.316373503       0.715242430       0.007270692       0.020237584
+Holocene normalized residual lag products (diagnostic, not significance tests):
+# A tibble: 3 × 4
+    lag lag_years n_pairs lag_product
+  <int>     <int>   <int>       <dbl>
+1     1      1000      24     -0.0856
+2     2      2000      20     -0.0778
+3     3      3000      16     -0.0402
+Undefined response identities:
+# A tibble: 142 × 6
+   era          site  lake  plot_id  age_hi age_lo
+   <chr>        <chr> <chr> <chr>     <dbl>  <dbl>
+ 1 Anthropocene MORA  <NA>  AURO-215     NA     NA
+ 2 Anthropocene MORA  <NA>  BACK-454     NA     NA
+ 3 Anthropocene MORA  <NA>  CARB-128     NA     NA
+ 4 Anthropocene MORA  <NA>  CAYU-059     NA     NA
+ 5 Anthropocene MORA  <NA>  CHIN-084     NA     NA
+ 6 Anthropocene MORA  <NA>  CHIN-086     NA     NA
+ 7 Anthropocene MORA  <NA>  CHIN-246     NA     NA
+ 8 Anthropocene MORA  <NA>  CHIN-247     NA     NA
+ 9 Anthropocene MORA  <NA>  CLOV-369     NA     NA
+10 Anthropocene MORA  <NA>  COLD-108     NA     NA
+# ℹ 132 more rows
+
+OFFSET 100 | MODEL Independent
+Selected rows: 635 | Finite rows: 493 | Undefined selected responses: 142
+Temporal correlation: none; era/site residual variances retained
+Warnings: none
+           era site   n
+1     Holocene MORA  19
+2 Anthropocene MORA 254
+3     Holocene NOCA   9
+4 Anthropocene NOCA 211
+Generalized least squares fit by REML
+  Model: estimate ~ era * site
+  Data: d
+       AIC      BIC    logLik
+  1177.709 1211.248 -580.8547
+
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | era_site
+ Parameter estimates:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+       1.00000000        0.54334324        0.00547467        0.01499921
+
+Coefficients:
+                              Value  Std.Error   t-value p-value
+(Intercept)              -0.0017761 0.00165333 -1.074262  0.2832
+eraAnthropocene           0.5201517 0.08261315  6.296234  0.0000
+siteNOCA                  0.0069630 0.00678601  1.026075  0.3054
+eraAnthropocene:siteNOCA -0.4885085 0.09639896 -5.067570  0.0000
+
+ Correlation:
+                         (Intr) erAnth stNOCA
+eraAnthropocene          -0.020
+siteNOCA                 -0.244  0.005
+eraAnthropocene:siteNOCA  0.017 -0.857 -0.070
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-2.74126922 -0.52340379 -0.06385379  0.55910406  3.15609975
+
+Residual standard error: 1.316373
+Degrees of freedom: 493 total; 489 residual
+Era means within each park:
+site = MORA:
+ era            emmean      SE  df lower.CL upper.CL
+ Holocene     -0.00178 0.00165  18 -0.00525   0.0017
+ Anthropocene  0.51838 0.08260 253  0.35571   0.6810
+
+site = NOCA:
+ era            emmean      SE  df lower.CL upper.CL
+ Holocene      0.00519 0.00658   8 -0.00999   0.0204
+ Anthropocene  0.03683 0.04920 210 -0.06024   0.1339
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Anthropocene - Holocene within each park (unadjusted exploratory contrasts):
+site = MORA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.5202 0.0826 253   0.3575    0.683   6.296 <0.0001
+
+site = NOCA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.0316 0.0497 216  -0.0663    0.130   0.637  0.5248
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Residual SDs:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+       1.31637327        0.71524252        0.00720671        0.01974457
+Holocene normalized residual lag products (diagnostic, not significance tests):
+# A tibble: 3 × 4
+    lag lag_years n_pairs lag_product
+  <int>     <int>   <int>       <dbl>
+1     1      1000      24     -0.0432
+2     2      2000      20     -0.0925
+3     3      3000      16     -0.0639
+Undefined response identities:
+# A tibble: 142 × 6
+   era          site  lake  plot_id  age_hi age_lo
+   <chr>        <chr> <chr> <chr>     <dbl>  <dbl>
+ 1 Anthropocene MORA  <NA>  AURO-215     NA     NA
+ 2 Anthropocene MORA  <NA>  BACK-454     NA     NA
+ 3 Anthropocene MORA  <NA>  CARB-128     NA     NA
+ 4 Anthropocene MORA  <NA>  CAYU-059     NA     NA
+ 5 Anthropocene MORA  <NA>  CHIN-084     NA     NA
+ 6 Anthropocene MORA  <NA>  CHIN-086     NA     NA
+ 7 Anthropocene MORA  <NA>  CHIN-246     NA     NA
+ 8 Anthropocene MORA  <NA>  CHIN-247     NA     NA
+ 9 Anthropocene MORA  <NA>  CLOV-369     NA     NA
+10 Anthropocene MORA  <NA>  COLD-108     NA     NA
+# ℹ 132 more rows
+
+OFFSET 200 | MODEL AR1
+Selected rows: 634 | Finite rows: 492 | Undefined selected responses: 142
+Correlation parameter: -0.032324495 (phi; lag-1 correlation)
+Warnings: none
+           era site   n
+1     Holocene MORA  18
+2 Anthropocene MORA 254
+3     Holocene NOCA   9
+4 Anthropocene NOCA 211
+Generalized least squares fit by REML
+  Model: estimate ~ era * site
+  Data: d
+       AIC      BIC    logLik
+  1153.034 1190.746 -567.5168
+
+Correlation Structure: AR(1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+        Phi
+-0.03232449
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | era_site
+ Parameter estimates:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.000000000       0.543343210       0.002136337       0.013452021
+
+Coefficients:
+                              Value  Std.Error   t-value p-value
+(Intercept)              -0.0007796 0.00064513 -1.208401  0.2275
+eraAnthropocene           0.5191552 0.08259913  6.285238  0.0000
+siteNOCA                  0.0056675 0.00577097  0.982073  0.3266
+eraAnthropocene:siteNOCA -0.4872130 0.09633284 -5.057601  0.0000
+
+ Correlation:
+                         (Intr) erAnth stNOCA
+eraAnthropocene          -0.008
+siteNOCA                 -0.112  0.001
+eraAnthropocene:siteNOCA  0.007 -0.857 -0.060
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-2.74126926 -0.54633532 -0.06974804  0.60859334  3.15609960
+
+Residual standard error: 1.316373
+Degrees of freedom: 492 total; 488 residual
+Era means within each park:
+site = MORA:
+ era            emmean       SE     df lower.CL upper.CL
+ Holocene     -0.00078 0.000645   6.79 -0.00231 0.000755
+ Anthropocene  0.51838 0.082600 253.05  0.35571 0.681040
+
+site = NOCA:
+ era            emmean       SE     df lower.CL upper.CL
+ Holocene      0.00489 0.005730   4.45 -0.01042 0.020196
+ Anthropocene  0.03683 0.049200 209.94 -0.06024 0.133897
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Anthropocene - Holocene within each park (unadjusted exploratory contrasts):
+site = MORA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.5192 0.0826 253   0.3565    0.682   6.285 <0.0001
+
+site = NOCA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.0319 0.0496 214  -0.0658    0.130   0.644  0.5200
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Residual SDs:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.316373337       0.715242514       0.002812217       0.017707881
+Holocene normalized residual lag products (diagnostic, not significance tests):
+# A tibble: 3 × 4
+    lag lag_years n_pairs lag_product
+  <int>     <int>   <int>       <dbl>
+1     1      1000      23     -0.0800
+2     2      2000      19     -0.0610
+3     3      3000      15     -0.284
+Undefined response identities:
+# A tibble: 142 × 6
+   era          site  lake  plot_id  age_hi age_lo
+   <chr>        <chr> <chr> <chr>     <dbl>  <dbl>
+ 1 Anthropocene MORA  <NA>  AURO-215     NA     NA
+ 2 Anthropocene MORA  <NA>  BACK-454     NA     NA
+ 3 Anthropocene MORA  <NA>  CARB-128     NA     NA
+ 4 Anthropocene MORA  <NA>  CAYU-059     NA     NA
+ 5 Anthropocene MORA  <NA>  CHIN-084     NA     NA
+ 6 Anthropocene MORA  <NA>  CHIN-086     NA     NA
+ 7 Anthropocene MORA  <NA>  CHIN-246     NA     NA
+ 8 Anthropocene MORA  <NA>  CHIN-247     NA     NA
+ 9 Anthropocene MORA  <NA>  CLOV-369     NA     NA
+10 Anthropocene MORA  <NA>  COLD-108     NA     NA
+# ℹ 132 more rows
+
+OFFSET 200 | MODEL MA1
+Selected rows: 634 | Finite rows: 492 | Undefined selected responses: 142
+Correlation parameter: -0.030606561 (theta; lag-1 correlation = -0.030577916)
+Warnings: none
+           era site   n
+1     Holocene MORA  18
+2 Anthropocene MORA 254
+3     Holocene NOCA   9
+4 Anthropocene NOCA 211
+Generalized least squares fit by REML
+  Model: estimate ~ era * site
+  Data: d
+       AIC      BIC    logLik
+  1153.034 1190.747 -567.5171
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+     Theta1
+-0.03060656
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | era_site
+ Parameter estimates:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+       1.00000000        0.54334323        0.00213644        0.01345192
+
+Coefficients:
+                              Value  Std.Error   t-value p-value
+(Intercept)              -0.0007806 0.00064570 -1.208993  0.2273
+eraAnthropocene           0.5191563 0.08259913  6.285251  0.0000
+siteNOCA                  0.0056752 0.00577562  0.982609  0.3263
+eraAnthropocene:siteNOCA -0.4872207 0.09633311 -5.057666  0.0000
+
+ Correlation:
+                         (Intr) erAnth stNOCA
+eraAnthropocene          -0.008
+siteNOCA                 -0.112  0.001
+eraAnthropocene:siteNOCA  0.007 -0.857 -0.060
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-2.74126927 -0.54633532 -0.06974804  0.60868067  3.15609972
+
+Residual standard error: 1.316373
+Degrees of freedom: 492 total; 488 residual
+Era means within each park:
+site = MORA:
+ era             emmean       SE    df lower.CL upper.CL
+ Holocene     -0.000781 0.000646  11.4 -0.00220 0.000634
+ Anthropocene  0.518376 0.082600 253.1  0.35571 0.681040
+
+site = NOCA:
+ era             emmean       SE    df lower.CL upper.CL
+ Holocene      0.004895 0.005740   6.3 -0.00899 0.018778
+ Anthropocene  0.036830 0.049200 210.0 -0.06024 0.133897
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Anthropocene - Holocene within each park (unadjusted exploratory contrasts):
+site = MORA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.5192 0.0826 253   0.3565    0.682   6.285 <0.0001
+
+site = NOCA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.0319 0.0496 214  -0.0658    0.130   0.644  0.5201
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Residual SDs:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.316373287       0.715242511       0.002812353       0.017707743
+Holocene normalized residual lag products (diagnostic, not significance tests):
+# A tibble: 3 × 4
+    lag lag_years n_pairs lag_product
+  <int>     <int>   <int>       <dbl>
+1     1      1000      23     -0.0811
+2     2      2000      19     -0.0602
+3     3      3000      15     -0.283
+Undefined response identities:
+# A tibble: 142 × 6
+   era          site  lake  plot_id  age_hi age_lo
+   <chr>        <chr> <chr> <chr>     <dbl>  <dbl>
+ 1 Anthropocene MORA  <NA>  AURO-215     NA     NA
+ 2 Anthropocene MORA  <NA>  BACK-454     NA     NA
+ 3 Anthropocene MORA  <NA>  CARB-128     NA     NA
+ 4 Anthropocene MORA  <NA>  CAYU-059     NA     NA
+ 5 Anthropocene MORA  <NA>  CHIN-084     NA     NA
+ 6 Anthropocene MORA  <NA>  CHIN-086     NA     NA
+ 7 Anthropocene MORA  <NA>  CHIN-246     NA     NA
+ 8 Anthropocene MORA  <NA>  CHIN-247     NA     NA
+ 9 Anthropocene MORA  <NA>  CLOV-369     NA     NA
+10 Anthropocene MORA  <NA>  COLD-108     NA     NA
+# ℹ 132 more rows
+
+OFFSET 200 | MODEL Independent
+Selected rows: 634 | Finite rows: 492 | Undefined selected responses: 142
+Temporal correlation: none; era/site residual variances retained
+Warnings: none
+           era site   n
+1     Holocene MORA  18
+2 Anthropocene MORA 254
+3     Holocene NOCA   9
+4 Anthropocene NOCA 211
+Generalized least squares fit by REML
+  Model: estimate ~ era * site
+  Data: d
+       AIC      BIC    logLik
+  1151.045 1184.567 -567.5225
+
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | era_site
+ Parameter estimates:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.000000000       0.543343118       0.002140684       0.013477357
+
+Coefficients:
+                              Value  Std.Error   t-value p-value
+(Intercept)              -0.0008081 0.00066419 -1.216725  0.2243
+eraAnthropocene           0.5191838 0.08259929  6.285572  0.0000
+siteNOCA                  0.0058553 0.00595093  0.983930  0.3256
+eraAnthropocene:siteNOCA -0.4874008 0.09634379 -5.058975  0.0000
+
+ Correlation:
+                         (Intr) erAnth stNOCA
+eraAnthropocene          -0.008
+siteNOCA                 -0.112  0.001
+eraAnthropocene:siteNOCA  0.007 -0.857 -0.062
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-2.74126952 -0.54633535 -0.06974804  0.61081761  3.15609937
+
+Residual standard error: 1.316373
+Degrees of freedom: 492 total; 488 residual
+Era means within each park:
+site = MORA:
+ era             emmean       SE  df lower.CL upper.CL
+ Holocene     -0.000808 0.000664  17 -0.00221 0.000593
+ Anthropocene  0.518376 0.082600 253  0.35571 0.681040
+
+site = NOCA:
+ era             emmean       SE  df lower.CL upper.CL
+ Holocene      0.005047 0.005910   8 -0.00859 0.018684
+ Anthropocene  0.036830 0.049200 210 -0.06024 0.133897
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Anthropocene - Holocene within each park (unadjusted exploratory contrasts):
+site = MORA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.5192 0.0826 253    0.357    0.682   6.286 <0.0001
+
+site = NOCA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.0318 0.0496 215   -0.066    0.130   0.641  0.5223
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Residual SDs:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+       1.31637343        0.71524245        0.00281794        0.01774123
+Holocene normalized residual lag products (diagnostic, not significance tests):
+# A tibble: 3 × 4
+    lag lag_years n_pairs lag_product
+  <int>     <int>   <int>       <dbl>
+1     1      1000      23     -0.0974
+2     2      2000      19     -0.0543
+3     3      3000      15     -0.271
+Undefined response identities:
+# A tibble: 142 × 6
+   era          site  lake  plot_id  age_hi age_lo
+   <chr>        <chr> <chr> <chr>     <dbl>  <dbl>
+ 1 Anthropocene MORA  <NA>  AURO-215     NA     NA
+ 2 Anthropocene MORA  <NA>  BACK-454     NA     NA
+ 3 Anthropocene MORA  <NA>  CARB-128     NA     NA
+ 4 Anthropocene MORA  <NA>  CAYU-059     NA     NA
+ 5 Anthropocene MORA  <NA>  CHIN-084     NA     NA
+ 6 Anthropocene MORA  <NA>  CHIN-086     NA     NA
+ 7 Anthropocene MORA  <NA>  CHIN-246     NA     NA
+ 8 Anthropocene MORA  <NA>  CHIN-247     NA     NA
+ 9 Anthropocene MORA  <NA>  CLOV-369     NA     NA
+10 Anthropocene MORA  <NA>  COLD-108     NA     NA
+# ℹ 132 more rows
+
+OFFSET 300 | MODEL AR1
+Selected rows: 634 | Finite rows: 492 | Undefined selected responses: 142
+Correlation parameter: -0.22996139 (phi; lag-1 correlation)
+Warnings: none
+           era site   n
+1     Holocene MORA  18
+2 Anthropocene MORA 254
+3     Holocene NOCA   9
+4 Anthropocene NOCA 211
+Generalized least squares fit by REML
+  Model: estimate ~ era * site
+  Data: d
+       AIC      BIC    logLik
+  1158.516 1196.229 -570.2581
+
+Correlation Structure: AR(1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+       Phi
+-0.2299614
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | era_site
+ Parameter estimates:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.000000000       0.543342611       0.002463691       0.014448258
+
+Coefficients:
+                              Value  Std.Error   t-value p-value
+(Intercept)               0.0002311 0.00062462  0.369965  0.7116
+eraAnthropocene           0.5181446 0.08259901  6.273012  0.0000
+siteNOCA                  0.0032315 0.00516181  0.626043  0.5316
+eraAnthropocene:siteNOCA -0.4847770 0.09629828 -5.034120  0.0000
+
+ Correlation:
+                         (Intr) erAnth stNOCA
+eraAnthropocene          -0.008
+siteNOCA                 -0.121  0.001
+eraAnthropocene:siteNOCA  0.006 -0.858 -0.054
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-2.74127112 -0.50883591 -0.06890693  0.60782451  3.15609826
+
+Residual standard error: 1.316374
+Degrees of freedom: 492 total; 488 residual
+Era means within each park:
+site = MORA:
+ era            emmean       SE     df lower.CL upper.CL
+ Holocene     0.000231 0.000625   5.13 -0.00136  0.00182
+ Anthropocene 0.518376 0.082600 253.06  0.35571  0.68104
+
+site = NOCA:
+ era            emmean       SE     df lower.CL upper.CL
+ Holocene     0.003463 0.005120   3.96 -0.01082  0.01774
+ Anthropocene 0.036830 0.049200 209.99 -0.06024  0.13390
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Anthropocene - Holocene within each park (unadjusted exploratory contrasts):
+site = MORA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.5181 0.0826 253   0.3555    0.681   6.273 <0.0001
+
+site = NOCA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.0334 0.0495 213  -0.0642    0.131   0.674  0.5010
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Residual SDs:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.316373896       0.715242029       0.003243138       0.019019310
+Holocene normalized residual lag products (diagnostic, not significance tests):
+# A tibble: 3 × 4
+    lag lag_years n_pairs lag_product
+  <int>     <int>   <int>       <dbl>
+1     1      1000      23     -0.0515
+2     2      2000      19      0.222
+3     3      3000      15     -0.0811
+Undefined response identities:
+# A tibble: 142 × 6
+   era          site  lake  plot_id  age_hi age_lo
+   <chr>        <chr> <chr> <chr>     <dbl>  <dbl>
+ 1 Anthropocene MORA  <NA>  AURO-215     NA     NA
+ 2 Anthropocene MORA  <NA>  BACK-454     NA     NA
+ 3 Anthropocene MORA  <NA>  CARB-128     NA     NA
+ 4 Anthropocene MORA  <NA>  CAYU-059     NA     NA
+ 5 Anthropocene MORA  <NA>  CHIN-084     NA     NA
+ 6 Anthropocene MORA  <NA>  CHIN-086     NA     NA
+ 7 Anthropocene MORA  <NA>  CHIN-246     NA     NA
+ 8 Anthropocene MORA  <NA>  CHIN-247     NA     NA
+ 9 Anthropocene MORA  <NA>  CLOV-369     NA     NA
+10 Anthropocene MORA  <NA>  COLD-108     NA     NA
+# ℹ 132 more rows
+
+OFFSET 300 | MODEL MA1
+Selected rows: 634 | Finite rows: 492 | Undefined selected responses: 142
+Correlation parameter: -0.1028148 (theta; lag-1 correlation = -0.10173933)
+Warnings: none
+           era site   n
+1     Holocene MORA  18
+2 Anthropocene MORA 254
+3     Holocene NOCA   9
+4 Anthropocene NOCA 211
+Generalized least squares fit by REML
+  Model: estimate ~ era * site
+  Data: d
+       AIC     BIC    logLik
+  1158.777 1196.49 -570.3886
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+    Theta1
+-0.1028148
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | era_site
+ Parameter estimates:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.000000000       0.543343135       0.002458292       0.014239208
+
+Coefficients:
+                              Value  Std.Error   t-value p-value
+(Intercept)               0.0001881 0.00069412  0.271013  0.7865
+eraAnthropocene           0.5181875 0.08259953  6.273492  0.0000
+siteNOCA                  0.0038018 0.00569113  0.668022  0.5044
+eraAnthropocene:siteNOCA -0.4853473 0.09632809 -5.038482  0.0000
+
+ Correlation:
+                         (Intr) erAnth stNOCA
+eraAnthropocene          -0.008
+siteNOCA                 -0.122  0.001
+eraAnthropocene:siteNOCA  0.007 -0.857 -0.059
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-2.74126951 -0.50477100 -0.06463652  0.60782430  3.15609945
+
+Residual standard error: 1.316373
+Degrees of freedom: 492 total; 488 residual
+Era means within each park:
+site = MORA:
+ era            emmean       SE     df lower.CL upper.CL
+ Holocene     0.000188 0.000694   6.76 -0.00146  0.00184
+ Anthropocene 0.518376 0.082600 253.14  0.35571  0.68104
+
+site = NOCA:
+ era            emmean       SE     df lower.CL upper.CL
+ Holocene     0.003990 0.005650   4.52 -0.01101  0.01899
+ Anthropocene 0.036830 0.049200 209.98 -0.06024  0.13390
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Anthropocene - Holocene within each park (unadjusted exploratory contrasts):
+site = MORA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.5182 0.0826 253   0.3555    0.681   6.273 <0.0001
+
+site = NOCA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.0328 0.0496 214  -0.0649    0.131   0.663  0.5083
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Residual SDs:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+       1.31637340        0.71524245        0.00323603        0.01874411
+Holocene normalized residual lag products (diagnostic, not significance tests):
+# A tibble: 3 × 4
+    lag lag_years n_pairs lag_product
+  <int>     <int>   <int>       <dbl>
+1     1      1000      23     -0.119
+2     2      2000      19      0.231
+3     3      3000      15     -0.0835
+Undefined response identities:
+# A tibble: 142 × 6
+   era          site  lake  plot_id  age_hi age_lo
+   <chr>        <chr> <chr> <chr>     <dbl>  <dbl>
+ 1 Anthropocene MORA  <NA>  AURO-215     NA     NA
+ 2 Anthropocene MORA  <NA>  BACK-454     NA     NA
+ 3 Anthropocene MORA  <NA>  CARB-128     NA     NA
+ 4 Anthropocene MORA  <NA>  CAYU-059     NA     NA
+ 5 Anthropocene MORA  <NA>  CHIN-084     NA     NA
+ 6 Anthropocene MORA  <NA>  CHIN-086     NA     NA
+ 7 Anthropocene MORA  <NA>  CHIN-246     NA     NA
+ 8 Anthropocene MORA  <NA>  CHIN-247     NA     NA
+ 9 Anthropocene MORA  <NA>  CLOV-369     NA     NA
+10 Anthropocene MORA  <NA>  COLD-108     NA     NA
+# ℹ 132 more rows
+
+OFFSET 300 | MODEL Independent
+Selected rows: 634 | Finite rows: 492 | Undefined selected responses: 142
+Temporal correlation: none; era/site residual variances retained
+Warnings: none
+           era site   n
+1     Holocene MORA  18
+2 Anthropocene MORA 254
+3     Holocene NOCA   9
+4 Anthropocene NOCA 211
+Generalized least squares fit by REML
+  Model: estimate ~ era * site
+  Data: d
+       AIC      BIC    logLik
+  1156.974 1190.497 -570.4872
+
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | era_site
+ Parameter estimates:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.000000000       0.543343654       0.002480769       0.014271943
+
+Coefficients:
+                              Value  Std.Error   t-value p-value
+(Intercept)               0.0001466 0.00076971  0.190428  0.8491
+eraAnthropocene           0.5182291 0.08260016  6.273947  0.0000
+siteNOCA                  0.0043952 0.00630952  0.696602  0.4864
+eraAnthropocene:siteNOCA -0.4859407 0.09636658 -5.042627  0.0000
+
+ Correlation:
+                         (Intr) erAnth stNOCA
+eraAnthropocene          -0.009
+siteNOCA                 -0.122  0.001
+eraAnthropocene:siteNOCA  0.008 -0.857 -0.065
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-2.74126808 -0.49851712 -0.06463652  0.60782413  3.15610082
+
+Residual standard error: 1.316373
+Degrees of freedom: 492 total; 488 residual
+Era means within each park:
+site = MORA:
+ era            emmean      SE  df lower.CL upper.CL
+ Holocene     0.000147 0.00077  17 -0.00148  0.00177
+ Anthropocene 0.518376 0.08260 253  0.35571  0.68104
+
+site = NOCA:
+ era            emmean      SE  df lower.CL upper.CL
+ Holocene     0.004542 0.00626   8 -0.00990  0.01898
+ Anthropocene 0.036830 0.04920 210 -0.06024  0.13390
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Anthropocene - Holocene within each park (unadjusted exploratory contrasts):
+site = MORA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.5182 0.0826 253   0.3556    0.681   6.274 <0.0001
+
+site = NOCA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.0323 0.0496 215  -0.0655    0.130   0.651  0.5161
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Residual SDs:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.316372829       0.715242823       0.003265617       0.018787198
+Holocene normalized residual lag products (diagnostic, not significance tests):
+# A tibble: 3 × 4
+    lag lag_years n_pairs lag_product
+  <int>     <int>   <int>       <dbl>
+1     1      1000      23     -0.171
+2     2      2000      19      0.233
+3     3      3000      15     -0.0811
+Undefined response identities:
+# A tibble: 142 × 6
+   era          site  lake  plot_id  age_hi age_lo
+   <chr>        <chr> <chr> <chr>     <dbl>  <dbl>
+ 1 Anthropocene MORA  <NA>  AURO-215     NA     NA
+ 2 Anthropocene MORA  <NA>  BACK-454     NA     NA
+ 3 Anthropocene MORA  <NA>  CARB-128     NA     NA
+ 4 Anthropocene MORA  <NA>  CAYU-059     NA     NA
+ 5 Anthropocene MORA  <NA>  CHIN-084     NA     NA
+ 6 Anthropocene MORA  <NA>  CHIN-086     NA     NA
+ 7 Anthropocene MORA  <NA>  CHIN-246     NA     NA
+ 8 Anthropocene MORA  <NA>  CHIN-247     NA     NA
+ 9 Anthropocene MORA  <NA>  CLOV-369     NA     NA
+10 Anthropocene MORA  <NA>  COLD-108     NA     NA
+# ℹ 132 more rows
+
+OFFSET 400 | MODEL AR1
+Selected rows: 634 | Finite rows: 491 | Undefined selected responses: 143
+Correlation parameter: -0.3906092 (phi; lag-1 correlation)
+Warnings: none
+           era site   n
+1     Holocene MORA  17
+2 Anthropocene MORA 254
+3     Holocene NOCA   9
+4 Anthropocene NOCA 211
+Generalized least squares fit by REML
+  Model: estimate ~ era * site
+  Data: d
+       AIC    BIC    logLik
+  1157.905 1195.6 -569.9526
+
+Correlation Structure: AR(1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+       Phi
+-0.3906092
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | era_site
+ Parameter estimates:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.000000000       0.543343260       0.001858841       0.015945247
+
+Coefficients:
+                              Value  Std.Error   t-value p-value
+(Intercept)               0.0013253 0.00041392  3.201744  0.0015
+eraAnthropocene           0.5170504 0.08259764  6.259869  0.0000
+siteNOCA                  0.0017123 0.00480121  0.356629  0.7215
+eraAnthropocene:siteNOCA -0.4832578 0.09627960 -5.019316  0.0000
+
+ Correlation:
+                         (Intr) erAnth stNOCA
+eraAnthropocene          -0.005
+siteNOCA                 -0.086  0.000
+eraAnthropocene:siteNOCA  0.004 -0.858 -0.050
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-2.74126916 -0.52310320 -0.08225287  0.60785841  3.15609977
+
+Residual standard error: 1.316373
+Degrees of freedom: 491 total; 487 residual
+Era means within each park:
+site = MORA:
+ era           emmean       SE     df lower.CL upper.CL
+ Holocene     0.00133 0.000414   5.14  0.00027  0.00238
+ Anthropocene 0.51838 0.082600 252.96  0.35571  0.68104
+
+site = NOCA:
+ era           emmean       SE     df lower.CL upper.CL
+ Holocene     0.00304 0.004780   4.89 -0.00935  0.01542
+ Anthropocene 0.03683 0.049200 210.02 -0.06024  0.13390
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Anthropocene - Holocene within each park (unadjusted exploratory contrasts):
+site = MORA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.5171 0.0826 253   0.3544    0.680   6.260 <0.0001
+
+site = NOCA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.0338 0.0495 213  -0.0637    0.131   0.683  0.4953
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Residual SDs:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.316373265       0.715242541       0.002446929       0.020989897
+Holocene normalized residual lag products (diagnostic, not significance tests):
+# A tibble: 3 × 4
+    lag lag_years n_pairs lag_product
+  <int>     <int>   <int>       <dbl>
+1     1      1000      22      -0.163
+2     2      2000      18      -0.215
+3     3      3000      14      -0.133
+Undefined response identities:
+# A tibble: 143 × 6
+   era          site  lake           plot_id  age_hi age_lo
+   <chr>        <chr> <chr>          <chr>     <dbl>  <dbl>
+ 1 Holocene     MORA  ReflectionPond <NA>       6900   5900
+ 2 Anthropocene MORA  <NA>           AURO-215     NA     NA
+ 3 Anthropocene MORA  <NA>           BACK-454     NA     NA
+ 4 Anthropocene MORA  <NA>           CARB-128     NA     NA
+ 5 Anthropocene MORA  <NA>           CAYU-059     NA     NA
+ 6 Anthropocene MORA  <NA>           CHIN-084     NA     NA
+ 7 Anthropocene MORA  <NA>           CHIN-086     NA     NA
+ 8 Anthropocene MORA  <NA>           CHIN-246     NA     NA
+ 9 Anthropocene MORA  <NA>           CHIN-247     NA     NA
+10 Anthropocene MORA  <NA>           CLOV-369     NA     NA
+# ℹ 133 more rows
+
+OFFSET 400 | MODEL MA1
+Selected rows: 634 | Finite rows: 491 | Undefined selected responses: 143
+Correlation parameter: -0.99973007 (theta; lag-1 correlation = -0.49999998)
+Warnings: none
+           era site   n
+1     Holocene MORA  17
+2 Anthropocene MORA 254
+3     Holocene NOCA   9
+4 Anthropocene NOCA 211
+Generalized least squares fit by REML
+  Model: estimate ~ era * site
+  Data: d
+       AIC      BIC    logLik
+  1156.202 1193.896 -569.1008
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+    Theta1
+-0.9997301
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | era_site
+ Parameter estimates:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.000000000       0.543343242       0.001822159       0.017780203
+
+Coefficients:
+                              Value  Std.Error   t-value p-value
+(Intercept)               0.0012327 0.00019784  6.230848  0.0000
+eraAnthropocene           0.5171429 0.08259684  6.261050  0.0000
+siteNOCA                  0.0004730 0.00183282  0.258099  0.7964
+eraAnthropocene:siteNOCA -0.4820186 0.09617728 -5.011771  0.0000
+
+ Correlation:
+                         (Intr) erAnth stNOCA
+eraAnthropocene          -0.002
+siteNOCA                 -0.108  0.000
+eraAnthropocene:siteNOCA  0.002 -0.859 -0.019
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-2.74126922 -0.51485903 -0.07968286  0.60785841  3.15609974
+
+Residual standard error: 1.316373
+Degrees of freedom: 491 total; 487 residual
+Era means within each park:
+site = MORA:
+ era           emmean       SE  df  lower.CL upper.CL
+ Holocene     0.00123 0.000198 483  0.000844  0.00162
+ Anthropocene 0.51838 0.082600 483  0.356083  0.68067
+
+site = NOCA:
+ era           emmean       SE  df  lower.CL upper.CL
+ Holocene     0.00171 0.001820 483 -0.001875  0.00529
+ Anthropocene 0.03683 0.049200 483 -0.059920  0.13358
+
+Degrees-of-freedom method: df.error
+Confidence level used: 0.95
+Anthropocene - Holocene within each park (unadjusted exploratory contrasts):
+site = MORA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.5171 0.0826 483   0.3548    0.679   6.261 <0.0001
+
+site = NOCA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.0351 0.0493 483  -0.0617    0.132   0.713  0.4763
+
+Degrees-of-freedom method: df.error
+Confidence level used: 0.95
+Residual SDs:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.316373276       0.715242524       0.002398641       0.023405384
+Holocene normalized residual lag products (diagnostic, not significance tests):
+# A tibble: 3 × 4
+    lag lag_years n_pairs lag_product
+  <int>     <int>   <int>       <dbl>
+1     1      1000      22      -0.116
+2     2      2000      18      -0.130
+3     3      3000      14      -0.146
+Undefined response identities:
+# A tibble: 143 × 6
+   era          site  lake           plot_id  age_hi age_lo
+   <chr>        <chr> <chr>          <chr>     <dbl>  <dbl>
+ 1 Holocene     MORA  ReflectionPond <NA>       6900   5900
+ 2 Anthropocene MORA  <NA>           AURO-215     NA     NA
+ 3 Anthropocene MORA  <NA>           BACK-454     NA     NA
+ 4 Anthropocene MORA  <NA>           CARB-128     NA     NA
+ 5 Anthropocene MORA  <NA>           CAYU-059     NA     NA
+ 6 Anthropocene MORA  <NA>           CHIN-084     NA     NA
+ 7 Anthropocene MORA  <NA>           CHIN-086     NA     NA
+ 8 Anthropocene MORA  <NA>           CHIN-246     NA     NA
+ 9 Anthropocene MORA  <NA>           CHIN-247     NA     NA
+10 Anthropocene MORA  <NA>           CLOV-369     NA     NA
+# ℹ 133 more rows
+
+OFFSET 400 | MODEL Independent
+Selected rows: 634 | Finite rows: 491 | Undefined selected responses: 143
+Temporal correlation: none; era/site residual variances retained
+Warnings: none
+           era site   n
+1     Holocene MORA  17
+2 Anthropocene MORA 254
+3     Holocene NOCA   9
+4 Anthropocene NOCA 211
+Generalized least squares fit by REML
+  Model: estimate ~ era * site
+  Data: d
+       AIC      BIC    logLik
+  1157.152 1190.658 -570.5758
+
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | era_site
+ Parameter estimates:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.000000000       0.543342952       0.001884894       0.014645916
+
+Coefficients:
+                              Value  Std.Error   t-value p-value
+(Intercept)               0.0014316 0.00060179  2.378964  0.0177
+eraAnthropocene           0.5169440 0.08259881  6.258492  0.0000
+siteNOCA                  0.0030484 0.00645461  0.472280  0.6369
+eraAnthropocene:siteNOCA -0.4845939 0.09637621 -5.028149  0.0000
+
+ Correlation:
+                         (Intr) erAnth stNOCA
+eraAnthropocene          -0.007
+siteNOCA                 -0.093  0.001
+eraAnthropocene:siteNOCA  0.006 -0.857 -0.067
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-2.74127016 -0.53422265 -0.08403759  0.60542125  3.15609913
+
+Residual standard error: 1.316374
+Degrees of freedom: 491 total; 487 residual
+Era means within each park:
+site = MORA:
+ era           emmean       SE  df  lower.CL upper.CL
+ Holocene     0.00143 0.000602  16  0.000156  0.00271
+ Anthropocene 0.51838 0.082600 253  0.355711  0.68104
+
+site = NOCA:
+ era           emmean       SE  df  lower.CL upper.CL
+ Holocene     0.00448 0.006430   8 -0.010340  0.01930
+ Anthropocene 0.03683 0.049200 210 -0.060236  0.13390
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Anthropocene - Holocene within each park (unadjusted exploratory contrasts):
+site = MORA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.5169 0.0826 253   0.3543     0.68   6.258 <0.0001
+
+site = NOCA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.0324 0.0497 216  -0.0655     0.13   0.651  0.5154
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Residual SDs:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.316373533       0.715242281       0.002481225       0.019279496
+Holocene normalized residual lag products (diagnostic, not significance tests):
+# A tibble: 3 × 4
+    lag lag_years n_pairs lag_product
+  <int>     <int>   <int>       <dbl>
+1     1      1000      22      -0.225
+2     2      2000      18      -0.140
+3     3      3000      14      -0.113
+Undefined response identities:
+# A tibble: 143 × 6
+   era          site  lake           plot_id  age_hi age_lo
+   <chr>        <chr> <chr>          <chr>     <dbl>  <dbl>
+ 1 Holocene     MORA  ReflectionPond <NA>       6900   5900
+ 2 Anthropocene MORA  <NA>           AURO-215     NA     NA
+ 3 Anthropocene MORA  <NA>           BACK-454     NA     NA
+ 4 Anthropocene MORA  <NA>           CARB-128     NA     NA
+ 5 Anthropocene MORA  <NA>           CAYU-059     NA     NA
+ 6 Anthropocene MORA  <NA>           CHIN-084     NA     NA
+ 7 Anthropocene MORA  <NA>           CHIN-086     NA     NA
+ 8 Anthropocene MORA  <NA>           CHIN-246     NA     NA
+ 9 Anthropocene MORA  <NA>           CHIN-247     NA     NA
+10 Anthropocene MORA  <NA>           CLOV-369     NA     NA
+# ℹ 133 more rows
+
+OFFSET 500 | MODEL AR1
+Selected rows: 633 | Finite rows: 491 | Undefined selected responses: 142
+Correlation parameter: -0.3223801 (phi; lag-1 correlation)
+Warnings: none
+           era site   n
+1     Holocene MORA  17
+2 Anthropocene MORA 254
+3     Holocene NOCA   9
+4 Anthropocene NOCA 211
+Generalized least squares fit by REML
+  Model: estimate ~ era * site
+  Data: d
+       AIC      BIC    logLik
+  1156.429 1194.124 -569.2146
+
+Correlation Structure: AR(1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+       Phi
+-0.3223801
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | era_site
+ Parameter estimates:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.000000000       0.543343215       0.001952364       0.012429680
+
+Coefficients:
+                              Value  Std.Error   t-value p-value
+(Intercept)               0.0009576 0.00046673  2.051816  0.0407
+eraAnthropocene           0.5174180 0.08259793  6.264298  0.0000
+siteNOCA                  0.0001851 0.00404150  0.045803  0.9635
+eraAnthropocene:siteNOCA -0.4817306 0.09624471 -5.005269  0.0000
+
+ Correlation:
+                         (Intr) erAnth stNOCA
+eraAnthropocene          -0.006
+siteNOCA                 -0.115  0.001
+eraAnthropocene:siteNOCA  0.005 -0.858 -0.042
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-3.15388625 -0.51485902 -0.07730568  0.60785841  3.15609966
+
+Residual standard error: 1.316373
+Degrees of freedom: 491 total; 487 residual
+Era means within each park:
+site = MORA:
+ era            emmean       SE     df  lower.CL upper.CL
+ Holocene     0.000958 0.000467   4.75 -0.000261  0.00218
+ Anthropocene 0.518376 0.082600 252.95  0.355711  0.68104
+
+site = NOCA:
+ era            emmean       SE     df  lower.CL upper.CL
+ Holocene     0.001143 0.004010   4.67 -0.009403  0.01169
+ Anthropocene 0.036830 0.049200 209.99 -0.060237  0.13390
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Anthropocene - Holocene within each park (unadjusted exploratory contrasts):
+site = MORA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.5174 0.0826 253   0.3548    0.680   6.264 <0.0001
+
+site = NOCA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.0357 0.0494 212  -0.0617    0.133   0.722  0.4709
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Residual SDs:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+       1.31637331        0.71524251        0.00257004        0.01636210
+Holocene normalized residual lag products (diagnostic, not significance tests):
+# A tibble: 3 × 4
+    lag lag_years n_pairs lag_product
+  <int>     <int>   <int>       <dbl>
+1     1      1000      22      -0.119
+2     2      2000      18      -0.113
+3     3      3000      14      -0.220
+Undefined response identities:
+# A tibble: 142 × 6
+   era          site  lake  plot_id  age_hi age_lo
+   <chr>        <chr> <chr> <chr>     <dbl>  <dbl>
+ 1 Anthropocene MORA  <NA>  AURO-215     NA     NA
+ 2 Anthropocene MORA  <NA>  BACK-454     NA     NA
+ 3 Anthropocene MORA  <NA>  CARB-128     NA     NA
+ 4 Anthropocene MORA  <NA>  CAYU-059     NA     NA
+ 5 Anthropocene MORA  <NA>  CHIN-084     NA     NA
+ 6 Anthropocene MORA  <NA>  CHIN-086     NA     NA
+ 7 Anthropocene MORA  <NA>  CHIN-246     NA     NA
+ 8 Anthropocene MORA  <NA>  CHIN-247     NA     NA
+ 9 Anthropocene MORA  <NA>  CLOV-369     NA     NA
+10 Anthropocene MORA  <NA>  COLD-108     NA     NA
+# ℹ 132 more rows
+
+OFFSET 500 | MODEL MA1
+Selected rows: 633 | Finite rows: 491 | Undefined selected responses: 142
+Correlation parameter: -0.46136375 (theta; lag-1 correlation = -0.38039434)
+Warnings: none
+           era site   n
+1     Holocene MORA  17
+2 Anthropocene MORA 254
+3     Holocene NOCA   9
+4 Anthropocene NOCA 211
+Generalized least squares fit by REML
+  Model: estimate ~ era * site
+  Data: d
+       AIC      BIC    logLik
+  1156.273 1193.967 -569.1365
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+    Theta1
+-0.4613638
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | era_site
+ Parameter estimates:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.000000000       0.543343314       0.001965288       0.012563949
+
+Coefficients:
+                              Value  Std.Error   t-value p-value
+(Intercept)               0.0010000 0.00036586  2.733375  0.0065
+eraAnthropocene           0.5173756 0.08259740  6.263824  0.0000
+siteNOCA                 -0.0001899 0.00301834 -0.062921  0.9499
+eraAnthropocene:siteNOCA -0.4813556 0.09620716 -5.003324  0.0000
+
+ Correlation:
+                         (Intr) erAnth stNOCA
+eraAnthropocene          -0.004
+siteNOCA                 -0.121  0.001
+eraAnthropocene:siteNOCA  0.004 -0.859 -0.031
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-3.14953310 -0.51485912 -0.07672812  0.61235280  3.15610027
+
+Residual standard error: 1.316373
+Degrees of freedom: 491 total; 487 residual
+Era means within each park:
+site = MORA:
+ era           emmean       SE     df lower.CL upper.CL
+ Holocene     0.00100 0.000366   1.10 -0.00274  0.00474
+ Anthropocene 0.51838 0.082600 253.06  0.35571  0.68104
+
+site = NOCA:
+ era           emmean       SE     df lower.CL upper.CL
+ Holocene     0.00081 0.003000   0.78 -0.07451  0.07613
+ Anthropocene 0.03683 0.049200 210.05 -0.06024  0.13390
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Anthropocene - Holocene within each park (unadjusted exploratory contrasts):
+site = MORA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene    0.517 0.0826 253   0.3547    0.680   6.264 <0.0001
+
+site = NOCA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene    0.036 0.0493 211  -0.0612    0.133   0.730  0.4661
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Residual SDs:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.316373057       0.715242499       0.002587053       0.016538844
+Holocene normalized residual lag products (diagnostic, not significance tests):
+# A tibble: 3 × 4
+    lag lag_years n_pairs lag_product
+  <int>     <int>   <int>       <dbl>
+1     1      1000      22     -0.102
+2     2      2000      18     -0.0765
+3     3      3000      14     -0.228
+Undefined response identities:
+# A tibble: 142 × 6
+   era          site  lake  plot_id  age_hi age_lo
+   <chr>        <chr> <chr> <chr>     <dbl>  <dbl>
+ 1 Anthropocene MORA  <NA>  AURO-215     NA     NA
+ 2 Anthropocene MORA  <NA>  BACK-454     NA     NA
+ 3 Anthropocene MORA  <NA>  CARB-128     NA     NA
+ 4 Anthropocene MORA  <NA>  CAYU-059     NA     NA
+ 5 Anthropocene MORA  <NA>  CHIN-084     NA     NA
+ 6 Anthropocene MORA  <NA>  CHIN-086     NA     NA
+ 7 Anthropocene MORA  <NA>  CHIN-246     NA     NA
+ 8 Anthropocene MORA  <NA>  CHIN-247     NA     NA
+ 9 Anthropocene MORA  <NA>  CLOV-369     NA     NA
+10 Anthropocene MORA  <NA>  COLD-108     NA     NA
+# ℹ 132 more rows
+
+OFFSET 500 | MODEL Independent
+Selected rows: 633 | Finite rows: 491 | Undefined selected responses: 142
+Temporal correlation: none; era/site residual variances retained
+Warnings: none
+           era site   n
+1     Holocene MORA  17
+2 Anthropocene MORA 254
+3     Holocene NOCA   9
+4 Anthropocene NOCA 211
+Generalized least squares fit by REML
+  Model: estimate ~ era * site
+  Data: d
+       AIC      BIC    logLik
+  1155.268 1188.775 -569.6342
+
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | era_site
+ Parameter estimates:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.000000000       0.543343507       0.001986872       0.011717460
+
+Coefficients:
+                              Value  Std.Error   t-value p-value
+(Intercept)               0.0009451 0.00063434  1.489834  0.1369
+eraAnthropocene           0.5174306 0.08259902  6.264367  0.0000
+siteNOCA                  0.0008992 0.00518050  0.173567  0.8623
+eraAnthropocene:siteNOCA -0.4824447 0.09629925 -5.009849  0.0000
+
+ Correlation:
+                         (Intr) erAnth stNOCA
+eraAnthropocene          -0.008
+siteNOCA                 -0.122  0.001
+eraAnthropocene:siteNOCA  0.007 -0.858 -0.054
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-3.09430014 -0.51485914 -0.07407681  0.60785839  3.15610043
+
+Residual standard error: 1.316373
+Degrees of freedom: 491 total; 487 residual
+Era means within each park:
+site = MORA:
+ era            emmean       SE  df lower.CL upper.CL
+ Holocene     0.000945 0.000634  16  -0.0004  0.00229
+ Anthropocene 0.518376 0.082600 253   0.3557  0.68104
+
+site = NOCA:
+ era            emmean       SE  df lower.CL upper.CL
+ Holocene     0.001844 0.005140   8  -0.0100  0.01370
+ Anthropocene 0.036830 0.049200 210  -0.0602  0.13390
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Anthropocene - Holocene within each park (unadjusted exploratory contrasts):
+site = MORA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene    0.517 0.0826 253   0.3548    0.680   6.264 <0.0001
+
+site = NOCA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene    0.035 0.0495 214  -0.0626    0.133   0.707  0.4805
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Residual SDs:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.316372990       0.715242717       0.002615465       0.015424547
+Holocene normalized residual lag products (diagnostic, not significance tests):
+# A tibble: 3 × 4
+    lag lag_years n_pairs lag_product
+  <int>     <int>   <int>       <dbl>
+1     1      1000      22     -0.203
+2     2      2000      18     -0.0394
+3     3      3000      14     -0.252
+Undefined response identities:
+# A tibble: 142 × 6
+   era          site  lake  plot_id  age_hi age_lo
+   <chr>        <chr> <chr> <chr>     <dbl>  <dbl>
+ 1 Anthropocene MORA  <NA>  AURO-215     NA     NA
+ 2 Anthropocene MORA  <NA>  BACK-454     NA     NA
+ 3 Anthropocene MORA  <NA>  CARB-128     NA     NA
+ 4 Anthropocene MORA  <NA>  CAYU-059     NA     NA
+ 5 Anthropocene MORA  <NA>  CHIN-084     NA     NA
+ 6 Anthropocene MORA  <NA>  CHIN-086     NA     NA
+ 7 Anthropocene MORA  <NA>  CHIN-246     NA     NA
+ 8 Anthropocene MORA  <NA>  CHIN-247     NA     NA
+ 9 Anthropocene MORA  <NA>  CLOV-369     NA     NA
+10 Anthropocene MORA  <NA>  COLD-108     NA     NA
+# ℹ 132 more rows
+
+OFFSET 600 | MODEL AR1
+Selected rows: 633 | Finite rows: 491 | Undefined selected responses: 142
+Correlation parameter: -0.095021783 (phi; lag-1 correlation)
+Warnings: none
+           era site   n
+1     Holocene MORA  17
+2 Anthropocene MORA 254
+3     Holocene NOCA   9
+4 Anthropocene NOCA 211
+Generalized least squares fit by REML
+  Model: estimate ~ era * site
+  Data: d
+       AIC      BIC    logLik
+  1155.339 1193.033 -568.6694
+
+Correlation Structure: AR(1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+        Phi
+-0.09502178
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | era_site
+ Parameter estimates:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.000000000       0.543343198       0.002199116       0.008408923
+
+Coefficients:
+                              Value  Std.Error   t-value p-value
+(Intercept)               0.0010847 0.00064828  1.673155  0.0949
+eraAnthropocene           0.5172910 0.08259916  6.262666  0.0000
+siteNOCA                 -0.0009360 0.00344863 -0.271410  0.7862
+eraAnthropocene:siteNOCA -0.4806095 0.09622164 -4.994817  0.0000
+
+ Correlation:
+                         (Intr) erAnth stNOCA
+eraAnthropocene          -0.008
+siteNOCA                 -0.188  0.001
+eraAnthropocene:siteNOCA  0.007 -0.858 -0.036
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-2.74126918 -0.55178271 -0.07968286  0.62629456  3.15609943
+
+Residual standard error: 1.316373
+Degrees of freedom: 491 total; 487 residual
+Era means within each park:
+site = MORA:
+ era            emmean       SE     df  lower.CL upper.CL
+ Holocene     0.001085 0.000648   4.29 -0.000669  0.00284
+ Anthropocene 0.518376 0.082600 252.94  0.355711  0.68104
+
+site = NOCA:
+ era            emmean       SE     df  lower.CL upper.CL
+ Holocene     0.000149 0.003390   3.55 -0.009745  0.01004
+ Anthropocene 0.036830 0.049200 209.98 -0.060237  0.13390
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Anthropocene - Holocene within each park (unadjusted exploratory contrasts):
+site = MORA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.5173 0.0826 253   0.3546    0.680   6.263 <0.0001
+
+site = NOCA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.0367 0.0494 212  -0.0606    0.134   0.743  0.4582
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Residual SDs:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.316373408       0.715242537       0.002894858       0.011069283
+Holocene normalized residual lag products (diagnostic, not significance tests):
+# A tibble: 3 × 4
+    lag lag_years n_pairs lag_product
+  <int>     <int>   <int>       <dbl>
+1     1      1000      22    -0.109
+2     2      2000      18    -0.293
+3     3      3000      14     0.00697
+Undefined response identities:
+# A tibble: 142 × 6
+   era          site  lake  plot_id  age_hi age_lo
+   <chr>        <chr> <chr> <chr>     <dbl>  <dbl>
+ 1 Anthropocene MORA  <NA>  AURO-215     NA     NA
+ 2 Anthropocene MORA  <NA>  BACK-454     NA     NA
+ 3 Anthropocene MORA  <NA>  CARB-128     NA     NA
+ 4 Anthropocene MORA  <NA>  CAYU-059     NA     NA
+ 5 Anthropocene MORA  <NA>  CHIN-084     NA     NA
+ 6 Anthropocene MORA  <NA>  CHIN-086     NA     NA
+ 7 Anthropocene MORA  <NA>  CHIN-246     NA     NA
+ 8 Anthropocene MORA  <NA>  CHIN-247     NA     NA
+ 9 Anthropocene MORA  <NA>  CLOV-369     NA     NA
+10 Anthropocene MORA  <NA>  COLD-108     NA     NA
+# ℹ 132 more rows
+
+OFFSET 600 | MODEL MA1
+Selected rows: 633 | Finite rows: 491 | Undefined selected responses: 142
+Correlation parameter: -0.22876175 (theta; lag-1 correlation = -0.21738554)
+Warnings: none
+           era site   n
+1     Holocene MORA  17
+2 Anthropocene MORA 254
+3     Holocene NOCA   9
+4 Anthropocene NOCA 211
+Generalized least squares fit by REML
+  Model: estimate ~ era * site
+  Data: d
+       AIC      BIC    logLik
+  1155.186 1192.881 -568.5931
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+    Theta1
+-0.2287617
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | era_site
+ Parameter estimates:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.000000000       0.543343909       0.002200051       0.008468949
+
+Coefficients:
+                              Value  Std.Error   t-value p-value
+(Intercept)               0.0010844 0.00055809  1.943106  0.0526
+eraAnthropocene           0.5172912 0.08259845  6.262723  0.0000
+siteNOCA                 -0.0010506 0.00294410 -0.356834  0.7214
+eraAnthropocene:siteNOCA -0.4804950 0.09620486 -4.994498  0.0000
+
+ Correlation:
+                         (Intr) erAnth stNOCA
+eraAnthropocene          -0.007
+siteNOCA                 -0.190  0.001
+eraAnthropocene:siteNOCA  0.006 -0.859 -0.031
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-2.74126732 -0.55178271 -0.07968281  0.62629454  3.15610142
+
+Residual standard error: 1.316373
+Degrees of freedom: 491 total; 487 residual
+Era means within each park:
+site = MORA:
+ era            emmean       SE     df lower.CL upper.CL
+ Holocene     1.08e-03 0.000558   1.76 -0.00165  0.00382
+ Anthropocene 5.18e-01 0.082600 252.94  0.35571  0.68104
+
+site = NOCA:
+ era            emmean       SE     df lower.CL upper.CL
+ Holocene     3.39e-05 0.002890   1.38 -0.01974  0.01981
+ Anthropocene 3.68e-02 0.049200 209.98 -0.06024  0.13390
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Anthropocene - Holocene within each park (unadjusted exploratory contrasts):
+site = MORA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.5173 0.0826 253   0.3546    0.680   6.263 <0.0001
+
+site = NOCA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.0368 0.0493 211  -0.0604    0.134   0.746  0.4565
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Residual SDs:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.316372578       0.715243022       0.002896087       0.011148292
+Holocene normalized residual lag products (diagnostic, not significance tests):
+# A tibble: 3 × 4
+    lag lag_years n_pairs lag_product
+  <int>     <int>   <int>       <dbl>
+1     1      1000      22     -0.0596
+2     2      2000      18     -0.294
+3     3      3000      14     -0.0412
+Undefined response identities:
+# A tibble: 142 × 6
+   era          site  lake  plot_id  age_hi age_lo
+   <chr>        <chr> <chr> <chr>     <dbl>  <dbl>
+ 1 Anthropocene MORA  <NA>  AURO-215     NA     NA
+ 2 Anthropocene MORA  <NA>  BACK-454     NA     NA
+ 3 Anthropocene MORA  <NA>  CARB-128     NA     NA
+ 4 Anthropocene MORA  <NA>  CAYU-059     NA     NA
+ 5 Anthropocene MORA  <NA>  CHIN-084     NA     NA
+ 6 Anthropocene MORA  <NA>  CHIN-086     NA     NA
+ 7 Anthropocene MORA  <NA>  CHIN-246     NA     NA
+ 8 Anthropocene MORA  <NA>  CHIN-247     NA     NA
+ 9 Anthropocene MORA  <NA>  CLOV-369     NA     NA
+10 Anthropocene MORA  <NA>  COLD-108     NA     NA
+# ℹ 132 more rows
+
+OFFSET 600 | MODEL Independent
+Selected rows: 633 | Finite rows: 491 | Undefined selected responses: 142
+Temporal correlation: none; era/site residual variances retained
+Warnings: none
+           era site   n
+1     Holocene MORA  17
+2 Anthropocene MORA 254
+3     Holocene NOCA   9
+4 Anthropocene NOCA 211
+Generalized least squares fit by REML
+  Model: estimate ~ era * site
+  Data: d
+      AIC      BIC    logLik
+  1153.46 1186.966 -568.7298
+
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | era_site
+ Parameter estimates:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.000000000       0.543343241       0.002217253       0.008403183
+
+Coefficients:
+                              Value  Std.Error   t-value p-value
+(Intercept)               0.0011030 0.00070790  1.558085  0.1199
+eraAnthropocene           0.5172727 0.08259964  6.262408  0.0000
+siteNOCA                 -0.0008442 0.00375458 -0.224837  0.8222
+eraAnthropocene:siteNOCA -0.4807013 0.09623309 -4.995177  0.0000
+
+ Correlation:
+                         (Intr) erAnth stNOCA
+eraAnthropocene          -0.009
+siteNOCA                 -0.189  0.002
+eraAnthropocene:siteNOCA  0.007 -0.858 -0.039
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-2.74126923 -0.55178275 -0.07968286  0.62629460  3.15609975
+
+Residual standard error: 1.316373
+Degrees of freedom: 491 total; 487 residual
+Era means within each park:
+site = MORA:
+ era            emmean       SE  df  lower.CL upper.CL
+ Holocene     0.001103 0.000708  16 -0.000398  0.00260
+ Anthropocene 0.518376 0.082600 253  0.355711  0.68104
+
+site = NOCA:
+ era            emmean       SE  df  lower.CL upper.CL
+ Holocene     0.000259 0.003690   8 -0.008244  0.00876
+ Anthropocene 0.036830 0.049200 210 -0.060237  0.13390
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Anthropocene - Holocene within each park (unadjusted exploratory contrasts):
+site = MORA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.5173 0.0826 253   0.3546    0.680   6.262 <0.0001
+
+site = NOCA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.0366 0.0494 212  -0.0608    0.134   0.741  0.4597
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Residual SDs:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.316373274       0.715242522       0.002918733       0.011061725
+Holocene normalized residual lag products (diagnostic, not significance tests):
+# A tibble: 3 × 4
+    lag lag_years n_pairs lag_product
+  <int>     <int>   <int>       <dbl>
+1     1      1000      22     -0.146
+2     2      2000      18     -0.282
+3     3      3000      14      0.0415
+Undefined response identities:
+# A tibble: 142 × 6
+   era          site  lake  plot_id  age_hi age_lo
+   <chr>        <chr> <chr> <chr>     <dbl>  <dbl>
+ 1 Anthropocene MORA  <NA>  AURO-215     NA     NA
+ 2 Anthropocene MORA  <NA>  BACK-454     NA     NA
+ 3 Anthropocene MORA  <NA>  CARB-128     NA     NA
+ 4 Anthropocene MORA  <NA>  CAYU-059     NA     NA
+ 5 Anthropocene MORA  <NA>  CHIN-084     NA     NA
+ 6 Anthropocene MORA  <NA>  CHIN-086     NA     NA
+ 7 Anthropocene MORA  <NA>  CHIN-246     NA     NA
+ 8 Anthropocene MORA  <NA>  CHIN-247     NA     NA
+ 9 Anthropocene MORA  <NA>  CLOV-369     NA     NA
+10 Anthropocene MORA  <NA>  COLD-108     NA     NA
+# ℹ 132 more rows
+
+OFFSET 700 | MODEL AR1
+Selected rows: 633 | Finite rows: 491 | Undefined selected responses: 142
+Correlation parameter: -0.15382901 (phi; lag-1 correlation)
+Warnings: none
+           era site   n
+1     Holocene MORA  17
+2 Anthropocene MORA 254
+3     Holocene NOCA   9
+4 Anthropocene NOCA 211
+Generalized least squares fit by REML
+  Model: estimate ~ era * site
+  Data: d
+      AIC      BIC   logLik
+  1149.85 1187.544 -565.925
+
+Correlation Structure: AR(1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+      Phi
+-0.153829
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | era_site
+ Parameter estimates:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.000000000       0.543343423       0.002120363       0.006465258
+
+Coefficients:
+                              Value  Std.Error   t-value p-value
+(Intercept)               0.0015445 0.00059387  2.600704  0.0096
+eraAnthropocene           0.5168312 0.08259871  6.257134  0.0000
+siteNOCA                 -0.0022018 0.00253672 -0.867961  0.3858
+eraAnthropocene:siteNOCA -0.4793437 0.09619325 -4.983133  0.0000
+
+ Correlation:
+                         (Intr) erAnth stNOCA
+eraAnthropocene          -0.007
+siteNOCA                 -0.234  0.002
+eraAnthropocene:siteNOCA  0.006 -0.859 -0.026
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-2.74126926 -0.58449247 -0.07407683  0.64512425  3.15610084
+
+Residual standard error: 1.316373
+Degrees of freedom: 491 total; 487 residual
+Era means within each park:
+site = MORA:
+ era             emmean       SE     df  lower.CL upper.CL
+ Holocene      0.001545 0.000594   6.84  0.000133  0.00296
+ Anthropocene  0.518376 0.082600 253.00  0.355711  0.68104
+
+site = NOCA:
+ era             emmean       SE     df  lower.CL upper.CL
+ Holocene     -0.000657 0.002470   5.30 -0.006891  0.00558
+ Anthropocene  0.036830 0.049200 210.06 -0.060236  0.13390
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Anthropocene - Holocene within each park (unadjusted exploratory contrasts):
+site = MORA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.5168 0.0826 253   0.3542    0.679   6.257 <0.0001
+
+site = NOCA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.0375 0.0493 211  -0.0597    0.135   0.760  0.4479
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Residual SDs:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.316372820       0.715242514       0.002791188       0.008510690
+Holocene normalized residual lag products (diagnostic, not significance tests):
+# A tibble: 3 × 4
+    lag lag_years n_pairs lag_product
+  <int>     <int>   <int>       <dbl>
+1     1      1000      22      -0.124
+2     2      2000      18      -0.389
+3     3      3000      14       0.160
+Undefined response identities:
+# A tibble: 142 × 6
+   era          site  lake  plot_id  age_hi age_lo
+   <chr>        <chr> <chr> <chr>     <dbl>  <dbl>
+ 1 Anthropocene MORA  <NA>  AURO-215     NA     NA
+ 2 Anthropocene MORA  <NA>  BACK-454     NA     NA
+ 3 Anthropocene MORA  <NA>  CARB-128     NA     NA
+ 4 Anthropocene MORA  <NA>  CAYU-059     NA     NA
+ 5 Anthropocene MORA  <NA>  CHIN-084     NA     NA
+ 6 Anthropocene MORA  <NA>  CHIN-086     NA     NA
+ 7 Anthropocene MORA  <NA>  CHIN-246     NA     NA
+ 8 Anthropocene MORA  <NA>  CHIN-247     NA     NA
+ 9 Anthropocene MORA  <NA>  CLOV-369     NA     NA
+10 Anthropocene MORA  <NA>  COLD-108     NA     NA
+# ℹ 132 more rows
+
+OFFSET 700 | MODEL MA1
+Selected rows: 633 | Finite rows: 491 | Undefined selected responses: 142
+Correlation parameter: -0.38300791 (theta; lag-1 correlation = -0.33401025)
+Warnings: none
+           era site   n
+1     Holocene MORA  17
+2 Anthropocene MORA 254
+3     Holocene NOCA   9
+4 Anthropocene NOCA 211
+Generalized least squares fit by REML
+  Model: estimate ~ era * site
+  Data: d
+       AIC     BIC    logLik
+  1149.235 1186.93 -565.6177
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+    Theta1
+-0.3830079
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | era_site
+ Parameter estimates:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.000000000       0.543343275       0.002143410       0.006533226
+
+Coefficients:
+                              Value  Std.Error   t-value p-value
+(Intercept)               0.0015226 0.00044577  3.415708  0.0007
+eraAnthropocene           0.5168530 0.08259781  6.257467  0.0000
+siteNOCA                 -0.0019979 0.00183396 -1.089385  0.2765
+eraAnthropocene:siteNOCA -0.4795476 0.09617730 -4.986079  0.0000
+
+ Correlation:
+                         (Intr) erAnth stNOCA
+eraAnthropocene          -0.005
+siteNOCA                 -0.243  0.001
+eraAnthropocene:siteNOCA  0.005 -0.859 -0.019
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-2.74126917 -0.58449237 -0.07407683  0.63118315  3.15609987
+
+Residual standard error: 1.316373
+Degrees of freedom: 491 total; 487 residual
+Era means within each park:
+site = MORA:
+ era             emmean       SE     df  lower.CL upper.CL
+ Holocene      0.001523 0.000446   2.34 -0.000151   0.0032
+ Anthropocene  0.518376 0.082600 252.97  0.355711   0.6810
+
+site = NOCA:
+ era             emmean       SE     df  lower.CL upper.CL
+ Holocene     -0.000475 0.001780   1.43 -0.011919   0.0110
+ Anthropocene  0.036830 0.049200 210.00 -0.060237   0.1339
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Anthropocene - Holocene within each park (unadjusted exploratory contrasts):
+site = MORA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.5169 0.0826 253   0.3542    0.680   6.257 <0.0001
+
+site = NOCA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.0373 0.0493 210  -0.0598    0.134   0.757  0.4498
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Residual SDs:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.316373225       0.715242539       0.002821528       0.008600164
+Holocene normalized residual lag products (diagnostic, not significance tests):
+# A tibble: 3 × 4
+    lag lag_years n_pairs lag_product
+  <int>     <int>   <int>       <dbl>
+1     1      1000      22    -0.00396
+2     2      2000      18    -0.349
+3     3      3000      14     0.0577
+Undefined response identities:
+# A tibble: 142 × 6
+   era          site  lake  plot_id  age_hi age_lo
+   <chr>        <chr> <chr> <chr>     <dbl>  <dbl>
+ 1 Anthropocene MORA  <NA>  AURO-215     NA     NA
+ 2 Anthropocene MORA  <NA>  BACK-454     NA     NA
+ 3 Anthropocene MORA  <NA>  CARB-128     NA     NA
+ 4 Anthropocene MORA  <NA>  CAYU-059     NA     NA
+ 5 Anthropocene MORA  <NA>  CHIN-084     NA     NA
+ 6 Anthropocene MORA  <NA>  CHIN-086     NA     NA
+ 7 Anthropocene MORA  <NA>  CHIN-246     NA     NA
+ 8 Anthropocene MORA  <NA>  CHIN-247     NA     NA
+ 9 Anthropocene MORA  <NA>  CLOV-369     NA     NA
+10 Anthropocene MORA  <NA>  COLD-108     NA     NA
+# ℹ 132 more rows
+
+OFFSET 700 | MODEL Independent
+Selected rows: 633 | Finite rows: 491 | Undefined selected responses: 142
+Temporal correlation: none; era/site residual variances retained
+Warnings: none
+           era site   n
+1     Holocene MORA  17
+2 Anthropocene MORA 254
+3     Holocene NOCA   9
+4 Anthropocene NOCA 211
+Generalized least squares fit by REML
+  Model: estimate ~ era * site
+  Data: d
+       AIC     BIC    logLik
+  1148.244 1181.75 -566.1219
+
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | era_site
+ Parameter estimates:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.000000000       0.543343026       0.002153845       0.006427921
+
+Coefficients:
+                              Value  Std.Error   t-value p-value
+(Intercept)               0.0016051 0.00068765  2.334148  0.0200
+eraAnthropocene           0.5167706 0.08259948  6.256341  0.0000
+siteNOCA                 -0.0023268 0.00290313 -0.801463  0.4233
+eraAnthropocene:siteNOCA -0.4792188 0.09620364 -4.981296  0.0000
+
+ Correlation:
+                         (Intr) erAnth stNOCA
+eraAnthropocene          -0.008
+siteNOCA                 -0.237  0.002
+eraAnthropocene:siteNOCA  0.007 -0.859 -0.030
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-2.74126983 -0.58449237 -0.07407685  0.64620547  3.15609918
+
+Residual standard error: 1.316374
+Degrees of freedom: 491 total; 487 residual
+Era means within each park:
+site = MORA:
+ era             emmean       SE  df  lower.CL upper.CL
+ Holocene      0.001605 0.000688  16  0.000147  0.00306
+ Anthropocene  0.518376 0.082600 253  0.355711  0.68104
+
+site = NOCA:
+ era             emmean       SE  df  lower.CL upper.CL
+ Holocene     -0.000722 0.002820   8 -0.007226  0.00578
+ Anthropocene  0.036830 0.049200 210 -0.060237  0.13390
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Anthropocene - Holocene within each park (unadjusted exploratory contrasts):
+site = MORA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.5168 0.0826 253   0.3541    0.679   6.256 <0.0001
+
+site = NOCA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.0376 0.0493 211  -0.0597    0.135   0.761  0.4473
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Residual SDs:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.316373510       0.715242366       0.002835264       0.008461544
+Holocene normalized residual lag products (diagnostic, not significance tests):
+# A tibble: 3 × 4
+    lag lag_years n_pairs lag_product
+  <int>     <int>   <int>       <dbl>
+1     1      1000      22      -0.208
+2     2      2000      18      -0.366
+3     3      3000      14       0.242
+Undefined response identities:
+# A tibble: 142 × 6
+   era          site  lake  plot_id  age_hi age_lo
+   <chr>        <chr> <chr> <chr>     <dbl>  <dbl>
+ 1 Anthropocene MORA  <NA>  AURO-215     NA     NA
+ 2 Anthropocene MORA  <NA>  BACK-454     NA     NA
+ 3 Anthropocene MORA  <NA>  CARB-128     NA     NA
+ 4 Anthropocene MORA  <NA>  CAYU-059     NA     NA
+ 5 Anthropocene MORA  <NA>  CHIN-084     NA     NA
+ 6 Anthropocene MORA  <NA>  CHIN-086     NA     NA
+ 7 Anthropocene MORA  <NA>  CHIN-246     NA     NA
+ 8 Anthropocene MORA  <NA>  CHIN-247     NA     NA
+ 9 Anthropocene MORA  <NA>  CLOV-369     NA     NA
+10 Anthropocene MORA  <NA>  COLD-108     NA     NA
+# ℹ 132 more rows
+
+OFFSET 800 | MODEL AR1
+Selected rows: 633 | Finite rows: 491 | Undefined selected responses: 142
+Correlation parameter: -0.29095841 (phi; lag-1 correlation)
+Warnings: none
+           era site   n
+1     Holocene MORA  17
+2 Anthropocene MORA 254
+3     Holocene NOCA   9
+4 Anthropocene NOCA 211
+Generalized least squares fit by REML
+  Model: estimate ~ era * site
+  Data: d
+       AIC      BIC    logLik
+  1163.657 1201.351 -572.8286
+
+Correlation Structure: AR(1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+       Phi
+-0.2909584
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | era_site
+ Parameter estimates:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.000000000       0.543343295       0.003494563       0.005966734
+
+Coefficients:
+                              Value  Std.Error   t-value p-value
+(Intercept)               0.0011049 0.00086184  1.281973  0.2005
+eraAnthropocene           0.5172708 0.08260109  6.262275  0.0000
+siteNOCA                 -0.0012830 0.00216936 -0.591401  0.5545
+eraAnthropocene:siteNOCA -0.4802625 0.09618428 -4.993150  0.0000
+
+ Correlation:
+                         (Intr) erAnth stNOCA
+eraAnthropocene          -0.010
+siteNOCA                 -0.397  0.004
+eraAnthropocene:siteNOCA  0.009 -0.859 -0.023
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-2.74126925 -0.58449239 -0.07407683  0.62457880  3.15610008
+
+Residual standard error: 1.316373
+Degrees of freedom: 491 total; 487 residual
+Era means within each park:
+site = MORA:
+ era             emmean       SE     df lower.CL upper.CL
+ Holocene      0.001105 0.000862   5.96 -0.00101  0.00322
+ Anthropocene  0.518376 0.082600 252.95  0.35571  0.68104
+
+site = NOCA:
+ era             emmean       SE     df lower.CL upper.CL
+ Holocene     -0.000178 0.001990   6.11 -0.00503  0.00467
+ Anthropocene  0.036830 0.049200 209.99 -0.06024  0.13390
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Anthropocene - Holocene within each park (unadjusted exploratory contrasts):
+site = MORA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene    0.517 0.0826 253   0.3546    0.680   6.262 <0.0001
+
+site = NOCA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene    0.037 0.0493 211  -0.0601    0.134   0.751  0.4535
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Residual SDs:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.316373135       0.715242517       0.004600149       0.007854449
+Holocene normalized residual lag products (diagnostic, not significance tests):
+# A tibble: 3 × 4
+    lag lag_years n_pairs lag_product
+  <int>     <int>   <int>       <dbl>
+1     1      1000      22     -0.0701
+2     2      2000      18     -0.190
+3     3      3000      14      0.0727
+Undefined response identities:
+# A tibble: 142 × 6
+   era          site  lake  plot_id  age_hi age_lo
+   <chr>        <chr> <chr> <chr>     <dbl>  <dbl>
+ 1 Anthropocene MORA  <NA>  AURO-215     NA     NA
+ 2 Anthropocene MORA  <NA>  BACK-454     NA     NA
+ 3 Anthropocene MORA  <NA>  CARB-128     NA     NA
+ 4 Anthropocene MORA  <NA>  CAYU-059     NA     NA
+ 5 Anthropocene MORA  <NA>  CHIN-084     NA     NA
+ 6 Anthropocene MORA  <NA>  CHIN-086     NA     NA
+ 7 Anthropocene MORA  <NA>  CHIN-246     NA     NA
+ 8 Anthropocene MORA  <NA>  CHIN-247     NA     NA
+ 9 Anthropocene MORA  <NA>  CLOV-369     NA     NA
+10 Anthropocene MORA  <NA>  COLD-108     NA     NA
+# ℹ 132 more rows
+
+OFFSET 800 | MODEL MA1
+Selected rows: 633 | Finite rows: 491 | Undefined selected responses: 142
+Correlation parameter: -0.36091367 (theta; lag-1 correlation = -0.31931953)
+Warnings: none
+           era site   n
+1     Holocene MORA  17
+2 Anthropocene MORA 254
+3     Holocene NOCA   9
+4 Anthropocene NOCA 211
+Generalized least squares fit by REML
+  Model: estimate ~ era * site
+  Data: d
+       AIC      BIC    logLik
+  1163.424 1201.118 -572.7118
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+    Theta1
+-0.3609137
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | era_site
+ Parameter estimates:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.000000000       0.543343228       0.003443785       0.006078827
+
+Coefficients:
+                              Value  Std.Error   t-value p-value
+(Intercept)               0.0010492 0.00073820  1.421256  0.1559
+eraAnthropocene           0.5173265 0.08259990  6.263040  0.0000
+siteNOCA                 -0.0011413 0.00186676 -0.611370  0.5412
+eraAnthropocene:siteNOCA -0.4804042 0.09617793 -4.994953  0.0000
+
+ Correlation:
+                         (Intr) erAnth stNOCA
+eraAnthropocene          -0.009
+siteNOCA                 -0.395  0.004
+eraAnthropocene:siteNOCA  0.008 -0.859 -0.019
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-2.74126937 -0.58449238 -0.07407684  0.61329327  3.15609983
+
+Residual standard error: 1.316373
+Degrees of freedom: 491 total; 487 residual
+Era means within each park:
+site = MORA:
+ era             emmean       SE     df lower.CL upper.CL
+ Holocene      1.05e-03 0.000738   2.44 -0.00164  0.00374
+ Anthropocene  5.18e-01 0.082600 252.92  0.35571  0.68104
+
+site = NOCA:
+ era             emmean       SE     df lower.CL upper.CL
+ Holocene     -9.21e-05 0.001710   2.68 -0.00593  0.00575
+ Anthropocene  3.68e-02 0.049200 209.92 -0.06024  0.13390
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Anthropocene - Holocene within each park (unadjusted exploratory contrasts):
+site = MORA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.5173 0.0826 253   0.3547    0.680   6.263 <0.0001
+
+site = NOCA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.0369 0.0493 210  -0.0602    0.134   0.749  0.4545
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Residual SDs:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.316373239       0.715242485       0.004533306       0.008002005
+Holocene normalized residual lag products (diagnostic, not significance tests):
+# A tibble: 3 × 4
+    lag lag_years n_pairs lag_product
+  <int>     <int>   <int>       <dbl>
+1     1      1000      22     -0.0318
+2     2      2000      18     -0.122
+3     3      3000      14      0.0616
+Undefined response identities:
+# A tibble: 142 × 6
+   era          site  lake  plot_id  age_hi age_lo
+   <chr>        <chr> <chr> <chr>     <dbl>  <dbl>
+ 1 Anthropocene MORA  <NA>  AURO-215     NA     NA
+ 2 Anthropocene MORA  <NA>  BACK-454     NA     NA
+ 3 Anthropocene MORA  <NA>  CARB-128     NA     NA
+ 4 Anthropocene MORA  <NA>  CAYU-059     NA     NA
+ 5 Anthropocene MORA  <NA>  CHIN-084     NA     NA
+ 6 Anthropocene MORA  <NA>  CHIN-086     NA     NA
+ 7 Anthropocene MORA  <NA>  CHIN-246     NA     NA
+ 8 Anthropocene MORA  <NA>  CHIN-247     NA     NA
+ 9 Anthropocene MORA  <NA>  CLOV-369     NA     NA
+10 Anthropocene MORA  <NA>  COLD-108     NA     NA
+# ℹ 132 more rows
+
+OFFSET 800 | MODEL Independent
+Selected rows: 633 | Finite rows: 491 | Undefined selected responses: 142
+Temporal correlation: none; era/site residual variances retained
+Warnings: none
+           era site   n
+1     Holocene MORA  17
+2 Anthropocene MORA 254
+3     Holocene NOCA   9
+4 Anthropocene NOCA 211
+Generalized least squares fit by REML
+  Model: estimate ~ era * site
+  Data: d
+       AIC      BIC    logLik
+  1162.881 1196.387 -573.4405
+
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | era_site
+ Parameter estimates:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.000000000       0.543343241       0.003627106       0.005658255
+
+Coefficients:
+                              Value  Std.Error   t-value p-value
+(Intercept)               0.0014608 0.00115802  1.261449  0.2078
+eraAnthropocene           0.5169149 0.08260472  6.257691  0.0000
+siteNOCA                 -0.0017733 0.00273957 -0.647305  0.5177
+eraAnthropocene:siteNOCA -0.4797722 0.09619883 -4.987297  0.0000
+
+ Correlation:
+                         (Intr) erAnth stNOCA
+eraAnthropocene          -0.014
+siteNOCA                 -0.423  0.006
+eraAnthropocene:siteNOCA  0.012 -0.859 -0.028
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-2.74126923 -0.58449236 -0.07407683  0.62629460  3.15609974
+
+Residual standard error: 1.316373
+Degrees of freedom: 491 total; 487 residual
+Era means within each park:
+site = MORA:
+ era             emmean      SE  df  lower.CL upper.CL
+ Holocene      0.001461 0.00116  16 -0.000994  0.00392
+ Anthropocene  0.518376 0.08260 253  0.355711  0.68104
+
+site = NOCA:
+ era             emmean      SE  df  lower.CL upper.CL
+ Holocene     -0.000313 0.00248   8 -0.006038  0.00541
+ Anthropocene  0.036830 0.04920 210 -0.060237  0.13390
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Anthropocene - Holocene within each park (unadjusted exploratory contrasts):
+site = MORA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.5169 0.0826 253    0.354    0.680   6.258 <0.0001
+
+site = NOCA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.0371 0.0493 211   -0.060    0.134   0.753  0.4521
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Residual SDs:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.316373277       0.715242523       0.004774625       0.007448376
+Holocene normalized residual lag products (diagnostic, not significance tests):
+# A tibble: 3 × 4
+    lag lag_years n_pairs lag_product
+  <int>     <int>   <int>       <dbl>
+1     1      1000      22      -0.284
+2     2      2000      18      -0.123
+3     3      3000      14       0.248
+Undefined response identities:
+# A tibble: 142 × 6
+   era          site  lake  plot_id  age_hi age_lo
+   <chr>        <chr> <chr> <chr>     <dbl>  <dbl>
+ 1 Anthropocene MORA  <NA>  AURO-215     NA     NA
+ 2 Anthropocene MORA  <NA>  BACK-454     NA     NA
+ 3 Anthropocene MORA  <NA>  CARB-128     NA     NA
+ 4 Anthropocene MORA  <NA>  CAYU-059     NA     NA
+ 5 Anthropocene MORA  <NA>  CHIN-084     NA     NA
+ 6 Anthropocene MORA  <NA>  CHIN-086     NA     NA
+ 7 Anthropocene MORA  <NA>  CHIN-246     NA     NA
+ 8 Anthropocene MORA  <NA>  CHIN-247     NA     NA
+ 9 Anthropocene MORA  <NA>  CLOV-369     NA     NA
+10 Anthropocene MORA  <NA>  COLD-108     NA     NA
+# ℹ 132 more rows
+
+OFFSET 900 | MODEL AR1
+Selected rows: 637 | Finite rows: 495 | Undefined selected responses: 142
+Correlation parameter: -0.49614536 (phi; lag-1 correlation)
+Warnings: none
+           era site   n
+1     Holocene MORA  20
+2 Anthropocene MORA 254
+3     Holocene NOCA  10
+4 Anthropocene NOCA 211
+Generalized least squares fit by REML
+  Model: estimate ~ era * site
+  Data: d
+       AIC    BIC    logLik
+  1175.932 1213.7 -578.9658
+
+Correlation Structure: AR(1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+       Phi
+-0.4961454
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | era_site
+ Parameter estimates:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.000000000       0.543341148       0.008468577       0.012606330
+
+Coefficients:
+                              Value  Std.Error   t-value p-value
+(Intercept)              -0.0011573 0.00152439 -0.759222  0.4481
+eraAnthropocene           0.5195330 0.08261084  6.288920  0.0000
+siteNOCA                  0.0062437 0.00350094  1.783435  0.0751
+eraAnthropocene:siteNOCA -0.4877892 0.09622363 -5.069329  0.0000
+
+ Correlation:
+                         (Intr) erAnth stNOCA
+eraAnthropocene          -0.018
+siteNOCA                 -0.435  0.008
+eraAnthropocene:siteNOCA  0.016 -0.859 -0.036
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-2.84943741 -0.50111618 -0.06541936  0.56411086  3.15609328
+
+Residual standard error: 1.316376
+Degrees of freedom: 495 total; 491 residual
+Era means within each park:
+site = MORA:
+ era            emmean      SE     df lower.CL upper.CL
+ Holocene     -0.00116 0.00152   6.70 -0.00479  0.00248
+ Anthropocene  0.51838 0.08260 252.96  0.35571  0.68104
+
+site = NOCA:
+ era            emmean      SE     df lower.CL upper.CL
+ Holocene      0.00509 0.00315   7.41 -0.00228  0.01246
+ Anthropocene  0.03683 0.04920 209.93 -0.06024  0.13390
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Anthropocene - Holocene within each park (unadjusted exploratory contrasts):
+site = MORA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.5195 0.0826 253   0.3568    0.682   6.289 <0.0001
+
+site = NOCA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.0317 0.0493 212  -0.0655    0.129   0.643  0.5207
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Residual SDs:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+       1.31637597        0.71524123        0.01114783        0.01659467
+Holocene normalized residual lag products (diagnostic, not significance tests):
+# A tibble: 3 × 4
+    lag lag_years n_pairs lag_product
+  <int>     <int>   <int>       <dbl>
+1     1      1000      26      0.171
+2     2      2000      22     -0.134
+3     3      3000      18     -0.0268
+Undefined response identities:
+# A tibble: 142 × 6
+   era          site  lake  plot_id  age_hi age_lo
+   <chr>        <chr> <chr> <chr>     <dbl>  <dbl>
+ 1 Anthropocene MORA  <NA>  AURO-215     NA     NA
+ 2 Anthropocene MORA  <NA>  BACK-454     NA     NA
+ 3 Anthropocene MORA  <NA>  CARB-128     NA     NA
+ 4 Anthropocene MORA  <NA>  CAYU-059     NA     NA
+ 5 Anthropocene MORA  <NA>  CHIN-084     NA     NA
+ 6 Anthropocene MORA  <NA>  CHIN-086     NA     NA
+ 7 Anthropocene MORA  <NA>  CHIN-246     NA     NA
+ 8 Anthropocene MORA  <NA>  CHIN-247     NA     NA
+ 9 Anthropocene MORA  <NA>  CLOV-369     NA     NA
+10 Anthropocene MORA  <NA>  COLD-108     NA     NA
+# ℹ 132 more rows
+
+OFFSET 900 | MODEL MA1
+Selected rows: 637 | Finite rows: 495 | Undefined selected responses: 142
+Correlation parameter: -0.47593569 (theta; lag-1 correlation = -0.3880391)
+Warnings: none
+           era site   n
+1     Holocene MORA  20
+2 Anthropocene MORA 254
+3     Holocene NOCA  10
+4 Anthropocene NOCA 211
+Generalized least squares fit by REML
+  Model: estimate ~ era * site
+  Data: d
+      AIC      BIC    logLik
+  1176.54 1214.308 -579.2698
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+    Theta1
+-0.4759357
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | era_site
+ Parameter estimates:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.000000000       0.543343258       0.008311592       0.011659673
+
+Coefficients:
+                              Value  Std.Error   t-value p-value
+(Intercept)              -0.0011905 0.00135445 -0.878945  0.3799
+eraAnthropocene           0.5195661 0.08260771  6.289560  0.0000
+siteNOCA                  0.0057642 0.00287734  2.003307  0.0457
+eraAnthropocene:siteNOCA -0.4873097 0.09620286 -5.065439  0.0000
+
+ Correlation:
+                         (Intr) erAnth stNOCA
+eraAnthropocene          -0.016
+siteNOCA                 -0.471  0.008
+eraAnthropocene:siteNOCA  0.014 -0.859 -0.030
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-2.90023337 -0.50111625 -0.06541924  0.58745781  3.15609978
+
+Residual standard error: 1.316373
+Degrees of freedom: 495 total; 491 residual
+Era means within each park:
+site = MORA:
+ era            emmean      SE     df lower.CL upper.CL
+ Holocene     -0.00119 0.00135   1.76 -0.00786  0.00548
+ Anthropocene  0.51838 0.08260 253.13  0.35571  0.68104
+
+site = NOCA:
+ era            emmean      SE     df lower.CL upper.CL
+ Holocene      0.00457 0.00254   1.48 -0.01099  0.02014
+ Anthropocene  0.03683 0.04920 210.08 -0.06024  0.13390
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Anthropocene - Holocene within each park (unadjusted exploratory contrasts):
+site = MORA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.5196 0.0826 253   0.3569    0.682   6.290 <0.0001
+
+site = NOCA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.0323 0.0493 211  -0.0649    0.129   0.654  0.5137
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Residual SDs:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+       1.31637326        0.71524254        0.01094116        0.01534848
+Holocene normalized residual lag products (diagnostic, not significance tests):
+# A tibble: 3 × 4
+    lag lag_years n_pairs lag_product
+  <int>     <int>   <int>       <dbl>
+1     1      1000      26      0.0827
+2     2      2000      22      0.0123
+3     3      3000      18     -0.0311
+Undefined response identities:
+# A tibble: 142 × 6
+   era          site  lake  plot_id  age_hi age_lo
+   <chr>        <chr> <chr> <chr>     <dbl>  <dbl>
+ 1 Anthropocene MORA  <NA>  AURO-215     NA     NA
+ 2 Anthropocene MORA  <NA>  BACK-454     NA     NA
+ 3 Anthropocene MORA  <NA>  CARB-128     NA     NA
+ 4 Anthropocene MORA  <NA>  CAYU-059     NA     NA
+ 5 Anthropocene MORA  <NA>  CHIN-084     NA     NA
+ 6 Anthropocene MORA  <NA>  CHIN-086     NA     NA
+ 7 Anthropocene MORA  <NA>  CHIN-246     NA     NA
+ 8 Anthropocene MORA  <NA>  CHIN-247     NA     NA
+ 9 Anthropocene MORA  <NA>  CLOV-369     NA     NA
+10 Anthropocene MORA  <NA>  COLD-108     NA     NA
+# ℹ 132 more rows
+
+OFFSET 900 | MODEL Independent
+Selected rows: 637 | Finite rows: 495 | Undefined selected responses: 142
+Temporal correlation: none; era/site residual variances retained
+Warnings: none
+           era site   n
+1     Holocene MORA  20
+2 Anthropocene MORA 254
+3     Holocene NOCA  10
+4 Anthropocene NOCA 211
+Generalized least squares fit by REML
+  Model: estimate ~ era * site
+  Data: d
+       AIC      BIC    logLik
+  1177.325 1210.896 -580.6624
+
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | era_site
+ Parameter estimates:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+      1.000000000       0.543342902       0.008468922       0.011310962
+
+Coefficients:
+                              Value  Std.Error   t-value p-value
+(Intercept)              -0.0020286 0.00249283 -0.813757  0.4162
+eraAnthropocene           0.5204042 0.08263423  6.297683  0.0000
+siteNOCA                  0.0072591 0.00532764  1.362531  0.1737
+eraAnthropocene:siteNOCA -0.4888046 0.09630730 -5.075468  0.0000
+
+ Correlation:
+                         (Intr) erAnth stNOCA
+eraAnthropocene          -0.030
+siteNOCA                 -0.468  0.014
+eraAnthropocene:siteNOCA  0.026 -0.858 -0.055
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-2.77117925 -0.51485892 -0.06385378  0.60714475  3.15609903
+
+Residual standard error: 1.316374
+Degrees of freedom: 495 total; 491 residual
+Era means within each park:
+site = MORA:
+ era            emmean      SE  df lower.CL upper.CL
+ Holocene     -0.00203 0.00249  19 -0.00725  0.00319
+ Anthropocene  0.51838 0.08260 253  0.35571  0.68104
+
+site = NOCA:
+ era            emmean      SE  df lower.CL upper.CL
+ Holocene      0.00523 0.00471   9 -0.00542  0.01588
+ Anthropocene  0.03683 0.04920 210 -0.06024  0.13390
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Anthropocene - Holocene within each park (unadjusted exploratory contrasts):
+site = MORA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.5204 0.0826 254   0.3577    0.683   6.298 <0.0001
+
+site = NOCA:
+ contrast                estimate     SE  df lower.CL upper.CL t.ratio p.value
+ Anthropocene - Holocene   0.0316 0.0495 213  -0.0659    0.129   0.639  0.5236
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Residual SDs:
+Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
+       1.31637357        0.71524224        0.01114827        0.01488945
+Holocene normalized residual lag products (diagnostic, not significance tests):
+# A tibble: 3 × 4
+    lag lag_years n_pairs lag_product
+  <int>     <int>   <int>       <dbl>
+1     1      1000      26     -0.330
+2     2      2000      22      0.0389
+3     3      3000      18      0.0375
+Undefined response identities:
+# A tibble: 142 × 6
+   era          site  lake  plot_id  age_hi age_lo
+   <chr>        <chr> <chr> <chr>     <dbl>  <dbl>
+ 1 Anthropocene MORA  <NA>  AURO-215     NA     NA
+ 2 Anthropocene MORA  <NA>  BACK-454     NA     NA
+ 3 Anthropocene MORA  <NA>  CARB-128     NA     NA
+ 4 Anthropocene MORA  <NA>  CAYU-059     NA     NA
+ 5 Anthropocene MORA  <NA>  CHIN-084     NA     NA
+ 6 Anthropocene MORA  <NA>  CHIN-086     NA     NA
+ 7 Anthropocene MORA  <NA>  CHIN-246     NA     NA
+ 8 Anthropocene MORA  <NA>  CHIN-247     NA     NA
+ 9 Anthropocene MORA  <NA>  CLOV-369     NA     NA
+10 Anthropocene MORA  <NA>  COLD-108     NA     NA
+# ℹ 132 more rows
+
+R version 4.6.1 (2026-06-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.7.1
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] C.UTF-8/C.UTF-8/C.UTF-8/C/C.UTF-8/C.UTF-8
+
+time zone: Europe/Zurich
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base
+
+other attached packages:
+ [1] patchwork_1.3.2 emmeans_2.0.4   nlme_3.1-170    lubridate_1.9.5
+ [5] forcats_1.0.1   stringr_1.6.0   dplyr_1.2.1     purrr_1.2.2
+ [9] readr_2.2.0     tidyr_1.3.2     tibble_3.3.1    ggplot2_4.0.3
+[13] tidyverse_2.0.0 here_1.0.2
+
+loaded via a namespace (and not attached):
+ [1] utf8_1.2.6          sandwich_3.1-3      generics_0.1.4
+ [4] stringi_1.8.9       lattice_0.22-9      hms_1.1.4
+ [7] magrittr_2.0.5      grid_4.6.1          timechange_0.4.0
+[10] estimability_2.0.0  RColorBrewer_1.1-3  mvtnorm_1.4-2
+[13] rprojroot_2.1.1     Matrix_1.7-5        survival_3.8-9
+[16] multcomp_1.4-31     scales_1.4.0        TH.data_1.1-5
+[19] textshaping_1.0.5   numDeriv_2016.8-1.1 codetools_0.2-20
+[22] cli_3.6.6           crayon_1.5.3        rlang_1.3.0
+[25] bit64_4.8.2         splines_4.6.1       withr_3.0.3
+[28] parallel_4.6.1      tools_4.6.1         tzdb_0.5.0
+[31] coda_0.19-4.1       vctrs_0.7.3         R6_2.6.1
+[34] stats4_4.6.1        zoo_1.8-15          lifecycle_1.0.5
+[37] bit_4.6.0           vroom_1.7.1         MASS_7.3-66
+[40] ragg_1.5.2          pkgconfig_2.0.3     pillar_1.11.1
+[43] gtable_0.3.6        glue_1.8.1          systemfonts_1.3.2
+[46] tidyselect_1.2.1    farver_2.1.2        xtable_1.8-8
+[49] labeling_0.4.3      compiler_4.6.1      S7_0.2.2

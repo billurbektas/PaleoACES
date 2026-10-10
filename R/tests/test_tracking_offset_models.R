@@ -1,22 +1,26 @@
 # Offline combined-input and covariance checks for the provisional model stage.
 suppressPackageStartupMessages({library(here);library(tidyverse);library(nlme)})
+source(here('R/helpers/config.R'),local=TRUE)
+source(here('R/helpers/tracking_metrics.R'),local=TRUE)
 source(here('R/helpers/tracking_data.R'),local=TRUE)
 source(here('R/helpers/tracking_model_data.R'),local=TRUE)
 source(here('R/helpers/tracking_model_reporting.R'),local=TRUE)
 stopifnot(identical(tracking_model_response_names(),c('lag_rate_per_century','observed_turnover_rate',
-  'standardized_climate_change_rate')),
+  'standardized_climate_change_rate','pace_corrected_lag_rate_per_century',
+  'direction_corrected_lag_rate_per_century')),
   tracking_model_response_unit('standardized_climate_change_rate')=='Calibration SD / century')
 equal=function(a,b) stopifnot(isTRUE(all.equal(a,b,tolerance=1e-9,check.attributes=FALSE)))
 fail=function(x) stopifnot(inherits(tryCatch({force(x);NULL},error=identity),'error'))
 read_tracking=function(stem) read_csv(here('output',paste0('cca_tracking_',stem,'.csv')),show_col_types=FALSE)
 b=read_tracking('holocene_lake_by_offset');a=read_tracking('anthropocene_plot_model_input')
 c=read_tracking('era_by_offset')
+hc=read_tracking('holocene_lake_realizations');ac=read_tracking('anthropocene_plot_calculations')
 contract=c('era','site','lake','plot_id','offset','age_hi','age_lo','interval_mid_cal_bp',
   'vegetation_t1_year','vegetation_t2_year','climate_t1_midyear','climate_t2_midyear',
   'vegetation_dt_years','climate_dt_years','metric','estimate','response_valid',
   'standardized_climate_change_rate','fire_activity','fire_coverage_valid','high_fire','burned',
   'n_draws_present','n_draws_nmin2','n_samples_t1_median','n_samples_t2_median','longitude','latitude')
-stopifnot(identical(names(c),contract),nrow(c)==(nrow(b)+nrow(a))*7L)
+stopifnot(identical(names(c),contract),nrow(c)==(nrow(b)+nrow(a))*9L)
 validate_tracking_model_data(c)
 key=function(x,fields) do.call(paste,c(as.data.frame(x[fields]),sep='::'))
 h=c |> filter(era=='Holocene');modern=c |> filter(era=='Anthropocene')
@@ -89,9 +93,57 @@ equal(h$longitude,lh$longitude);equal(h$latitude,lh$latitude)
 equal(modern$longitude,ap$longitude);equal(modern$latitude,ap$latitude)
 stopifnot('EAGl-120' %in% modern$plot_id,
   sum(!modern$response_valid[modern$metric=='angle_degrees'])==142L)
-fail(combine_tracking_model_data(b,a,lake_locations,plot_locations[-1,]))
-fail(combine_tracking_model_data(b,a,lake_locations,bind_rows(plot_locations,plot_locations[1,])))
+fail(combine_tracking_model_data(b,a,lake_locations,plot_locations[-1,],hc,ac))
+fail(combine_tracking_model_data(b,a,lake_locations,bind_rows(plot_locations,plot_locations[1,]),hc,ac))
 fail(validate_tracking_model_data(c[-1,]))
+# Independently reconstruct the corrected geometry from original endpoints,
+# rather than checking a formula against itself or subtracting summary medians.
+independent_corrected=function(x) {
+  ox=x$o1_2-x$o1;oy=x$o2_2-x$o2
+  px=x$p1_2-x$p1;py=x$p2_2-x$p2
+  a=sqrt(ox^2+oy^2);b=sqrt(px^2+py^2)
+  L1=sqrt((x$o1-x$p1)^2+(x$o2-x$p2)^2)
+  Lpace=sqrt((x$o1+b*ox/a-x$p1_2)^2+(x$o2+b*oy/a-x$p2_2)^2)
+  Ldirection=sqrt((x$o1+a*px/b-x$p1_2)^2+(x$o2+a*py/b-x$p2_2)^2)
+  x$pace_corrected_lag_rate_per_century=ifelse(a>1e-8,(Lpace-L1)*100/x$climate_dt_years,NA_real_)
+  x$direction_corrected_lag_rate_per_century=ifelse(b>1e-8,(Ldirection-L1)*100/x$climate_dt_years,NA_real_)
+  x
+}
+hi=independent_corrected(hc);ai=independent_corrected(ac)
+for(name in tracking_corrected_response_names()) {
+  expected_h=hi |> group_by(across(all_of(tracking_transition_keys()))) |>
+    summarise(estimate=if(any(is.finite(.data[[name]])))
+      median(.data[[name]][is.finite(.data[[name]])]) else NA_real_,.groups='drop')
+  actual_h=h[h$metric==name,]
+  actual_h=actual_h[match(key(expected_h,tracking_transition_keys()),key(actual_h,tracking_transition_keys())),]
+  actual_a=modern[modern$metric==name,]
+  actual_a=actual_a[match(key(ai,c('site','plot_id')),key(actual_a,c('site','plot_id'))),]
+  equal(actual_h$estimate,expected_h$estimate);equal(actual_a$estimate,ai[[name]])
+  direct_h=add_corrected_lag_rates(hc);direct_a=add_corrected_lag_rates(ac)
+  equal(direct_h[[name]],hi[[name]]);equal(direct_a[[name]],ai[[name]])
+  effect=if(name=='pace_corrected_lag_rate_per_century')
+    'pace_effect_on_lag_per_century' else 'direction_effect_on_lag_per_century'
+  equal(direct_h[[name]],hc$lag_rate_per_century-hc[[effect]])
+  equal(direct_a[[name]],ac$lag_rate_per_century-ac[[effect]])
+}
+stopifnot(sum(!modern$response_valid[modern$metric=='pace_corrected_lag_rate_per_century'])==142L,
+  all(modern$response_valid[modern$metric=='direction_corrected_lag_rate_per_century']))
+# Nonlinear chronology summaries cannot be replaced by a difference of medians.
+toy=data.frame(lag_t1=c(0,0,0),lag_t2_pace_corrected=c(3,0,8),
+  lag_t2_direction_corrected=c(3,0,8),climate_dt_years=c(100,100,100),
+  pace_counterfactual_valid=TRUE,direction_counterfactual_valid=TRUE)
+lag=c(3,10,8);effect=lag-toy$lag_t2_pace_corrected
+stopifnot(median(add_corrected_lag_rates(toy)$pace_corrected_lag_rate_per_century)!=median(lag)-median(effect))
+# An empty corrected group preserves its observation keys and other responses.
+empty_h=hc;empty_h$pace_counterfactual_valid=FALSE
+empty=combine_tracking_model_data(b,a,lake_locations,plot_locations,empty_h,ac)
+stopifnot(all(is.na(empty$estimate[empty$era=='Holocene' & empty$metric=='pace_corrected_lag_rate_per_century'])),
+  nrow(empty)==nrow(c),
+  all(empty$response_valid[empty$era=='Holocene' & empty$metric=='lag_rate_per_century']))
+fail(combine_tracking_model_data(b,a,lake_locations,plot_locations,hc[-1,] |> filter(draw!=2),ac[-1,]))
+fail(combine_tracking_model_data(b,a,lake_locations,plot_locations,hc[-1,],ac))
+bad_time=ac;bad_time$climate_dt_years[1]=bad_time$climate_dt_years[1]+1
+fail(combine_tracking_model_data(b,a,lake_locations,plot_locations,hc,bad_time))
 schema=read_tracking('schema') |> filter(dataset=='cca_tracking_era_by_offset')
 stopifnot(identical(schema$column,contract),schema$unit[schema$column=='estimate']=='metric_dependent')
 
@@ -107,7 +159,14 @@ if(is.list(ma)) ma=ma[[1]];if(is.list(ar)) ar=ar[[1]]
 equal(ma[1,2],.4/(1+.4^2));equal(ma[1,3],0);equal(ma[2,3],0)
 equal(ar[1,3],.4^3);equal(ar[2,3],.4^2)
 
+b_reference=b |> left_join(hi |> group_by(across(all_of(tracking_transition_keys()))) |>
+  summarise(across(all_of(tracking_corrected_response_names()),
+    ~if(any(is.finite(.x))) median(.x[is.finite(.x)]) else NA_real_),.groups='drop'),
+  by=tracking_transition_keys())
+a_reference=a |> left_join(ai |> select(site,plot_id,all_of(tracking_corrected_response_names())),
+  by=c('site','plot_id'))
 for(metric in tracking_model_response_names()) {
+expected_modern=sum(is.finite(a_reference[[metric]]))
 coeff=read_csv(here('output/exploratory/tracking_offset_models',metric,'model_coefficients.csv'),
   show_col_types=FALSE)
 stopifnot(nrow(coeff)==120L,setequal(coeff$model_type,c('AR1','MA1','Independent')),
@@ -124,7 +183,7 @@ stopifnot(tracking_selected_model_type()=='MA1',
 for(offset in seq(0,900,100)) {
   d=tracking_offset_model_input(c,metric,offset)$data
   co=coeff[coeff$offset==offset,]
-  stopifnot(all(co$n_holocene==sum(d$era=='Holocene')),all(co$n_anthropocene==607L),
+  stopifnot(all(co$n_holocene==sum(d$era=='Holocene')),all(co$n_anthropocene==expected_modern),
     all(co$df==nrow(d)-4L))
   # Independent residuals with constant variance within each saturated era/site
   # cell have the same point estimates as ordinary cell means / lm coefficients.
@@ -165,7 +224,7 @@ for(offset in seq(0,900,100)) {
   x=comparison[comparison$offset==offset,]
   stopifnot(nrow(x)==3L,setequal(x$model_type,c('AR1','MA1','Independent')),
     all(x$n==nrow(d)),all(x$n_holocene==sum(d$era=='Holocene')),
-    all(x$n_anthropocene==607L))
+    all(x$n_anthropocene==expected_modern))
   equal(x$delta_AIC,x$AIC-min(x$AIC))
   w=exp(-(x$AIC-min(x$AIC))/2)
   equal(x$akaike_weight,w/sum(w));equal(sum(x$akaike_weight),1)
@@ -249,9 +308,9 @@ stopifnot(nrow(lc)==16L,nrow(lt)==8L,all(lc$offset==0),all(lt$offset==0),
   !anyDuplicated(lt[c('site','lake','model_type')]))
 for(lake in unique(b$lake)) {
   selected=tracking_lake_model_input(c,metric,lake,0)$data
-  bh=b[b$lake==lake & b$offset==0 & is.finite(b[[metric]]),]
+  bh=b_reference[b_reference$lake==lake & b_reference$offset==0 & is.finite(b_reference[[metric]]),]
   park=unique(bh$site)
-  ma=a[a$site==park & is.finite(a[[metric]]),]
+  ma=a_reference[a_reference$site==park & is.finite(a_reference[[metric]]),]
   stopifnot(all(selected$site==park),all(selected$lake[selected$era=='Holocene']==lake),
     setequal(selected$plot_id[selected$era=='Anthropocene'],ma$plot_id),
     setequal(key(selected[selected$era=='Holocene',],tracking_transition_keys()),
@@ -275,7 +334,9 @@ for(x in list(lc,lt)) {
 }
 flagged=lt |> filter(near_correlation_boundary)
 expected_boundary=switch(metric,lag_rate_per_century=c('ReflectionPond','PantherPotholes'),
-  observed_turnover_rate='JayBath',standardized_climate_change_rate='PantherPotholes')
+  observed_turnover_rate='JayBath',standardized_climate_change_rate='PantherPotholes',
+  pace_corrected_lag_rate_per_century='ReflectionPond',
+  direction_corrected_lag_rate_per_century=c('JayBath','LogWallow','ReflectionPond'))
 stopifnot(nrow(flagged)==length(expected_boundary),all(flagged$model_type=='MA1'),
   setequal(flagged$lake,expected_boundary))
 fail(tracking_lake_model_input(c,metric,'UnknownLake',0))
@@ -289,6 +350,23 @@ if(isTRUE(getOption('paleoaces.render_figures',TRUE))) for(stem in c('coefficien
 }
 cat('PASS:',metric,'comparison fits, selected MA1 group means / covariance-based contrasts and offset-0 lake sensitivity.\n')
 }
-cat('PASS: all three requested responses use actual transitions and original modern identities, dates, fire and coordinates; reporting does not pool offsets.\n')
+cat('PASS: all five requested responses use actual transitions and original modern identities, dates, fire and coordinates; reporting does not pool offsets.\n')
 cat('PASS: raw physical climate rates match canonical source values without duplicate observations, transformations or tracking-validity filtering.\n')
 cat('PASS: per response, 120 coefficients, 60 contrasts, 30 AIC comparisons, 40 MA1 group means, 16 lake coefficients and 8 lake contrasts; all intervals, signs, counts and retained time gaps verified.\n')
+
+# Verify the final manuscript figure reuses every model result and each finite
+# corrected observation; drawing the figure never fits another model.
+options(paleoaces.render_figures=FALSE)
+e=new.env();sys.source(here('R/stages/10b_tracking_manuscript_figure.R'),envir=e)
+stopifnot(nrow(e$means)==20L,nrow(e$contrasts)==10L,nrow(e$d)==1132L,
+  all(e$means$model_type=='MA1'),all(e$contrasts$model_type=='MA1'),
+  is.null(e$figure$patches$annotation$title),is.null(e$figure$patches$annotation$caption),
+  diff(range(-e$limits$lower/(e$limits$upper-e$limits$lower)))<1e-12)
+for(era in c('Holocene','Anthropocene')) for(correction in c('Direction','Pace')) {
+  dd=e$d[e$d$era==era & e$d$correction==correction,]
+  ss=e$scatter_stats[[era]] |> filter(.data$correction==.env$correction)
+  ref=cor.test(dd$lag_rate_per_century,dd$corrected_rate,method='spearman',exact=FALSE)
+  equal(ss$rho,unname(ref$estimate));equal(ss$p_value,ref$p.value)
+  equal(ss$n_pairs,nrow(dd))
+}
+cat('PASS: five offset-0 contrast categories, grouped corrected lag labels, aligned zeros and reproducible scatter/density inputs.\n')

@@ -1,5 +1,6 @@
 MA1 covariance selected by the author on 2026-10-09; model development and inference remain exploratory.
 Response: observed_turnover_rate | Holocene interval / time step: 1000 years
+Response units: CCA units / century | Transformation: none
 Fixed effects: estimate ~ era * site; REML; separate residual SDs by era/site.
 Reference categories: Holocene and MORA. Coefficient units follow the selected response.
 AR1: corAR1(~ time_index | series). MA1: corARMA(p=0, q=1, ~ time_index | series).
@@ -10,6 +11,8 @@ Each fit uses one offset and all original modern pairs with a finite selected re
 Modern pairs are singleton series; their internal time index is 0 and their actual dates are retained.
 Offsets are sensitivity realizations; the same modern data are reused, so fits are not independent.
 Holocene responses are finite chronology-draw medians within actual transitions, without offset aggregation.
+Corrected lag rates use (corrected final lag - initial lag)*100/climate elapsed years within each draw before summarizing.
+Pace correction remains magnitude-based. Its undefined directions exclude only the pace-corrected response.
 No chronology uncertainty propagation, lake random intercept, climate/fire fixed effects or support threshold.
 Adjacent Holocene transitions share endpoints; only four lakes and two fire histories are available.
 AIC comparisons are meaningful between covariance types within the same offset, not across offsets.
@@ -17,11 +20,11 @@ Delta AIC is measured from the minimum within each offset; Akaike weights are re
 Boxplots show within-offset delta AIC and summarize offset sensitivity, not independent samples; raw AIC remains in the CSV.
 REML is retained because these covariance comparisons use identical fixed effects and observations within each offset.
 The comparison retains all candidates; reported coefficients, contrasts and residuals use the author-selected MA1.
-The MA1 reporting specification is applied to both requested responses; covariance comparisons and diagnostics are response-specific.
+The MA1 reporting specification is applied to every requested response; covariance comparisons and diagnostics are response-specific.
 Group means and era contrasts use emmeans with Satterthwaite degrees of freedom; contrast SEs use the fitted covariance of the means.
 Coefficient intervals and park contrasts are unadjusted exploratory intervals/tests.
-Input: cca_tracking_era_by_offset.csv | MD5: b4c903acf64253f0225d8d8d448fe860
-Script MD5: 300f0620cd701e59ea42b7b757d4582c
+Input: cca_tracking_era_by_offset.csv | MD5: 2e3fcf5d47d7b2f2303618c69c01a26b
+Script MD5: c635510e6f9cb22b38fe42e8e0611472
 Packages: nlme 3.1.170; emmeans 2.0.4
 
 Fit overview:

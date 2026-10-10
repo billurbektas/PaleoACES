@@ -20,7 +20,7 @@ script/outputs while preserving the source calculations and descriptive plots.
 | `cca_tracking_anthropocene_plot_calculations.csv` | 607 | 79 | Detailed modern calculation record, preserving endpoints, seasonal climate and provenance |
 | `cca_tracking_holocene_lake_timeseries.csv` | 1,657 | 15 | Lake × one of seven responses × descriptive 100-year reporting date |
 | `cca_tracking_holocene_lake_support.csv` | 40 | 23 | Lake × offset, including exclusions and two-sample sensitivity support |
-| `cca_tracking_era_by_offset.csv` | 6,160 | 28 | Actual Holocene lake × offset × transition × response, or modern plot × response, with dates, elapsed times, original predictors/support and WGS84 coordinates |
+| `cca_tracking_era_by_offset.csv` | 7,920 | 28 | Actual Holocene lake × offset × transition × response, or modern plot × response, with dates, elapsed times, original predictors/support and WGS84 coordinates |
 
 These outputs are written under `output/`. The [machine-readable schema](../assets/analysis/tables/tracking_schema.csv)
 defines all 342 columns across the eight contracts. Stage 09b assembles the combined
@@ -255,7 +255,9 @@ support, and an uncertainty/inclusion strategy. This validation does not fit
 that interaction, choose a final distribution/covariance, calculate contribution
 attribution or replace the retired figures.
 
-## Offset-0 manuscript figure (2026-10-09)
+## Original offset-0 manuscript figure (2026-10-09)
+
+This records the earlier display, replaced by the 2026-10-10 extension below.
 
 Stage `R/stages/10b_tracking_manuscript_figure.R` reads the maintained combined
 input and existing MA1 group-mean/contrast tables. The figure contains 1,911
@@ -268,3 +270,44 @@ No fits or source CSVs are replaced. The preserved-file snapshot verifies
 all 1,457 prior data, cache, output and figure files remain byte-identical,
 including Figures 2/3 and every model result. The new Figure 4 is a distinct
 producer; historical tracking visualizations remain retired.
+
+## Corrected lag-rate models and anchored Figure 4 (2026-10-10)
+
+The combined input retains 28 columns and now contains 7,920 rows: nine response
+names for 273 transitions and 607 paired plots. The original 23/21-column tables,
+15-column uncertainty, seven-response reporting and detailed calculation records
+are unchanged. Pace/direction corrected rates are derived by the maintained
+metric helper within each chronology draw before taking finite-draw transition
+medians. Independent endpoint geometry reproduces both corrected responses for
+every lake and modern pair. Within each realization, observed rate minus its
+correction effect equals the corrected rate; subtraction of summary medians is
+explicitly tested and rejected as an equivalent calculation.
+
+All five requested responses pass the model gate: 120 coefficients, 60 contrasts,
+30 covariance comparisons and 40 MA1 means across ten offsets, plus 16 lake
+coefficients and eight lake contrasts at offset 0 per response. All fits converge.
+MA1 remains the reporting covariance; AR1/independent comparisons remain audits.
+Pace alone excludes 142 stationary modern pairs, leaving 254 MORA and 211 NOCA.
+Direction retains all 607 pairs. Empty corrected groups preserve observation
+identities and other finite responses. Corrupted draw counts, conflicting elapsed
+times and missing calculation identities stop assembly before export.
+Reflection Pond's corrected-pace MA1 lake fit approaches the parameter boundary;
+Jay Bath, Log Wallow and Reflection Pond direction-corrected MA1 lake fits do too.
+They remain explicitly flagged, not excluded. These are exploratory sensitivities.
+
+The final figure verifies 20 offset-0 MA1 means, ten contrasts and 3,043 finite
+untransformed values. Its upper row shows climate, turnover and three lag variants
+with aligned zeros on their separate unit scales. Its lower row contains 1,132
+finite scatter points: 60 Holocene, 607 modern direction and 465 modern pace.
+Spearman coefficients/p values are independently reproduced from those same
+points. Observed-rate densities use 30 Holocene transitions and 607 modern pairs
+once each, with original observed-lag model means and intervals. Corrected
+marginal distributions, title, caption and count subtitles are absent.
+
+[Preservation fingerprints](TRACKING_CORRECTED_RATE_PRESERVATION.csv) confirm
+17 protected input/calculation/calibration/chronology/Figure-2/3 files and all
+12 original numerical model CSVs remain byte-identical. Offline metric, model,
+workflow, figure-contract, documentation and portable review checks pass.
+The Analysis Review and generated R reading copy expose the focused corrected-rate
+calculation directly from the maintained helper and register all new diagnostics.
+No chronology regeneration, downloads, model transformation or merge occurs.

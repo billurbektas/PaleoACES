@@ -1,5 +1,5 @@
 # Maintained sensitivity: offset 0, one Holocene lake versus its park's modern pairs.
-# Default: lag-change rate, observed turnover and raw physical climate-change rate; offset 0 only.
+# Default: five rate responses, including the two corrected lag rates; offset 0 only.
 # Rscript R/stages/10a_tracking_lake_sensitivity.R [--metric=NAME]
 # Optional manual runs: --metric=NAME --offset=N --bin-width-years=N.
 suppressPackageStartupMessages({

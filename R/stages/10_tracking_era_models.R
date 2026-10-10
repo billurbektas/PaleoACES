@@ -1,5 +1,5 @@
 # Covariance comparison and selected MA1 results: one transition offset per fit.
-# Default: lag-change rate, observed turnover and raw physical climate-change rate.
+# Default: observed and two corrected lag rates, turnover and physical climate rate.
 # --metric=NAME selects one response; no response transformation is applied.
 # Rscript R/stages/10_tracking_era_models.R [--metric=observed_turnover_rate]
 # Optional later width experiments: --bin-width-years=N; never run automatically.
@@ -165,6 +165,8 @@ for(response_metric in response_metrics) {
     'Modern pairs are singleton series; their internal time index is 0 and their actual dates are retained.',
     'Offsets are sensitivity realizations; the same modern data are reused, so fits are not independent.',
     'Holocene responses are finite chronology-draw medians within actual transitions, without offset aggregation.',
+    'Corrected lag rates use (corrected final lag - initial lag)*100/climate elapsed years within each draw before summarizing.',
+    'Pace correction remains magnitude-based. Its undefined directions exclude only the pace-corrected response.',
     'No chronology uncertainty propagation, lake random intercept, climate/fire fixed effects or support threshold.',
     'Adjacent Holocene transitions share endpoints; only four lakes and two fire histories are available.',
     'AIC comparisons are meaningful between covariance types within the same offset, not across offsets.',

@@ -376,7 +376,7 @@ preserves response estimates and leaves dates outside the classified
 ### Combined transition input and provisional offset models
 
 Stage 09b assembles `cca_tracking_era_by_offset.csv` from the canonical lake
-transition and modern plot tables. Its [28-column contract](OUTPUTS.md#canonical-tracking-schemas)
+transition and modern plot tables and detailed calculation records. Its [28-column contract](OUTPUTS.md#canonical-tracking-schemas)
 retains one response per actual observation, both elapsed times, known survey
 and climate dates, physical climate rate, original fire exposure, lake support
 and WGS84 coordinates. Modern pairs appear once per response with an absent
@@ -389,8 +389,8 @@ Descriptive tracking plots still reconstruct their aligned predictor medians
 from source transitions using the existing response-specific reporting rule.
 
 Stage 10 runs the same provisional Gaussian GLS separately at all ten offsets
-for lag-change rate, observed community turnover and raw physical climate-change
-rate. It fits `estimate ~ era * site` with REML and era/site
+for observed lag-change rate, observed community turnover, raw physical
+climate-change rate and the two corrected lag-change rates. It fits `estimate ~ era * site` with REML and era/site
 residual variances, trying AR1, MA1 and independent residuals. One combined coefficient
 CSV flags offset and `model_type`. A separate contrast CSV holds Anthropocene
 minus Holocene within MORA and within NOCA: 60 contrasts per response with unadjusted 95%
@@ -514,26 +514,50 @@ are not addressed by this initial GLS. The same modern observations are reused
 across offsets and MORA lake sensitivities; these runs are not independent
 replicates. Continuous fire activity is outside this response-model extension.
 
-**Offset-0 manuscript comparison (2026-10-09).** The author requested a new
-Figure 4 with raw distributions, connected model means and confidence intervals
-for climate-change rate, community turnover and lag-change rate. Each pair of
-era means is annotated with its Anthropocene-minus-Holocene contrast and
-covariance-based 95% interval. Stage 10b uses the untransformed offset-0 inputs
-and existing MA1 model tables. The figure combines three response rows and two
-park columns, uses large fonts and keeps the complete raw ranges on shared
-linear scales within each response. MORA has 20 actual Holocene transitions
-across its three lakes and 330 modern pairs; NOCA has 10 Panther Potholes
-transitions and 277 modern pairs per response. Holocene input values are
-chronology-draw medians for actual transitions. Violins have equal maximum
-width and do not encode sample count; counts are printed. These are model-based
-intervals and do not propagate chronology uncertainty. This new figure reads
-existing results without refitting, preserves Figures 2/3, and does not restore
-the historical tracking-visualization pipeline.
-The author refined the display to use grey distributions and model overlays,
-smaller mean circles, and response names ending in "rate" without units on the
-plot. Units remain defined in the methods. A single star marks an existing
-unadjusted within-park era contrast with `p < 0.05`; estimates and intervals
-remain unchanged.
+**Corrected lag-rate model extension and manuscript Figure 4 (2026-10-10).**
+The author anchored the contrast/scatter preview and requested the same model
+exercise for pace- and direction-corrected lag changes. The new responses are
+`pace_corrected_lag_rate_per_century` and
+`direction_corrected_lag_rate_per_century`: `(corrected final lag - initial lag)`
+multiplied by `100 / climate_dt_years`. They retain the original counterfactual
+geometry, tolerance and elapsed time. Stage 09b derives them from the detailed
+calculation records within each chronology draw, then takes finite-draw medians.
+Subtracting an effect median from an observed-rate median is not equivalent.
+The canonical 23/21-column tables and seven-response uncertainty/reporting
+contracts remain unchanged; two response names are added as rows to the
+28-column combined input, now 7,920 rows. MA1 remains the working covariance,
+with the same coefficients, means, contrasts and residual diagnostics across
+all ten offsets and the existing offset-0 lake sensitivity. The three covariance
+candidates remain in the numerical comparison audit. Corrected rates are signed,
+descriptive changes, not corrected lag levels or causal contributions.
+
+All 607 modern pairs have defined direction corrections. Pace is undefined
+for 142 stationary modern plots (76 MORA, 66 NOCA); its model uses 254 MORA and
+211 NOCA pairs. Exclusions are response-specific; other responses retain their
+observations. Original time gaps, lake identities and finite-draw medians remain.
+The same scale conventions and model limitations apply to all five responses.
+
+Stage 10b now shows five offset-0 MA1 era contrasts in the first row, with MORA
+and NOCA side by side. Climate and community/lag rates use separate scales with
+aligned zeros. Observed, pace-corrected and direction-corrected lag changes share
+a grouped x-axis and teal/pink/purple outlines and intervals. Park fills stay
+blue/orange. Stars mark unadjusted contrast `p < 0.05`; nonsignificant error bars
+are faint without an opacity legend. Point ratios of fitted Anthropocene to
+Holocene means are printed below bars without ratio uncertainty. Lag ratios
+may be negative on sign reversal or unstable near a zero denominator; these
+labels support description, while the absolute contrast retains its model
+interval. They are not multiplicative inference for signed lag rates.
+
+The second row has separate-era scatter panels of observed versus corrected
+lag-change rates, pooling parks. Correlation lines are descriptive linear fits.
+Spearman rho and nominal p values do not adjust for lake/temporal dependence or
+mathematical coupling between observed and corrected responses. Only observed
+lag rates have top densities; each input appears once, with the original MA1
+park/era means and 95% intervals beside the scatter border. No corrected density,
+figure caption, overall title or count subtitle is drawn. Units and limitations
+are maintained in the review and publication caption. The figure reuses results,
+validates 20 means and ten contrasts, and preserves calibration, chronology and
+Figures 2/3 without refitting or response transformations.
 
 The 273 primary transition rows span ten alternative bin placements. **Offsets
 are sensitivity realizations, not independent ecological replicates.** The

@@ -82,39 +82,45 @@ the constraints share explanatory variation. **D.** Taxon-specific partition
 of constrained inertia; shading indicates occurrence in the 607 calibration
 plots.
 
-## Figure 4 — Climate-change, community turnover and lag-change rates
+## Figure 4 — Era contrasts and corrected lag-change rates
 
-**Method summary.** Untransformed values from the primary 1,000-year analysis
-were selected at offset 0. Each Holocene value is the median over valid whole
-chronology draws for one actual lake transition; each Anthropocene value is
-one paired plot. Separate GLS models for climate-change rate, community turnover
-and lag-change rate use `era * site`, REML, MA(1) residual correlation within
-lake series and separate era/site residual variances. The figure reads fitted
-means and contrasts from the existing model outputs without refitting.
-Intervals use Satterthwaite degrees of freedom and contrast intervals retain
-covariance between fitted means. Violins have equal maximum width, with actual
-sample counts shown. All raw values remain on linear scales shared between
-parks within each response. The figure uses grey distributions and model
-overlays, with smaller mean markers and response-only rate labels. A star marks
-an unadjusted Anthropocene-minus-Holocene contrast with `p < 0.05`.
+**Method summary.** Offset-0 MA1 GLS results are reused without refitting for
+physical climate-change rate, observed community turnover and observed,
+pace-corrected and direction-corrected lag changes. Models use `era * site`,
+REML and separate era/site residual variances. Corrected rates are calculated
+within each chronology draw from stored counterfactual geometry before finite-draw
+transition medians. The original 23/21-column model tables are preserved.
+Contrast and group-mean intervals use Satterthwaite degrees of freedom; contrast
+SEs retain covariance between fitted means. Correlations are descriptive and
+nominal, without adjustment for lake/temporal dependence or mathematical coupling.
 
 [Open the publication PDF](../plot/fig_tracking_era_distributions.pdf)
 
-![Figure 4. Offset-0 raw distributions, fitted era means and contrasts.](../plot/fig_tracking_era_distributions.png)
+![Figure 4. Offset-0 model contrasts and observed-versus-corrected lag changes.](../plot/fig_tracking_era_distributions.png)
 
-**Publication-ready caption.** Figure 4. Holocene and Anthropocene
-climate-change rates and forest community responses at Mount Rainier (MORA)
-and North Cascades (NOCA). **A.** Standardized physical climate-change rate,
-the Euclidean magnitude of changes in the four seasonal climate variables
-divided by their pooled legacy-calibration standard deviations and expressed
-per century. **B.** Observed community turnover rate, measured as WA displacement
-in CCA space per vegetation century. **C.** Lag-change rate, the change in
-observed-to-climate-predicted CCA distance per climate century. Violins and
-points show untransformed input values. Connected open circles and error bars
-show MA(1) GLS fitted era means and 95% confidence intervals. Bracket annotations
-report the Anthropocene-minus-Holocene contrast (A − H) and its covariance-based
-95% interval; * denotes an unadjusted contrast with p < 0.05. Offset 0 contributes 20 Holocene transitions across the three
-MORA lakes and 10 Panther Potholes transitions at NOCA; modern samples comprise
-330 MORA and 277 NOCA plot pairs. Chronology uncertainty is summarized within
-transitions and is not propagated through these model intervals. Per-century
-units do not equalize Holocene and modern temporal averaging.
+**Publication-ready caption.** Figure 4. Holocene–Anthropocene comparisons at
+Mount Rainier (MORA, blue) and North Cascades (NOCA, orange). The upper row
+shows Anthropocene-minus-Holocene MA(1) GLS contrasts and 95% confidence intervals
+for physical climate-change rate, community turnover and observed (teal),
+pace-corrected (pink) and direction-corrected (purple) lag changes. Climate uses
+a separate scale; zero baselines are aligned. * denotes unadjusted contrast
+p < 0.05; nonsignificant interval bars are faint. Numbers beneath intervals
+are ratios of fitted Anthropocene to Holocene means, without ratio intervals.
+Signed lag ratios may reflect sign reversals and become unstable near zero;
+they are descriptive annotations, not multiplicative-effect inference.
+Climate change is the Euclidean norm of four seasonal changes scaled by pooled
+legacy-calibration SDs per climate century. Turnover is observed CCA displacement
+per vegetation century. Observed lag change is the change in observed-to-predicted
+CCA distance per climate century; corrected rates substitute the maintained
+counterfactual final lag while preserving the actual initial lag.
+The lower row plots observed against corrected lag-change rates separately for
+each era, pooling parks. Small transparent points retain park fills and correction
+outlines; colored straight lines are descriptive linear fits, dashed diagonals
+are 1:1, and colored text gives Spearman rho and nominal two-sided p values.
+Top densities show observed lag rates once per observation, with their original
+MA1 fitted means and 95% intervals. Holocene values are chronology-draw medians
+for actual offset-0 transitions: 20 MORA and 10 NOCA. Observed/direction modern
+values comprise 330 MORA and 277 NOCA pairs; pace retains 254 and 211, respectively,
+after excluding undefined stationary directions. The geometric corrections are
+descriptive, not causal, and model intervals do not propagate chronology
+uncertainty. Per-century units do not equalize temporal averaging across eras.

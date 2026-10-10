@@ -13,6 +13,9 @@ suffix=if(width==1000L) '' else paste0('_',width,'yr')
 b=read_csv(here('output',paste0('cca_tracking_holocene_lake_by_offset',suffix,'.csv')),
   show_col_types=FALSE)
 a=read_csv(here('output/cca_tracking_anthropocene_plot_model_input.csv'),show_col_types=FALSE)
+hc=read_csv(here('output',paste0('cca_tracking_holocene_lake_realizations',suffix,'.csv')),
+  show_col_types=FALSE)
+ac=read_csv(here('output/cca_tracking_anthropocene_plot_calculations.csv'),show_col_types=FALSE)
 if(any(b$climate_dt_years!=width)) stop('Requested width and source table disagree')
 lake_locations=read_csv(here('output/chelsa_paleo_ponds.csv'),show_col_types=FALSE) |>
   distinct(site,lake,longitude=lon,latitude=lat)
@@ -21,7 +24,7 @@ plot_locations=bind_rows(
     transmute(site='MORA',plot_id,longitude,latitude),
   read_csv(here('output/NOCA_plot_info_fire.csv'),show_col_types=FALSE) |>
     transmute(site='NOCA',plot_id,longitude,latitude))
-combined=combine_tracking_model_data(b,a,lake_locations,plot_locations)
+combined=combine_tracking_model_data(b,a,lake_locations,plot_locations,hc,ac)
 write_csv(combined,here('output',paste0('cca_tracking_era_by_offset',suffix,'.csv')))
 if(width==1000L) {
   schema=read_csv(here('output/cca_tracking_schema.csv'),show_col_types=FALSE) |>
@@ -30,4 +33,5 @@ if(width==1000L) {
   write_csv(schema,here('output/cca_tracking_schema.csv'))
 }
 cat('Combined model input:',nrow(combined),'rows;',ncol(combined),'columns;',
-  nrow(b),'Holocene transitions and',nrow(a),'modern pairs, each with seven responses.\n')
+  nrow(b),'Holocene transitions and',nrow(a),'modern pairs, each with',
+  length(tracking_combined_response_names()),'responses.\n')

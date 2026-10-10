@@ -1,0 +1,607 @@
+Lake sensitivity; MA1 selected by the author on 2026-10-09; inference remains exploratory.
+Response: pace_corrected_lag_rate_per_century | Offset: 0 | Holocene interval: 1000 years
+Response units: CCA units / century | Transformation: none
+Each fit compares one Holocene lake with all finite modern responses from the same park.
+Constant site is removed: estimate ~ era; REML; separate residual variances by era.
+AR1 or MA1 correlation retains actual within-lake gaps; modern pairs are singleton series.
+Comparison records retain AR1 and MA1; reported lake coefficients and contrasts use only the selected MA1.
+MORA lake fits reuse the same modern plots; they are not independent comparisons.
+Near-boundary fits are retained and flagged when the absolute correlation parameter exceeds 0.98.
+No chronology propagation, support cutoff, lake random effect or climate/fire fixed effects.
+No pooled averaging of lake fits and no AIC comparisons between different lake inputs.
+Input MD5: 2e3fcf5d47d7b2f2303618c69c01a26b
+Script MD5: 7a1c077cc03c32e59609c78e37e71e63
+
+LAKE JayBath | PARK MORA | OFFSET 0 | MODEL AR1
+Holocene transitions: 7 | Modern pairs: 254 | Undefined selected responses: 76
+Correlation parameter: -0.36766746 (phi)
+Near correlation boundary (absolute parameter > 0.98): FALSE
+Warnings: none
+Generalized least squares fit by REML
+  Model: estimate ~ era
+  Data: d
+       AIC      BIC    logLik
+  837.0204 854.8046 -413.5102
+
+Correlation Structure: AR(1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+       Phi
+-0.3676675
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | era
+ Parameter estimates:
+Anthropocene     Holocene
+ 1.000000000  0.008174258
+
+Coefficients:
+                     Value  Std.Error   t-value p-value
+(Intercept)     -0.0006898 0.00287816 -0.239681  0.8108
+eraAnthropocene  0.5190655 0.08264674  6.280532  0.0000
+
+ Correlation:
+                (Intr)
+eraAnthropocene -0.035
+
+Standardized residuals:
+       Min         Q1        Med         Q3        Max
+-2.4845797 -0.5902408 -0.1183559  0.7137950  3.1560997
+
+Residual standard error: 1.316373
+Degrees of freedom: 261 total; 259 residual
+Era means:
+ era            emmean      SE     df lower.CL upper.CL
+ Holocene     -0.00069 0.00288   0.68   -0.116    0.115
+ Anthropocene  0.51838 0.08260 253.00    0.356    0.681
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Anthropocene - Holocene:
+ contrast                 estimate         SE     df  lower.CL  upper.CL
+ Anthropocene - Holocene 0.5190655 0.08264674 253.48 0.3563037 0.6818272
+ t.ratio p.value
+   6.281 <0.0001
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Undefined response identities:
+# A tibble: 76 × 6
+   era          site  lake  plot_id  age_hi age_lo
+   <chr>        <chr> <chr> <chr>     <dbl>  <dbl>
+ 1 Anthropocene MORA  <NA>  AURO-215     NA     NA
+ 2 Anthropocene MORA  <NA>  BACK-454     NA     NA
+ 3 Anthropocene MORA  <NA>  CARB-128     NA     NA
+ 4 Anthropocene MORA  <NA>  CAYU-059     NA     NA
+ 5 Anthropocene MORA  <NA>  CHIN-084     NA     NA
+ 6 Anthropocene MORA  <NA>  CHIN-086     NA     NA
+ 7 Anthropocene MORA  <NA>  CHIN-246     NA     NA
+ 8 Anthropocene MORA  <NA>  CHIN-247     NA     NA
+ 9 Anthropocene MORA  <NA>  CLOV-369     NA     NA
+10 Anthropocene MORA  <NA>  COLD-108     NA     NA
+# ℹ 66 more rows
+
+LAKE JayBath | PARK MORA | OFFSET 0 | MODEL MA1
+Holocene transitions: 7 | Modern pairs: 254 | Undefined selected responses: 76
+Correlation parameter: -0.098251473 (theta; rho(1) = -0.097312085)
+Near correlation boundary (absolute parameter > 0.98): FALSE
+Warnings: none
+Generalized least squares fit by REML
+  Model: estimate ~ era
+  Data: d
+       AIC      BIC    logLik
+  837.0968 854.8809 -413.5484
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+     Theta1
+-0.09825147
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | era
+ Parameter estimates:
+Anthropocene     Holocene
+ 1.000000000  0.008018485
+
+Coefficients:
+                     Value  Std.Error   t-value p-value
+(Intercept)     -0.0009737 0.00363738 -0.267694  0.7891
+eraAnthropocene  0.5193493 0.08267668  6.281691  0.0000
+
+ Correlation:
+                (Intr)
+eraAnthropocene -0.044
+
+Standardized residuals:
+       Min         Q1        Med         Q3        Max
+-2.4845792 -0.5902407 -0.1183559  0.7137948  3.1560991
+
+Residual standard error: 1.316374
+Degrees of freedom: 261 total; 259 residual
+Era means:
+ era             emmean      SE     df lower.CL upper.CL
+ Holocene     -0.000974 0.00364   0.59   -0.277    0.275
+ Anthropocene  0.518376 0.08260 253.02    0.356    0.681
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Anthropocene - Holocene:
+ contrast                 estimate         SE     df  lower.CL  upper.CL
+ Anthropocene - Holocene 0.5193493 0.08267668 253.63 0.3565291 0.6821696
+ t.ratio p.value
+   6.282 <0.0001
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Undefined response identities:
+# A tibble: 76 × 6
+   era          site  lake  plot_id  age_hi age_lo
+   <chr>        <chr> <chr> <chr>     <dbl>  <dbl>
+ 1 Anthropocene MORA  <NA>  AURO-215     NA     NA
+ 2 Anthropocene MORA  <NA>  BACK-454     NA     NA
+ 3 Anthropocene MORA  <NA>  CARB-128     NA     NA
+ 4 Anthropocene MORA  <NA>  CAYU-059     NA     NA
+ 5 Anthropocene MORA  <NA>  CHIN-084     NA     NA
+ 6 Anthropocene MORA  <NA>  CHIN-086     NA     NA
+ 7 Anthropocene MORA  <NA>  CHIN-246     NA     NA
+ 8 Anthropocene MORA  <NA>  CHIN-247     NA     NA
+ 9 Anthropocene MORA  <NA>  CLOV-369     NA     NA
+10 Anthropocene MORA  <NA>  COLD-108     NA     NA
+# ℹ 66 more rows
+
+LAKE LogWallow | PARK MORA | OFFSET 0 | MODEL AR1
+Holocene transitions: 7 | Modern pairs: 254 | Undefined selected responses: 76
+Correlation parameter: -0.53157926 (phi)
+Near correlation boundary (absolute parameter > 0.98): FALSE
+Warnings: none
+Generalized least squares fit by REML
+  Model: estimate ~ era
+  Data: d
+       AIC      BIC    logLik
+  837.1257 854.9099 -413.5629
+
+Correlation Structure: AR(1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+       Phi
+-0.5315793
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | era
+ Parameter estimates:
+Anthropocene     Holocene
+  1.00000000   0.00876528
+
+Coefficients:
+                     Value  Std.Error   t-value p-value
+(Intercept)     -0.0009164 0.00254110 -0.360624  0.7187
+eraAnthropocene  0.5192920 0.08263568  6.284113  0.0000
+
+ Correlation:
+                (Intr)
+eraAnthropocene -0.031
+
+Standardized residuals:
+       Min         Q1        Med         Q3        Max
+-2.4845797 -0.5902408 -0.1183559  0.7048351  3.1560997
+
+Residual standard error: 1.316373
+Degrees of freedom: 261 total; 259 residual
+Era means:
+ era             emmean      SE     df lower.CL upper.CL
+ Holocene     -0.000916 0.00254   1.21  -0.0225   0.0207
+ Anthropocene  0.518376 0.08260 253.00   0.3557   0.6810
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Anthropocene - Holocene:
+ contrast                estimate         SE     df  lower.CL  upper.CL t.ratio
+ Anthropocene - Holocene 0.519292 0.08263568 253.43 0.3565519 0.6820321   6.284
+ p.value
+ <0.0001
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Undefined response identities:
+# A tibble: 76 × 6
+   era          site  lake  plot_id  age_hi age_lo
+   <chr>        <chr> <chr> <chr>     <dbl>  <dbl>
+ 1 Anthropocene MORA  <NA>  AURO-215     NA     NA
+ 2 Anthropocene MORA  <NA>  BACK-454     NA     NA
+ 3 Anthropocene MORA  <NA>  CARB-128     NA     NA
+ 4 Anthropocene MORA  <NA>  CAYU-059     NA     NA
+ 5 Anthropocene MORA  <NA>  CHIN-084     NA     NA
+ 6 Anthropocene MORA  <NA>  CHIN-086     NA     NA
+ 7 Anthropocene MORA  <NA>  CHIN-246     NA     NA
+ 8 Anthropocene MORA  <NA>  CHIN-247     NA     NA
+ 9 Anthropocene MORA  <NA>  CLOV-369     NA     NA
+10 Anthropocene MORA  <NA>  COLD-108     NA     NA
+# ℹ 66 more rows
+
+LAKE LogWallow | PARK MORA | OFFSET 0 | MODEL MA1
+Holocene transitions: 7 | Modern pairs: 254 | Undefined selected responses: 76
+Correlation parameter: -0.17643494 (theta; rho(1) = -0.17110846)
+Near correlation boundary (absolute parameter > 0.98): FALSE
+Warnings: none
+Generalized least squares fit by REML
+  Model: estimate ~ era
+  Data: d
+       AIC      BIC    logLik
+  837.3437 855.1278 -413.6718
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+    Theta1
+-0.1764349
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | era
+ Parameter estimates:
+Anthropocene     Holocene
+ 1.000000000  0.008154276
+
+Coefficients:
+                     Value  Std.Error   t-value p-value
+(Intercept)     -0.0014050 0.00339604 -0.413724  0.6794
+eraAnthropocene  0.5197807 0.08266639  6.287690  0.0000
+
+ Correlation:
+                (Intr)
+eraAnthropocene -0.041
+
+Standardized residuals:
+       Min         Q1        Med         Q3        Max
+-2.4845797 -0.5902408 -0.1183559  0.7137950  3.1560998
+
+Residual standard error: 1.316373
+Degrees of freedom: 261 total; 259 residual
+Era means:
+ era           emmean     SE    df lower.CL upper.CL
+ Holocene     -0.0014 0.0034   0.8  -0.0809   0.0781
+ Anthropocene  0.5184 0.0826 253.0   0.3557   0.6810
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Anthropocene - Holocene:
+ contrast                 estimate         SE     df  lower.CL  upper.CL
+ Anthropocene - Holocene 0.5197807 0.08266639 253.64 0.3569807 0.6825806
+ t.ratio p.value
+   6.288 <0.0001
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Undefined response identities:
+# A tibble: 76 × 6
+   era          site  lake  plot_id  age_hi age_lo
+   <chr>        <chr> <chr> <chr>     <dbl>  <dbl>
+ 1 Anthropocene MORA  <NA>  AURO-215     NA     NA
+ 2 Anthropocene MORA  <NA>  BACK-454     NA     NA
+ 3 Anthropocene MORA  <NA>  CARB-128     NA     NA
+ 4 Anthropocene MORA  <NA>  CAYU-059     NA     NA
+ 5 Anthropocene MORA  <NA>  CHIN-084     NA     NA
+ 6 Anthropocene MORA  <NA>  CHIN-086     NA     NA
+ 7 Anthropocene MORA  <NA>  CHIN-246     NA     NA
+ 8 Anthropocene MORA  <NA>  CHIN-247     NA     NA
+ 9 Anthropocene MORA  <NA>  CLOV-369     NA     NA
+10 Anthropocene MORA  <NA>  COLD-108     NA     NA
+# ℹ 66 more rows
+
+LAKE ReflectionPond | PARK MORA | OFFSET 0 | MODEL AR1
+Holocene transitions: 6 | Modern pairs: 254 | Undefined selected responses: 76
+Correlation parameter: -0.67935687 (phi)
+Near correlation boundary (absolute parameter > 0.98): FALSE
+Warnings: none
+Generalized least squares fit by REML
+  Model: estimate ~ era
+  Data: d
+       AIC      BIC    logLik
+  835.2524 853.0172 -412.6262
+
+Correlation Structure: AR(1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+       Phi
+-0.6793569
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | era
+ Parameter estimates:
+Anthropocene     Holocene
+ 1.000000000  0.004294916
+
+Coefficients:
+                     Value  Std.Error   t-value p-value
+(Intercept)     -0.0009512 0.00108430 -0.877203  0.3812
+eraAnthropocene  0.5193268 0.08260372  6.286966  0.0000
+
+ Correlation:
+                (Intr)
+eraAnthropocene -0.013
+
+Standardized residuals:
+       Min         Q1        Med         Q3        Max
+-2.4845797 -0.5967822 -0.1396075  0.7179463  3.1560997
+
+Residual standard error: 1.316373
+Degrees of freedom: 260 total; 258 residual
+Era means:
+ era             emmean      SE     df lower.CL upper.CL
+ Holocene     -0.000951 0.00108   2.42 -0.00492  0.00302
+ Anthropocene  0.518376 0.08260 253.00  0.35571  0.68104
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Anthropocene - Holocene:
+ contrast                 estimate         SE     df  lower.CL  upper.CL
+ Anthropocene - Holocene 0.5193268 0.08260372 253.08 0.3566485 0.6820051
+ t.ratio p.value
+   6.287 <0.0001
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Undefined response identities:
+# A tibble: 76 × 6
+   era          site  lake  plot_id  age_hi age_lo
+   <chr>        <chr> <chr> <chr>     <dbl>  <dbl>
+ 1 Anthropocene MORA  <NA>  AURO-215     NA     NA
+ 2 Anthropocene MORA  <NA>  BACK-454     NA     NA
+ 3 Anthropocene MORA  <NA>  CARB-128     NA     NA
+ 4 Anthropocene MORA  <NA>  CAYU-059     NA     NA
+ 5 Anthropocene MORA  <NA>  CHIN-084     NA     NA
+ 6 Anthropocene MORA  <NA>  CHIN-086     NA     NA
+ 7 Anthropocene MORA  <NA>  CHIN-246     NA     NA
+ 8 Anthropocene MORA  <NA>  CHIN-247     NA     NA
+ 9 Anthropocene MORA  <NA>  CLOV-369     NA     NA
+10 Anthropocene MORA  <NA>  COLD-108     NA     NA
+# ℹ 66 more rows
+
+LAKE ReflectionPond | PARK MORA | OFFSET 0 | MODEL MA1
+Holocene transitions: 6 | Modern pairs: 254 | Undefined selected responses: 76
+Correlation parameter: -0.99961725 (theta; rho(1) = -0.49999996)
+Near correlation boundary (absolute parameter > 0.98): TRUE
+Warnings: none
+Generalized least squares fit by REML
+  Model: estimate ~ era
+  Data: d
+       AIC      BIC    logLik
+  834.9988 852.7636 -412.4994
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+    Theta1
+-0.9996172
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | era
+ Parameter estimates:
+Anthropocene     Holocene
+ 1.000000000  0.003566564
+
+Coefficients:
+                     Value  Std.Error   t-value p-value
+(Intercept)     -0.0010859 0.00062739 -1.730799  0.0847
+eraAnthropocene  0.5194615 0.08259899  6.288957  0.0000
+
+ Correlation:
+                (Intr)
+eraAnthropocene -0.008
+
+Standardized residuals:
+       Min         Q1        Med         Q3        Max
+-2.4845797 -0.5967822 -0.1391510  0.7179463  3.1560997
+
+Residual standard error: 1.316373
+Degrees of freedom: 260 total; 258 residual
+Era means:
+ era            emmean       SE  df lower.CL upper.CL
+ Holocene     -0.00109 0.000627 256 -0.00232  0.00015
+ Anthropocene  0.51838 0.082600 256  0.35572  0.68103
+
+Degrees-of-freedom method: df.error
+Confidence level used: 0.95
+Anthropocene - Holocene:
+ contrast                 estimate         SE  df  lower.CL  upper.CL t.ratio
+ Anthropocene - Holocene 0.5194615 0.08259899 256 0.3568015 0.6821215   6.289
+ p.value
+ <0.0001
+
+Degrees-of-freedom method: df.error
+Confidence level used: 0.95
+Undefined response identities:
+# A tibble: 76 × 6
+   era          site  lake  plot_id  age_hi age_lo
+   <chr>        <chr> <chr> <chr>     <dbl>  <dbl>
+ 1 Anthropocene MORA  <NA>  AURO-215     NA     NA
+ 2 Anthropocene MORA  <NA>  BACK-454     NA     NA
+ 3 Anthropocene MORA  <NA>  CARB-128     NA     NA
+ 4 Anthropocene MORA  <NA>  CAYU-059     NA     NA
+ 5 Anthropocene MORA  <NA>  CHIN-084     NA     NA
+ 6 Anthropocene MORA  <NA>  CHIN-086     NA     NA
+ 7 Anthropocene MORA  <NA>  CHIN-246     NA     NA
+ 8 Anthropocene MORA  <NA>  CHIN-247     NA     NA
+ 9 Anthropocene MORA  <NA>  CLOV-369     NA     NA
+10 Anthropocene MORA  <NA>  COLD-108     NA     NA
+# ℹ 66 more rows
+
+LAKE PantherPotholes | PARK NOCA | OFFSET 0 | MODEL AR1
+Holocene transitions: 10 | Modern pairs: 211 | Undefined selected responses: 66
+Correlation parameter: -0.1389391 (phi)
+Near correlation boundary (absolute parameter > 0.98): FALSE
+Warnings: none
+Generalized least squares fit by REML
+  Model: estimate ~ era
+  Data: d
+       AIC     BIC    logLik
+  424.4627 441.408 -207.2313
+
+Correlation Structure: AR(1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+       Phi
+-0.1389391
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | era
+ Parameter estimates:
+Anthropocene     Holocene
+  1.00000000   0.02290163
+
+Coefficients:
+                      Value  Std.Error   t-value p-value
+(Intercept)     0.005270215 0.00455984 1.1557884   0.249
+eraAnthropocene 0.031559912 0.04945001 0.6382185   0.524
+
+ Correlation:
+                (Intr)
+eraAnthropocene -0.092
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-2.74126934 -0.48674438 -0.05739058  0.48134878  2.64594749
+
+Residual standard error: 0.7152425
+Degrees of freedom: 221 total; 219 residual
+Era means:
+ era           emmean      SE     df lower.CL upper.CL
+ Holocene     0.00527 0.00456   3.47  -0.0082   0.0187
+ Anthropocene 0.03683 0.04920 210.02  -0.0602   0.1339
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Anthropocene - Holocene:
+ contrast                  estimate         SE     df    lower.CL  upper.CL
+ Anthropocene - Holocene 0.03155991 0.04945001 212.68 -0.06591498 0.1290348
+ t.ratio p.value
+   0.638  0.5240
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Undefined response identities:
+# A tibble: 66 × 6
+   era          site  lake  plot_id  age_hi age_lo
+   <chr>        <chr> <chr> <chr>     <dbl>  <dbl>
+ 1 Anthropocene NOCA  <NA>  ANNE265      NA     NA
+ 2 Anthropocene NOCA  <NA>  BBCR3032     NA     NA
+ 3 Anthropocene NOCA  <NA>  BBCR6071     NA     NA
+ 4 Anthropocene NOCA  <NA>  BEAV6047     NA     NA
+ 5 Anthropocene NOCA  <NA>  BEAV6067     NA     NA
+ 6 Anthropocene NOCA  <NA>  BRCR5126     NA     NA
+ 7 Anthropocene NOCA  <NA>  BRCR5142     NA     NA
+ 8 Anthropocene NOCA  <NA>  CARI447      NA     NA
+ 9 Anthropocene NOCA  <NA>  CAS5109      NA     NA
+10 Anthropocene NOCA  <NA>  CASC5117     NA     NA
+# ℹ 56 more rows
+
+LAKE PantherPotholes | PARK NOCA | OFFSET 0 | MODEL MA1
+Holocene transitions: 10 | Modern pairs: 211 | Undefined selected responses: 66
+Correlation parameter: -0.14526544 (theta; rho(1) = -0.14226339)
+Near correlation boundary (absolute parameter > 0.98): FALSE
+Warnings: none
+Generalized least squares fit by REML
+  Model: estimate ~ era
+  Data: d
+      AIC      BIC    logLik
+  424.459 441.4043 -207.2295
+
+Correlation Structure: ARMA(0,1)
+ Formula: ~time_index | series
+ Parameter estimate(s):
+    Theta1
+-0.1452654
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | era
+ Parameter estimates:
+Anthropocene     Holocene
+  1.00000000   0.02285469
+
+Coefficients:
+                      Value  Std.Error   t-value p-value
+(Intercept)     0.005212154 0.00444872 1.1716086  0.2426
+eraAnthropocene 0.031617973 0.04943989 0.6395236  0.5232
+
+ Correlation:
+                (Intr)
+eraAnthropocene -0.09
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max
+-2.74126924 -0.48674437 -0.05739058  0.48134876  2.65493364
+
+Residual standard error: 0.7152425
+Degrees of freedom: 221 total; 219 residual
+Era means:
+ era           emmean      SE     df lower.CL upper.CL
+ Holocene     0.00521 0.00445   2.26  -0.0120   0.0224
+ Anthropocene 0.03683 0.04920 210.02  -0.0602   0.1339
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Anthropocene - Holocene:
+ contrast                  estimate         SE     df    lower.CL  upper.CL
+ Anthropocene - Holocene 0.03161797 0.04943989 212.14 -0.06583841 0.1290744
+ t.ratio p.value
+   0.640  0.5232
+
+Degrees-of-freedom method: satterthwaite
+Confidence level used: 0.95
+Undefined response identities:
+# A tibble: 66 × 6
+   era          site  lake  plot_id  age_hi age_lo
+   <chr>        <chr> <chr> <chr>     <dbl>  <dbl>
+ 1 Anthropocene NOCA  <NA>  ANNE265      NA     NA
+ 2 Anthropocene NOCA  <NA>  BBCR3032     NA     NA
+ 3 Anthropocene NOCA  <NA>  BBCR6071     NA     NA
+ 4 Anthropocene NOCA  <NA>  BEAV6047     NA     NA
+ 5 Anthropocene NOCA  <NA>  BEAV6067     NA     NA
+ 6 Anthropocene NOCA  <NA>  BRCR5126     NA     NA
+ 7 Anthropocene NOCA  <NA>  BRCR5142     NA     NA
+ 8 Anthropocene NOCA  <NA>  CARI447      NA     NA
+ 9 Anthropocene NOCA  <NA>  CAS5109      NA     NA
+10 Anthropocene NOCA  <NA>  CASC5117     NA     NA
+# ℹ 56 more rows
+
+R version 4.6.1 (2026-06-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.7.1
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] C.UTF-8/C.UTF-8/C.UTF-8/C/C.UTF-8/C.UTF-8
+
+time zone: Europe/Zurich
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base
+
+other attached packages:
+ [1] emmeans_2.0.4   nlme_3.1-170    lubridate_1.9.5 forcats_1.0.1
+ [5] stringr_1.6.0   dplyr_1.2.1     purrr_1.2.2     readr_2.2.0
+ [9] tidyr_1.3.2     tibble_3.3.1    ggplot2_4.0.3   tidyverse_2.0.0
+[13] here_1.0.2
+
+loaded via a namespace (and not attached):
+ [1] utf8_1.2.6          sandwich_3.1-3      generics_0.1.4
+ [4] stringi_1.8.9       lattice_0.22-9      hms_1.1.4
+ [7] magrittr_2.0.5      grid_4.6.1          timechange_0.4.0
+[10] estimability_2.0.0  RColorBrewer_1.1-3  mvtnorm_1.4-2
+[13] rprojroot_2.1.1     Matrix_1.7-5        survival_3.8-9
+[16] multcomp_1.4-31     scales_1.4.0        TH.data_1.1-5
+[19] textshaping_1.0.5   numDeriv_2016.8-1.1 codetools_0.2-20
+[22] cli_3.6.6           crayon_1.5.3        rlang_1.3.0
+[25] bit64_4.8.2         splines_4.6.1       withr_3.0.3
+[28] parallel_4.6.1      tools_4.6.1         tzdb_0.5.0
+[31] coda_0.19-4.1       vctrs_0.7.3         R6_2.6.1
+[34] zoo_1.8-15          lifecycle_1.0.5     bit_4.6.0
+[37] vroom_1.7.1         MASS_7.3-66         ragg_1.5.2
+[40] pkgconfig_2.0.3     pillar_1.11.1       gtable_0.3.6
+[43] glue_1.8.1          systemfonts_1.3.2   tidyselect_1.2.1
+[46] farver_2.1.2        xtable_1.8-8        labeling_0.4.3
+[49] compiler_4.6.1      S7_0.2.2

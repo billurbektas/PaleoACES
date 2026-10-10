@@ -3,7 +3,7 @@
 No raw input or scientific result is modified. Python standard library only.
 """
 from pathlib import Path
-import argparse, csv, hashlib, json, os, re, shutil, subprocess, tempfile, textwrap
+import argparse, csv, hashlib, json, math, os, re, shutil, subprocess, tempfile, textwrap
 from datetime import datetime, timezone
 ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = ROOT / 'docs/report/artifacts.json'
@@ -133,6 +133,8 @@ def tracking_calculation_sections():
             excerpt(angle,'  a = sqrt(ax^2','  result\n')),
         ('Pace and direction counterfactual effects',
             excerpt(tracking,'  # Only divide','  x\n')),
+        ('Corrected lag-change rates for the additional GLS responses',
+            excerpt(body('add_corrected_lag_rates'),'  x$pace_corrected_lag_rate_per_century =','  x\n')),
         ('Physical seasonal climate changes and standardized rate',
             excerpt(climate,'  z_change_cols =','  x\n'))]
 
@@ -216,6 +218,24 @@ def validate_tracking_contracts(root):
         with (root/ASSETS/'tables'/f'{name}.csv').open(newline='') as f:
             header = next(csv.reader(f))
         if header != expected: raise ValueError('Portable tracking contract differs: '+name)
+    combined = rows(root/ASSETS/'tables/era_by_offset.csv')
+    combined_metrics = responses + ['pace_corrected_lag_rate_per_century',
+                                    'direction_corrected_lag_rate_per_century']
+    observations = {}
+    for r in combined:
+        if r['era'] not in ('Holocene', 'Anthropocene'):
+            raise ValueError('Invalid era in combined tracking input.')
+        identity = (r['era'],) + tuple(r[k] for k in
+            (keys if r['era']=='Holocene' else ['site', 'plot_id']))
+        metrics = observations.setdefault(identity, set())
+        if r['metric'] in metrics:
+            raise ValueError('Duplicate combined tracking response identity.')
+        metrics.add(r['metric'])
+        finite = r['estimate'] not in ('NA', '', 'NaN', 'Inf', '-Inf') and math.isfinite(float(r['estimate']))
+        if (r['response_valid']=='TRUE') != finite:
+            raise ValueError('Combined response validity disagrees with finite estimate.')
+    if any(metrics != set(combined_metrics) for metrics in observations.values()):
+        raise ValueError('Combined tracking input is missing original or corrected response rows.')
     modern = rows(root/ASSETS/'tables/modern_model_input.csv')
     calculations = rows(root/ASSETS/'tables/modern_calculations.csv')
     indexed = {(r['site'], r['plot_id']): r for r in calculations}
@@ -513,7 +533,7 @@ def build(mode):
             inventory.append(dict(diagnostic=f'[{Path(x["pdf"]).name}](../{x["pdf"]})',purpose=x['purpose'],producer=f'[{Path(x["producer"]).name}](../{x["producer"]})',pages=', '.join(map(str,x['pages'])) or 'Full PDF only',interpretation=x['interpretation'],status=status))
         fig_blocks={}
         titles={2:'Climate eras, climate rates and high-fire periods',3:'Observed and climate-predicted community trajectories',
-                4:'Offset-0 raw distributions, fitted era means and contrasts'}
+                4:'Offset-0 era contrasts and observed-versus-corrected lag changes'}
         for x in registry['main_figures']:
             src=ROOT/'plot'/(x['stem']+'.png'); dest=out/f'figure-{x["number"]}.png'; shutil.copyfile(src,dest)
             record(dest,x['producer'],relative(src),status='manuscript figure')

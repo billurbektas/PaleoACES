@@ -1,4 +1,5 @@
-# Assembly and selection only: the response calculations remain in stage 09.
+# Assemble canonical responses and two corrected rates from stored calculation records.
+# Geometry stays in the maintained metric helper; models read only this combined input.
 tracking_model_data_columns = function() c(
   'era','site','lake','plot_id','offset','age_hi','age_lo','interval_mid_cal_bp',
   'vegetation_t1_year','vegetation_t2_year','climate_t1_midyear','climate_t2_midyear',
@@ -7,7 +8,13 @@ tracking_model_data_columns = function() c(
   'n_draws_present','n_draws_nmin2','n_samples_t1_median','n_samples_t2_median',
   'longitude','latitude')
 
-combine_tracking_model_data = function(by_offset,modern,lake_coordinates,plot_coordinates) {
+tracking_corrected_response_names = function() c('pace_corrected_lag_rate_per_century',
+  'direction_corrected_lag_rate_per_century')
+tracking_combined_response_names = function() c(tracking_response_names(),
+  tracking_corrected_response_names())
+
+combine_tracking_model_data = function(by_offset,modern,lake_coordinates,plot_coordinates,
+    holocene_calculations,modern_calculations) {
   if(!identical(names(by_offset),holocene_model_columns()) ||
      !identical(names(modern),anthropocene_model_columns()))
     stop('Unexpected canonical tracking input schema')
@@ -15,6 +22,43 @@ combine_tracking_model_data = function(by_offset,modern,lake_coordinates,plot_co
      anyDuplicated(modern[c('site','plot_id')]) ||
      anyDuplicated(lake_coordinates[c('site','lake')]))
     stop('Duplicate transition, plot or lake-coordinate identity')
+  if(anyDuplicated(holocene_calculations[c(tracking_transition_keys(),'draw')]) ||
+     anyDuplicated(modern_calculations[c('site','plot_id')]))
+    stop('Duplicate chronology realization or modern calculation identity')
+  support=holocene_calculations |>
+    count(across(all_of(tracking_transition_keys())),name='n_calculation_draws') |>
+    full_join(by_offset |> select(all_of(tracking_transition_keys()),n_draws_present),
+      by=tracking_transition_keys(),relationship='one-to-one')
+  if(anyNA(support[c('n_calculation_draws','n_draws_present')]) ||
+     any(support$n_calculation_draws!=support$n_draws_present))
+    stop('Calculation draw support differs from the canonical transition table')
+  time_keys=c('vegetation_dt_years','climate_dt_years')
+  check_times=function(calculations,model,keys) {
+    times=calculations |> select(all_of(c(keys,time_keys))) |> distinct()
+    if(anyDuplicated(times[keys])) stop('Conflicting calculation elapsed times')
+    check=full_join(times,model |> select(all_of(c(keys,time_keys))),by=keys,
+      suffix=c('_calculation','_model'),relationship='one-to-one')
+    for(name in time_keys) if(anyNA(check[[paste0(name,'_calculation')]]) ||
+       anyNA(check[[paste0(name,'_model')]]) ||
+       any(check[[paste0(name,'_calculation')]]!=check[[paste0(name,'_model')]]))
+      stop('Calculation and model elapsed times disagree: ',name)
+  }
+  check_times(holocene_calculations,by_offset,tracking_transition_keys())
+  check_times(modern_calculations,modern,c('site','plot_id'))
+  hc=add_corrected_lag_rates(holocene_calculations) |>
+    group_by(across(all_of(tracking_transition_keys()))) |>
+    summarise(across(all_of(tracking_corrected_response_names()),
+      ~if(any(is.finite(.x))) median(.x[is.finite(.x)]) else NA_real_),.groups='drop')
+  ac=add_corrected_lag_rates(modern_calculations) |>
+    select(site,plot_id,all_of(tracking_corrected_response_names()))
+  same_keys=function(x,y,keys) {
+    !nrow(anti_join(x,y,by=keys)) && !nrow(anti_join(y,x,by=keys))
+  }
+  if(!same_keys(by_offset,hc,tracking_transition_keys()) ||
+     !same_keys(modern,ac,c('site','plot_id')))
+    stop('Canonical model tables and calculation records have different keys')
+  by_offset=left_join(by_offset,hc,by=tracking_transition_keys(),relationship='one-to-one')
+  modern=left_join(modern,ac,by=c('site','plot_id'),relationship='one-to-one')
   # Normalize only the join key; preserve the original exported plot spelling.
   locations=plot_coordinates |> mutate(coordinate_plot_key=toupper(plot_id)) |>
     select(site,coordinate_plot_key,longitude,latitude)
@@ -32,13 +76,13 @@ combine_tracking_model_data = function(by_offset,modern,lake_coordinates,plot_co
       fire_coverage_valid=NA,high_fire=NA,n_draws_present=NA_integer_,
       n_draws_nmin2=NA_integer_,n_samples_t1_median=NA_real_,n_samples_t2_median=NA_real_)
   combined=bind_rows(h,a) |>
-    pivot_longer(all_of(tracking_response_names()),names_to='metric',values_to='estimate') |>
+    pivot_longer(all_of(tracking_combined_response_names()),names_to='metric',values_to='estimate') |>
     mutate(response_valid=is.finite(estimate)) |>
     select(all_of(tracking_model_data_columns())) |>
     arrange(match(era,c('Holocene','Anthropocene')),site,lake,offset,desc(age_hi),
-      plot_id,match(metric,tracking_response_names()))
+      plot_id,match(metric,tracking_combined_response_names()))
   validate_tracking_model_data(combined)
-  if(nrow(combined)!=(nrow(by_offset)+nrow(modern))*length(tracking_response_names()))
+  if(nrow(combined)!=(nrow(by_offset)+nrow(modern))*length(tracking_combined_response_names()))
     stop('Assembly lost or duplicated source observations')
   combined
 }
@@ -47,7 +91,7 @@ validate_tracking_model_data = function(x) {
   if(!identical(names(x),tracking_model_data_columns()) ||
      anyNA(x$era) || any(!x$era %in% c('Holocene','Anthropocene')) ||
      anyNA(x$site) || any(!x$site %in% c('MORA','NOCA')) ||
-     !setequal(x$metric,tracking_response_names()) ||
+     !setequal(x$metric,tracking_combined_response_names()) ||
      !identical(x$response_valid,is.finite(x$estimate)))
     stop('Invalid combined model schema, categories or response validity')
   h=x[x$era=='Holocene',]; a=x[x$era=='Anthropocene',]
@@ -55,8 +99,8 @@ validate_tracking_model_data = function(x) {
   if(!nrow(h) || !nrow(a) || anyDuplicated(h[hkeys]) ||
      anyDuplicated(a[c('site','plot_id','metric')]) ||
      anyNA(h$offset) || anyNA(h$lake) || anyNA(a$plot_id) ||
-     nrow(h)!=nrow(unique(h[tracking_transition_keys()]))*length(tracking_response_names()) ||
-     nrow(a)!=nrow(unique(a[c('site','plot_id')]))*length(tracking_response_names()))
+     nrow(h)!=nrow(unique(h[tracking_transition_keys()]))*length(tracking_combined_response_names()) ||
+     nrow(a)!=nrow(unique(a[c('site','plot_id')]))*length(tracking_combined_response_names()))
     stop('Missing or duplicate era-specific observation identities')
   w=unique(h$climate_dt_years)
   if(length(w)!=1L) stop('Combined input must contain one Holocene interval width')
@@ -92,7 +136,7 @@ validate_tracking_model_data = function(x) {
 
 # Modern pairs occur once in the CSV and are reused in each offset sensitivity.
 # Filtering concerns only the selected response; preserve actual gaps in time.
-tracking_model_available_names = function() c(tracking_response_names(),
+tracking_model_available_names = function() c(tracking_combined_response_names(),
   'standardized_climate_change_rate')
 
 tracking_offset_model_input = function(combined,metric,offset) {
@@ -101,7 +145,7 @@ tracking_offset_model_input = function(combined,metric,offset) {
     stop('Unknown response or configured offset')
   selected=combined |> filter(era=='Anthropocene' | .data$offset==.env$offset)
   if(metric=='standardized_climate_change_rate') {
-    # Climate is a fixed field repeated on seven tracking-response rows. Reduce
+    # Climate is a fixed field repeated on response rows. Reduce
     # those copies to one observation, independently of tracking validity, and
     # stop if the fixed fields disagree within an observation identity.
     selected=selected |> select(-metric,-estimate,-response_valid) |> distinct()
