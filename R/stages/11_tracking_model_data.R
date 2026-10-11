@@ -1,5 +1,5 @@
 # One combined model input, assembled after the canonical tracking calculations.
-# Rscript R/stages/09b_tracking_model_data.R [--bin-width-years=500]
+# Rscript R/stages/11_tracking_model_data.R [--bin-width-years=500]
 suppressPackageStartupMessages({library(here);library(tidyverse)})
 source(here('R/helpers/config.R'),local=TRUE)
 source(here('R/helpers/tracking_metrics.R'),local=TRUE)

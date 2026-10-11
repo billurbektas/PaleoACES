@@ -24,7 +24,7 @@
 library(here)
 if (!exists("extra_exclude")) extra_exclude = character(0)
 if (!exists("cca_suffix"))    cca_suffix    = ""
-source(here("R/stages/05_cca_model.R"), local = TRUE)
+source(here("R/stages/04_cca_model.R"), local = TRUE)
 library(ggrepel)
 library(patchwork)
 

@@ -1,5 +1,5 @@
 # Canonical lake-level and paired-plot tracking datasets. No figure/model fits.
-# Rscript R/stages/09_tracking_metrics.R [--bin-width-years=500]
+# Rscript R/stages/08_tracking_metrics.R [--bin-width-years=500]
 # Nondefault widths write only suffixed Holocene products.
 suppressPackageStartupMessages({library(here);library(tidyverse);library(vegan)})
 source(here('R/helpers/config.R'),local=TRUE)

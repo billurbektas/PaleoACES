@@ -114,14 +114,14 @@ report_cca_details = function(e, permutations = 9999L, seed = 20261008L) {
   write(climate, "cca_climate_contributions")
 
   # Copy the fitting/projection statements from the active script verbatim.
-  source = readLines(here::here("R/stages/05_cca_model.R"), warn = FALSE)
+  source = readLines(here::here("R/stages/04_cca_model.R"), warn = FALSE)
   extract = function(start, lines = 1L) {
     pos = which(startsWith(source, start))
     if (length(pos) != 1L) stop("Cannot identify CCA code statement: ", start)
     source[seq.int(pos, length.out = lines)]
   }
   value = function(x) paste(capture.output(dput(x)), collapse = "")
-  code = c("# Current settings; presence and climate tables are prepared above in 05_cca_model.R.",
+  code = c("# Current settings; presence and climate tables are prepared above in 04_cca_model.R.",
     paste0("CCA_VARIABLES = ", value(e$CCA_VARIABLES)),
     paste0("cca_scaling = ", value(e$cca_scaling)), paste0("cca_hill = ", value(e$cca_hill)),
     "", "# Matched legacy observations used to calibrate the CCA.",

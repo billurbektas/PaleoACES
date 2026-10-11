@@ -42,7 +42,7 @@ occ = read_csv(here("output/occ_consolidated.csv"), show_col_types = FALSE)
 env = read_csv(here("output/paleo_env.csv"), show_col_types = FALSE) %>%
   select(plot_id, lake, age)
 
-# THE SPECIES THE CCA ACTUALLY USES. count.thr must match R/stages/05_cca_model.R.
+# THE SPECIES THE CCA ACTUALLY USES. count.thr must match R/stages/04_cca_model.R.
 # The rule there: a species is dropped only if it occurs in fewer than count.thr
 # plots in EVERY site x period group, so one common group is enough to keep it.
 COUNT_THR = CCA_COUNT_THRESHOLD

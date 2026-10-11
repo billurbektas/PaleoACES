@@ -1,5 +1,5 @@
 # STANDALONE: fixed-CCA species and climate-variable displacement contributions.
-# Rscript R/stages/11_cca_transition_contributions.R
+# Rscript R/stages/16_cca_transition_contributions.R
 # Not called by R/workflow.R. Reads existing reference, tracking and chronology;
 # writes its own tables under output/cca_transition_contributions/ and two
 # diagnostic PDFs directly under plot/test_figures/.
@@ -145,7 +145,7 @@ provenance=list(scaling='sites',hill=FALSE,axes=1:2,n_draws=N_DRAWS,draw_seed=DR
   bin_width_years=1000L,offsets=seq(0,900,100),direction_epsilon=CCA_CONTRIBUTION_EPSILON,
   numerical_tolerance=CCA_CONTRIBUTION_TOLERANCE,
   input_md5=as.list(input_md5),source_md5=as.list(tools::md5sum(here(c(
-    'R/stages/11_cca_transition_contributions.R','R/helpers/cca_transition_contributions.R')))),
+    'R/stages/16_cca_transition_contributions.R','R/helpers/cca_transition_contributions.R')))),
   R_version=as.character(getRversion()),vegan_version=as.character(packageVersion('vegan')))
 jsonlite::write_json(provenance,file.path(out,'provenance.json'),pretty=TRUE,auto_unbox=TRUE)
 if(isTRUE(getOption('paleoaces.render_figures',TRUE))) {

@@ -1,4 +1,4 @@
-# Current settings; presence and climate tables are prepared above in 05_cca_model.R.
+# Current settings; presence and climate tables are prepared above in 04_cca_model.R.
 CCA_VARIABLES = c("MSpT", "MWT", "SP", "WP")
 cca_scaling = "sites"
 cca_hill = FALSE

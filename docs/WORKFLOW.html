@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: e5813b3d324930b4467b197cbe1e494c -->
+<!-- paleoaces-source-md5: dabf0ad069b4894eda95752da81dca60 -->
 
 <html>
 
@@ -1522,19 +1522,19 @@ Rscript R/workflow.R --age-models
 # Complete analysis without writing PDF/PNG files or running gates
 Rscript R/workflow.R --offline --skip-figures --skip-tests
 
-# Focused replacement stages
+# Focused stages (prepared dependencies must already exist)
 Rscript R/stages/000_FIRE_cleaning.R
 Rscript R/stages/000_PALEO_c_fire.R
-Rscript R/stages/05a_cca_figure.R
-Rscript R/stages/09_tracking_metrics.R
-Rscript R/stages/09b_tracking_model_data.R
-Rscript R/stages/10_tracking_era_models.R
-Rscript R/stages/10a_tracking_lake_sensitivity.R
-Rscript R/stages/12_walsh_fire_reproduction.R
-Rscript R/stages/12a_fire_event_detection_worked_example.R
-Rscript R/stages/13_holocene_climate_fire_eras.R
-Rscript R/stages/13a_climate_change_figure.R
-Rscript R/stages/13b_fire_method_worked_example.R
+Rscript R/stages/02_walsh_fire_reproduction.R
+Rscript R/stages/03_fire_event_detection_worked_example.R
+Rscript R/stages/05_holocene_climate_fire_eras.R
+Rscript R/stages/06_fire_method_worked_example.R
+Rscript R/stages/07_cca_figure.R
+Rscript R/stages/08_tracking_metrics.R
+Rscript R/stages/10_climate_change_figure.R
+Rscript R/stages/11_tracking_model_data.R
+Rscript R/stages/12_tracking_era_models.R
+Rscript R/stages/13_tracking_lake_sensitivity.R
 
 # Focused offline gates
 Rscript R/tests/test_cca_tracking_metrics.R
@@ -1564,7 +1564,7 @@ a PDF are not retained.</p>
 CharAnalysis R 2.0.3; install it once with
 <code>install.packages(&quot;CharAnalysis&quot;)</code>. Manifests validate
 versions, settings, sources, and products. No climate download or Bacon
-regeneration is needed for stages 9–14.</p>
+regeneration is needed for numbered stages 02–16.</p>
 </div>
 <div id="dependency-diagram" class="section level2">
 <h2>Dependency diagram</h2>
@@ -1578,39 +1578,53 @@ regeneration is needed for stages 9–14.</p>
   PV --&gt; PF
   PD[000_PALEO_d_climate_download cached] --&gt; PE[000_PALEO_e_climate]
   PV --&gt; PE
-  MV --&gt; OC[000_occurrence_data_consolidate and before-CCA 100-year sampling/fire counts]
+  FW --&gt; WR[02 accepted fire catalog and Walsh audit]
+  PF --&gt; WR
+  WR --&gt; FD[03 fire-event detection example]
+  MV --&gt; OC[000_occurrence consolidation and native sampling/fire counts]
   NV --&gt; OC
   PV --&gt; OC
   PD --&gt; OC
   FW --&gt; OC
   PF --&gt; OC
-  OC --&gt; CCA[05_cca_model]
+  OC --&gt; CCA[04 pooled CCA and calibration reference]
   MC --&gt; CCA
   NC --&gt; CCA
   PE --&gt; CCA
   AF --&gt; CCA
   PF --&gt; CCA
-  CCA --&gt; TM1[09 canonical lake and plot tracking]
-  FW --&gt; WR[12 all-tapas source catalog plus official Walsh audit]
-  PF --&gt; WR
-  CCA --&gt; ER[13 unified climate eras/fire classification]
-  ER --&gt; TM1
-  TM1 --&gt; MD[09b combined transition model input]
-  MD --&gt; GLS[10 five rate responses with selected MA1 groups and diagnostics by offset]
-  MD --&gt; LS[10a five rate responses in MA1 lake reporting at offset 0]
-  MD --&gt; MF[10b offset-0 MA1 contrasts and corrected-lag scatter: Figure 4]
-  MD --&gt; PM[10c within-era lag predictors: ten Holocene MA1 offsets and two modern specifications]
-  ER --&gt; PM
-  GLS --&gt; MF
-  TM1 --&gt; TV[09a tracking plots with climate bands]
-  ER --&gt; TV
+  CCA --&gt; ER[05 independent climate eras and high-fire classification]
   PE --&gt; ER
   WR --&gt; ER
-  ER --&gt; CA[05a selected era-centroid output and main render]
-  ER --&gt; CF[13a authoritative climate/fire figure]</code></pre>
+  ER --&gt; FE[06 fire-classification worked example]
+  CCA --&gt; CA[07 CCA trajectory: Figure 3]
+  ER --&gt; CA
+  CCA --&gt; TM[08 canonical lake and plot tracking]
+  ER --&gt; TM
+  WR --&gt; TM
+  TM --&gt; TV[09 tracking example and context visualizations]
+  ER --&gt; TV
+  TM --&gt; CF[10 climate/fire display: Figure 2]
+  ER --&gt; CF
+  TM --&gt; MD[11 combined transition model input]
+  MD --&gt; GLS[12 era GLS models by offset]
+  GLS --&gt; LS[13 offset-0 lake sensitivity]
+  MD --&gt; LS
+  GLS --&gt; MF[14 manuscript comparison: Figure 4]
+  MD --&gt; MF
+  MD --&gt; PM[15 within-era predictor models and ensembles]
+  ER --&gt; PM
+  TM -. standalone .-&gt; SC[16 species and climate contributions]</code></pre>
 </div>
 <div id="ordered-stages" class="section level2">
 <h2>Ordered stages</h2>
+<p>Preparation filenames keep the <code>000_</code> prefix. Analysis
+prefixes <code>01_</code>–<code>15_</code> follow their actual execution
+order, including displays and worked examples. Stage 02 reconstructs
+fire before calibration; stage 05 needs stage 04’s fixed calibration
+SDs. <code>16_cca_transition_contributions.R</code> remains standalone
+and is run explicitly after tracking, outside the automatic
+workflow.</p>
 <table>
 <colgroup>
 <col width="25%" />
@@ -1630,7 +1644,7 @@ regeneration is needed for stages 9–14.</p>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="right">1a</td>
+<td align="right">1</td>
 <td><code>R/stages/000_MORA_cleaning.R</code></td>
 <td>Required modern vegetation cleaning</td>
 <td>Original 1978 workbook, resurvey tree/seedling files, plot/species
@@ -1640,7 +1654,7 @@ latest adult year with matching seedlings;
 <code>MORA_plot_years.csv</code></td>
 </tr>
 <tr class="even">
-<td align="right">1b</td>
+<td align="right">2</td>
 <td><code>R/stages/000_NOCA_cleaning.R</code></td>
 <td>Required 2026 tree patch and study exclusions</td>
 <td>Agee/JHRL data, corrected workbook, Wilson plots, Rachel notes</td>
@@ -1649,7 +1663,7 @@ excluded <code>CARI449</code>/<code>CARI450</code> GPS-collision
 evidence; 305 plots, 1,775 rows, 31 taxa</td>
 </tr>
 <tr class="odd">
-<td align="right">2</td>
+<td align="right">3</td>
 <td><code>R/stages/01_get_fire_info.R</code></td>
 <td>Required Anthropocene fire assignment</td>
 <td>Clean plot tables, MORA disturbances, Wilson fire
@@ -1658,7 +1672,7 @@ package/reference</td>
 among 303 common plots</td>
 </tr>
 <tr class="even">
-<td align="right">3a</td>
+<td align="right">4</td>
 <td><code>R/stages/000_MORA_climate.R</code></td>
 <td>Required modern CHELSA V2.1 extraction</td>
 <td>MORA IDs/coordinates, shared adult-year table and monthly
@@ -1667,7 +1681,7 @@ service/cache</td>
 fingerprints</td>
 </tr>
 <tr class="odd">
-<td align="right">3b</td>
+<td align="right">5</td>
 <td><code>R/stages/000_NOCA_climate.R</code></td>
 <td>Required NOCA equivalent</td>
 <td>NOCA IDs/coordinates, shared adult-year table and monthly
@@ -1675,7 +1689,7 @@ service/cache</td>
 <td><code>NOCA_climate.csv</code>; same cache validation</td>
 </tr>
 <tr class="even">
-<td align="right">4</td>
+<td align="right">6</td>
 <td><code>R/stages/000_PALEO_a_agedepth.R</code></td>
 <td>Manual/conditional seeded Bacon refit</td>
 <td>Core controls and <code>R/helpers/bacon_settings.R</code></td>
@@ -1683,7 +1697,7 @@ service/cache</td>
 15–30 min</td>
 </tr>
 <tr class="odd">
-<td align="right">5</td>
+<td align="right">7</td>
 <td><code>R/stages/000_PALEO_b_vegetation.R</code></td>
 <td>Required plant-macrofossil preparation</td>
 <td>MORA workbook, NOCA Neotoma 52207, Bacon outputs</td>
@@ -1691,7 +1705,7 @@ service/cache</td>
 depths</td>
 </tr>
 <tr class="even">
-<td align="right">6a</td>
+<td align="right">8</td>
 <td><code>R/stages/000_FIRE_cleaning.R</code></td>
 <td>Required harmonized MORA <code>tapas</code> catalogs</td>
 <td>Three MORA charcoal workbooks</td>
@@ -1699,7 +1713,7 @@ depths</td>
 17 Sunrise, 14 Shadow, and 13 Little Sunrise accepted events</td>
 </tr>
 <tr class="odd">
-<td align="right">6b</td>
+<td align="right">9</td>
 <td><code>R/stages/000_PALEO_c_fire.R</code></td>
 <td>Required harmonized NOCA <code>tapas</code> catalog and combined
 sample fire</td>
@@ -1710,7 +1724,7 @@ ages</td>
 12.5-year interpolation sensitivity</td>
 </tr>
 <tr class="even">
-<td align="right">7a</td>
+<td align="right">10</td>
 <td><code>R/stages/000_PALEO_d_climate_download.R</code></td>
 <td>Validated native-cache aggregation; download only in online
 mode</td>
@@ -1719,7 +1733,7 @@ mode</td>
 complete-cache validation</td>
 </tr>
 <tr class="odd">
-<td align="right">7b</td>
+<td align="right">11</td>
 <td><code>R/stages/000_PALEO_e_climate.R</code></td>
 <td>Required seasonal derivation and age match</td>
 <td>Cached pond climate and paleo samples</td>
@@ -1727,7 +1741,28 @@ complete-cache validation</td>
 tolerance</td>
 </tr>
 <tr class="even">
-<td align="right">8</td>
+<td align="right">12</td>
+<td><code>R/stages/02_walsh_fire_reproduction.R</code></td>
+<td>Assemble authoritative all-<code>tapas</code> source catalog and
+retain a separate official Walsh audit</td>
+<td>Harmonized MORA/NOCA tapas outputs, three Walsh workbooks,
+CharAnalysis 2.0.3</td>
+<td>Authoritative four-core source series/events/settings and tapas
+manifest; separate official MORA series/events/FRIs/publication audit;
+active fire outputs hash-protected</td>
+</tr>
+<tr class="odd">
+<td align="right">13</td>
+<td><code>R/stages/03_fire_event_detection_worked_example.R</code></td>
+<td>Accepted-event detection for all four cores</td>
+<td>All-<code>tapas</code> source series with local thresholds,
+candidate/count-screen flags, and accepted events</td>
+<td><code>fire_event_detection_lake_audit.csv</code> and, when
+rendering, a PDF with all four residual/threshold plots on one page,
+alongside settings and the software comparison</td>
+</tr>
+<tr class="even">
+<td align="right">14</td>
 <td><code>R/stages/000_occurrence_data_consolidate.R</code></td>
 <td>Required taxonomy/occurrence consolidation and before-CCA sampling
 diagnostic</td>
@@ -1739,38 +1774,44 @@ shared count scale and summed accepted fire detections by park on native
 100-year cells</td>
 </tr>
 <tr class="odd">
-<td align="right">9</td>
-<td><code>R/stages/05_cca_model.R</code></td>
+<td align="right">15</td>
+<td><code>R/stages/04_cca_model.R</code></td>
 <td>Required pooled calibration/projection</td>
 <td>Consolidated occurrence, modern/paleo climate and fire</td>
 <td>CCA reference bundle and fixed climate scaling; 20 threshold,
 scaling 1, 14 species, 607 matched calibration plots</td>
 </tr>
 <tr class="even">
-<td align="right">10c</td>
-<td><code>R/stages/12_walsh_fire_reproduction.R</code></td>
-<td>Assemble authoritative all-<code>tapas</code> source catalog and
-retain a separate official Walsh audit</td>
-<td>Harmonized MORA/NOCA tapas outputs, three Walsh workbooks,
-CharAnalysis 2.0.3</td>
-<td>Authoritative four-core source series/events/settings and tapas
-manifest; separate official MORA series/events/FRIs/publication audit;
-active fire outputs hash-protected</td>
-</tr>
-<tr class="odd">
-<td align="right">10d</td>
-<td><code>R/stages/13_holocene_climate_fire_eras.R</code></td>
+<td align="right">16</td>
+<td><code>R/stages/05_holocene_climate_fire_eras.R</code></td>
 <td>Authoritative literature-blind climate-era and independent high-fire
 classification</td>
-<td>Native pond climate, pooled legacy CCA scaling, stage-12 source
+<td>Native pond climate, pooled legacy CCA scaling, stage-02 source
 series/events</td>
 <td>Four-variable signed 1,000-year changes, thresholds, frozen CC/S
 grid/catalog, subphases, composite, normalized fire frequency/high-fire
 runs, and audit tables</td>
 </tr>
+<tr class="odd">
+<td align="right">17</td>
+<td><code>R/stages/06_fire_method_worked_example.R</code></td>
+<td>Fire-classification arithmetic audit and illustration</td>
+<td>Stage-02 accepted events and stage-05 core/site fire-frequency
+tables</td>
+<td><code>holocene_fire_method_worked_example.csv</code> and a PDF-only
+audit under <code>plot/test_figures/</code></td>
+</tr>
 <tr class="even">
-<td align="right">10e</td>
-<td><code>R/stages/09_tracking_metrics.R</code></td>
+<td align="right">18</td>
+<td><code>R/stages/07_cca_figure.R</code></td>
+<td>Selected CCA trajectory data and main render</td>
+<td>Model, positioned Holocene samples, stage-05 frozen CC/S grid</td>
+<td><code>cca_trajectory_era_centroids.csv</code> and, when rendering,
+main-paper <code>fig_cca_trajectories.pdf/.png</code></td>
+</tr>
+<tr class="odd">
+<td align="right">19</td>
+<td><code>R/stages/08_tracking_metrics.R</code></td>
 <td>Canonical lake/plot tracking</td>
 <td>Published CCA reference, cached whole draws, own-lake climate,
 accepted charcoal events and coverage, cleaned plot coordinates</td>
@@ -1778,18 +1819,43 @@ accepted charcoal events and coverage, cleaned plot coordinates</td>
 calculation audits, seven-response reporting and support; base schema
 dictionary</td>
 </tr>
+<tr class="even">
+<td align="right">20</td>
+<td><code>R/stages/09_tracking_example_and_visualizations.R</code></td>
+<td>Tracking example and visualizations</td>
+<td>Canonical lake realizations, lake-by-offset responses/predictors,
+reporting grid, aligned predictor medians reconstructed from source
+transitions, modern paired-plot model input and stage-05 frozen
+climate-era catalog/subphases</td>
+<td>Three diagnostic PDFs: worked geometry and two tracking/climate/fire
+grids with four lake columns, established regional CC/S bands and CC1
+subdivisions, complete-offset medians and an Anthropocene MORA/NOCA
+boxplot column</td>
+</tr>
 <tr class="odd">
-<td align="right">10f</td>
-<td><code>R/stages/09b_tracking_model_data.R</code></td>
+<td align="right">21</td>
+<td><code>R/stages/10_climate_change_figure.R</code></td>
+<td>Climate/subphase/fire display data and render</td>
+<td>Stage-05 directional cells, eras, subphases, fire frequency and
+thresholds; annualized Anthropocene plot-level contrasts for historical
+1979–1989 and plot-specific modern Y−5 through Y (MORA 27.5–32.5
+midpoint years; NOCA 27.5–28.5)</td>
+<td>Fire-ratio and raw-rate comparison tables, including the
+maximum-absolute Holocene regional median after ten-offset aggregation,
+plus the main-paper PDF/PNG when rendering</td>
+</tr>
+<tr class="even">
+<td align="right">22</td>
+<td><code>R/stages/11_tracking_model_data.R</code></td>
 <td>Combined transition model input</td>
 <td>Canonical 23/21-column tables, detailed calculations, lake and
 cleaned plot coordinates</td>
 <td>One 28-column long input with actual lake/offset transitions and
 modern pairs stored once per response; completed schema dictionary</td>
 </tr>
-<tr class="even">
-<td align="right">10g</td>
-<td><code>R/stages/10_tracking_era_models.R</code></td>
+<tr class="odd">
+<td align="right">23</td>
+<td><code>R/stages/12_tracking_era_models.R</code></td>
 <td>Maintained provisional offset GLS exploration</td>
 <td>Combined transition input only</td>
 <td>Observed/corrected lag rates, turnover and raw climate rate, each
@@ -1799,9 +1865,9 @@ results TXT, MA1-only group-mean/coefficient/contrast/residual PDFs and
 three-candidate within-offset ΔAIC boxplots when rendering; all five
 requested responses run by default</td>
 </tr>
-<tr class="odd">
-<td align="right">10g-a</td>
-<td><code>R/stages/10a_tracking_lake_sensitivity.R</code></td>
+<tr class="even">
+<td align="right">24</td>
+<td><code>R/stages/13_tracking_lake_sensitivity.R</code></td>
 <td>Maintained offset-0 lake sensitivity</td>
 <td>Combined transition input only</td>
 <td>Lag rate, turnover and raw climate rate, each with four lakes ×
@@ -1810,20 +1876,20 @@ eight contrasts, one results TXT and two PDFs; MA1-only figures show
 eight coefficients and four contrasts; near-boundary fits retained and
 flagged</td>
 </tr>
-<tr class="even">
-<td align="right">10g-b</td>
-<td><code>R/stages/10b_tracking_manuscript_figure.R</code></td>
+<tr class="odd">
+<td align="right">25</td>
+<td><code>R/stages/14_tracking_manuscript_figure.R</code></td>
 <td>Manuscript Figure 4 and separate corrected contrasts; offset 0
 only</td>
-<td>Combined transition input and stage-10 MA1 group
+<td>Combined transition input and stage-12 MA1 group
 means/contrasts</td>
 <td>Three observed contrast categories above two era scatter panels;
 observed marginal densities and model mean intervals; primary PDF/PNG
 plus corrected-contrast PDF; no refitting</td>
 </tr>
-<tr class="odd">
-<td align="right">10g-c</td>
-<td><code>R/stages/10c_tracking_predictor_models.R</code></td>
+<tr class="even">
+<td align="right">26</td>
+<td><code>R/stages/15_tracking_predictor_models.R</code></td>
 <td>Separate within-era predictor models</td>
 <td>Combined transition input, native modern elevation sources and
 frozen CC/S catalog</td>
@@ -1833,58 +1899,6 @@ offset-0 random lake intercept sensitivities, modern site-plus-burned
 and elevation/climate-extended independent GLS; supported rate
 predictions, descriptive R², residual/spatial checks, seven diagnostic
 PDFs and full TXT</td>
-</tr>
-<tr class="even">
-<td align="right">10h</td>
-<td><code>R/stages/05a_cca_figure.R</code></td>
-<td>Selected CCA trajectory data and main render</td>
-<td>Model, positioned Holocene samples, stage-13 frozen CC/S grid</td>
-<td><code>cca_trajectory_era_centroids.csv</code> and, when rendering,
-main-paper <code>fig_cca_trajectories.pdf/.png</code></td>
-</tr>
-<tr class="odd">
-<td align="right">10i</td>
-<td><code>R/stages/09a_tracking_example_and_visualizations.R</code></td>
-<td>Tracking example and visualizations</td>
-<td>Canonical lake realizations, lake-by-offset responses/predictors,
-reporting grid, aligned predictor medians reconstructed from source
-transitions, modern paired-plot model input and stage-13 frozen
-climate-era catalog/subphases</td>
-<td>Three diagnostic PDFs: worked geometry and two tracking/climate/fire
-grids with four lake columns, established regional CC/S bands and CC1
-subdivisions, complete-offset medians and an Anthropocene MORA/NOCA
-boxplot column</td>
-</tr>
-<tr class="even">
-<td align="right">10j</td>
-<td><code>R/stages/12a_fire_event_detection_worked_example.R</code></td>
-<td>Accepted-event detection for all four cores</td>
-<td>All-<code>tapas</code> source series with local thresholds,
-candidate/count-screen flags, and accepted events</td>
-<td><code>fire_event_detection_lake_audit.csv</code> and, when
-rendering, a PDF with all four residual/threshold plots on one page,
-alongside settings and the software comparison</td>
-</tr>
-<tr class="odd">
-<td align="right">10k</td>
-<td><code>R/stages/13a_climate_change_figure.R</code></td>
-<td>Climate/subphase/fire display data and render</td>
-<td>Stage-13 directional cells, eras, subphases, fire frequency and
-thresholds; annualized Anthropocene plot-level contrasts for historical
-1979–1989 and plot-specific modern Y−5 through Y (MORA 27.5–32.5
-midpoint years; NOCA 27.5–28.5)</td>
-<td>Fire-ratio and raw-rate comparison tables, including the
-maximum-absolute Holocene regional median after ten-offset aggregation,
-plus the main-paper PDF/PNG when rendering</td>
-</tr>
-<tr class="even">
-<td align="right">10l</td>
-<td><code>R/stages/13b_fire_method_worked_example.R</code></td>
-<td>Fire-classification arithmetic audit and illustration</td>
-<td>Stage-12 accepted events and stage-13 core/site fire-frequency
-tables</td>
-<td><code>holocene_fire_method_worked_example.csv</code> and a PDF-only
-audit under <code>plot/test_figures/</code></td>
 </tr>
 </tbody>
 </table>
@@ -2314,14 +2328,14 @@ evidence.</p>
 </div>
 <div id="canonical-tracking-rebuild" class="section level2">
 <h2>Canonical tracking rebuild</h2>
-<p>After <code>05_cca_model.R</code> publishes the calibration
-reference, run stage 12, then stage 13, then
-<code>09_tracking_metrics.R</code>. The stage is cache-only for
-chronology and does not refit the CCA. Default outputs and schema
-definitions are in <a href="OUTPUTS.html#canonical-tracking-schemas">OUTPUTS.md</a>.</p>
-<pre class="bash"><code>Rscript R/stages/09_tracking_metrics.R
+<p>Stage 02 assembles accepted fire events before CCA. After
+<code>04_cca_model.R</code> publishes the calibration reference, stage
+05 classifies climate and fire, then <code>08_tracking_metrics.R</code>
+calculates tracking. The stage is cache-only for chronology and does not
+refit the CCA. Default outputs and schema definitions are in <a href="OUTPUTS.html#canonical-tracking-schemas">OUTPUTS.md</a>.</p>
+<pre class="bash"><code>Rscript R/stages/08_tracking_metrics.R
 # Later sensitivity experiment; primary products stay untouched
-Rscript R/stages/09_tracking_metrics.R --bin-width-years=500</code></pre>
+Rscript R/stages/08_tracking_metrics.R --bin-width-years=500</code></pre>
 <p>The separate 500-year wrapper, old tracking
 visualization/target-direction pipelines and their Figures 4/5 are
 retired through Git history. The shared metric implementation supports
@@ -2331,14 +2345,14 @@ windows, compact contracts, long uncertainty, draw support and
 response-specific complete-offset reporting;
 <code>cca_reference.R</code> exports the existing fit and prepared
 endpoints.</p>
-<p>Stage 09 validates the 273 Holocene transition keys, 607 plot-pair
+<p>Stage 08 validates the 273 Holocene transition keys, 607 plot-pair
 keys and 3,822 uncertainty rows before replacing primary exports.
 Changed keys or exclusions stop execution with diagnostics.
 Plot-endpoint and seasonal-climate consumers read
-<code>cca_tracking_anthropocene_plot_calculations.csv</code>. Stage 09b
+<code>cca_tracking_anthropocene_plot_calculations.csv</code>. Stage 11
 assembles the combined model input from the compact source tables; stage
-10 reads only that combined CSV. Stages 10/10a run observed/corrected
-lag rates, turnover and raw physical climate-change rate by default. The
+12 reads only that combined CSV. Stages 12/13 run observed/corrected lag
+rates, turnover and raw physical climate-change rate by default. The
 climate response is selected from the fixed physical-rate field once per
 observation, independently of tracking validity; its repeated
 nine-response copies are checked for consistency and reduced without
@@ -2356,9 +2370,9 @@ aligns both parks in three rows: Holocene means across offsets, one
 Anthropocene mean per park with its offset-0 interval, and all
 offset-specific differences. Mean and contrast intervals use
 Satterthwaite degrees of freedom and the fitted covariance. Modern pairs
-are reused across offset fits. Stage 10a follows with the agreed
-offset-0 individual-lake sensitivity; its figures show MA1 only with
-modern plots from each lake’s own park. Its files live under
+are reused across offset fits. Stage 13 follows with the agreed offset-0
+individual-lake sensitivity; its figures show MA1 only with modern plots
+from each lake’s own park. Its files live under
 <code>output/exploratory/tracking_lake_sensitivity/</code>. Reflection
 Pond and Panther Potholes MA1 fits approach the parameter boundary;
 tables and figures retain and flag them. The earlier group-mean preview
@@ -2368,37 +2382,36 @@ every offset, with MA1 within two AIC units; the requested Gaussian/MA1
 turnover exercise remains exploratory. MA1 is selected for reporting.
 Final distribution, lake effects and chronology uncertainty treatment
 remain decisions for model development.</p>
-<p>Stage 09b extends the combined input to nine response names,
-retaining 28 columns and the original canonical table contracts.
-Corrected lag-change rates are calculated from stored endpoints within
-each chronology draw before medians. Stages 10/10a run all five
-requested rate models and their diagnostics by default, reporting MA1.
-The pace response alone excludes 142 stationary modern pairs. Stage 10b
-shows three offset-0 contrast categories in Figure 4’s first row:
-standardized climate change per century, community turnover rate and
-observed lag change. Climate and community/lag have distinct scales with
-aligned zeros. The pace- and direction-corrected contrasts are written
-to a separate PDF and embedded alongside Figure 4 in the Analysis
-Review. Both figures use larger fonts and CCA distance-per-century
-labels where appropriate. Figure 4’s second row shows
-observed-versus-corrected lag scatter panels by era, and observed-rate
-top densities with original GLS means/95% intervals. No overall title,
-caption or count subtitles are rendered. The corrected comparisons
-retain MORA/NOCA identity and the existing descriptive counterfactual
-geometry. No refitting occurs in the figure stage. Calibration,
-chronology and Figure 2/3 are preserved.</p>
+<p>Stage 11 extends the combined input to nine response names, retaining
+28 columns and the original canonical table contracts. Corrected
+lag-change rates are calculated from stored endpoints within each
+chronology draw before medians. Stages 12/13 run all five requested rate
+models and their diagnostics by default, reporting MA1. The pace
+response alone excludes 142 stationary modern pairs. Stage 14 shows
+three offset-0 contrast categories in Figure 4’s first row: standardized
+climate change per century, community turnover rate and observed lag
+change. Climate and community/lag have distinct scales with aligned
+zeros. The pace- and direction-corrected contrasts are written to a
+separate PDF and embedded alongside Figure 4 in the Analysis Review.
+Both figures use larger fonts and CCA distance-per-century labels where
+appropriate. Figure 4’s second row shows observed-versus-corrected lag
+scatter panels by era, and observed-rate top densities with original GLS
+means/95% intervals. No overall title, caption or count subtitles are
+rendered. The corrected comparisons retain MORA/NOCA identity and the
+existing descriptive counterfactual geometry. No refitting occurs in the
+figure stage. Calibration, chronology and Figure 2/3 are preserved.</p>
 <pre class="bash"><code># Primary combined input and all ten provisional offset/covariance fits
-Rscript R/stages/09b_tracking_model_data.R
-Rscript R/stages/10_tracking_era_models.R
+Rscript R/stages/11_tracking_model_data.R
+Rscript R/stages/12_tracking_era_models.R
 # Offset-0 lake sensitivity (also called by the full workflow)
-Rscript R/stages/10a_tracking_lake_sensitivity.R
+Rscript R/stages/13_tracking_lake_sensitivity.R
 # Manuscript contrasts and corrected-lag scatter; offset 0 only
-Rscript R/stages/10b_tracking_manuscript_figure.R
+Rscript R/stages/14_tracking_manuscript_figure.R
 # Later exploration of another response, still running each offset separately
-Rscript R/stages/10_tracking_era_models.R --metric=observed_turnover_rate
+Rscript R/stages/12_tracking_era_models.R --metric=observed_turnover_rate
 # Same untransformed model exercise for physical climate-change rate
-Rscript R/stages/10_tracking_era_models.R --metric=standardized_climate_change_rate
-Rscript R/stages/10a_tracking_lake_sensitivity.R --metric=standardized_climate_change_rate</code></pre>
+Rscript R/stages/12_tracking_era_models.R --metric=standardized_climate_change_rate
+Rscript R/stages/13_tracking_lake_sensitivity.R --metric=standardized_climate_change_rate</code></pre>
 <p>The previous reporting-grid comparison CSV and diagnostic model
 runner/results are retired. Canonical source, uncertainty and
 calculation tables remain. The model stage honors
@@ -2407,7 +2420,7 @@ persistent coefficient/residual PDF writes are suppressed.</p>
 </div>
 <div id="within-era-predictor-models" class="section level2">
 <h2>Within-era predictor models</h2>
-<p>Stage <a href="../R/stages/10c_tracking_predictor_models.R">10c_tracking_predictor_models.R</a>
+<p>Stage <a href="../R/stages/15_tracking_predictor_models.R">15_tracking_predictor_models.R</a>
 runs after the combined transition producer. It fits observed,
 pace-corrected and direction-corrected lag-change rates separately.
 Holocene models use <code>site + climate_rate + fire_activity</code>,
@@ -2419,9 +2432,9 @@ and <code>site + elevation + climate_rate + burned</code>. Elevation
 joins preserve the 607 paired identities; undefined pace correction
 excludes only that response. The main figures and earlier era models are
 not rerun by this stage.</p>
-<pre class="sh"><code>Rscript R/stages/10c_tracking_predictor_models.R
+<pre class="sh"><code>Rscript R/stages/15_tracking_predictor_models.R
 # Reproduce only the ensemble from matching stored fits:
-Rscript R/stages/10c_tracking_predictor_models.R --ensemble-only
+Rscript R/stages/15_tracking_predictor_models.R --ensemble-only
 Rscript R/tests/test_tracking_predictor_models.R</code></pre>
 <p>Results reside in
 <code>output/exploratory/tracking_predictor_models/</code>, with one

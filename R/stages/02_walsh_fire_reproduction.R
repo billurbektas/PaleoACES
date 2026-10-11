@@ -1,5 +1,5 @@
 # =============================================================================
-# 12_walsh_fire_reproduction.R
+# 02_walsh_fire_reproduction.R
 # =============================================================================
 # Assemble the authoritative all-tapas four-core source catalog, then run the
 # official CharAnalysis R 2.0.3 Walsh reproduction as a separate audit. This

@@ -1,6 +1,6 @@
 # Worked geometry example and descriptive lake-level tracking visualizations.
 # Run after stages 13 and 09; read their canonical tables and write diagnostic PDFs.
-# Rscript R/stages/09a_tracking_example_and_visualizations.R
+# Rscript R/stages/09_tracking_example_and_visualizations.R
 suppressPackageStartupMessages({library(here);library(tidyverse);library(patchwork)})
 source(here('R/helpers/tracking_data.R'),local=TRUE)
 render_figures = isTRUE(getOption('paleoaces.render_figures',TRUE))

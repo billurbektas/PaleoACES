@@ -36,7 +36,7 @@ stopifnot(
   all(is.finite(unlist(select(centroids, ends_with(c("CCA1", "CCA2"))))))
 )
 
-main_code = paste(readLines(here("R/stages/05a_cca_figure.R")), collapse = "\n")
+main_code = paste(readLines(here("R/stages/07_cca_figure.R")), collapse = "\n")
 stopifnot(
   str_detect(main_code, 'holocene_display_mode = "era_centroid"'),
   str_detect(main_code, 'cca_figure_stem = "fig_cca_trajectories"'),

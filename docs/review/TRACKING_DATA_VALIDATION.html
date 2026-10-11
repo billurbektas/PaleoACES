@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: 1b92ff9c117e8840bce68347dc39bb6c -->
+<!-- paleoaces-source-md5: 1adaae14d49abc952968eb2ca308df58 -->
 
 <html>
 
@@ -1586,8 +1586,8 @@ and WGS84 coordinates</td>
 </tbody>
 </table>
 <p>These outputs are written under <code>output/</code>. The <a href="../assets/analysis/tables/tracking_schema.csv">machine-readable
-schema</a> defines all 342 columns across the eight contracts. Stage 09b
-assembles the combined input after stage 09 calculates the canonical
+schema</a> defines all 342 columns across the eight contracts. Stage 11
+assembles the combined input after stage 08 calculates the canonical
 records. The <a href="../OUTPUTS.html">output register</a> documents keys,
 units and suffix conventions. The <a href="../ANALYSIS_REVIEW.html">analysis review</a> contains focused
 excerpts of the maintained metric calculations and portable copies of
@@ -1848,12 +1848,12 @@ from the canonical lake table.</p>
 <h2>Raw physical climate-rate GLS extension (2026-10-09)</h2>
 <p>The same maintained model stages now include
 <code>standardized_climate_change_rate</code> on its original scale.
-Stage 10 fits ten offsets under AR1, MA1 and independent residuals;
-stage 10a fits four offset-0 lake sensitivities under AR1 and MA1. All
-38 climate fits converge without warnings. MA1 results use the same
-figure layouts and covariance-based group means and era contrasts as the
-two tracking responses, with calibration SD per century replacing CCA
-units per century.</p>
+Stage 12 fits ten offsets under AR1, MA1 and independent residuals;
+stage 13 fits four offset-0 lake sensitivities under AR1 and MA1. All 38
+climate fits converge without warnings. MA1 results use the same figure
+layouts and covariance-based group means and era contrasts as the two
+tracking responses, with calibration SD per century replacing CCA units
+per century.</p>
 <p>Focused checks in <code>R/tests/test_tracking_offset_models.R</code>
 verify all three response sets: 120 coefficient rows, 60 contrasts, 30
 comparison rows, 40 MA1 group means, 16 lake coefficients and eight lake
@@ -1902,19 +1902,19 @@ the retired figures.</p>
 <h2>Original offset-0 manuscript figure (2026-10-09)</h2>
 <p>This records the earlier display, replaced by the 2026-10-10
 extension below.</p>
-<p>Stage <code>R/stages/10b_tracking_manuscript_figure.R</code> reads
-the maintained combined input and existing MA1 group-mean/contrast
-tables. The figure contains 1,911 untransformed input values across the
-three responses, 12 fitted means and six contrasts. For each response,
-MORA has 20 Holocene transitions and 330 modern pairs; NOCA has 10
-Holocene transitions and 277 pairs. The stage checks group identities
-and sample counts, confirms each contrast equals its fitted mean
-difference, and reads confidence bounds directly from the model records.
-No fits or source CSVs are replaced. The preserved-file snapshot
-verifies all 1,457 prior data, cache, output and figure files remain
-byte-identical, including Figures 2/3 and every model result. The new
-Figure 4 is a distinct producer; historical tracking visualizations
-remain retired.</p>
+<p>Stage <code>R/stages/14_tracking_manuscript_figure.R</code> reads the
+maintained combined input and existing MA1 group-mean/contrast tables.
+The figure contains 1,911 untransformed input values across the three
+responses, 12 fitted means and six contrasts. For each response, MORA
+has 20 Holocene transitions and 330 modern pairs; NOCA has 10 Holocene
+transitions and 277 pairs. The stage checks group identities and sample
+counts, confirms each contrast equals its fitted mean difference, and
+reads confidence bounds directly from the model records. No fits or
+source CSVs are replaced. The preserved-file snapshot verifies all 1,457
+prior data, cache, output and figure files remain byte-identical,
+including Figures 2/3 and every model result. The new Figure 4 is a
+distinct producer; historical tracking visualizations remain
+retired.</p>
 </div>
 <div id="corrected-lag-rate-models-and-anchored-figure-4-2026-10-10" class="section level2">
 <h2>Corrected lag-rate models and anchored Figure 4 (2026-10-10)</h2>

@@ -7,7 +7,7 @@ sys.source(here("R/tests/test_bacon_provenance.R"), envir = new.env(parent = glo
 sys.source(here("R/tests/test_figure_output_contract.R"), envir = new.env(parent = globalenv()))
 dir.create(here("output/report"), recursive = TRUE, showWarnings = FALSE)
 e = new.env(parent = globalenv())
-sys.source(here("R/stages/05_cca_model.R"), envir = e)
+sys.source(here("R/stages/04_cca_model.R"), envir = e)
 report_export_cca(e)
 sys.source(here("R/diagnostics/plot_sample_selection.R"), envir = new.env(parent = globalenv()))
 report_python("--snapshot")

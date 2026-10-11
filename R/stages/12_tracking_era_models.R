@@ -1,7 +1,7 @@
 # Covariance comparison and selected MA1 results: one transition offset per fit.
 # Default: observed and two corrected lag rates, turnover and physical climate rate.
 # --metric=NAME selects one response; no response transformation is applied.
-# Rscript R/stages/10_tracking_era_models.R [--metric=observed_turnover_rate]
+# Rscript R/stages/12_tracking_era_models.R [--metric=observed_turnover_rate]
 # Optional later width experiments: --bin-width-years=N; never run automatically.
 # Same fixed effects and variance groups for AR1, MA1 and independent residuals.
 suppressPackageStartupMessages({
@@ -122,9 +122,9 @@ for(response_metric in response_metrics) {
     fits[[paste(offset,model_type,sep='_')]]=tryCatch(fit_offset(offset,model_type),
       error=function(e) stop('Offset ',offset,' / ',model_type,': ',conditionMessage(e),call.=FALSE))
   }
-  coefficients=bind_rows(map(fits,'coefficients'))
-  contrasts=bind_rows(map(fits,'contrasts'))
-  group_means=tracking_selected_model_results(bind_rows(map(fits,'means')))
+  coefficients=bind_rows(purrr::map(fits,'coefficients'))
+  contrasts=bind_rows(purrr::map(fits,'contrasts'))
+  group_means=tracking_selected_model_results(bind_rows(purrr::map(fits,'means')))
   if(nrow(group_means)!=length(offsets)*4L ||
      anyDuplicated(group_means[c('metric','offset','model_type','site','era')]) ||
      any(!is.finite(as.matrix(group_means[c('estimate','std_error','df','conf_low','conf_high')]))))
@@ -178,7 +178,7 @@ for(response_metric in response_metrics) {
     'Group means and era contrasts use emmeans with Satterthwaite degrees of freedom; contrast SEs use the fitted covariance of the means.',
     'Coefficient intervals and park contrasts are unadjusted exploratory intervals/tests.',
     paste('Input:',basename(input_path),'| MD5:',unname(tools::md5sum(input_path))),
-    paste('Script MD5:',unname(tools::md5sum(here('R/stages/10_tracking_era_models.R')))),
+    paste('Script MD5:',unname(tools::md5sum(here('R/stages/12_tracking_era_models.R')))),
     paste('Packages:',paste(sapply(c('nlme','emmeans'),function(p)
       paste(p,as.character(packageVersion(p)))),collapse='; ')))
   out=here('output/exploratory/tracking_offset_models',paste0(response_metric,suffix))
@@ -189,7 +189,7 @@ for(response_metric in response_metrics) {
   write_csv(group_means,file.path(out,'model_group_means.csv'))
   writeLines(c(notes,'','Fit overview:',capture.output(print(as.data.frame(fit_overview),
     digits=8,row.names=FALSE)), '',
-    unlist(map(fits,'text')),capture.output(sessionInfo())),file.path(out,'model_results.txt'))
+    unlist(purrr::map(fits,'text')),capture.output(sessionInfo())),file.path(out,'model_results.txt'))
 
   # Only the selected covariance is presented after the comparison figure.
   model_colors=tracking_model_colors()

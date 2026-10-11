@@ -1,6 +1,6 @@
 # Standalone fixed-CCA transition contributions
 
-Run `Rscript R/stages/11_cca_transition_contributions.R`, then
+Run `Rscript R/stages/16_cca_transition_contributions.R`, then
 `Rscript R/tests/test_cca_transition_contributions.R`, from the repository root.
 The script is deliberately outside the active workflow. It reads the existing
 CCA reference, occurrence records, whole Bacon draws and canonical calculation
@@ -14,7 +14,7 @@ The descriptive boxplots combine their offset-specific transition points.
 The maintained calculation code is in
 [cca_transition_contributions.R](../../R/helpers/cca_transition_contributions.R).
 The executable is
-[11_cca_transition_contributions.R](../../R/stages/11_cca_transition_contributions.R),
+[16_cca_transition_contributions.R](../../R/stages/16_cca_transition_contributions.R),
 and independent checks are in
 [test_cca_transition_contributions.R](../../R/tests/test_cca_transition_contributions.R).
 

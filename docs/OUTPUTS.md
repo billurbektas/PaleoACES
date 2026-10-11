@@ -25,7 +25,7 @@ Active data and cache locations are preserved. See [repository inventory](REPOSI
 | `report/cca_model_code.R`, `report/cca_model_output.txt`, `report/cca_anova_output.txt` | Current fitting/projection code excerpt and readable model/permutation-test outputs displayed or linked immediately before Figure 3 |
 | `plot/test_figures/plots_to_cca.pdf` | Single-page diagram showing starting counts, exclusion reasons, combined sample depths, legacy calibration counts and final paired/projection counts |
 | `plot/test_figures/fig_holocene_sampling_fire_100yr.pdf` | Before-CCA diagnostic from the consolidation stage: separate macrofossil lake lines on a shared MORA/NOCA count scale, above summed accepted fire detections by park on native 100-year climate cells; grey marks inadequate charcoal coverage |
-| `plot/test_figures/fig_cca_transition_species_boxplots.pdf`, `plot/test_figures/fig_cca_transition_climate_boxplots.pdf` | Standalone fixed-CCA transition contributions: raw signed parallel displacements, species/climate variables on the y-axis, with Holocene/Anthropocene boxes by park; produced by stage 11 outside the main workflow |
+| `plot/test_figures/fig_cca_transition_species_boxplots.pdf`, `plot/test_figures/fig_cca_transition_climate_boxplots.pdf` | Standalone fixed-CCA transition contributions: raw signed parallel displacements, species/climate variables on the y-axis, with Holocene/Anthropocene boxes by park; produced by stage 16 outside the main workflow |
 | `plot/test_figures/fig_method_worked_example.pdf` | Panther Potholes realization: WA/LC geometry, counterfactual endpoints, seven responses and chronology-draw distributions |
 | `plot/test_figures/fig_tracking_offset_rates.pdf` | Four lake columns × three rows: tracking rates together, standardized climate-change rate, and continuous fire activity, with established regional climate-period bands; a fifth column shows MORA/NOCA modern boxplots |
 | `plot/test_figures/fig_tracking_offset_ratios_angles.pdf` | Four lake columns × four rows: magnitude ratio, angle, standardized climate-change rate, and fire activity, with the same regional climate-period bands; a fifth column shows MORA/NOCA modern boxplots |
@@ -76,9 +76,9 @@ Historical climate and Holocene values remain unchanged in the mixed tables.
 
 ## Canonical tracking schemas
 
-Stage `R/stages/09_tracking_metrics.R` calculates lake and plot records once,
+Stage `R/stages/08_tracking_metrics.R` calculates lake and plot records once,
 then separates the seven source, uncertainty, descriptive and audit tables.
-Stage `R/stages/09b_tracking_model_data.R` assembles one combined transition
+Stage `R/stages/11_tracking_model_data.R` assembles one combined transition
 input from these calculations, deriving the two corrected lag-change rates
 within each draw before transition medians.
 The complete ordered column dictionary is `output/cca_tracking_schema.csv`,
@@ -178,7 +178,7 @@ quantiles; `phase_min,phase_max` bound the offset medians. Support fields retain
 observed offset counts and minimum draw presence. Neither interval is an
 inferential confidence interval.
 
-Stage 09b exports `cca_tracking_era_by_offset.csv` with exactly:
+Stage 11 exports `cca_tracking_era_by_offset.csv` with exactly:
 
 ```text
 era, site, lake, plot_id, offset, age_hi, age_lo, interval_mid_cal_bp,
@@ -208,7 +208,7 @@ binary burned assignment. WGS84 coordinates retain original identities and
 normalized joins; missing or ambiguous locations stop export. The long layout
 does not add ecological replicates. Alternative widths receive `_Nyr` suffixes.
 
-Stage `R/stages/10_tracking_era_models.R` reads only the combined CSV and fits
+Stage `R/stages/12_tracking_era_models.R` reads only the combined CSV and fits
 observed/pace-corrected/direction-corrected lag-change rates, observed turnover
 and untransformed physical climate-change rate separately for all ten offsets under AR1,
 MA1 and no temporal autocorrelation
@@ -261,7 +261,7 @@ using the offset-0 fit's interval. All 40 fitted group means and their individua
 intervals remain in each response's CSV; Holocene means and contrasts remain
 offset-specific in the figures.
 
-Stage `R/stages/10a_tracking_lake_sensitivity.R` then runs the agreed **offset-0
+Stage `R/stages/13_tracking_lake_sensitivity.R` then runs the agreed **offset-0
 lake sensitivity**: each of the four Holocene lakes versus modern pairs from
 its own park, under AR1 and MA1 (eight fits per response). The park is constant within each
 fit, so the formula is `estimate ~ era`, with REML and separate era residual
@@ -303,7 +303,7 @@ per-century units do not equalize Holocene and modern temporal averaging.
 
 The two additional model response names are
 `pace_corrected_lag_rate_per_century` and
-`direction_corrected_lag_rate_per_century`. Stage 09b computes
+`direction_corrected_lag_rate_per_century`. Stage 11 computes
 `(corrected final lag - initial lag) * 100 / climate_dt_years` from detailed
 records within each draw before transition medians. They have the same ten-offset
 CSV/TXT/diagnostic PDF set and offset-0 lake sensitivity, using their metric names
@@ -311,7 +311,7 @@ in the directory/figure stems above. Modern pace models use 465 pairs, excluding
 142 undefined stationary directions; direction models retain all 607 pairs.
 The 23/21/15-column canonical contracts and original calculation records remain.
 
-Stage `R/stages/10b_tracking_manuscript_figure.R` reads combined inputs and existing
+Stage `R/stages/14_tracking_manuscript_figure.R` reads combined inputs and existing
 MA1 results without fitting. It validates 20 group counts and ten mean differences.
 The first row of Figure 4 shows standardized climate change per century,
 community turnover rate and observed lag change, with side-by-side parks,
@@ -371,7 +371,7 @@ so the existing fitted calibration remains available from the branch.
 
 ## Tracking example and descriptive visualizations
 
-`R/stages/09a_tracking_example_and_visualizations.R` reads the canonical stage-09
+`R/stages/09_tracking_example_and_visualizations.R` reads the canonical stage-08
 products and writes the three diagnostic PDFs listed above. Both descriptive
 figures use four Holocene lake columns with aligned cal-BP axes and shared
 scales across lakes within each row. The rates figure has three rows: the four
@@ -380,7 +380,7 @@ fire activity. The second figure gives magnitude ratio, angle, climate rate and
 fire activity one row each. The duplicate Holocene rate-ratio display is omitted;
 both ratios remain in both model tables and can differ in the Anthropocene.
 
-Both figures read the established stage-13 `holocene_era_catalog.csv` and
+Both figures read the established stage-05 `holocene_era_catalog.csv` and
 `holocene_era_climate_change_subphases.csv`, the same sources as Figure 2.
 Darker gray marks climate change (CC) and lighter gray relative stability (S)
 across every Holocene row. Top-row labels show CC1a, CC1b and CC1c and the other
@@ -411,7 +411,7 @@ sensitivity realizations, not independent ecological replicates.
 
 ## Within-era predictor model records
 
-Producer: [R/stages/10c_tracking_predictor_models.R](../R/stages/10c_tracking_predictor_models.R).
+Producer: [R/stages/15_tracking_predictor_models.R](../R/stages/15_tracking_predictor_models.R).
 The primary directory is `output/exploratory/tracking_predictor_models/`.
 These records are derived from the existing combined model input; canonical
 tracking schemas and calculation tables remain unchanged.
@@ -455,6 +455,6 @@ request for all responses, with each full fitted `vcov` (450,000 samples per res
 estimates are exact means across offsets; intervals are mixture percentiles,
 not conventional confidence intervals. Offsets are sensitivity reconstructions,
 and uncertainty is not divided by √9. Bacon chronology uncertainty is not
-propagated. `Rscript R/stages/10c_tracking_predictor_models.R --ensemble-only`
+propagated. `Rscript R/stages/15_tracking_predictor_models.R --ensemble-only`
 adds/reproduces only the ensemble products from matching stored fits, without
 refitting or changing existing outputs.

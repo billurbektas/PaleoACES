@@ -1,5 +1,5 @@
 # =============================================================================
-# 13b_fire_method_worked_example.R
+# 06_fire_method_worked_example.R
 # Step-by-step worked example of the frozen Holocene high-fire method.
 # =============================================================================
 

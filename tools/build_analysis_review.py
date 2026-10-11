@@ -100,6 +100,11 @@ def workflow_stages():
     paths = re.findall(r'run_script\("(R/[^\"]+[.]R)"', workflow)
     paths = [p for p in paths if p.startswith('R/stages/')]
     if len(paths) != 26 or len(set(paths)) != 26: raise ValueError('Expected exactly 26 ordered workflow analysis stages.')
+    numbered = [p for p in paths if not Path(p).name.startswith('000_')]
+    if [int(Path(p).name.split('_', 1)[0]) for p in numbered] != list(range(1, 16)):
+        raise ValueError('Numbered stages must follow the dependency-checked execution order 01–15.')
+    if any(not (ROOT/p).is_file() for p in paths):
+        raise ValueError('Workflow refers to a missing stage.')
     return paths
 
 def tracking_calculation_sections():
@@ -322,7 +327,7 @@ def validate(root=ROOT):
         raise ValueError('Review embeds the whole tracking helper instead of calculation excerpts.')
     if '### Figure 5.' in text:
         raise ValueError('Retired manuscript Figure 5 remains active.')
-    if '### Figure 4.' not in text or '../R/stages/10b_tracking_manuscript_figure.R)' not in text:
+    if '### Figure 4.' not in text or '../R/stages/14_tracking_manuscript_figure.R)' not in text:
         raise ValueError('Review omitted the new offset-0 manuscript figure.')
     helper = (ROOT/'R/helpers/tracking_predictor_models.R').read_text()
     predictor_code = helper.split('# BEGIN PREDICTOR MODEL STRUCTURES\n',1)[1].split('# END PREDICTOR MODEL STRUCTURES',1)[0].rstrip()
@@ -354,6 +359,12 @@ def validate(root=ROOT):
     review = root/'docs/review/00_main_analysis_review.R'
     if review.read_text() != combined_review(): raise ValueError('Combined analysis review differs from current workflow sources.')
     headings = re.findall(r'^## (.+)$',text,re.M)
+    dependency_headings = ['Accepted fire events', 'CCA calibration and geometry',
+                           'Climate eras and high-fire periods', 'Community trajectories',
+                           'Tracking calculations']
+    positions = [headings.index(h) for h in dependency_headings]
+    if positions != sorted(positions):
+        raise ValueError('Review must explain source fire reconstruction before CCA, then calibration-dependent classifications and tracking.')
     eligibility_heading = headings.index('Plots and samples included in CCA')
     if headings[eligibility_heading+1:eligibility_heading+3] != [
             'Holocene sampling support on native climate intervals', 'CCA calibration and geometry']:

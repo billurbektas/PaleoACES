@@ -6,7 +6,7 @@ options(paleoaces.render_figures = FALSE)
 destination = here("output/review_audit")
 dir.create(destination, recursive = TRUE, showWarnings = FALSE)
 e = new.env(parent = globalenv())
-sys.source(here("R/stages/05_cca_model.R"), e)
+sys.source(here("R/stages/04_cca_model.R"), e)
 stopifnot(exists("CCA_VARIABLES", e, inherits = FALSE),
           !exists("cca_model", globalenv(), inherits = FALSE))
 checks = list()

@@ -13,7 +13,7 @@ equal = function(x, y) stopifnot(isTRUE(all.equal(x, y, tolerance = 1e-10,
 
 # CCA eligibility: analytically specified plots, without fitting a model or
 # reading local data. Extract only the two pure preparation functions.
-cca_functions = parse(here("R/stages/05_cca_model.R"))
+cca_functions = parse(here("R/stages/04_cca_model.R"))
 for (name in c("cca_classify_samples", "cca_pair_samples")) {
   definition = Filter(function(x) is.call(x) && is.symbol(x[[1]]) &&
     as.character(x[[1]]) %in% c("=", "<-") && identical(x[[2]], as.name(name)),

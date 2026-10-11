@@ -69,7 +69,7 @@ if (nrow(no_climate)) {
   cat("\n  samples WITHOUT usable climate, by lake:\n")
   print(as.data.frame(no_climate %>% group_by(lake, why) %>%
     summarise(n = n(), age_min = min(age), age_max = max(age), .groups = "drop")))
-  cat("\n  -> dropped by complete-case filtering / intersect() in 05_cca_model.R,\n")
+  cat("\n  -> dropped by complete-case filtering / intersect() in 04_cca_model.R,\n")
   cat("     with nothing printed. Their ages tell you WHICH end of the record\n")
   cat("     the download failed to reach.\n")
 }

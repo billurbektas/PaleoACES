@@ -21,8 +21,8 @@ def state():
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--isolated', action='store_true', required=True)
 parser.parse_args()
-primary = 'R/stages/09_tracking_metrics.R'
-assembly = 'R/stages/09b_tracking_model_data.R'
+primary = 'R/stages/08_tracking_metrics.R'
+assembly = 'R/stages/11_tracking_model_data.R'
 baseline = state()
 checks = []
 for label, stages in [('fresh tracking and assembly', [primary, assembly]),

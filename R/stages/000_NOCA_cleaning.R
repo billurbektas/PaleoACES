@@ -785,7 +785,7 @@ print_turnover_summary(noca_turnover_results)
 noca_heatmap_plot = create_turnover_heatmap(noca_turnover_results$turnover_data) 
 noca_alluvial_plot = create_alluvial_plot(noca_turnover_results$turnover_data)
 
-# The CCA inclusion threshold belongs to R/stages/05_cca_model.R. This cleaner reports
+# The CCA inclusion threshold belongs to R/stages/04_cca_model.R. This cleaner reports
 # the raw NOCA occurrence counts without duplicating downstream model decisions.
 noca_count_data = NOCA_occ %>%
   filter(occurrence == 1) %>%
@@ -801,7 +801,7 @@ noca_count_plot =
   geom_col(position = "dodge", width = 0.7) +
   scale_fill_manual(values = c("past" = "#8B4513", "present" = "#228B22")) +
   labs(title = "NOCA species occurrence by period",
-       subtitle = "Raw cleaning output; CCA eligibility is decided centrally in R/stages/05_cca_model.R",
+       subtitle = "Raw cleaning output; CCA eligibility is decided centrally in R/stages/04_cca_model.R",
        x = "Species", y = "Number of plots",
        fill = "Period") +
   theme_minimal() +

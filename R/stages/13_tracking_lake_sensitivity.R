@@ -1,6 +1,6 @@
 # Maintained sensitivity: offset 0, one Holocene lake versus its park's modern pairs.
 # Default: five rate responses, including the two corrected lag rates; offset 0 only.
-# Rscript R/stages/10a_tracking_lake_sensitivity.R [--metric=NAME]
+# Rscript R/stages/13_tracking_lake_sensitivity.R [--metric=NAME]
 # Optional manual runs: --metric=NAME --offset=N --bin-width-years=N.
 suppressPackageStartupMessages({
   library(here);library(tidyverse);library(nlme);library(emmeans)
@@ -89,8 +89,8 @@ for(response_metric in response_metrics) {
     fits[[paste(lake,model_type,sep='_')]]=tryCatch(fit_lake(lake,model_type),
       error=function(e) stop('Lake ',lake,' / ',model_type,': ',conditionMessage(e),call.=FALSE))
   }
-  coefficients=bind_rows(map(fits,'coefficients'))
-  contrasts=bind_rows(map(fits,'contrasts'))
+  coefficients=bind_rows(purrr::map(fits,'coefficients'))
+  contrasts=bind_rows(purrr::map(fits,'contrasts'))
   if(nrow(coefficients)!=nrow(lakes)*length(model_types)*2L ||
      anyDuplicated(coefficients[c('metric','offset','site','lake','model_type','term')]) ||
      nrow(contrasts)!=nrow(lakes)*length(model_types) ||
@@ -112,8 +112,8 @@ for(response_metric in response_metrics) {
     'No chronology propagation, support cutoff, lake random effect or climate/fire fixed effects.',
     'No pooled averaging of lake fits and no AIC comparisons between different lake inputs.',
     paste('Input MD5:',unname(tools::md5sum(input_path))),
-    paste('Script MD5:',unname(tools::md5sum(here('R/stages/10a_tracking_lake_sensitivity.R')))))
-  writeLines(c(notes,'',unlist(map(fits,'text')),capture.output(sessionInfo())),file.path(out,'model_results.txt'))
+    paste('Script MD5:',unname(tools::md5sum(here('R/stages/13_tracking_lake_sensitivity.R')))))
+  writeLines(c(notes,'',unlist(purrr::map(fits,'text')),capture.output(sessionInfo())),file.path(out,'model_results.txt'))
 
   lake_labels=c(JayBath='Jay Bath',LogWallow='Log Wallow',ReflectionPond='Reflection Pond',
     PantherPotholes='Panther Potholes')

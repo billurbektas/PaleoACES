@@ -1,5 +1,5 @@
 # =============================================================================
-# 05a_cca_figure.R - the main CCA figure: observed vs predicted trajectories
+# 07_cca_figure.R - the main CCA figure: observed vs predicted trajectories
 # =============================================================================
 # Panel A: the pooled ordination, showing for each site x era BOTH trajectories
 #          through time -
@@ -15,7 +15,7 @@
 #
 # Holocene points are site x frozen CC/S-era centroids of the complete 1,000-year
 # site-date path; Anthropocene is one point per site per survey. Sources
-# R/stages/05_cca_model.R for the model.
+# R/stages/04_cca_model.R for the model.
 # =============================================================================
 
 library(here)
@@ -24,8 +24,8 @@ render_figures = isTRUE(getOption("paleoaces.render_figures", TRUE))
 # Species selection is inherited from the model. Consolidation removes Taxus
 # brevifolia and Acer circinatum under the understory rule; Pinus ponderosa is
 # retained following the 2026-10-08 reversal of its former manual exclusion.
-# 05_cca_model.R defaults extra_exclude to character(0) and cca_suffix to "".
-source(here("R/stages/05_cca_model.R"), local = TRUE)
+# 04_cca_model.R defaults extra_exclude to character(0) and cca_suffix to "".
+source(here("R/stages/04_cca_model.R"), local = TRUE)
 library(ggrepel)
 library(patchwork)
 source(here("R/helpers/figure_style.R"), local = TRUE)
@@ -73,7 +73,7 @@ full_name = function(x) unname(ifelse(x %in% names(clim_full), clim_full[x], x))
 # -----------------------------------------------------------------------------
 # Trajectory points: observed (WA) and predicted (LC) centroids through time
 # -----------------------------------------------------------------------------
-# Anthropocene: identical valid pairs at BOTH dates, prepared in 05_cca_model.R.
+# Anthropocene: identical valid pairs at BOTH dates, prepared in 04_cca_model.R.
 # The full legacy calibration cloud remains in the model/background display.
 past_pred = predict(cca_model, newdata = env_past_paired,     type = "lc",
                     scaling = cca_scaling, hill = cca_hill)
@@ -184,7 +184,7 @@ holo_pts = if (holocene_display_mode == "trajectory") {
   # observed and predicted paths separately with time-direction arrows.
   era_grid_path = here("output/holocene_era_grid.csv")
   if (!file.exists(era_grid_path))
-    stop("Missing output/holocene_era_grid.csv; run R/stages/13_holocene_climate_fire_eras.R first.")
+    stop("Missing output/holocene_era_grid.csv; run R/stages/05_holocene_climate_fire_eras.R first.")
   era_grid = read_csv(era_grid_path, show_col_types = FALSE)
   era_levels = c("CC1", "S1", "CC2", "S2", "CC3", "S3", "CC4", "S4")
   if (!identical(unique(era_grid$era_id), era_levels))
@@ -378,7 +378,7 @@ sp_dropped = sp_contrib %>% filter(arrow_pct <  inset_sp_min_pct)
 # pointed right - because the four arrow tips sit close together under scaling 1.
 # ARROW SCALING. The constraint arrows were drawn at a FIXED x2, which worked
 # while the species cloud was compact. It is not: Pinus albicaulis sits at
-# (3.57, 4.39) - kept deliberately, see 05_cca_model.R - and it stretches this
+# (3.57, 4.39) - kept deliberately, see 04_cca_model.R - and it stretches this
 # panel so far that the four climate arrows collapse onto the origin, which is
 # the one thing this panel exists to show. The multiplier is therefore tied to
 # the species extent, so the arrows fill a fixed FRACTION of the panel whatever

@@ -80,7 +80,7 @@ paleo_fire =
 # 000_PALEO_b_vegetation.R already collapses exactly this collision on the
 # vegetation side ("present if present in any contributing row"), so paleo_occ has
 # one row per sample while paleo_fire had three. Left unmerged, the left_join in
-# 05_cca_model.R multiplies that sample's env row threefold and it is counted
+# 04_cca_model.R multiplies that sample's env row threefold and it is counted
 # three times in the CCA.
 #
 # Two different rules, because the columns are two different kinds of thing:
@@ -211,7 +211,7 @@ stopifnot(nrow(noca_fire) == nrow(noca_samples))
 paleo_fire = bind_rows(paleo_fire, noca_fire)
 
 # ONE row per sample, and the same samples the vegetation has. Without this the
-# left_join in 05_cca_model.R silently multiplies rows: a plot_id appearing twice
+# left_join in 04_cca_model.R silently multiplies rows: a plot_id appearing twice
 # here makes that paleo sample count twice in the CCA.
 stopifnot(!any(duplicated(paleo_fire$plot_id)))
 paleo_occ_ids = read_csv(here("output", "paleo_occ.csv"), show_col_types = FALSE)$plot_id

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: da6083c327f1c3377d05d16fbcf6e65c -->
+<!-- paleoaces-source-md5: 6a0eb385ec83294678b8da1d51989ef0 -->
 
 <html>
 
@@ -1505,7 +1505,7 @@ evidence</h1>
 which reads the three cleaned occurrence tables and writes the single
 file the ordination consumes:</p>
 <pre><code>output/MORA_occ.csv    000_MORA_cleaning.R
-output/NOCA_occ.csv    000_NOCA_cleaning.R      -&gt;  output/occ_consolidated.csv  -&gt;  05_cca_model.R
+output/NOCA_occ.csv    000_NOCA_cleaning.R      -&gt;  output/occ_consolidated.csv  -&gt;  04_cca_model.R
 output/paleo_occ.csv   000_PALEO_b_vegetation.R</code></pre>
 <p>No cleaning script is re-run. This is a pure transformation on their
 outputs, so any decision below can be changed and re-applied in
@@ -2099,9 +2099,9 @@ no longer exist and split taxa that are now merged.</p>
 <p><strong>Nothing is filtered or decided by this block</strong> — it
 reports the raw evidence only. <strong>The threshold default lives in
 <code>R/helpers/config.R</code></strong> and is consumed by
-<code>05_cca_model.R</code>; a caller can override it explicitly for a
+<code>04_cca_model.R</code>; a caller can override it explicitly for a
 sweep:</p>
-<pre class="r"><code>for (thr in c(10, 15, 20, 25, 30)) { count.thr = thr; source(here(&quot;R/stages/05_cca_model.R&quot;)) }</code></pre>
+<pre class="r"><code>for (thr in c(10, 15, 20, 25, 30)) { count.thr = thr; source(here(&quot;R/stages/04_cca_model.R&quot;)) }</code></pre>
 <p>The rule there: a species is dropped only if it is below the
 threshold in <strong>every</strong> site × period group, so the
 comparison is against each species’ <strong>largest</strong> group count
@@ -2202,7 +2202,7 @@ cross-site species and losing it costs more than it saves.</li>
 <div id="tsuga-heterophylla-the-old-hand-exclusion-is-reversed" class="section level3">
 <h3><em>Tsuga heterophylla</em> — the old hand-exclusion is
 reversed</h3>
-<p>It was dropped by hand in <code>05_cca_model.R</code> at every
+<p>It was dropped by hand in <code>04_cca_model.R</code> at every
 threshold from the first version of this analysis. <strong>It is now
 kept</strong> (2026-08-13), on three grounds:</p>
 <ol style="list-style-type: decimal">
@@ -2210,7 +2210,7 @@ kept</strong> (2026-08-13), on three grounds:</p>
 preserved in Git history, carries the bare line with no comment; the
 former species-count diagnostic also recorded that the exclusion was
 undocumented. The “range truncation, HilleRisLambers et al. 2015
-Appendix B” note previously in <code>05_cca_model.R</code> was
+Appendix B” note previously in <code>04_cca_model.R</code> was
 reconstructed after the fact, not inherited from the original
 author.</p></li>
 <li><p><strong>The citation does not single it out.</strong>
@@ -2390,7 +2390,7 @@ grid first:</strong></p>
 <pre class="r"><code>expand_grid(plots, species) %&gt;% left_join(presences) %&gt;% mutate(x = replace_na(x, 0))</code></pre>
 <p>Taking <code>mean(occurrence == 1)</code> over the modern rows that
 exist returns <strong>~1 for every species</strong>.
-<code>05_cca_model.R</code> does this correctly
+<code>04_cca_model.R</code> does this correctly
 (<code>all_combinations</code> + <code>replace_na</code>); an earlier
 figure did not, and reported every species at ~100% occupancy until it
 was caught.</p>

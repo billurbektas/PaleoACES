@@ -1,5 +1,5 @@
 # Era-specific predictor models for observed and two corrected lag-change rates.
-# Rscript R/stages/10c_tracking_predictor_models.R
+# Rscript R/stages/15_tracking_predictor_models.R
 # --bin-width-years=N uses separately suffixed inputs/outputs; default 1000 only.
 # --ensemble-only adds reconstruction summaries from stored fits without refitting.
 # Holocene: each offset, MA1 within lake, site residual variances; offset-0
@@ -28,9 +28,9 @@ labels=tracking_predictor_labels()
 out=here('output/exploratory',paste0('tracking_predictor_models',suffix))
 export_ensembles=function(ensembles) {
   dir.create(out,recursive=TRUE,showWarnings=FALSE)
-  summary=bind_rows(map(ensembles,'summary'))
-  audit=bind_rows(map(ensembles,'offset_audit'))
-  covariance=bind_rows(map(ensembles,'offset_vcov'))
+  summary=bind_rows(purrr::map(ensembles,'summary'))
+  audit=bind_rows(purrr::map(ensembles,'offset_audit'))
+  covariance=bind_rows(purrr::map(ensembles,'offset_vcov'))
   if(nrow(summary)!=length(metrics)*4L || nrow(audit)!=length(metrics)*length(offsets) ||
      nrow(covariance)!=length(metrics)*length(offsets)*16L ||
      anyDuplicated(summary[c('metric','term')]) || anyDuplicated(audit[c('metric','offset')]))
@@ -152,15 +152,15 @@ for(metric in metrics) {
     fits[[paste(metric,type,sep='_')]]=run_fit(metric,'Anthropocene',NA_real_,type)
   }
 }
-coefficients=bind_rows(map(fits,'coefficients'))
-performance=bind_rows(map(fits,'performance'))
-predictions=bind_rows(map(fits,'predictions'))
-lake_sensitivity=bind_rows(map(sensitivities,'summary'))
+coefficients=bind_rows(purrr::map(fits,'coefficients'))
+performance=bind_rows(purrr::map(fits,'performance'))
+predictions=bind_rows(purrr::map(fits,'predictions'))
+lake_sensitivity=bind_rows(purrr::map(sensitivities,'summary'))
 holocene_predictions=tracking_prediction_reporting_grid(predictions |> filter(era=='Holocene'))
-spatial=map(fits[vapply(fits,function(x) x$performance$era=='Anthropocene',logical(1))],
+spatial=purrr::map(fits[vapply(fits,function(x) x$performance$era=='Anthropocene',logical(1))],
   ~tracking_spatial_residual_check(.x$predictions))
-spatial_checks=bind_rows(map(spatial,'checks'))
-spatial_locations=bind_rows(map(spatial,'locations'))
+spatial_checks=bind_rows(purrr::map(spatial,'checks'))
+spatial_locations=bind_rows(purrr::map(spatial,'locations'))
 all_exclusions=bind_rows(exclusions)
 if(nrow(coefficients)!=length(metrics)*(length(offsets)*4L+3L+5L) ||
    nrow(performance)!=length(metrics)*(length(offsets)+2L) ||

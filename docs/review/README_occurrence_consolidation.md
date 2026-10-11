@@ -6,7 +6,7 @@ ordination consumes:
 
 ```
 output/MORA_occ.csv    000_MORA_cleaning.R
-output/NOCA_occ.csv    000_NOCA_cleaning.R      ->  output/occ_consolidated.csv  ->  05_cca_model.R
+output/NOCA_occ.csv    000_NOCA_cleaning.R      ->  output/occ_consolidated.csv  ->  04_cca_model.R
 output/paleo_occ.csv   000_PALEO_b_vegetation.R
 ```
 
@@ -342,10 +342,10 @@ that are now merged.
 
 **Nothing is filtered or decided by this block** — it reports the raw evidence only.
 **The threshold default lives in `R/helpers/config.R`** and is consumed by
-`05_cca_model.R`; a caller can override it explicitly for a sweep:
+`04_cca_model.R`; a caller can override it explicitly for a sweep:
 
 ```r
-for (thr in c(10, 15, 20, 25, 30)) { count.thr = thr; source(here("R/stages/05_cca_model.R")) }
+for (thr in c(10, 15, 20, 25, 30)) { count.thr = thr; source(here("R/stages/04_cca_model.R")) }
 ```
 
 The rule there: a species is dropped only if it is below the threshold in **every**
@@ -383,13 +383,13 @@ Three things worth noting when choosing:
 
 ### *Tsuga heterophylla* — the old hand-exclusion is reversed
 
-It was dropped by hand in `05_cca_model.R` at every threshold from the first version
+It was dropped by hand in `04_cca_model.R` at every threshold from the first version
 of this analysis. **It is now kept** (2026-08-13), on three grounds:
 
 1. **It was never justified.** The original model, preserved in Git history, carries the bare line with
    no comment; the former species-count diagnostic also recorded that the
    exclusion was undocumented. The "range truncation, HilleRisLambers et al.
-   2015 Appendix B" note previously in `05_cca_model.R` was reconstructed after the
+   2015 Appendix B" note previously in `04_cca_model.R` was reconstructed after the
    fact, not inherited from the original author.
 2. **The citation does not single it out.** HilleRisLambers et al. 2015: range limits
    were estimated *"for three species (Abies amabilis, Callitropsis nootkatensis,
@@ -486,5 +486,5 @@ expand_grid(plots, species) %>% left_join(presences) %>% mutate(x = replace_na(x
 ```
 
 Taking `mean(occurrence == 1)` over the modern rows that exist returns **~1 for every species**.
-`05_cca_model.R` does this correctly (`all_combinations` + `replace_na`); an earlier figure
+`04_cca_model.R` does this correctly (`all_combinations` + `replace_na`); an earlier figure
 did not, and reported every species at ~100% occupancy until it was caught.

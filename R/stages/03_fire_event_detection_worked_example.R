@@ -1,5 +1,5 @@
 # =============================================================================
-# 12a_fire_event_detection_worked_example.R
+# 03_fire_event_detection_worked_example.R
 # Auditable, step-by-step display of accepted charcoal-event detection.
 # This stage explains individual-event selection; it does not classify the
 # later centered 1,000-year high-fire periods.
@@ -16,7 +16,7 @@ series_path = here("output/holocene_fire_source_series.csv")
 events_path = here("output/holocene_fire_source_events.csv")
 settings_path = here("output/holocene_fire_source_settings.csv")
 if (!all(file.exists(c(series_path, events_path, settings_path)))) {
-  stop("Run R/stages/12_walsh_fire_reproduction.R first.")
+  stop("Run R/stages/02_walsh_fire_reproduction.R first.")
 }
 
 series = read_csv(series_path, show_col_types = FALSE)
@@ -29,7 +29,7 @@ required_series = c(
   "minimum_count_p", "candidate_before_count_screen",
   "rejected_by_count_screen", "is_significant")
 if (!all(required_series %in% names(series))) {
-  stop("The source-series audit lacks event-detection columns; rerun stage 12.")
+  stop("The source-series audit lacks event-detection columns; rerun stage 02.")
 }
 
 lake_order = c("Sunrise Lake", "Shadow Lake", "Little Sunrise Lake",

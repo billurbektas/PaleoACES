@@ -358,7 +358,7 @@ cat('PASS: per response, 120 coefficients, 60 contrasts, 30 AIC comparisons, 40 
 # corrected observation; drawing the figure never fits another model.
 previous_render_option=getOption('paleoaces.render_figures')
 options(paleoaces.render_figures=FALSE)
-e=new.env();sys.source(here('R/stages/10b_tracking_manuscript_figure.R'),envir=e)
+e=new.env();sys.source(here('R/stages/14_tracking_manuscript_figure.R'),envir=e)
 options(paleoaces.render_figures=previous_render_option)
 stopifnot(nrow(e$means)==20L,nrow(e$contrasts)==10L,nrow(e$d)==1132L,
   all(e$means$model_type=='MA1'),all(e$contrasts$model_type=='MA1'),

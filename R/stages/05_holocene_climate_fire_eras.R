@@ -1,5 +1,5 @@
 # =============================================================================
-# 13_holocene_climate_fire_eras.R
+# 05_holocene_climate_fire_eras.R
 # =============================================================================
 # Literature-blind unified Holocene climate-era and high-fire-period analysis.
 # Climate and fire are classified independently. This stage freezes the era
@@ -23,7 +23,7 @@ required = c(CLIMATE_INPUT, CLIMATE_SCALING, FIRE_EVENTS, FIRE_SERIES,
              FIRE_SETTINGS)
 if (!all(file.exists(required))) stop("Missing unified-era input(s): ",
   paste(required[!file.exists(required)], collapse = ", "),
-  ". Run CCA reference and R/stages/12_walsh_fire_reproduction.R first.")
+  ". Run CCA reference and R/stages/02_walsh_fire_reproduction.R first.")
 
 # The interpretive stage is read-only with respect to the fitted analysis,
 # climate caches, chronology products, and active paleo-fire assignments.

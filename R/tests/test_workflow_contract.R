@@ -20,19 +20,34 @@ position = function(path) {
   hit
 }
 
-# Calibration reference precedes classifications, then canonical metrics and examples.
+# Analysis numbers are consecutive in execution order; 000 remains preparation.
+stage_calls = calls[startsWith(calls, "R/stages/")]
+numbered_calls = stage_calls[!startsWith(basename(stage_calls), "000_")]
+stage_numbers = as.integer(sub("_.*", "", basename(numbered_calls)))
+stopifnot(identical(stage_numbers, seq_len(15L)),
+  all(file.exists(here(stage_calls))))
+standalone = here("R/stages/16_cca_transition_contributions.R")
+stopifnot(file.exists(standalone), !standalone %in% here(calls))
+
+# Source fire reconstruction precedes calibration; classifications use its SDs.
 stopifnot(
-  position("R/stages/05_cca_model.R") < position("R/stages/13_holocene_climate_fire_eras.R"),
-  position("R/stages/000_occurrence_data_consolidate.R") + 1L == position("R/stages/05_cca_model.R"),
-  position("R/stages/12_walsh_fire_reproduction.R") < position("R/stages/13_holocene_climate_fire_eras.R"),
-  position("R/stages/13_holocene_climate_fire_eras.R") < position("R/stages/09_tracking_metrics.R"),
-  position("R/stages/13_holocene_climate_fire_eras.R") < position("R/stages/05a_cca_figure.R"),
-  position("R/stages/09_tracking_metrics.R") < position("R/stages/09b_tracking_model_data.R"),
-  position("R/stages/09b_tracking_model_data.R") < position("R/stages/10_tracking_era_models.R"),
-  position("R/stages/10_tracking_era_models.R") < position("R/stages/10a_tracking_lake_sensitivity.R"),
-  position("R/stages/10_tracking_era_models.R") < position("R/stages/10b_tracking_manuscript_figure.R"),
-  position("R/stages/09b_tracking_model_data.R") < position("R/stages/10c_tracking_predictor_models.R"),
-  position("R/stages/09_tracking_metrics.R") < position("R/stages/09a_tracking_example_and_visualizations.R"))
+  position("R/stages/000_FIRE_cleaning.R") < position("R/stages/02_walsh_fire_reproduction.R"),
+  position("R/stages/000_PALEO_c_fire.R") < position("R/stages/02_walsh_fire_reproduction.R"),
+  position("R/stages/02_walsh_fire_reproduction.R") < position("R/stages/03_fire_event_detection_worked_example.R"),
+  position("R/stages/03_fire_event_detection_worked_example.R") < position("R/stages/000_occurrence_data_consolidate.R"),
+  position("R/stages/04_cca_model.R") < position("R/stages/05_holocene_climate_fire_eras.R"),
+  position("R/stages/000_occurrence_data_consolidate.R") + 1L == position("R/stages/04_cca_model.R"),
+  position("R/stages/02_walsh_fire_reproduction.R") < position("R/stages/05_holocene_climate_fire_eras.R"),
+  position("R/stages/05_holocene_climate_fire_eras.R") < position("R/stages/08_tracking_metrics.R"),
+  position("R/stages/05_holocene_climate_fire_eras.R") < position("R/stages/07_cca_figure.R"),
+  position("R/stages/05_holocene_climate_fire_eras.R") < position("R/stages/06_fire_method_worked_example.R"),
+  position("R/stages/08_tracking_metrics.R") < position("R/stages/10_climate_change_figure.R"),
+  position("R/stages/08_tracking_metrics.R") < position("R/stages/11_tracking_model_data.R"),
+  position("R/stages/11_tracking_model_data.R") < position("R/stages/12_tracking_era_models.R"),
+  position("R/stages/12_tracking_era_models.R") < position("R/stages/13_tracking_lake_sensitivity.R"),
+  position("R/stages/12_tracking_era_models.R") < position("R/stages/14_tracking_manuscript_figure.R"),
+  position("R/stages/11_tracking_model_data.R") < position("R/stages/15_tracking_predictor_models.R"),
+  position("R/stages/08_tracking_metrics.R") < position("R/stages/09_tracking_example_and_visualizations.R"))
 
 # Native sampling/fire support is produced before CCA and shown directly before it.
 registry = jsonlite::fromJSON(here("docs/report/artifacts.json"))$diagnostics
@@ -42,7 +57,15 @@ stopifnot(nrow(sampling) == 1L,
   sampling$section == "sampling_support")
 template = readLines(here("docs/report/analysis_review_template.md"), warn = FALSE)
 stopifnot(which(template == "{{sampling_support_diagnostics}}") <
-  which(template == "## CCA calibration and geometry"))
+  which(template == "## CCA calibration and geometry"),
+  which(template == "## Accepted fire events") <
+    which(template == "## CCA calibration and geometry"),
+  which(template == "## CCA calibration and geometry") <
+    which(template == "## Climate eras and high-fire periods"),
+  which(template == "## Climate eras and high-fire periods") <
+    which(template == "## Community trajectories"),
+  which(template == "## Community trajectories") <
+    which(template == "## Tracking calculations"))
 
 # --skip-figures is a render option, not an analysis-stage branch.
 stopifnot(
@@ -51,19 +74,19 @@ stopifnot(
   !grepl("if (!skip_figures)", workflow, fixed = TRUE))
 
 analysis_stages = c(
-  "R/stages/09_tracking_metrics.R",
-  "R/stages/09b_tracking_model_data.R",
-  "R/stages/10_tracking_era_models.R",
-  "R/stages/10a_tracking_lake_sensitivity.R",
-  "R/stages/10b_tracking_manuscript_figure.R",
-  "R/stages/10c_tracking_predictor_models.R",
-  "R/stages/12_walsh_fire_reproduction.R",
-  "R/stages/13_holocene_climate_fire_eras.R",
-  "R/stages/05a_cca_figure.R",
-  "R/stages/09a_tracking_example_and_visualizations.R",
-  "R/stages/12a_fire_event_detection_worked_example.R",
-  "R/stages/13a_climate_change_figure.R",
-  "R/stages/13b_fire_method_worked_example.R")
+  "R/stages/08_tracking_metrics.R",
+  "R/stages/11_tracking_model_data.R",
+  "R/stages/12_tracking_era_models.R",
+  "R/stages/13_tracking_lake_sensitivity.R",
+  "R/stages/14_tracking_manuscript_figure.R",
+  "R/stages/15_tracking_predictor_models.R",
+  "R/stages/02_walsh_fire_reproduction.R",
+  "R/stages/05_holocene_climate_fire_eras.R",
+  "R/stages/07_cca_figure.R",
+  "R/stages/09_tracking_example_and_visualizations.R",
+  "R/stages/03_fire_event_detection_worked_example.R",
+  "R/stages/10_climate_change_figure.R",
+  "R/stages/06_fire_method_worked_example.R")
 stopifnot(all(analysis_stages %in% calls))
 
 automatic_gates = c(
@@ -80,15 +103,15 @@ stopifnot(all(automatic_gates %in% calls))
 render_aware = c(
   "R/stages/000_MORA_cleaning.R", "R/stages/000_NOCA_cleaning.R",
   "R/stages/000_occurrence_data_consolidate.R", "R/stages/01_get_fire_info.R",
-  "R/stages/000_PALEO_a_agedepth.R", "R/stages/05a_cca_figure.R",
-  "R/stages/09a_tracking_example_and_visualizations.R",
-  "R/stages/10_tracking_era_models.R",
-  "R/stages/10a_tracking_lake_sensitivity.R",
-  "R/stages/10b_tracking_manuscript_figure.R",
-  "R/stages/10c_tracking_predictor_models.R",
-  "R/stages/12_walsh_fire_reproduction.R", "R/stages/12a_fire_event_detection_worked_example.R",
-  "R/stages/13_holocene_climate_fire_eras.R", "R/stages/13a_climate_change_figure.R",
-  "R/stages/13b_fire_method_worked_example.R")
+  "R/stages/000_PALEO_a_agedepth.R", "R/stages/07_cca_figure.R",
+  "R/stages/09_tracking_example_and_visualizations.R",
+  "R/stages/12_tracking_era_models.R",
+  "R/stages/13_tracking_lake_sensitivity.R",
+  "R/stages/14_tracking_manuscript_figure.R",
+  "R/stages/15_tracking_predictor_models.R",
+  "R/stages/02_walsh_fire_reproduction.R", "R/stages/03_fire_event_detection_worked_example.R",
+  "R/stages/05_holocene_climate_fire_eras.R", "R/stages/10_climate_change_figure.R",
+  "R/stages/06_fire_method_worked_example.R")
 for (path in render_aware) {
   code = paste(readLines(here(path), warn = FALSE, encoding = "UTF-8"), collapse = "\n")
   if (!grepl("paleoaces.render_figures", code, fixed = TRUE))

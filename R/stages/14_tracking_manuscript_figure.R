@@ -1,6 +1,6 @@
 # Manuscript Figure 4 and separate corrected-lag contrasts at offset 0.
 # Read maintained model input/results; no refitting, transforms or geometry calculations.
-# Rscript R/stages/10b_tracking_manuscript_figure.R
+# Rscript R/stages/14_tracking_manuscript_figure.R
 suppressPackageStartupMessages({library(here);library(tidyverse);library(patchwork)})
 source(here('R/helpers/tracking_data.R'),local=TRUE)
 source(here('R/helpers/tracking_model_data.R'),local=TRUE)
@@ -106,7 +106,7 @@ contrast_plot=function(response_metrics,bounds,correction_labels=FALSE) {
   p+theme(plot.margin=margin(10,14,if(correction_labels) 58 else 86,14))
 }
 # Each pair is an actual transition/plot; corrected medians were calculated from
-# draw-level geometry by stage 09b, never as a difference between two medians.
+# draw-level geometry by stage 11, never as a difference between two medians.
 pair_keys=c('era','site','lake','plot_id','offset','age_hi','age_lo')
 pairs=combined |> filter(era=='Anthropocene' | offset==0,
     metric %in% c('lag_rate_per_century',tracking_corrected_response_names())) |>

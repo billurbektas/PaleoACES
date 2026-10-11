@@ -5,6 +5,12 @@ source(here("R/helpers/documentation_config.R"), local = TRUE)
 failures = character(0)
 fail = function(x) failures <<- c(failures, x)
 
+# Standalone figure-caption documents are retired and must not be regenerated.
+retired_captions = here("docs", paste0("FIGURE_CAPTIONS.", c("md", "html")))
+if (any(file.exists(retired_captions))) fail("retired figure-caption documents returned")
+if (any(grepl("FIGURE_CAPTIONS", PALEOACES_DOCS, fixed = TRUE)))
+  fail("retired figure-caption documents are registered for rendering")
+
 extract_links = function(text) {
   matches = str_match_all(text, "\\[[^]]+\\]\\(([^)]+)\\)")
   unique(unlist(lapply(matches, function(x) if (nrow(x)) x[, 2] else character())))

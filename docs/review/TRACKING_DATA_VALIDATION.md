@@ -23,8 +23,8 @@ script/outputs while preserving the source calculations and descriptive plots.
 | `cca_tracking_era_by_offset.csv` | 7,920 | 28 | Actual Holocene lake × offset × transition × response, or modern plot × response, with dates, elapsed times, original predictors/support and WGS84 coordinates |
 
 These outputs are written under `output/`. The [machine-readable schema](../assets/analysis/tables/tracking_schema.csv)
-defines all 342 columns across the eight contracts. Stage 09b assembles the combined
-input after stage 09 calculates the canonical records. The [output register](../OUTPUTS.md)
+defines all 342 columns across the eight contracts. Stage 11 assembles the combined
+input after stage 08 calculates the canonical records. The [output register](../OUTPUTS.md)
 documents keys, units and suffix conventions. The [analysis review](../ANALYSIS_REVIEW.md)
 contains focused excerpts of the maintained metric calculations and portable copies
 of the compact inputs, uncertainty, modern calculations and support tables.
@@ -209,8 +209,8 @@ example now reads a Panther Potholes realization from the canonical lake table.
 ## Raw physical climate-rate GLS extension (2026-10-09)
 
 The same maintained model stages now include `standardized_climate_change_rate`
-on its original scale. Stage 10 fits ten offsets under AR1, MA1 and independent
-residuals; stage 10a fits four offset-0 lake sensitivities under AR1 and MA1.
+on its original scale. Stage 12 fits ten offsets under AR1, MA1 and independent
+residuals; stage 13 fits four offset-0 lake sensitivities under AR1 and MA1.
 All 38 climate fits converge without warnings. MA1 results use the same figure
 layouts and covariance-based group means and era contrasts as the two tracking
 responses, with calibration SD per century replacing CCA units per century.
@@ -259,7 +259,7 @@ attribution or replace the retired figures.
 
 This records the earlier display, replaced by the 2026-10-10 extension below.
 
-Stage `R/stages/10b_tracking_manuscript_figure.R` reads the maintained combined
+Stage `R/stages/14_tracking_manuscript_figure.R` reads the maintained combined
 input and existing MA1 group-mean/contrast tables. The figure contains 1,911
 untransformed input values across the three responses, 12 fitted means and
 six contrasts. For each response, MORA has 20 Holocene transitions and 330

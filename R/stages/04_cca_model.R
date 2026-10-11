@@ -1,5 +1,5 @@
 # =============================================================================
-# 05_cca_model.R - the pooled CCA and everything derived from it. NO FIGURES.
+# 04_cca_model.R - the pooled CCA and everything derived from it. NO FIGURES.
 # =============================================================================
 # This file defines the ordination without rendering figures and is sourced by
 # the downstream analysis and figure stages.
@@ -31,7 +31,7 @@ source(here("R/helpers/config.R"), local = TRUE)
 # calling script can set any of them before source()-ing to run a variant
 # without editing this file:
 #
-#   count.thr = 10; source(here("R/stages/05_cca_model.R"))
+#   count.thr = 10; source(here("R/stages/04_cca_model.R"))
 #
 # Taxus brevifolia and Acer circinatum are removed by the documented understory
 # rule in R/stages/000_occurrence_data_consolidate.R. The former manual exclusion

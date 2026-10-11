@@ -40,7 +40,7 @@ run_script = function(path, label = basename(path)) {
   env = new.env(parent = globalenv())
   sys.source(here(path), envir = env)
   if (build_report) {
-    if (path == "R/stages/05_cca_model.R") report_export_cca(env)
+    if (path == "R/stages/04_cca_model.R") report_export_cca(env)
     report_state <<- report_record(report_state, path, started)
   }
   invisible(env)
@@ -77,39 +77,43 @@ if (offline && !build_report) {
 }
 run_script("R/stages/000_PALEO_e_climate.R")
 
-# 4. Consolidation, native 100-year sampling/fire diagnostic, then CCA.
-# The diagnostic uses cached ages and upstream tapas catalogs, not the CCA fit.
+# 4. Accepted fire events and their independent software/detection audits.
+# These depend on prepared charcoal records, not on the fitted CCA.
+run_script("R/stages/02_walsh_fire_reproduction.R")
+run_script("R/stages/03_fire_event_detection_worked_example.R")
+
+# 5. Consolidation, native 100-year sampling/fire diagnostic, then CCA.
+# Keep 000 for preparation; numbered analysis stages follow execution order.
 run_script("R/stages/000_occurrence_data_consolidate.R")
-run_script("R/stages/05_cca_model.R")
+run_script("R/stages/04_cca_model.R")
 
-# 5. Analysis products. These always run, including with --skip-figures.
+# 6. Classifications need fixed calibration SDs and accepted fire events.
+# Freeze these before CCA trajectories or tracking use their boundaries.
+run_script("R/stages/05_holocene_climate_fire_eras.R")
+run_script("R/stages/06_fire_method_worked_example.R")
+run_script("R/stages/07_cca_figure.R")
 
-# Assemble source-specific accepted fire events, then independently build the
-# literature-blind unified climate-era/fire classification. Stage 13 creates the
-# frozen era grid required by the main CCA trajectory render.
-run_script("R/stages/12_walsh_fire_reproduction.R")
-run_script("R/stages/13_holocene_climate_fire_eras.R")
-run_script("R/stages/09_tracking_metrics.R")
-run_script("R/stages/09b_tracking_model_data.R")
+# 7. Calculate tracking once, then derive examples, displays and model input.
+# All stages run under --skip-figures; only persistent PDF/PNG writes stop.
+run_script("R/stages/08_tracking_metrics.R")
+run_script("R/stages/09_tracking_example_and_visualizations.R")
+run_script("R/stages/10_climate_change_figure.R")
+run_script("R/stages/11_tracking_model_data.R")
+
+# 8. Model comparisons and downstream manuscript/predictor products.
 # Compare covariance candidates, then present the author-selected MA1; inference
 # and model development remain exploratory. Lag-change rate, observed turnover
 # and untransformed physical climate-change rate run in the same stages,
 # together with pace- and direction-corrected lag-change rates.
 # Lake reporting uses offset 0 only.
-run_script("R/stages/10_tracking_era_models.R")
-run_script("R/stages/10a_tracking_lake_sensitivity.R")
-run_script("R/stages/10b_tracking_manuscript_figure.R")
+run_script("R/stages/12_tracking_era_models.R")
+run_script("R/stages/13_tracking_lake_sensitivity.R")
+run_script("R/stages/14_tracking_manuscript_figure.R")
 # Separate within-era predictor models, preserving the era-comparison products.
-run_script("R/stages/10c_tracking_predictor_models.R")
+run_script("R/stages/15_tracking_predictor_models.R")
 
-# Derived audit/visualization data. Mixed scripts still write their CSV audits
-# under --skip-figures; only their persistent PDF/PNG writes are suppressed.
-# Stage 09a reuses stage 13's frozen climate-era catalog in both tracking figures.
-run_script("R/stages/05a_cca_figure.R")
-run_script("R/stages/09a_tracking_example_and_visualizations.R")
-run_script("R/stages/12a_fire_event_detection_worked_example.R")
-run_script("R/stages/13a_climate_change_figure.R")
-run_script("R/stages/13b_fire_method_worked_example.R")
+# Stage 16 is the standalone contribution analysis, run explicitly when needed.
+# Its products remain separate from this workflow.
 
 # Reporting-only diagnostics run in the same isolated script environments.
 if (build_report) {
@@ -124,7 +128,7 @@ if (build_report) {
     paths = c("plot/test_figures/fig_bacon_agedepth_slump.pdf", "plot/test_figures/fig_bacon_pb210_sensitivity.pdf"))
 }
 
-# 6. Fast, offline, load-bearing regression gates
+# 9. Fast, offline, load-bearing regression gates
 if (!skip_tests) {
   run_script("R/tests/test_check_vegetation.R")
   run_script("R/tests/test_NOCA_tree_corrections.R")

@@ -6,7 +6,7 @@
 #   reads   output/MORA_occ.csv   (000_MORA_cleaning.R)
 #           output/NOCA_occ.csv   (000_NOCA_cleaning.R)
 #           output/paleo_occ.csv  (000_PALEO_b_vegetation.R)
-#   writes  output/occ_consolidated.csv   <- the ONLY occurrence input to 05_cca_model.R
+#   writes  output/occ_consolidated.csv   <- the ONLY occurrence input to 04_cca_model.R
 #           diagnostic PDFs, including native 100-year sampling/fire counts
 #
 # Nothing upstream is re-run. The three cleaning scripts keep producing exactly
@@ -154,7 +154,7 @@ NON_TAXA = c("unknown", "Abies sp.", "Unknown tree.")
 # exclusion was not justified by identification evidence or a general selection
 # rule. Site concentration, absence from the Holocene records and an extreme
 # ordination position are not exclusion criteria. It now follows the same >=20
-# species-selection rule as other tree taxa in 05_cca_model.R.
+# species-selection rule as other tree taxa in 04_cca_model.R.
 # The former rationale and the author's reversal are recorded in
 # docs/review/README_occurrence_consolidation.md and SCIENTIFIC_DECISIONS.md.
 
@@ -285,9 +285,9 @@ cat("\nWrote output/occ_consolidated.csv:", nrow(occ), "rows,",
 #
 # NOTHING IS FILTERED OR DECIDED HERE. This block reports the RAW EVIDENCE - how
 # many plots each species occupies in each site x period. The threshold itself
-# lives at the top of 05_cca_model.R as `count.thr`, so it can be swept:
+# lives at the top of 04_cca_model.R as `count.thr`, so it can be swept:
 #
-#   for (thr in c(10, 15, 20, 25, 30)) { count.thr = thr; source("R/stages/05_cca_model.R") }
+#   for (thr in c(10, 15, 20, 25, 30)) { count.thr = thr; source("R/stages/04_cca_model.R") }
 #
 # The rule there: a species is DROPPED only if it is below the threshold in EVERY
 # site x period group - so a species common in one group survives even if it is
@@ -306,7 +306,7 @@ counts = counts %>%
 
 cat("\n=== plots (or paleo samples) per species, by site x period ===\n")
 cat("    max_group = the largest count in any one group. A candidate count.thr\n",
-    "    is compared against THIS, because 05_cca_model.R drops a species only\n",
+    "    is compared against THIS, because 04_cca_model.R drops a species only\n",
     "    if it is below the cut-off in every group. Set the threshold there.\n", sep = "")
 print(as.data.frame(counts), row.names = FALSE)
 
@@ -490,7 +490,7 @@ if (VERIFY_AGAINST_RAW) {
 # or a replacement for the normalized 1,000-year fire predictor. Each prepared
 # macrofossil ID enters once at its median age across the existing Bacon draws.
 # Counts include samples with no retained tree taxa; no fitted CCA is required.
-# Fire inputs are the upstream all-tapas catalogs assembled unchanged by stage 12.
+# Fire inputs are the upstream all-tapas catalogs assembled unchanged by stage 02.
 holocene_sampling_fire_counts = function(draws, climate, events, series, n_draws) {
   stopifnot(length(n_draws) == 1L, is.finite(n_draws), n_draws > 0,
     n_draws == as.integer(n_draws), nrow(draws) > 0L,

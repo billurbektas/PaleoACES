@@ -73,7 +73,7 @@ Figures 2 and 3 are recalculated. Chronologies, climate inputs and fire settings
 unchanged. Climate-explained inertia changes from 15.69% to 15.33% after this
 restriction; current axes and tracking summaries are in the analysis review.
 
-The species-frequency exclusion remains in `R/stages/05_cca_model.R`. Its
+The species-frequency exclusion remains in `R/stages/04_cca_model.R`. Its
 eligibility section reports all cases before fitting or projection, using
 the cleaned occurrences, consolidated occurrences, selected taxa and valid
 climate constraints. All-zero retained-taxon rows have no observed WA position;
@@ -366,7 +366,7 @@ uncertainty records remain available. No matching coverage across lakes is requi
 
 Both maintained tracking visualizations annotate every Holocene row with the
 regional climate-era bands already used in Figure 2. They read the frozen
-stage-13 era catalog and climate-change subphases: darker gray denotes CC,
+stage-05 era catalog and climate-change subphases: darker gray denotes CC,
 lighter gray denotes relative stability, and CC1a–CC1c retain their existing
 internal boundaries. These shared regional annotations do not classify lakes
 individually or enter the model tables as predictors. The plotting stage
@@ -394,7 +394,7 @@ tracking calculations and fitted models unchanged. Counts are not interpolated.
 
 ### Combined transition input and provisional offset models
 
-Stage 09b assembles `cca_tracking_era_by_offset.csv` from the canonical lake
+Stage 11 assembles `cca_tracking_era_by_offset.csv` from the canonical lake
 transition and modern plot tables and detailed calculation records. Its [28-column contract](OUTPUTS.md#canonical-tracking-schemas)
 retains one response per actual observation, both elapsed times, known survey
 and climate dates, physical climate rate, original fire exposure, lake support
@@ -407,7 +407,7 @@ The 16-column reporting-grid comparison and its model trials are retired.
 Descriptive tracking plots still reconstruct their aligned predictor medians
 from source transitions using the existing response-specific reporting rule.
 
-Stage 10 runs the same provisional Gaussian GLS separately at all ten offsets
+Stage 12 runs the same provisional Gaussian GLS separately at all ten offsets
 for observed lag-change rate, observed community turnover, raw physical
 climate-change rate and the two corrected lag-change rates. It fits `estimate ~ era * site` with REML and era/site
 residual variances, trying AR1, MA1 and independent residuals. One combined coefficient
@@ -459,7 +459,7 @@ Q-Q and Holocene lag products for the selected MA1 covariance. Lag products matc
 actual time gaps, exclude modern singleton series, and report pair counts;
 they are descriptive diagnostics without formal significance tests.
 
-Stage 10a maintains the offset-0 lake sensitivity authorized on 2026-10-09.
+Stage 13 maintains the offset-0 lake sensitivity authorized on 2026-10-09.
 Each Holocene lake is compared separately with its own park's modern plot
 pairs with `estimate ~ era`, REML and era-specific residual
 variances. Its figures show MA1 only: four fits, eight coefficients and four
@@ -475,7 +475,7 @@ and no comparison of AICs across different lake inputs. MA(2) is not maintained.
 
 The GLS models support estimated marginal means through `emmeans`, using
 Satterthwaite degrees of freedom. Within-park era means and their contrasts
-are already included in stage 10's TXT. The contrast is Anthropocene mean minus
+are already included in stage 12's TXT. The contrast is Anthropocene mean minus
 Holocene mean; its SE uses the fitted covariance of those means. Group-mean
 and contrast intervals are model-based intervals, not chronology quantiles.
 The author requested integration of the group-mean display on 2026-10-09.
@@ -492,7 +492,7 @@ Offsets remain sensitivity realizations and are not averaged into a new model.
 
 **Observed-turnover exercise (2026-10-09).** The author requested the same
 model exercise for `observed_turnover_rate`: observed CCA movement magnitude
-per century using vegetation elapsed time. Stages 10/10a include both tracking
+per century using vegetation elapsed time. Stages 12/13 include both tracking
 responses by default, preserving separate output folders and response-specific
 finite-value selection. Turnover gets the same three-candidate covariance
 comparison, MA1 group means/coefficients/contrasts/residuals, and offset-0 lake
@@ -510,7 +510,7 @@ turnover distribution and covariance choice remain subjects for model developmen
 
 **Untransformed climate-rate exercise (2026-10-09).** The author requested the
 same offset models and outputs for `standardized_climate_change_rate`, explicitly
-without logging. Stages 10/10a now run this third response by default. The response
+without logging. Stages 12/13 now run this third response by default. The response
 is the existing standardized physical climate-change rate in calibration SD per
 century; it is not predicted CCA displacement. One copy of each actual transition
 or modern plot is selected from the repeated fixed fields in the combined CSV.
@@ -539,7 +539,7 @@ exercise for pace- and direction-corrected lag changes. The new responses are
 `pace_corrected_lag_rate_per_century` and
 `direction_corrected_lag_rate_per_century`: `(corrected final lag - initial lag)`
 multiplied by `100 / climate_dt_years`. They retain the original counterfactual
-geometry, tolerance and elapsed time. Stage 09b derives them from the detailed
+geometry, tolerance and elapsed time. Stage 11 derives them from the detailed
 calculation records within each chronology draw, then takes finite-draw medians.
 Subtracting an effect median from an observed-rate median is not equivalent.
 The canonical 23/21-column tables and seven-response uncertainty/reporting
@@ -556,7 +556,7 @@ for 142 stationary modern plots (76 MORA, 66 NOCA); its model uses 254 MORA and
 observations. Original time gaps, lake identities and finite-draw medians remain.
 The same scale conventions and model limitations apply to all five responses.
 
-Stage 10b shows three offset-0 MA1 era contrasts in the first row of Figure 4:
+Stage 14 shows three offset-0 MA1 era contrasts in the first row of Figure 4:
 standardized climate change per century, community turnover rate and observed
 lag change. MORA and NOCA appear side by side, with blue/orange dots, error bars
 and numeric annotations. Response labels have no additional color. Climate and
@@ -603,7 +603,7 @@ lake random effect, power analysis or contribution attribution is selected here.
 
 ## Unified 1,000-year climate eras
 
-- `R/stages/13_holocene_climate_fire_eras.R` is the sole Holocene era authority. It
+- `R/stages/05_holocene_climate_fire_eras.R` is the sole Holocene era authority. It
   derives adjacent complete 1,000-year changes from the four native pond
   trajectories and uses ten 100-year bin phases. Fixed climate windows contain
   no Bacon chronology draws; phase spread is placement sensitivity, not
@@ -680,14 +680,14 @@ lake random effect, power analysis or contribution attribution is selected here.
   accepted totals are 17, 14, 13, and 66, respectively. A 12.5-year NOCA
   interpolation yields 72 events and is retained as publication-resolution
   sensitivity, not as the primary chronology grid.
-- `R/stages/12_walsh_fire_reproduction.R` additionally runs official CharAnalysis R
+- `R/stages/02_walsh_fire_reproduction.R` additionally runs official CharAnalysis R
   2.0.3 against the three Walsh MORA workbooks. This is a software/publication
   audit only; it is isolated from the authoritative all-`tapas` catalog and
   hash-checks `fire_walsh.csv` and `paleo_fire.csv` before/after.
 - Official R 2.0.3 yields 15 Sunrise, 16 Shadow, and 14 Little Sunrise episodes.
   Walsh reports 24, 18, and 16. These discrepancies are an explicit software/
   implementation audit; thresholds were not modified to force agreement.
-- `R/stages/12a_fire_event_detection_worked_example.R` separates individual-event
+- `R/stages/03_fire_event_detection_worked_example.R` separates individual-event
   detection from the later high-fire-period rule. Its three-page figure shows the
   common chain—interpolation, robust LOWESS background, positive residual,
   local Gaussian-mixture threshold, 75-year count screen, accepted event—for
@@ -717,7 +717,7 @@ lake random effect, power analysis or contribution attribution is selected here.
 - Within-core peak-strength percentiles and standardized background CHAR are
   corroborating markers only. They cannot independently create a high-fire
   period, and raw charcoal magnitudes are never compared between sites.
-- `R/stages/13b_fire_method_worked_example.R` exposes the complete arithmetic at
+- `R/stages/06_fire_method_worked_example.R` exposes the complete arithmetic at
   2,300 cal BP. The centered `[1,800, 2,800)` window contains 3 Little Sunrise,
   2 Shadow, 3 Sunrise, and 7 Panther Potholes accepted events. Core-normalized
   frequencies are 1.000, 0.667, 1.000, and 0.636; consequently the equal-core
@@ -744,7 +744,7 @@ lake random effect, power analysis or contribution attribution is selected here.
   and the duplicate era-centroid compatibility render are not active displays.
 ### Within-era lag predictor models (2026-10-11)
 
-The author requested a separate stage 10c for observed, pace-corrected and
+The author requested a separate stage 15 for observed, pace-corrected and
 direction-corrected lag-change rates. Each Holocene offset uses
 `site + climate_rate + fire_activity`, REML, MA(1) within lake and separate
 park residual variances. Responses retain their original CCA distance per
@@ -784,7 +784,7 @@ Binary modern burning is not treated as comparable to Holocene charcoal activity
 Different fixed-effect specifications are not compared by REML AIC.
 
 The author chose independent modern residuals first, with a spatial diagnostic.
-Stage 10c checks normalized residual Moran I separately within each park using
+Stage 15 checks normalized residual Moran I separately within each park using
 UTM 10N coordinates, symmetric row-standardized eight-neighbor graphs and 999
 fixed-seed permutations. Several fits show positive spatial residual association,
 including observed lag in both parks. The nominal permutation tests are

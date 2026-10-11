@@ -1,7 +1,7 @@
 # =============================================================================
 # climate_variables.R - THE definition of the climate variables. Used by BOTH arms.
 # =============================================================================
-# Sourced by 000_PALEO_e_climate.R (Holocene) and 05_cca_model.R (Anthropocene).
+# Sourced by 000_PALEO_e_climate.R (Holocene) and 04_cca_model.R (Anthropocene).
 # If the two arms ever define a season differently - DJF vs JF, tasmin vs the
 # tasmin/tasmax mean - then MWT means two different things, the CCA is calibrated
 # on one and projected with the other, and the resulting displacement is

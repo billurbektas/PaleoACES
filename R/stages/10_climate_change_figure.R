@@ -1,5 +1,5 @@
 # =============================================================================
-# 13a_climate_change_figure.R
+# 10_climate_change_figure.R
 # =============================================================================
 # Two-panel display of standardized Holocene and Anthropocene climate change.
 # This figure reads authoritative outputs and does not recalculate eras.
@@ -20,7 +20,7 @@ required = c(
   anthropocene = here("output/cca_tracking_anthropocene_plot_calculations.csv"),
   regional_phases = here("output/holocene_era_climate_regional_phase_changes.csv"))
 if (!all(file.exists(required))) stop(
-  "Run R/stages/09_tracking_metrics.R and R/stages/13_holocene_climate_fire_eras.R first.")
+  "Run R/stages/08_tracking_metrics.R and R/stages/05_holocene_climate_fire_eras.R first.")
 
 climate = read_csv(required[["climate"]], show_col_types = FALSE)
 eras = read_csv(required[["eras"]], show_col_types = FALSE)

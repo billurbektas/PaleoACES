@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: 256aed358089b405f2efd2f23df76ace -->
+<!-- paleoaces-source-md5: 8bd3e67bcb429ce74c964c1331304998 -->
 
 <html>
 
@@ -1626,7 +1626,7 @@ marks inadequate charcoal coverage</td>
 <code>plot/test_figures/fig_cca_transition_climate_boxplots.pdf</code></td>
 <td>Standalone fixed-CCA transition contributions: raw signed parallel
 displacements, species/climate variables on the y-axis, with
-Holocene/Anthropocene boxes by park; produced by stage 11 outside the
+Holocene/Anthropocene boxes by park; produced by stage 16 outside the
 main workflow</td>
 </tr>
 <tr class="odd">
@@ -1812,10 +1812,10 @@ Holocene values remain unchanged in the mixed tables.</p>
 </div>
 <div id="canonical-tracking-schemas" class="section level2">
 <h2>Canonical tracking schemas</h2>
-<p>Stage <code>R/stages/09_tracking_metrics.R</code> calculates lake and
+<p>Stage <code>R/stages/08_tracking_metrics.R</code> calculates lake and
 plot records once, then separates the seven source, uncertainty,
 descriptive and audit tables. Stage
-<code>R/stages/09b_tracking_model_data.R</code> assembles one combined
+<code>R/stages/11_tracking_model_data.R</code> assembles one combined
 transition input from these calculations, deriving the two corrected
 lag-change rates within each draw before transition medians. The
 complete ordered column dictionary is
@@ -1973,7 +1973,7 @@ counterfactuals do not remove other responses.
 quantiles; <code>phase_min,phase_max</code> bound the offset medians.
 Support fields retain observed offset counts and minimum draw presence.
 Neither interval is an inferential confidence interval.</p>
-<p>Stage 09b exports <code>cca_tracking_era_by_offset.csv</code> with
+<p>Stage 11 exports <code>cca_tracking_era_by_offset.csv</code> with
 exactly:</p>
 <pre class="text"><code>era, site, lake, plot_id, offset, age_hi, age_lo, interval_mid_cal_bp,
 vegetation_t1_year, vegetation_t2_year, climate_t1_midyear, climate_t2_midyear,
@@ -2002,7 +2002,7 @@ survey calendar year or binary burned assignment. WGS84 coordinates
 retain original identities and normalized joins; missing or ambiguous
 locations stop export. The long layout does not add ecological
 replicates. Alternative widths receive <code>_Nyr</code> suffixes.</p>
-<p>Stage <code>R/stages/10_tracking_era_models.R</code> reads only the
+<p>Stage <code>R/stages/12_tracking_era_models.R</code> reads only the
 combined CSV and fits observed/pace-corrected/direction-corrected
 lag-change rates, observed turnover and untransformed physical
 climate-change rate separately for all ten offsets under AR1, MA1 and no
@@ -2119,7 +2119,7 @@ fixed effects are added to this initial model.</p>
 per park, using the offset-0 fit’s interval. All 40 fitted group means
 and their individual intervals remain in each response’s CSV; Holocene
 means and contrasts remain offset-specific in the figures.</p>
-<p>Stage <code>R/stages/10a_tracking_lake_sensitivity.R</code> then runs
+<p>Stage <code>R/stages/13_tracking_lake_sensitivity.R</code> then runs
 the agreed <strong>offset-0 lake sensitivity</strong>: each of the four
 Holocene lakes versus modern pairs from its own park, under AR1 and MA1
 (eight fits per response). The park is constant within each fit, so the
@@ -2195,8 +2195,7 @@ flag. Common per-century units do not equalize Holocene and modern
 temporal averaging.</p>
 <p>The two additional model response names are
 <code>pace_corrected_lag_rate_per_century</code> and
-<code>direction_corrected_lag_rate_per_century</code>. Stage 09b
-computes
+<code>direction_corrected_lag_rate_per_century</code>. Stage 11 computes
 <code>(corrected final lag - initial lag) * 100 / climate_dt_years</code>
 from detailed records within each draw before transition medians. They
 have the same ten-offset CSV/TXT/diagnostic PDF set and offset-0 lake
@@ -2205,7 +2204,7 @@ above. Modern pace models use 465 pairs, excluding 142 undefined
 stationary directions; direction models retain all 607 pairs. The
 23/21/15-column canonical contracts and original calculation records
 remain.</p>
-<p>Stage <code>R/stages/10b_tracking_manuscript_figure.R</code> reads
+<p>Stage <code>R/stages/14_tracking_manuscript_figure.R</code> reads
 combined inputs and existing MA1 results without fitting. It validates
 20 group counts and ten mean differences. The first row of Figure 4
 shows standardized climate change per century, community turnover rate
@@ -2269,8 +2268,8 @@ available from the branch.</p>
 </div>
 <div id="tracking-example-and-descriptive-visualizations" class="section level2">
 <h2>Tracking example and descriptive visualizations</h2>
-<p><code>R/stages/09a_tracking_example_and_visualizations.R</code> reads
-the canonical stage-09 products and writes the three diagnostic PDFs
+<p><code>R/stages/09_tracking_example_and_visualizations.R</code> reads
+the canonical stage-08 products and writes the three diagnostic PDFs
 listed above. Both descriptive figures use four Holocene lake columns
 with aligned cal-BP axes and shared scales across lakes within each row.
 The rates figure has three rows: the four tracking rates together,
@@ -2279,7 +2278,7 @@ The second figure gives magnitude ratio, angle, climate rate and fire
 activity one row each. The duplicate Holocene rate-ratio display is
 omitted; both ratios remain in both model tables and can differ in the
 Anthropocene.</p>
-<p>Both figures read the established stage-13
+<p>Both figures read the established stage-05
 <code>holocene_era_catalog.csv</code> and
 <code>holocene_era_climate_change_subphases.csv</code>, the same sources
 as Figure 2. Darker gray marks climate change (CC) and lighter gray
@@ -2314,7 +2313,7 @@ ecological replicates.</p>
 </div>
 <div id="within-era-predictor-model-records" class="section level2">
 <h2>Within-era predictor model records</h2>
-<p>Producer: <a href="../R/stages/10c_tracking_predictor_models.R">R/stages/10c_tracking_predictor_models.R</a>.
+<p>Producer: <a href="../R/stages/15_tracking_predictor_models.R">R/stages/15_tracking_predictor_models.R</a>.
 The primary directory is
 <code>output/exploratory/tracking_predictor_models/</code>. These
 records are derived from the existing combined model input; canonical
@@ -2459,7 +2458,7 @@ are exact means across offsets; intervals are mixture percentiles, not
 conventional confidence intervals. Offsets are sensitivity
 reconstructions, and uncertainty is not divided by √9. Bacon chronology
 uncertainty is not propagated.
-<code>Rscript R/stages/10c_tracking_predictor_models.R --ensemble-only</code>
+<code>Rscript R/stages/15_tracking_predictor_models.R --ensemble-only</code>
 adds/reproduces only the ensemble products from matching stored fits,
 without refitting or changing existing outputs.</p>
 </div>

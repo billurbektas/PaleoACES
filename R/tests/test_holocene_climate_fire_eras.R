@@ -254,11 +254,11 @@ stopifnot(
 )
 
 # No literature input or retired state machine may influence the stage.
-source_text = paste(readLines(here("R/stages/13_holocene_climate_fire_eras.R"),
+source_text = paste(readLines(here("R/stages/05_holocene_climate_fire_eras.R"),
   warn = FALSE), collapse = "\n")
 helper_text = paste(readLines(here("R/helpers/holocene_climate_fire_era_functions.R"),
   warn = FALSE), collapse = "\n")
-figure_text = paste(readLines(here("R/stages/13a_climate_change_figure.R"),
+figure_text = paste(readLines(here("R/stages/10_climate_change_figure.R"),
   warn = FALSE), collapse = "\n")
 stopifnot(!grepl("holocene_period_candidates", source_text, fixed = TRUE),
   !grepl("forward_state", paste(source_text, helper_text), fixed = TRUE),
