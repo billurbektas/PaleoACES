@@ -23,6 +23,7 @@ position = function(path) {
 # Calibration reference precedes classifications, then canonical metrics and examples.
 stopifnot(
   position("R/stages/05_cca_model.R") < position("R/stages/13_holocene_climate_fire_eras.R"),
+  position("R/stages/000_occurrence_data_consolidate.R") + 1L == position("R/stages/05_cca_model.R"),
   position("R/stages/12_walsh_fire_reproduction.R") < position("R/stages/13_holocene_climate_fire_eras.R"),
   position("R/stages/13_holocene_climate_fire_eras.R") < position("R/stages/09_tracking_metrics.R"),
   position("R/stages/13_holocene_climate_fire_eras.R") < position("R/stages/05a_cca_figure.R"),
@@ -32,6 +33,16 @@ stopifnot(
   position("R/stages/10_tracking_era_models.R") < position("R/stages/10b_tracking_manuscript_figure.R"),
   position("R/stages/09b_tracking_model_data.R") < position("R/stages/10c_tracking_predictor_models.R"),
   position("R/stages/09_tracking_metrics.R") < position("R/stages/09a_tracking_example_and_visualizations.R"))
+
+# Native sampling/fire support is produced before CCA and shown directly before it.
+registry = jsonlite::fromJSON(here("docs/report/artifacts.json"))$diagnostics
+sampling = registry[registry$id == "holocene_sampling_fire_100yr", ]
+stopifnot(nrow(sampling) == 1L,
+  sampling$producer == "R/stages/000_occurrence_data_consolidate.R",
+  sampling$section == "sampling_support")
+template = readLines(here("docs/report/analysis_review_template.md"), warn = FALSE)
+stopifnot(which(template == "{{sampling_support_diagnostics}}") <
+  which(template == "## CCA calibration and geometry"))
 
 # --skip-figures is a render option, not an analysis-stage branch.
 stopifnot(

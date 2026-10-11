@@ -213,4 +213,42 @@ must_fail(restrict_modern_months(bounded[-1, ], w))
 must_fail(restrict_modern_months(dplyr::filter(bounded, !(year == 2008 & variable == "pr")), w))
 must_fail(restrict_modern_months(dplyr::bind_rows(bounded, bounded[1, ]), w))
 bad = bounded; bad$value[1] = Inf; must_fail(restrict_modern_months(bad, w))
-cat("Review regressions passed: geometry, time supports, seasons, invalid caches, coverage gaps, adult visits and six-year windows.\n")
+# Native 100-year sampling/fire counts: hand-specified boundaries and a regional
+# coverage gap. Extract the pure calculation without running consolidation.
+sampling_functions = parse(here("R/stages/000_occurrence_data_consolidate.R"))
+definition = Filter(function(x) is.call(x) && is.symbol(x[[1]]) &&
+  as.character(x[[1]]) %in% c("=", "<-") &&
+  identical(x[[2]], as.name("holocene_sampling_fire_counts")), as.list(sampling_functions))
+stopifnot(length(definition) == 1L)
+eval(definition[[1]])
+ages = tibble::tribble(~lake, ~plot_id, ~age,
+  "JayBath", "J1", 0, "JayBath", "J2", 100, "PantherPotholes", "P1", 200) |>
+  tidyr::crossing(draw = 1:2)
+climate = tidyr::expand_grid(lake = c("JayBath", "PantherPotholes"), cal_BP = c(50, 150, 250, 350)) |>
+  dplyr::mutate(site = if_else(lake == "JayBath", "MORA", "NOCA"))
+series = tibble::tribble(~site, ~lake, ~age_cal_yr_BP,
+  "MORA", "A", 0, "MORA", "A", 400,
+  "MORA", "B", 0, "MORA", "B", 100,
+  "MORA", "C", 200, "MORA", "C", 400,
+  "NOCA", "N", 0, "NOCA", "N", 300)
+events = tibble::tribble(~site, ~lake, ~age_cal_yr_BP,
+  "MORA", "A", 0, "MORA", "A", 100, "MORA", "A", 200, "MORA", "A", 400,
+  "MORA", "B", 100, "MORA", "C", 200, "NOCA", "N", 100, "NOCA", "N", 300)
+counts = holocene_sampling_fire_counts(ages, climate, events, series, 2L)
+equal(counts$macro$count[counts$macro$lake == "JayBath"], c(1, 1, 0, 0))
+equal(counts$macro$count[counts$macro$lake == "PantherPotholes"], c(0, 0, 1, 0))
+equal(counts$fire$count[counts$fire$site == "MORA"], c(1, NA, 2, 0))
+equal(counts$fire$count[counts$fire$site == "NOCA"], c(0, 1, 0, NA))
+equal(counts$fire$segment[counts$fire$site == "MORA"], c(0, 1, 1, 1))
+for (i in seq_len(nrow(counts$core))) {
+  cell = counts$core[i, ]
+  expected = if (cell$covered) sum(events$site == cell$site & events$lake == cell$lake &
+    events$age_cal_yr_BP >= cell$lo & events$age_cal_yr_BP < cell$hi) else NA_integer_
+  equal(cell$n_events, expected)
+}
+must_fail(holocene_sampling_fire_counts(ages[-1, ], climate, events, series, 2L))
+bad = ages; bad$age[1] = Inf
+must_fail(holocene_sampling_fire_counts(bad, climate, events, series, 2L))
+bad = events; bad$lake[1] = "unknown"
+must_fail(holocene_sampling_fire_counts(ages, climate, bad, series, 2L))
+cat("Review regressions passed: geometry, time supports, seasons, invalid caches, coverage gaps, adult visits, six-year windows and native sampling/fire counts.\n")

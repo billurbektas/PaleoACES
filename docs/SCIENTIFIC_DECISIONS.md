@@ -373,6 +373,25 @@ individually or enter the model tables as predictors. The plotting stage
 preserves response estimates and leaves dates outside the classified
 9,600–1,300 cal-BP domain unshaded. Modern boxplots retain their existing layout.
 
+### Native 100-year sampling diagnostic before CCA
+
+`R/stages/000_occurrence_data_consolidate.R` also produces
+`plot/test_figures/fig_holocene_sampling_fire_100yr.pdf`, shown immediately before
+CCA calibration in the Analysis Review. Count each prepared macrofossil ID once
+at its median age across the 100 existing cached draws, on native climate cells
+`[center − 50, center + 50)`. Separate lake lines share one sample-count scale.
+These counts include CCA-ineligible samples and do not create 100-year vegetation
+responses or propagate chronology uncertainty.
+
+Fire values in this diagnostic are raw accepted detections from fully covered
+100-year cells. MORA sums the covered regional cores, requiring at least two;
+NOCA uses Panther Potholes. Covered zero-event cells remain zero, inadequate
+coverage is missing and breaks the line. MORA totals can use two or three cores,
+and overlapping detections are not deduplicated. Different source resolutions
+also prevent interpreting these raw park totals as comparable fire intensity.
+The figure leaves normalized 1,000-year `fire_activity`, high-fire periods,
+tracking calculations and fitted models unchanged. Counts are not interpolated.
+
 ### Combined transition input and provisional offset models
 
 Stage 09b assembles `cca_tracking_era_by_offset.csv` from the canonical lake

@@ -7,6 +7,7 @@
 #           output/NOCA_occ.csv   (000_NOCA_cleaning.R)
 #           output/paleo_occ.csv  (000_PALEO_b_vegetation.R)
 #   writes  output/occ_consolidated.csv   <- the ONLY occurrence input to 05_cca_model.R
+#           diagnostic PDFs, including native 100-year sampling/fire counts
 #
 # Nothing upstream is re-run. The three cleaning scripts keep producing exactly
 # what they produce now; this script is a pure transformation on their outputs,
@@ -481,3 +482,148 @@ if (VERIFY_AGAINST_RAW) {
 
   cat("  all checks passed\n")
 }
+
+# =============================================================================
+# HOLOCENE SAMPLING AND ACCEPTED FIRE DETECTIONS BEFORE CCA
+# =============================================================================
+# Descriptive counts on the native climate cells, not new tracking observations
+# or a replacement for the normalized 1,000-year fire predictor. Each prepared
+# macrofossil ID enters once at its median age across the existing Bacon draws.
+# Counts include samples with no retained tree taxa; no fitted CCA is required.
+# Fire inputs are the upstream all-tapas catalogs assembled unchanged by stage 12.
+holocene_sampling_fire_counts = function(draws, climate, events, series, n_draws) {
+  stopifnot(length(n_draws) == 1L, is.finite(n_draws), n_draws > 0,
+    n_draws == as.integer(n_draws), nrow(draws) > 0L,
+    !anyNA(draws[c("lake", "plot_id", "draw", "age")]),
+    all(is.finite(draws$age)), all(draws$draw %in% seq_len(n_draws)),
+    !anyDuplicated(draws[c("lake", "plot_id", "draw")]))
+  grid = climate |> distinct(site, lake, cal_BP) |>
+    transmute(site, lake, mid = cal_BP, lo = cal_BP - 50, hi = cal_BP + 50)
+  lake_sites = grid |> distinct(lake, site)
+  stopifnot(nrow(grid) > 0L, !anyNA(grid), all(is.finite(grid$mid)),
+    all(grid$mid %% 100 == 50), !anyDuplicated(grid[c("lake", "mid")]),
+    !anyDuplicated(lake_sites$lake), all(lake_sites$site %in% c("MORA", "NOCA")),
+    all(draws$lake %in% lake_sites$lake))
+  # Each lake supplies its own native cells; no matching lake coverage is imposed.
+  spacing = grid |> arrange(lake, mid) |> group_by(lake) |>
+    summarize(regular = all(diff(mid) == 100), .groups = "drop")
+  stopifnot(all(spacing$regular))
+  samples = draws |> group_by(lake, plot_id) |>
+    summarize(age = median(age), n_draws = n_distinct(draw), .groups = "drop") |>
+    mutate(mid = floor(age / 100) * 100 + 50) |>
+    left_join(lake_sites, by = "lake", relationship = "many-to-one")
+  stopifnot(all(samples$n_draws == n_draws))
+  outside = anti_join(samples, grid, by = c("site", "lake", "mid"))
+  if (nrow(outside)) stop("Macrofossil IDs outside native climate cells: ",
+    paste(outside$plot_id, collapse = ", "))
+  macro = grid |> left_join(samples |> count(site, lake, mid, name = "count"),
+    by = c("site", "lake", "mid"), relationship = "one-to-one") |>
+    mutate(count = replace_na(count, 0L))
+  stopifnot(sum(macro$count) == nrow(samples))
+
+  stopifnot(nrow(series) > 0L, !anyNA(series[c("site", "lake", "age_cal_yr_BP")]),
+    !anyNA(events[c("site", "lake", "age_cal_yr_BP")]),
+    all(is.finite(series$age_cal_yr_BP)), all(is.finite(events$age_cal_yr_BP)))
+  coverage = series |> group_by(site, lake) |>
+    summarize(youngest = min(age_cal_yr_BP), oldest = max(age_cal_yr_BP), .groups = "drop")
+  stopifnot(all(coverage$oldest > coverage$youngest),
+    !nrow(anti_join(events, coverage, by = c("site", "lake"))),
+    all(grid$site %in% coverage$site))
+  core = grid |> distinct(site, mid, lo, hi) |>
+    left_join(coverage, by = "site", relationship = "many-to-many") |>
+    mutate(covered = lo >= youngest & hi <= oldest) |>
+    left_join(events |> mutate(mid = floor(age_cal_yr_BP / 100) * 100 + 50) |>
+      count(site, lake, mid, name = "n_events"),
+      by = c("site", "lake", "mid"), relationship = "one-to-one") |>
+    mutate(n_events = if_else(covered, replace_na(n_events, 0L), NA_integer_))
+  fire = core |> group_by(site, mid, lo, hi) |>
+    summarize(n_covered = sum(covered),
+      n_required = if_else(first(site) == "MORA", 2L, 1L),
+      total = sum(n_events[covered]), .groups = "drop") |>
+    mutate(coverage_valid = n_covered >= n_required,
+      count = if_else(coverage_valid, as.numeric(total), NA_real_)) |>
+    arrange(site, mid) |> group_by(site) |>
+    mutate(segment = cumsum(!is.finite(count))) |> ungroup()
+  list(samples = samples, macro = macro, core = core, fire = fire)
+}
+
+source(here("R/helpers/paleo_runs.R"), local = TRUE)
+sampling_draws = paleo_age_draws(allow_rebuild = FALSE)
+sampling_ids = read_csv(here("output/paleo_occ.csv"), show_col_types = FALSE) |>
+  distinct(lake, plot_id)
+stopifnot(setequal(sampling_draws$plot_id, sampling_ids$plot_id),
+  !nrow(anti_join(sampling_draws |> distinct(lake, plot_id), sampling_ids,
+    by = c("lake", "plot_id"))))
+sampling_counts = holocene_sampling_fire_counts(
+  sampling_draws,
+  read_csv(here("output/chelsa_paleo_ponds.csv"), show_col_types = FALSE),
+  bind_rows(read_csv(here("output/fire_mora_tapas_events.csv"), show_col_types = FALSE),
+    read_csv(here("output/fire_noca_tapas_events.csv"), show_col_types = FALSE)),
+  bind_rows(read_csv(here("output/fire_mora_tapas_series.csv"), show_col_types = FALSE),
+    read_csv(here("output/fire_noca_tapas_series.csv"), show_col_types = FALSE)),
+  N_DRAWS)
+sampling_lake_order = c("JayBath", "LogWallow", "ReflectionPond", "PantherPotholes")
+sampling_lake_labels = c("Jay Bath", "Log Wallow", "Reflection Pond", "Panther Potholes")
+stopifnot(setequal(sampling_counts$samples$lake, sampling_lake_order))
+sampling_macro = sampling_counts$macro |> mutate(
+  site = factor(site, levels = c("MORA", "NOCA")),
+  lake = factor(lake, levels = sampling_lake_order))
+sampling_fire = sampling_counts$fire |> mutate(site = factor(site, levels = c("MORA", "NOCA")))
+sampling_time_scale = function() scale_x_reverse(
+  limits = c(max(sampling_macro$hi), min(sampling_macro$lo)),
+  breaks = seq(0, max(sampling_macro$hi), 2000), labels = scales::label_comma(),
+  expand = expansion(mult = c(.005, .005)))
+sampling_theme = theme_minimal(base_size = 19) + theme(
+  panel.grid.minor = element_blank(), panel.grid.major.x = element_line(color = "grey91"),
+  panel.grid.major.y = element_line(color = "grey89"),
+  strip.text = element_text(size = 19, face = "bold"), axis.text = element_text(size = 15),
+  plot.title = element_text(size = 21, face = "bold"), plot.subtitle = element_text(size = 14),
+  legend.position = "bottom", legend.title = element_blank(), legend.text = element_text(size = 15),
+  panel.spacing = grid::unit(2, "lines"))
+sampling_macro_plot = ggplot(sampling_macro, aes(mid, count, color = lake, group = lake)) +
+  geom_line(linewidth = .9) + geom_point(size = 1.5, alpha = .65) +
+  facet_wrap(~site, nrow = 1) + sampling_time_scale() +
+  scale_y_continuous(limits = c(0, max(sampling_macro$count) * 1.1),
+    breaks = scales::breaks_pretty(n = 5), expand = expansion(mult = c(.01, 0))) +
+  scale_color_manual(values = c(JayBath = "#377eb8", LogWallow = "#4daf4a",
+    ReflectionPond = "#984ea3", PantherPotholes = "#d47c42"),
+    breaks = sampling_lake_order, labels = sampling_lake_labels, drop = FALSE) +
+  labs(title = "Macrofossil samples per 100-year climate interval",
+    subtitle = "Separate lake trajectories; MORA and NOCA share the same y-axis scale.",
+    x = NULL, y = "Number of samples") + sampling_theme
+sampling_fire_plot = ggplot() +
+  geom_rect(data = filter(sampling_fire, !coverage_valid),
+    aes(xmin = lo, xmax = hi, ymin = -Inf, ymax = Inf), fill = "grey89") +
+  geom_line(data = filter(sampling_fire, coverage_valid),
+    aes(mid, count, color = site, group = interaction(site, segment)), linewidth = .9) +
+  geom_point(data = filter(sampling_fire, coverage_valid),
+    aes(mid, count, color = site), size = 1.5, alpha = .7) +
+  facet_wrap(~site, nrow = 1) + sampling_time_scale() +
+  scale_y_continuous(limits = c(0, max(sampling_fire$count, na.rm = TRUE) * 1.1),
+    breaks = scales::breaks_pretty(n = 4), labels = function(x) ifelse(x == floor(x), x, ""),
+    expand = expansion(mult = c(.01, 0))) +
+  scale_color_manual(values = c(MORA = "#3977a2", NOCA = "#d47c42"), guide = "none") +
+  labs(title = "Accepted fire events per 100-year climate interval",
+    subtitle = "MORA: summed covered cores; NOCA: Panther Potholes. Grey: insufficient charcoal coverage.",
+    x = "Age (cal BP; older \u2190)", y = "Number of fire events") + sampling_theme
+sampling_totals = sampling_counts$samples |> count(lake, name = "n_samples")
+sampling_caption_counts = paste(paste0(sampling_lake_labels, " ",
+  sampling_totals$n_samples[match(sampling_lake_order, sampling_totals$lake)]), collapse = "; ")
+sampling_figure = patchwork::wrap_plots(sampling_macro_plot, sampling_fire_plot,
+  ncol = 1, heights = c(1.1, 1)) + patchwork::plot_annotation(
+    title = "Macrofossil sampling by lake and total fire-event detections",
+    caption = paste0("Each prepared sample ID enters once at its median cached Bacon age: ",
+      sampling_caption_counts, ". Cells are [younger edge, older edge).\n",
+      "Fire totals sum accepted detections from fully covered charcoal cores; MORA requires at least two. ",
+      "These are source detections, not unique regional fires, normalized fire_activity or CHAR.\n",
+      "Counts are not interpolated; median-age placement does not propagate dating uncertainty. ",
+      "Lines do not bridge missing fire coverage."),
+    theme = theme(plot.title = element_text(size = 25, face = "bold"),
+      plot.caption = element_text(size = 12, hjust = 0), plot.margin = margin(14, 18, 14, 18)))
+if (render_figures) ggsave(here("plot/test_figures/fig_holocene_sampling_fire_100yr.pdf"),
+  sampling_figure, width = 18, height = 11, device = cairo_pdf, bg = "white")
+cat("\nNative 100-year sampling counts before CCA:\n")
+print(sampling_totals)
+print(sampling_fire |> group_by(site) |> summarize(n_covered_cells = sum(coverage_valid),
+  n_covered_zero_cells = sum(coverage_valid & count == 0, na.rm = TRUE),
+  n_missing_cells = sum(!coverage_valid), .groups = "drop"))

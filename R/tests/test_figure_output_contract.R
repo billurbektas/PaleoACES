@@ -18,6 +18,8 @@ main_files = here("plot", expected_root)
 stopifnot(all(file.exists(main_files)), all(file.info(main_files)$size > 5000))
 corrected_contrasts = here("plot/test_figures/fig_tracking_corrected_lag_contrasts_offset_0.pdf")
 stopifnot(file.exists(corrected_contrasts), file.info(corrected_contrasts)$size > 5000)
+sampling_support = here("plot/test_figures/fig_holocene_sampling_fire_100yr.pdf")
+stopifnot(file.exists(sampling_support), file.info(sampling_support)$size > 5000)
 
 retired = here(c("R/05b_cca_trajectory_alternatives.R",
   "output/cca_trajectory_alternatives_spec.csv",
@@ -26,7 +28,7 @@ retired = here(c("R/05b_cca_trajectory_alternatives.R",
 stopifnot(!any(file.exists(retired)))
 
 if (nzchar(Sys.which("pdfinfo"))) {
-  pages = vapply(c(here("plot", paste0(main_stems, ".pdf")), corrected_contrasts), function(path) {
+  pages = vapply(c(here("plot", paste0(main_stems, ".pdf")), corrected_contrasts, sampling_support), function(path) {
     x = system2("pdfinfo", path, stdout = TRUE, stderr = TRUE)
     as.integer(sub("^Pages:\\s*", "", grep("^Pages:", x, value = TRUE)[1]))
   }, integer(1))

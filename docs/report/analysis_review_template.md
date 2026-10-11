@@ -252,6 +252,29 @@ The [sample table](assets/analysis/tables/cca_sample_eligibility.csv) and
 individual reasons. The cleaned data retain these observations even when they
 cannot enter CCA tracking.
 
+## Holocene sampling support on native climate intervals
+
+[The consolidation stage](../R/stages/000_occurrence_data_consolidate.R) produces
+this diagnostic immediately before CCA, without requiring a fitted ordination.
+Each prepared macrofossil sample ID enters one native climate cell at its median
+age across the 100 cached Bacon draws. These counts include samples subsequently
+excluded from CCA. The four lake lines remain separate, with a common sample-count
+scale for MORA and NOCA. Cell centers follow the native climate grid (50 modulo
+100 cal BP); each cell uses `[center − 50, center + 50)`.
+
+The fire row uses accepted detections from the same upstream `tapas` catalogs
+that stage 12 assembles. MORA has one summed line across fully covered regional
+cores, requiring at least two; NOCA uses Panther Potholes. Grey cells lack adequate
+coverage, while covered cells with no detections remain zero. The number of covered
+MORA cores can vary from two to three. Detections of the same regional fire in
+different cores are counted separately, and source resolution differs between
+parks, so raw totals do not measure comparable regional fire intensity. These
+100-year counts leave the normalized 1,000-year fire predictor and high-fire
+classifications unchanged. Neither sample counts nor fire counts are interpolated;
+the median-age display does not propagate chronology uncertainty.
+
+{{sampling_support_diagnostics}}
+
 ## CCA calibration and geometry
 
 One pooled legacy CCA relates composition to the four climate variables, using

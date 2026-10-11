@@ -309,6 +309,29 @@ not interpretations of the active ordination.
 
 ---
 
+## Native 100-year sampling and fire counts before CCA
+
+The consolidation script also writes
+`plot/test_figures/fig_holocene_sampling_fire_100yr.pdf`. It appears immediately
+before CCA calibration in the Analysis Review. This diagnostic reads the
+validated `paleo_age_draws.rds` cache, prepared macrofossil IDs, native pond
+climate cells and upstream `fire_mora_tapas_*` / `fire_noca_tapas_*` catalogs;
+it does not require a fitted CCA or regenerate chronology draws.
+
+Each prepared macrofossil ID enters one `[center − 50, center + 50)` climate cell
+at its median cached age. Separate lake trajectories share a MORA/NOCA count
+scale, including samples subsequently excluded from CCA. Fire counts sum accepted
+source detections from fully covered cells: at least two covered regional cores
+for MORA, and Panther Potholes for NOCA. Covered zero-event cells stay zero;
+insufficient coverage stays missing and breaks the line. MORA totals can combine
+two or three cores and count overlapping detections separately. The differing
+source resolutions prevent comparing raw park totals as regional fire intensity.
+
+These counts are descriptive; there is no interpolation or dating-uncertainty
+propagation in the median-age display. The normalized 1,000-year `fire_activity`,
+high-fire classification and all tracking/model outputs retain their definitions.
+The shared render option suppresses the PDF under `--skip-figures`.
+
 ## 7. Choosing `count.thr` — set to 20 (2026-08-13)
 
 The consolidation script now prints the species × site × period count table and a

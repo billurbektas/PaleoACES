@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: f9b57f22062560f7dd28e9726ebd656f -->
+<!-- paleoaces-source-md5: da6083c327f1c3377d05d16fbcf6e65c -->
 
 <html>
 
@@ -2061,6 +2061,32 @@ historical table is not the active species-selection policy.</p>
 <p>The old CCA1 description and loadings belong only to that historical
 run and are not interpretations of the active ordination.</p>
 <hr />
+</div>
+<div id="native-100-year-sampling-and-fire-counts-before-cca" class="section level2">
+<h2>Native 100-year sampling and fire counts before CCA</h2>
+<p>The consolidation script also writes
+<code>plot/test_figures/fig_holocene_sampling_fire_100yr.pdf</code>. It
+appears immediately before CCA calibration in the Analysis Review. This
+diagnostic reads the validated <code>paleo_age_draws.rds</code> cache,
+prepared macrofossil IDs, native pond climate cells and upstream
+<code>fire_mora_tapas_*</code> / <code>fire_noca_tapas_*</code>
+catalogs; it does not require a fitted CCA or regenerate chronology
+draws.</p>
+<p>Each prepared macrofossil ID enters one
+<code>[center − 50, center + 50)</code> climate cell at its median
+cached age. Separate lake trajectories share a MORA/NOCA count scale,
+including samples subsequently excluded from CCA. Fire counts sum
+accepted source detections from fully covered cells: at least two
+covered regional cores for MORA, and Panther Potholes for NOCA. Covered
+zero-event cells stay zero; insufficient coverage stays missing and
+breaks the line. MORA totals can combine two or three cores and count
+overlapping detections separately. The differing source resolutions
+prevent comparing raw park totals as regional fire intensity.</p>
+<p>These counts are descriptive; there is no interpolation or
+dating-uncertainty propagation in the median-age display. The normalized
+1,000-year <code>fire_activity</code>, high-fire classification and all
+tracking/model outputs retain their definitions. The shared render
+option suppresses the PDF under <code>--skip-figures</code>.</p>
 </div>
 <div id="choosing-count.thr-set-to-20-2026-08-13" class="section level2">
 <h2>7. Choosing <code>count.thr</code> — set to 20 (2026-08-13)</h2>

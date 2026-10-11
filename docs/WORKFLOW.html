@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: 93bef3e678ddfdd5cc17784d9513393c -->
+<!-- paleoaces-source-md5: c70f19d45c05ee3e1a7cce9ec36738a7 -->
 
 <html>
 
@@ -1578,9 +1578,12 @@ regeneration is needed for stages 9–14.</p>
   PV --&gt; PF
   PD[000_PALEO_d_climate_download cached] --&gt; PE[000_PALEO_e_climate]
   PV --&gt; PE
-  MV --&gt; OC[000_occurrence_data_consolidate]
+  MV --&gt; OC[000_occurrence_data_consolidate and before-CCA 100-year sampling/fire counts]
   NV --&gt; OC
   PV --&gt; OC
+  PD --&gt; OC
+  FW --&gt; OC
+  PF --&gt; OC
   OC --&gt; CCA[05_cca_model]
   MC --&gt; CCA
   NC --&gt; CCA
@@ -1726,10 +1729,14 @@ tolerance</td>
 <tr class="even">
 <td align="right">8</td>
 <td><code>R/stages/000_occurrence_data_consolidate.R</code></td>
-<td>Required taxonomy and occurrence consolidation</td>
-<td>Three occurrence tables and stage data</td>
+<td>Required taxonomy/occurrence consolidation and before-CCA sampling
+diagnostic</td>
+<td>Three occurrence tables, native climate cells, validated cached
+Bacon draws and upstream MORA/NOCA tapas catalogs</td>
 <td><code>occ_consolidated.csv</code>; 13,690 rows, 22 taxa, 1,599
-plots/samples</td>
+plots/samples; diagnostic PDF with separate macrofossil lake lines on a
+shared count scale and summed accepted fire detections by park on native
+100-year cells</td>
 </tr>
 <tr class="odd">
 <td align="right">9</td>

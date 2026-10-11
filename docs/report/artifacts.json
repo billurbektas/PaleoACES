@@ -205,6 +205,18 @@
       "status": "current"
     },
     {
+      "id": "holocene_sampling_fire_100yr",
+      "section": "sampling_support",
+      "pdf": "plot/test_figures/fig_holocene_sampling_fire_100yr.pdf",
+      "pages": [
+        1
+      ],
+      "producer": "R/stages/000_occurrence_data_consolidate.R",
+      "purpose": "Inspect macrofossil sampling and accepted fire detections on native 100-year climate cells before CCA.",
+      "interpretation": "Each prepared macrofossil ID is counted once at its median age across the 100 cached Bacon draws. Separate lake lines share the same MORA/NOCA sample-count scale. Fire lines sum accepted detections from fully covered cores: at least two MORA regional cores, or Panther Potholes for NOCA. Grey cells lack adequate charcoal coverage; covered zero-event cells remain zero and lines do not bridge gaps. MORA totals may use two or three covered cores and do not deduplicate regional fires. Fire counts are source detections, not normalized fire_activity or CHAR, and differing source resolution prevents interpreting raw park counts as comparable fire intensity. Median-age placement does not propagate dating uncertainty; these cells are descriptive counts, not independent 100-year vegetation responses.",
+      "status": "current"
+    },
+    {
       "id": "tracking_example",
       "section": "tracking",
       "pdf": "plot/test_figures/fig_method_worked_example.pdf",

@@ -77,7 +77,8 @@ if (offline && !build_report) {
 }
 run_script("R/stages/000_PALEO_e_climate.R")
 
-# 4. Consolidation and model
+# 4. Consolidation, native 100-year sampling/fire diagnostic, then CCA.
+# The diagnostic uses cached ages and upstream tapas catalogs, not the CCA fit.
 run_script("R/stages/000_occurrence_data_consolidate.R")
 run_script("R/stages/05_cca_model.R")
 

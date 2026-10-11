@@ -83,9 +83,12 @@ flowchart TD
   PV --> PF
   PD[000_PALEO_d_climate_download cached] --> PE[000_PALEO_e_climate]
   PV --> PE
-  MV --> OC[000_occurrence_data_consolidate]
+  MV --> OC[000_occurrence_data_consolidate and before-CCA 100-year sampling/fire counts]
   NV --> OC
   PV --> OC
+  PD --> OC
+  FW --> OC
+  PF --> OC
   OC --> CCA[05_cca_model]
   MC --> CCA
   NC --> CCA
@@ -127,7 +130,7 @@ flowchart TD
 | 6b | `R/stages/000_PALEO_c_fire.R` | Required harmonized NOCA `tapas` catalog and combined sample fire | Paleo vegetation, MORA catalog, NOCA Neotoma charcoal/Bacon ages | NOCA series/events/settings, `fire_noca_peaks.csv`, `paleo_fire.csv`; 12/500/99 primary with 66 peaks and 12.5-year interpolation sensitivity |
 | 7a | `R/stages/000_PALEO_d_climate_download.R` | Validated native-cache aggregation; download only in online mode | Four pond coordinates and CHELSA services | `chelsa_paleo_ponds.csv`, chunks and bias anchor; atomic complete-cache validation |
 | 7b | `R/stages/000_PALEO_e_climate.R` | Required seasonal derivation and age match | Cached pond climate and paleo samples | `paleo_env.csv`; complete nearest-slice match within tolerance |
-| 8 | `R/stages/000_occurrence_data_consolidate.R` | Required taxonomy and occurrence consolidation | Three occurrence tables and stage data | `occ_consolidated.csv`; 13,690 rows, 22 taxa, 1,599 plots/samples |
+| 8 | `R/stages/000_occurrence_data_consolidate.R` | Required taxonomy/occurrence consolidation and before-CCA sampling diagnostic | Three occurrence tables, native climate cells, validated cached Bacon draws and upstream MORA/NOCA tapas catalogs | `occ_consolidated.csv`; 13,690 rows, 22 taxa, 1,599 plots/samples; diagnostic PDF with separate macrofossil lake lines on a shared count scale and summed accepted fire detections by park on native 100-year cells |
 | 9 | `R/stages/05_cca_model.R` | Required pooled calibration/projection | Consolidated occurrence, modern/paleo climate and fire | CCA reference bundle and fixed climate scaling; 20 threshold, scaling 1, 14 species, 607 matched calibration plots |
 | 10c | `R/stages/12_walsh_fire_reproduction.R` | Assemble authoritative all-`tapas` source catalog and retain a separate official Walsh audit | Harmonized MORA/NOCA tapas outputs, three Walsh workbooks, CharAnalysis 2.0.3 | Authoritative four-core source series/events/settings and tapas manifest; separate official MORA series/events/FRIs/publication audit; active fire outputs hash-protected |
 | 10d | `R/stages/13_holocene_climate_fire_eras.R` | Authoritative literature-blind climate-era and independent high-fire classification | Native pond climate, pooled legacy CCA scaling, stage-12 source series/events | Four-variable signed 1,000-year changes, thresholds, frozen CC/S grid/catalog, subphases, composite, normalized fire frequency/high-fire runs, and audit tables |

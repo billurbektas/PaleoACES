@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: 13c9593659e44de5b0a6069595c39c2b -->
+<!-- paleoaces-source-md5: 3930cf4aed7194a2525599109b3103b6 -->
 
 <html>
 
@@ -1980,6 +1980,28 @@ annotations do not classify lakes individually or enter the model tables
 as predictors. The plotting stage preserves response estimates and
 leaves dates outside the classified 9,600–1,300 cal-BP domain unshaded.
 Modern boxplots retain their existing layout.</p>
+</div>
+<div id="native-100-year-sampling-diagnostic-before-cca" class="section level3">
+<h3>Native 100-year sampling diagnostic before CCA</h3>
+<p><code>R/stages/000_occurrence_data_consolidate.R</code> also produces
+<code>plot/test_figures/fig_holocene_sampling_fire_100yr.pdf</code>,
+shown immediately before CCA calibration in the Analysis Review. Count
+each prepared macrofossil ID once at its median age across the 100
+existing cached draws, on native climate cells
+<code>[center − 50, center + 50)</code>. Separate lake lines share one
+sample-count scale. These counts include CCA-ineligible samples and do
+not create 100-year vegetation responses or propagate chronology
+uncertainty.</p>
+<p>Fire values in this diagnostic are raw accepted detections from fully
+covered 100-year cells. MORA sums the covered regional cores, requiring
+at least two; NOCA uses Panther Potholes. Covered zero-event cells
+remain zero, inadequate coverage is missing and breaks the line. MORA
+totals can use two or three cores, and overlapping detections are not
+deduplicated. Different source resolutions also prevent interpreting
+these raw park totals as comparable fire intensity. The figure leaves
+normalized 1,000-year <code>fire_activity</code>, high-fire periods,
+tracking calculations and fitted models unchanged. Counts are not
+interpolated.</p>
 </div>
 <div id="combined-transition-input-and-provisional-offset-models" class="section level3">
 <h3>Combined transition input and provisional offset models</h3>

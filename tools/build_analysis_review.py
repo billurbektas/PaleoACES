@@ -355,8 +355,13 @@ def validate(root=ROOT):
     if review.read_text() != combined_review(): raise ValueError('Combined analysis review differs from current workflow sources.')
     headings = re.findall(r'^## (.+)$',text,re.M)
     eligibility_heading = headings.index('Plots and samples included in CCA')
-    if headings[eligibility_heading+1] != 'CCA calibration and geometry':
-        raise ValueError('CCA eligibility must immediately precede calibration.')
+    if headings[eligibility_heading+1:eligibility_heading+3] != [
+            'Holocene sampling support on native climate intervals', 'CCA calibration and geometry']:
+        raise ValueError('CCA eligibility and native sampling support must immediately precede calibration.')
+    sampling_section = text.split('## Holocene sampling support on native climate intervals\n',1)[1].split('\n## ',1)[0]
+    if ('assets/analysis/holocene_sampling_fire_100yr-p1.png' not in sampling_section or
+            '../R/stages/000_occurrence_data_consolidate.R)' not in sampling_section):
+        raise ValueError('Review omitted the before-CCA native sampling/fire figure or its producer.')
     selection = rows(root/ASSETS/'tables/sample_selection_counts.csv')
     plot_sizes = rows(root/ASSETS/'tables/sample_selection_plot_sizes.csv')
     if len({(r['site'], r['legacy_area_m2']) for r in plot_sizes}) != len(plot_sizes):

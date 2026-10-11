@@ -2,7 +2,7 @@
 title: "PaleoACES analysis review"
 ---
 
-**Snapshot of existing outputs · 2026-10-10.** Figures and CCA summaries use verified existing analysis outputs.
+**Snapshot of existing outputs · 2026-10-11.** Figures and CCA summaries use verified existing analysis outputs.
 
 PaleoACES asks how observed forest composition moves relative to the composition
 predicted by climate, comparing modern forest resurveys with four Holocene
@@ -453,6 +453,35 @@ The [sample table](assets/analysis/tables/cca_sample_eligibility.csv) and
 [paired-plot table](assets/analysis/tables/cca_pair_eligibility.csv) retain the
 individual reasons. The cleaned data retain these observations even when they
 cannot enter CCA tracking.
+
+## Holocene sampling support on native climate intervals
+
+[The consolidation stage](../R/stages/000_occurrence_data_consolidate.R) produces
+this diagnostic immediately before CCA, without requiring a fitted ordination.
+Each prepared macrofossil sample ID enters one native climate cell at its median
+age across the 100 cached Bacon draws. These counts include samples subsequently
+excluded from CCA. The four lake lines remain separate, with a common sample-count
+scale for MORA and NOCA. Cell centers follow the native climate grid (50 modulo
+100 cal BP); each cell uses `[center − 50, center + 50)`.
+
+The fire row uses accepted detections from the same upstream `tapas` catalogs
+that stage 12 assembles. MORA has one summed line across fully covered regional
+cores, requiring at least two; NOCA uses Panther Potholes. Grey cells lack adequate
+coverage, while covered cells with no detections remain zero. The number of covered
+MORA cores can vary from two to three. Detections of the same regional fire in
+different cores are counted separately, and source resolution differs between
+parks, so raw totals do not measure comparable regional fire intensity. These
+100-year counts leave the normalized 1,000-year fire predictor and high-fire
+classifications unchanged. Neither sample counts nor fire counts are interpolated;
+the median-age display does not propagate chronology uncertainty.
+
+### Inspect macrofossil sampling and accepted fire detections on native 100-year climate cells before CCA
+
+Each prepared macrofossil ID is counted once at its median age across the 100 cached Bacon draws. Separate lake lines share the same MORA/NOCA sample-count scale. Fire lines sum accepted detections from fully covered cores: at least two MORA regional cores, or Panther Potholes for NOCA. Grey cells lack adequate charcoal coverage; covered zero-event cells remain zero and lines do not bridge gaps. MORA totals may use two or three covered cores and do not deduplicate regional fires. Fire counts are source detections, not normalized fire_activity or CHAR, and differing source resolution prevents interpreting raw park counts as comparable fire intensity. Median-age placement does not propagate dating uncertainty; these cells are descriptive counts, not independent 100-year vegetation responses.
+
+Script: [000_occurrence_data_consolidate.R](../R/stages/000_occurrence_data_consolidate.R). [Complete PDF](../plot/test_figures/fig_holocene_sampling_fire_100yr.pdf) (1 page).
+
+![Inspect macrofossil sampling and accepted fire detections on native 100-year climate cells before CCA. — PDF page 1](assets/analysis/holocene_sampling_fire_100yr-p1.png)
 
 ## CCA calibration and geometry
 
@@ -2212,6 +2241,7 @@ current-results analysis.
 | [fig_walsh_charanalysis_reproduction.pdf](../plot/test_figures/fig_walsh_charanalysis_reproduction.pdf) | Compare official CharAnalysis results with published Walsh totals. | [12_walsh_fire_reproduction.R](../R/stages/12_walsh_fire_reproduction.R) | 3 | current |
 | [fig_holocene_climate_period_method_worked_example.pdf](../plot/test_figures/fig_holocene_climate_period_method_worked_example.pdf) | Expose signed changes, phase support, and era construction. | [13_holocene_climate_fire_eras.R](../R/stages/13_holocene_climate_fire_eras.R) | 1 | current |
 | [fig_holocene_fire_method_worked_example.pdf](../plot/test_figures/fig_holocene_fire_method_worked_example.pdf) | Work through centered event frequencies at 2,300 cal BP. | [13b_fire_method_worked_example.R](../R/stages/13b_fire_method_worked_example.R) | 1 | current |
+| [fig_holocene_sampling_fire_100yr.pdf](../plot/test_figures/fig_holocene_sampling_fire_100yr.pdf) | Inspect macrofossil sampling and accepted fire detections on native 100-year climate cells before CCA. | [000_occurrence_data_consolidate.R](../R/stages/000_occurrence_data_consolidate.R) | 1 | current |
 | [fig_method_worked_example.pdf](../plot/test_figures/fig_method_worked_example.pdf) | Work through WA/LC movement, lag, ratio, and angle. | [09a_tracking_example_and_visualizations.R](../R/stages/09a_tracking_example_and_visualizations.R) | 1 | current |
 | [fig_tracking_offset_rates.pdf](../plot/test_figures/fig_tracking_offset_rates.pdf) | Compare tracking responses, climate and fire under established regional climate-period bands, with Anthropocene boxplots. | [09a_tracking_example_and_visualizations.R](../R/stages/09a_tracking_example_and_visualizations.R) | 1 | current |
 | [fig_tracking_offset_ratios_angles.pdf](../plot/test_figures/fig_tracking_offset_ratios_angles.pdf) | Compare magnitude tracking ratio, angle, climate and fire under the same regional climate-period bands, one variable per row. | [09a_tracking_example_and_visualizations.R](../R/stages/09a_tracking_example_and_visualizations.R) | 1 | current |
