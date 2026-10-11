@@ -7,8 +7,9 @@ CCA reference, occurrence records, whole Bacon draws and canonical calculation
 tables; it writes only new files in `output/cca_transition_contributions/` and
 `plot/test_figures/cca_transition_contributions/`. It does not refit the CCA,
 regenerate chronology, download climate, fit statistical models or replace
-other analysis outputs. All ten 1,000-year offsets, including 800, are analyzed
-separately, without R² weights.
+other analysis outputs. All ten 1,000-year offsets, including 800, retain their
+identities in the calculations and sensitivity summaries, without R² weights.
+The descriptive boxplots combine their offset-specific transition points.
 
 The maintained calculation code is in
 [cca_transition_contributions.R](../../R/helpers/cca_transition_contributions.R).
@@ -187,35 +188,46 @@ uncertainty are not propagated.
 Species and climate variables stay on the **y-axis**, with raw signed CCA
 parallel contributions on the **x-axis**. MORA/NOCA form two columns,
 with the two eras in side-by-side boxes.
-Each PDF contains ten pages, one per offset, in
+Each analysis has one single-page PDF in
 `plot/test_figures/cca_transition_contributions/`:
 
-- [Species boxplots](../../plot/test_figures/cca_transition_contributions/species_boxplots_by_offset.pdf).
-- [Climate-variable boxplots](../../plot/test_figures/cca_transition_contributions/climate_boxplots_by_offset.pdf).
+- [Species boxplots](../../plot/test_figures/cca_transition_contributions/species_boxplots.pdf).
+- [Climate-variable boxplots](../../plot/test_figures/cca_transition_contributions/climate_boxplots.pdf).
 
-Offset-0 previews, `species_boxplot_offset_0.png` and
-`climate_boxplot_offset_0.png`, are saved beside the calculation tables in
+Matching previews, `species_boxplot.png` and
+`climate_boxplot.png`, are saved beside the calculation tables in
 `output/cca_transition_contributions/`, preserving the existing PDF-only
 diagnostic figure contract. The previous heatmaps are retired.
 
-For each species or climate variable, a Holocene boxplot observation is the median
-across finite Bacon draws of **one actual lake transition within that offset**.
-Draws are summarized independently for each measure; an undefined parallel
-contribution does not remove a valid coordinate contribution. Every modern plot contributes its
-individual parallel contribution once per species or climate variable. Modern values are shown
-again on each offset page for comparison; this does not add observations.
-Chronology draws and offsets are never pooled into a boxplot sample.
+For each species or climate variable, a Holocene point is the median across
+finite Bacon draws of **one lake transition within one offset**. All 273
+lake-transition records across the ten offsets supply the descriptive
+Holocene distributions, without taking another median across offsets or
+separating them into different pages. Every modern plot contributes once per
+species or climate variable, giving 607 plot points before excluding undefined
+projections. These are the same values retained in `*_boxplot_values.csv`.
+
+Chronology draws are summarized independently for each measure; an undefined
+parallel contribution does not remove a valid coordinate contribution.
+The plotted Holocene distributions combine overlapping bin placements for
+visual description. Offsets remain alternative reconstructions, not independent
+ecological replicates; the boxplots do not add a statistical model or treat
+these points as independent observations for inference.
 
 The exported `*_boxplot_values.csv` files retain `NA` observations and Holocene
 present, valid and undefined draw counts. Plotting omits undefined values but
-retains defined zeros. Boxes show the median and interquartile range, whiskers
+retains defined zeros. With the current inputs, each species distribution uses
+all 273 Holocene transitions and 607 modern pairs; each climate-variable
+distribution uses 272 Holocene transitions and 465 modern pairs. One Holocene
+transition and 142 modern pairs have undefined observed directions, so their
+climate projections remain `NA` in the calculation and plotting tables.
+Boxes show the median and interquartile range, whiskers
 extend to values within 1.5 × IQR, and points beyond the whiskers are shown.
 These are descriptive distributions, not confidence intervals. Lakes with
 more supported transitions contribute more transition observations; this
 choice is explicit rather than an equal-lake summary.
 
-Raw-contribution x limits stay fixed across parks, eras and all
-pages within each PDF. Species and climate figures have their own limits.
+Raw-contribution x limits stay fixed across parks and eras within each PDF. Species and climate figures have their own limits.
 The separate `*_era_site_summary.csv` tables still average finite transitions
 within each lake/draw/offset, then equally weight available lake means within
 park/draw/offset and take the median across draws. Modern park summaries are

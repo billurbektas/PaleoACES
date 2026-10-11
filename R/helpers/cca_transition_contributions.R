@@ -287,7 +287,8 @@ contribution_summaries = function(data,type,n_expected=100L) {
 
 # Each Holocene boxplot observation is one actual transition's draw median.
 # Draws are summarized response by response; modern plots enter once each.
-# Offsets remain separate sensitivity pages, never a pooled boxplot sample.
+# Offset-specific transition points share the descriptive boxplot distribution;
+# they retain their identities and are not independent ecological replicates.
 contribution_boxplot_values = function(data,uncertainty,type) {
   component=contribution_component_name(type)
   measures='parallel_contribution'
@@ -310,16 +311,15 @@ contribution_boxplot_values = function(data,uncertainty,type) {
   values
 }
 
-contribution_boxplot = function(values,type,offset,reference) {
+contribution_boxplot = function(values,type,reference) {
   component=contribution_component_name(type)
-  data=values |> dplyr::filter(era=='Anthropocene' | .data$offset==.env$offset,
-    is.finite(value)) |>
+  data=values |> dplyr::filter(is.finite(value)) |>
     dplyr::mutate(era=factor(era,levels=c('Holocene','Anthropocene')),
       site=factor(site,levels=c('MORA','NOCA')))
   labels=if(type=='species') stats::setNames(reference$retained_species,reference$retained_species) else
     reference$climate_labels[reference$climate_variables]
   data$component=factor(data[[component]],levels=rev(names(labels)),labels=rev(unname(labels)))
-  # The same raw-contribution limits on every page permit offset comparisons.
+  # Common raw-contribution limits permit comparisons between the two parks.
   limits=range(values$value[is.finite(values$value)],0)
   if(diff(limits)==0) limits=c(-1,1)
   reference_label=if(type=='species') 'Species contributions along climate-predicted movement' else
@@ -333,9 +333,9 @@ contribution_boxplot = function(values,type,offset,reference) {
     ggplot2::scale_color_manual(values=c(Holocene='#36998c',Anthropocene='#d87934'))+
     ggplot2::coord_cartesian(xlim=limits)+
     ggplot2::labs(title=reference_label,
-      subtitle=paste('Offset',offset,'• Holocene: transition medians across valid Bacon draws; Anthropocene: individual plots'),
+      subtitle='Holocene: all offset-specific transition points; Anthropocene: individual plots',
       x='Parallel contribution (CCA units)',y=NULL,fill=NULL,color=NULL,
-      caption='Boxes: median and quartiles; whiskers: 1.5 × IQR. Undefined projections omitted; zero contributions retained. Descriptive distributions.')+
+      caption='Boxes: median and quartiles; whiskers: 1.5 × IQR. Holocene points overlap across offsets; distributions are descriptive.')+
     ggplot2::theme_minimal(base_size=20)+ggplot2::theme(panel.grid.minor=ggplot2::element_blank(),
       panel.grid.major.y=ggplot2::element_blank(),axis.text=ggplot2::element_text(size=17),
       axis.text.y=ggplot2::element_text(face=if(type=='species') 'italic' else 'plain'),

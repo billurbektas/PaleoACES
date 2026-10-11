@@ -150,17 +150,17 @@ jsonlite::write_json(provenance,file.path(out,'provenance.json'),pretty=TRUE,aut
 if(isTRUE(getOption('paleoaces.render_figures',TRUE))) {
   for(type in c('species','climate')) {
     values=if(type=='species') species_boxplots else climate_boxplots
-    pdf_path=file.path(plot_dir,paste0(type,'_boxplots_by_offset.pdf'))
+    pdf_path=file.path(plot_dir,paste0(type,'_boxplots.pdf'))
     cairo_pdf(pdf_path,width=16,height=if(type=='species') 9 else 6)
-    tryCatch(for(offset in seq(0,900,100)) print(contribution_boxplot(values,type,offset,reference)),
+    tryCatch(print(contribution_boxplot(values,type,reference)),
       finally=dev.off())
     # Existing figure contract keeps diagnostic plot directories PDF-only.
-    ggsave(file.path(out,paste0(type,'_boxplot_offset_0.png')),
-      contribution_boxplot(values,type,0,reference),width=16,height=if(type=='species') 9 else 6,dpi=140,bg='white')
+    ggsave(file.path(out,paste0(type,'_boxplot.png')),
+      contribution_boxplot(values,type,reference),width=16,height=if(type=='species') 9 else 6,dpi=140,bg='white')
   }
 }
 notes=c('Standalone fixed-CCA displacement contribution analysis. No additional statistical models.',
-  'All ten offsets, including 800, are retained separately. No R2 weights or offset exclusion.',
+  'All ten offsets, including 800, remain identifiable in the calculation records and sensitivity summaries. No R2 weights or offset exclusion.',
   'Species: mean of sample-level relative weights in each Holocene bin; Delta q times fixed species positions.',
   'Climate: change one raw seasonal variable at a time, hold other variables at their initial values, subtract initial LC.',
   'All contributions are raw CCA displacements: no division by elapsed years and no annualization. Elapsed times are context only.',
@@ -169,7 +169,7 @@ notes=c('Standalone fixed-CCA displacement contribution analysis. No additional 
   'Holocene uncertainty is calculated after realization-level contributions, with all and nmin2 sampling rules.',
   'Trajectory summaries first average supported transitions within lake/draw/offset, then equal-weight available lakes within park/draw/offset.',
   'Boxplots use one median across finite Bacon draws per actual Holocene transition and offset; each modern plot enters once.',
-  'Boxplots compare parallel contributions between eras within each park; all ten offsets have separate pages with common raw-contribution scales.',
+  'Each boxplot figure combines all offset-specific Holocene transition medians as descriptive points, without another median across offsets; modern plots enter once.',
   'Offset origins, adjacent shared endpoints, chronology draws and unequal lake coverage are not independent replicates.',
   'Component medians need not sum after aggregation; additivity is verified for every original transition/draw.',
   'Bacon percentile summaries are conditional on valid transitions; CCA and climate-model uncertainty are not propagated.',

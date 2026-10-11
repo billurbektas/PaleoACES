@@ -217,13 +217,23 @@ for(type in c('species','climate')) {
   stopifnot(!anyNA(index),!anyDuplicated(index),nrow(expected_a)==nrow(actual),
     all(is.na(actual$offset)),all(is.na(actual$n_present_draws)))
   close(actual$value[index],expected_a$value)
-  # Filter each page exactly as in the plot. The modern observations stay unique.
-  for(offset in seq(0,900,100)) {
-    page=box |> filter(era=='Anthropocene' | .data$offset==.env$offset,is.finite(value))
-    modern_page=page |> filter(era=='Anthropocene')
-    stopifnot(nrow(modern_page)==sum(is.finite(expected_a$value)),
-      !anyDuplicated(make_key(modern_page,grouping)))
-  }
+  # A single figure contains all offset-specific transition points and each
+  # modern plot once. No second median collapses the offset-specific values.
+  plotted=contribution_boxplot(box,type,reference)$data
+  plotted_h=plotted |> filter(era=='Holocene')
+  plotted_a=plotted |> filter(era=='Anthropocene')
+  h_keys=c('site','lake','offset','age_hi','age_lo',component,'measure')
+  expected_finite_h=expected_h |> filter(is.finite(value))
+  index=match(make_key(expected_finite_h,h_keys),make_key(plotted_h,h_keys))
+  stopifnot(!anyNA(index),!anyDuplicated(index),nrow(plotted_h)==nrow(expected_finite_h),
+    setequal(plotted_h$offset,seq(0,900,100)),
+    nrow(plotted_a)==sum(is.finite(expected_a$value)),
+    !anyDuplicated(make_key(plotted_a,grouping)))
+  close(plotted_h$value[index],expected_finite_h$value)
+  expected_finite_a=expected_a |> filter(is.finite(value))
+  index=match(make_key(expected_finite_a,grouping),make_key(plotted_a,grouping))
+  stopifnot(!anyNA(index))
+  close(plotted_a$value[index],expected_finite_a$value)
 }
 cat('Every Bacon distribution, draw-support count, per-offset summary and era/park descriptive estimate reconstructed from detailed records.\n')
 # Geometry edge cases: off-reference movement, opposite movement, zero component, stationary
