@@ -12,8 +12,9 @@ PALEOACES_DOCS = c(
   "docs/SCIENTIFIC_DECISIONS.md",
   "Cores/CONTROL_POINTS.md",
   "Cores/SOURCES_MORA.md",
-  "docs/methods/000_NOCA_cleaning_guide.md",
-  "docs/methods/README_occurrence_consolidation.md",
+  "docs/review/000_NOCA_cleaning_guide.md",
+  "docs/review/README_occurrence_consolidation.md",
+  "docs/review/README_cca_transition_contributions.md",
   "data/MORA/README_data_raw.md",
   "data/NOCA/NOCA_paleo/SOURCES.md",
   "data/README_outputs_MORA_AT.md",
@@ -22,5 +23,5 @@ PALEOACES_DOCS = c(
 
 PALEOACES_AUTHORITY_DOCS = c(
   "README.md", "docs/WORKFLOW.md", "docs/SCIENTIFIC_DECISIONS.md",
-  "docs/methods/000_NOCA_cleaning_guide.md", "docs/methods/README_occurrence_consolidation.md"
+  "docs/review/000_NOCA_cleaning_guide.md", "docs/review/README_occurrence_consolidation.md"
 )

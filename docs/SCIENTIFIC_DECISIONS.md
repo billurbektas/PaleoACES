@@ -51,7 +51,7 @@ CCA changes modern and Holocene positions, tracking metrics and direction
 summaries. Figures 2 and 3 and the report are regenerated. Other cleaning choices,
 CCA constraints, scaling and age-model settings are unchanged.
 
-[Former rationale, source evidence and reversal](methods/README_occurrence_consolidation.md#ponderosa-reinstatement)
+[Former rationale, source evidence and reversal](review/README_occurrence_consolidation.md#ponderosa-reinstatement)
 record the history. The increase in explained inertia under the former exclusion
 was not a valid selection criterion; reinstatement changed it from 16.57% to 15.69%
 before the matched-calibration decision below.
@@ -914,7 +914,7 @@ notes; any future chronology revision is separate work.
 - [MORA chronology sources](../Cores/SOURCES_MORA.md)
 - [NOCA paleo sources](../data/NOCA/NOCA_paleo/SOURCES.md)
 - [Survey-year sources](../data/SOURCES_SURVEY_YEARS.md)
-- [NOCA cleaning guide](methods/000_NOCA_cleaning_guide.md)
-- [Occurrence consolidation](methods/README_occurrence_consolidation.md)
+- [NOCA cleaning guide](review/000_NOCA_cleaning_guide.md)
+- [Occurrence consolidation](review/README_occurrence_consolidation.md)
 - [MORA raw-data reference](../data/MORA/README_data_raw.md)
 - [MORA output reference](../data/README_outputs_MORA_AT.md)

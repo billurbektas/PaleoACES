@@ -1,9 +1,9 @@
 {
   "mode": "snapshot",
-  "built_at_utc": "2026-10-11T15:01:05Z",
-  "run_id": "snapshot-2026-10-11T15:01:05Z",
-  "input_manifest_sha256": "2a7ad24229124114d8e4c8dd366f2a14d64af69845803a700389ee48f0d5de72",
-  "source_manifest_sha256": "d3bc3d66d67f32b51e57fc5a125bb8ff8415050b75308196583b2149232ede3d",
+  "built_at_utc": "2026-10-11T15:11:28Z",
+  "run_id": "snapshot-2026-10-11T15:11:28Z",
+  "input_manifest_sha256": "b3585bd4775771e19e9e0272be16b80ed55c18681c4bd1876ad56575e3576267",
+  "source_manifest_sha256": "a91da7d3b74c528adb8b365189cd745f8da947470eada3bebdb2a2e46543348f",
   "result_manifest_sha256": "765c28497211bb1b7aacf44542c4851bf279eda94b147f44adafa3110f253eab",
   "publication": "staged and validated before replacement",
   "chronology": "validated stored posteriors; no MCMC in reporting"

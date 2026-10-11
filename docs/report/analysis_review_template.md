@@ -63,7 +63,7 @@ NOCA excludes `BAK487` for its old clearcut, `BEAV6061` for uncertain relocation
 and `CARI449`/`CARI450` for GPS problems. The latter share coordinates despite
 conflicting elevations, and Rachel's notes supply no verified correction.
 These exclusions apply to both dates. The cleaned NOCA data contain 305 pairs;
-CCA eligibility is assessed later. The [cleaning guide](methods/000_NOCA_cleaning_guide.md)
+CCA eligibility is assessed later. The [cleaning guide](review/000_NOCA_cleaning_guide.md)
 and [GPS source note](review/NOCA_GPS_EXCLUSION.md) explain the decisions.
 
 {{correction_summary}}
@@ -175,7 +175,7 @@ primary climate-rate results.
 
 ## Taxonomy and species selection
 
-[Consolidation](methods/README_occurrence_consolidation.md) aligns Populus,
+[Consolidation](review/README_occurrence_consolidation.md) aligns Populus,
 Picea and Abies identifications across surveys and macrofossils. Acer circinatum
 and Taxus brevifolia are removed for stratum compatibility. Pinus ponderosa's
 manual exclusion was [reversed on 2026-10-08](SCIENTIFIC_DECISIONS.md#ponderosa-reinstatement);

@@ -14,8 +14,9 @@ The [analysis review](ANALYSIS_REVIEW.md) connects current results to intermedia
 | [SCIENTIFIC_DECISIONS](SCIENTIFIC_DECISIONS.md) | Scientific rationale and open questions |
 | [CONTROL_POINTS](../Cores/CONTROL_POINTS.md) | Methods or input provenance |
 | [SOURCES_MORA](../Cores/SOURCES_MORA.md) | Methods or input provenance |
-| [000_NOCA_cleaning_guide](methods/000_NOCA_cleaning_guide.md) | Methods or input provenance |
-| [README_occurrence_consolidation](methods/README_occurrence_consolidation.md) | Methods or input provenance |
+| [000_NOCA_cleaning_guide](review/000_NOCA_cleaning_guide.md) | Methods or input provenance |
+| [README_occurrence_consolidation](review/README_occurrence_consolidation.md) | Methods or input provenance |
+| [README_cca_transition_contributions](review/README_cca_transition_contributions.md) | Standalone species/climate displacement contributions, uncertainty and boxplots |
 | [README_data_raw](../data/MORA/README_data_raw.md) | Methods or input provenance |
 | [SOURCES](../data/NOCA/NOCA_paleo/SOURCES.md) | Methods or input provenance |
 | [README_outputs_MORA_AT](../data/README_outputs_MORA_AT.md) | Methods or input provenance |

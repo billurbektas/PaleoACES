@@ -20,8 +20,8 @@ the maintained code, scientific documents and authoritative local inputs.
 | `plot/` | Manuscript Figures 2–4, each as a PDF and PNG. |
 | `plot/test_figures/` | Diagnostic PDFs. |
 | `docs/` | Scientific review, decisions, workflow, indexes and HTML companions. |
-| `docs/methods/`, `docs/references/` | Detailed cleaning, consolidation, metric methods and literature context. |
-| `docs/review/` | Combined analysis reading copy, tracking support and preservation evidence, GPS source note, stored Pb210 comparison and TraCE21k–V2.1 appendix. |
+| `docs/review/` | Cleaning and consolidation guides, contribution methods, combined analysis reading copy, tracking support and preservation evidence, GPS source note, stored Pb210 comparison and the existing TraCE21k–V2.1 appendix. |
+| `docs/references/` | Literature context. |
 | `docs/report/`, `docs/assets/analysis/` | Review template, figure selection and dated survey-decision baseline; generated previews, curated tables and verification metadata. |
 | `related_publications/` | Local reference papers. |
 

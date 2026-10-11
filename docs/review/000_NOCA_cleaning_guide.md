@@ -62,7 +62,7 @@ to the paper's coordinate CSV, which still contains this collision. Her other
 notes provide no correction. The author requested exclusion of both plots for
 a **GPS problem**. The cleaner removes both dates before downstream outputs
 and preserves raw coordinates in the collision audit with an excluded status.
-See the [source review and decision](../review/NOCA_GPS_EXCLUSION.md).
+See the [source review and decision](NOCA_GPS_EXCLUSION.md).
 
 ## Paired-plot rules
 
@@ -77,8 +77,8 @@ Four otherwise paired plots are excluded at study level:
 |---|---|
 | `BAK487` | Old clearcut; removed from Wilson's final analysis (`notes_from_Rachel/Burned plots.rtf`). |
 | `BEAV6061` | Historical location uncertain; elevation was inaccurate and the resurvey landed in an avalanche chute (`notes_from_Rachel/Missing trees.rtf`). |
-| `CARI449` | GPS problem; shares coordinates with CARI450 despite different elevation, with no verified replacement ([source review](../review/NOCA_GPS_EXCLUSION.md)). |
-| `CARI450` | GPS problem; shares coordinates with CARI449 despite different elevation, with no verified replacement ([source review](../review/NOCA_GPS_EXCLUSION.md)). |
+| `CARI449` | GPS problem; shares coordinates with CARI450 despite different elevation, with no verified replacement ([source review](NOCA_GPS_EXCLUSION.md)). |
+| `CARI450` | GPS problem; shares coordinates with CARI449 despite different elevation, with no verified replacement ([source review](NOCA_GPS_EXCLUSION.md)). |
 
 These are study-design exclusions, not silent cleaning losses.
 

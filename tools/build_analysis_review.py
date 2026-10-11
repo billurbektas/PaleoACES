@@ -44,7 +44,7 @@ def input_files():
     files += list((ROOT / 'Cores/provenance').glob('*.json'))
     files += list((ROOT / 'Cores/provenance/chronology_sources_before_move').glob('*.txt'))
     files += list((ROOT/'R/tests/fixtures').glob('*.csv'))
-    files += [ROOT/p for p in ['docs/SCIENTIFIC_DECISIONS.md', 'docs/methods/000_NOCA_cleaning_guide.md', 'docs/methods/README_occurrence_consolidation.md', 'docs/review/NOCA_GPS_EXCLUSION.md', 'docs/review/TRACKING_DATA_VALIDATION.md', 'docs/review/NOCA_TRACKING_MIGRATION_CHECK.csv', 'docs/review/TRACKING_COMPACT_PRESERVATION.csv', 'docs/review/TRACKING_INDEPENDENT_CHECKS.csv']]
+    files += [ROOT/p for p in ['docs/SCIENTIFIC_DECISIONS.md', 'docs/review/000_NOCA_cleaning_guide.md', 'docs/review/README_occurrence_consolidation.md', 'docs/review/README_cca_transition_contributions.md', 'docs/review/NOCA_GPS_EXCLUSION.md', 'docs/review/TRACKING_DATA_VALIDATION.md', 'docs/review/NOCA_TRACKING_MIGRATION_CHECK.csv', 'docs/review/TRACKING_COMPACT_PRESERVATION.csv', 'docs/review/TRACKING_INDEPENDENT_CHECKS.csv']]
     return sorted(set(files))
 
 def manifest(files): return [dict(path=relative(p), bytes=p.stat().st_size, sha256=sha(p)) for p in files]

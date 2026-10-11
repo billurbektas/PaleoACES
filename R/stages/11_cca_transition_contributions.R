@@ -1,7 +1,8 @@
 # STANDALONE: fixed-CCA species and climate-variable displacement contributions.
 # Rscript R/stages/11_cca_transition_contributions.R
 # Not called by R/workflow.R. Reads existing reference, tracking and chronology;
-# writes only its own output/cca_transition_contributions/ and figure directory.
+# writes its own tables under output/cca_transition_contributions/ and two
+# diagnostic PDFs directly under plot/test_figures/.
 suppressPackageStartupMessages({library(here);library(tidyverse);library(vegan)})
 source(here('R/helpers/cca_transition_contributions.R'),local=TRUE)
 N_DRAWS=100;DRAW_SEED=42
@@ -110,7 +111,7 @@ for(summary in list(species_summary$uncertainty,climate_summary$uncertainty)) {
 }
 if(!identical(input_md5,tools::md5sum(paths))) stop('An input changed during the standalone calculation')
 out=here('output/cca_transition_contributions')
-plot_dir=here('plot/test_figures/cca_transition_contributions')
+plot_dir=here('plot/test_figures')
 dir.create(out,recursive=TRUE,showWarnings=FALSE)
 dir.create(plot_dir,recursive=TRUE,showWarnings=FALSE)
 tables=list(species_realizations=species,climate_realizations=climate,
@@ -150,7 +151,7 @@ jsonlite::write_json(provenance,file.path(out,'provenance.json'),pretty=TRUE,aut
 if(isTRUE(getOption('paleoaces.render_figures',TRUE))) {
   for(type in c('species','climate')) {
     values=if(type=='species') species_boxplots else climate_boxplots
-    pdf_path=file.path(plot_dir,paste0(type,'_boxplots.pdf'))
+    pdf_path=file.path(plot_dir,paste0('fig_cca_transition_',type,'_boxplots.pdf'))
     cairo_pdf(pdf_path,width=16,height=if(type=='species') 9 else 6)
     tryCatch(print(contribution_boxplot(values,type,reference)),
       finally=dev.off())

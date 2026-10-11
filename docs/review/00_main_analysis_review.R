@@ -3721,7 +3721,7 @@ cat("\nwritten: output/paleo_env.csv\n")
 # so a decision here can be changed and re-applied in seconds.
 #
 # Full prose rationale, with the quotes and the evidence tables:
-#   docs/methods/README_occurrence_consolidation.md
+#   docs/review/README_occurrence_consolidation.md
 #
 # =============================================================================
 # WHY THERE IS AN UNDERSTORY PROBLEM AT ALL
@@ -3863,7 +3863,7 @@ NON_TAXA = c("unknown", "Abies sp.", "Unknown tree.")
 # ordination position are not exclusion criteria. It now follows the same >=20
 # species-selection rule as other tree taxa in 05_cca_model.R.
 # The former rationale and the author's reversal are recorded in
-# docs/methods/README_occurrence_consolidation.md and SCIENTIFIC_DECISIONS.md.
+# docs/review/README_occurrence_consolidation.md and SCIENTIFIC_DECISIONS.md.
 
 # (3) TAXONOMIC HARMONISATION.
 # Each entry says WHICH SITE and WHICH PERIOD it applies to, because two of the

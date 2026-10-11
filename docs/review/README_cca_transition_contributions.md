@@ -5,7 +5,7 @@ Run `Rscript R/stages/11_cca_transition_contributions.R`, then
 The script is deliberately outside the active workflow. It reads the existing
 CCA reference, occurrence records, whole Bacon draws and canonical calculation
 tables; it writes only new files in `output/cca_transition_contributions/` and
-`plot/test_figures/cca_transition_contributions/`. It does not refit the CCA,
+two named PDFs directly in `plot/test_figures/`. It does not refit the CCA,
 regenerate chronology, download climate, fit statistical models or replace
 other analysis outputs. All ten 1,000-year offsets, including 800, retain their
 identities in the calculations and sensitivity summaries, without R² weights.
@@ -189,10 +189,10 @@ Species and climate variables stay on the **y-axis**, with raw signed CCA
 parallel contributions on the **x-axis**. MORA/NOCA form two columns,
 with the two eras in side-by-side boxes.
 Each analysis has one single-page PDF in
-`plot/test_figures/cca_transition_contributions/`:
+`plot/test_figures/`:
 
-- [Species boxplots](../../plot/test_figures/cca_transition_contributions/species_boxplots.pdf).
-- [Climate-variable boxplots](../../plot/test_figures/cca_transition_contributions/climate_boxplots.pdf).
+- [Species boxplots](../../plot/test_figures/fig_cca_transition_species_boxplots.pdf).
+- [Climate-variable boxplots](../../plot/test_figures/fig_cca_transition_climate_boxplots.pdf).
 
 Matching previews, `species_boxplot.png` and
 `climate_boxplot.png`, are saved beside the calculation tables in

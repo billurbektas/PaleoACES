@@ -226,8 +226,9 @@ the verification needed to use the existing posteriors.
 | [MORA core sources](../Cores/SOURCES_MORA.md) | MORA chronology provenance |
 | [NOCA paleo sources](../data/NOCA/NOCA_paleo/SOURCES.md) | Panther Potholes vegetation/fire provenance |
 | [Survey-year sources](../data/SOURCES_SURVEY_YEARS.md) | Modern survey and climate-window provenance |
-| [NOCA cleaning guide](methods/000_NOCA_cleaning_guide.md) | Tree patch, exclusions, and outputs |
-| [Occurrence consolidation](methods/README_occurrence_consolidation.md) | Taxonomy and retention decisions |
+| [NOCA cleaning guide](review/000_NOCA_cleaning_guide.md) | Tree patch, exclusions, and outputs |
+| [Occurrence consolidation](review/README_occurrence_consolidation.md) | Taxonomy and retention decisions |
+| [Transition contributions](review/README_cca_transition_contributions.md) | Standalone fixed-CCA species/climate displacement methods and boxplots |
 | [MORA raw-data reference](../data/MORA/README_data_raw.md) | Reference-only upstream package description |
 | [MORA output reference](../data/README_outputs_MORA_AT.md) | Reference-only upstream outputs |
 
