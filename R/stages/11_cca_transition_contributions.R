@@ -99,6 +99,8 @@ for(variable in vars) {
 cat('Summarizing whole-draw uncertainty separately within each offset.\n')
 species_summary=contribution_summaries(species,'species',N_DRAWS)
 climate_summary=contribution_summaries(climate,'climate',N_DRAWS)
+species_boxplots=contribution_boxplot_values(species,species_summary$uncertainty,'species')
+climate_boxplots=contribution_boxplot_values(climate,climate_summary$uncertainty,'climate')
 for(summary in list(species_summary$uncertainty,climate_summary$uncertainty)) {
   if(any(summary$n_valid_draws>summary$n_eligible_draws) ||
      any(summary$n_eligible_draws>summary$n_present_draws) ||
@@ -117,7 +119,9 @@ tables=list(species_realizations=species,climate_realizations=climate,
   species_holocene_offset_summary=species_summary$offset_summary,
   climate_holocene_offset_summary=climate_summary$offset_summary,
   species_era_site_summary=species_summary$era_site,
-  climate_era_site_summary=climate_summary$era_site,transition_validation=validation,
+  climate_era_site_summary=climate_summary$era_site,
+  species_boxplot_values=species_boxplots,climate_boxplot_values=climate_boxplots,
+  transition_validation=validation,
   reference_source_audit=source_audit,
   species_basis=tibble(species=rownames(basis$positions),CCA1=basis$positions[,1],CCA2=basis$positions[,2],
     calibration_column_mass=reference$model$colsum[rownames(basis$positions)]),
@@ -126,16 +130,17 @@ tables=list(species_realizations=species,climate_realizations=climate,
 iwalk(tables,~write_csv(.x,file.path(out,paste0(.y,'.csv'))))
 schema=imap_dfr(tables,function(data,name) tibble(table=paste0(name,'.csv'),column=names(data),
   storage_type=map_chr(data,~class(.x)[1]),
-  unit=case_when(grepl('_per_century$',names(data))~'CCA units per century',
-    names(data) %in% c('weight_t1','weight_t2','weight_change','calibration_column_mass')~'unitless relative species weight',
-    names(data) %in% c('contribution_CCA1','contribution_CCA2','CCA1','CCA2')~'CCA units',
+  unit=case_when(names(data) %in% c('weight_t1','weight_t2','weight_change','calibration_column_mass')~'unitless relative species weight',
+    names(data) %in% c('contribution_CCA1','contribution_CCA2','parallel_contribution','CCA1','CCA2')~'CCA units',
+    names(data)=='value' & grepl('boxplot_values$',name)~'CCA units',
     names(data) %in% c('age_hi','age_lo','interval_mid_cal_bp')~'cal BP',
     names(data) %in% c('vegetation_dt_years','climate_dt_years','offset')~'years',
     names(data) %in% c('value_t1','value_t2','value_change')~'physical_unit column',
-    names(data) %in% c('mean','sd','median','q025','q975','estimate')~'measure-dependent; weight_change unitless, otherwise CCA units per century',
+    names(data) %in% c('mean','sd','median','q025','q975','estimate')~'measure-dependent; weight_change unitless, otherwise CCA units',
     TRUE~NA_character_)))
 write_csv(schema,file.path(out,'schema.csv'))
 provenance=list(scaling='sites',hill=FALSE,axes=1:2,n_draws=N_DRAWS,draw_seed=DRAW_SEED,
+  contribution_unit='CCA units',annualized=FALSE,
   bin_width_years=1000L,offsets=seq(0,900,100),direction_epsilon=CCA_CONTRIBUTION_EPSILON,
   numerical_tolerance=CCA_CONTRIBUTION_TOLERANCE,
   input_md5=as.list(input_md5),source_md5=as.list(tools::md5sum(here(c(
@@ -144,26 +149,27 @@ provenance=list(scaling='sites',hill=FALSE,axes=1:2,n_draws=N_DRAWS,draw_seed=DR
 jsonlite::write_json(provenance,file.path(out,'provenance.json'),pretty=TRUE,auto_unbox=TRUE)
 if(isTRUE(getOption('paleoaces.render_figures',TRUE))) {
   for(type in c('species','climate')) {
-    summary=if(type=='species') species_summary$era_site else climate_summary$era_site
-    pdf_path=file.path(plot_dir,paste0(type,'_heatmaps_by_offset.pdf'))
+    values=if(type=='species') species_boxplots else climate_boxplots
+    pdf_path=file.path(plot_dir,paste0(type,'_boxplots_by_offset.pdf'))
     cairo_pdf(pdf_path,width=16,height=if(type=='species') 9 else 6)
-    tryCatch(for(offset in seq(0,900,100)) print(contribution_heatmap(summary,type,offset,reference)),
+    tryCatch(for(offset in seq(0,900,100)) print(contribution_boxplot(values,type,offset,reference)),
       finally=dev.off())
     # Existing figure contract keeps diagnostic plot directories PDF-only.
-    ggsave(file.path(out,paste0(type,'_heatmap_offset_0.png')),
-      contribution_heatmap(summary,type,0,reference),width=16,height=if(type=='species') 9 else 6,dpi=140,bg='white')
+    ggsave(file.path(out,paste0(type,'_boxplot_offset_0.png')),
+      contribution_boxplot(values,type,0,reference),width=16,height=if(type=='species') 9 else 6,dpi=140,bg='white')
   }
 }
 notes=c('Standalone fixed-CCA displacement contribution analysis. No additional statistical models.',
   'All ten offsets, including 800, are retained separately. No R2 weights or offset exclusion.',
   'Species: mean of sample-level relative weights in each Holocene bin; Delta q times fixed species positions.',
   'Climate: change one raw seasonal variable at a time, hold other variables at their initial values, subtract initial LC.',
-  'Species rates use vegetation elapsed time; climate rates use climate elapsed time.',
-  'Parallel is signed along the reference movement; perpendicular is signed along its +90-degree rotation.',
+  'All contributions are raw CCA displacements: no division by elapsed years and no annualization. Elapsed times are context only.',
+  'Parallel contribution is signed along the reference movement: positive along it, negative against it.',
   'Species reference is Delta LC; climate-variable reference is Delta WA. Undefined directions stay NA.',
   'Holocene uncertainty is calculated after realization-level contributions, with all and nmin2 sampling rules.',
   'Trajectory summaries first average supported transitions within lake/draw/offset, then equal-weight available lakes within park/draw/offset.',
-  'Heatmap Holocene estimates are medians across these whole-draw park means; modern estimates are means across valid plots.',
+  'Boxplots use one median across finite Bacon draws per actual Holocene transition and offset; each modern plot enters once.',
+  'Boxplots compare parallel contributions between eras within each park; all ten offsets have separate pages with common raw-contribution scales.',
   'Offset origins, adjacent shared endpoints, chronology draws and unequal lake coverage are not independent replicates.',
   'Component medians need not sum after aggregation; additivity is verified for every original transition/draw.',
   'Bacon percentile summaries are conditional on valid transitions; CCA and climate-model uncertainty are not propagated.',

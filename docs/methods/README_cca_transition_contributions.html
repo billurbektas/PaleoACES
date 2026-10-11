@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: c9eb6bddb1050f0cbb9efe14b42b5f1c -->
+<!-- paleoaces-source-md5: 9a1e44dea5d67b3a90123dc5d8b577c5 -->
 
 <html>
 
@@ -1594,34 +1594,35 @@ changes are exported for interpretation. These vectors are an algebraic
 attribution within the fitted CCA, rather than causal effects of
 independent climate variables.</p>
 </div>
-<div id="signed-projections-and-rates" class="section level2">
-<h2>Signed projections and rates</h2>
-<p>For reference vector <span class="math inline">\(r=(r_1,r_2)\)</span>, define</p>
+<div id="signed-projections-of-raw-displacement" class="section level2">
+<h2>Signed projections of raw displacement</h2>
+<p>For reference vector <span class="math inline">\(r=(r_1,r_2)\)</span>, define the unit
+direction</p>
 <p><span class="math display">\[
-u=\frac{r}{\|r\|},\qquad u_\perp=(-u_2,u_1).
+u=\frac{r}{\|r\|}.
 \]</span></p>
-<p>Each vector contributes <span class="math inline">\(V\cdot u\)</span>
-parallel and <span class="math inline">\(V\cdot u_\perp\)</span>
-perpendicular to the reference. Positive parallel means movement in the
-same direction; negative means movement against it. Positive
-perpendicular means counterclockwise in the fixed CCA1/CCA2 plane, using
-its +90-degree rotation. The perpendicular sign is a geometric
-convention, not a measure of benefit.</p>
-<p>Species use <strong>ΔLC</strong> as their reference and rates equal
-their vectors multiplied by <code>100 / vegetation_dt_years</code>.
-Climate variables use <strong>ΔWA</strong> as their reference and rates
-equal their vectors multiplied by <code>100 / climate_dt_years</code>.
-Modern vegetation and climate elapsed times can differ; both remain
-explicit. The rate fields are in <strong>CCA units per century</strong>.
-Relative species weights remain unitless; seasonal endpoint values
-retain their original physical units.</p>
+<p>The signed parallel contribution is the scalar <span class="math inline">\(V\cdot u\)</span>. Positive values mean movement
+along the reference direction; negative values mean movement against it.
+Raw CCA1 and CCA2 coordinates are retained as the underlying two-axis
+geometry for verifying vector additivity.</p>
+<p>Species use <strong>ΔLC</strong> as their reference; climate
+variables use <strong>ΔWA</strong>. All coordinate vectors and signed
+projections are <strong>raw displacement in CCA units</strong>. They are
+not divided by elapsed years or multiplied by 100. Both elapsed times
+remain contextual information only: changing either duration without
+changing the endpoints leaves every contribution unchanged.</p>
+<p>These distributions compare movement over each era’s actual
+transition windows, not movement rates. Holocene transitions span 1,000
+years, while modern survey and climate windows are shorter and can
+differ. Relative species weights remain unitless; seasonal endpoint
+values retain their original physical units.</p>
 <p>Reference magnitudes at or below <code>1e-8</code> have undefined
-directions. Both projections become <code>NA</code> and
-<code>reference_direction_valid = FALSE</code>, while raw vectors,
-weight changes and coordinate rates remain available. A zero contributor
-projected onto a valid reference gives zero. A stationary observed
-community makes climate-variable projections undefined, but does not
-remove species vectors or valid projections onto ΔLC.</p>
+directions. The parallel contribution becomes <code>NA</code> and
+<code>reference_direction_valid = FALSE</code>, while raw vectors and
+weight changes remain available. A zero contributor projected onto a
+valid reference gives zero. A stationary observed community makes
+climate-variable projections undefined, but does not remove species
+vectors or valid projections onto ΔLC.</p>
 </div>
 <div id="long-format-products" class="section level2">
 <h2>Long-format products</h2>
@@ -1642,44 +1643,53 @@ remove species vectors or valid projections onto ΔLC.</p>
 <tr class="odd">
 <td><code>species_realizations.csv</code></td>
 <td>374,850 transition/realization × species rows, combining both eras.
-Endpoint weights, changes, raw CCA vectors, coordinate rates, signed
-parallel/perpendicular rates and direction validity.</td>
+Endpoint weights, changes, raw CCA vectors, signed parallel
+contributions and direction validity.</td>
 </tr>
 <tr class="even">
 <td><code>climate_realizations.csv</code></td>
 <td>107,100 transition/realization × seasonal variable rows, combining
-both eras. Physical endpoint values and changes, raw CCA vectors,
-coordinate rates, signed parallel/perpendicular rates and direction
-validity.</td>
+both eras. Physical endpoint values and changes, raw CCA vectors, signed
+parallel contributions and direction validity.</td>
 </tr>
 <tr class="odd">
 <td><code>species_holocene_uncertainty.csv</code></td>
-<td>38,220 lake × offset × actual transition × species × measure ×
+<td>30,576 lake × offset × actual transition × species × measure ×
 sampling-rule distributions.</td>
 </tr>
 <tr class="even">
 <td><code>climate_holocene_uncertainty.csv</code></td>
-<td>8,736 corresponding seasonal-variable distributions.</td>
+<td>6,552 corresponding seasonal-variable distributions.</td>
 </tr>
 <tr class="odd">
 <td><code>species_holocene_offset_summary.csv</code></td>
-<td>5,600 lake × offset × species × measure × sampling-rule trajectory
+<td>4,480 lake × offset × species × measure × sampling-rule trajectory
 summaries, preserving whole draws.</td>
 </tr>
 <tr class="even">
 <td><code>climate_holocene_offset_summary.csv</code></td>
-<td>1,280 corresponding seasonal-variable summaries.</td>
+<td>960 corresponding seasonal-variable summaries.</td>
 </tr>
 <tr class="odd">
 <td><code>species_era_site_summary.csv</code>,
 <code>climate_era_site_summary.csv</code></td>
-<td>The descriptive values behind the heatmaps, with support and
-aggregation documented below.</td>
+<td>Descriptive park-level trajectory/plot means and chronology support;
+separate from the boxplot observations.</td>
+</tr>
+<tr class="even">
+<td><code>species_boxplot_values.csv</code></td>
+<td>12,320 transition/plot × species rows: actual Holocene transition
+medians and individual modern values, retaining undefined entries and
+draw support.</td>
+</tr>
+<tr class="odd">
+<td><code>climate_boxplot_values.csv</code></td>
+<td>3,520 corresponding transition/plot × seasonal-variable rows.</td>
 </tr>
 <tr class="even">
 <td><code>transition_validation.csv</code></td>
 <td>One row for each of the 26,775 original transitions/realizations:
-raw-vector, rate and projection sum errors, and independent
+raw-vector and projection sum errors, and independent
 reference-direction flags.</td>
 </tr>
 <tr class="odd">
@@ -1707,13 +1717,11 @@ results.</td>
 records include both elapsed times and both endpoint sample counts.
 Modern endpoint sample counts equal one plot at each survey, not numbers
 of tree records.</p>
-<p>Four rate measures are <code>contribution_CCA1_per_century</code>,
-<code>contribution_CCA2_per_century</code>,
-<code>parallel_rate_per_century</code> and
-<code>perpendicular_rate_per_century</code>. Species summaries also
-retain <code>weight_change</code>. Raw <code>contribution_CCA1</code>
-and <code>contribution_CCA2</code> sum to displacement before
-annualization.</p>
+<p>Three displacement measures are <code>contribution_CCA1</code>,
+<code>contribution_CCA2</code> and <code>parallel_contribution</code>,
+all in CCA units. Species summaries also retain unitless
+<code>weight_change</code>. There are no rate columns or annualized
+calculations in this standalone analysis.</p>
 </div>
 <div id="bacon-uncertainty-sampling-support-and-offset-sensitivity" class="section level2">
 <h2>Bacon uncertainty, sampling support and offset sensitivity</h2>
@@ -1742,46 +1750,66 @@ chronology and bin-placement sensitivities, not statistical model
 confidence intervals. CCA calibration and climate-model uncertainty are
 not propagated.</p>
 </div>
-<div id="heatmaps" class="section level2">
-<h2>Heatmaps</h2>
-<p>Each PDF contains ten pages, one for each offset, in
+<div id="horizontal-boxplots" class="section level2">
+<h2>Horizontal boxplots</h2>
+<p>Species and climate variables stay on the <strong>y-axis</strong>,
+with raw signed CCA parallel contributions on the
+<strong>x-axis</strong>. MORA/NOCA form two columns, with the two eras
+in side-by-side boxes. Each PDF contains ten pages, one per offset, in
 <code>plot/test_figures/cca_transition_contributions/</code>:</p>
 <ul>
-<li><code>species_heatmaps_by_offset.pdf</code>.</li>
-<li><code>climate_heatmaps_by_offset.pdf</code>.</li>
+<li><a href="../../plot/test_figures/cca_transition_contributions/species_boxplots_by_offset.pdf">Species
+boxplots</a>.</li>
+<li><a href="../../plot/test_figures/cca_transition_contributions/climate_boxplots_by_offset.pdf">Climate-variable
+boxplots</a>.</li>
 </ul>
-<p>Offset-0 PNG previews, <code>species_heatmap_offset_0.png</code> and
-<code>climate_heatmap_offset_0.png</code>, are saved beside the new
+<p>Offset-0 previews, <code>species_boxplot_offset_0.png</code> and
+<code>climate_boxplot_offset_0.png</code>, are saved beside the
 calculation tables in <code>output/cca_transition_contributions/</code>,
-preserving the existing PDF-only diagnostic figure contract.</p>
-<p>Each page compares Holocene MORA, Holocene NOCA, Anthropocene MORA
-and Anthropocene NOCA, with separate parallel/perpendicular panels.
-Within each Holocene draw and offset, available lake trajectory means
-are averaged with equal lake weights; the displayed estimate is their
-median across whole draws. The contributing lake count is reported
-explicitly. Modern estimates are means across valid plot contributions,
-used once each; no modern chronology distribution or fitted confidence
-interval is invented. The Holocene summaries describe each lake’s
-available coverage, without aligning or filling records.</p>
-<p>The signed, linear color scale is held fixed across all pages of a
-given PDF. Exact values are printed in the tiles. Species and climate
-figures use their own scales. Component medians need not add up after
-aggregation; exact additivity is verified at the original
-transition/draw level. These contributions decompose displacement, not
-changes in lag or counterfactual pace/direction effects.</p>
+preserving the existing PDF-only diagnostic figure contract. The
+previous heatmaps are retired.</p>
+<p>For each species or climate variable, a Holocene boxplot observation
+is the median across finite Bacon draws of <strong>one actual lake
+transition within that offset</strong>. Draws are summarized
+independently for each measure; an undefined parallel contribution does
+not remove a valid coordinate contribution. Every modern plot
+contributes its individual parallel contribution once per species or
+climate variable. Modern values are shown again on each offset page for
+comparison; this does not add observations. Chronology draws and offsets
+are never pooled into a boxplot sample.</p>
+<p>The exported <code>*_boxplot_values.csv</code> files retain
+<code>NA</code> observations and Holocene present, valid and undefined
+draw counts. Plotting omits undefined values but retains defined zeros.
+Boxes show the median and interquartile range, whiskers extend to values
+within 1.5 × IQR, and points beyond the whiskers are shown. These are
+descriptive distributions, not confidence intervals. Lakes with more
+supported transitions contribute more transition observations; this
+choice is explicit rather than an equal-lake summary.</p>
+<p>Raw-contribution x limits stay fixed across parks, eras and all pages
+within each PDF. Species and climate figures have their own limits. The
+separate <code>*_era_site_summary.csv</code> tables still average finite
+transitions within each lake/draw/offset, then equally weight available
+lake means within park/draw/offset and take the median across draws.
+Modern park summaries are means across valid plots. These numerical
+summaries do not supply the boxplot observations.</p>
+<p>Component medians need not add up after aggregation; exact additivity
+is verified at the original transition/draw level. These contributions
+decompose displacement, not changes in lag or counterfactual
+pace/direction effects. Adjacent transitions share endpoints, and lake
+histories, chronology draws and alternative offsets do not create
+independent ecological replicates.</p>
 </div>
 <div id="numerical-verification-and-provenance" class="section level2">
 <h2>Numerical verification and provenance</h2>
 <p>The producer checks the preserved calibration and sample identities,
 WA endpoints, climate LC endpoints, every species and climate vector
-sum, each rate sum, projected sums and recovery of each coordinate
-vector from its parallel/perpendicular pair. An independent test
-rebuilds occurrences, sample-normalized bin weights, sample-mean WA,
+sum, parallel contribution sums. An independent test rebuilds
+occurrences, sample-normalized bin weights, sample-mean WA,
 lake-specific raw climate bins, direct-coefficient climate vectors,
-trigonometric projections, all uncertainty distributions, support counts
-and heatmap estimates. Synthetic cases test stationary/tiny references,
-zero components, signs, unequal elapsed times, sparse draws and empty
-sensitivity groups.</p>
+trigonometric projections, all uncertainty distributions, support
+counts, park summaries and every boxplot observation. Synthetic cases
+test stationary/tiny references, zero components, signs, invariance to
+elapsed times, sparse draws and empty sensitivity groups.</p>
 <p>For the current inputs, maximum raw-vector sum errors are
 approximately <code>1.82e-15</code> for species and
 <code>8.60e-16</code> for climate variables, well below the

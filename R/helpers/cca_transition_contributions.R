@@ -108,17 +108,15 @@ contribution_context = function(x,era) {
   } else stop('Unknown contribution era')
 }
 
-# Reference-left is a +90-degree rotation in the fixed CCA1/CCA2 plane.
-# Positive perpendicular means counterclockwise; it is not an unsigned distance.
+# Signed scalar contribution along the reference movement in CCA1/CCA2.
 contribution_project = function(x,y,ref_x,ref_y,epsilon=CCA_CONTRIBUTION_EPSILON) {
   if(length(x)!=length(y) || length(x)!=length(ref_x) || length(x)!=length(ref_y) ||
      any(!is.finite(x)) || any(!is.finite(y))) stop('Invalid contribution vectors')
   length_ref=sqrt(ref_x^2+ref_y^2)
   valid=is.finite(length_ref) & length_ref>epsilon
-  parallel=perpendicular=rep(NA_real_,length(x))
+  parallel=rep(NA_real_,length(x))
   parallel[valid]=(x[valid]*ref_x[valid]+y[valid]*ref_y[valid])/length_ref[valid]
-  perpendicular[valid]=(ref_x[valid]*y[valid]-ref_y[valid]*x[valid])/length_ref[valid]
-  list(parallel=parallel,perpendicular=perpendicular,valid=valid)
+  list(parallel=parallel,valid=valid)
 }
 
 contribution_species = function(context,first,last,positions,endpoints) {
@@ -131,14 +129,12 @@ contribution_species = function(context,first,last,positions,endpoints) {
   species_index=rep(seq_len(n_species),times=nrow(context))
   delta=as.vector(t(change))
   x=delta*positions[species_index,1];y=delta*positions[species_index,2]
-  rate=100/context$vegetation_dt_years[index]
-  projection=contribution_project(x*rate,y*rate,
+  projection=contribution_project(x,y,
     endpoints$delta_predicted_CCA1[index],endpoints$delta_predicted_CCA2[index])
   dplyr::bind_cols(context[index,],tibble::tibble(species=rownames(positions)[species_index],
     weight_t1=as.vector(t(first)),weight_t2=as.vector(t(last)),weight_change=delta,
     contribution_CCA1=x,contribution_CCA2=y,
-    contribution_CCA1_per_century=x*rate,contribution_CCA2_per_century=y*rate,
-    parallel_rate_per_century=projection$parallel,perpendicular_rate_per_century=projection$perpendicular,
+    parallel_contribution=projection$parallel,
     reference_direction_valid=projection$valid))
 }
 
@@ -155,15 +151,13 @@ contribution_climate = function(context,endpoints,reference) {
     changed=first;changed[[variable]]=last[[variable]]
     value_first=first[[variable]];value_last=last[[variable]]
     vector=predict_lc(changed)-initial
-    rate=100/context$climate_dt_years
-    projection=contribution_project(vector[,1]*rate,vector[,2]*rate,
+    projection=contribution_project(vector[,1],vector[,2],
       endpoints$delta_observed_CCA1,endpoints$delta_observed_CCA2)
     dplyr::bind_cols(context,tibble::tibble(variable,
       value_t1=value_first,value_t2=value_last,value_change=value_last-value_first,
       physical_unit=unname(reference$climate_units[variable]),
       contribution_CCA1=vector[,1],contribution_CCA2=vector[,2],
-      contribution_CCA1_per_century=vector[,1]*rate,contribution_CCA2_per_century=vector[,2]*rate,
-      parallel_rate_per_century=projection$parallel,perpendicular_rate_per_century=projection$perpendicular,
+      parallel_contribution=projection$parallel,
       reference_direction_valid=projection$valid))
   })
   dplyr::bind_rows(pieces)
@@ -196,49 +190,30 @@ contribution_validate = function(species,climate,context,endpoints,positions,fir
   # Independent direct-coefficient LC identity is checked by the caller/test.
   contribution_close(rowSums(first),rep(1,nrow(first)),'Initial relative-weight sums')
   contribution_close(rowSums(last),rep(1,nrow(last)),'Final relative-weight sums')
-  rate_fields=paste0(fields,'_per_century')
-  species_rate=raw_sum(species,rate_fields);climate_rate=raw_sum(climate,rate_fields)
-  contribution_close(species_rate,observed*100/context$vegetation_dt_years,
-    'Species rates use vegetation elapsed time')
-  contribution_close(climate_rate,predicted*100/context$climate_dt_years,
-    'Climate rates use climate elapsed time')
   project_check=function(data,total,reference_vector) {
     valid=sqrt(rowSums(reference_vector^2))>CCA_CONTRIBUTION_EPSILON
     summed=raw_sum(dplyr::mutate(data,
-      parallel_rate_per_century=dplyr::coalesce(parallel_rate_per_century,0),
-      perpendicular_rate_per_century=dplyr::coalesce(perpendicular_rate_per_century,0)),
-      c('parallel_rate_per_century','perpendicular_rate_per_century'))
+      parallel_contribution=dplyr::coalesce(parallel_contribution,0)),
+      'parallel_contribution')[,1]
     target=contribution_project(total[,1],total[,2],reference_vector[,1],reference_vector[,2])
-    contribution_close(summed[valid,,drop=FALSE],
-      cbind(target$parallel[valid],target$perpendicular[valid]),'Projected vector additivity')
+    contribution_close(summed[valid],target$parallel[valid],'Parallel contribution additivity')
     group=match(contribution_key(data),key)
     if(any(data$reference_direction_valid!=valid[group]) ||
-       any(!is.na(data$parallel_rate_per_century[!valid[group]])) ||
-       any(!is.na(data$perpendicular_rate_per_century[!valid[group]])))
+       any(!is.na(data$parallel_contribution[!valid[group]])))
       stop('Undefined reference directions were assigned contributions')
-    # Rotate each pair of signed projections back into the original CCA plane.
-    norm=sqrt(rowSums(reference_vector^2));unit=reference_vector/norm
-    u=unit[group,,drop=FALSE]
-    rebuilt=cbind(data$parallel_rate_per_century*u[,1]-data$perpendicular_rate_per_century*u[,2],
-      data$parallel_rate_per_century*u[,2]+data$perpendicular_rate_per_century*u[,1])
-    contribution_close(rebuilt[valid[group],,drop=FALSE],
-      as.matrix(data[valid[group],rate_fields]),'Projection basis reconstructs each component')
-    list(valid=valid,error=ifelse(valid,apply(abs(summed-cbind(target$parallel,target$perpendicular)),1,max),NA_real_))
+    list(valid=valid,error=ifelse(valid,abs(summed-target$parallel),NA_real_))
   }
-  s=project_check(species,species_rate,predicted);c=project_check(climate,climate_rate,observed)
+  s=project_check(species,sum_species,predicted);c=project_check(climate,sum_climate,observed)
   dplyr::bind_cols(context,tibble::tibble(
     species_sum_abs_error=apply(abs(sum_species-observed),1,max),
     climate_sum_abs_error=apply(abs(sum_climate-predicted),1,max),
-    species_rate_sum_abs_error=apply(abs(species_rate-observed*100/context$vegetation_dt_years),1,max),
-    climate_rate_sum_abs_error=apply(abs(climate_rate-predicted*100/context$climate_dt_years),1,max),
     species_projection_abs_error=s$error,climate_projection_abs_error=c$error,
     climate_direction_valid=s$valid,observed_direction_valid=c$valid))
 }
 
 contribution_measure_names = function(type) {
-  rates=c('contribution_CCA1_per_century','contribution_CCA2_per_century',
-    'parallel_rate_per_century','perpendicular_rate_per_century')
-  if(type=='species') c(rates,'weight_change') else if(type=='climate') rates else
+  measures=c('contribution_CCA1','contribution_CCA2','parallel_contribution')
+  if(type=='species') c(measures,'weight_change') else if(type=='climate') measures else
     stop('Unknown contribution type')
 }
 contribution_component_name = function(type) if(type=='species') 'species' else 'variable'
@@ -310,35 +285,61 @@ contribution_summaries = function(data,type,n_expected=100L) {
     era_site=dplyr::bind_rows(holocene_site,modern))
 }
 
-contribution_heatmap = function(summary,type,offset,reference) {
+# Each Holocene boxplot observation is one actual transition's draw median.
+# Draws are summarized response by response; modern plots enter once each.
+# Offsets remain separate sensitivity pages, never a pooled boxplot sample.
+contribution_boxplot_values = function(data,uncertainty,type) {
   component=contribution_component_name(type)
-  measures=c('parallel_rate_per_century','perpendicular_rate_per_century')
-  data=summary |> dplyr::filter(sampling_rule=='all',
-    era=='Anthropocene' | .data$offset==.env$offset,measure %in% measures) |>
-    dplyr::mutate(group=factor(paste(era,site,sep='\n'),levels=c('Holocene\nMORA',
-      'Holocene\nNOCA','Anthropocene\nMORA','Anthropocene\nNOCA')),
-      direction=factor(measure,levels=measures,labels=c('Parallel','Perpendicular')))
+  measures='parallel_contribution'
+  holocene=uncertainty |> dplyr::filter(sampling_rule=='all',measure %in% measures) |>
+    dplyr::transmute(era='Holocene',site,lake,plot_id=NA_character_,offset,age_hi,age_lo,
+      dplyr::across(dplyr::all_of(component)),measure,value=median,
+      n_expected_draws,n_present_draws,n_valid_draws,n_undefined_draws)
+  modern=data |> dplyr::filter(era=='Anthropocene') |>
+    dplyr::select(site,plot_id,dplyr::all_of(c(component,measures))) |>
+    tidyr::pivot_longer(dplyr::all_of(measures),names_to='measure',values_to='value') |>
+    dplyr::mutate(era='Anthropocene',lake=NA_character_,offset=NA_real_,
+      age_hi=NA_real_,age_lo=NA_real_,n_expected_draws=NA_integer_,
+      n_present_draws=NA_integer_,n_valid_draws=NA_integer_,n_undefined_draws=NA_integer_)
+  values=dplyr::bind_rows(holocene,modern)
+  keys=ifelse(values$era=='Holocene',
+    paste('H',values$site,values$lake,values$offset,values$age_hi,values$age_lo),
+    paste('A',values$site,values$plot_id))
+  if(anyDuplicated(paste(keys,values[[component]],values$measure)))
+    stop('Duplicate transition or plot in boxplot values')
+  values
+}
+
+contribution_boxplot = function(values,type,offset,reference) {
+  component=contribution_component_name(type)
+  data=values |> dplyr::filter(era=='Anthropocene' | .data$offset==.env$offset,
+    is.finite(value)) |>
+    dplyr::mutate(era=factor(era,levels=c('Holocene','Anthropocene')),
+      site=factor(site,levels=c('MORA','NOCA')))
   labels=if(type=='species') stats::setNames(reference$retained_species,reference$retained_species) else
     reference$climate_labels[reference$climate_variables]
   data$component=factor(data[[component]],levels=rev(names(labels)),labels=rev(unname(labels)))
-  # Common per-panel color limits across all offsets make the sensitivity pages
-  # directly comparable. Color is linear; exact values remain in the CSV.
-  bound=max(abs(summary$estimate[summary$measure %in% measures & summary$sampling_rule=='all']),na.rm=TRUE)
-  if(!is.finite(bound) || bound==0) bound=1
-  reference_label=if(type=='species') 'Species movement relative to climate-predicted movement' else
-    'Climate-variable movement relative to observed community movement'
-  ggplot2::ggplot(data,ggplot2::aes(group,component,fill=estimate))+
-    ggplot2::geom_tile(color='white',linewidth=.6)+
-    ggplot2::geom_text(ggplot2::aes(label=ifelse(is.finite(estimate),formatC(estimate,digits=2,format='g'),'NA')),
-      size=3.6,color='grey15')+
-    ggplot2::facet_wrap(~direction,nrow=1)+
-    ggplot2::scale_fill_gradient2(low='#3678a8',mid='white',high='#c55045',midpoint=0,
-      limits=c(-bound,bound),na.value='grey75',name='CCA units\nper century')+
+  # The same raw-contribution limits on every page permit offset comparisons.
+  limits=range(values$value[is.finite(values$value)],0)
+  if(diff(limits)==0) limits=c(-1,1)
+  reference_label=if(type=='species') 'Species contributions along climate-predicted movement' else
+    'Climate-variable contributions along observed community movement'
+  ggplot2::ggplot(data,ggplot2::aes(x=value,y=component,fill=era,color=era))+
+    ggplot2::geom_vline(xintercept=0,color='grey55',linetype='dashed',linewidth=.5)+
+    ggplot2::geom_boxplot(orientation='y',position=ggplot2::position_dodge2(width=.8,preserve='single'),
+      width=.7,linewidth=.7,alpha=.3,outlier.alpha=.25,outlier.size=.8)+
+    ggplot2::facet_wrap(~site,nrow=1)+
+    ggplot2::scale_fill_manual(values=c(Holocene='#36998c',Anthropocene='#d87934'))+
+    ggplot2::scale_color_manual(values=c(Holocene='#36998c',Anthropocene='#d87934'))+
+    ggplot2::coord_cartesian(xlim=limits)+
     ggplot2::labs(title=reference_label,
-      subtitle=paste('Holocene: offset',offset,'• median across whole draws of equal-lake trajectory means; Anthropocene: plot means'),
-      x=NULL,y=NULL,caption='Positive parallel: same direction. Positive perpendicular: counterclockwise. Grey: undefined. No fitted statistical models.')+
-    ggplot2::theme_minimal(base_size=17)+ggplot2::theme(panel.grid=ggplot2::element_blank(),
-      axis.text=ggplot2::element_text(size=14),axis.text.y=ggplot2::element_text(face=if(type=='species') 'italic' else 'plain'),
-      strip.text=ggplot2::element_text(size=18,face='bold'),plot.title=ggplot2::element_text(size=21,face='bold'),
-      plot.subtitle=ggplot2::element_text(size=12),plot.caption=ggplot2::element_text(size=11,hjust=0))
+      subtitle=paste('Offset',offset,'• Holocene: transition medians across valid Bacon draws; Anthropocene: individual plots'),
+      x='Parallel contribution (CCA units)',y=NULL,fill=NULL,color=NULL,
+      caption='Boxes: median and quartiles; whiskers: 1.5 × IQR. Undefined projections omitted; zero contributions retained. Descriptive distributions.')+
+    ggplot2::theme_minimal(base_size=20)+ggplot2::theme(panel.grid.minor=ggplot2::element_blank(),
+      panel.grid.major.y=ggplot2::element_blank(),axis.text=ggplot2::element_text(size=17),
+      axis.text.y=ggplot2::element_text(face=if(type=='species') 'italic' else 'plain'),
+      strip.text=ggplot2::element_text(size=20,face='bold'),legend.position='bottom',
+      plot.title=ggplot2::element_text(size=23,face='bold'),
+      plot.subtitle=ggplot2::element_text(size=14),plot.caption=ggplot2::element_text(size=12,hjust=0))
 }

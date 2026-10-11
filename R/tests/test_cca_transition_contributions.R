@@ -9,8 +9,10 @@ h=read_csv(here('output/cca_tracking_holocene_lake_realizations.csv'),show_col_t
 a=read_csv(here('output/cca_tracking_anthropocene_plot_calculations.csv'),show_col_types=FALSE)
 species=read_product('species_realizations');climate=read_product('climate_realizations')
 validation=read_product('transition_validation')
+stopifnot(!any(grepl('per_century|rate',c(names(species),names(climate),names(validation)))))
 provenance=jsonlite::read_json(file.path(root,'provenance.json'),simplifyVector=TRUE)
 stopifnot(provenance$scaling=='sites',!provenance$hill,provenance$n_draws==100,
+  provenance$contribution_unit=='CCA units',!provenance$annualized,
   provenance$bin_width_years==1000,identical(as.numeric(provenance$offsets),seq(0,900,100)))
 for(group in c('input_md5','source_md5')) {
   recorded=unlist(provenance[[group]])
@@ -90,8 +92,6 @@ close(species$weight_t1,expected_first);close(species$weight_t2,expected_last)
 close(species$weight_change,expected_last-expected_first)
 close(species$contribution_CCA1,(expected_last-expected_first)*v[taxon,1])
 close(species$contribution_CCA2,(expected_last-expected_first)*v[taxon,2])
-close(species$contribution_CCA1_per_century,species$contribution_CCA1*100/endpoint$vegetation_dt_years[group])
-close(species$contribution_CCA2_per_century,species$contribution_CCA2*100/endpoint$vegetation_dt_years[group])
 cat('All species weights, sample-mean bins and species vectors reconstructed independently.\n')
 # Independent raw climate-source join for every lake/offset endpoint.
 ponds=read_csv(here('output/chelsa_paleo_ponds.csv'),show_col_types=FALSE)
@@ -124,8 +124,6 @@ expected_delta=delta[cbind(climate_group,variable_index)]
 close(climate$value_change,expected_delta)
 close(climate$contribution_CCA1,expected_delta*lc_basis[variable_index,1])
 close(climate$contribution_CCA2,expected_delta*lc_basis[variable_index,2])
-close(climate$contribution_CCA1_per_century,climate$contribution_CCA1*100/endpoint$climate_dt_years[climate_group])
-close(climate$contribution_CCA2_per_century,climate$contribution_CCA2*100/endpoint$climate_dt_years[climate_group])
 close(as.numeric(delta%*%lc_basis),as.numeric(as.matrix(endpoint[c('delta_predicted_CCA1','delta_predicted_CCA2')])))
 # Independent trigonometric projections and direction validity, every component.
 for(type in c('species','climate')) {
@@ -134,20 +132,20 @@ for(type in c('species','climate')) {
   rx=if(type=='species') endpoint$delta_predicted_CCA1[index] else endpoint$delta_observed_CCA1[index]
   ry=if(type=='species') endpoint$delta_predicted_CCA2[index] else endpoint$delta_observed_CCA2[index]
   valid=sqrt(rx^2+ry^2)>1e-8;angle=atan2(ry,rx)
-  px=data$contribution_CCA1_per_century;py=data$contribution_CCA2_per_century
-  parallel=px*cos(angle)+py*sin(angle);perpendicular=py*cos(angle)-px*sin(angle)
-  parallel[!valid]=NA_real_;perpendicular[!valid]=NA_real_
+  px=data$contribution_CCA1;py=data$contribution_CCA2
+  parallel=px*cos(angle)+py*sin(angle)
+  parallel[!valid]=NA_real_
   stopifnot(identical(data$reference_direction_valid,valid))
-  close(data$parallel_rate_per_century,parallel);close(data$perpendicular_rate_per_century,perpendicular)
+  close(data$parallel_contribution,parallel)
 }
-cat('All lake-specific climate endpoints, one-variable LC vectors, time denominators and signed projections independently verified.\n')
+cat('All lake-specific climate endpoints, one-variable LC vectors, raw displacements and signed projections independently verified.\n')
 # Independently rebuild chronology distributions and hierarchical summaries.
 finite_mean=function(x) if(any(is.finite(x))) mean(x[is.finite(x)]) else NA_real_
 for(type in c('species','climate')) {
   data=if(type=='species') species else climate
   component=if(type=='species') 'species' else 'variable'
-  measures=c('contribution_CCA1_per_century','contribution_CCA2_per_century',
-    'parallel_rate_per_century','perpendicular_rate_per_century',if(type=='species') 'weight_change')
+  measures=c('contribution_CCA1','contribution_CCA2',
+    'parallel_contribution',if(type=='species') 'weight_change')
   values=data |> filter(era=='Holocene') |>
     select(site,lake,offset,age_hi,age_lo,draw,n_samples_t1,n_samples_t2,all_of(c(component,measures))) |>
     pivot_longer(all_of(measures),names_to='measure',values_to='value')
@@ -196,14 +194,43 @@ for(type in c('species','climate')) {
   grouping=c('site',component,'measure');actual=e |> filter(era=='Anthropocene')
   index=match(make_key(modern,grouping),make_key(actual,grouping));stopifnot(!anyNA(index))
   close(actual$estimate[index],modern$estimate);close(actual$n_valid_plots[index],modern$n_valid_plots)
+  # Independently reconstruct every boxplot observation. Each Holocene record
+  # is a transition median, not an individual draw or a park trajectory mean.
+  box=read_product(paste0(type,'_boxplot_values'))
+  projection_measures='parallel_contribution'
+  expected_h=values |> filter(measure %in% projection_measures) |>
+    group_by(site,lake,offset,age_hi,age_lo,across(all_of(c(component,'measure')))) |>
+    summarize(n_present_draws=n_distinct(draw),n_valid_draws=sum(is.finite(value)),
+      value=if(any(is.finite(value))) median(value[is.finite(value)]) else NA_real_,.groups='drop')
+  grouping=c('site','lake','offset','age_hi','age_lo',component,'measure')
+  actual=box |> filter(era=='Holocene')
+  index=match(make_key(expected_h,grouping),make_key(actual,grouping))
+  stopifnot(!anyNA(index),!anyDuplicated(index),nrow(expected_h)==nrow(actual),
+    all(actual$n_expected_draws==100),all(is.na(actual$plot_id)))
+  for(field in c('value','n_present_draws','n_valid_draws')) close(actual[[field]][index],expected_h[[field]])
+  close(actual$n_undefined_draws,actual$n_present_draws-actual$n_valid_draws)
+  expected_a=data |> filter(era=='Anthropocene') |>
+    select(site,plot_id,all_of(c(component,projection_measures))) |>
+    pivot_longer(all_of(projection_measures),names_to='measure',values_to='value')
+  grouping=c('site','plot_id',component,'measure');actual=box |> filter(era=='Anthropocene')
+  index=match(make_key(expected_a,grouping),make_key(actual,grouping))
+  stopifnot(!anyNA(index),!anyDuplicated(index),nrow(expected_a)==nrow(actual),
+    all(is.na(actual$offset)),all(is.na(actual$n_present_draws)))
+  close(actual$value[index],expected_a$value)
+  # Filter each page exactly as in the plot. The modern observations stay unique.
+  for(offset in seq(0,900,100)) {
+    page=box |> filter(era=='Anthropocene' | .data$offset==.env$offset,is.finite(value))
+    modern_page=page |> filter(era=='Anthropocene')
+    stopifnot(nrow(modern_page)==sum(is.finite(expected_a$value)),
+      !anyDuplicated(make_key(modern_page,grouping)))
+  }
 }
-cat('Every Bacon distribution, draw-support count, per-offset summary and era/park heatmap estimate reconstructed from detailed records.\n')
-# Geometry edge cases: +90 degrees, opposite movement, zero component, stationary
+cat('Every Bacon distribution, draw-support count, per-offset summary and era/park descriptive estimate reconstructed from detailed records.\n')
+# Geometry edge cases: off-reference movement, opposite movement, zero component, stationary
 # and tiny reference. No undefined reference is silently set to zero.
 p=contribution_project(c(2,0,-2,0,1,1),c(0,3,0,0,1,1),
   c(1,1,1,1,0,1e-9),rep(0,6))
 close(p$parallel,c(2,0,-2,0,NA_real_,NA_real_))
-close(p$perpendicular,c(0,3,0,0,NA_real_,NA_real_))
 stopifnot(identical(p$valid,c(TRUE,TRUE,TRUE,TRUE,FALSE,FALSE)))
 first=matrix(c(1,0),nrow=1,dimnames=list(NULL,c('a','b')))
 last=matrix(c(0,1),nrow=1,dimnames=list(NULL,c('a','b')))
@@ -211,26 +238,36 @@ positions=matrix(c(2,0,0,3),nrow=2,byrow=TRUE,dimnames=list(c('a','b'),c('CCA1',
 toy_context=tibble(era='Anthropocene',site='MORA',plot_id='toy',vegetation_dt_years=50,climate_dt_years=20)
 toy_endpoint=tibble(delta_predicted_CCA1=1,delta_predicted_CCA2=0)
 toy=contribution_species(toy_context,first,last,positions,toy_endpoint)
-close(toy$parallel_rate_per_century,c(-4,0));close(toy$perpendicular_rate_per_century,c(0,6))
+close(toy$parallel_contribution,c(-2,0))
+# Elapsed times are audit context only, even when vegetation/climate times differ.
+changed_context=toy_context |> mutate(vegetation_dt_years=150,climate_dt_years=1000)
+changed=contribution_species(changed_context,first,last,positions,toy_endpoint)
+for(field in contribution_measure_names('species')) close(toy[[field]],changed[[field]])
+climate_context=contribution_context(a[1:2,],'Anthropocene')
+base_climate=contribution_climate(climate_context,a[1:2,],reference)
+changed_context=climate_context |> mutate(vegetation_dt_years=1000,climate_dt_years=10)
+changed=contribution_climate(changed_context,a[1:2,],reference)
+for(field in contribution_measure_names('climate')) close(base_climate[[field]],changed[[field]])
 toy_endpoint$delta_predicted_CCA1=0
 toy=contribution_species(toy_context,first,last,positions,toy_endpoint)
-stopifnot(all(is.na(toy$parallel_rate_per_century)),all(is.na(toy$perpendicular_rate_per_century)))
-close(toy$contribution_CCA1_per_century,c(-4,0))
+stopifnot(all(is.na(toy$parallel_contribution)))
+close(toy$contribution_CCA1,c(-2,0))
 # Sparse draws, response-specific undefined values, empty nmin2 groups and
 # counts computed BEFORE averaging a trajectory.
 toy=tibble(era='Holocene',site='MORA',lake='toy',plot_id=NA_character_,draw=c(1,7,1,7),offset=0,
   age_hi=c(1500,1500,2500,2500),age_lo=c(500,500,1500,1500),species='a',
   n_samples_t1=c(1,1,2,2),n_samples_t2=c(1,1,2,2),
-  contribution_CCA1_per_century=c(1,2,4,6),contribution_CCA2_per_century=0,
-  parallel_rate_per_century=c(NA_real_,2,4,6),perpendicular_rate_per_century=c(NA_real_,0,0,0),weight_change=0)
+  contribution_CCA1=c(1,2,4,6),contribution_CCA2=0,
+  parallel_contribution=c(NA_real_,2,4,6),weight_change=0)
 toy_summary=contribution_summaries(toy,'species')
 empty=toy_summary$uncertainty |> filter(age_hi==1500,sampling_rule=='nmin2')
 stopifnot(all(empty$n_present_draws==2L),all(empty$n_missing_draws==98L),
   all(empty$n_eligible_draws==0L),all(empty$n_valid_draws==0L),all(empty$n_undefined_draws==0L),
   all(is.na(empty$median)),all(is.na(empty$q025)),all(is.na(empty$q975)))
-sparse=toy_summary$uncertainty |> filter(age_hi==1500,sampling_rule=='all',measure=='parallel_rate_per_century')
+sparse=toy_summary$uncertainty |> filter(age_hi==1500,sampling_rule=='all',measure=='parallel_contribution')
 stopifnot(sparse$n_valid_draws==1L,sparse$n_undefined_draws==1L,sparse$median==2)
-trajectory=toy_summary$offset_summary |> filter(sampling_rule=='all',measure=='parallel_rate_per_century')
+trajectory=toy_summary$offset_summary |> filter(sampling_rule=='all',measure=='parallel_contribution')
 stopifnot(trajectory$min_valid_transitions==1L,trajectory$max_valid_transitions==2L,trajectory$median==4)
+cat('Boxplot inputs reconstructed independently; elapsed-time invariance verified for both contribution types.\n')
 cat('Edge cases passed: scaling, signs, unequal elapsed times, stationary directions, zero components, sparse draws and empty sensitivity groups.\n')
 cat('Standalone fixed-CCA contribution acceptance checks passed.\n')
