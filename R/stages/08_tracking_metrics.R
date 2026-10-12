@@ -1,8 +1,22 @@
 # Canonical lake-level and paired-plot tracking datasets. No figure/model fits.
 # Rscript R/stages/08_tracking_metrics.R [--bin-width-years=500]
 # Nondefault widths write only suffixed Holocene products.
+# Native-century migration milestone (no primary outputs replaced):
+# Rscript R/stages/08_tracking_metrics.R --reconstruction-audit
 suppressPackageStartupMessages({library(here);library(tidyverse);library(vegan)})
 source(here('R/helpers/config.R'),local=TRUE)
+stage_args = commandArgs(trailingOnly=TRUE)
+if ('--reconstruction-audit' %in% stage_args) {
+  if (length(setdiff(stage_args, '--reconstruction-audit')))
+    stop('The reconstruction audit cannot be combined with primary workflow options')
+  source(here('R/helpers/holocene_reconstruction_settings.R'),local=TRUE)
+  source(here('R/helpers/holocene_reconstruction.R'),local=TRUE)
+  run_holocene_reconstruction_audit()
+} else if ('--century-reconstruction' %in% stage_args) {
+  source(here('R/helpers/holocene_reconstruction_settings.R'),local=TRUE)
+  require_holocene_support_policy()
+  stop('Primary century migration follows the reviewed support audit; it is not active yet.')
+} else {
 source(here('R/helpers/tracking_metrics.R'),local=TRUE)
 source(here('R/helpers/tracking_data.R'),local=TRUE)
 N_DRAWS = 100; DRAW_SEED = 42
@@ -105,3 +119,4 @@ if(bin_width_years==1000L) {
 cat('Tracking completed:',nrow(realizations),'lake realizations;',nrow(by_offset),
   'actual lake/offset transitions;',nrow(uncertainty),'uncertainty rows; width',
   bin_width_years,'years.\n')
+}
