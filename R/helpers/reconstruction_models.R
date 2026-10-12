@@ -60,15 +60,15 @@ reconstruction_fit = function(d,fixed,type,variance='site') {
   # With a group intercept and varIdent, a constant group permits its residual
   # variance to approach zero and the likelihood is unbounded. Keep observations
   # and report this structural limitation instead of a spurious optimizer fit.
-  groups=if(variance=='era_site') d$era_site else d[[variance]]
+  groups=if(is.null(variance)) rep('within_site',nrow(d)) else if(variance=='era_site') d$era_site else d[[variance]]
   if(any(vapply(split(d$estimate,groups),function(y) length(y)>1L && var(y)==0,logical(1))))
     stop('constant_variance_group: no finite heteroscedastic Gaussian optimum')
   fit=nlme::gls(fixed,data=d,correlation=reconstruction_correlation(type),
-    weights=nlme::varIdent(form=as.formula(paste('~1 |',variance))),method='REML',
+    weights=if(is.null(variance)) NULL else nlme::varIdent(form=as.formula(paste('~1 |',variance))),method='REML',
     na.action=na.fail,control=nlme::glsControl(msMaxIter=300))
   # Store evaluable model/covariance calls for emmeans covariance derivatives.
   fit$call$model=fixed
-  fit$call$weights=substitute(nlme::varIdent(form=F),list(F=as.formula(paste('~1 |',variance))))
+  fit$call$weights=if(is.null(variance)) NULL else substitute(nlme::varIdent(form=F),list(F=as.formula(paste('~1 |',variance))))
   fit$call$correlation=switch(type,Independent=NULL,
     MA1=quote(nlme::corARMA(p=0,q=1,form=~time_index | series)),
     CAR1=quote(nlme::corCAR1(form=~time_centuries | series)))
@@ -76,6 +76,7 @@ reconstruction_fit = function(d,fixed,type,variance='site') {
 
 }
 reconstruction_covariance_status = function(fit) {
+  if(is.null(fit$apVar) && length(fit$modelStruct)==0L) return('not_applicable_no_covariance_parameters')
   if(!is.matrix(fit$apVar)) return(as.character(fit$apVar))
   if(all(is.finite(fit$apVar)) && min(eigen(fit$apVar,symmetric=TRUE,only.values=TRUE)$values)>0)
     'positive_definite' else 'non_positive_definite'
@@ -137,13 +138,15 @@ reconstruction_predictions = function(fit,d) {
     normalized_residual=as.numeric(residuals(fit,type='normalized')),
     raw_residual=estimate-predicted)
 }
-reconstruction_explanatory_input = function(x,metric,era='Holocene',species=FALSE,extended=FALSE) {
+reconstruction_explanatory_input = function(x,metric,era='Holocene',species=FALSE,extended=FALSE,within_site=NULL,fixed_override=NULL) {
   d=if(species) x[x$species==metric,] else x
+  if(!is.null(within_site)) d=d[d$site==within_site,]
   if(species) d$estimate=d$contribution_rate else if(metric %in% names(d)) d$estimate=d[[metric]]
   d$metric=metric;d$era=era
   d$climate_rate=d$standardized_climate_change_rate
   d$site=factor(d$site,levels=c('MORA','NOCA'))
   if(era=='Holocene') {
+    if('burned' %in% names(d)) d$burned=factor(rep(NA_character_,nrow(d)),levels=c('Unburned','Burned'))
     d$series=paste('H',d$site,d$lake,sep='_')
     d$time_index=d$transition_index;d$time_centuries=-d$interval_mid_cal_bp/100
     fixed=estimate~site+climate_rate+fire_activity
@@ -152,6 +155,8 @@ reconstruction_explanatory_input = function(x,metric,era='Holocene',species=FALS
     d$burned=factor(d$burned,levels=c(FALSE,TRUE),labels=c('Unburned','Burned'))
     fixed=if(extended) estimate~site+elevation+climate_rate+burned else estimate~site+burned
   }
+  if(!is.null(within_site)) fixed=update(fixed,~ . - site)
+  if(!is.null(fixed_override)) fixed=fixed_override
   fields=all.vars(fixed)
   good=complete.cases(d[fields])
   for(n in fields) if(is.numeric(d[[n]])) good=good & is.finite(d[[n]])
@@ -208,6 +213,7 @@ reconstruction_export = function(entries,out,exclusions=tibble::tibble()) {
   for(name in names(entries)) {
     e=entries[[name]]
     selection[[name]]=dplyr::mutate(e$audit,metric=e$metric,era=e$era,specification=e$specification)
+    if(!is.null(e$site)) selection[[name]]$site=e$site
     if(is.null(e$fit)) {
       text=c(text,paste(name,'PRIMARY FIT FAILED'),capture.output(print(e$audit)), '');next
     }
@@ -217,6 +223,7 @@ reconstruction_export = function(entries,out,exclusions=tibble::tibble()) {
       dplyr::mutate(model_type=e$selected,specification=e$specification)
     performance[[name]]=tibble::tibble(metric=e$metric,era=e$era,model_type=e$selected,
       specification=e$specification,n=nrow(e$data),R2=reconstruction_r2(e$data$estimate,fitted(e$fit)))
+    if(!is.null(e$site)) {coefficients[[name]]$site=e$site;performance[[name]]$site=e$site}
     text=c(text,name,paste('Primary covariance:',e$selected),capture.output(print(e$audit)),
       capture.output(print(summary(e$fit))),paste('Descriptive R2:',performance[[name]]$R2),'')
   }
@@ -236,7 +243,7 @@ reconstruction_sensitivity = function(bundle,primary_entries,kind,out) {
   dir.create(file.path(out,'chronology_batches'),recursive=TRUE,showWarnings=FALSE)
   holocene=primary_entries[vapply(primary_entries,function(x) x$era=='Holocene',logical(1))]
   signature=object_fingerprint(list(bundle=bundle$signature,rows=bundle$cache$posterior_rows,
-    specs=lapply(holocene,function(e) list(metric=e$metric,type=e$selected,fixed=paste(deparse(e$fixed),collapse=""))),
+    specs=lapply(holocene,function(e) list(metric=e$metric,site=e$site,variance=e$variance,type=e$selected,fixed=paste(deparse(e$fixed),collapse=""))),
     code=tools::md5sum(here::here(c('R/helpers/reconstruction_models.R','R/helpers/cca_transition_contributions.R',
       'R/helpers/tracking_metrics.R')))))
   batch=function(draw) {
@@ -246,10 +253,10 @@ reconstruction_sensitivity = function(bundle,primary_entries,kind,out) {
     values=if(kind=='species') century_species_contributions(reconstructed,bundle) else reconstructed$calculations
     coefficients=status=fits=exclusions=list()
     for(name in names(holocene)) {
-      e=holocene[[name]];selected=reconstruction_explanatory_input(values,e$metric,species=kind=='species')
+      e=holocene[[name]];selected=reconstruction_explanatory_input(values,e$metric,species=kind=='species',within_site=e$site)
       d=selected$data;exclusions[[name]]=selected$excluded
       result=if(is.na(e$selected)) list(fit=NULL,error='primary_model_unestimable',warnings=character()) else
-        reconstruction_capture(function() reconstruction_fit(d,selected$fixed,e$selected))
+        reconstruction_capture(function() reconstruction_fit(d,selected$fixed,e$selected,variance=e$variance))
       fit=result$fit
       phi=if(is.null(fit) || is.null(fit$modelStruct$corStruct)) NA_real_ else
         as.numeric(coef(fit$modelStruct$corStruct,unconstrained=FALSE))
@@ -260,8 +267,10 @@ reconstruction_sensitivity = function(bundle,primary_entries,kind,out) {
         R2=if(is.null(fit)) NA_real_ else reconstruction_r2(d$estimate,fitted(fit)),
         correlation_parameter=phi,
         boundary=if(is.na(phi)) FALSE else if(e$selected=='CAR1') phi<1e-4 || phi>1-1e-4 else abs(phi)>1-1e-4)
+      if(!is.null(e$site)) status[[name]]$site=e$site
       if(!is.null(fit)) {
         coefficients[[name]]=reconstruction_coefficients(fit,e$metric,'Holocene',e$selected,draw)
+        if(!is.null(e$site)) coefficients[[name]]$site=e$site
         fits[[name]]=fit
       }
     }
@@ -290,13 +299,17 @@ reconstruction_sensitivity = function(bundle,primary_entries,kind,out) {
   co=dplyr::bind_rows(lapply(collected,`[[`,'coefficients'))
   status=dplyr::bind_rows(lapply(collected,`[[`,'status'))
   support=dplyr::bind_rows(lapply(collected,`[[`,'support'))
-  if(nrow(status)!=length(holocene)*HOLOCENE_RECONSTRUCTION_DRAWS || anyDuplicated(status[c('draw','metric')]))
+  if(nrow(status)!=length(holocene)*HOLOCENE_RECONSTRUCTION_DRAWS || anyDuplicated(status[intersect(c('draw','metric','site'),names(status))]))
     stop('Missing or duplicate chronology fit outcomes')
-  primary=purrr::map_dfr(holocene,function(e) if(is.null(e$fit)) tibble::tibble() else
-    reconstruction_coefficients(e$fit,e$metric,e$era,e$selected)) |>
-    dplyr::select(metric,term,primary_estimate=estimate,primary_conf_low=conf_low,primary_conf_high=conf_high)
-  summary=co |> dplyr::left_join(primary,by=c('metric','term'),relationship='many-to-one') |>
-    dplyr::group_by(metric,term) |> dplyr::summarise(n_expected=HOLOCENE_RECONSTRUCTION_DRAWS,
+  primary=purrr::map_dfr(holocene,function(e) {
+    if(is.null(e$fit)) return(tibble::tibble())
+    p=reconstruction_coefficients(e$fit,e$metric,e$era,e$selected)
+    if(!is.null(e$site)) p$site=e$site
+    p
+  }) |> dplyr::select(metric,term,dplyr::any_of('site'),primary_estimate=estimate,primary_conf_low=conf_low,primary_conf_high=conf_high)
+  keys=intersect(c('metric','term','site'),names(primary))
+  summary=co |> dplyr::left_join(primary,by=keys,relationship='many-to-one') |>
+    dplyr::group_by(dplyr::across(dplyr::all_of(keys))) |> dplyr::summarise(n_expected=HOLOCENE_RECONSTRUCTION_DRAWS,
       n_successful_fits=dplyr::n(),n_valid_intervals=sum(is.finite(conf_low)&is.finite(conf_high)),
       primary_estimate=dplyr::first(primary_estimate),primary_conf_low=dplyr::first(primary_conf_low),
       primary_conf_high=dplyr::first(primary_conf_high),median=median(estimate),q025=quantile(estimate,.025),

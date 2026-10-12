@@ -9,6 +9,7 @@
 # Rebuild the scientific review from validated native caches:
 #   Rscript R/workflow.R --offline --report
 # Optional: --skip-figures, --skip-tests
+# Bacon model sensitivity is on hold by default; opt in later with --bacon-sensitivity.
 
 suppressPackageStartupMessages(library(here))
 
@@ -18,7 +19,8 @@ run_age_models = "--age-models" %in% args
 skip_figures = "--skip-figures" %in% args
 skip_tests = "--skip-tests" %in% args
 build_report = "--report" %in% args
-unknown = setdiff(args, c("--offline", "--age-models", "--skip-figures", "--skip-tests", "--report"))
+run_bacon_sensitivity = "--bacon-sensitivity" %in% args
+unknown = setdiff(args, c("--offline", "--age-models", "--skip-figures", "--skip-tests", "--report", "--bacon-sensitivity"))
 if (length(unknown)) stop("Unknown workflow option(s): ", paste(unknown, collapse = ", "))
 
 if (build_report && (skip_figures || skip_tests))
@@ -33,7 +35,8 @@ if (build_report) {
 # Shared by every workflow-owned script that can persist a PDF or PNG. Scripts
 # run directly still render by default; the workflow option suppresses only
 # persistent figure writes, never analytical tables or classifications.
-options(paleoaces.render_figures = !skip_figures, paleoaces.primary_only=FALSE)
+options(paleoaces.render_figures = !skip_figures, paleoaces.primary_only=FALSE,
+        paleoaces.run_bacon_sensitivity=run_bacon_sensitivity)
 
 run_script = function(path, label = basename(path)) {
   cat("\n", strrep("=", 78), "\n", label, "\n", strrep("=", 78), "\n", sep = "")
@@ -143,8 +146,8 @@ if (!skip_tests) {
   run_script("R/tests/test_cca_tracking_metrics.R")
   run_script("R/tests/test_century_tracking.R")
   run_script("R/tests/test_cca_transition_contributions.R")
-  run_script("R/tests/test_chronology_figures.R")
   run_script("R/tests/test_tracking_predictor_models.R")
+  if(run_bacon_sensitivity) run_script("R/tests/test_chronology_figures.R")
   run_script("R/tests/test_review_edge_cases.R")
   run_script("R/tests/test_walsh_fire_reproduction.R")
   run_script("R/tests/test_holocene_climate_fire_eras.R")

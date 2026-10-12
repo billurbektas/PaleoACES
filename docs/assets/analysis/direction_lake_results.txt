@@ -2,151 +2,151 @@ JayBath
 Generalized least squares fit by REML
   Model: estimate ~ era
   Data: d
-      AIC     BIC   logLik
-  740.706 760.287 -365.353
+       AIC      BIC    logLik
+  1035.253 1054.834 -512.6265
 
 Correlation Structure: ARMA(0,1)
  Formula: ~time_index | series
  Parameter estimate(s):
     Theta1
--0.1963375
+-0.7234774
 Variance function:
  Structure: Different standard deviations per stratum
  Formula: ~1 | era
  Parameter estimates:
 Anthropocene     Holocene
-   1.0000000    0.1633359
+   1.0000000    0.3641471
 
 Coefficients:
-                     Value  Std.Error  t-value p-value
-(Intercept)     0.00618604 0.01553400 0.398226  0.6907
-eraAnthropocene 0.29328537 0.04598796 6.377438  0.0000
+                      Value  Std.Error   t-value p-value
+(Intercept)     -0.00901438 0.01443585 -0.624444  0.5327
+eraAnthropocene  0.27762925 0.06157730  4.508630  0.0000
 
  Correlation:
                 (Intr)
-eraAnthropocene -0.338
+eraAnthropocene -0.234
 
 Standardized residuals:
        Min         Q1        Med         Q3        Max
--3.2125853 -0.5605592 -0.1401819  0.5666356  5.8220551
+-3.3161036 -0.2847229 -0.1996266  0.4240961  3.8050860
 
-Residual standard error: 0.7863103
+Residual standard error: 1.087434
 Degrees of freedom: 373 total; 371 residual
 # A tibble: 1 × 8
-  contrast              estimate     SE    df lower.CL upper.CL t.ratio  p.value
-  <chr>                    <dbl>  <dbl> <dbl>    <dbl>    <dbl>   <dbl>    <dbl>
-1 Anthropocene - Holoc…    0.293 0.0460  295.    0.203    0.384    6.38 6.95e-10
+  contrast               estimate     SE    df lower.CL upper.CL t.ratio p.value
+  <chr>                     <dbl>  <dbl> <dbl>    <dbl>    <dbl>   <dbl>   <dbl>
+1 Anthropocene - Holoce…    0.278 0.0616  249.    0.156    0.399    4.51 1.00e-5
 LogWallow
 Generalized least squares fit by REML
   Model: estimate ~ era
   Data: d
        AIC      BIC    logLik
-  726.3624 745.8207 -358.1812
+  990.0723 1009.531 -490.0361
 
 Correlation Structure: ARMA(0,1)
  Formula: ~time_index | series
  Parameter estimate(s):
-       Theta1
--0.0004693301
+    Theta1
+-0.6115346
 Variance function:
  Structure: Different standard deviations per stratum
  Formula: ~1 | era
  Parameter estimates:
 Anthropocene     Holocene
-   1.0000000    0.1090986
+   1.0000000    0.1916765
 
 Coefficients:
-                     Value  Std.Error  t-value p-value
-(Intercept)     0.01434392 0.01470537 0.975421    0.33
-eraAnthropocene 0.28512749 0.04571472 6.237104    0.00
+                      Value  Std.Error   t-value p-value
+(Intercept)     -0.02227759 0.01243644 -1.791316  0.0741
+eraAnthropocene  0.29089247 0.06113946  4.757852  0.0000
 
  Correlation:
                 (Intr)
-eraAnthropocene -0.322
+eraAnthropocene -0.203
 
 Standardized residuals:
        Min         Q1        Med         Q3        Max
--3.2125850 -0.5483214 -0.1403038  0.5469736  5.8220545
+-3.3161043 -0.2934162 -0.2223006  0.4257671  3.8050868
 
-Residual standard error: 0.7863104
+Residual standard error: 1.087433
 Degrees of freedom: 364 total; 362 residual
 # A tibble: 1 × 8
   contrast               estimate     SE    df lower.CL upper.CL t.ratio p.value
   <chr>                     <dbl>  <dbl> <dbl>    <dbl>    <dbl>   <dbl>   <dbl>
-1 Anthropocene - Holoce…    0.285 0.0457  316.    0.195    0.375    6.24 1.43e-9
+1 Anthropocene - Holoce…    0.291 0.0611  311.    0.171    0.411    4.76 3.00e-6
 ReflectionPond
 Generalized least squares fit by REML
   Model: estimate ~ era
   Data: d
-       AIC      BIC    logLik
-  773.7871 793.1476 -381.8935
+       AIC      BIC   logLik
+  1014.324 1033.685 -502.162
 
 Correlation Structure: ARMA(0,1)
  Formula: ~time_index | series
  Parameter estimate(s):
-   Theta1
-0.2565407
+     Theta1
+-0.05079995
 Variance function:
  Structure: Different standard deviations per stratum
  Formula: ~1 | era
  Parameter estimates:
 Anthropocene     Holocene
-    1.000000     0.214559
+   1.0000000    0.2515509
 
 Coefficients:
-                     Value  Std.Error   t-value p-value
-(Intercept)     -0.0107405 0.03922252 -0.273835  0.7844
-eraAnthropocene  0.3102119 0.05841228  5.310731  0.0000
+                      Value  Std.Error   t-value p-value
+(Intercept)     -0.03175997 0.05000430 -0.635145  0.5257
+eraAnthropocene  0.30037485 0.07799871  3.851023  0.0001
 
  Correlation:
                 (Intr)
-eraAnthropocene -0.671
+eraAnthropocene -0.641
 
 Standardized residuals:
        Min         Q1        Med         Q3        Max
--3.2125848 -0.5546372 -0.1175779  0.5456927  5.8220541
+-4.9038714 -0.2556956 -0.1938592  0.4104773  3.8050863
 
-Residual standard error: 0.7863105
+Residual standard error: 1.087434
 Degrees of freedom: 357 total; 355 residual
 # A tibble: 1 × 8
   contrast               estimate     SE    df lower.CL upper.CL t.ratio p.value
   <chr>                     <dbl>  <dbl> <dbl>    <dbl>    <dbl>   <dbl>   <dbl>
-1 Anthropocene - Holoce…    0.310 0.0584  38.2    0.192    0.428    5.31 4.93e-6
+1 Anthropocene - Holoce…    0.300 0.0780  45.0    0.143    0.457    3.85 3.69e-4
 PantherPotholes
 Generalized least squares fit by REML
   Model: estimate ~ era
   Data: d
-      AIC      BIC   logLik
-  995.506 1015.233 -492.753
+       AIC      BIC    logLik
+  1340.451 1360.178 -665.2255
 
 Correlation Structure: ARMA(0,1)
  Formula: ~time_index | series
  Parameter estimate(s):
-   Theta1
-0.1679085
+    Theta1
+-0.2144047
 Variance function:
  Structure: Different standard deviations per stratum
  Formula: ~1 | era
  Parameter estimates:
 Anthropocene     Holocene
-  1.00000000   0.09350318
+   1.0000000    0.1334282
 
 Coefficients:
-                     Value  Std.Error  t-value p-value
-(Intercept)     0.04041944 0.01747665 2.312768  0.0213
-eraAnthropocene 0.22453969 0.10249487 2.190741  0.0291
+                     Value  Std.Error   t-value p-value
+(Intercept)     -0.0392721 0.02379306 -1.650571  0.0996
+eraAnthropocene -0.3313527 0.14586804 -2.271592  0.0237
 
  Correlation:
                 (Intr)
-eraAnthropocene -0.171
+eraAnthropocene -0.163
 
 Standardized residuals:
        Min         Q1        Med         Q3        Max
--4.1219493 -0.4379638 -0.0700355  0.4019712  4.1040239
+-5.2596240 -0.2583498  0.1547356  0.4902065  3.3730111
 
-Residual standard error: 1.680873
+Residual standard error: 2.395214
 Degrees of freedom: 384 total; 382 residual
 # A tibble: 1 × 8
   contrast                estimate    SE    df lower.CL upper.CL t.ratio p.value
   <chr>                      <dbl> <dbl> <dbl>    <dbl>    <dbl>   <dbl>   <dbl>
-1 Anthropocene - Holocene    0.225 0.102  291.   0.0228    0.426    2.19  0.0293
+1 Anthropocene - Holocene   -0.331 0.146  289.   -0.618  -0.0443   -2.27  0.0238

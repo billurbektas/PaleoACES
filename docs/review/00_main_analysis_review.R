@@ -5770,58 +5770,23 @@ cat('Primary native-century tracking:',nrow(h),'actual transitions; no interpola
 # ============================================================================
 # BEGIN R/stages/08_cca_figure.R
 # ============================================================================
-# =============================================================================
-# 08_cca_figure.R - the main CCA figure: observed vs predicted trajectories
-# =============================================================================
-# Panel A: the pooled ordination, showing for each site x era BOTH trajectories
-#          through time -
-#            observed  (solid, filled points)  = WA scores, from composition
-#            predicted (dashed, open points)   = LC scores, from climate
-#          Arrows run in the direction of time. Where the two paths diverge, the
-#          forest is not where climate says it should be; where they run
-#          parallel, it is moving as climate asks while holding its offset.
-# Panel B: the biplot inset within A, with climate arrows and species scores.
-# Panel C: marginal climate-variable effects on constrained inertia; shared
-#          climate variance is reported but is not plotted as a separate bar.
-# Panel D: species contributions to constrained inertia, with occurrence shading.
-#
-# Holocene points are equal-lake CC/S-era centroids of primary occupied centuries; Anthropocene is one point per site per survey. Sources
-# R/stages/04_cca_model.R for the model.
-# =============================================================================
-
+# Figure 3: A, species/climate biplot; B, observed and predicted trajectories.
+# Constrained-inertia colors summarize all constrained axes. Biplot positions
+# and trajectory coordinates retain CCA1–CCA2 site scaling, Hill = FALSE.
 library(here)
 render_figures = isTRUE(getOption("paleoaces.render_figures", TRUE))
-
-# Species selection is inherited from the model. Consolidation removes Taxus
-# brevifolia and Acer circinatum under the understory rule; Pinus ponderosa is
-# retained following the 2026-10-08 reversal of its former manual exclusion.
-# 04_cca_model.R defaults extra_exclude to character(0) and cca_suffix to "".
 source(here("R/stages/04_cca_model.R"), local = TRUE)
 library(ggrepel)
 library(patchwork)
 source(here("R/helpers/figure_style.R"), local = TRUE)
-
-# The reviewed frozen CC/S-era centroid display is the sole main trajectory
-# product. Both publication formats are written when rendering is enabled.
 holocene_display_mode = "era_centroid"
 cca_figure_stem = "fig_cca_trajectories"
-write_cca_png = TRUE
-
-# Species LABELLED in the inset biplot: those whose arrow reaches at least this
-# percent of the longest species arrow. Purely a legibility rule - shorter arrows
-# sit on the origin where a label cannot be placed. All species are still drawn,
-# and panel B shows all of them, so nothing is hidden.
-inset_sp_min_pct = 25
-
-base_theme = theme_paleoaces(base_size = PAPER_BASE_SIZE) +
+base_theme = theme_paleoaces(base_size = 16) +
   theme(legend.title = element_blank(), legend.position = "bottom",
-        panel.grid.minor = element_blank())
-
-imp    = summary(cca_model)$cont$importance[2, ] * 100
+    axis.title=element_text(size=17),axis.text=element_text(size=14),
+    panel.grid.minor = element_blank())
+imp = summary(cca_model)$cont$importance[2, ] * 100
 ax_lab = paste0(c("CCA1", "CCA2"), " ", round(imp[1:2], 1), "%")
-
-# Full names for the configured constraints. Their shared derivation is defined
-# in R/helpers/climate_variables.R; their active selection and labels live in config.R.
 clim_full = CLIMATE_VARIABLE_LABELS[CCA_VARIABLES]
 full_name = function(x) unname(ifelse(x %in% names(clim_full), clim_full[x], x))
 
@@ -5887,12 +5852,7 @@ traj_long = bind_rows(
   mutate(type = factor(type, levels = c("observed", "predicted"))) %>%
   arrange(grp, type, order)
 
-# EDIT SERIES-LABEL POSITIONS HERE. Each row controls exactly one direct label.
-# `anchor_lab` is the trajectory vertex used as the starting position; NA uses
-# the mean of that path. `nx_frac` and `ny_frac` are horizontal/vertical offsets
-# expressed as fractions of the complete trajectory range: positive = right/up,
-# negative = left/down. These labels are drawn without repel so changes here are
-# deterministic and easy to tune by eye.
+# Initial direct-label positions; the joint repel layer also avoids time labels.
 series_label_positions = tribble(
   ~site,  ~era,            ~type,        ~anchor_lab, ~nx_frac, ~ny_frac,
   "MORA", "holocene",     "observed",   "CC4",          0.000,   -0.070,
@@ -5936,486 +5896,161 @@ stopifnot(nrow(series_lab) == 8L,
           all(is.finite(series_lab$x)), all(is.finite(series_lab$y)),
           all(is.finite(series_lab$nx)), all(is.finite(series_lab$ny)))
 
-# Arrowheads every arrow_every-th step. With few, widely spaced points every
-# segment should carry its own head; at traj_step = 100 a head on every step
-# would be a solid line of arrowheads.
-arrow_every = 1L
 
-steps = traj_long %>%
-  group_by(grp, type) %>%
-  mutate(xend = lead(x), yend = lead(y), step = row_number()) %>%
-  ungroup() %>%
-  filter(!is.na(xend))
+steps = traj_long %>% group_by(grp,type) %>%
+  mutate(xend=lead(x),yend=lead(y)) %>% ungroup() %>% filter(!is.na(xend))
+step_heads = steps
+lab_pts = traj_long %>% filter(type=="observed",!is.na(lab))
 
-step_heads = steps %>%
-  filter(era == "anthropocene" | step %% arrow_every == 0)
-
-# Labels: every second bin on the observed Holocene path, both ends of every
-# observed path, and the two ends of the predicted Holocene paths (which run far
-# from their observed counterparts, so they need anchoring in time). The
-# Anthropocene predicted path is left unlabelled - it has two points sitting
-# right beside the observed ones, so labelling it just prints each year twice.
-# Observed paths get EVERY bin labelled; predicted paths only their two ends,
-# nudged below the vertex so the text does not sit on the point it marks.
-lab_pts = traj_long %>%
-  group_by(grp, type) %>%
-  mutate(is_end = row_number() %in% c(1, n())) %>%
-  ungroup()
-  # Label the observed CC/S centroids. Predicted centroids remain visible through
-  # the original observed/predicted alpha legend without duplicating every label.
-  lab_pts = lab_pts %>%
-    filter(type == "observed", !is.na(lab)) %>%
-    mutate(ny = 0)
-
-# -----------------------------------------------------------------------------
-# Inset: the plain biplot - climate constraint arrows + species scores
-# -----------------------------------------------------------------------------
-env_bp = as_tibble(scores(cca_model, display = "bp", choices = 1:2,
-                          scaling = cca_scaling, hill = cca_hill), rownames = "variable")
-sp_bp  = as_tibble(scores(cca_model, display = "species", choices = 1:2,
-                          scaling = cca_scaling, hill = cca_hill), rownames = "species")
-
-# Climate and species labels go in ONE repel layer, or they only avoid their own
-# kind and collide with each other. Every label gets a leader line
-# (min.segment.length = 0), so species with near-zero loadings - Abies amabilis
-# sits almost exactly on the origin - are pulled out to where they can be read
-# instead of piling up on the axis crossing.
-# Which species get a LABEL in the inset is a legibility question, not an
-# importance one: a species sitting near the origin cannot be labelled without
-# the text landing on the axis crossing. The criterion is therefore arrow length
-# relative to the longest arrow - explicitly NOT a contribution measure. (They
-# are unrelated here: Spearman(arrow length, goodness) = -0.04, and Pinus
-# contorta has the longest arrow but one of the lowest goodness values.)
-# Every species is still DRAWN; only the label is withheld.
-sp_contrib = sp_bp %>%
-  mutate(arrow_len = sqrt(CCA1^2 + CCA2^2),
-         arrow_pct = 100 * arrow_len / max(arrow_len)) %>%
-  arrange(desc(arrow_pct))
-
-sp_inset   = sp_contrib %>% filter(arrow_pct >= inset_sp_min_pct)
-sp_dropped = sp_contrib %>% filter(arrow_pct <  inset_sp_min_pct)
-
-# Climate labels are nudged OUTWARD along their own arrow before repel runs.
-# Without it repel can park a label on the far side of the origin from the arrow
-# it names - "Mean summer temperature" was landing to the left while its arrow
-# pointed right - because the four arrow tips sit close together under scaling 1.
-# ARROW SCALING. The constraint arrows were drawn at a FIXED x2, which worked
-# while the species cloud was compact. It is not: Pinus albicaulis sits at
-# (3.57, 4.39) - kept deliberately, see 04_cca_model.R - and it stretches this
-# panel so far that the four climate arrows collapse onto the origin, which is
-# the one thing this panel exists to show. The multiplier is therefore tied to
-# the species extent, so the arrows fill a fixed FRACTION of the panel whatever
-# the species set does. Direction and relative length are untouched - only the
-# common scale factor changes, which is standard biplot practice and carries no
-# interpretation (arrow length is comparable BETWEEN arrows, never to the species).
-arrow_mult = 0.62 * max(sqrt(sp_bp$CCA1^2 + sp_bp$CCA2^2)) /
-                    max(sqrt(env_bp$CCA1^2 + env_bp$CCA2^2))
-cat("\nbiplot arrow multiplier: ", round(arrow_mult, 2),
-    " (was a fixed 2; rescaled because the species extent is ",
-    round(max(sqrt(sp_bp$CCA1^2 + sp_bp$CCA2^2)), 2), ")\n", sep = "")
-
-inset_labs = bind_rows(
-  env_bp %>% mutate(r = sqrt(CCA1^2 + CCA2^2)) %>%
-    transmute(x = CCA1 * arrow_mult, y = CCA2 * arrow_mult, label = full_name(variable),
-              col = "black", fface = "bold", sz = 2.4,
-              # nudge outward along the arrow, in the SAME units the arrows are
-              # now drawn in - it was tied to the old fixed x2 and would drop the
-              # labels near the origin once the arrows were rescaled
-              nx = CCA1 / r * 0.5 * max(r) * arrow_mult,
-              ny = CCA2 / r * 0.5 * max(r) * arrow_mult),
-  sp_inset %>% transmute(x = CCA1, y = CCA2, label = species,
-                         col = "grey30", fface = "italic", sz = 2.15,
-                         nx = 0, ny = 0)
-)
-# Text sizes are tied to the inset's PHYSICAL size, not to the data: the box was
-# halved above, and at the old 2.8/2.6 the four climate labels collided and
-# "Callitropsis nootkatensis" ran off the right edge. Adjust these together with
-# the inset_element() extents below, never one without the other.
-
-p_inset = ggplot() +
-  geom_hline(yintercept = 0, color = "grey88", linewidth = 0.3) +
-  geom_vline(xintercept = 0, color = "grey88", linewidth = 0.3) +
-  geom_segment(data = sp_bp, aes(0, 0, xend = CCA1, yend = CCA2),
-               color = "grey70", linewidth = 0.3) +
-  geom_point(data = sp_bp, aes(CCA1, CCA2), color = "grey55", size = 0.7) +
-  geom_segment(data = env_bp, aes(0, 0, xend = CCA1 * arrow_mult, yend = CCA2 * arrow_mult),
-               arrow = arrow(length = unit(0.22, "cm")), color = "black", linewidth = 0.9) +
-  geom_text_repel(data = inset_labs,
-                  aes(x, y, label = label, color = col, fontface = fface, size = sz),
-                  nudge_x = inset_labs$nx, nudge_y = inset_labs$ny,
-                  segment.size = 0.2, segment.color = "grey60", segment.alpha = 0.8,
-                  box.padding = 0.3, point.padding = 0.2,
-                  # high pull, low push: labels stay anchored to what they name.
-                  # Summer and winter temperature point within 19 deg of each
-                  # other, so without a strong pull repel throws one across the
-                  # origin, away from the arrow it belongs to.
-                  force = 1.5, force_pull = 8,
-                  min.segment.length = 0, max.overlaps = Inf,
-                  max.iter = 200000, seed = 11) +
-  scale_color_identity() +
-  scale_size_identity() +
-  scale_discrete_identity(aesthetics = "fontface") +
-  scale_x_continuous(expand = expansion(mult = 0.30)) +
-  scale_y_continuous(expand = expansion(mult = 0.20)) +
-  # Back to an INSET (Billur, 2026-08-13), now at the TOP RIGHT of panel A - the
-  # corner the trajectories leave empty. Compact styling: no axes, since an inset
-  # this size cannot carry readable ones, and the arrow directions are what it is
-  # for. It keeps the rescaled arrows (see arrow_mult above), without which the
-  # four constraints collapse onto the origin at this size.
-  # No title: the arrows and species names say what it is, and a header inside a
-  # box this small costs more room than it earns.
-  labs(tag = "B.", x = NULL, y = NULL) +
-  theme_void(base_size = 9) +
-  theme(panel.background = element_rect(fill = alpha("white", 0.93), color = "grey70",
-                                        linewidth = 0.4),
-        plot.margin = margin(4, 6, 4, 6),
-        plot.tag = element_text(face = "bold", size = PAPER_PANEL_TAG_SIZE),
-        plot.tag.position = "topleft",
-        legend.position = "none")
-
-# -----------------------------------------------------------------------------
-# Panel A: trajectories
-# -----------------------------------------------------------------------------
-# NO `site` column, so facet_wrap draws the SAME calibration cloud in every panel.
-# Deliberate: an identical background in both facets is what makes the two panels
-# visually comparable. Splitting it per site would also be informative (the two
-# sites' plots occupy different parts of the space) but would change what the grey
-# means between panels, which is the wrong trade for a headline figure.
-calib_proj = predict(cca_model, newdata = species_past_final, type = "wa",
-                     scaling = cca_scaling, hill = cca_hill)
-calib = tibble(o1 = calib_proj[, 1], o2 = calib_proj[, 2])
-stopifnot(nrow(calib) == nrow(species_past_final), all(is.finite(as.matrix(calib))))
-
-# Observed vs predicted is carried by OPACITY, not line type: at these path
-# lengths a dashed line reads as a broken line rather than as a second series.
-alpha_type = c(observed = 1, predicted = 0.18)
-
-# ZOOM. The trajectories occupy 20% of the area the calibration cloud forces the
-# axes to cover (CCA1 -1.22 to 2.69 against paths at -0.43 to 0.79), so four
-# fifths of the panel was empty. coord_cartesian CLIPS the view without dropping
-# any data - the cloud is cropped, not filtered, so nothing is silently removed
-# from the model. How many plots fall outside is printed and captioned.
-zpad = 0.12
-zx = range(traj_long$x) + c(-1, 1) * zpad * diff(range(traj_long$x))
-zy = range(traj_long$y) + c(-1, 1) * zpad * diff(range(traj_long$y))
-
-# HEADROOM FOR THE INSET. The biplot sits at the top right of panel A, so that
-# corner has to be empty - otherwise it lands on the MORA Holocene path, whose
-# oldest point is the closest thing to it. Reserved by extending the view rather
-# than by shrinking the inset, so the inset stays readable. Checked below.
-zx[2] = zx[2] + 0.30 * diff(zx)
-# Extra display space keeps the refitted ponderosa model's era labels clear of B.
-zy[2] = zy[2] + 0.35 * diff(zy)
-
-n_out = sum(calib$o1 < zx[1] | calib$o1 > zx[2] | calib$o2 < zy[1] | calib$o2 > zy[2])
-
-# The inset occupies the top-right corner in NORMALISED panel coordinates. Assert
-# no trajectory point falls inside it, so it cannot silently cover the data.
-INSET_BOX = c(left = 0.45, bottom = 0.54, right = 1.00, top = 1.00)
-
-# ⚠ CHECK THE LABELS, NOT JUST THE POINTS. The first version of this test looked
-# at trajectory vertices only and passed cleanly while the inset's bottom-left
-# corner sat on MORA's "6 ka" label - a label is offset from its point and repel
-# moves it further, so a vertex outside the box is no guarantee its text is.
-# lab_pts is checked with a margin to stand in for that displacement.
-LAB_MARGIN = 0.04
-inset_hits = function(df, margin = 0) df %>%
-  mutate(nx = (x - zx[1]) / diff(zx), ny = (y - zy[1]) / diff(zy)) %>%
-  filter(nx > INSET_BOX["left"] - margin, ny > INSET_BOX["bottom"] - margin)
-
-hidden     = inset_hits(traj_long)
-hidden_lab = inset_hits(lab_pts, LAB_MARGIN)
-hidden_series = inset_hits(series_lab, LAB_MARGIN)
-if (nrow(hidden) || nrow(hidden_lab) || nrow(hidden_series))
-  warning("inset would cover ", nrow(hidden), " trajectory point(s) and ",
-          nrow(hidden_lab), " time label(s) and ", nrow(hidden_series),
-          " series-label anchor(s): ",
-          paste(unique(c(hidden$grp, hidden_lab$lab, hidden_series$lab)),
-                collapse = ", "),
-          " - raise INSET_BOX['bottom'] or widen the headroom above")
-cat("\ninset check: ", nrow(hidden), " trajectory points and ", nrow(hidden_lab),
-    " time labels and ", nrow(hidden_series),
-    " series-label anchors fall under the inset box\n", sep = "")
-
-# BOTH VIEWS ARE DRAWN, from ONE definition (Billur, 2026-08-13). They answer
-# different questions and neither replaces the other:
-#
-#   A  ALL TOGETHER, one panel, coloured by site x era - the two sites in a single
-#      space, so their positions can be compared directly. This is the original
-#      layout. It is the honest view of "where is MORA relative to NOCA", and it
-#      is the one that gets crowded.
-#   B  FACETED BY SITE, coloured by era - each site's paths get their own panel
-#      and cannot overlap the other's. Legible, at the cost of no longer showing
-#      the two sites in one space.
-#
-# The colour mapping differs BY DESIGN and each panel carries its own legend: in A
-# colour must encode site AND era (4 series in one space); in B site is the facet,
-# so panel B uses its era legend. Panel A keeps the same MORA blue and NOCA
-# orange across eras; endpoint shapes and labels identify the modern comparison.
-# Built by one function so the two panels
-# cannot drift apart in anything except the mapping.
-traj_panel = function(colour_var, pal, tag, facet = FALSE, title = NULL,
-                      subtitle = NULL, caption = NULL) {
-  cv = sym(colour_var)
-  p = ggplot() +
-    geom_hline(yintercept = 0, color = "grey90") +
-    geom_vline(xintercept = 0, color = "grey90") +
-    geom_point(data = calib, aes(o1, o2), color = "grey80", size = 0.5, alpha = 0.3) +
-    # Points first, arrows second: the arrowheads must sit ON TOP of the vertex
-    # circles, or a white-filled point masks the head of the arrow arriving at it.
-    # At traj_step = 100 a circle on every Holocene point beads the whole path, so
-    # vertices are drawn only for the Anthropocene pair.
-    geom_point(data = traj_long,
-               aes(x, y, color = !!cv, alpha = type),
-               shape = 21, fill = "white", size = 1.9, stroke = 0.7,
-               show.legend = FALSE) +
-    geom_segment(data = steps,
-                 aes(x, y, xend = xend, yend = yend, color = !!cv, alpha = type,
-                     group = interaction(grp, type)),
-                 linewidth = 0.6, lineend = "round", show.legend = FALSE) +
-    geom_segment(data = step_heads,
-                 aes(x, y, xend = xend, yend = yend, color = !!cv, alpha = type),
-                 arrow = arrow(length = unit(0.16, "cm"), type = "closed"),
-                 linewidth = 0.6, lineend = "butt", show.legend = TRUE) +
-    # Predicted labels share the predicted-path transparency. Every text layer
-    # stays out of the guide so the alpha legend contains arrows, never "a" glyphs.
-    geom_text_repel(data = lab_pts,
-                    aes(x, y, label = lab, color = !!cv, alpha = type),
-                    size = 3.0, nudge_y = lab_pts$ny,
-                    # high pull keeps each time label beside its own vertex; the
-                    # tightly-spaced predicted paths otherwise fling labels away
-                    force = 1.5, force_pull = 6, box.padding = 0.16, point.padding = 0.1,
-                    segment.size = 0.2, segment.alpha = 0.6, min.segment.length = 0.2,
-                    max.overlaps = Inf, max.iter = 100000, seed = 3,
-                    show.legend = FALSE) +
-    geom_text(data = series_lab,
-              aes(x + nx, y + ny, label = lab, color = !!cv, alpha = type),
-              size = 3.85, fontface = "bold", lineheight = 0.82,
-              show.legend = FALSE) +
-    coord_cartesian(xlim = zx, ylim = zy) +
-    scale_color_manual(values = pal) +
-    scale_alpha_manual(values = alpha_type,
-                       labels = c(observed = "Observed", predicted = "Predicted")) +
-    labs(x = ax_lab[1], y = ax_lab[2], tag = tag, title = title,
-         subtitle = subtitle, caption = caption) +
-    guides(color = "none",
-           alpha = guide_legend(order = 1, nrow = 1, title = NULL,
-                                override.aes = list(color = "grey25",
-                                  linewidth = 1.1))) +
-    base_theme +
-    theme(plot.margin = margin(6, 6, 6, 6),
-          plot.title = element_text(face = "bold", size = 12),
-          plot.subtitle = element_text(size = 9, color = "grey35"),
-          strip.text = element_text(face = "bold", size = 12),
-          plot.caption = element_text(hjust = 0, colour = "grey40", size = 8),
-          legend.text = element_text(size = 13),
-          legend.key.width = unit(2.2, "cm"),
-          legend.key.height = unit(.65, "cm"))
-  if (facet) p = p + facet_wrap(~ site)
-  p
-}
-
-# No caption on the figure - it belongs in the paper's legend, so it is printed
-# with the rest of the caption material at the end instead. Do NOT lose it: the
-# panel is a crop, and a reader who is not told that will read the grey cloud as
-# the whole calibration set.
-zoom_note = paste0("Zoomed to the trajectories: ", n_out, " of ", nrow(calib),
-                   " calibration plots fall outside this view (cropped, not removed).")
-
-pA = traj_panel("grp", color_site_era, "A.", facet = FALSE)
-
-# The facet-by-site version is NOT drawn (Billur, 2026-08-13): both sites in one
-# space is the comparison the study is about, and at 2000-yr points that panel is
-# no longer crowded enough to need splitting. traj_panel() still takes
-# facet = TRUE, so it is one call away if it is ever wanted again.
-# Extents come from INSET_BOX, the same vector the overlap check above uses, so
-# the assertion can never test a box different from the one drawn. unname() -
-# inset_element takes bare numerics and a named vector is a silent trap.
-pA_inset = pA + inset_element(p_inset,
-                              left   = unname(INSET_BOX["left"]),
-                              bottom = unname(INSET_BOX["bottom"]),
-                              right  = unname(INSET_BOX["right"]),
-                              top    = unname(INSET_BOX["top"]),
-                              align_to = "panel")
-
-# -----------------------------------------------------------------------------
-# Panels C and D: contributions to the constrained inertia
-# -----------------------------------------------------------------------------
-# Loadings are NOT repeated here - the inset already shows them, as the direction
-# and length of each arrow. This panel shows the other thing: how the constrained
-# inertia is divided up.
-#
-# Both blocks are pieces of the SAME total constrained inertia, but they behave
-# completely differently:
-#
-#   species  inertcomp(display="species")[, "CCA"] / sum(CCA$eig)  -> sums to 100%
-#            Species are columns of the RESPONSE, so the constrained inertia
-#            decomposes exactly across them. A true contribution.
-#
-#   climate  marginal ChiSquare from anova(by="margin") / sum(CCA$eig) -> sums to 27%
-#            Constraints are correlated PREDICTORS, so their explanatory parts
-#            overlap. The missing 73% is shared and cannot be attributed to any
-#            one variable (VIF 22-39; r = 0.90 temperatures, 0.95 precipitations).
-#            It is reported in the caption and console, not plotted as a bar.
-#
-# NOT goodness()/inertcomp(proportional=TRUE): those divide by each species' OWN
-# inertia, giving a per-species FIT that does not partition (sums to 1.77 here)
-# and is not comparable with the climate numbers.
-tot_constrained = sum(cca_model$CCA$eig)
-
-sp_inertia = inertcomp(cca_model, display = "species")
-sp_share   = tibble(variable = rownames(sp_inertia),
-                    share_pct = 100 * sp_inertia[, "CCA"] / tot_constrained)
-
+# Panel A: all species and climate variables, with inertia and occurrence.
+env_bp = as_tibble(scores(cca_model,display="bp",choices=1:2,
+  scaling=cca_scaling,hill=cca_hill),rownames="variable")
+sp_bp = as_tibble(scores(cca_model,display="species",choices=1:2,
+  scaling=cca_scaling,hill=cca_hill),rownames="species")
+tot_constrained=sum(cca_model$CCA$eig)
+sp_inertia=inertcomp(cca_model,display="species")
+sp_share=tibble(species=rownames(sp_inertia),
+  share_pct=100*sp_inertia[,"CCA"]/tot_constrained)
+sp_prev=tibble(species=colnames(species_past_final),
+  n_plots=colSums(species_past_final>0),
+  prev_pct=100*colSums(species_past_final>0)/nrow(species_past_final))
 set.seed(1)
-clim_marg  = anova(cca_model, by = "margin", permutations = 499)
-nterm      = nrow(clim_marg) - 1
-clim_share = tibble(variable = full_name(rownames(clim_marg)[seq_len(nterm)]),
-                    share_pct = 100 * clim_marg$ChiSquare[seq_len(nterm)] / tot_constrained,
-                    p_value   = clim_marg$`Pr(>F)`[seq_len(nterm)])
+clim_marg=anova(cca_model,by="margin",permutations=499)
+nterm=nrow(clim_marg)-1L
+clim_share=tibble(variable=rownames(clim_marg)[seq_len(nterm)],
+  share_pct=100*clim_marg$ChiSquare[seq_len(nterm)]/tot_constrained)
+shared_pct=100-sum(clim_share$share_pct)
+arrow_mult=.62*max(sqrt(sp_bp$CCA1^2+sp_bp$CCA2^2))/
+  max(sqrt(env_bp$CCA1^2+env_bp$CCA2^2))
+sp_bp=sp_bp %>% left_join(sp_share,by="species",relationship="one-to-one") %>%
+  left_join(sp_prev,by="species",relationship="one-to-one")
+env_bp=env_bp %>% left_join(clim_share,by="variable",relationship="one-to-one")
+biplot_labels=bind_rows(
+  sp_bp %>% transmute(component="Species",name=species,x=CCA1,y=CCA2,
+    share_pct,occurrence_pct=prev_pct,label=sprintf("%s (%.1f%%)",species,prev_pct),
+    fontface="italic",nudge_x=0,nudge_y=0),
+  env_bp %>% transmute(component="Climate",name=variable,
+    x=CCA1*arrow_mult,y=CCA2*arrow_mult,share_pct,occurrence_pct=NA_real_,
+    label=full_name(variable),
+    fontface="bold",nudge_x=CCA1*arrow_mult*.22,nudge_y=CCA2*arrow_mult*.22))
+# Separate crowded central taxa and nearby climate tips before the shared repel
+# layer resolves remaining collisions. Leaders still point to the exact scores.
+biplot_label_positions=tribble(
+  ~name,~label_x,~label_y,
+  "Pinus albicaulis",2.3,5.7,
+  "Pinus ponderosa",-4.5,3.7,
+  "Pinus contorta",-1.0,3.2,
+  "Abies lasiocarpa",3.7,2.6,
+  "Picea engelmannii",-.7,1.7,
+  "Abies grandis",-4.3,1.5,
+  "Pinus monticola",2.4,1.1,
+  "Pseudotsuga menziesii",-4.1,.7,
+  "Thuja plicata",-3.3,-.1,
+  "Tsuga mertensiana",3.7,.25,
+  "Abies amabilis",2.2,-.65,
+  "Tsuga heterophylla",-1.3,-1.0,
+  "Callitropsis nootkatensis",3.4,-1.6,
+  "Abies procera",-.5,-2.0,
+  "MSpT",-5.5,-3.0,
+  "MWT",-2.0,-3.0,
+  "SP",1.6,-3.0,
+  "WP",5.0,-3.0)
+biplot_labels=biplot_labels %>% left_join(biplot_label_positions,by="name",relationship="one-to-one") %>%
+  mutate(nudge_x=label_x-x,nudge_y=label_y-y)
+stopifnot(nrow(sp_bp)==14L,nrow(env_bp)==4L,abs(sum(sp_bp$share_pct)-100)<1e-8,
+  all(is.finite(biplot_labels$share_pct)),all(sp_bp$prev_pct>=0 & sp_bp$prev_pct<=100))
+write_csv(biplot_labels,here("output/cca_figure_biplot_annotations.csv"))
+p_biplot=ggplot()+
+  geom_hline(yintercept=0,color="grey88",linewidth=.4)+
+  geom_vline(xintercept=0,color="grey88",linewidth=.4)+
+  geom_segment(data=sp_bp,aes(0,0,xend=CCA1,yend=CCA2,color=share_pct),
+    linewidth=.45,arrow=arrow(length=unit(.12,"cm")),show.legend=FALSE)+
+  geom_point(data=sp_bp,aes(CCA1,CCA2,color=share_pct),size=1.4,show.legend=FALSE)+
+  geom_segment(data=env_bp,aes(0,0,xend=CCA1*arrow_mult,yend=CCA2*arrow_mult,color=share_pct),
+    linewidth=1.1,arrow=arrow(length=unit(.25,"cm"),type="closed"),show.legend=TRUE)+
+  geom_label_repel(data=biplot_labels,
+    aes(x,y,label=label,color=share_pct,fontface=fontface),size=4.2,
+    fill="white",linewidth=0,label.padding=unit(.10,"lines"),
+    nudge_x=biplot_labels$nudge_x,nudge_y=biplot_labels$nudge_y,
+    box.padding=.45,point.padding=.2,force=3,force_pull=2,
+    segment.size=.3,segment.color="grey65",min.segment.length=0,
+    max.overlaps=Inf,max.iter=200000,max.time=8,seed=11,show.legend=FALSE)+
+  scale_color_gradientn(colours=c(PAPER_SITE_COLORS[["MORA"]],"#9B79B6","#CF646E",
+      PAPER_SITE_COLORS[["NOCA"]]),
+    limits=c(0,max(biplot_labels$share_pct)),name="Constrained inertia (%)",
+    guide=guide_colorbar(title.position="top",title.hjust=.5,
+      barwidth=unit(5,"cm"),barheight=unit(.35,"cm")))+
+  scale_discrete_identity(aesthetics="fontface")+
+  coord_equal(xlim=c(-7.5,6.5),ylim=c(-3.6,6.1),expand=FALSE,clip="off")+
+  labs(tag="A.",x=ax_lab[1],y=ax_lab[2])+
+  base_theme+theme(legend.title=element_text(size=14),legend.text=element_text(size=13),
+    plot.subtitle=element_text(size=13,color="grey35"),plot.margin=margin(10,20,10,10))
 
-shared_pct = 100 - sum(clim_share$share_pct)   # reported, not plotted
-
-# Species prevalence: percentage of the CALIBRATION plots (the "past" plots the
-# CCA was actually fitted on) in which the species occurs. Independent of bar
-# length - a species can be common yet contribute little constrained inertia, or
-# rare and contribute a lot - so the colour is not re-encoding the bar.
-sp_prev = tibble(variable  = colnames(species_past_final),
-                 n_plots   = colSums(species_past_final),
-                 prev_pct  = 100 * colSums(species_past_final) / nrow(species_past_final))
-n_calib = nrow(species_past_final)
-
-# Neutral grey -> near-black ramp. Grey rather than a hue because panel A already
-# spends blue on MORA and orange on NOCA; a coloured ramp here reads as a site.
-# Five stops across a wide lightness span so adjacent species separate; light end
-# #b2b2ad clears 2:1 against the panel surface so the rarest stay visible.
-# The ramp is stretched over the observed prevalence range rather than 0-100.
-# The retained species span that current range, so a fixed 0-100 scale would
-# compress their colors into the pale half. Legend breaks remain real percentages.
-prev_ramp = c("#b2b2ad", "#8e8e88", "#6b6b65", "#484843", "#1f1f1c")
-
-sp_names = sp_bp$species
-ital_lab = function(x) parse(text = ifelse(x %in% sp_names,
-                                           paste0("italic('", x, "')"), paste0("'", x, "'")))
-
-# Two stacked plots rather than facets, so each block gets a plain horizontal
-# title and a height proportional to its number of bars. facet_wrap cannot do
-# space = "free", and facet_grid rows put the strip on its side.
-# NOTE the two blocks share a denominator (the constrained inertia, 0.4596) but
-# NOT a numerator, so "share" is only accurate for the species:
-#   species  inertia_j^CCA / sum_j inertia_j^CCA          -> an exact partition
-#            "the fraction of the climate-explained compositional variation that
-#             is this species' own variation"             (sums to 100%)
-#   climate  [I(full) - I(full without k)] / I(full)      -> a unique effect
-#            "the fraction of the climate-explained variation that disappears if
-#             this variable is dropped"                   (sums to 27%)
-# Verified: sum(inertcomp CCA) == sum(CCA$eig) exactly, and the marginal
-# ChiSquare equals the drop in constrained inertia on refitting without the term.
-# The axis is therefore labelled "% of constrained inertia" - a ratio TO it,
-# which is true of both - and each block carries its own one-line definition.
-bar_block = function(df, title, subtitle, show_axis, tag = NULL, fill_prev = FALSE) {
-  p = ggplot(df, aes(reorder(variable, share_pct), share_pct)) +
-    (if (fill_prev) geom_col(aes(fill = prev_pct), width = 0.7)
-     else           geom_col(width = 0.7, fill = "grey45")) +
-    geom_text(aes(label = sprintf("%.1f", share_pct)), hjust = -0.2, size = 3.1,
-              color = "grey25") +
-    coord_flip(clip = "off") +
-    scale_x_discrete(labels = ital_lab) +
-    scale_y_continuous(limits = c(0, max(contrib_all$share_pct) * 1.12),
-                       expand = expansion(mult = c(0, 0.02))) +
-    labs(x = NULL, tag = tag,
-         y = if (show_axis) "% of constrained inertia" else NULL,
-         title = title, subtitle = subtitle) +
-    base_theme +
-    theme(plot.title = element_text(face = "bold", size = 12, hjust = 0),
-          plot.subtitle = element_text(size = 9, color = "grey35", hjust = 0),
-          panel.grid.major.y = element_blank(),
-          axis.text.x  = if (show_axis) element_text() else element_blank(),
-          axis.ticks.x = if (show_axis) element_line() else element_blank())
-
-  if (fill_prev) {
-    p + scale_fill_gradientn(
-          colours = prev_ramp, limits = range(sp_prev$prev_pct),
-          breaks = scales::pretty_breaks(5),
-          guide = guide_colorbar(title.position = "top", title.hjust = 0)) +
-      labs(fill = paste0("Occurrence: % of the ", n_calib,
-                         " calibration plots holding the species")) +
-      theme(legend.position  = "bottom",
-            legend.title     = element_text(size = 9),
-            legend.direction = "horizontal",
-            legend.key.height = unit(0.3, "cm"),
-            legend.key.width  = unit(1.5, "cm"))
-  } else {
-    p + theme(legend.position = "none")
-  }
+# Panel B: tightly framed trajectories with fully opaque light predicted colors.
+# Lighting the actual colors avoids fading lines and text into the background.
+lighten=function(hex,amount=.42) {
+  v=col2rgb(hex)/255
+  rgb(v[1,]+(1-v[1,])*amount,v[2,]+(1-v[2,])*amount,v[3,]+(1-v[3,])*amount)
 }
+path_colors=c("MORA.observed"=PAPER_SITE_COLORS[["MORA"]],
+  "NOCA.observed"=PAPER_SITE_COLORS[["NOCA"]],
+  "MORA.predicted"=lighten(PAPER_SITE_COLORS[["MORA"]]),
+  "NOCA.predicted"=lighten(PAPER_SITE_COLORS[["NOCA"]]))
+add_path_color=function(x) x %>% mutate(path_color=paste(site,type,sep="."))
+traj_long=add_path_color(traj_long);steps=add_path_color(steps)
+step_heads=add_path_color(step_heads)
+trajectory_labels=bind_rows(
+  add_path_color(lab_pts) %>% transmute(x,y,label=lab,path_color,
+    nudge_x=0,nudge_y=0,fontface="plain",label_size=4),
+  add_path_color(series_lab) %>% transmute(x,y,label=lab,path_color,
+    nudge_x=nx,nudge_y=ny,fontface="bold",label_size=4.6))
+write_csv(traj_long %>% mutate(display_color=unname(path_colors[path_color]),display_alpha=1),
+  here("output/cca_figure_trajectory_display.csv"))
+calib_proj=predict(cca_model,newdata=species_past_final,type="wa",scaling=cca_scaling,hill=cca_hill)
+calib=tibble(o1=calib_proj[,1],o2=calib_proj[,2])
+zpad=.12
+zx=range(traj_long$x)+c(-1,1)*zpad*diff(range(traj_long$x))
+zy=range(traj_long$y)+c(-1,1)*zpad*diff(range(traj_long$y))
+n_out=sum(calib$o1<zx[1] | calib$o1>zx[2] | calib$o2<zy[1] | calib$o2>zy[2])
+p_trajectories=ggplot()+
+  geom_hline(yintercept=0,color="grey90")+geom_vline(xintercept=0,color="grey90")+
+  geom_point(data=calib,aes(o1,o2),color="grey80",size=.6,alpha=.3)+
+  geom_point(data=traj_long,aes(x,y,color=path_color),shape=21,fill="white",
+    size=2.3,stroke=.8,show.legend=FALSE)+
+  geom_segment(data=steps,aes(x,y,xend=xend,yend=yend,color=path_color),
+    linewidth=.8,lineend="round",show.legend=FALSE)+
+  geom_segment(data = step_heads,aes(x,y,xend=xend,yend=yend,color=path_color,linetype=type),
+    arrow=arrow(length=unit(.19,"cm"),type="closed"),linewidth=.8,show.legend=TRUE)+
+  geom_text_repel(data=trajectory_labels,aes(x,y,label=label,color=path_color,
+    fontface=fontface,size=label_size),
+    nudge_x=trajectory_labels$nudge_x,nudge_y=trajectory_labels$nudge_y,
+    box.padding=.4,point.padding=.2,force=2.5,force_pull=1.5,
+    segment.size=.3,segment.color="grey60",min.segment.length=0,
+    max.overlaps=Inf,max.iter=200000,max.time=8,seed=3,lineheight=.95,
+    xlim=zx,ylim=zy,show.legend=FALSE)+
+  scale_color_manual(values=path_colors,guide="none")+
+  scale_linetype_manual(values=c(observed="solid",predicted="solid"),
+    labels=c(observed="Observed",predicted="Predicted"),
+    guide=guide_legend(override.aes=list(color=c("grey25","grey70"),linewidth=1.1)))+
+  scale_size_identity()+scale_discrete_identity(aesthetics="fontface")+
+  coord_cartesian(xlim=zx,ylim=zy,expand=FALSE)+
+  labs(tag="B.",x=ax_lab[1],y=ax_lab[2])+base_theme+
+  theme(legend.text=element_text(size=15),legend.key.width=unit(2.2,"cm"),
+    legend.key.height=unit(.65,"cm"),plot.margin=margin(10,12,10,12))
 
-contrib_all = bind_rows(clim_share %>% select(variable, share_pct),
-                        sp_share   %>% select(variable, share_pct))
-
-pB = bar_block(clim_share, "Climate", NULL, show_axis = FALSE, tag = "C.") /
-     bar_block(sp_share %>% left_join(sp_prev, by = "variable"), "Species", NULL,
-               show_axis = TRUE, tag = "D.", fill_prev = TRUE) +
-  plot_layout(heights = c(nrow(clim_share), nrow(sp_share)))
-
-# Four labelled visual components: A trajectories, B biplot inset, and C/D the
-# climate/species constrained-inertia blocks.
-fig = pA_inset + pB +
-  plot_layout(widths = c(1.6, 1)) &
-  theme(plot.tag = element_text(size = 16, face = "bold"))
-
-if (render_figures) {
-  pdf(here("plot", paste0(cca_figure_stem, ".pdf")), height = 8.5, width = 15)
-  print(fig)
-  dev.off()
-  ggsave(here("plot", paste0(cca_figure_stem, ".png")), fig,
-         height = 8.5, width = 15, dpi = 300, bg = "white")
+fig=wrap_plots(p_biplot,p_trajectories,nrow=1,widths=c(1,1.15)) &
+  theme(plot.tag=element_text(size=24,face="bold"),plot.tag.position="topleft")
+if(render_figures) {
+  ggsave(here("plot",paste0(cca_figure_stem,".pdf")),fig,width=18.5,height=8.5,
+    device=cairo_pdf,bg="white")
+  ggsave(here("plot",paste0(cca_figure_stem,".png")),fig,width=18.5,height=8.5,dpi=300,bg="white")
 }
-
-# The caption is deliberately not drawn on the figure. Everything a caption would
-# need is printed here instead.
-cat("\n=== CAPTION MATERIAL (figure carries no caption) ===\n")
-cat(zoom_note, "\n", sep = "")
-  cat("Panel A: one WA and one LC centroid per site x frozen CC/S era,",
-      " connected separately from CC1 through S4 with time-direction arrows;",
-      " Anthropocene legacy-to-resurvey trajectories are unchanged.\n")
-cat("Observed = WA scores (alpha ", alpha_type["observed"],
-    "); predicted = LC scores (alpha ", alpha_type["predicted"], ").\n", sep = "")
-cat("Ordination scaling: ", cca_scaling, " (hill = ", cca_hill, ")\n", sep = "")
-cat("Total constrained inertia: ", round(tot_constrained, 4),
-    " (", round(100 * tot_constrained / cca_model$tot.chi, 1), "% of total)\n", sep = "")
-
-cat("\nSpecies: share of constrained inertia (inertcomp), and arrow length",
-    " (inset label threshold ", inset_sp_min_pct, "% of longest):\n", sep = "")
-print(as.data.frame(sp_contrib %>%
-  left_join(sp_share, by = c("species" = "variable")) %>%
-  left_join(sp_prev,  by = c("species" = "variable")) %>%
-  transmute(species, share_pct = round(share_pct, 1),
-            n_plots, prev_pct = round(prev_pct, 1),
-            arrow_len = round(arrow_len, 2), arrow_pct = round(arrow_pct, 1),
-            labelled = arrow_pct >= inset_sp_min_pct)), row.names = FALSE)
-cat("  species shares sum to", round(sum(sp_share$share_pct), 1), "% - they partition\n")
-
-# Interset correlations are no longer drawn (the inset carries direction, as
-# arrow angle), but they are still the right thing to quote in text.
-cat("\nClimate: marginal share of constrained inertia, plus interset correlations",
-    "\n(scaling-free; reported here, not plotted):\n")
-print(as.data.frame(clim_share %>%
-  left_join(as_tibble(intersetcor(cca_model)[, 1:2], rownames = "variable") %>%
-              mutate(variable = full_name(variable)), by = "variable") %>%
-  mutate(across(where(is.numeric), \(x) round(x, 3)))), row.names = FALSE)
-cat("  climate shares sum to", round(sum(clim_share$share_pct), 1),
-    "% - the remaining", round(100 - sum(clim_share$share_pct), 1),
-    "% is shared between\n  the collinear constraints and cannot be attributed",
-    "(VIF 22-39; r = 0.90 temperatures, 0.95 precipitations).\n")
-
-trajectory_audit=traj %>% group_by(site,era) %>% summarize(points=n(),.groups='drop')
-print(as.data.frame(trajectory_audit),row.names=FALSE)
-if (render_figures) {
-  cat("\nWritten: plot/", cca_figure_stem, ".pdf and .png\n", sep = "")
-} else {
-  cat("\nFigure rendering skipped; trajectory data and audits were refreshed.\n")
-}
+cat("Panel A: all 14 species and four climate constraints; colors encode % constrained inertia.\n",
+  "Species annotations give occurrence percentages. Species shares partition 100%; climate values are unique effects.\n",
+  "Shared climate fraction:",shared_pct,"%.\n",
+  "Panel B: primary equal-lake centroids connected separately from CC1 through S4; unchanged modern paths.\n",
+  "Observed and predicted paths are opaque; predicted paths use lighter colors.\n",
+  "Trajectory zoom crops",n_out,"of",nrow(calib),"calibration points without removing them from the fit.\n")
 # END R/stages/08_cca_figure.R
 
 # ============================================================================
@@ -7064,6 +6699,92 @@ for(metric in tracking_model_response_names()) {
 for(name in names(figure_pages)) tracking_pdf_pages(figure_pages[[name]],
   tracking_model_figure(paste0('fig_tracking_model_',name,'.pdf')),
   width=12,height=if(name=='residuals') 10 else if(name=='coefficients') 12 else 6)
+
+# Additional joint correction model; the five separate response models above
+# keep their own valid observations and are not replaced by this paired fit.
+paired=tracking_joint_correction_input(combined)
+d=paired$data
+joint_out=here('output/tracking_analysis/primary/era_comparison/joint_correction_effects')
+dir.create(joint_out,recursive=TRUE,showWarnings=FALSE)
+write_csv(d,file.path(joint_out,'model_input.csv'))
+captured=reconstruction_capture(function() {
+  fit=gls(estimate~era*site*correction,data=d,correlation=corPairedMA1(),
+    weights=varIdent(form=~1 | era_site_correction),method='REML',na.action=na.fail,
+    control=glsControl(msMaxIter=500))
+  fit$call$model=estimate~era*site*correction
+  fit$call$correlation=quote(corPairedMA1())
+  fit$call$weights=quote(nlme::varIdent(form=~1 | era_site_correction))
+  fit
+})
+fit=captured$fit
+valid=!is.null(fit) && all(is.finite(coef(fit))) && all(is.finite(vcov(fit)))
+parameters=if(valid) coef(fit$modelStruct$corStruct,unconstrained=FALSE) else rep(NA_real_,5)
+audit=tibble(model_type='Paired_MA1',n=nrow(d),n_paired_units=nrow(d)/2,
+  row_signature=object_fingerprint(d),method='REML',converged=valid,
+  AIC=if(valid) AIC(fit) else NA_real_,n_covariance_parameters=5L,
+  n_parameters=if(valid) attr(logLik(fit),'df') else NA_integer_,
+  correlation_parameter=parameters[1],boundary=any(abs(parameters)>1-1e-4,na.rm=TRUE),
+  covariance_status=if(valid) reconstruction_covariance_status(fit) else 'fit_failed',
+  warnings=paste(captured$warnings,collapse='; '),fit_error=captured$error,
+  selected=valid,selection_policy='Paired corrections with primary MA(1) temporal covariance')
+entry=list(fit=fit,data=d,selected='Paired_MA1',audit=audit,
+  metric='joint_correction_effect_rate',era='Combined',specification='era_site_correction',
+  fixed=estimate~era*site*correction,variance='era_site_correction')
+joint_tables=reconstruction_export(list(joint=entry),joint_out,paired$excluded)
+if(!valid) stop('Joint correction GLS failed; see joint_correction_effects/model_results.txt')
+
+em=emmeans(fit,~correction | era*site,data=d,mode='satterthwaite')
+mt=as_tibble(as.data.frame(summary(em,infer=c(TRUE,TRUE),adjust='none'))) |>
+  transmute(era,site,correction,model_type='Paired_MA1',estimate=emmean,std_error=SE,df,
+    conf_low=lower.CL,conf_high=upper.CL,p_zero=p.value) |>
+  left_join(count(d,era,site,correction,name='n'),by=c('era','site','correction'),relationship='one-to-one')
+correction_em=contrast(em,method=list('Direction - Pace'=c(-1,1)))
+contrast_table=function(x,family) {
+  as_tibble(as.data.frame(summary(x,infer=c(TRUE,TRUE),adjust='none'))) |>
+    rename(std_error=SE,p_value=p.value,conf_low=lower.CL,conf_high=upper.CL) |>
+    mutate(model_type='Paired_MA1',p_adjusted=p.adjust(p_value,method='holm'),
+      adjustment=paste('Holm across',n(),family),
+      interval_type='Unadjusted conditional 95% confidence interval',
+      significant=p_adjusted<.05,
+      significance=case_when(p_adjusted<.001~'***',p_adjusted<.01~'**',p_adjusted<.05~'*',TRUE~''))
+}
+ct=contrast_table(correction_em,'within-era/park correction comparisons')
+era_em=emmeans(fit,~era | site*correction,data=d,mode='satterthwaite')
+era_ct=contrast_table(contrast(era_em,method=list('Anthropocene - Holocene'=c(-1,1))),
+  'within-park/correction era comparisons')
+interaction_ct=contrast_table(contrast(correction_em,
+  method=list('Anthropocene - Holocene correction difference'=c(-1,1)),by='site'),
+  'park-specific correction-by-era interactions')
+for(name in c('model_group_means','correction_contrasts','era_contrasts','correction_by_era_contrasts'))
+  write_csv(switch(name,model_group_means=mt,correction_contrasts=ct,era_contrasts=era_ct,
+    correction_by_era_contrasts=interaction_ct),file.path(joint_out,paste0(name,'.csv')))
+observed_means=read_csv(here('output/tracking_analysis/primary/era_comparison/lag_rate_per_century/model_group_means.csv'),
+  show_col_types=FALSE) |> mutate(correction='Observed',p_zero=2*pt(-abs(estimate/std_error),df))
+zero_tests=bind_rows(mt,observed_means) |>
+  mutate(zero_test='Fitted mean = 0; unadjusted, two-sided Satterthwaite t test',
+    zero_significant=p_zero<.05,
+    zero_significance=case_when(p_zero<.001~'***',p_zero<.01~'**',p_zero<.05~'*',TRUE~''))
+write_csv(zero_tests,file.path(joint_out,'displayed_mean_zero_tests.csv'))
+write_csv(tibble(parameter=names(parameters),estimate=unname(parameters)),
+  file.path(joint_out,'correlation_parameters.csv'))
+cat('\nJoint correction-effect analysis: pace and direction only, paired on the same transitions.\n',
+  'Fixed effects: estimate ~ era * site * correction.\n',
+  'Residual SDs: era x site x correction. Temporal MA(1) uses preserved transition indices.\n',
+  'Paired correction correlations vary by era x site; modern plots are singleton temporal series.\n',
+  'Primary-only analysis; no additional Bacon fits. Joint means refer to complete correction pairs.\n',
+  'Contrasts are Direction effect minus Pace effect. Positive effects mean reduced lag after correction. Holm-adjusted p-values use separate stated families.\n',
+  'Displayed mean stars test zero using unadjusted two-sided Satterthwaite t tests.\n',
+  capture.output(print(count(d,era,site,correction))),
+  capture.output(print(mt)),capture.output(print(ct)),capture.output(print(era_ct)),
+  capture.output(print(interaction_ct)),sep='\n',file=file.path(joint_out,'model_results.txt'),append=TRUE)
+if(isTRUE(getOption('paleoaces.render_figures',TRUE))) {
+  predictions=joint_tables$transition_predictions |>
+    mutate(metric=as.character(correction))
+  tracking_pdf_pages(list(reconstruction_residual_plot(predictions)+
+    plot_annotation(title='Joint pace/direction correction-effect GLS: paired outcomes, temporal MA(1)')),
+    tracking_model_figure('fig_tracking_joint_correction_residuals.pdf'),width=12,height=10)
+}
+cat('Joint correction GLS:',nrow(d)/2,'paired units;',audit$covariance_status,'covariance uncertainty.\n')
 # END R/stages/12_tracking_era_models.R
 
 # ============================================================================
@@ -7126,7 +6847,7 @@ source(here('R/helpers/tracking_model_data.R'),local=TRUE)
 source(here('R/helpers/tracking_model_reporting.R'),local=TRUE)
 render_figures=isTRUE(getOption('paleoaces.render_figures',TRUE))
 metrics=c('standardized_climate_change_rate','observed_turnover_rate','lag_rate_per_century',
-  tracking_corrected_response_names())
+  tracking_correction_effect_response_names())
 combined=read_csv(here('output/cca_tracking_era_model_input.csv'),show_col_types=FALSE)
 validate_tracking_model_data(combined)
 raw=map_dfr(metrics,function(metric) tracking_primary_model_input(combined,metric)$data)
@@ -7154,8 +6875,8 @@ if(any(abs(ratios$Anthropocene-ratios$Holocene-ratios$contrast_estimate)>1e-8))
 ratios=ratios |> transmute(metric,site,ratio=Anthropocene/Holocene)
 site_colors=c(MORA='#648FFF',NOCA='#FE6100')
 response_colors=c(Observed='#40AB9D',Direction='#8B85F1',Pace='#DE85F0')
-metric_kind=c(lag_rate_per_century='Observed',pace_corrected_lag_rate_per_century='Pace',
-  direction_corrected_lag_rate_per_century='Direction')
+metric_kind=c(lag_rate_per_century='Observed',pace_effect_on_lag_per_century='Pace',
+  direction_effect_on_lag_per_century='Direction')
 cl=contrasts |> left_join(ratios,by=c('metric','site'),relationship='one-to-one') |>
   mutate(metric=factor(metric,levels=metrics),site=factor(site,levels=names(site_colors)),
     kind=unname(metric_kind[as.character(metric)]),
@@ -7180,7 +6901,7 @@ contrast_limits=function(data) {
 }
 primary_metrics=metrics[1:3]
 primary_limits=contrast_limits(filter(cl,metric %in% primary_metrics))
-corrected_metrics=tracking_corrected_response_names()
+corrected_metrics=tracking_correction_effect_response_names()
 corrected_limits=contrast_limits(filter(cl,metric %in% corrected_metrics))
 contrast_plot=function(response_metrics,bounds,correction_labels=FALSE) {
   dd=filter(cl,metric %in% response_metrics)
@@ -7193,15 +6914,15 @@ contrast_plot=function(response_metrics,bounds,correction_labels=FALSE) {
       standardized_climate_change_rate='Standardized climate change\nper century',
       observed_turnover_rate='Community turnover rate\n(CCA distance per century)',
       lag_rate_per_century='Observed lag change\n(CCA distance per century)',
-      pace_corrected_lag_rate_per_century='Pace corrected',
-      direction_corrected_lag_rate_per_century='Direction corrected'),
+      pace_effect_on_lag_per_century='Pace correction effect',
+      direction_effect_on_lag_per_century='Direction correction effect'),
       axis_color=if(correction_labels) kind else 'Axis',
       axis_y=bounds$lower-.025*(bounds$upper-bounds$lower))
   p=ggplot(dd,aes(metric,estimate,group=site))+
     geom_hline(yintercept=0,linetype='dashed',color='grey55',linewidth=.6)+
     geom_errorbar(aes(ymin=conf_low,ymax=conf_high,alpha=error_alpha,color=site),
       position=pd,width=.10,linewidth=1.3,show.legend=FALSE)+
-    geom_point(aes(color=site,fill=site,alpha=point_label_alpha),position=pd,shape=21,size=3.8,stroke=1.1,
+    geom_point(aes(color=site,fill=site,alpha=point_label_alpha),position=pd,shape=21,size=1.8,stroke=.5,
       show.legend=if(correction_labels) c(fill=TRUE,color=FALSE,alpha=FALSE) else FALSE)+
     geom_text(aes(y=label_y,label=label,color=site,alpha=point_label_alpha),
       position=pd,size=9,show.legend=FALSE)+
@@ -7222,124 +6943,100 @@ contrast_plot=function(response_metrics,bounds,correction_labels=FALSE) {
     theme(axis.text.x=element_blank())
   p+theme(plot.margin=margin(10,14,if(correction_labels) 58 else 86,14))
 }
-# Each pair is an actual transition/plot; corrected medians were calculated from
-# each primary transition geometry, using its actual elapsed time.
-pair_keys=c('era','site','lake','plot_id','age_hi','age_lo')
-pairs=combined |> filter(metric %in% c('lag_rate_per_century',tracking_corrected_response_names())) |>
-  select(all_of(pair_keys),metric,estimate) |>
-  pivot_wider(names_from=metric,values_from=estimate) |>
-  pivot_longer(all_of(tracking_corrected_response_names()),names_to='metric',values_to='corrected_rate') |>
-  mutate(correction=unname(metric_kind[metric]))
-d=pairs |> filter(is.finite(lag_rate_per_century),is.finite(corrected_rate))
-scatter_stats=list()
-scatter=function(era_name) {
-  ds=filter(d,era==era_name)
-  observed=raw |> filter(metric=='lag_rate_per_century',era==era_name)
-  mt=means |> filter(metric=='lag_rate_per_century',era==era_name)
-  lim=range(c(ds$corrected_rate,ds$lag_rate_per_century,mt$conf_low,mt$conf_high,0))
-  lim=lim+c(-1,1)*diff(lim)*.055
-  reference_annotations=tibble(
-    x=lim[1]+c(.05,.95,.78)*diff(lim),
-    y=lim[1]+c(.70,.12,.78)*diff(lim),
-    label=c('Above 1:1:\nCorrection increases\nfinal lag',
-      'Below 1:1:\nCorrection reduces\nfinal lag',
-      'On 1:1:\nNo effect on final lag'),
-    hjust=c(0,1,.5),vjust=c(1,0,.5),angle=c(0,0,45))
-  stats=ds |> group_by(correction) |> group_modify(function(g,key) {
-    test=cor.test(g$lag_rate_per_century,g$corrected_rate,method='spearman',
-      alternative='two.sided',exact=FALSE)
-    tibble(n_pairs=nrow(g),rho=unname(test$estimate),p_value=test$p.value)
-  }) |> ungroup() |> mutate(era=era_name,
-    p_text=if_else(p_value<.001,sprintf('%.1e',p_value),sprintf('%.3f',p_value)),
-    label=sprintf('\u03c1 = %.2f, p = %s',rho,p_text),
-    label_x=lim[1]+.04*diff(lim),
-    label_y=lim[2]-(.055+.075*(match(correction,c('Direction','Pace'))-1))*diff(lim))
-  scatter_stats[[era_name]] <<- stats
-  p=ggplot(ds,aes(lag_rate_per_century,corrected_rate))+
+# Joint correction comparisons use complete pace/direction pairs only.
+# The existing independent-response models remain the source for the top row.
+joint_out=here('output/tracking_analysis/primary/era_comparison/joint_correction_effects')
+paired_input=tracking_joint_correction_input(combined)$data
+joint_means=read_csv(file.path(joint_out,'model_group_means.csv'),show_col_types=FALSE)
+joint_contrasts=read_csv(file.path(joint_out,'correction_contrasts.csv'),show_col_types=FALSE)
+displayed_means=read_csv(file.path(joint_out,'displayed_mean_zero_tests.csv'),show_col_types=FALSE)
+joint_check=full_join(joint_means,count(paired_input,era,site,correction,name='n_raw'),
+  by=c('era','site','correction'),relationship='one-to-one')
+if(nrow(joint_check)!=8L || anyNA(joint_check[c('n','n_raw')]) ||
+   any(joint_check$n!=joint_check$n_raw) || nrow(joint_contrasts)!=4L ||
+   anyDuplicated(joint_contrasts[c('era','site')])) stop('Inconsistent joint correction results')
+correction_colors=c(Observed=response_colors[['Observed']],Pace=response_colors[['Pace']],
+  Direction=response_colors[['Direction']])
+violin_panel=function(era_name) {
+  distributions=bind_rows(paired_input,
+    raw |> filter(metric=='lag_rate_per_century') |> mutate(correction='Observed')) |>
+    filter(era==era_name) |> mutate(correction=factor(correction,levels=names(correction_colors)),
+      park_x=match(site,c('MORA','NOCA')))
+  comparisons=joint_contrasts |> filter(era==era_name) |> mutate(park_x=match(site,c('MORA','NOCA')))
+  mt=displayed_means |> filter(era==era_name) |>
+    mutate(correction=factor(correction,levels=names(correction_colors)),park_x=match(site,c('MORA','NOCA')))
+  violin_limits=range(c(distributions$estimate,mt$conf_low,mt$conf_high,0))
+  span=diff(violin_limits)
+  mt=mt |> mutate(mean_label=sprintf('%+.3f %s',estimate,coalesce(zero_significance,'')),
+    label_y=conf_high+c(.065,.155,.245)[as.integer(correction)]*span,
+    model_alpha=if_else(zero_significant,1,.25))
+  peaks=distributions |> group_by(site) |> summarise(peak=max(estimate),.groups='drop')
+  brackets=comparisons |> filter(significant) |> left_join(peaks,by='site',relationship='one-to-one') |>
+    mutate(bracket_y=pmax(peak,max(mt$label_y))+.07*span,
+      label_y=bracket_y+.06*span,
+      label=sprintf('%+.3f %s\np = %.3g',estimate,significance,p_adjusted))
+  upper=max(c(violin_limits[2],mt$label_y,brackets$label_y+.11*span))+.06*span
+  ggplot(distributions,aes(park_x,estimate,group=interaction(site,correction)))+
     geom_hline(yintercept=0,linetype='dashed',color='grey55',linewidth=.6)+
-    geom_vline(xintercept=0,linetype='dashed',color='grey55',linewidth=.6)+
-    geom_abline(intercept=0,slope=1,linetype='dashed',color='grey50',linewidth=.6)+
-    geom_point(aes(fill=site,color=correction,shape=correction),
-      size=if(era_name=='Holocene') 2.1 else 1.7,alpha=.35,stroke=.5,
-      show.legend=c(fill=TRUE,color=TRUE,shape=FALSE))+
-    geom_smooth(aes(color=correction,group=correction),method='lm',formula=y~x,
-      se=FALSE,linewidth=1.15,show.legend=FALSE)+
-    geom_label(data=stats,aes(x=label_x,y=label_y,label=label,color=correction),inherit.aes=FALSE,
-      hjust=0,vjust=1,size=8,fill='white',linewidth=0,
-      label.padding=grid::unit(.10,'lines'),show.legend=FALSE)+
-    geom_text(data=reference_annotations,
-      aes(x=x,y=y,label=label,hjust=hjust,vjust=vjust,angle=angle),
-      inherit.aes=FALSE,size=7,lineheight=1.05,color='grey40',show.legend=FALSE)+
-    scale_fill_manual(name='Park',values=site_colors)+
-    scale_color_manual(name='Lag change',values=response_colors,
-      breaks=c('Pace','Direction'),labels=c('Pace corrected','Direction corrected'))+
-    scale_shape_manual(values=c(Direction=21,Pace=24),guide='none')+
-    guides(color=guide_legend(override.aes=list(fill='white',alpha=1,size=4)),
-      fill=guide_legend(override.aes=list(color='grey50',shape=21,alpha=1,size=4)))+
-    coord_fixed(ratio=1,xlim=lim,ylim=lim,expand=FALSE)+
-    labs(x='Observed lag-change rate',y='Lag-change rate after correction')+base_theme+
-    theme(panel.grid.major.x=element_line(color='grey92',linewidth=.4),
-      plot.margin=margin(0,14,12,14))
-  den=observed |> group_by(site) |> group_modify(function(g,key) {
-    z=density(g$estimate,n=512,from=lim[1],to=lim[2])
-    tibble(value=z$x,density=z$y)
-  }) |> ungroup()
-  peak=max(den$density)
-  mt=mt |> mutate(error_y=peak*if_else(site=='MORA',.28,.095),
-    cap_lo=error_y-peak*.022,cap_hi=error_y+peak*.022,
-    mean_label=sprintf('%+.3f',estimate),label_x=conf_high+.018*diff(lim))
-  top=ggplot(den,aes(value,density,color=site,fill=site))+
-    geom_hline(yintercept=0,color='grey50',linewidth=.55)+
-    geom_area(alpha=.23,position='identity')+geom_line(linewidth=.85)+
-    geom_vline(xintercept=0,linetype='dashed',color='grey55',linewidth=.6)+
-    geom_segment(data=mt,aes(x=conf_low,xend=conf_high,y=error_y,yend=error_y,color=site),
-      inherit.aes=FALSE,linewidth=1.3)+
-    geom_segment(data=mt,aes(x=conf_low,xend=conf_low,y=cap_lo,yend=cap_hi,color=site),
-      inherit.aes=FALSE,linewidth=1.1)+
-    geom_segment(data=mt,aes(x=conf_high,xend=conf_high,y=cap_lo,yend=cap_hi,color=site),
-      inherit.aes=FALSE,linewidth=1.1)+
-    geom_point(data=mt,aes(x=estimate,y=error_y,color=site),inherit.aes=FALSE,
-      shape=21,fill='white',size=3.5,stroke=.9)+
-    geom_text(data=mt,aes(x=label_x,y=error_y,label=mean_label,color=site),
-      inherit.aes=FALSE,hjust=0,vjust=.5,size=7.5,fontface='bold')+
-    scale_color_manual(values=site_colors,guide='none')+scale_fill_manual(values=site_colors,guide='none')+
-    scale_x_continuous(limits=lim,expand=expansion(mult=0))+
-    scale_y_continuous(limits=c(0,NA),expand=expansion(mult=c(0,.08)))+
-    labs(title=era_name)+theme_void(base_size=27)+theme(legend.position='none',
-      plot.title=element_text(size=30,face='bold'),plot.margin=margin(10,14,0,14))
-  wrap_plots(top,p,ncol=1,heights=c(.30,1),guides='auto')
+    geom_violin(aes(fill=correction),position=position_dodge(width=.8),width=.78,
+      alpha=.32,color='grey50',linewidth=.6,scale='width',trim=TRUE)+
+    geom_errorbar(data=mt,aes(ymin=conf_low,ymax=conf_high,color=correction,alpha=model_alpha),
+      position=position_dodge(width=.8),width=.10,linewidth=1.3,show.legend=FALSE)+
+    geom_point(data=mt,aes(color=correction,fill=correction,alpha=model_alpha),
+      position=position_dodge(width=.8),shape=21,size=1.8,stroke=.5,show.legend=FALSE)+
+    geom_text(data=mt,aes(y=label_y,label=mean_label,color=correction,alpha=model_alpha),
+      position=position_dodge(width=.8),size=9,show.legend=FALSE)+
+    geom_segment(data=brackets,aes(x=park_x,xend=park_x+.8/3,y=bracket_y,yend=bracket_y),
+      inherit.aes=FALSE,color='grey40',linewidth=.8)+
+    geom_segment(data=brackets,aes(x=park_x,xend=park_x,y=bracket_y,yend=bracket_y-.025*span),
+      inherit.aes=FALSE,color='grey40',linewidth=.8)+
+    geom_segment(data=brackets,aes(x=park_x+.8/3,xend=park_x+.8/3,y=bracket_y,yend=bracket_y-.025*span),
+      inherit.aes=FALSE,color='grey40',linewidth=.8)+
+    geom_text(data=brackets,aes(x=park_x+.4/3,y=label_y,label=label),inherit.aes=FALSE,
+      size=8.5,lineheight=1.05,vjust=0,color='grey20')+
+    scale_x_continuous(breaks=1:2,labels=c('MORA','NOCA'),limits=c(.5,2.5))+
+    scale_fill_manual(name=NULL,values=correction_colors,
+      labels=c('Observed lag-change rate','Pace correction effect rate','Direction correction effect rate'),
+      guide=guide_legend(override.aes=list(alpha=1)))+
+    scale_color_manual(values=correction_colors,guide='none')+
+    scale_alpha_identity(guide='none')+
+    coord_cartesian(ylim=c(violin_limits[1]-.06*span,upper))+
+    labs(x=NULL,y='CCA distance per century',title=era_name)+base_theme+
+    theme(plot.title=element_text(size=30,face='bold'),plot.margin=margin(12,14,12,14))
 }
 first_row=wrap_plots(
-  contrast_plot(primary_metrics[1],filter(primary_limits,panel=='Climate')),
-  contrast_plot(primary_metrics[2:3],filter(primary_limits,panel=='CCA')),
+  contrast_plot(primary_metrics[1],filter(primary_limits,panel=='Climate'))+labs(tag='A'),
+  contrast_plot(primary_metrics[2:3],filter(primary_limits,panel=='CCA'))+labs(tag='B'),
   nrow=1,widths=c(1.2,2),guides='auto')
-second_row=wrap_plots(scatter('Holocene'),scatter('Anthropocene'),nrow=1,guides='auto')
-figure=wrap_plots(first_row,second_row,ncol=1,heights=c(1,1.65),guides='collect') &
-  theme(legend.position='bottom',plot.background=element_rect(fill='white',color=NA))
+second_row=wrap_plots(violin_panel('Holocene')+labs(tag='C'),
+  violin_panel('Anthropocene')+labs(tag='D'),nrow=1,guides='auto')
+figure=wrap_plots(first_row,second_row,ncol=1,heights=c(1,.85),guides='collect') &
+  theme(legend.position='bottom',plot.background=element_rect(fill='white',color=NA),
+    plot.tag=element_text(size=32,face='bold'),plot.tag.position='topleft')
 corrected_figure=contrast_plot(corrected_metrics,corrected_limits,correction_labels=TRUE)+
   theme(legend.position='bottom',plot.background=element_rect(fill='white',color=NA))
 if(render_figures) {
   stem=here('plot/fig_tracking_era_distributions')
-  ggsave(paste0(stem,'.pdf'),figure,width=19,height=19.5,device=cairo_pdf,bg='white')
-  ggsave(paste0(stem,'.png'),figure,width=19,height=19.5,dpi=300,bg='white')
-  ggsave(tracking_model_figure('fig_tracking_corrected_lag_contrasts.pdf'),
+  ggsave(paste0(stem,'.pdf'),figure,width=19,height=14.5,device=cairo_pdf,bg='white')
+  ggsave(paste0(stem,'.png'),figure,width=19,height=14.5,dpi=300,bg='white')
+  ggsave(tracking_model_figure('fig_tracking_correction_effect_contrasts.pdf'),
     corrected_figure,width=12,height=7.5,device=cairo_pdf,bg='white')
 }
 cat('Manuscript figure verified: primary reconstruction; 20 fitted means, ten covariance-based contrasts;',
-  nrow(raw),'untransformed input values.\n')
+  nrow(raw),'separate-model input values; joint correction panels:',nrow(paired_input)/2,
+  'paired units, eight fitted means and four correction contrasts; panels A–D.\n')
 # END R/stages/14_tracking_manuscript_figure.R
 
 # ============================================================================
 # BEGIN R/stages/15_tracking_predictor_models.R
 # ============================================================================
-# Primary explanatory GLS and whole-chronology community sensitivity.
+# Primary explanatory GLS. Bacon model sensitivity is on hold unless explicitly enabled.
 suppressPackageStartupMessages({library(here);library(tidyverse);library(nlme);library(patchwork)})
 source(here('R/helpers/reconstruction_models.R'),local=TRUE)
 source(here('R/helpers/tracking_predictor_models.R'),local=TRUE)
-metrics=c('lag_rate_per_century',tracking_corrected_response_names())
+metrics=c('lag_rate_per_century',tracking_correction_effect_response_names())
 h=read_csv(here('output/cca_tracking_holocene_lake_calculations.csv'),show_col_types=FALSE)
-a=read_csv(here('output/cca_tracking_anthropocene_plot_calculations.csv'),show_col_types=FALSE) |>
-  add_corrected_lag_rates()
+a=read_csv(here('output/cca_tracking_anthropocene_plot_calculations.csv'),show_col_types=FALSE)
 combined=read_csv(here('output/cca_tracking_era_model_input.csv'),show_col_types=FALSE)
 locations=combined |> filter(era=='Anthropocene') |> distinct(site,plot_id,longitude,latitude)
 a=left_join(a,locations,by=c('site','plot_id'),relationship='one-to-one')
@@ -7371,10 +7068,31 @@ if(isTRUE(getOption('paleoaces.render_figures',TRUE))) {
   co=tables$model_coefficients;pr=tables$transition_predictions
   specification_labels=c(Holocene='Holocene',Anthropocene_basic='Anthropocene: basic',
     Anthropocene_extended='Anthropocene: extended')
-  co$model_type=recode(co$specification,Holocene='Site + climate + fire',
-    Anthropocene_basic='Site + burned',Anthropocene_extended='Site + elevation + climate + burned')
-  ggsave(tracking_model_figure('fig_tracking_predictor_era_coefficients.pdf'),
-    reconstruction_coefficient_plot(co),width=16,height=14,device=cairo_pdf)
+  holocene_effects=tracking_predictor_effect_panel(co,tables$model_performance,
+    'Holocene','Holocene','A.')
+  modern_effects=tracking_predictor_effect_panel(co,tables$model_performance,
+    'Anthropocene_basic','Anthropocene','B.')
+  effects_figure=wrap_plots(holocene_effects$plot,modern_effects$plot,nrow=1,guides='collect')+
+    plot_annotation(caption=paste(
+      'Points: GLS coefficients; bars: conditional 95% confidence intervals. Faded estimates have p ≥ 0.05.',
+      'Fire and climate slopes are shared by MORA and NOCA; the site coefficient is NOCA − MORA.',
+      'Holocene: site + climate rate + fire activity, MA(1). Anthropocene: site + burned, independent residuals.',
+      'Correction effect = observed final lag − corrected final lag, per century; positive means the correction reduces lag.',
+      'R² = 1 − SSE/SST; descriptive and may be negative for GLS.',sep='\n'),
+      theme=theme(plot.caption=element_text(size=14,hjust=0,margin=margin(t=12)))) &
+    theme(legend.position='bottom')
+  ggsave(here('plot/fig_tracking_predictor_era_coefficients.pdf'),effects_figure,
+    width=19,height=9,device=cairo_pdf,bg='white')
+  ggsave(here('plot/fig_tracking_predictor_era_coefficients.png'),effects_figure,
+    width=19,height=9,dpi=300,bg='white')
+  extended_effects=tracking_predictor_effect_panel(co,tables$model_performance,
+    'Anthropocene_extended','Anthropocene: extended model',NULL)
+  ggsave(tracking_model_figure('fig_tracking_predictor_extended_coefficients.pdf'),
+    extended_effects$plot+labs(subtitle='Site + elevation + climate-change rate + burned',
+      x='Effect on response (CCA distance per century)'),
+    width=12,height=9,device=cairo_pdf,bg='white')
+  write_csv(bind_rows(holocene_effects$data,modern_effects$data),file.path(out,'figure_main_coefficients.csv'))
+  write_csv(extended_effects$data,file.path(out,'figure_appendix_coefficients.csv'))
   performance=tables$model_performance |> mutate(specification=unname(specification_labels[specification]))
   r2=ggplot(performance,aes(specification,R2,fill=era))+geom_col(width=.6)+
     facet_wrap(~metric,labeller=labeller(metric=reconstruction_metric_label))+
@@ -7402,12 +7120,13 @@ if(isTRUE(getOption('paleoaces.render_figures',TRUE))) {
       color='#648FFF',linewidth=1)+
     facet_grid(metric~lake,scales='free_y',labeller=labeller(metric=reconstruction_metric_label))+
     scale_x_reverse()+
-    labs(x='Transition age (cal BP)',y='Lag-change rate (CCA distance per century)',
+    labs(x='Transition age (cal BP)',y='Lag change / correction effect (CCA distance per century)',
       caption='Joined fitted values over actual transition intervals; shaded bands: conditional 95% mean-confidence intervals. Excluded transitions remain gaps.')+
     reconstruction_model_theme()
   ggsave(tracking_model_figure('fig_tracking_predictor_holocene_predictions.pdf'),prediction,width=19,height=12,device=cairo_pdf)
 }
-if(!isTRUE(getOption('paleoaces.primary_only',FALSE))) {
+if(isTRUE(getOption('paleoaces.run_bacon_sensitivity',FALSE)) &&
+   !isTRUE(getOption('paleoaces.primary_only',FALSE))) {
   sensitivity_out=tracking_bacon_results('community')
   sensitivity=reconstruction_sensitivity(century_prepare(),entries,'community',sensitivity_out)
   source(here('R/helpers/chronology_exports.R'),local=TRUE)
@@ -7484,33 +7203,47 @@ if(isTRUE(getOption('paleoaces.render_figures',TRUE))) for(type in c('species','
 # ============================================================================
 # BEGIN R/stages/17_species_contribution_models.R
 # ============================================================================
-# Species explanatory GLS mirrors community models; modern species: site + burned only.
+# Species GLS by park; modern MORA: intercept only, NOCA: unburned baseline + burned contrast.
 suppressPackageStartupMessages({library(here);library(tidyverse);library(nlme);library(patchwork)})
 source(here('R/helpers/reconstruction_models.R'),local=TRUE)
+source(here('R/helpers/tracking_predictor_models.R'),local=TRUE)
 x=read_csv(here('output/cca_transition_contributions/species_primary.csv'),show_col_types=FALSE)
 entries=exclusions=list()
-for(species in sort(unique(x$species))) for(era in c('Holocene','Anthropocene')) {
-  input=reconstruction_explanatory_input(x[x$era==era,],species,era,species=TRUE)
-  e=reconstruction_select(input$data,input$fixed,families=if(era=='Holocene') c('Independent','MA1','CAR1') else 'Independent')
-  e$metric=species;e$era=era;e$specification=if(era=='Holocene') 'site_climate_fire' else 'site_burned'
-  name=paste(species,era,sep=':');entries[[name]]=e;exclusions[[name]]=input$excluded
+for(species in sort(unique(x$species))) for(era in c('Holocene','Anthropocene')) for(site in c('MORA','NOCA')) {
+  input=reconstruction_explanatory_input(x[x$era==era,],species,era,species=TRUE,within_site=site,
+    fixed_override=if(era=='Anthropocene' && site=='MORA') estimate~1 else NULL)
+  e=reconstruction_select(input$data,input$fixed,variance=NULL,families=if(era=='Holocene') c('Independent','MA1','CAR1') else 'Independent')
+  e$metric=species;e$era=era;e$site=site;e$specification=if(era=='Holocene') 'within_site_climate_fire' else
+    if(site=='MORA') 'within_site_intercept' else 'within_site_burned'
+  name=paste(species,era,site,sep=':');entries[[name]]=e;exclusions[[name]]=input$excluded
 }
 out=tracking_primary_results('species')
 tables=reconstruction_export(entries,out,bind_rows(exclusions))
 if(isTRUE(getOption('paleoaces.render_figures',TRUE))) {
-  ggsave(tracking_model_figure('fig_species_contribution_model_coefficients.pdf'),
-    reconstruction_coefficient_plot(tables$model_coefficients)+facet_grid(metric~term,scales='free_x'),width=22,height=22,device=cairo_pdf)
-  ggsave(tracking_model_figure('fig_species_contribution_model_residuals.pdf'),
-    reconstruction_residual_plot(tables$transition_predictions),width=22,height=24,device=cairo_pdf)
+  coefficient_pages=tracking_species_coefficient_pages(tables$model_coefficients,
+    tables$covariance_comparison,x)
+  tracking_pdf_pages(coefficient_pages$plots,
+    tracking_model_figure('fig_species_contribution_model_coefficients.pdf'),width=14,height=10)
+  write_csv(coefficient_pages$status,file.path(out,'figure_coefficient_availability.csv'))
+  write_csv(coefficient_pages$contribution_summary,file.path(out,'figure_mean_contributions.csv'))
+  residual_pages=lapply(c('Holocene','Anthropocene'),function(era_name) lapply(c('MORA','NOCA'),function(park)
+    reconstruction_residual_plot(tables$transition_predictions |> filter(era==era_name,site==park))+
+      plot_annotation(title=paste(era_name,park)))) |> unlist(recursive=FALSE)
+  tracking_pdf_pages(residual_pages,tracking_model_figure('fig_species_contribution_model_residuals.pdf'),width=18,height=18)
 }
-if(!isTRUE(getOption('paleoaces.primary_only',FALSE))) {
+if(isTRUE(getOption('paleoaces.run_bacon_sensitivity',FALSE)) &&
+   !isTRUE(getOption('paleoaces.primary_only',FALSE))) {
   sensitivity_out=tracking_bacon_results('species')
   sensitivity=reconstruction_sensitivity(century_prepare(),entries,'species',sensitivity_out)
   source(here('R/helpers/chronology_exports.R'),local=TRUE)
   export_chronology_records(sensitivity_out,'species')
-  if(isTRUE(getOption('paleoaces.render_figures',TRUE))) ggsave(
-    tracking_model_figure('fig_species_contribution_chronology_sensitivity.pdf',role='bacon'),
-    reconstruction_sensitivity_plot(sensitivity),width=22,height=14,device=cairo_pdf)
+  if(isTRUE(getOption('paleoaces.render_figures',TRUE))) {
+    pages=lapply(c('MORA','NOCA'),function(park) {
+      one=lapply(sensitivity[c('coefficients','status','summary')],function(d) filter(d,site==park))
+      reconstruction_sensitivity_plot(one)+plot_annotation(title=paste('Holocene',park))
+    })
+    tracking_pdf_pages(pages,tracking_model_figure('fig_species_contribution_chronology_sensitivity.pdf',role='bacon'),width=18,height=14)
+  }
 }
 # END R/stages/17_species_contribution_models.R
 
@@ -7563,7 +7296,7 @@ x$direction_effect_on_lag = x$lag_t2-x$lag_t2_direction_corrected
 x$pace_effect_on_lag_per_century = x$pace_effect_on_lag/x$climate_dt_years*100
 x$direction_effect_on_lag_per_century = x$direction_effect_on_lag/x$climate_dt_years*100
 
-# Corrected lag-change rates for the additional GLS responses
+# Auxiliary corrected lag-change rates retained for geometric auditing (not fitted responses)
 x$pace_corrected_lag_rate_per_century = ifelse(x$pace_counterfactual_valid,
   (x$lag_t2_pace_corrected-x$lag_t1)*100/x$climate_dt_years, NA_real_)
 x$direction_corrected_lag_rate_per_century = ifelse(x$direction_counterfactual_valid,

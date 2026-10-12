@@ -5,9 +5,9 @@ Primary covariance: MA1
 # A tibble: 3 × 18
   model_type      n row_signature  method converged   AIC n_covariance_paramet…¹
   <chr>       <int> <chr>          <chr>  <lgl>     <dbl>                  <int>
-1 Independent   818 86764b7b98948… REML   TRUE      1659.                      0
-2 MA1           818 86764b7b98948… REML   TRUE      1660.                      1
-3 CAR1          818 86764b7b98948… REML   TRUE      1659.                      1
+1 Independent   818 c1129a29ee269… REML   TRUE      2408.                      0
+2 MA1           818 c1129a29ee269… REML   TRUE      2386.                      1
+3 CAR1          818 c1129a29ee269… REML   TRUE      2410.                      1
 # ℹ abbreviated name: ¹​n_covariance_parameters
 # ℹ 11 more variables: n_parameters <int>, correlation_parameter <dbl>,
 #   boundary <lgl>, covariance_status <chr>, warnings <chr>, fit_error <chr>,
@@ -17,52 +17,52 @@ Generalized least squares fit by REML
   Model: estimate ~ era * site
   Data: d
        AIC      BIC    logLik
-  1660.171 1702.489 -821.0857
+  2385.641 2427.959 -1183.821
 
 Correlation Structure: ARMA(0,1)
  Formula: ~time_index | series
  Parameter estimate(s):
     Theta1
-0.06629559
+-0.3647657
 Variance function:
  Structure: Different standard deviations per stratum
  Formula: ~1 | era_site
  Parameter estimates:
 Anthropocene.MORA Anthropocene.NOCA     Holocene.MORA     Holocene.NOCA
-        1.0000000         2.1376592         0.1636171         0.1987454
+        1.0000000         2.2026312         0.2798626         0.3084080
 
 Coefficients:
-                               Value  Std.Error   t-value p-value
-(Intercept)               0.00433496 0.01339849  0.323541  0.7464
-eraAnthropocene           0.29513645 0.04531144  6.513509  0.0000
-siteNOCA                  0.03569885 0.02091881  1.706543  0.0883
-eraAnthropocene:siteNOCA -0.07021114 0.11185237 -0.627713  0.5304
+                              Value  Std.Error   t-value p-value
+(Intercept)              -0.0195782 0.01811154 -1.080979  0.2800
+eraAnthropocene           0.2881931 0.06254121  4.608051  0.0000
+siteNOCA                 -0.0201370 0.02657915 -0.757623  0.4489
+eraAnthropocene:siteNOCA -0.6191028 0.15811784 -3.915452  0.0001
 
  Correlation:
                          (Intr) erAnth stNOCA
-eraAnthropocene          -0.296
-siteNOCA                 -0.640  0.189
-eraAnthropocene:siteNOCA  0.120 -0.405 -0.187
+eraAnthropocene          -0.290
+siteNOCA                 -0.681  0.197
+eraAnthropocene:siteNOCA  0.115 -0.396 -0.168
 
 Standardized residuals:
         Min          Q1         Med          Q3         Max
--4.12195245 -0.48885719 -0.09744308  0.47805964  5.82202566
+-5.25961770 -0.26228196  0.06433163  0.42527793  3.85578172
 
-Residual standard error: 0.7863143
+Residual standard error: 1.087434
 Degrees of freedom: 818 total; 814 residual
-Descriptive R2: 0.0109673320727284
+Descriptive R2: 0.0299506592923408
 
 # A tibble: 4 × 10
   metric      model_type site  era   estimate std_error    df conf_low conf_high
   <chr>       <chr>      <fct> <fct>    <dbl>     <dbl> <dbl>    <dbl>     <dbl>
-1 direction_… MA1        MORA  Holo…  0.00433    0.0134  54.1 -0.0225     0.0312
-2 direction_… MA1        MORA  Anth…  0.299      0.0433 329.   0.214      0.385
-3 direction_… MA1        NOCA  Holo…  0.0400     0.0161  68.7  0.00798    0.0721
-4 direction_… MA1        NOCA  Anth…  0.265      0.101  276.   0.0661     0.464
+1 direction_… MA1        MORA  Holo…  -0.0196    0.0181  28.5  -0.0566  0.0175
+2 direction_… MA1        MORA  Anth…   0.269     0.0599 331.    0.151   0.386
+3 direction_… MA1        NOCA  Holo…  -0.0397    0.0195  36.5  -0.0791 -0.000281
+4 direction_… MA1        NOCA  Anth…  -0.371     0.144  276.   -0.654  -0.0873
 # ℹ 1 more variable: n <int>
 # A tibble: 2 × 10
-  metric    model_type site  contrast estimate std_error    df  p_value conf_low
-  <chr>     <chr>      <fct> <fct>       <dbl>     <dbl> <dbl>    <dbl>    <dbl>
-1 directio… MA1        MORA  Anthrop…    0.295    0.0453  374. 2.37e-10   0.206
-2 directio… MA1        NOCA  Anthrop…    0.225    0.102   289. 2.86e- 2   0.0237
+  metric     model_type site  contrast estimate std_error    df p_value conf_low
+  <chr>      <chr>      <fct> <fct>       <dbl>     <dbl> <dbl>   <dbl>    <dbl>
+1 direction… MA1        MORA  Anthrop…    0.288    0.0625  359. 5.66e-6    0.165
+2 direction… MA1        NOCA  Anthrop…   -0.331    0.145   285. 2.34e-2   -0.617
 # ℹ 1 more variable: conf_high <dbl>

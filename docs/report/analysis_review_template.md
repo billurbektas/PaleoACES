@@ -332,7 +332,7 @@ These calculations are reproduced by [the reporting functions](../R/helpers/anal
 
 **Species contributions.** Each percentage is a species' contribution to the
 total climate-explained inertia, across all four constrained axes. These
-contributions sum to 100% and match the species bars in Figure 3. The score
+contributions sum to 100% and determine the species arrow and annotation colors in Figure 3A. The score
 columns describe position on CCA1–CCA2; distance from the origin is a different
 quantity from contribution. See [vegan's inertia decomposition](https://vegandevs.github.io/vegan/reference/goodness.cca.html).
 
@@ -404,7 +404,23 @@ unchanged normalized 1,000-year fire measure used in descriptive climate/fire-pe
 
 ## Community trajectories
 
-Figure 3 retains its layout and modern paths. Holocene period centroids first average primary
+Figure 3 places **A, the species/climate biplot**, beside **B, the trajectory projections**
+in a wider, two-panel layout. Panel A labels all 14 taxa, including those near the origin.
+Species names give occurrence percentages across the 607 calibration plots; arrow and
+annotation colors encode each species' share of total constrained inertia. Climate arrow
+and annotation colors encode unique marginal percentages of that same denominator.
+A blue–purple–orange gradient uses the manuscript park colors as its endpoints; exact
+inertia percentages remain in the tables rather than beside the arrows. Species shares sum to 100%; climate unique
+effects do not partition the total because predictors share explanatory variation. The tables above retain all exact values from
+the former contribution bars. Climate arrows retain their common display multiplier;
+arrow length is not the inertia color statistic.
+
+Panel B is zoomed to the trajectories, with the calibration cloud cropped only for display.
+Observed paths retain park colors; predicted paths and annotations use lighter, fully opaque
+versions of those colors. The observed/predicted arrow legend remains dark/light grey.
+Jointly placed direct labels and time annotations use leader lines to reduce collisions.
+
+Holocene period centroids first average primary
 occupied centuries within lake/period, then average available lakes equally. Period membership
 uses the unchanged CC/S catalog boundaries. Missing lake/period coverage is not manufactured.
 The fitted species/climate panels remain based on the unchanged CCA.
@@ -479,7 +495,7 @@ Modern-only models retain independent residuals.
 {{climate_lake_diagnostics}}
 {{climate_lake_results}}
 
-### Corrected lag-change rates
+### Pace and direction correction effects
 
 {{pace_covariance_diagnostics}}
 {{pace_groups_diagnostics}}
@@ -496,22 +512,128 @@ Modern-only models retain independent residuals.
 {{direction_lake_diagnostics}}
 {{direction_lake_results}}
 
+### Joint pace/direction correction model
+
+The separate response models above remain intact. The additional joint model includes
+**pace and direction correction effects only**, with all era × park × correction interactions:
+
+```r
+fit_joint = nlme::gls(
+  estimate ~ era * site * correction,
+  correlation = corPairedMA1(form = ~ time_index | series),
+  weights = nlme::varIdent(form = ~ 1 | era_site_correction),
+  data = paired_corrections,
+  method = "REML"
+)
+```
+
+`corPairedMA1()` is the validated shared correlation helper. Its temporal part is MA(1)
+on the original transition indices; its outcome part allows the two corrections on the
+same transition to correlate, separately by era/park. Their product defines the full
+within-series correlation. Modern plots have two outcomes but one time point each.
+Separate residual SDs apply to the eight era/park/correction groups. Stacking the two
+corrections as independent observations would give incorrect contrast uncertainty.
+
+Only transitions with both corrections defined enter: 185 Holocene transitions
+(78 MORA, 107 NOCA) and 465 modern pairs (254 MORA, 211 NOCA), giving 1,300 response rows.
+No values are imputed and temporal indices are not renumbered. These paired fitted means
+can differ from separate-model means, which retain each response's own eligible records.
+This joint model is primary-only. Convergence, boundary estimates and covariance uncertainty
+are reported with the current fit below.
+
+{{joint_correction_comparison_summary}}
+
+Differences are **Direction − Pace**, in CCA distance per century. P-values are Holm-adjusted
+across the four within-era/park comparisons; intervals are unadjusted conditional 95% intervals.
+Current estimates and significance appear in the table above; they are refitted to correction
+effects, not copied from the retired corrected-lag responses. Correction-by-era interaction
+p-values use their own Holm family of two park comparisons. Positive effects mean the
+correction reduces final lag; a positive Direction − Pace contrast means the direction
+correction provides the larger reduction.
+
+[Joint coefficients](assets/analysis/tables/joint_correction_model_coefficients.csv),
+[fitted means](assets/analysis/tables/joint_correction_model_group_means.csv),
+[correction comparisons](assets/analysis/tables/joint_correction_correction_contrasts.csv),
+[era comparisons](assets/analysis/tables/joint_correction_era_contrasts.csv),
+[correction-by-era interactions](assets/analysis/tables/joint_correction_correction_by_era_contrasts.csv),
+[displayed mean tests against zero](assets/analysis/tables/joint_correction_displayed_mean_zero_tests.csv),
+[matched input](assets/analysis/tables/joint_correction_model_input.csv), and
+[excluded unmatched records](assets/analysis/tables/joint_correction_model_exclusions.csv).
+
+{{joint_correction_results}}
+{{joint_correction_diagnostics}}
+
 ## Manuscript comparison from the primary reconstruction
 
-Raw distributions, fitted means and era contrasts refer to the primary reconstruction and selected
-models. Corrected-lag contrasts remain a separate figure. Scatterplots retain separate era scales,
-Spearman coefficients and p-values, and the gray 1:1 reference. Significance styling uses conditional
-model contrasts. Signed lag ratios are descriptive annotations and can be unstable near a zero mean.
+Figure 4 has four labeled sections: **A**, standardized climate era contrasts;
+**B**, community-turnover and observed-lag era contrasts; **C**, Holocene lag distributions;
+**D**, Anthropocene lag distributions. Panels C/D have MORA and NOCA on the x-axis and their
+own era-specific scales. The y-axis is **CCA distance per century**. The legend identifies
+**Observed lag-change rate** (green), **Pace correction effect rate** (pink), and
+**Direction correction effect rate** (purple). Filled small dots and capped error bars show fitted means and conditional
+95% Satterthwaite intervals. Large signed numerical annotations label the means to three decimals.
+
+Observed violins and means use the existing observed-response model and all its eligible
+records (211 Holocene transitions, 607 modern pairs). Correction-effect violins and means use the
+new joint model's complete paired records; observed is **not** a third joint-model level.
+Each input observation enters once within its displayed response.
+
+Stars on mean labels test whether that mean differs from **zero**, using unadjusted two-sided
+Satterthwaite t tests: * p < 0.05, ** p < 0.01, *** p < 0.001. Non-significant mean points,
+intervals and labels are faded; transparency has no legend entry. Brackets compare
+**direction minus pace**, and are shown only where their Holm-adjusted comparison is significant;
+the bracket labels report the difference, stars and adjusted p-value. These are different tests:
+a direction-effect mean can differ from zero even if its difference from pace is unsupported.
+
+The correction-effect responses are existing geometric quantities:
+
+- `pace_effect_on_lag_per_century = (observed final lag − pace-corrected final lag) × 100 / elapsed climate years`.
+- `direction_effect_on_lag_per_century = (observed final lag − direction-corrected final lag) × 100 / elapsed climate years`.
+
+Thus positive means indicate a lag reduction from the correction, negative means indicate a
+lag increase, and zero indicates no effect. These are different from corrected lag-change
+rates measured relative to initial lag. Both effects are independently verified from endpoints,
+and undefined counterfactual directions remain excluded only for the affected response.
+
+Correction-effect era contrasts from the separate models remain a separate figure.
+The top-row climate, turnover and observed-lag contrasts retain their original definitions.
+Signed fitted-mean ratios are descriptive and can be unstable near a zero mean.
 
 {{figure_4}}
 {{tracking_corrected_contrasts_diagnostics}}
 
 ## Within-era climate, fire and elevation predictor models
 
-Primary Holocene explanatory models fit observed and the two corrected lag-change rates against
+Primary Holocene explanatory models fit observed lag-change rate and the two correction-effect rates against
 `site + climate_rate + fire_activity`, with site-specific residual variances and selected covariance.
 Primary Anthropocene basic models use `site + burned`; extended community models also include
 `elevation + climate_rate`. Responses remain untransformed. Modern-only models retain independent residuals.
+
+The main coefficient figure compares **Holocene** and **Anthropocene** predictor effects on
+**observed lag-change rate**, **pace correction effect** and **direction correction effect**,
+shown in green, pink and purple respectively.
+The site coefficient is **NOCA − MORA**. These additive models have shared climate/fire slopes
+across parks, so the figure does not present duplicated slopes as separate park estimates.
+Holocene fire is the effect of one additional event per century per eligible core;
+Anthropocene fire is **burned − unburned**. The Anthropocene main figure uses `site + burned`.
+Intercepts are omitted, and conditional 95% intervals accompany the coefficients.
+Each era's caption gives each response model's descriptive R² (`1 − SSE/SST`); negative values
+are retained because GLS minimizes a covariance-weighted criterion rather than ordinary SSE.
+The eras have separate coefficient-axis scales. Coefficients refer to their stated predictor
+increments, not standardized effect sizes.
+
+{{figure_5}}
+
+### Appendix: extended Anthropocene coefficients
+
+The `site + elevation + climate_rate + burned` model remains fitted and reported as an
+appendix analysis. Its separate figure omits intercepts and shows elevation effects per
+100 m for readability, without changing the fitted model or its original coefficient table.
+Its caption gives the three extended-model R² values.
+
+{{predictor_appendix_diagnostics}}
+
+### Model diagnostics and lake sensitivity
 
 The lake random-intercept sensitivity uses the same primary observations and selected covariance.
 Its actual variance, coefficient changes and covariance-interval status are reported below; the older
@@ -521,33 +643,15 @@ near-zero variance result is not assumed to recur.
 {{predictor_predictions_diagnostics}}
 {{predictor_focal_performance}}
 {{predictor_performance_diagnostics}}
-{{predictor_era_diagnostics}}
 {{predictor_residuals_diagnostics}}
 {{predictor_model_results}}
 
-### Whole-chronology reconstruction sensitivity
-
-Each of 1,000 complete chronologies constructs its own occupied cells, transitions and endpoint
-climate/fire exposures. The same explanatory model is refitted, retaining the primary MA(1)
-covariance family while reestimating covariance parameters. Combined-era models, lake comparisons,
-random-intercept diagnostics and standalone modern models are primary-only.
-
-Sensitivity quantiles describe the distribution of reconstruction-specific coefficient estimates;
-they are not conventional confidence intervals or posterior probabilities. The primary coefficient
-and its conditional confidence interval remain the reported primary result. There is no averaging
-of primary coefficients, pooling of p-values, R² weighting or uncertainty reduction by √1,000.
-Successful-fit and valid-interval denominators, sign agreement, magnitude ranges, interval-conclusion
-agreement, transition counts/durations, coverage losses and failures are retained explicitly.
-
-The temporal-range figure shows 50% and 95% ranges across complete Bacon reconstructions,
-with the primary reconstruction retained as solid transition spans. Each draw's own
-transition-average rate or fire exposure is mapped only over that transition's actual duration.
-Vegetation is not interpolated. The bottom panels show transition and valid fire-exposure availability;
-finite-draw denominators and all quantiles are retained in the
-[temporal range audit](assets/analysis/tables/chronology_temporal_ranges.csv).
-
-{{chronology_summary}}
-{{predictor_chronology_diagnostics}}
+Bacon model sensitivity is **on hold for both community and species models** and omitted
+from the active review. The code and saved checkpoints are retained for a later rerun;
+normal workflow and standalone model-stage runs do not execute these sensitivities.
+The reported coefficients and intervals condition on the primary median-age reconstruction;
+they do not additionally propagate chronology uncertainty. Stored Bacon chronologies remain
+unchanged and continue to supply the primary sample median ages.
 
 ## Species and seasonal climate contributions
 
@@ -564,14 +668,35 @@ offsets or Bacon draws. Climate displacements retain their actual, variable-dura
 
 {{contributions_diagnostics}}
 
-Stage 17 fits Holocene species rates with `site + climate_rate + fire_activity`, using the shared
-covariance comparison. Anthropocene species use `site + burned` only. Constant or rank-deficient
-models and numerical failures are reported explicitly; zeros are retained. A constant response
-within a variance group can produce no finite heteroscedastic Gaussian optimum.
+Stage 17 fits species models **separately within MORA and NOCA**. Holocene species rates use
+`climate_rate + fire_activity`, with primary MA(1) covariance and Independent/CAR1 comparisons.
+Anthropocene MORA species use intercept-only models (`contribution_rate ~ 1`).
+Anthropocene NOCA species use `contribution_rate ~ burned` with unburned as the reference.
+Both modern specifications use independent residuals. Each fit estimates its own
+residual variance; there is no site coefficient or between-park variance ratio within a park.
+The retained sensitivity code uses the same park separation when Bacon model sensitivity is resumed.
+
+The coefficient PDF has separate Holocene and Anthropocene pages, with all 14 species as
+readable rows and coefficients (including the intercept) as columns. Blue MORA and orange NOCA
+estimates are shown together. The first column adds arithmetic mean parallel contributions
+from the same finite primary observations used in the species boxplots: each transition or
+plot pair counts once, zeros remain, and undefined directions are omitted. These descriptive
+diamonds have no model confidence intervals or significance fading; they may include responses
+excluded from models because a predictor is missing. Each column has its own x-axis scale. Faded estimates
+have unadjusted p ≥ 0.05. An `NE` marker denotes a model not estimable in that park, not a fitted
+zero coefficient. Species present in only one park are estimated there independently of their
+absence in the other park. Absent species still have zero responses throughout their park and
+cannot be fitted; constant responses, rank deficiency and numerical failures are reported.
+
+The Holocene intercept is the expected contribution at zero climate-change rate and zero fire
+activity in the fitted park. The Anthropocene MORA intercept is the mean across all eligible
+plots; the NOCA intercept is the unburned mean, and its fire coefficient is burned minus
+unburned. No MORA fire term is fitted. The Holocene intercept remains conditional on zero predictor values. Neither
+an intercept nor a mean implies that all observations share its sign. Positive contributions align with climate-predicted movement;
+negative contributions oppose it. Captions explain park-specific absences.
 
 {{species_selection}}
 {{species_models_diagnostics}}
-{{species_chronology_diagnostics}}
 {{predictor_tables}}
 
 ## Limitations and remaining questions

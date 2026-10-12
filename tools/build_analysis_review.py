@@ -138,7 +138,7 @@ def tracking_calculation_sections():
             excerpt(angle,'  a = sqrt(ax^2','  result\n')),
         ('Pace and direction counterfactual effects',
             excerpt(tracking,'  # Only divide','  x\n')),
-        ('Corrected lag-change rates for the additional GLS responses',
+        ('Auxiliary corrected lag-change rates retained for geometric auditing (not fitted responses)',
             excerpt(body('add_corrected_lag_rates'),'  x$pace_corrected_lag_rate_per_century =','  x\n')),
         ('Physical seasonal climate changes and standardized rate',
             excerpt(climate,'  z_change_cols =','  x\n'))]
@@ -228,10 +228,6 @@ def validate_tracking_contracts(root):
                 raise ValueError('Missing fire coverage is not NA')
     if any(metrics!=expected for metrics in observations.values()): raise ValueError('Missing primary responses')
     if sum(k[0]=='Anthropocene' for k in observations)!=607: raise ValueError('Modern pair identities changed')
-    for name,n_metrics in [('predictor_chronology_status',3),('species_chronology_status',14)]:
-        status=rows(root/ASSETS/'tables'/f'{name}.csv')
-        if len(status)!=1000*n_metrics or len({(r['draw'],r['metric']) for r in status})!=len(status):
-            raise ValueError('Incomplete whole-chronology fit audit: '+name)
     modern=rows(root/ASSETS/'tables/modern_model_input.csv')
     calculations=rows(root/ASSETS/'tables/modern_calculations.csv')
     indexed={(r['site'],r['plot_id']):r for r in calculations}
@@ -314,7 +310,8 @@ def validate(root=ROOT):
         raise ValueError('Review omitted model structures')
     if any(word in text for word in ['across ten offsets','offset-0','reconstruction-ensemble averaging']):
         raise ValueError('Retired ecological analysis remains in the review')
-    if '### Figure 4.' not in text: raise ValueError('Missing primary manuscript figure')
+    if any(f'### Figure {number}.' not in text for number in [4,5]):
+        raise ValueError('Missing primary manuscript figure')
     performance=rows(root/ASSETS/'tables/predictor_model_performance.csv')
     if len(performance)!=9: raise ValueError('Missing primary explanatory specifications')
     if len(rows(root/ASSETS/'tables/predictor_lake_random_intercept_sensitivity.csv'))!=3:
@@ -399,7 +396,7 @@ def validate(root=ROOT):
     if sha(root/ASSETS/'inputs.csv') != meta['input_manifest_sha256']: raise ValueError('Input manifest changed.')
     if sha(root/ASSETS/'sources.csv') != meta['source_manifest_sha256']: raise ValueError('Source manifest changed.')
     if sha(root/ASSETS/'results.csv') != meta['result_manifest_sha256']: raise ValueError('Result manifest changed.')
-    print('Report integrity passed: links, hashes, synchronized self-contained HTML, figures 2–4, and readable previews.', flush=True)
+    print('Report integrity passed: links, hashes, synchronized self-contained HTML, figures 2–5, and readable previews.', flush=True)
 
 def build(mode):
     for name in ['pdfinfo','pdftoppm','Rscript']:
@@ -487,8 +484,8 @@ def build(mode):
         text_blocks['predictor_tables']='\n'.join(f'- [{name.replace("_"," ")}](assets/analysis/tables/{name}.csv)' for name in predictor_names)+'\n'
         text_blocks['predictor_focal_performance']=mdtable(tables['predictor_model_performance'],[('metric','Response'),('specification','Specification'),('n','Observations'),('R2','Descriptive R²')])
         text_blocks['predictor_random_sensitivity']=mdtable(tables['predictor_lake_random_intercept_sensitivity'],[('metric','Response'),('random_intercept_sd','Lake SD'),('max_abs_coefficient_difference','Maximum coefficient change'),('covariance_status','Covariance uncertainty'),('variance_intervals_available','Lake-SD interval available')])
-        text_blocks['chronology_summary']=mdtable(tables['predictor_chronology_summary'],[('metric','Response'),('term','Predictor'),('n_successful_fits','Successful fits'),('primary_estimate','Primary estimate'),('median','Sensitivity median'),('q025','Sensitivity 2.5%'),('q975','Sensitivity 97.5%'),('sign_agreement','Sign agreement'),('support_agreement','Interval conclusion agreement')])
-        text_blocks['species_selection']=mdtable(tables['species_model_selection'],[('metric','Species'),('era','Era'),('model_type','Covariance'),('converged','Converged'),('selected','Selected'),('fit_error','Failure reason')])
+        text_blocks['species_selection']=mdtable(tables['species_model_selection'],[('metric','Species'),('era','Era'),('site','Park'),('model_type','Covariance'),('converged','Converged'),('selected','Selected'),('fit_error','Failure reason')])
+        text_blocks['joint_correction_comparison_summary']=mdtable(tables['joint_correction_correction_contrasts'],[('era','Era'),('site','Park'),('estimate','Direction − Pace'),('conf_low','95% lower'),('conf_high','95% upper'),('p_adjusted','Holm p'),('significance','Stars')])
         table_blocks={}
         for name,cols in COLUMNS.items():
             data=tables[name]
@@ -546,7 +543,8 @@ def build(mode):
             inventory.append(dict(diagnostic=f'[{Path(x["pdf"]).name}](../{x["pdf"]})',purpose=x['purpose'],producer=f'[{Path(x["producer"]).name}](../{x["producer"]})',pages=', '.join(map(str,x['pages'])) or 'Full PDF only',interpretation=x['interpretation'],status=status))
         fig_blocks={}
         titles={2:'Climate eras, climate rates and high-fire periods',3:'Observed and climate-predicted community trajectories',
-                4:'Primary era contrasts and observed-versus-corrected lag changes'}
+                4:'Primary era contrasts, observed lag change and correction effects',
+                5:'Site, climate and fire effects on lag-change rates by era'}
         for x in registry['main_figures']:
             dest=out/f'figure-{x["number"]}.png'
             if 'png' in x.get('formats',['pdf','png']):

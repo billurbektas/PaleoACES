@@ -48,41 +48,38 @@ for(i in seq_len(nrow(centroids))) {
   stopifnot(row$n_lakes==length(lakes),max(abs(actual-expected))<1e-12)
 }
 
-main_code = paste(readLines(here("R/stages/08_cca_figure.R")), collapse = "\n")
-stopifnot(
-  str_detect(main_code, 'holocene_display_mode = "era_centroid"'),
-  str_detect(main_code, 'cca_figure_stem = "fig_cca_trajectories"'),
-  str_detect(main_code, "connected separately from CC1 through S4"),
-  str_detect(main_code, "geom_segment\\(data = step_heads"),
-  str_detect(main_code, "series_label_positions = tribble"),
-  str_detect(main_code, "geom_text\\(data = series_lab"),
-  !str_detect(main_code, "geom_text_repel\\(data = series_lab"),
-  !str_detect(main_code, "geom_label_repel\\(data = series_lab"),
-  str_detect(main_code, '"Holocene\\\\nObserved"'),
-  str_detect(main_code, '"Anthropocene\\\\nPredicted"'),
-  str_detect(main_code, "nrow\\(series_lab\\) == 8L"),
-  str_detect(main_code, "setequal\\(series_lab\\$lab, expected_series_labels\\)"),
-  str_detect(main_code, '"NOCA", "holocene",     "observed",   "CC1"'),
-  str_detect(main_code, '"MORA", "holocene",     "observed",   "CC4"'),
-  str_detect(main_code, '"NOCA", "anthropocene", "predicted",  "legacy"'),
-  str_detect(main_code, '"NOCA", "anthropocene", "observed",   "resurvey"'),
-  str_detect(main_code, '"MORA", "anthropocene", "observed",   "legacy"'),
-  str_count(main_code,
-    fixed("aes(x, y, label = lab, color = !!cv, alpha = type)")) == 1L,
-  str_detect(main_code,
-    "aes\\(x, y, label = lab, color = !!cv, alpha = type\\)"),
-  str_detect(main_code,
-    "aes\\(x \\+ nx, y \\+ ny, label = lab, color = !!cv, alpha = type\\)"),
-  str_detect(main_code, "lineheight = 0\\.82"),
-  all(str_detect(main_code, fixed(c('"A."', '"B."', '"C."', '"D."')))),
-  str_detect(main_code, "show.legend = FALSE\\) \\+\\n    geom_segment\\(data = steps"),
-  str_detect(main_code,
-    "geom_segment\\(data = step_heads[\\s\\S]+show.legend = TRUE"),
-  str_detect(main_code, "legend.key.width = unit\\(2.2"),
-  str_count(main_code, "show.legend = FALSE") >= 4L,
-  str_detect(main_code,
-    "INSET_BOX = c\\(left = 0.45, bottom = 0.54, right = 1.00, top = 1.00\\)")
-)
+# Independently verify the information transferred from the former bar panels.
+labels=read_csv(here("output/cca_figure_biplot_annotations.csv"),show_col_types=FALSE)
+sp=read_csv(here("output/report/cca_species_contributions.csv"),show_col_types=FALSE)
+cl=read_csv(here("output/report/cca_climate_contributions.csv"),show_col_types=FALSE)
+stopifnot(nrow(labels)==18L,!anyDuplicated(labels$name),all(is.finite(labels$share_pct)),
+  setequal(labels$name, c(sp$species,cl$variable)))
+ls=labels |> filter(component=='Species') |> arrange(name)
+sp=arrange(sp,species)
+stopifnot(max(abs(ls$share_pct-sp$percent_constrained_inertia))<1e-10,
+  max(abs(ls$occurrence_pct-sp$prevalence_percent))<1e-10,
+  abs(sum(ls$share_pct)-100)<1e-8,
+  identical(ls$label,sprintf('%s (%.1f%%)',sp$species,sp$prevalence_percent)))
+lc=labels |> filter(component=='Climate') |> arrange(name)
+cl=arrange(cl,variable)
+stopifnot(max(abs(lc$share_pct-cl$unique_percent_constrained))<1e-10)
+# Full-opacity path colors are actual lighter RGB values, not alpha blending.
+display=read_csv(here('output/cca_figure_trajectory_display.csv'),show_col_types=FALSE)
+stopifnot(all(display$display_alpha==1),all(nchar(display$display_color)==7L))
+for(site_name in c('MORA','NOCA')) {
+  observed=unique(display$display_color[display$site==site_name & display$type=='observed'])
+  predicted=unique(display$display_color[display$site==site_name & display$type=='predicted'])
+  stopifnot(length(observed)==1L,length(predicted)==1L,
+    all(col2rgb(predicted)>=col2rgb(observed)),any(col2rgb(predicted)>col2rgb(observed)))
+}
+if(render_figures && nzchar(Sys.which('pdftotext'))) {
+  text=paste(system2('pdftotext',c(figure_files[1],'-'),stdout=TRUE),collapse=' ')
+  text=str_squish(text)
+  stopifnot(all(vapply(sp$species,function(name) str_detect(text,fixed(name)),logical(1))),
+    str_detect(text,fixed('A.')),str_detect(text,fixed('B.')),
+    !str_detect(text,fixed('C.')),!str_detect(text,fixed('D.')),
+    str_detect(text,fixed('Constrained inertia (%)')))
+}
 
 retired = here(c(
   "R/05b_cca_trajectory_alternatives.R",
@@ -101,5 +98,5 @@ pdf_pages = function(path) {
 if (render_figures && nzchar(Sys.which("pdfinfo")))
   stopifnot(pdf_pages(figure_files[1]) == 1L)
 
-cat("PASS: publication CCA figure uses primary equal-lake period centroids and preserved A-D architecture",
+cat("PASS: publication CCA figure uses primary equal-lake period centroids and side-by-side A/B architecture with complete inertia/occurrence annotations",
     if (render_figures) ", including PDF/PNG outputs.\n" else ".\n", sep = "")

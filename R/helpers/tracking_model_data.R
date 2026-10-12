@@ -1,5 +1,6 @@
 # Assemble one primary transition/plot x response input, with no bin phases.
 tracking_corrected_response_names=function() century_response_names()[8:9]
+tracking_correction_effect_response_names=function() c('pace_effect_on_lag_per_century','direction_effect_on_lag_per_century')
 tracking_combined_response_names=century_response_names
 tracking_model_available_names=function() c(century_response_names(),'standardized_climate_change_rate')
 combine_tracking_model_data=function(h,modern,lake_coordinates,plot_coordinates,hc,ac) {

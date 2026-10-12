@@ -1,0 +1,13 @@
+metric,era,model_type,draw,term,estimate,std_error,df,p_value,conf_low,conf_high,specification,display_multiplier,y,interval_alpha
+lag_rate_per_century,Anthropocene,Independent,NA,siteNOCA,-0.6489264047583874,0.19070914229649516,602,7.115093646893842e-4,-1.023462460671495,-0.2743903488452798,Anthropocene_extended,1,4.2,1
+lag_rate_per_century,Anthropocene,Independent,NA,elevation,-0.00744185243272542,0.019907342434509756,602,0.7086665039242379,-0.04653812977605838,0.031654424910607534,Anthropocene_extended,100,3.2,0.45
+lag_rate_per_century,Anthropocene,Independent,NA,climate_rate,-0.027053282411230083,0.0677147824600089,602,0.6896531772485245,-0.16003918567829073,0.10593262085583055,Anthropocene_extended,1,2.2,0.45
+lag_rate_per_century,Anthropocene,Independent,NA,burnedBurned,-0.9081987817091969,0.42963813363884157,602,0.034937101485870654,-1.751970454662275,-0.06442710875611879,Anthropocene_extended,1,1.2,1
+pace_effect_on_lag_per_century,Anthropocene,Independent,NA,siteNOCA,-0.3400083262597826,0.18016624499135078,460,0.059763841845452595,-0.6940592230092095,0.014042570489644357,Anthropocene_extended,1,4,0.45
+pace_effect_on_lag_per_century,Anthropocene,Independent,NA,elevation,0.0045230067989889934,0.016191186410728375,460,0.78010184652254555,-0.02729485158192313,0.036340865179901115,Anthropocene_extended,100,3,0.45
+pace_effect_on_lag_per_century,Anthropocene,Independent,NA,climate_rate,-0.06815954890769524,0.053637414501623557,460,0.20446117132464442,-0.1735642805461451,0.03724518273075461,Anthropocene_extended,1,2,0.45
+pace_effect_on_lag_per_century,Anthropocene,Independent,NA,burnedBurned,-0.8286215555657859,0.38966047740929755,460,0.03399156961219897,-1.5943567878297134,-0.0628863233018585,Anthropocene_extended,1,1,1
+direction_effect_on_lag_per_century,Anthropocene,Independent,NA,siteNOCA,-0.5352874647281652,0.19197826134123036,602,0.005466453904786117,-0.9123159593139838,-0.15825897014234663,Anthropocene_extended,1,3.8,1
+direction_effect_on_lag_per_century,Anthropocene,Independent,NA,elevation,-0.003579829615475666,0.018610974381915578,602,0.847532556991436,-0.04013015362073784,0.032970494389786505,Anthropocene_extended,100,2.8,0.45
+direction_effect_on_lag_per_century,Anthropocene,Independent,NA,climate_rate,0.03720919754522295,0.06413855241431685,602,0.5620387765626143,-0.08875330306676701,0.1631716981572129,Anthropocene_extended,1,1.8,0.45
+direction_effect_on_lag_per_century,Anthropocene,Independent,NA,burnedBurned,-0.5719336383972008,0.4353612059288297,602,0.1894478903729513,-1.4269449241836547,0.283077647389253,Anthropocene_extended,1,0.8,0.45

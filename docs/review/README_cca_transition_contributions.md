@@ -48,17 +48,34 @@ pair enters once per component. Species and climate variables remain on the boxp
 Species x values are parallel contribution rates (CCA distance per century); climate x values
 are parallel displacements. PDFs are directly under `plot/test_figures/`.
 
-Holocene species models use contribution_rate ~ site + climate_rate + fire_activity,
-site-specific residual variances and primary MA(1) covariance, matching community models.
-Independent and CAR1 are comparison diagnostics only.
-Modern species use contribution_rate ~ site + burned only, with independent residuals and
-site-specific variances. There is no modern species elevation model. Constant responses,
-rank deficiency and failures are reported without dropping zeros or changing specifications.
+Species models are fitted separately within MORA and NOCA. Holocene models use
+`contribution_rate ~ climate_rate + fire_activity` and primary MA(1) covariance.
+Independent and CAR1 are comparison diagnostics only. Modern MORA uses
+`contribution_rate ~ 1`; modern NOCA uses `contribution_rate ~ burned`, with unburned
+as the reference. Both use independent residuals. Each park fit estimates its own
+residual variance; no site term or between-park variance ratio is needed. There is no modern
+species elevation model. Absence from one park does not block estimation in the other.
+Absent/constant responses, rank deficiency and failures are reported without dropping zeros.
 
-## Complete-chronology sensitivity
+The coefficient PDF has one page per era, showing all species, park-colored coefficients and
+conditional 95% intervals, including intercepts. A descriptive column shows arithmetic means
+of finite contribution rates from the same primary data as the species boxplots; every
+transition/plot has equal weight, zeros remain and undefined directions are omitted.
+These means have no model confidence intervals or significance fading and may include rows
+excluded from modeling because a predictor is missing. An intercept describes expected contribution
+at zero climate/fire predictors in the Holocene. In Anthropocene MORA, it is the mean across
+all eligible plots; in NOCA, it is the unburned mean and the fire coefficient is burned minus
+unburned. No MORA fire term is fitted. None fixes the sign of every observation. Positive parallel
+contributions align with climate-predicted movement; negative contributions oppose it.
+
+## Complete-chronology sensitivity (on hold)
+
+Bacon model sensitivity is currently disabled by default for community and species models.
+Saved results and checkpoints remain for later use but are omitted from the current review.
+The following describes the retained procedure, to be rerun and validated when resumed.
 
 Each of 1,000 complete Bacon chronologies reconstructs its own occupied centuries and pairs.
-Species contributions are calculated before fitting that draw's explanatory models. Models
+Species contributions are calculated before fitting that draw's explanatory models separately within each park. Models
 retain the primary MA(1) covariance family and reestimate its parameters. The primary
 species input is not a median of draw contributions. Draw-specific records and fitted models
 remain in resumable chronology checkpoints; coefficient and fit-status tables are exported.

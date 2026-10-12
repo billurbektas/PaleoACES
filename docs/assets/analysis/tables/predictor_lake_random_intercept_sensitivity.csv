@@ -1,5 +1,6 @@
 metric,model_type,converged,random_intercept_sd,random_intercept_variance,max_abs_coefficient_difference,covariance_status,variance_interval_error,variance_intervals_available,warnings,fit_error
 lag_rate_per_century,MA1,TRUE,0.01664292,2.7698678612639993e-4,0.023041265714155393,positive_definite,NA,TRUE,,NA
-pace_corrected_lag_rate_per_century,MA1,TRUE,4.56301e-6,2.08210602601e-11,1.4726793156477624e-8,Non-positive definite approximate variance-covariance,"cannot get confidence intervals on var-cov components: Non-positive definite approximate variance-covariance
+pace_effect_on_lag_per_century,MA1,TRUE,3.050532e-6,9.305745483024e-12,2.24673219438587e-9,Non-positive definite approximate variance-covariance,"cannot get confidence intervals on var-cov components: Non-positive definite approximate variance-covariance
  Consider 'which = ""fixed""'",FALSE,,NA
-direction_corrected_lag_rate_per_century,MA1,TRUE,3.337544e-6,1.1139199951936002e-11,2.6021844096602714e-8,positive_definite,NA,TRUE,,NA
+direction_effect_on_lag_per_century,MA1,TRUE,5.674528e-6,3.220026802278401e-11,1.1668335048176104e-10,Non-positive definite approximate variance-covariance,"cannot get confidence intervals on var-cov components: Non-positive definite approximate variance-covariance
+ Consider 'which = ""fixed""'",FALSE,,NA

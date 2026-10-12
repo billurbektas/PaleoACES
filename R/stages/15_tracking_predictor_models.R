@@ -1,11 +1,10 @@
-# Primary explanatory GLS and whole-chronology community sensitivity.
+# Primary explanatory GLS. Bacon model sensitivity is on hold unless explicitly enabled.
 suppressPackageStartupMessages({library(here);library(tidyverse);library(nlme);library(patchwork)})
 source(here('R/helpers/reconstruction_models.R'),local=TRUE)
 source(here('R/helpers/tracking_predictor_models.R'),local=TRUE)
-metrics=c('lag_rate_per_century',tracking_corrected_response_names())
+metrics=c('lag_rate_per_century',tracking_correction_effect_response_names())
 h=read_csv(here('output/cca_tracking_holocene_lake_calculations.csv'),show_col_types=FALSE)
-a=read_csv(here('output/cca_tracking_anthropocene_plot_calculations.csv'),show_col_types=FALSE) |>
-  add_corrected_lag_rates()
+a=read_csv(here('output/cca_tracking_anthropocene_plot_calculations.csv'),show_col_types=FALSE)
 combined=read_csv(here('output/cca_tracking_era_model_input.csv'),show_col_types=FALSE)
 locations=combined |> filter(era=='Anthropocene') |> distinct(site,plot_id,longitude,latitude)
 a=left_join(a,locations,by=c('site','plot_id'),relationship='one-to-one')
@@ -37,10 +36,31 @@ if(isTRUE(getOption('paleoaces.render_figures',TRUE))) {
   co=tables$model_coefficients;pr=tables$transition_predictions
   specification_labels=c(Holocene='Holocene',Anthropocene_basic='Anthropocene: basic',
     Anthropocene_extended='Anthropocene: extended')
-  co$model_type=recode(co$specification,Holocene='Site + climate + fire',
-    Anthropocene_basic='Site + burned',Anthropocene_extended='Site + elevation + climate + burned')
-  ggsave(tracking_model_figure('fig_tracking_predictor_era_coefficients.pdf'),
-    reconstruction_coefficient_plot(co),width=16,height=14,device=cairo_pdf)
+  holocene_effects=tracking_predictor_effect_panel(co,tables$model_performance,
+    'Holocene','Holocene','A.')
+  modern_effects=tracking_predictor_effect_panel(co,tables$model_performance,
+    'Anthropocene_basic','Anthropocene','B.')
+  effects_figure=wrap_plots(holocene_effects$plot,modern_effects$plot,nrow=1,guides='collect')+
+    plot_annotation(caption=paste(
+      'Points: GLS coefficients; bars: conditional 95% confidence intervals. Faded estimates have p ≥ 0.05.',
+      'Fire and climate slopes are shared by MORA and NOCA; the site coefficient is NOCA − MORA.',
+      'Holocene: site + climate rate + fire activity, MA(1). Anthropocene: site + burned, independent residuals.',
+      'Correction effect = observed final lag − corrected final lag, per century; positive means the correction reduces lag.',
+      'R² = 1 − SSE/SST; descriptive and may be negative for GLS.',sep='\n'),
+      theme=theme(plot.caption=element_text(size=14,hjust=0,margin=margin(t=12)))) &
+    theme(legend.position='bottom')
+  ggsave(here('plot/fig_tracking_predictor_era_coefficients.pdf'),effects_figure,
+    width=19,height=9,device=cairo_pdf,bg='white')
+  ggsave(here('plot/fig_tracking_predictor_era_coefficients.png'),effects_figure,
+    width=19,height=9,dpi=300,bg='white')
+  extended_effects=tracking_predictor_effect_panel(co,tables$model_performance,
+    'Anthropocene_extended','Anthropocene: extended model',NULL)
+  ggsave(tracking_model_figure('fig_tracking_predictor_extended_coefficients.pdf'),
+    extended_effects$plot+labs(subtitle='Site + elevation + climate-change rate + burned',
+      x='Effect on response (CCA distance per century)'),
+    width=12,height=9,device=cairo_pdf,bg='white')
+  write_csv(bind_rows(holocene_effects$data,modern_effects$data),file.path(out,'figure_main_coefficients.csv'))
+  write_csv(extended_effects$data,file.path(out,'figure_appendix_coefficients.csv'))
   performance=tables$model_performance |> mutate(specification=unname(specification_labels[specification]))
   r2=ggplot(performance,aes(specification,R2,fill=era))+geom_col(width=.6)+
     facet_wrap(~metric,labeller=labeller(metric=reconstruction_metric_label))+
@@ -68,12 +88,13 @@ if(isTRUE(getOption('paleoaces.render_figures',TRUE))) {
       color='#648FFF',linewidth=1)+
     facet_grid(metric~lake,scales='free_y',labeller=labeller(metric=reconstruction_metric_label))+
     scale_x_reverse()+
-    labs(x='Transition age (cal BP)',y='Lag-change rate (CCA distance per century)',
+    labs(x='Transition age (cal BP)',y='Lag change / correction effect (CCA distance per century)',
       caption='Joined fitted values over actual transition intervals; shaded bands: conditional 95% mean-confidence intervals. Excluded transitions remain gaps.')+
     reconstruction_model_theme()
   ggsave(tracking_model_figure('fig_tracking_predictor_holocene_predictions.pdf'),prediction,width=19,height=12,device=cairo_pdf)
 }
-if(!isTRUE(getOption('paleoaces.primary_only',FALSE))) {
+if(isTRUE(getOption('paleoaces.run_bacon_sensitivity',FALSE)) &&
+   !isTRUE(getOption('paleoaces.primary_only',FALSE))) {
   sensitivity_out=tracking_bacon_results('community')
   sensitivity=reconstruction_sensitivity(century_prepare(),entries,'community',sensitivity_out)
   source(here('R/helpers/chronology_exports.R'),local=TRUE)

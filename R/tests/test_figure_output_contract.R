@@ -1,10 +1,11 @@
-# Publication figure-output contract: three manuscript PDFs, two PNG versions, PDF-only audits.
+# Publication figure-output contract: four manuscript PDFs, three PNG versions, PDF-only audits.
 suppressPackageStartupMessages(library(here))
 
 main_stems = c(
   "fig_standardized_climate_change_eras_fire",
   "fig_cca_trajectories",
-  "fig_tracking_era_distributions")
+  "fig_tracking_era_distributions",
+  "fig_tracking_predictor_era_coefficients")
 expected_root = sort(c(paste0(main_stems,'.pdf'),paste0(main_stems[-1],'.png')))
 actual_root = sort(list.files(here("plot"), pattern = "\\.(pdf|png)$",
                               recursive = FALSE))
@@ -16,7 +17,7 @@ stopifnot(!length(test_png))
 
 main_files = here("plot", expected_root)
 stopifnot(all(file.exists(main_files)), all(file.info(main_files)$size > 5000))
-corrected_contrasts = here("plot/test_figures/primary_models/fig_tracking_corrected_lag_contrasts.pdf")
+corrected_contrasts = here("plot/test_figures/primary_models/fig_tracking_correction_effect_contrasts.pdf")
 stopifnot(file.exists(corrected_contrasts), file.info(corrected_contrasts)$size > 5000)
 sampling_support = here("plot/test_figures/fig_holocene_sampling_fire_100yr.pdf")
 stopifnot(file.exists(sampling_support), file.info(sampling_support)$size > 5000)
@@ -46,5 +47,13 @@ if (nzchar(Sys.which("pdfinfo"))) {
   },integer(1))
   stopifnot(all(consolidated_pages==5L))
 }
+if(nzchar(Sys.which('pdftotext'))) {
+  text=system2('pdftotext',c('-layout',here('plot/fig_tracking_era_distributions.pdf'),'-'),stdout=TRUE)
+  stopifnot(all(vapply(c('A','B','C','D'),function(tag)
+    any(grepl(paste0('\\b',tag,'\\b'),text)),logical(1))),
+    any(grepl('Holocene',text)),any(grepl('Anthropocene',text)),
+    any(grepl('Observed',text)),any(grepl('Pace correction effect rate',text)),
+    any(grepl('Direction correction effect rate',text)))
+}
 
-cat("Figure output contract passed: three manuscript PDFs, two PNG versions and PDF-only audits.\n")
+cat("Figure output contract passed: four manuscript PDFs, three PNG versions and PDF-only audits.\n")

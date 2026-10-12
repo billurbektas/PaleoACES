@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- paleoaces-source-md5: a5d35c0c8231276d6aa197a55e16e074 -->
+<!-- paleoaces-source-md5: e78987bd6c78ef6349da85b074813888 -->
 
 <html>
 
@@ -1555,24 +1555,47 @@ climate variables remain on the boxplot y-axis. Species x values are
 parallel contribution rates (CCA distance per century); climate x values
 are parallel displacements. PDFs are directly under
 <code>plot/test_figures/</code>.</p>
-<p>Holocene species models use contribution_rate ~ site + climate_rate +
-fire_activity, site-specific residual variances and primary MA(1)
-covariance, matching community models. Independent and CAR1 are
-comparison diagnostics only. Modern species use contribution_rate ~ site
-+ burned only, with independent residuals and site-specific variances.
-There is no modern species elevation model. Constant responses, rank
-deficiency and failures are reported without dropping zeros or changing
-specifications.</p>
+<p>Species models are fitted separately within MORA and NOCA. Holocene
+models use <code>contribution_rate ~ climate_rate + fire_activity</code>
+and primary MA(1) covariance. Independent and CAR1 are comparison
+diagnostics only. Modern MORA uses <code>contribution_rate ~ 1</code>;
+modern NOCA uses <code>contribution_rate ~ burned</code>, with unburned
+as the reference. Both use independent residuals. Each park fit
+estimates its own residual variance; no site term or between-park
+variance ratio is needed. There is no modern species elevation model.
+Absence from one park does not block estimation in the other.
+Absent/constant responses, rank deficiency and failures are reported
+without dropping zeros.</p>
+<p>The coefficient PDF has one page per era, showing all species,
+park-colored coefficients and conditional 95% intervals, including
+intercepts. A descriptive column shows arithmetic means of finite
+contribution rates from the same primary data as the species boxplots;
+every transition/plot has equal weight, zeros remain and undefined
+directions are omitted. These means have no model confidence intervals
+or significance fading and may include rows excluded from modeling
+because a predictor is missing. An intercept describes expected
+contribution at zero climate/fire predictors in the Holocene. In
+Anthropocene MORA, it is the mean across all eligible plots; in NOCA, it
+is the unburned mean and the fire coefficient is burned minus unburned.
+No MORA fire term is fitted. None fixes the sign of every observation.
+Positive parallel contributions align with climate-predicted movement;
+negative contributions oppose it.</p>
 </div>
-<div id="complete-chronology-sensitivity" class="section level2">
-<h2>Complete-chronology sensitivity</h2>
+<div id="complete-chronology-sensitivity-on-hold" class="section level2">
+<h2>Complete-chronology sensitivity (on hold)</h2>
+<p>Bacon model sensitivity is currently disabled by default for
+community and species models. Saved results and checkpoints remain for
+later use but are omitted from the current review. The following
+describes the retained procedure, to be rerun and validated when
+resumed.</p>
 <p>Each of 1,000 complete Bacon chronologies reconstructs its own
 occupied centuries and pairs. Species contributions are calculated
-before fitting that draw’s explanatory models. Models retain the primary
-MA(1) covariance family and reestimate its parameters. The primary
-species input is not a median of draw contributions. Draw-specific
-records and fitted models remain in resumable chronology checkpoints;
-coefficient and fit-status tables are exported.</p>
+before fitting that draw’s explanatory models separately within each
+park. Models retain the primary MA(1) covariance family and reestimate
+its parameters. The primary species input is not a median of draw
+contributions. Draw-specific records and fitted models remain in
+resumable chronology checkpoints; coefficient and fit-status tables are
+exported.</p>
 <p>Assess coefficient signs, magnitudes and confidence-interval
 conclusion consistency using explicit valid-fit denominators.
 Sensitivity quantiles are not conventional confidence intervals or

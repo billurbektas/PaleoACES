@@ -1,0 +1,57 @@
+era,metric,site,converged,fit_error,n,present,reason
+Holocene,Abies amabilis,MORA,TRUE,NA,104,TRUE,Estimated
+Holocene,Abies amabilis,NOCA,FALSE,constant_response,106,FALSE,Absent in this park; contribution is zero throughout
+Anthropocene,Abies amabilis,MORA,TRUE,NA,330,TRUE,Estimated
+Anthropocene,Abies amabilis,NOCA,TRUE,NA,277,TRUE,Estimated
+Holocene,Abies grandis,MORA,FALSE,constant_response,104,FALSE,Absent in this park; contribution is zero throughout
+Holocene,Abies grandis,NOCA,FALSE,constant_response,106,FALSE,Absent in this park; contribution is zero throughout
+Anthropocene,Abies grandis,MORA,TRUE,NA,330,TRUE,Estimated
+Anthropocene,Abies grandis,NOCA,TRUE,NA,277,TRUE,Estimated
+Holocene,Abies lasiocarpa,MORA,TRUE,NA,104,TRUE,Estimated
+Holocene,Abies lasiocarpa,NOCA,TRUE,NA,106,TRUE,Estimated
+Anthropocene,Abies lasiocarpa,MORA,TRUE,NA,330,TRUE,Estimated
+Anthropocene,Abies lasiocarpa,NOCA,TRUE,NA,277,TRUE,Estimated
+Holocene,Abies procera,MORA,TRUE,NA,104,TRUE,Estimated
+Holocene,Abies procera,NOCA,FALSE,constant_response,106,FALSE,Absent in this park; contribution is zero throughout
+Anthropocene,Abies procera,MORA,TRUE,NA,330,TRUE,Estimated
+Anthropocene,Abies procera,NOCA,FALSE,constant_response,277,FALSE,Absent in this park; contribution is zero throughout
+Holocene,Callitropsis nootkatensis,MORA,TRUE,NA,104,TRUE,Estimated
+Holocene,Callitropsis nootkatensis,NOCA,TRUE,NA,106,TRUE,Estimated
+Anthropocene,Callitropsis nootkatensis,MORA,TRUE,NA,330,TRUE,Estimated
+Anthropocene,Callitropsis nootkatensis,NOCA,TRUE,NA,277,TRUE,Estimated
+Holocene,Picea engelmannii,MORA,TRUE,NA,104,TRUE,Estimated
+Holocene,Picea engelmannii,NOCA,TRUE,NA,106,TRUE,Estimated
+Anthropocene,Picea engelmannii,MORA,TRUE,NA,330,TRUE,Estimated
+Anthropocene,Picea engelmannii,NOCA,TRUE,NA,277,TRUE,Estimated
+Holocene,Pinus albicaulis,MORA,FALSE,constant_response,104,FALSE,Absent in this park; contribution is zero throughout
+Holocene,Pinus albicaulis,NOCA,FALSE,constant_response,106,FALSE,Absent in this park; contribution is zero throughout
+Anthropocene,Pinus albicaulis,MORA,TRUE,NA,330,TRUE,Estimated
+Anthropocene,Pinus albicaulis,NOCA,TRUE,NA,277,TRUE,Estimated
+Holocene,Pinus contorta,MORA,TRUE,NA,104,TRUE,Estimated
+Holocene,Pinus contorta,NOCA,TRUE,NA,106,TRUE,Estimated
+Anthropocene,Pinus contorta,MORA,TRUE,NA,330,TRUE,Estimated
+Anthropocene,Pinus contorta,NOCA,TRUE,NA,277,TRUE,Estimated
+Holocene,Pinus monticola,MORA,TRUE,NA,104,TRUE,Estimated
+Holocene,Pinus monticola,NOCA,TRUE,NA,106,TRUE,Estimated
+Anthropocene,Pinus monticola,MORA,TRUE,NA,330,TRUE,Estimated
+Anthropocene,Pinus monticola,NOCA,TRUE,NA,277,TRUE,Estimated
+Holocene,Pinus ponderosa,MORA,FALSE,constant_response,104,FALSE,Absent in this park; contribution is zero throughout
+Holocene,Pinus ponderosa,NOCA,FALSE,constant_response,106,FALSE,Absent in this park; contribution is zero throughout
+Anthropocene,Pinus ponderosa,MORA,TRUE,NA,330,TRUE,Estimated
+Anthropocene,Pinus ponderosa,NOCA,TRUE,NA,277,TRUE,Estimated
+Holocene,Pseudotsuga menziesii,MORA,TRUE,NA,104,TRUE,Estimated
+Holocene,Pseudotsuga menziesii,NOCA,TRUE,NA,106,TRUE,Estimated
+Anthropocene,Pseudotsuga menziesii,MORA,TRUE,NA,330,TRUE,Estimated
+Anthropocene,Pseudotsuga menziesii,NOCA,TRUE,NA,277,TRUE,Estimated
+Holocene,Thuja plicata,MORA,FALSE,constant_response,104,FALSE,Absent in this park; contribution is zero throughout
+Holocene,Thuja plicata,NOCA,TRUE,NA,106,TRUE,Estimated
+Anthropocene,Thuja plicata,MORA,TRUE,NA,330,TRUE,Estimated
+Anthropocene,Thuja plicata,NOCA,TRUE,NA,277,TRUE,Estimated
+Holocene,Tsuga heterophylla,MORA,TRUE,NA,104,TRUE,Estimated
+Holocene,Tsuga heterophylla,NOCA,TRUE,NA,106,TRUE,Estimated
+Anthropocene,Tsuga heterophylla,MORA,TRUE,NA,330,TRUE,Estimated
+Anthropocene,Tsuga heterophylla,NOCA,TRUE,NA,277,TRUE,Estimated
+Holocene,Tsuga mertensiana,MORA,TRUE,NA,104,TRUE,Estimated
+Holocene,Tsuga mertensiana,NOCA,TRUE,NA,106,TRUE,Estimated
+Anthropocene,Tsuga mertensiana,MORA,TRUE,NA,330,TRUE,Estimated
+Anthropocene,Tsuga mertensiana,NOCA,TRUE,NA,277,TRUE,Estimated

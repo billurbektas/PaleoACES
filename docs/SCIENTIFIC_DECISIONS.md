@@ -285,14 +285,14 @@ covariance for every model containing Holocene observations. Independent and CAR
 comparison diagnostics only. AIC recommendations are recorded separately and never replace
 the primary MA(1) fit. A failed MA(1) fit is reported, without an automatic fallback.
 
-Refit Holocene explanatory community and species models under 1,000 complete chronologies,
-reconstructing each draw's own cells and pairs. Retain the primary MA(1) covariance
-family and reestimate its parameters. Examine direction, magnitude and confidence-interval
-conclusion consistency with valid-fit denominators. Primary estimates and confidence intervals
-are conditional on the primary reconstruction. Sensitivity quantiles are not conventional CIs
-or posterior probabilities. No pooled p-values, coefficient averaging, R² weights or √1,000
-uncertainty reduction is used. Combined-era comparisons, lake comparisons, random-intercept
-diagnostics and standalone modern models remain primary-only.
+Bacon model sensitivity is on hold for **both community and species** models. Normal workflow
+runs and standalone stages 15/17 do not run it; retained code can be enabled later using
+`--bacon-sensitivity` or `options(paleoaces.run_bacon_sensitivity=TRUE)`. Saved checkpoints and
+historical outputs are preserved, but are not presented as current results. An interrupted
+community update is incomplete and must be resumed and validated before its results are used.
+Primary coefficients and intervals condition on the median-age reconstruction; they do not
+additionally propagate chronology uncertainty. Stored posteriors and primary reconstruction
+remain unchanged. Lake checks remain active.
 
 ### Species contributions and models
 
@@ -301,9 +301,21 @@ Species vectors sum to delta WA for each primary/draw transition. Signed paralle
 along delta LC are annualized per century. Stationary directions are undefined; legitimate
 zero components remain zero. Climate-variable vectors sum to delta LC and their projections
 along delta WA retain displacement units. Perpendicular contributions remain retired.
-Stage 17 mirrors Holocene community predictors/covariance; modern species use site + burned only.
-Constant or rank-deficient models and failures remain explicit. A constant variance group can
-make the heteroscedastic Gaussian likelihood unbounded; no observations are discarded to rescue it.
+Stage 17 fits species separately within MORA and NOCA. Holocene models use
+`contribution_rate ~ climate_rate + fire_activity` with primary MA(1). Modern MORA uses
+`contribution_rate ~ 1`; modern NOCA uses `contribution_rate ~ burned` with unburned as
+the reference. Both modern models use independent residuals. Each park fit has its own residual
+variance, without a site coefficient or between-park variance ratio. When resumed, chronology sensitivity
+also fits each species within each park. Absence from the other park no longer blocks a fit.
+Absent or otherwise constant responses, rank deficiency and failures remain explicit; zeros
+are retained. Holocene intercepts are expected contributions at zero climate/fire predictors.
+The Anthropocene MORA intercept estimates the overall mean contribution; the NOCA intercept
+estimates the unburned mean and its fire coefficient is burned minus unburned. MORA has no fire term.
+Neither an intercept nor a mean fixes the sign of every observation.
+The coefficient figure also shows descriptive arithmetic means of finite primary parallel
+contribution rates (one equally weighted transition/plot per value), using the species boxplot
+data. Mean diamonds have no model intervals or significance fading. Undefined directions are
+omitted and zeros retained; missing predictors do not exclude otherwise valid descriptive values.
 
 ### Native sampling support and manuscript displays
 
@@ -312,6 +324,47 @@ age, distinguishes macrofossil lakes on a shared count scale, and shows shared r
 fire totals. Primary model figures use actual transitions and selected fits; chronology results
 are separate sensitivity diagnostics. Former ecological phase tables, ensembles and figures
 are retired. The previous 1,000-year calculation checkpoint and support audit remain in Git history.
+
+Manuscript Figure 4 labels its sections A–D: climate contrasts, community/observed-lag
+contrasts, Holocene lag/effect distributions, and Anthropocene lag/effect distributions. Bottom panels
+use park on the x-axis and observed/pace/direction colors (green/pink/purple).
+Small filled means and capped conditional 95% intervals match the top-panel style;
+mean annotations use three decimals and stars from unadjusted two-sided tests against zero.
+Non-significant mean points, intervals and annotations are transparent without an alpha legend.
+
+The additional paired correction GLS is `estimate ~ era * site * correction`, with pace
+and direction only. It retains MA(1) on original transition indices and models correlation
+between the two corrections in each era/park group; residual SDs vary by era/park/correction.
+Only complete correction pairs enter. Existing separate response models retain their own
+observations. Observed distributions and means are displayed from the observed-response
+model; correction-effect distributions and means come from the paired model. Mean tests against
+zero are distinct from correction comparisons. Direction-minus-pace comparisons are
+Holm-adjusted across four era/park cells, with unadjusted conditional 95% intervals;
+correction-by-era interaction tests use a separate Holm family of two parks. Significant
+correction comparisons receive brackets, differences, stars and adjusted p-values.
+The joint fit is primary-only; no additional chronology fits are added.
+
+The correction responses are `pace_effect_on_lag_per_century` and
+`direction_effect_on_lag_per_century`: observed final lag minus the respective corrected final
+lag, multiplied by 100 / elapsed climate years. Positive effects mean the correction reduces
+lag; negative effects mean it increases lag. These replace corrected lag-change rates in all
+combined-era, paired-correction, lake and community explanatory fits. The auxiliary corrected
+rates remain in calculation records for auditing, not as fitted responses. Panel C/D axes read
+"CCA distance per century"; legends identify observed lag-change rate and the two correction
+effect rates.
+
+## Community explanatory coefficient figure
+
+The main coefficient figure uses the existing Holocene `site + climate_rate + fire_activity`
+and Anthropocene `site + burned` models. Separate era panels show the NOCA-minus-MORA site
+contrast and shared predictor slopes; additive models do not estimate park-specific fire
+or climate slopes. No intercept is displayed. The main figure shows observed lag-change rate in green,
+pace correction effect in pink and direction correction effect in purple, with conditional
+intervals and response-specific descriptive R² in each era caption. Negative descriptive
+R² values are not truncated.
+The extended Anthropocene `site + elevation + climate_rate + burned` coefficients appear
+in a separate appendix figure. Elevation is displayed per 100 m there; the underlying
+fit and coefficient table retain the original metre unit.
 
 ## Unified 1,000-year climate eras
 
@@ -439,7 +492,15 @@ are retired. The previous 1,000-year calculation checkpoint and support audit re
 
 ## Figure 3 era-centroid trajectories
 
-The layout and calibration panels remain. Primary occupied centuries are averaged within
+The figure uses two side-by-side panels: A, the full species/climate biplot; B, the zoomed
+trajectory projections. All 14 species are labeled with calibration occurrence percentages.
+Arrow and annotation colors encode species shares or unique climate effects as percentages
+of total constrained inertia across all constrained axes. Exact contribution values remain
+in the review tables. The former inset and contribution bars are combined in panel A.
+Predicted paths and labels have opaque lighter park colors; the path-type legend remains
+grey. All time and direct path annotations are placed jointly to reduce overlap.
+
+Primary occupied centuries are averaged within
 lake/CC-S period, then available lakes are weighted equally within park/period. Boundaries
 come from the unchanged descriptive catalog. Missing lake/period observations are not filled.
 Modern paths retain the same 607 paired plots and original endpoints.

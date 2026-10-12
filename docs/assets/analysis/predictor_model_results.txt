@@ -57,7 +57,7 @@ Primary covariance: Independent
 # A tibble: 1 × 18
   model_type      n row_signature  method converged   AIC n_covariance_paramet…¹
   <chr>       <int> <chr>          <chr>  <lgl>     <dbl>                  <int>
-1 Independent   607 884bd5969bad1… REML   TRUE      2321.                      0
+1 Independent   607 e39b1df726c27… REML   TRUE      2321.                      0
 # ℹ abbreviated name: ¹​n_covariance_parameters
 # ℹ 11 more variables: n_parameters <int>, correlation_parameter <dbl>,
 #   boundary <lgl>, covariance_status <chr>, warnings <chr>, fit_error <chr>,
@@ -100,7 +100,7 @@ Primary covariance: Independent
 # A tibble: 1 × 18
   model_type      n row_signature  method converged   AIC n_covariance_paramet…¹
   <chr>       <int> <chr>          <chr>  <lgl>     <dbl>                  <int>
-1 Independent   607 884bd5969bad1… REML   TRUE      2343.                      0
+1 Independent   607 e39b1df726c27… REML   TRUE      2343.                      0
 # ℹ abbreviated name: ¹​n_covariance_parameters
 # ℹ 11 more variables: n_parameters <int>, correlation_parameter <dbl>,
 #   boundary <lgl>, covariance_status <chr>, warnings <chr>, fit_error <chr>,
@@ -142,14 +142,14 @@ Residual standard error: 1.24807
 Degrees of freedom: 607 total; 602 residual
 Descriptive R2: 0.0503609821275669
 
-pace_corrected_lag_rate_per_century:Holocene
+pace_effect_on_lag_per_century:Holocene
 Primary covariance: MA1
 # A tibble: 3 × 18
-  model_type      n row_signature method converged    AIC n_covariance_paramet…¹
-  <chr>       <int> <chr>         <chr>  <lgl>      <dbl>                  <int>
-1 Independent   184 2ce36325eb92… REML   TRUE       -7.89                      0
-2 MA1           184 2ce36325eb92… REML   TRUE      -37.6                       1
-3 CAR1          184 2ce36325eb92… REML   TRUE       -5.89                      1
+  model_type      n row_signature  method converged   AIC n_covariance_paramet…¹
+  <chr>       <int> <chr>          <chr>  <lgl>     <dbl>                  <int>
+1 Independent   184 ddd58918ea40b… REML   TRUE      -126.                      0
+2 MA1           184 ddd58918ea40b… REML   TRUE      -132.                      1
+3 CAR1          184 ddd58918ea40b… REML   TRUE      -124.                      1
 # ℹ abbreviated name: ¹​n_covariance_parameters
 # ℹ 11 more variables: n_parameters <int>, correlation_parameter <dbl>,
 #   boundary <lgl>, covariance_status <chr>, warnings <chr>, fit_error <chr>,
@@ -158,48 +158,48 @@ Primary covariance: MA1
 Generalized least squares fit by REML
   Model: estimate ~ site + climate_rate + fire_activity
   Data: d
-        AIC       BIC   logLik
-  -37.57498 -15.22428 25.78749
+       AIC       BIC   logLik
+  -131.937 -109.5863 72.96848
 
 Correlation Structure: ARMA(0,1)
  Formula: ~time_index | series
  Parameter estimate(s):
     Theta1
--0.4513625
+-0.2514457
 Variance function:
  Structure: Different standard deviations per stratum
  Formula: ~1 | site
  Parameter estimates:
     MORA     NOCA
-1.000000 1.225435
+1.000000 1.351826
 
 Coefficients:
                     Value  Std.Error    t-value p-value
-(Intercept)   -0.01229823 0.02700297 -0.4554399  0.6493
-siteNOCA       0.02187836 0.02334340  0.9372395  0.3499
-climate_rate   0.03037352 0.08920806  0.3404795  0.7339
-fire_activity -0.02127602 0.03265037 -0.6516318  0.5155
+(Intercept)   -0.01319552 0.02294855 -0.5750046  0.5660
+siteNOCA      -0.02051307 0.02166815 -0.9466925  0.3451
+climate_rate   0.01110198 0.07674059  0.1446690  0.8851
+fire_activity  0.03619817 0.02713430  1.3340370  0.1839
 
  Correlation:
               (Intr) stNOCA clmt_r
-siteNOCA      -0.079
-climate_rate  -0.856 -0.090
-fire_activity -0.209 -0.659  0.037
+siteNOCA      -0.087
+climate_rate  -0.837 -0.112
+fire_activity -0.204 -0.585  0.033
 
 Standardized residuals:
-         Min           Q1          Med           Q3          Max
--3.959560134 -0.295095521 -0.006054501  0.373228051  4.449021233
+        Min          Q1         Med          Q3         Max
+-3.12047595 -0.41002798  0.04873839  0.45145878  4.33368944
 
-Residual standard error: 0.1932497
+Residual standard error: 0.1336546
 Degrees of freedom: 184 total; 180 residual
-Descriptive R2: -0.00569051020101607
+Descriptive R2: 0.00766860304226347
 
-pace_corrected_lag_rate_per_century:Anthropocene_basic
+pace_effect_on_lag_per_century:Anthropocene_basic
 Primary covariance: Independent
 # A tibble: 1 × 18
   model_type      n row_signature  method converged   AIC n_covariance_paramet…¹
   <chr>       <int> <chr>          <chr>  <lgl>     <dbl>                  <int>
-1 Independent   465 77c54961d037d… REML   TRUE      1334.                      0
+1 Independent   465 2aacd3eb9a13b… REML   TRUE      1523.                      0
 # ℹ abbreviated name: ¹​n_covariance_parameters
 # ℹ 11 more variables: n_parameters <int>, correlation_parameter <dbl>,
 #   boundary <lgl>, covariance_status <chr>, warnings <chr>, fit_error <chr>,
@@ -209,40 +209,40 @@ Generalized least squares fit by REML
   Model: estimate ~ site + burned
   Data: d
        AIC      BIC    logLik
-  1333.523 1354.201 -661.7614
+  1523.169 1543.847 -756.5847
 
 Variance function:
  Structure: Different standard deviations per stratum
  Formula: ~1 | site
  Parameter estimates:
-     MORA      NOCA
-1.0000000 0.5431194
+    MORA     NOCA
+1.000000 2.809988
 
 Coefficients:
-                  Value  Std.Error   t-value p-value
-(Intercept)   0.5199424 0.08260102  6.294625  0.0000
-siteNOCA     -0.4670806 0.09700311 -4.815110  0.0000
-burnedBurned -0.1989814 0.17752859 -1.120841  0.2629
+                  Value Std.Error    t-value p-value
+(Intercept)   0.0405641 0.0482723  0.8403167  0.4012
+siteNOCA     -0.2302648 0.1586457 -1.4514409  0.1473
+burnedBurned -0.8970070 0.3856559 -2.3259259  0.0205
 
  Correlation:
              (Intr) stNOCA
-siteNOCA     -0.849
-burnedBurned -0.017 -0.133
+siteNOCA     -0.292
+burnedBurned -0.063 -0.177
 
 Standardized residuals:
-       Min         Q1        Med         Q3        Max
--2.7650707 -0.5075501 -0.0846729  0.6067909  3.1551927
+         Min           Q1          Med           Q3          Max
+-4.817551595 -0.455430694  0.009665244  0.461219499  6.392321318
 
-Residual standard error: 1.316255
+Residual standard error: 0.7678107
 Degrees of freedom: 465 total; 462 residual
-Descriptive R2: 0.0479733685068254
+Descriptive R2: 0.0305792979530635
 
-pace_corrected_lag_rate_per_century:Anthropocene_extended
+pace_effect_on_lag_per_century:Anthropocene_extended
 Primary covariance: Independent
 # A tibble: 1 × 18
   model_type      n row_signature  method converged   AIC n_covariance_paramet…¹
   <chr>       <int> <chr>          <chr>  <lgl>     <dbl>                  <int>
-1 Independent   465 77c54961d037d… REML   TRUE      1357.                      0
+1 Independent   465 2aacd3eb9a13b… REML   TRUE      1545.                      0
 # ℹ abbreviated name: ¹​n_covariance_parameters
 # ℹ 11 more variables: n_parameters <int>, correlation_parameter <dbl>,
 #   boundary <lgl>, covariance_status <chr>, warnings <chr>, fit_error <chr>,
@@ -251,47 +251,47 @@ Primary covariance: Independent
 Generalized least squares fit by REML
   Model: estimate ~ site + elevation + climate_rate + burned
   Data: d
-       AIC      BIC    logLik
-  1357.277 1386.196 -671.6387
+       AIC     BIC    logLik
+  1545.301 1574.22 -765.6505
 
 Variance function:
  Structure: Different standard deviations per stratum
  Formula: ~1 | site
  Parameter estimates:
-     MORA      NOCA
-1.0000000 0.5400173
+    MORA     NOCA
+1.000000 2.798407
 
 Coefficients:
-                  Value  Std.Error   t-value p-value
-(Intercept)   0.6952517 0.18703053  3.717316  0.0002
-siteNOCA     -0.5430161 0.11343542 -4.787007  0.0000
-elevation     0.0000582 0.00011389  0.511313  0.6094
-climate_rate -0.0456949 0.03539732 -1.290915  0.1974
-burnedBurned -0.1104089 0.18997888 -0.581164  0.5614
+                  Value Std.Error    t-value p-value
+(Intercept)   0.3490999 0.2735254  1.2762978  0.2025
+siteNOCA     -0.3400083 0.1801662 -1.8871922  0.0598
+elevation     0.0000452 0.0001619  0.2793499  0.7801
+climate_rate -0.0681595 0.0536374 -1.2707464  0.2045
+burnedBurned -0.8286216 0.3896605 -2.1265219  0.0340
 
  Correlation:
              (Intr) stNOCA elevtn clmt_r
-siteNOCA     -0.687
-elevation    -0.202 -0.218
-climate_rate -0.669  0.515 -0.480
-burnedBurned  0.277 -0.291  0.100 -0.353
+siteNOCA     -0.427
+elevation    -0.256 -0.166
+climate_rate -0.773  0.476 -0.392
+burnedBurned  0.099 -0.222  0.055 -0.142
 
 Standardized residuals:
-        Min          Q1         Med          Q3         Max
--2.80409379 -0.51392687 -0.07496747  0.59671660  3.16830646
+         Min           Q1          Med           Q3          Max
+-4.927125060 -0.481410573 -0.008945425  0.462214083  6.273327118
 
-Residual standard error: 1.320137
+Residual standard error: 0.7695267
 Degrees of freedom: 465 total; 460 residual
-Descriptive R2: 0.0467812372110132
+Descriptive R2: 0.0357948548785385
 
-direction_corrected_lag_rate_per_century:Holocene
+direction_effect_on_lag_per_century:Holocene
 Primary covariance: MA1
 # A tibble: 3 × 18
   model_type      n row_signature  method converged   AIC n_covariance_paramet…¹
   <chr>       <int> <chr>          <chr>  <lgl>     <dbl>                  <int>
-1 Independent   210 4310286619c7e… REML   TRUE      -195.                      0
-2 MA1           210 4310286619c7e… REML   TRUE      -195.                      1
-3 CAR1          210 4310286619c7e… REML   TRUE      -196.                      1
+1 Independent   210 513f484ff7158… REML   TRUE       144.                      0
+2 MA1           210 513f484ff7158… REML   TRUE       123.                      1
+3 CAR1          210 513f484ff7158… REML   TRUE       146.                      1
 # ℹ abbreviated name: ¹​n_covariance_parameters
 # ℹ 11 more variables: n_parameters <int>, correlation_parameter <dbl>,
 #   boundary <lgl>, covariance_status <chr>, warnings <chr>, fit_error <chr>,
@@ -300,48 +300,48 @@ Primary covariance: MA1
 Generalized least squares fit by REML
   Model: estimate ~ site + climate_rate + fire_activity
   Data: d
-        AIC     BIC   logLik
-  -194.5151 -171.22 104.2576
+       AIC      BIC    logLik
+  122.5281 145.8233 -54.26406
 
 Correlation Structure: ARMA(0,1)
  Formula: ~time_index | series
  Parameter estimate(s):
     Theta1
-0.07049674
+-0.3599239
 Variance function:
  Structure: Different standard deviations per stratum
  Formula: ~1 | site
  Parameter estimates:
     MORA     NOCA
-1.000000 1.200416
+1.000000 1.098532
 
 Coefficients:
-                     Value  Std.Error    t-value p-value
-(Intercept)   -0.000165908 0.02283481 -0.0072656  0.9942
-siteNOCA       0.021443827 0.02369178  0.9051167  0.3665
-climate_rate   0.003738811 0.07606744  0.0491513  0.9608
-fire_activity  0.024067330 0.02283561  1.0539385  0.2931
+                    Value  Std.Error    t-value p-value
+(Intercept)   -0.03410916 0.03641626 -0.9366464  0.3500
+siteNOCA      -0.03280170 0.03569088 -0.9190500  0.3591
+climate_rate   0.04782494 0.13012559  0.3675291  0.7136
+fire_activity  0.02219285 0.04873678  0.4553614  0.6493
 
  Correlation:
               (Intr) stNOCA clmt_r
-siteNOCA      -0.157
-climate_rate  -0.793 -0.140
-fire_activity -0.178 -0.450  0.034
+siteNOCA       0.003
+climate_rate  -0.839 -0.160
+fire_activity -0.218 -0.636  0.018
 
 Standardized residuals:
-       Min         Q1        Med         Q3        Max
--3.5359769 -0.5210212 -0.1035881  0.4473104  3.5734625
+        Min          Q1         Med          Q3         Max
+-4.44002927 -0.34611481  0.06159524  0.40837046  3.79290460
 
-Residual standard error: 0.1289146
+Residual standard error: 0.3063075
 Degrees of freedom: 210 total; 206 residual
-Descriptive R2: 0.0180455564320058
+Descriptive R2: 0.00389934430050598
 
-direction_corrected_lag_rate_per_century:Anthropocene_basic
+direction_effect_on_lag_per_century:Anthropocene_basic
 Primary covariance: Independent
 # A tibble: 1 × 18
   model_type      n row_signature  method converged   AIC n_covariance_paramet…¹
   <chr>       <int> <chr>          <chr>  <lgl>     <dbl>                  <int>
-1 Independent   607 aa2b2679c3c2d… REML   TRUE      1866.                      0
+1 Independent   607 d609ca22c6e44… REML   TRUE      2274.                      0
 # ℹ abbreviated name: ¹​n_covariance_parameters
 # ℹ 11 more variables: n_parameters <int>, correlation_parameter <dbl>,
 #   boundary <lgl>, covariance_status <chr>, warnings <chr>, fit_error <chr>,
@@ -350,41 +350,41 @@ Primary covariance: Independent
 Generalized least squares fit by REML
   Model: estimate ~ site + burned
   Data: d
-       AIC      BIC    logLik
-  1865.625 1887.643 -927.8126
+      AIC      BIC   logLik
+  2274.02 2296.037 -1132.01
 
 Variance function:
  Structure: Different standard deviations per stratum
  Formula: ~1 | site
  Parameter estimates:
     MORA     NOCA
-1.000000 2.144237
+1.000000 2.193825
 
 Coefficients:
-                  Value  Std.Error   t-value p-value
-(Intercept)   0.3018917 0.04323654  6.982327  0.0000
-siteNOCA     -0.0023327 0.11260187 -0.020717  0.9835
-burnedBurned -0.3993392 0.30191743 -1.322677  0.1864
+                  Value Std.Error   t-value p-value
+(Intercept)   0.2717802 0.0600015  4.529559  0.0000
+siteNOCA     -0.5971531 0.1592947 -3.748731  0.0002
+burnedBurned -0.5222837 0.4257420 -1.226761  0.2204
 
  Correlation:
              (Intr) stNOCA
-siteNOCA     -0.374
-burnedBurned -0.042 -0.216
+siteNOCA     -0.367
+burnedBurned -0.043 -0.215
 
 Standardized residuals:
         Min          Q1         Med          Q3         Max
--4.13818271 -0.49687495 -0.09971172  0.48553908  5.83071768
+-5.29221401 -0.25435926  0.08562282  0.47715033  3.79680173
 
-Residual standard error: 0.784727
+Residual standard error: 1.088973
 Degrees of freedom: 607 total; 604 residual
-Descriptive R2: 0.00156239671852942
+Descriptive R2: 0.0358670048921097
 
-direction_corrected_lag_rate_per_century:Anthropocene_extended
+direction_effect_on_lag_per_century:Anthropocene_extended
 Primary covariance: Independent
 # A tibble: 1 × 18
   model_type      n row_signature  method converged   AIC n_covariance_paramet…¹
   <chr>       <int> <chr>          <chr>  <lgl>     <dbl>                  <int>
-1 Independent   607 aa2b2679c3c2d… REML   TRUE      1889.                      0
+1 Independent   607 d609ca22c6e44… REML   TRUE      2297.                      0
 # ℹ abbreviated name: ¹​n_covariance_parameters
 # ℹ 11 more variables: n_parameters <int>, correlation_parameter <dbl>,
 #   boundary <lgl>, covariance_status <chr>, warnings <chr>, fit_error <chr>,
@@ -394,34 +394,34 @@ Generalized least squares fit by REML
   Model: estimate ~ site + elevation + climate_rate + burned
   Data: d
        AIC      BIC    logLik
-  1889.107 1919.908 -937.5533
+  2296.846 2327.648 -1141.423
 
 Variance function:
  Structure: Different standard deviations per stratum
  Formula: ~1 | site
  Parameter estimates:
     MORA     NOCA
-1.000000 2.131985
+1.000000 2.198681
 
 Coefficients:
-                  Value  Std.Error    t-value p-value
-(Intercept)   0.5331275 0.23252654  2.2927599  0.0222
-siteNOCA     -0.0709862 0.13590460 -0.5223235  0.6016
-elevation    -0.0000244 0.00013336 -0.1827762  0.8550
-climate_rate -0.0388250 0.04587578 -0.8463069  0.3977
-burnedBurned -0.3445891 0.30832268 -1.1176247  0.2642
+                  Value Std.Error    t-value p-value
+(Intercept)   0.1165416 0.3253758  0.3581755  0.7203
+siteNOCA     -0.5352875 0.1919783 -2.7882712  0.0055
+elevation    -0.0000358 0.0001861 -0.1923505  0.8475
+climate_rate  0.0372092 0.0641386  0.5801378  0.5620
+burnedBurned -0.5719336 0.4353612 -1.3136991  0.1894
 
  Correlation:
              (Intr) stNOCA elevtn clmt_r
-siteNOCA     -0.529
-elevation    -0.238 -0.167
-climate_rate -0.784  0.559 -0.392
-burnedBurned  0.152 -0.290  0.083 -0.206
+siteNOCA     -0.523
+elevation    -0.239 -0.164
+climate_rate -0.785  0.553 -0.390
+burnedBurned  0.147 -0.286  0.081 -0.200
 
 Standardized residuals:
-       Min         Q1        Med         Q3        Max
--4.0808119 -0.4893917 -0.1148775  0.4802933  5.7599857
+        Min          Q1         Med          Q3         Max
+-5.26553722 -0.27154355  0.08464635  0.46906043  3.77940712
 
-Residual standard error: 0.787419
+Residual standard error: 1.089377
 Degrees of freedom: 607 total; 602 residual
-Descriptive R2: 0.00655679264481757
+Descriptive R2: 0.0343277331499788

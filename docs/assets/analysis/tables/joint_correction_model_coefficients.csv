@@ -1,0 +1,9 @@
+metric,era,model_type,draw,term,estimate,std_error,df,p_value,conf_low,conf_high,specification
+joint_correction_effect_rate,Combined,Paired_MA1,NA,(Intercept),-0.005080471035081191,0.011942713636059876,1292,0.670613470228854,-0.028509708141194717,0.018348766071032335,era_site_correction
+joint_correction_effect_rate,Combined,Paired_MA1,NA,eraAnthropocene,0.03858147775362028,0.04958372241683971,1292,0.4366479719806574,-0.058691958126160515,0.13585491363340108,era_site_correction
+joint_correction_effect_rate,Combined,Paired_MA1,NA,siteNOCA,-0.0010102240724353877,0.01778288432420096,1292,0.9547062988611454,-0.03589671854587659,0.03387627040100581,era_site_correction
+joint_correction_effect_rate,Combined,Paired_MA1,NA,correctionDirection,-0.021147611235990276,0.025768469333667554,1292,0.41198119735416694,-0.07170024075372324,0.02940501828174268,era_site_correction
+joint_correction_effect_rate,Combined,Paired_MA1,NA,eraAnthropocene:siteNOCA,-0.2944622630425889,0.15879264754084868,1292,0.06391222802975256,-0.6059819647884883,0.017057438703310557,era_site_correction
+joint_correction_effect_rate,Combined,Paired_MA1,NA,eraAnthropocene:correctionDirection,0.33663443582357444,0.096559037376755,1292,5.061570161823822e-4,0.14720474250770527,0.5260641291394437,era_site_correction
+joint_correction_effect_rate,Combined,Paired_MA1,NA,siteNOCA:correctionDirection,-0.012095322546151673,0.03315173893912819,1292,0.7152851030113199,-0.0771324636645303,0.05294181857222696,era_site_correction
+joint_correction_effect_rate,Combined,Paired_MA1,NA,eraAnthropocene:siteNOCA:correctionDirection,-0.5279749411138606,0.1833973501512105,1292,0.004056922508221645,-0.8877641927251259,-0.16818568950259521,era_site_correction

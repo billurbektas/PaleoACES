@@ -1,0 +1,2 @@
+model_type,n,n_paired_units,row_signature,method,converged,AIC,n_covariance_parameters,n_parameters,correlation_parameter,boundary,covariance_status,warnings,fit_error,selected,selection_policy,metric,era,specification
+Paired_MA1,1300,650,917234c27451a55268ce9ee9ceae4e04,REML,TRUE,3220.3366272229914,5,21,-0.23755649547378524,FALSE,positive_definite,,NA,TRUE,Paired corrections with primary MA(1) temporal covariance,joint_correction_effect_rate,Combined,era_site_correction

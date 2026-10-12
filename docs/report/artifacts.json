@@ -81,7 +81,7 @@
       ],
       "producer": "R/diagnostics/plot_sample_selection.R",
       "purpose": "From starting plots and core samples to the CCA.",
-      "interpretation": "Each count shows plots or samples remaining. Reasons beside the arrows explain losses; repeated visits and sample depths combined at the same modeled age are distinguished from exclusions. The middle panels show legacy adult-tree areas among retained plots and the confirmed 500 m\u00b2 resurvey area at both sites.",
+      "interpretation": "Each count shows plots or samples remaining. Reasons beside the arrows explain losses; repeated visits and sample depths combined at the same modeled age are distinguished from exclusions. The middle panels show legacy adult-tree areas among retained plots and the confirmed 500 m² resurvey area at both sites.",
       "status": "current"
     },
     {
@@ -104,8 +104,8 @@
         1
       ],
       "producer": "R/stages/000_PALEO_a_agedepth.R",
-      "purpose": "Compare published activity errors with assumed \u00b110-year age uncertainty.",
-      "interpretation": "The sensitivity concerns the upper 35\u201340 cm of Panther Potholes; uncertainty in published fire chronologies is not equivalent across sites.",
+      "purpose": "Compare published activity errors with assumed ±10-year age uncertainty.",
+      "interpretation": "The sensitivity concerns the upper 35–40 cm of Panther Potholes; uncertainty in published fire chronologies is not equivalent across sites.",
       "status": "chronology sensitivity"
     },
     {
@@ -116,7 +116,7 @@
         1
       ],
       "producer": "R/diagnostics/test_survey_year_anomaly.R",
-      "purpose": "Compare selected survey windows with the full 1979\u20132021 record.",
+      "purpose": "Compare selected survey windows with the full 1979–2021 record.",
       "interpretation": "Detrending does not resolve CHELSA product continuity. Apparent precipitation anomalies remain a scientific limitation.",
       "status": "current"
     },
@@ -141,7 +141,7 @@
       ],
       "producer": "R/diagnostics/test_cca_scaling_comparison.R",
       "purpose": "Compare scaling 1 and 2 of the same fitted CCA.",
-      "interpretation": "Site scaling (1), Hill off and CCA1\u2013CCA2 define the primary geometry. Unequal rescaling of axes changes distances and angles; display arrow multipliers are excluded from the calculations.",
+      "interpretation": "Site scaling (1), Hill off and CCA1–CCA2 define the primary geometry. Unequal rescaling of axes changes distances and angles; display arrow multipliers are excluded from the calculations.",
       "status": "current"
     },
     {
@@ -522,7 +522,7 @@
         4
       ],
       "producer": "R/stages/12_tracking_era_models.R",
-      "purpose": "Pace-corrected lag-change rate: group means for the primary reconstruction.",
+      "purpose": "Pace correction effect: group means for the primary reconstruction.",
       "interpretation": "One primary median-age reconstruction. MA(1) is primary for models containing Holocene observations; Independent and CAR1 are comparisons only. Confidence intervals are conditional on the reconstruction.",
       "status": "primary reconstruction; conditional inference"
     },
@@ -534,7 +534,7 @@
         4
       ],
       "producer": "R/stages/12_tracking_era_models.R",
-      "purpose": "Pace-corrected lag-change rate: coefficients for the primary reconstruction.",
+      "purpose": "Pace correction effect: coefficients for the primary reconstruction.",
       "interpretation": "One primary median-age reconstruction. MA(1) is primary for models containing Holocene observations; Independent and CAR1 are comparisons only. Confidence intervals are conditional on the reconstruction.",
       "status": "primary reconstruction; conditional inference"
     },
@@ -546,7 +546,7 @@
         4
       ],
       "producer": "R/stages/12_tracking_era_models.R",
-      "purpose": "Pace-corrected lag-change rate: contrasts for the primary reconstruction.",
+      "purpose": "Pace correction effect: contrasts for the primary reconstruction.",
       "interpretation": "One primary median-age reconstruction. MA(1) is primary for models containing Holocene observations; Independent and CAR1 are comparisons only. Confidence intervals are conditional on the reconstruction.",
       "status": "primary reconstruction; conditional inference"
     },
@@ -558,7 +558,7 @@
         4
       ],
       "producer": "R/stages/12_tracking_era_models.R",
-      "purpose": "Pace-corrected lag-change rate: residuals for the primary reconstruction.",
+      "purpose": "Pace correction effect: residuals for the primary reconstruction.",
       "interpretation": "One primary median-age reconstruction. MA(1) is primary for models containing Holocene observations; Independent and CAR1 are comparisons only. Confidence intervals are conditional on the reconstruction.",
       "status": "primary reconstruction; conditional inference"
     },
@@ -582,7 +582,7 @@
         4
       ],
       "producer": "R/stages/13_tracking_lake_sensitivity.R",
-      "purpose": "Pace-corrected lag-change rate: primary lake sensitivity coefficients.",
+      "purpose": "Pace correction effect: primary lake sensitivity coefficients.",
       "interpretation": "Primary individual-lake comparison with modern plots in its park; the primary MA(1) covariance is reestimated.",
       "status": "primary reconstruction; conditional inference"
     },
@@ -594,7 +594,7 @@
         4
       ],
       "producer": "R/stages/13_tracking_lake_sensitivity.R",
-      "purpose": "Pace-corrected lag-change rate: primary lake sensitivity contrasts.",
+      "purpose": "Pace correction effect: primary lake sensitivity contrasts.",
       "interpretation": "Primary individual-lake comparison with modern plots in its park; the primary MA(1) covariance is reestimated.",
       "status": "primary reconstruction; conditional inference"
     },
@@ -606,7 +606,7 @@
         5
       ],
       "producer": "R/stages/12_tracking_era_models.R",
-      "purpose": "Direction-corrected lag-change rate: group means for the primary reconstruction.",
+      "purpose": "Direction correction effect: group means for the primary reconstruction.",
       "interpretation": "One primary median-age reconstruction. MA(1) is primary for models containing Holocene observations; Independent and CAR1 are comparisons only. Confidence intervals are conditional on the reconstruction.",
       "status": "primary reconstruction; conditional inference"
     },
@@ -618,7 +618,7 @@
         5
       ],
       "producer": "R/stages/12_tracking_era_models.R",
-      "purpose": "Direction-corrected lag-change rate: coefficients for the primary reconstruction.",
+      "purpose": "Direction correction effect: coefficients for the primary reconstruction.",
       "interpretation": "One primary median-age reconstruction. MA(1) is primary for models containing Holocene observations; Independent and CAR1 are comparisons only. Confidence intervals are conditional on the reconstruction.",
       "status": "primary reconstruction; conditional inference"
     },
@@ -630,7 +630,7 @@
         5
       ],
       "producer": "R/stages/12_tracking_era_models.R",
-      "purpose": "Direction-corrected lag-change rate: contrasts for the primary reconstruction.",
+      "purpose": "Direction correction effect: contrasts for the primary reconstruction.",
       "interpretation": "One primary median-age reconstruction. MA(1) is primary for models containing Holocene observations; Independent and CAR1 are comparisons only. Confidence intervals are conditional on the reconstruction.",
       "status": "primary reconstruction; conditional inference"
     },
@@ -642,7 +642,7 @@
         5
       ],
       "producer": "R/stages/12_tracking_era_models.R",
-      "purpose": "Direction-corrected lag-change rate: residuals for the primary reconstruction.",
+      "purpose": "Direction correction effect: residuals for the primary reconstruction.",
       "interpretation": "One primary median-age reconstruction. MA(1) is primary for models containing Holocene observations; Independent and CAR1 are comparisons only. Confidence intervals are conditional on the reconstruction.",
       "status": "primary reconstruction; conditional inference"
     },
@@ -666,7 +666,7 @@
         5
       ],
       "producer": "R/stages/13_tracking_lake_sensitivity.R",
-      "purpose": "Direction-corrected lag-change rate: primary lake sensitivity coefficients.",
+      "purpose": "Direction correction effect: primary lake sensitivity coefficients.",
       "interpretation": "Primary individual-lake comparison with modern plots in its park; the primary MA(1) covariance is reestimated.",
       "status": "primary reconstruction; conditional inference"
     },
@@ -678,32 +678,32 @@
         5
       ],
       "producer": "R/stages/13_tracking_lake_sensitivity.R",
-      "purpose": "Direction-corrected lag-change rate: primary lake sensitivity contrasts.",
+      "purpose": "Direction correction effect: primary lake sensitivity contrasts.",
       "interpretation": "Primary individual-lake comparison with modern plots in its park; the primary MA(1) covariance is reestimated.",
       "status": "primary reconstruction; conditional inference"
     },
     {
       "id": "tracking_corrected_lag_contrasts",
       "section": "tracking_corrected_contrasts",
-      "pdf": "plot/test_figures/primary_models/fig_tracking_corrected_lag_contrasts.pdf",
+      "pdf": "plot/test_figures/primary_models/fig_tracking_correction_effect_contrasts.pdf",
       "pages": [
         1
       ],
       "producer": "R/stages/14_tracking_manuscript_figure.R",
-      "purpose": "Primary corrected lag-change contrasts",
-      "interpretation": "Selected primary GLS Anthropocene-minus-Holocene contrasts for pace- and direction-corrected lag-change rates, with conditional 95% Satterthwaite intervals in CCA distance per century. MORA/NOCA are blue/orange; correction labels retain their colors. Stars mark unadjusted p < 0.05; nonsignificant dots, bars and annotations are faint. Signed fitted-mean ratios are descriptive and can be unstable near zero. Bacon sensitivity is reported separately.",
+      "purpose": "Primary correction-effect era contrasts",
+      "interpretation": "Selected primary GLS Anthropocene-minus-Holocene contrasts for pace- and direction correction effects, with conditional 95% Satterthwaite intervals in CCA distance per century. MORA/NOCA are blue/orange; correction labels retain their colors. Stars mark unadjusted p < 0.05; nonsignificant dots, bars and annotations are faint. Signed fitted-mean ratios are descriptive and can be unstable near zero. Bacon model sensitivity is currently on hold.",
       "status": "primary reconstruction; conditional inference"
     },
     {
-      "id": "tracking_predictor_era_coefficients",
-      "section": "predictor_era",
-      "pdf": "plot/test_figures/primary_models/fig_tracking_predictor_era_coefficients.pdf",
+      "id": "tracking_predictor_extended_coefficients",
+      "section": "predictor_appendix",
+      "pdf": "plot/test_figures/primary_models/fig_tracking_predictor_extended_coefficients.pdf",
       "pages": [
         1
       ],
       "producer": "R/stages/15_tracking_predictor_models.R",
-      "purpose": "Holocene primary and Anthropocene predictor coefficients",
-      "interpretation": "Primary explanatory models with actual transition durations and matching climate/fire exposures. See separate whole-chronology sensitivity results.",
+      "purpose": "Appendix: extended Anthropocene predictor coefficients",
+      "interpretation": "Site + elevation + climate-change rate + burned, with independent residuals and park-specific residual variances. Intercepts are omitted. Elevation is displayed per 100 m; model fitting uses the original untransformed covariates. Conditional 95% intervals and descriptive R² are shown for observed lag change, pace correction effect and direction correction effect.",
       "status": "primary reconstruction; conditional inference"
     },
     {
@@ -715,7 +715,7 @@
       ],
       "producer": "R/stages/15_tracking_predictor_models.R",
       "purpose": "Holocene predicted lag-change trajectories",
-      "interpretation": "Primary explanatory models with actual transition durations and matching climate/fire exposures. See separate whole-chronology sensitivity results.",
+      "interpretation": "Primary explanatory models with actual transition durations and matching climate/fire exposures. Bacon model sensitivity is currently on hold.",
       "status": "primary reconstruction; conditional inference"
     },
     {
@@ -726,8 +726,8 @@
         1
       ],
       "producer": "R/stages/15_tracking_predictor_models.R",
-      "purpose": "Descriptive R\u00b2 for the predictor models",
-      "interpretation": "Primary explanatory models with actual transition durations and matching climate/fire exposures. See separate whole-chronology sensitivity results.",
+      "purpose": "Descriptive R² for the predictor models",
+      "interpretation": "Primary explanatory models with actual transition durations and matching climate/fire exposures. Bacon model sensitivity is currently on hold.",
       "status": "primary reconstruction; conditional inference"
     },
     {
@@ -739,20 +739,8 @@
       ],
       "producer": "R/stages/15_tracking_predictor_models.R",
       "purpose": "Predictor-model normalized residual diagnostics",
-      "interpretation": "Primary explanatory models with actual transition durations and matching climate/fire exposures. See separate whole-chronology sensitivity results.",
+      "interpretation": "Primary explanatory models with actual transition durations and matching climate/fire exposures. Bacon model sensitivity is currently on hold.",
       "status": "primary reconstruction; conditional inference"
-    },
-    {
-      "id": "tracking_predictor_chronology_sensitivity",
-      "section": "predictor_chronology",
-      "pdf": "plot/test_figures/sensitivity/bacon_chronologies/fig_tracking_predictor_chronology_sensitivity.pdf",
-      "producer": "R/stages/15_tracking_predictor_models.R",
-      "purpose": "Community coefficient sensitivity to 1,000 whole Bacon chronologies.",
-      "interpretation": "Primary and chronology sensitivity are reported separately. Reconstructions are sensitivity realizations, not independent observations.",
-      "status": "current",
-      "pages": [
-        1
-      ]
     },
     {
       "id": "species_contributions",
@@ -783,11 +771,12 @@
       "section": "species_models",
       "pdf": "plot/test_figures/primary_models/fig_species_contribution_model_coefficients.pdf",
       "producer": "R/stages/17_species_contribution_models.R",
-      "purpose": "Primary species-model coefficients.",
-      "interpretation": "Primary and chronology sensitivity are reported separately. Reconstructions are sensitivity realizations, not independent observations.",
+      "purpose": "Within-park species contribution means and GLS coefficients, including intercepts, by era.",
+      "interpretation": "Separate Holocene and Anthropocene pages retain all 14 species. Blue MORA and orange NOCA diamonds show arithmetic means of finite primary contributions from the boxplot data, each transition/plot weighted equally; these descriptive means have no model intervals. Circles and capped bars show within-park GLS coefficients and conditional 95% intervals; estimates with unadjusted p ≥ 0.05 are faded. NE denotes an unavailable model in that park, with explanations in captions. Holocene intercepts are predictions at zero climate/fire predictors. Anthropocene MORA is intercept-only (overall park mean); NOCA retains burned versus unburned, with unburned as its intercept. No MORA fire coefficient is fitted. Columns have separate x-axis scales.",
       "status": "current",
       "pages": [
-        1
+        1,
+        2
       ]
     },
     {
@@ -796,35 +785,26 @@
       "pdf": "plot/test_figures/primary_models/fig_species_contribution_model_residuals.pdf",
       "producer": "R/stages/17_species_contribution_models.R",
       "purpose": "Primary species-model normalized residual diagnostics.",
-      "interpretation": "Primary and chronology sensitivity are reported separately. Reconstructions are sensitivity realizations, not independent observations.",
+      "interpretation": "Four pages separate Holocene MORA, Holocene NOCA, Anthropocene MORA and Anthropocene NOCA. Residuals are from each species model within that park; Bacon model sensitivity is currently on hold.",
       "status": "current",
       "pages": [
-        1
+        1,
+        2,
+        3,
+        4
       ]
     },
     {
-      "id": "species_chronology_sensitivity",
-      "section": "species_chronology",
-      "pdf": "plot/test_figures/sensitivity/bacon_chronologies/fig_species_contribution_chronology_sensitivity.pdf",
-      "producer": "R/stages/17_species_contribution_models.R",
-      "purpose": "Species coefficient sensitivity to whole Bacon chronologies.",
-      "interpretation": "Primary and chronology sensitivity are reported separately. Reconstructions are sensitivity realizations, not independent observations.",
-      "status": "current",
+      "id": "joint_correction_residuals",
+      "section": "joint_correction",
+      "pdf": "plot/test_figures/primary_models/fig_tracking_joint_correction_residuals.pdf",
       "pages": [
         1
-      ]
-    },
-    {
-      "id": "tracking_bacon_ranges",
-      "section": "predictor_chronology",
-      "pdf": "plot/test_figures/sensitivity/bacon_chronologies/fig_tracking_bacon_chronology_ranges.pdf",
-      "producer": "R/stages/15_tracking_predictor_models.R",
-      "purpose": "Temporal ranges across 1,000 complete Bacon reconstructions.",
-      "interpretation": "Each chronology constructs its own transitions. Transition-average values are mapped over their actual spans. Bands show conditional finite-draw 50% and 95% ranges; solid spans retain the primary reconstruction. Availability counts are shown separately. These are sensitivity ranges, not model confidence intervals or interpolated vegetation.",
-      "status": "current",
-      "pages": [
-        1
-      ]
+      ],
+      "producer": "R/stages/12_tracking_era_models.R",
+      "purpose": "Paired pace/direction model normalized-residual diagnostics",
+      "interpretation": "Joint era × park × correction GLS on transitions with both corrections defined. Temporal MA(1) and paired correction correlation are modeled together; normalized residuals account for the full fitted covariance.",
+      "status": "primary reconstruction; conditional inference"
     }
   ],
   "main_figures": [
@@ -848,6 +828,12 @@
       "stem": "fig_tracking_era_distributions",
       "section": "tracking_manuscript",
       "producer": "R/stages/14_tracking_manuscript_figure.R"
+    },
+    {
+      "number": 5,
+      "stem": "fig_tracking_predictor_era_coefficients",
+      "section": "predictor_main",
+      "producer": "R/stages/15_tracking_predictor_models.R"
     }
   ],
   "tables": {
@@ -1088,51 +1074,51 @@
       "producer": "R/stages/12_tracking_era_models.R"
     },
     "pace_model_coefficients": {
-      "source": "output/tracking_analysis/primary/era_comparison/pace_corrected_lag_rate_per_century/model_coefficients.csv",
+      "source": "output/tracking_analysis/primary/era_comparison/pace_effect_on_lag_per_century/model_coefficients.csv",
       "producer": "R/stages/12_tracking_era_models.R"
     },
     "pace_model_contrasts": {
-      "source": "output/tracking_analysis/primary/era_comparison/pace_corrected_lag_rate_per_century/model_contrasts.csv",
+      "source": "output/tracking_analysis/primary/era_comparison/pace_effect_on_lag_per_century/model_contrasts.csv",
       "producer": "R/stages/12_tracking_era_models.R"
     },
     "pace_model_comparison": {
-      "source": "output/tracking_analysis/primary/era_comparison/pace_corrected_lag_rate_per_century/covariance_comparison.csv",
+      "source": "output/tracking_analysis/primary/era_comparison/pace_effect_on_lag_per_century/covariance_comparison.csv",
       "producer": "R/stages/12_tracking_era_models.R"
     },
     "pace_model_group_means": {
-      "source": "output/tracking_analysis/primary/era_comparison/pace_corrected_lag_rate_per_century/model_group_means.csv",
+      "source": "output/tracking_analysis/primary/era_comparison/pace_effect_on_lag_per_century/model_group_means.csv",
       "producer": "R/stages/12_tracking_era_models.R"
     },
     "pace_lake_coefficients": {
-      "source": "output/tracking_analysis/sensitivity/lake_checks/era_comparisons/pace_corrected_lag_rate_per_century/model_coefficients.csv",
+      "source": "output/tracking_analysis/sensitivity/lake_checks/era_comparisons/pace_effect_on_lag_per_century/model_coefficients.csv",
       "producer": "R/stages/13_tracking_lake_sensitivity.R"
     },
     "pace_lake_contrasts": {
-      "source": "output/tracking_analysis/sensitivity/lake_checks/era_comparisons/pace_corrected_lag_rate_per_century/model_contrasts.csv",
+      "source": "output/tracking_analysis/sensitivity/lake_checks/era_comparisons/pace_effect_on_lag_per_century/model_contrasts.csv",
       "producer": "R/stages/13_tracking_lake_sensitivity.R"
     },
     "direction_model_coefficients": {
-      "source": "output/tracking_analysis/primary/era_comparison/direction_corrected_lag_rate_per_century/model_coefficients.csv",
+      "source": "output/tracking_analysis/primary/era_comparison/direction_effect_on_lag_per_century/model_coefficients.csv",
       "producer": "R/stages/12_tracking_era_models.R"
     },
     "direction_model_contrasts": {
-      "source": "output/tracking_analysis/primary/era_comparison/direction_corrected_lag_rate_per_century/model_contrasts.csv",
+      "source": "output/tracking_analysis/primary/era_comparison/direction_effect_on_lag_per_century/model_contrasts.csv",
       "producer": "R/stages/12_tracking_era_models.R"
     },
     "direction_model_comparison": {
-      "source": "output/tracking_analysis/primary/era_comparison/direction_corrected_lag_rate_per_century/covariance_comparison.csv",
+      "source": "output/tracking_analysis/primary/era_comparison/direction_effect_on_lag_per_century/covariance_comparison.csv",
       "producer": "R/stages/12_tracking_era_models.R"
     },
     "direction_model_group_means": {
-      "source": "output/tracking_analysis/primary/era_comparison/direction_corrected_lag_rate_per_century/model_group_means.csv",
+      "source": "output/tracking_analysis/primary/era_comparison/direction_effect_on_lag_per_century/model_group_means.csv",
       "producer": "R/stages/12_tracking_era_models.R"
     },
     "direction_lake_coefficients": {
-      "source": "output/tracking_analysis/sensitivity/lake_checks/era_comparisons/direction_corrected_lag_rate_per_century/model_coefficients.csv",
+      "source": "output/tracking_analysis/sensitivity/lake_checks/era_comparisons/direction_effect_on_lag_per_century/model_coefficients.csv",
       "producer": "R/stages/13_tracking_lake_sensitivity.R"
     },
     "direction_lake_contrasts": {
-      "source": "output/tracking_analysis/sensitivity/lake_checks/era_comparisons/direction_corrected_lag_rate_per_century/model_contrasts.csv",
+      "source": "output/tracking_analysis/sensitivity/lake_checks/era_comparisons/direction_effect_on_lag_per_century/model_contrasts.csv",
       "producer": "R/stages/13_tracking_lake_sensitivity.R"
     },
     "predictor_model_coefficients": {
@@ -1175,20 +1161,12 @@
       "source": "output/tracking_analysis/primary/community_predictor_models/covariance_comparison.csv",
       "producer": "R/stages/15_tracking_predictor_models.R"
     },
-    "predictor_chronology_summary": {
-      "source": "output/tracking_analysis/sensitivity/bacon_chronologies/community/chronology_summary.csv",
-      "producer": "R/stages/15_tracking_predictor_models.R"
-    },
-    "predictor_chronology_status": {
-      "source": "output/tracking_analysis/sensitivity/bacon_chronologies/community/chronology_status.csv",
-      "producer": "R/stages/15_tracking_predictor_models.R"
-    },
-    "predictor_chronology_support": {
-      "source": "output/tracking_analysis/sensitivity/bacon_chronologies/community/chronology_support.csv",
-      "producer": "R/stages/15_tracking_predictor_models.R"
-    },
     "species_model_coefficients": {
       "source": "output/tracking_analysis/primary/species_contribution_models/model_coefficients.csv",
+      "producer": "R/stages/17_species_contribution_models.R"
+    },
+    "species_figure_coefficient_availability": {
+      "source": "output/tracking_analysis/primary/species_contribution_models/figure_coefficient_availability.csv",
       "producer": "R/stages/17_species_contribution_models.R"
     },
     "species_model_selection": {
@@ -1199,18 +1177,69 @@
       "source": "output/tracking_analysis/primary/species_contribution_models/model_performance.csv",
       "producer": "R/stages/17_species_contribution_models.R"
     },
-    "species_chronology_summary": {
-      "source": "output/tracking_analysis/sensitivity/bacon_chronologies/species/chronology_summary.csv",
-      "producer": "R/stages/17_species_contribution_models.R"
+    "joint_correction_model_coefficients": {
+      "source": "output/tracking_analysis/primary/era_comparison/joint_correction_effects/model_coefficients.csv",
+      "producer": "R/stages/12_tracking_era_models.R"
     },
-    "species_chronology_status": {
-      "source": "output/tracking_analysis/sensitivity/bacon_chronologies/species/chronology_status.csv",
-      "producer": "R/stages/17_species_contribution_models.R"
+    "joint_correction_model_group_means": {
+      "source": "output/tracking_analysis/primary/era_comparison/joint_correction_effects/model_group_means.csv",
+      "producer": "R/stages/12_tracking_era_models.R"
     },
-    "chronology_temporal_ranges": {
-      "source": "output/tracking_analysis/sensitivity/bacon_chronologies/community/chronology_temporal_ranges.csv",
-      "producer": "R/stages/15_tracking_predictor_models.R",
-      "section": "predictor_chronology"
+    "joint_correction_correction_contrasts": {
+      "source": "output/tracking_analysis/primary/era_comparison/joint_correction_effects/correction_contrasts.csv",
+      "producer": "R/stages/12_tracking_era_models.R"
+    },
+    "joint_correction_era_contrasts": {
+      "source": "output/tracking_analysis/primary/era_comparison/joint_correction_effects/era_contrasts.csv",
+      "producer": "R/stages/12_tracking_era_models.R"
+    },
+    "joint_correction_correction_by_era_contrasts": {
+      "source": "output/tracking_analysis/primary/era_comparison/joint_correction_effects/correction_by_era_contrasts.csv",
+      "producer": "R/stages/12_tracking_era_models.R"
+    },
+    "joint_correction_covariance_comparison": {
+      "source": "output/tracking_analysis/primary/era_comparison/joint_correction_effects/covariance_comparison.csv",
+      "producer": "R/stages/12_tracking_era_models.R"
+    },
+    "joint_correction_correlation_parameters": {
+      "source": "output/tracking_analysis/primary/era_comparison/joint_correction_effects/correlation_parameters.csv",
+      "producer": "R/stages/12_tracking_era_models.R"
+    },
+    "joint_correction_displayed_mean_zero_tests": {
+      "source": "output/tracking_analysis/primary/era_comparison/joint_correction_effects/displayed_mean_zero_tests.csv",
+      "producer": "R/stages/12_tracking_era_models.R"
+    },
+    "joint_correction_model_exclusions": {
+      "source": "output/tracking_analysis/primary/era_comparison/joint_correction_effects/model_exclusions.csv",
+      "producer": "R/stages/12_tracking_era_models.R"
+    },
+    "joint_correction_model_input": {
+      "source": "output/tracking_analysis/primary/era_comparison/joint_correction_effects/model_input.csv",
+      "producer": "R/stages/12_tracking_era_models.R"
+    },
+    "joint_correction_model_performance": {
+      "source": "output/tracking_analysis/primary/era_comparison/joint_correction_effects/model_performance.csv",
+      "producer": "R/stages/12_tracking_era_models.R"
+    },
+    "cca_figure_biplot_annotations": {
+      "source": "output/cca_figure_biplot_annotations.csv",
+      "producer": "R/stages/08_cca_figure.R"
+    },
+    "cca_figure_trajectory_display": {
+      "source": "output/cca_figure_trajectory_display.csv",
+      "producer": "R/stages/08_cca_figure.R"
+    },
+    "predictor_figure_main_coefficients": {
+      "source": "output/tracking_analysis/primary/community_predictor_models/figure_main_coefficients.csv",
+      "producer": "R/stages/15_tracking_predictor_models.R"
+    },
+    "predictor_figure_appendix_coefficients": {
+      "source": "output/tracking_analysis/primary/community_predictor_models/figure_appendix_coefficients.csv",
+      "producer": "R/stages/15_tracking_predictor_models.R"
+    },
+    "species_figure_mean_contributions": {
+      "source": "output/tracking_analysis/primary/species_contribution_models/figure_mean_contributions.csv",
+      "producer": "R/stages/17_species_contribution_models.R"
     }
   },
   "text_outputs": {
@@ -1266,32 +1295,32 @@
       "status": "exploratory raw climate-rate lake sensitivity"
     },
     "pace_model_results": {
-      "source": "output/tracking_analysis/primary/era_comparison/pace_corrected_lag_rate_per_century/model_results.txt",
+      "source": "output/tracking_analysis/primary/era_comparison/pace_effect_on_lag_per_century/model_results.txt",
       "producer": "R/stages/12_tracking_era_models.R",
       "asset_name": "pace_model_results.txt",
-      "link_label": "Complete pace-corrected lag-change rate model results",
-      "status": "exploratory corrected lag GLS results"
+      "link_label": "Complete pace correction effect model results",
+      "status": "primary correction-effect GLS results"
     },
     "pace_lake_results": {
-      "source": "output/tracking_analysis/sensitivity/lake_checks/era_comparisons/pace_corrected_lag_rate_per_century/model_results.txt",
+      "source": "output/tracking_analysis/sensitivity/lake_checks/era_comparisons/pace_effect_on_lag_per_century/model_results.txt",
       "producer": "R/stages/13_tracking_lake_sensitivity.R",
       "asset_name": "pace_lake_results.txt",
-      "link_label": "Complete pace-corrected lag-change rate lake results",
-      "status": "exploratory corrected lag GLS results"
+      "link_label": "Complete pace correction effect lake results",
+      "status": "primary correction-effect GLS results"
     },
     "direction_model_results": {
-      "source": "output/tracking_analysis/primary/era_comparison/direction_corrected_lag_rate_per_century/model_results.txt",
+      "source": "output/tracking_analysis/primary/era_comparison/direction_effect_on_lag_per_century/model_results.txt",
       "producer": "R/stages/12_tracking_era_models.R",
       "asset_name": "direction_model_results.txt",
-      "link_label": "Complete direction-corrected lag-change rate model results",
-      "status": "exploratory corrected lag GLS results"
+      "link_label": "Complete direction correction effect model results",
+      "status": "primary correction-effect GLS results"
     },
     "direction_lake_results": {
-      "source": "output/tracking_analysis/sensitivity/lake_checks/era_comparisons/direction_corrected_lag_rate_per_century/model_results.txt",
+      "source": "output/tracking_analysis/sensitivity/lake_checks/era_comparisons/direction_effect_on_lag_per_century/model_results.txt",
       "producer": "R/stages/13_tracking_lake_sensitivity.R",
       "asset_name": "direction_lake_results.txt",
-      "link_label": "Complete direction-corrected lag-change rate lake results",
-      "status": "exploratory corrected lag GLS results"
+      "link_label": "Complete direction correction effect lake results",
+      "status": "primary correction-effect GLS results"
     },
     "predictor_model_results": {
       "source": "output/tracking_analysis/primary/community_predictor_models/model_results.txt",
@@ -1306,6 +1335,13 @@
       "asset_name": "tracking_result_guide.txt",
       "status": "primary/sensitivity result guide",
       "link_label": "Primary, Bacon sensitivity and lake-check folder guide"
+    },
+    "joint_correction_results": {
+      "source": "output/tracking_analysis/primary/era_comparison/joint_correction_effects/model_results.txt",
+      "producer": "R/stages/12_tracking_era_models.R",
+      "asset_name": "joint_correction_model_results.txt",
+      "link_label": "Complete paired correction GLS results, means and contrast tests",
+      "status": "primary paired correction GLS; conditional inference"
     }
   },
   "reference_bundles": {

@@ -21,6 +21,7 @@ Active data and cache locations are preserved. See [repository inventory](REPOSI
 | `report/sample_selection_counts.csv`, `report/sample_selection_choices.csv` | Counts from the starting survey lists and core depths through matching, cleaning and CCA selection; choices that change records without removing plots are listed separately |
 | `report/sample_selection_plot_sizes.csv` | Legacy adult-tree areas among the plots retained for CCA, with counts and the confirmed 500 m² resurvey area at both sites |
 | `report/cca_anova.csv`, `report/cca_anova_full.csv` | Overall, sequential-axis and marginal climate-variable permutation tests of the fitted CCA; 9,999 permutations both unrestricted and within parks |
+| `cca_figure_biplot_annotations.csv`, `cca_figure_trajectory_display.csv` | Auditable Figure 3 annotation percentages, coordinates, path colors and opacity |
 | `report/cca_species_contributions.csv`, `report/cca_climate_contributions.csv` | Species shares and unique climate effects on constrained inertia, calibration prevalence, CCA1–CCA2 scores and climate collinearity |
 | `report/cca_model_code.R`, `report/cca_model_output.txt`, `report/cca_anova_output.txt` | Current fitting/projection code excerpt and readable model/permutation-test outputs displayed or linked immediately before Figure 3 |
 | `plot/test_figures/plots_to_cca.pdf` | Single-page diagram showing starting counts, exclusion reasons, combined sample depths, legacy calibration counts and final paired/projection counts |
@@ -46,9 +47,11 @@ Active data and cache locations are preserved. See [repository inventory](REPOSI
 | `plot/test_figures/worked_examples/fig_holocene_fire_method_worked_example.pdf` | PDF-only six-step worked example of accepted-event counting, core normalization, site aggregation, robust thresholding, and high-fire classification |
 | `plot/test_figures/fig_walsh_charanalysis_reproduction.pdf` | PDF-only three-page official Walsh reconstruction and publication discrepancy audit |
 | `plot/test_figures/worked_examples/fig_fire_event_detection_workflow.pdf` | PDF-only three-page explanation: detection settings, all four lake residual/threshold plots in a 2 × 2 grid, and the separate MORA software/publication comparison |
-| `plot/fig_cca_trajectories.*` | Main-paper PDF/PNG with A. pooled trajectories, B. biplot inset, C. climate contributions, D. species contributions, eight independently positioned two-line path names, transparent predicted paths/annotations, and an arrow-only observed/predicted legend |
-| `plot/fig_tracking_era_distributions.*` | Manuscript Figure 4: primary selected-model contrasts for climate, turnover and observed lag change above separate-era corrected-lag scatter panels; observed-rate top densities with GLS means/95% intervals |
-| `plot/test_figures/primary_models/fig_tracking_corrected_lag_contrasts.pdf` | Separate primary selected-model pace- and direction-corrected lag-change contrasts; embedded in the Analysis Review |
+| `plot/fig_cca_trajectories.*` | Wider main-paper PDF/PNG with A. full species/climate biplot colored by constrained inertia and species occurrence percentages, beside B. zoomed pooled trajectories with opaque lighter predicted paths, joint annotation placement and a grey observed/predicted arrow legend |
+| `plot/fig_tracking_era_distributions.*` | Manuscript Figure 4, panels A–D: climate and community/observed-lag era contrasts above Holocene/Anthropocene violin panels grouped by MORA/NOCA; observed green, pace pink, direction purple; GLS fitted means, conditional 95% intervals, zero-test stars, and significant paired correction contrasts |
+| `plot/fig_tracking_predictor_era_coefficients.*` | Manuscript Figure 5: observed lag change and pace/direction correction-effect responses, Holocene and basic Anthropocene predictor effects, no intercepts; shared fire/climate slopes and NOCA − MORA site contrast, with R² in captions |
+| `plot/test_figures/primary_models/fig_tracking_predictor_extended_coefficients.pdf` | Appendix extended Anthropocene coefficients; no intercepts, elevation per 100 m, R² in caption |
+| `plot/test_figures/primary_models/fig_tracking_correction_effect_contrasts.pdf` | Separate primary pace- and direction-correction-effect contrasts; embedded in the Analysis Review |
 | `cca_trajectory_era_centroids.csv` | Site × CC1–S4 observed WA and predicted LC centroids used by the selected trajectories |
 | `cca_trajectory_anthropocene_centroids.csv` | Exact legacy/resurvey WA and LC site means from identical valid paired plots at both dates, plus pair counts |
 | `bacon_run_manifest.csv` | Seed, versions, settings/control/output hashes, the historical whole-script hash used for five chronology runs, and a separately checked chronology-code fingerprint; the recorded post-run revision is limited to PDF location and PNG persistence |
@@ -101,7 +104,8 @@ There is no vegetation interpolation or ecological bin-offset field.
 The seven common responses remain `lag_rate_per_century`, `observed_turnover_rate`,
 `magnitude_tracking_ratio`, `rate_tracking_ratio`, `angle_degrees`,
 `pace_effect_on_lag_per_century` and `direction_effect_on_lag_per_century`.
-Two additional model responses are pace- and direction-corrected lag-change rates.
+Auxiliary pace- and direction-corrected lag-change rates remain available for geometric auditing;
+the modeled responses are observed lag change, turnover, standardized climate change and the two correction effects.
 Individual undefined responses remain NA without removing the transition's other responses.
 
 Fire activity is events per century per eligible core. Covered zero-event intervals
@@ -110,14 +114,20 @@ The descriptive 1,000-year normalized fire measure and CC/S classification outpu
 
 ## Model records and chronology sensitivity
 
-Primary combined-era results are under `output/tracking_analysis/primary/era_comparison/`, lake comparisons
+Primary combined-era results are under `output/tracking_analysis/primary/era_comparison/`.
+Its `joint_correction_effects/` subfolder contains the additional paired pace/direction correction-effect model,
+fitted means, zero tests, correction/era contrasts, exclusions, covariance audit and saved fit.
+Joint residual diagnostics are in `plot/test_figures/primary_models/fig_tracking_joint_correction_residuals.pdf`. Lake comparisons
 under `output/tracking_analysis/sensitivity/lake_checks/era_comparisons/`, community explanatory models under
 `output/tracking_analysis/primary/community_predictor_models/`, and stage-17 models under `output/tracking_analysis/primary/species_contribution_models/`.
 Each family exports coefficients, model/covariance selection, exclusions, saved fits,
 performance, predictions and readable text. Combined models additionally export fitted
 means and Anthropocene-minus-Holocene contrasts.
 
-Bacon results are separate under `output/tracking_analysis/sensitivity/bacon_chronologies/community/`
+Bacon model sensitivity is **on hold for both community and species models**. Default runs
+skip it; a future explicit `--bacon-sensitivity` run can resume fingerprinted batches.
+Saved results are historical or incomplete (the community run was interrupted), and are
+excluded from the current review. Preserved Bacon records are separate under `output/tracking_analysis/sensitivity/bacon_chronologies/community/`
 and `output/tracking_analysis/sensitivity/bacon_chronologies/species/`:
 
 - `chronology_coefficients.csv`: draw × response/species × coefficient, SE and conditional CI.
@@ -148,20 +158,23 @@ phase trajectories, and primary covariance comparisons replace phase AIC boxplot
 The [figure migration manifest](review/TRACKING_FIGURE_MIGRATION.csv) records adaptations,
 renames, additions and retirements. The descriptive climate/fire Figure 2 is unchanged.
 
-Detailed draw calculations are streamed into the Bacon sensitivity directories as
+When sensitivity is enabled, detailed draw calculations are streamed into the Bacon sensitivity directories as
 `community/transition_calculations.csv.gz` and `species/species_contributions.csv.gz`.
 Compression does not change the long-format observational unit.
 
-`plot/test_figures/sensitivity/bacon_chronologies/fig_tracking_bacon_chronology_ranges.pdf` shows temporal ranges across
+The retained historical `plot/test_figures/sensitivity/bacon_chronologies/fig_tracking_bacon_chronology_ranges.pdf` shows temporal ranges across
 the 1,000 complete reconstructions, primary transition spans and draw availability. These
 are chronology sensitivity ranges, separate from conditional model confidence intervals.
 Contribution boxplots show primary transition/plot distributions, not Bacon draws or offsets.
 
 Each combined-era model PDF contains the same five response pages: observed lag change,
-community turnover, standardized climate change, pace-corrected lag change, direction-corrected
-lag change. Group means, coefficients, contrasts, residuals and AIC comparisons each have one
+community turnover, standardized climate change, pace correction effect, direction correction
+effect. Group means, coefficients, contrasts, residuals and AIC comparisons each have one
 PDF, rather than five separate metric files. Lake coefficients and contrasts use the same
 page order in their two consolidated PDFs. Primary results stay separate from sensitivity
 results; `covariance_comparison.csv` contains diagnostic candidates and the declared primary
 MA(1) indicator. Lake random-intercept results are under
 `output/tracking_analysis/sensitivity/lake_checks/random_intercepts/`.
+
+The main predictor coefficient figure shows observed lag-change rate and pace/direction
+correction effects, with Holocene and Anthropocene panels and response-specific descriptive R².
