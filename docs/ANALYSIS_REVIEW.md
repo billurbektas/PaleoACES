@@ -2,7 +2,7 @@
 title: "PaleoACES analysis review"
 ---
 
-**Snapshot of existing outputs · 2026-10-11.** Figures and CCA summaries use verified existing analysis outputs.
+**Rebuilt analysis · 2026-10-12.** Current results and diagnostics were refreshed; chronology figures use the existing stored models.
 
 PaleoACES asks how observed forest composition moves relative to the composition
 predicted by climate, comparing modern forest resurveys with four Holocene
@@ -30,32 +30,43 @@ including figure production; figure numbers retain their manuscript meaning.
 The [combined script](review/00_main_analysis_review.R) contains these stages
 verbatim for reading. Run the workflow for an analysis rebuild.
 
-| Order | Analysis step | Scripts |
+| Execution order | Role | Script |
 | --- | --- | --- |
-| 1–3 | Modern vegetation and fire | [000_MORA_cleaning.R](../R/stages/000_MORA_cleaning.R); [000_NOCA_cleaning.R](../R/stages/000_NOCA_cleaning.R); [01_get_fire_info.R](../R/stages/01_get_fire_info.R) |
-| 4–5 | Modern climate | [000_MORA_climate.R](../R/stages/000_MORA_climate.R); [000_NOCA_climate.R](../R/stages/000_NOCA_climate.R) |
-| 6 | Chronology (optional refit) | [000_PALEO_a_agedepth.R](../R/stages/000_PALEO_a_agedepth.R) |
-| 7–9 | Paleo vegetation and fire | [000_PALEO_b_vegetation.R](../R/stages/000_PALEO_b_vegetation.R); [000_FIRE_cleaning.R](../R/stages/000_FIRE_cleaning.R); [000_PALEO_c_fire.R](../R/stages/000_PALEO_c_fire.R) |
-| 10–11 | Paleo climate | [000_PALEO_d_climate_download.R](../R/stages/000_PALEO_d_climate_download.R); [000_PALEO_e_climate.R](../R/stages/000_PALEO_e_climate.R) |
-| 12 | Taxonomy consolidation | [02_walsh_fire_reproduction.R](../R/stages/02_walsh_fire_reproduction.R) |
-| 13 | CCA eligibility, calibration and reference | [03_fire_event_detection_worked_example.R](../R/stages/03_fire_event_detection_worked_example.R) |
-| 14–15 | Fire catalog and climate eras | [000_occurrence_data_consolidate.R](../R/stages/000_occurrence_data_consolidate.R); [04_cca_model.R](../R/stages/04_cca_model.R) |
-| 16 | Canonical lake/plot tracking | [05_holocene_climate_fire_eras.R](../R/stages/05_holocene_climate_fire_eras.R) |
-| 17 | Combined transition input | [06_fire_method_worked_example.R](../R/stages/06_fire_method_worked_example.R) |
-| 18 | Covariance comparison and selected MA1 | [07_cca_figure.R](../R/stages/07_cca_figure.R) |
-| 19 | Offset-0 lake sensitivity | [08_tracking_metrics.R](../R/stages/08_tracking_metrics.R) |
-| 20 | Offset-0 manuscript comparison: Figure 4 | [09_tracking_example_and_visualizations.R](../R/stages/09_tracking_example_and_visualizations.R) |
-| 21 | Era-specific predictor models and lake-intercept sensitivity | [10_climate_change_figure.R](../R/stages/10_climate_change_figure.R) |
-| 22 | Community trajectories: Figure 3 | [11_tracking_model_data.R](../R/stages/11_tracking_model_data.R) |
-| 23–24 | Tracking and fire-detection examples | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R); [13_tracking_lake_sensitivity.R](../R/stages/13_tracking_lake_sensitivity.R) |
-| 25–26 | Climate/fire display: Figure 2 and example | [14_tracking_manuscript_figure.R](../R/stages/14_tracking_manuscript_figure.R); [15_tracking_predictor_models.R](../R/stages/15_tracking_predictor_models.R) |
+| 1 | Preparation | [000_MORA_cleaning.R](../R/stages/000_MORA_cleaning.R) |
+| 2 | Preparation | [000_NOCA_cleaning.R](../R/stages/000_NOCA_cleaning.R) |
+| 3 | Analysis | [01_get_fire_info.R](../R/stages/01_get_fire_info.R) |
+| 4 | Preparation | [000_MORA_climate.R](../R/stages/000_MORA_climate.R) |
+| 5 | Preparation | [000_NOCA_climate.R](../R/stages/000_NOCA_climate.R) |
+| 6 | Preparation | [000_PALEO_a_agedepth.R](../R/stages/000_PALEO_a_agedepth.R) |
+| 7 | Preparation | [000_PALEO_b_vegetation.R](../R/stages/000_PALEO_b_vegetation.R) |
+| 8 | Preparation | [000_FIRE_cleaning.R](../R/stages/000_FIRE_cleaning.R) |
+| 9 | Preparation | [000_PALEO_c_fire.R](../R/stages/000_PALEO_c_fire.R) |
+| 10 | Preparation | [000_PALEO_d_climate_download.R](../R/stages/000_PALEO_d_climate_download.R) |
+| 11 | Preparation | [000_PALEO_e_climate.R](../R/stages/000_PALEO_e_climate.R) |
+| 12 | Analysis | [02_walsh_fire_reproduction.R](../R/stages/02_walsh_fire_reproduction.R) |
+| 13 | Analysis | [03_fire_event_detection_worked_example.R](../R/stages/03_fire_event_detection_worked_example.R) |
+| 14 | Preparation | [000_occurrence_data_consolidate.R](../R/stages/000_occurrence_data_consolidate.R) |
+| 15 | Analysis | [04_cca_model.R](../R/stages/04_cca_model.R) |
+| 16 | Analysis | [05_holocene_climate_fire_eras.R](../R/stages/05_holocene_climate_fire_eras.R) |
+| 17 | Analysis | [06_fire_method_worked_example.R](../R/stages/06_fire_method_worked_example.R) |
+| 18 | Analysis | [07_tracking_metrics.R](../R/stages/07_tracking_metrics.R) |
+| 19 | Analysis | [08_cca_figure.R](../R/stages/08_cca_figure.R) |
+| 20 | Analysis | [09_tracking_example_and_visualizations.R](../R/stages/09_tracking_example_and_visualizations.R) |
+| 21 | Analysis | [10_climate_change_figure.R](../R/stages/10_climate_change_figure.R) |
+| 22 | Analysis | [11_tracking_model_data.R](../R/stages/11_tracking_model_data.R) |
+| 23 | Analysis | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) |
+| 24 | Analysis | [13_tracking_lake_sensitivity.R](../R/stages/13_tracking_lake_sensitivity.R) |
+| 25 | Analysis | [14_tracking_manuscript_figure.R](../R/stages/14_tracking_manuscript_figure.R) |
+| 26 | Analysis | [15_tracking_predictor_models.R](../R/stages/15_tracking_predictor_models.R) |
+| 27 | Analysis | [16_cca_transition_contributions.R](../R/stages/16_cca_transition_contributions.R) |
+| 28 | Analysis | [17_species_contribution_models.R](../R/stages/17_species_contribution_models.R) |
 
 | Prepared input | Rows | Plot/sample IDs | Taxa |
 | --- | --- | --- | --- |
 | MORA | 2490 | 331 | 23 |
 | NOCA | 1775 | 305 | 31 |
-| paleo | 9590 | 963 | 12 |
-| consolidated | 13690 | 1599 | 22 |
+| paleo | 9850 | 989 | 12 |
+| consolidated | 13950 | 1625 | 22 |
 
 [Full cleaning summary table](assets/analysis/tables/cleaning_summary.csv).
 
@@ -225,28 +236,15 @@ Script: [test_survey_year_anomaly.R](../R/diagnostics/test_survey_year_anomaly.R
 
 ## Chronology and uncertainty
 
-The four Bacon models provide sample ages, allowing vegetation to be matched
-to climate through time. The [control-point register](../Cores/CONTROL_POINTS.md)
-explains radiocarbon dates, tephra ages, surface controls and instantaneous layers.
-Tracking uses 100 whole-chronology draws per core, preserving temporal dependence
-within each core.
+The existing stored Bacon models are retained. Each primary original sample receives
+its **unrounded median age over all stored posterior rows**, not the median of a
+selected draw subset. Original sample identities do not depend on estimated ages.
 
-**The chronology choices are retained for this analysis.** Some tephra errors
-are assumed bracket half-widths, rather than verified statistical standard
-deviations. Reflection Pond's basal-lahar control also retains an assumed age
-error and an unverified core-to-deposit correlation. The draws describe
-uncertainty conditional on these controls and the Bacon model; they do not
-represent every source of dating uncertainty. The [MORA reconsideration](../Cores/SOURCES_MORA.md#basal-lahar-reconsideration-2026-10-06)
-records the sources and reason for retaining the existing model.
-
-Panther Potholes' primary chronology deliberately retains inherited Pb210
-activity errors for reproduction. The existing **assumed ±10-year age-error
-sensitivity** examines that limitation without replacing the primary chronology.
-The deeper models are similar, not identical: the
-[stored comparison](review/PB210_STORED_SENSITIVITY_COMPARISON.csv) finds maximum
-differences below 35 cm of 15 years in median age and 24/28 years in the lower/upper
-95% bounds. The [NOCA source notes](../data/NOCA/NOCA_paleo/SOURCES.md) preserve the
-earlier discussion. This report uses stored chronologies; no chronology model is refitted.
+The sensitivity uses 1,000 reproducibly selected complete posterior chronologies per
+lake. One selected posterior row supplies all sample and NOCA fire-event ages within
+that lake. No MCMC or CCA recalibration is performed. MORA regional charcoal chronologies
+remain fixed. Primary confidence intervals are conditional on the primary reconstruction;
+separate refits examine changes in coefficient direction, magnitude and statistical support.
 
 ### Inspect four fitted age-depth models and slump treatment
 
@@ -266,15 +264,11 @@ Script: [000_PALEO_a_agedepth.R](../R/stages/000_PALEO_a_agedepth.R). [Complete 
 
 ## Paleo vegetation and fire preparation
 
-Macrofossil records are harmonized into presence/absence observations while
-retaining their lake, sample depth and modeled age. Macrofossil percentages and
-survey stem counts are not combined as abundance. A sample without detected
-tree taxa does not demonstrate an absence of forest.
-
-Charcoal and charred-needle information is prepared separately from vegetation.
-The MORA published charcoal chronologies and the Panther Potholes core do not
-have equivalent timing precision or spatial support. Later fire classification
-uses the accepted-event catalog described below.
+Taxonomic categories are harmonized within original samples. Separate depths and
+Neotoma sample IDs remain separate even when their posterior median ages coincide.
+Samples with no retained taxa remain in the exclusion audit and have no WA position.
+Accepted charcoal-event detection and its descriptive products remain unchanged.
+The ecological exposure uses whole vegetation-transition durations and coherent NOCA redating.
 
 ## Paleo climate preparation
 
@@ -349,7 +343,7 @@ Script: [02_walsh_fire_reproduction.R](../R/stages/02_walsh_fire_reproduction.R)
 
 Each panel shows the charcoal residual, the local noise threshold (dashed), accepted events (filled circles), and peaks rejected by the minimum-count screen (red crosses). The three MORA records use 95% thresholds; Panther Potholes uses 99%. These events are used later to identify high-fire periods.
 
-Script: [03_fire_event_detection_worked_example.R](../R/stages/03_fire_event_detection_worked_example.R). [Complete PDF](../plot/test_figures/fig_fire_event_detection_workflow.pdf) (3 pages).
+Script: [03_fire_event_detection_worked_example.R](../R/stages/03_fire_event_detection_worked_example.R). [Complete PDF](../plot/test_figures/worked_examples/fig_fire_event_detection_workflow.pdf) (3 pages).
 
 ![Compare fire-event detection in all four lake records. — PDF page 2](assets/analysis/fire_detection-p2.png)
 
@@ -365,26 +359,26 @@ CCA retains a taxon when it occurs in **at least 20 plots or samples in any one
 site × period group**. The rule does not require 20 in every group. Pinus
 albicaulis reaches exactly 20 and remains included. Selection rests on taxon
 relevance and ordination interpretation; increased explained inertia alone is
-not its justification. Resurvey and paleo counts influence selection even
-though those observations do not calibrate the CCA.
+not its justification. The existing selected taxa and matched-legacy calibration are frozen during this migration;
+new paleo identities affect projection records and diagnostics, not calibration.
 
 | Taxon | MORA legacy | MORA resurvey | MORA paleo | NOCA legacy | NOCA resurvey | NOCA paleo | CCA retained |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Abies amabilis | 290 | 288 | 117 | 113 | 128 | 0 | TRUE |
-| Abies lasiocarpa | 34 | 31 | 92 | 63 | 76 | 468 | TRUE |
+| Abies amabilis | 290 | 288 | 119 | 113 | 128 | 0 | TRUE |
+| Abies lasiocarpa | 34 | 31 | 94 | 63 | 76 | 473 | TRUE |
 | Abies procera | 68 | 50 | 43 | 0 | 0 | 0 | TRUE |
 | Callitropsis nootkatensis | 106 | 101 | 78 | 37 | 44 | 38 | TRUE |
 | Picea engelmannii | 12 | 9 | 5 | 26 | 22 | 12 | TRUE |
-| Pinus contorta | 2 | 1 | 31 | 32 | 28 | 285 | TRUE |
-| Pinus monticola | 42 | 14 | 90 | 28 | 25 | 489 | TRUE |
-| Pseudotsuga menziesii | 181 | 147 | 40 | 157 | 147 | 594 | TRUE |
-| Tsuga heterophylla | 281 | 283 | 54 | 88 | 121 | 179 | TRUE |
-| Tsuga mertensiana | 88 | 75 | 108 | 89 | 76 | 39 | TRUE |
+| Pinus contorta | 2 | 1 | 31 | 32 | 28 | 293 | TRUE |
+| Pinus monticola | 42 | 14 | 90 | 28 | 25 | 504 | TRUE |
+| Pseudotsuga menziesii | 181 | 147 | 40 | 157 | 147 | 597 | TRUE |
+| Tsuga heterophylla | 281 | 283 | 54 | 88 | 121 | 180 | TRUE |
+| Tsuga mertensiana | 88 | 75 | 110 | 89 | 76 | 39 | TRUE |
 | Abies grandis | 8 | 7 | 0 | 11 | 20 | 0 | TRUE |
 | Alnus rubra | 15 | 15 | 0 | 11 | 18 | 0 | FALSE |
 | Picea sitchensis | 2 | 0 | 0 | 0 | 0 | 0 | FALSE |
 | Populus trichocarpa | 3 | 3 | 0 | 8 | 3 | 0 | FALSE |
-| Thuja plicata | 111 | 110 | 0 | 95 | 101 | 159 | TRUE |
+| Thuja plicata | 111 | 110 | 0 | 95 | 101 | 168 | TRUE |
 | Acer macrophyllum | 0 | 4 | 0 | 17 | 18 | 0 | FALSE |
 | Malus fusca | 0 | 1 | 0 | 0 | 0 | 0 | FALSE |
 | Pinus albicaulis | 0 | 2 | 0 | 20 | 7 | 0 | TRUE |
@@ -417,22 +411,20 @@ Script: [000_occurrence_data_consolidate.R](../R/stages/000_occurrence_data_cons
 
 ### Inspect taxon site confounding and temporal occupancy
 
-This explicitly retains the 500-year occupancy sensitivity. Sparse sampling is shown; the primary tracking analysis uses 1,000 years. **500-year sensitivity**.
+Presence/absence occupancy in native 100-year cells using original samples and unrounded posterior median ages.
 
 Script: [test_species_through_time.R](../R/diagnostics/test_species_through_time.R). [Complete PDF](../plot/test_figures/species_through_time.pdf) (1 page).
 
 ![Inspect taxon site confounding and temporal occupancy. — PDF page 1](assets/analysis/occupancy-p1.png)
 
-The occupancy display is explicitly a **500-year sensitivity**. Primary
-Holocene tracking uses 1,000-year intervals.
+The occupancy display uses original samples placed on the native 100-year grid.
 
 ## Plots and samples included in CCA
 
 The following diagram starts with the supplied survey lists and core sample
 depths. It shows losses during matching and cleaning, then the species and
 climate checks required for CCA. The starting legacy and resurvey counts are
-separate; their exclusions must not be added together. Core depths sharing one
-modeled age are combined, rather than excluded.
+separate; their exclusions must not be added together. Original sample identities are retained when median ages coincide.
 
 ### From starting plots and core samples to the CCA
 
@@ -471,8 +463,8 @@ comparison.
 | anthropocene | MORA | Modern paired comparison | 331 | 1 | 330 |
 | anthropocene | NOCA | Legacy calibration | 305 | 28 | 277 |
 | anthropocene | NOCA | Modern paired comparison | 305 | 28 | 277 |
-| holocene | MORA | Paleo projection | 117 | 0 | 117 |
-| holocene | NOCA | Paleo projection | 846 | 56 | 790 |
+| holocene | MORA | Paleo projection | 119 | 0 | 119 |
+| holocene | NOCA | Paleo projection | 870 | 58 | 812 |
 
 [Full CCA eligibility counts table](assets/analysis/tables/cca_eligibility_counts.csv).
 
@@ -493,7 +485,7 @@ counts are samples before age draws or temporal binning.
 | anthropocene | NOCA | Modern paired comparison | past | Only taxa excluded by CCA species selection | 11 |
 | anthropocene | NOCA | Modern paired comparison | present | Loss of all recorded tree-taxon presence at resurvey | 9 |
 | anthropocene | NOCA | Modern paired comparison | present | Only taxa excluded by CCA species selection | 2 |
-| holocene | NOCA | Paleo projection | paleo | No tree taxa detected in paleo sample | 56 |
+| holocene | NOCA | Paleo projection | paleo | No tree taxa detected in paleo sample | 58 |
 
 [Full CCA exclusion summary table](assets/analysis/tables/cca_exclusion_summary.csv).
 
@@ -510,24 +502,12 @@ cannot enter CCA tracking.
 
 ## Holocene sampling support on native climate intervals
 
-[The consolidation stage](../R/stages/000_occurrence_data_consolidate.R) produces
-this diagnostic immediately before CCA, without requiring a fitted ordination.
-Each prepared macrofossil sample ID enters one native climate cell at its median
-age across the 100 cached Bacon draws. These counts include samples subsequently
-excluded from CCA. The four lake lines remain separate, with a common sample-count
-scale for MORA and NOCA. Cell centers follow the native climate grid (50 modulo
-100 cal BP); each cell uses `[center − 50, center + 50)`.
-
-The fire row uses accepted detections from the same upstream `tapas` catalogs
-that stage 02 assembles. MORA has one summed line across fully covered regional
-cores, requiring at least two; NOCA uses Panther Potholes. Grey cells lack adequate
-coverage, while covered cells with no detections remain zero. The number of covered
-MORA cores can vary from two to three. Detections of the same regional fire in
-different cores are counted separately, and source resolution differs between
-parks, so raw totals do not measure comparable regional fire intensity. These
-100-year counts leave the normalized 1,000-year fire predictor and high-fire
-classifications unchanged. Neither sample counts nor fire counts are interpolated;
-the median-age display does not propagate chronology uncertainty.
+The pre-CCA diagnostic places every original macrofossil sample once at its unrounded
+full-posterior median Bacon age, including samples subsequently excluded from WA projection.
+Macrofossil lakes remain distinguished with the same MORA/NOCA count scale. Fire panels
+show accepted-event totals by park; MORA regional cores are combined, not plotted as separate
+vegetation lakes. Covered zero-event cells remain zero and missing coverage breaks the line.
+These descriptive counts use native climate intervals and are not transition-model observations.
 
 ### Inspect macrofossil sampling and accepted fire detections on native 100-year climate cells before CCA
 
@@ -559,17 +539,17 @@ recalibrating it.
 | Total inertia | 3.465 |
 | Climate-constrained inertia | 0.531 |
 | Constrained inertia (%) | 15.33 |
-| Modern plots and paleo samples before eligibility | 1599 |
-| Eligible modern pairs and paleo samples | 1514 |
+| Modern plots and paleo samples before eligibility | 1625 |
+| Eligible modern pairs and paleo samples | 1538 |
 
 [Full CCA summary table](assets/analysis/tables/cca_summary.csv).
 
 | Site | Period | Prepared climate samples | Calibrated | Positioned projection |
 | --- | --- | --- | --- | --- |
-| MORA | paleo | 117 | — | 117 |
+| MORA | paleo | 119 | — | 119 |
 | MORA | past | 331 | 330 | — |
 | MORA | present | 331 | — | 330 |
-| NOCA | paleo | 846 | — | 790 |
+| NOCA | paleo | 870 | — | 812 |
 | NOCA | past | 305 | 277 | — |
 | NOCA | present | 305 | — | 277 |
 
@@ -615,7 +595,15 @@ species_past_final = species_past[present_pairs, keep_species, drop = FALSE]
 env_past_final = env_past[present_pairs, CCA_VARIABLES, drop = FALSE]
 
 cca_formula = reformulate(CCA_VARIABLES, response = "species_past_final")
-cca_model = cca(cca_formula, data = env_past_final)
+reference_path=here('output/cca_calibration_reference.rds')
+if(file.exists(reference_path) && count.thr==CCA_COUNT_THRESHOLD && !length(extra_exclude) && !nzchar(cca_suffix)) {
+  frozen=readRDS(reference_path)
+  if(!isTRUE(all.equal(species_past_final,frozen$legacy_species,tolerance=0)) ||
+     !isTRUE(all.equal(env_past_final,frozen$legacy_climate,tolerance=0)) ||
+     !identical(keep_species,frozen$retained_species))
+    stop('Fixed CCA calibration inputs changed; do not recalibrate during reconstruction migration')
+  cca_model=frozen$model
+} else cca_model=cca(cca_formula,data=env_past_final)
 
 # Resurvey positions: climate-predicted (LC) and observed (WA).
 predicted_present = predict(cca_model, newdata = env_present_final, type = "lc", scaling = cca_scaling, hill = cca_hill)
@@ -764,7 +752,7 @@ use fixed median event chronologies, without propagating event-timing uncertaint
 
 Any qualifying variable creates a climate-change cell. Only adjacent cells merge; the unsigned composite is context.
 
-Script: [05_holocene_climate_fire_eras.R](../R/stages/05_holocene_climate_fire_eras.R). [Complete PDF](../plot/test_figures/fig_holocene_climate_period_method_worked_example.pdf) (1 page).
+Script: [05_holocene_climate_fire_eras.R](../R/stages/05_holocene_climate_fire_eras.R). [Complete PDF](../plot/test_figures/worked_examples/fig_holocene_climate_period_method_worked_example.pdf) (1 page).
 
 ![Expose signed changes, phase support, and era construction. — PDF page 1](assets/analysis/climate_era_example-p1.png)
 
@@ -772,257 +760,38 @@ Script: [05_holocene_climate_fire_eras.R](../R/stages/05_holocene_climate_fire_e
 
 Within-core normalization and site-specific robust thresholds yield MORA high fire and NOCA no high fire for the worked date.
 
-Script: [06_fire_method_worked_example.R](../R/stages/06_fire_method_worked_example.R). [Complete PDF](../plot/test_figures/fig_holocene_fire_method_worked_example.pdf) (1 page).
+Script: [06_fire_method_worked_example.R](../R/stages/06_fire_method_worked_example.R). [Complete PDF](../plot/test_figures/worked_examples/fig_holocene_fire_method_worked_example.pdf) (1 page).
 
 ![Work through centered event frequencies at 2,300 cal BP. — PDF page 1](assets/analysis/high_fire_example-p1.png)
 
-## Community trajectories
-
-Figure 3 connects observed and predicted centroids for each site through the
-CC1–S4 eras. These are separate WA and LC trajectories within the same fitted
-ordination. Modern arrows use exactly the same eligible pairs at both endpoints;
-their matched legacy observations also provide the CCA calibration.
-
-| Site | Survey | Same paired plots | Observed CCA1 | Observed CCA2 | Predicted CCA1 | Predicted CCA2 |
-| --- | --- | --- | --- | --- | --- | --- |
-| MORA | legacy | 330 | 0.01916 | -0.2931 | 0.02739 | -0.2841 |
-| MORA | resurvey | 330 | 0.007418 | -0.3313 | -0.3602 | -0.1502 |
-| NOCA | legacy | 277 | -0.1207 | 0.4995 | -0.1007 | 0.455 |
-| NOCA | resurvey | 277 | -0.1448 | 0.3547 | -0.24 | 0.4876 |
-
-[Full modern centroids table](assets/analysis/tables/modern_centroids.csv).
-
-| Site | Era | Positioned dates | Observed CCA1 | Observed CCA2 | Predicted CCA1 | Predicted CCA2 |
-| --- | --- | --- | --- | --- | --- | --- |
-| MORA | CC1 | 3 | 0.1855 | 0.4639 | -0.03907 | -0.823 |
-| MORA | S1 | 4 | 0.2911 | 0.5599 | 0.07978 | -0.809 |
-| MORA | CC2 | 6 | 0.3504 | 0.5708 | 0.1344 | -0.7955 |
-| MORA | S2 | 8 | 0.5449 | 0.5334 | 0.1561 | -0.7924 |
-| MORA | CC3 | 5 | 0.5979 | 0.5077 | 0.1145 | -0.7755 |
-| MORA | S3 | 27 | 0.6901 | 0.2025 | 0.05787 | -0.8415 |
-| MORA | CC4 | 5 | 0.7129 | -0.1067 | 0.05517 | -0.8728 |
-| MORA | S4 | 4 | 0.705 | -0.02137 | 0.007844 | -0.8396 |
-| NOCA | CC1 | 24 | -0.1834 | 1.359 | -0.3362 | 0.372 |
-| NOCA | S1 | 4 | -0.1626 | 0.9889 | -0.3979 | 0.2585 |
-| NOCA | CC2 | 6 | -0.1517 | 1.027 | -0.343 | 0.2691 |
-| NOCA | S2 | 8 | -0.05666 | 0.904 | -0.3159 | 0.26 |
-| NOCA | CC3 | 5 | -0.08602 | 0.7052 | -0.3443 | 0.2513 |
-| NOCA | S3 | 27 | -0.1752 | 0.6288 | -0.3358 | 0.2229 |
-| NOCA | CC4 | 5 | -0.2261 | 0.3776 | -0.3364 | 0.25 |
-| NOCA | S4 | 4 | -0.2744 | 0.1739 | -0.356 | 0.2696 |
-
-[Full era centroids table](assets/analysis/tables/era_centroids.csv).
-
-### Figure 3. Observed and climate-predicted community trajectories
-
-![Figure 3. fig cca trajectories](assets/analysis/figure-3.png)
-
-[Full PDF](../plot/fig_cca_trajectories.pdf) · [Figure script](../R/stages/07_cca_figure.R).
-
 ## Tracking calculations
 
-Observed movement is the change in WA position; climate-predicted movement is
-the change in LC position. Endpoint lag is the distance between LC and WA.
-**Δlag is final lag minus initial lag**: positive values mean the mismatch opens.
-The tracking ratio compares observed and predicted movement rates; the angle
-compares their directions and is undefined when either movement is stationary.
+One primary reconstructed series is built for each lake. Original samples are projected
+through the fixed CCA before sample WA coordinates are averaged within their own native
+CHELSA cells, `[lower, upper)`. Occupied cell centers currently end in 50 cal BP.
+Consecutive occupied centuries are connected, including gaps; vegetation is never interpolated.
+Both endpoint climate records belong to that lake. All Holocene rates use the actual elapsed
+time, `age_hi - age_lo`, and response validity is handled independently.
 
-Primary Holocene calculations treat each lake separately before calculating nonlinear
-metrics for consecutive **1,000-year intervals**. Each core contributes 100
-chronology draws, and ten 100-year offsets assess sensitivity to interval
-placement. Draws are summarized within offset before offsets are combined.
-These realizations are not additional ecological replicates. One-sample bins
-remain flagged, with an existing minimum-two-sample sensitivity.
+Primary support counts describe actual endpoint samples. Chronology occupancy is diagnostic,
+with no authorized occupancy or joint-support exclusion threshold. The physical climate-rate
+index uses changes in MSpT, MWT, SP and WP divided by their fixed pooled legacy SDs, then
+combined by Euclidean norm and multiplied by 100/elapsed years. It is separate from LC movement.
 
-## Tracking example, descriptive visualizations and climate/fire display
+Fire exposure counts accepted events over `[age_lo, age_hi)`. Each fully covered core contributes
+`events × 100 / elapsed years`. MORA averages at least two fully covered regional cores equally;
+NOCA requires complete Panther Potholes coverage. Covered zeros remain zero and inadequate
+coverage remains NA. The unit is events per century per eligible core. This differs from the
+unchanged normalized 1,000-year fire measure used in descriptive climate/fire-period comparisons.
 
-The metric example below shows how displacement, lag, ratio and angle follow
-from WA and LC endpoints. The next two descriptive figures use four lake columns
-with aligned cal-BP axes. Thin trajectories show offsets at actual transition
-midpoints; thick response lines reuse the maintained complete-offset medians.
-Climate/fire predictor medians are reconstructed from canonical transitions
-with the same half-open intervals and complete-offset rule. The original model,
-uncertainty and seven-response reporting CSVs are unchanged.
-The rates figure has rows for tracking responses together, standardized climate
-rate and fire activity. The other figure gives magnitude ratio, angle, climate
-and fire one row each, omitting the duplicate Holocene rate-ratio display.
-Both ratios remain in the model inputs and can differ for modern plots.
-
-Both figures reuse the regional climate-period catalog and subdivisions shown
-in Figure 2. Darker gray marks climate change (CC) and lighter gray relative
-stability (S) across all Holocene rows. Top-row labels include CC1a, CC1b and
-CC1c; dotted lines mark their internal boundaries. These are shared regional
-annotations, with unshaded margins outside the classified 9,600–1,300 cal-BP
-domain. Adding these bands does not change response values, predictors or
-climate classifications. The modern boxplots have no climate-period bands.
-
-A fifth column shows MORA/NOCA paired-plot boxplots with matching colors and
-separate labeled y-scales. It uses all 607 pairs, retaining finite values per
-response independently. Modern continuous fire activity is unavailable and is
-annotated; binary burned assignments remain in the model input. MORA vegetation
-lakes share regional fire exposure. Missing values break trajectories and sparse
-supported transitions remain visible. Offsets are sensitivity placements,
-not independent ecological replicates.
-
-### Work through WA/LC movement, lag, ratio, and angle
-
-One actual Panther Potholes lake transition shows WA/LC endpoints, pace/direction counterfactuals, focused responses and valid chronology-draw distributions. Corrections are nonadditive.
-
-Script: [09_tracking_example_and_visualizations.R](../R/stages/09_tracking_example_and_visualizations.R). [Complete PDF](../plot/test_figures/fig_method_worked_example.pdf) (1 page).
-
-![Work through WA/LC movement, lag, ratio, and angle. — PDF page 1](assets/analysis/tracking_example-p1.png)
-
-### Compare tracking responses, climate and fire under established regional climate-period bands, with Anthropocene boxplots
-
-Rows show four tracking rates together, standardized physical climate-change rate, and continuous fire activity. Four Holocene lake columns share aligned cal-BP axes and scales by row; thin lines show offsets and thick lines show complete-offset medians. Frozen Figure 2 era/subphase products supply darker CC and lighter stability bands across all Holocene rows, including CC1a/CC1b/CC1c labels and internal boundaries; margins outside the classified domain are unshaded. A fifth column shows identically colored MORA/NOCA paired-plot boxplots using separate labeled y-scales. Modern continuous fire activity is unavailable and is annotated. MORA vegetation lakes share regional fire exposure. Offsets are sensitivity placements, not independent replicates.
-
-Script: [09_tracking_example_and_visualizations.R](../R/stages/09_tracking_example_and_visualizations.R). [Complete PDF](../plot/test_figures/fig_tracking_offset_rates.pdf) (1 page).
-
-![Compare tracking responses, climate and fire under established regional climate-period bands, with Anthropocene boxplots. — PDF page 1](assets/analysis/tracking_offset_rates-p1.png)
-
-### Compare magnitude tracking ratio, angle, climate and fire under the same regional climate-period bands, one variable per row
-
-Four lake columns show magnitude tracking ratio, movement angle, standardized climate-change rate and fire activity in separate rows. The same frozen Figure 2 era/subphase products annotate all Holocene rows with darker CC and lighter stability bands, CC1 subdivisions and unshaded margins outside the classified domain. The duplicate Holocene rate-ratio display is omitted; both ratios remain in the model inputs and can differ in the Anthropocene. A fifth column shows MORA/NOCA plot boxplots with matching colors and separate labeled y-scales; modern continuous fire activity is unavailable and annotated. Thin offset trajectories and thick complete-offset medians retain actual gaps and observed ranges.
-
-Script: [09_tracking_example_and_visualizations.R](../R/stages/09_tracking_example_and_visualizations.R). [Complete PDF](../plot/test_figures/fig_tracking_offset_ratios_angles.pdf) (1 page).
-
-![Compare magnitude tracking ratio, angle, climate and fire under the same regional climate-period bands, one variable per row. — PDF page 1](assets/analysis/tracking_offset_ratios_angles-p1.png)
-
-Figure 2 aligns independently defined climate eras and high-fire periods.
-Its rate comparison retains signed temperatures in °C/century and precipitation
-in mm/century. Modern rates describe the agreed survey-window contrasts.
-
-| Constraint | Units | Holocene regional signed maximum | Peak cal BP | MORA modern median | NOCA modern median |
+| Lake | Occupied centuries | Transitions | Gaps over 100 years | Median duration (years) | Missing fire exposure |
 | --- | --- | --- | --- | --- | --- |
-| Spring temperature | deg C / century | 0.04175 | 7500 | 1.288 | 0.7691 |
-| Winter temperature | deg C / century | 0.05504 | 9500 | 3.271 | 1.359 |
-| Summer precipitation | mm / century | -1.087 | 8900 | -142.6 | 103.6 |
-| Winter precipitation | mm / century | 2.338 | 8100 | -937.2 | -411.2 |
-
-[Full raw climate rates table](assets/analysis/tables/raw_climate_rates.csv).
-
-### Figure 2. Climate eras, climate rates and high-fire periods
-
-![Figure 2. fig standardized climate change eras fire](assets/analysis/figure-2.png)
-
-[Full PDF](../plot/fig_standardized_climate_change_eras_fire.pdf) · [Figure script](../R/stages/10_climate_change_figure.R).
-
-## Lake-level tracking datasets and support
-
-The canonical tracking analysis calculates each lake independently in the same
-pooled CCA. Stage 08 derives seven products from detailed records: two compact
-source inputs, long chronology uncertainty, lake and modern calculation audits,
-seven-response descriptive reporting and sampling/coverage diagnostics.
-Stage 11 assembles canonical responses and derives corrected lag-change rates
-from stored calculation records within each draw before transition medians.
-The model inputs share exactly the same seven response names and definitions:
-[273 lake/offset transitions, 23 columns](assets/analysis/tables/lake_by_offset.csv),
-[607 modern pairs, 21 columns](assets/analysis/tables/modern_model_input.csv).
-Separate records expose [chronology uncertainty, 15 columns](assets/analysis/tables/lake_uncertainty.csv),
-[detailed modern calculations](assets/analysis/tables/modern_calculations.csv), and
-[column definitions and units](assets/analysis/tables/tracking_schema.csv).
-
-The [combined transition input, 28 columns](assets/analysis/tables/era_by_offset.csv)
-contains 7,920 rows: nine responses for each of 273 actual lake/offset transitions
-and 607 modern pairs. Modern observations are stored once per response, with
-an absent offset; each model fit selects one Holocene offset and the same modern
-pairs. No across-offset median or 100-year grid is used for modeling. Holocene
-estimates remain finite-draw medians within actual transitions. Dates, both
-elapsed times, predictors, sampling support and WGS84 identities are retained.
-Undefined responses remain rows and are filtered separately using `response_valid`.
-Missing charcoal exposure stays missing; modern fire remains binary burned.
-The previous reporting-grid model input and model trials are retired.
-
-| Lake | Offset | Samples | Transitions | Minimum draws | Two-sample realizations |
-| --- | --- | --- | --- | --- | --- |
-| JayBath | 0 | 48 | 7 | 24 | 583 |
-| JayBath | 100 | 48 | 7 | 13 | 586 |
-| JayBath | 200 | 48 | 6 | 98 | 595 |
-| JayBath | 300 | 48 | 6 | 98 | 582 |
-| JayBath | 400 | 48 | 6 | 95 | 567 |
-| JayBath | 500 | 48 | 6 | 90 | 540 |
-| JayBath | 600 | 48 | 6 | 85 | 528 |
-| JayBath | 700 | 48 | 6 | 76 | 511 |
-| JayBath | 800 | 48 | 6 | 63 | 488 |
-| JayBath | 900 | 48 | 7 | 39 | 584 |
-| LogWallow | 0 | 40 | 7 | 2 | 521 |
-| LogWallow | 100 | 40 | 6 | 99 | 539 |
-| LogWallow | 200 | 40 | 6 | 98 | 525 |
-| LogWallow | 300 | 40 | 6 | 100 | 521 |
-| LogWallow | 400 | 40 | 6 | 100 | 522 |
-| LogWallow | 500 | 40 | 6 | 100 | 501 |
-| LogWallow | 600 | 40 | 6 | 99 | 484 |
-| LogWallow | 700 | 40 | 6 | 88 | 465 |
-| LogWallow | 800 | 40 | 6 | 57 | 439 |
-| LogWallow | 900 | 40 | 7 | 19 | 506 |
-| ReflectionPond | 0 | 29 | 6 | 29 | 474 |
-| ReflectionPond | 100 | 29 | 6 | 15 | 458 |
-| ReflectionPond | 200 | 29 | 6 | 9 | 433 |
-| ReflectionPond | 300 | 29 | 6 | 6 | 417 |
-| ReflectionPond | 400 | 29 | 6 | 1 | 425 |
-| ReflectionPond | 500 | 29 | 5 | 98 | 440 |
-| ReflectionPond | 600 | 29 | 5 | 98 | 460 |
-| ReflectionPond | 700 | 29 | 5 | 92 | 453 |
-| ReflectionPond | 800 | 29 | 5 | 77 | 431 |
-| ReflectionPond | 900 | 29 | 6 | 59 | 490 |
-| PantherPotholes | 0 | 790 | 10 | 100 | 1000 |
-| PantherPotholes | 100 | 790 | 9 | 100 | 900 |
-| PantherPotholes | 200 | 790 | 9 | 100 | 900 |
-| PantherPotholes | 300 | 790 | 9 | 100 | 900 |
-| PantherPotholes | 400 | 790 | 9 | 100 | 900 |
-| PantherPotholes | 500 | 790 | 9 | 100 | 900 |
-| PantherPotholes | 600 | 790 | 9 | 100 | 900 |
-| PantherPotholes | 700 | 790 | 9 | 100 | 900 |
-| PantherPotholes | 800 | 790 | 9 | 100 | 900 |
-| PantherPotholes | 900 | 790 | 10 | 100 | 1000 |
+| JayBath | 44 | 43 | 15 | 100 | 0 |
+| LogWallow | 35 | 34 | 15 | 100 | 0 |
+| ReflectionPond | 28 | 27 | 20 | 200 | 0 |
+| PantherPotholes | 108 | 107 | 0 | 100 | 1 |
 
 [Full lake support table](assets/analysis/tables/lake_support.csv).
-
-No majority-draw cutoff is imposed. `n_draws_present` counts existing transitions
-before response validity; `n_draws_nmin2` counts present draws with at least two
-samples in both endpoint bins. Model responses are independent finite-draw
-medians. The uncertainty table records expected, present, eligible, valid and
-undefined draws for each response under `all` and `nmin2`, retaining empty
-sensitivity groups with missing statistics. Quantiles describe chronology
-uncertainty conditional on valid realizations, not model confidence intervals.
-
-The descriptive grid contains only seven responses and requires a finite median
-from every offset separately for each lake/date/response. At Reflection Pond,
-5,900 cal BP, angle and pace have nine valid offsets: only those two reporting
-values are excluded, while the other five responses and all underlying transition
-records remain available.
-
-The 273 Holocene rows span ten alternative bin placements. Offsets are sensitivity
-realizations, not independent ecological replicates. The intended primary
-statistical approach is to analyze non-overlapping transitions separately within
-each offset, considering lake identity and temporal dependence during later
-model development. Adjacent transitions share endpoint information.
-There are approximately 5–6 majority-supported transitions per MORA lake per
-offset and 9–10 for Panther Potholes. Four lakes and two fire histories provide
-limited independent support for a later three-way interaction. The covariance
-comparison and chosen MA(1) results are shown below; distributions and
-lake/chronology uncertainty treatment remain open.
-
-Each MORA vegetation lake uses its own climate but shares regional fire exposure.
-Numerators and core maxima use fully covered windows of identical duration and
-matching half-open interval conventions. Covered zero-event intervals have zero
-activity; inadequate coverage gives both `fire_activity=NA` and `high_fire=NA`. Full-window denominators match the
-existing 1,000-year references. [Scientific definitions](SCIENTIFIC_DECISIONS.md#lake-tracking-metrics)
-explain the formulas, units, stationary cases and nonadditive counterfactuals.
-[NOCA migration validation](review/NOCA_TRACKING_MIGRATION_CHECK.csv) records the
-full 9,200-realization comparison before legacy outputs were removed.
-The [tracking validation report](review/TRACKING_DATA_VALIDATION.md) gives the
-schemas, exclusion counts, independent checks and limits for later modeling.
-
-### Tracking metric calculations
-
-These calculation excerpts are generated directly from
-[tracking_metrics.R](../R/helpers/tracking_metrics.R). The generated R reading
-copy includes the same excerpts. `x` contains the observed and predicted
-endpoints, seasonal climate values and their respective elapsed times.
-`epsilon` is the movement tolerance (default `1e-8`), and `scaling` supplies the
-fixed pooled-calibration SDs. In the cosine calculation, `ax,ay` and `bx,by`
-are the observed and predicted displacement components.
 
 **Endpoint geometry and lag/turnover rates.**
 
@@ -1112,22 +881,6 @@ x$standardized_climate_displacement = sqrt(rowSums(x[z_change_cols]^2))
 x$standardized_climate_change_rate = sqrt(rowSums(x[z_rate_cols]^2))
 ```
 
-### Effects of the 2026-10-07 survey-date decision
-
-The comparison below isolates the survey-date update from its preserved
-pre-update analysis. At that time, legacy occurrences and climate, the 618-plot
-CCA fit, its 13 taxa, and all Holocene results were unchanged. The subsequent
-2026-10-08 ponderosa reinstatement first refitted that model with 14 taxa and
-619 legacy plots; matched calibration then restricted fitting to 607 plots.
-These tables describe the earlier survey-date decision alone.
-Latest-visit selection removes earlier-only presence from
-seven cleaned MORA plots; one loss is a taxon already excluded during
-consolidation, so six modeled observed positions change. Modern climate changes for all 330 MORA plots and the 50 NOCA plots surveyed in
-2014. Climate elapsed time changes for 319 MORA plots and those same 50 NOCA
-plots; 2017 MORA resurveys retain the former 30.5-year midpoint interval.
-The 225 NOCA plots surveyed in 2015 retain their former 2010–2015 window.
-Figures 2 and 3 and the lake/plot tracking datasets use the updated inputs.
-
 | Plot | Presence removed from pooled resurvey |
 | --- | --- |
 | LONG-356 | Thuja plicata |
@@ -1164,1036 +917,708 @@ Figures 2 and 3 and the lake/plot tracking datasets use the updated inputs.
 
 [Full survey decision effects table](assets/analysis/tables/survey_decision_effects.csv).
 
-## Residual covariance comparison
+## Community trajectories
 
-[Stage 12](../R/stages/12_tracking_era_models.R) compares three Gaussian GLS
-structures for lag-change rate, observed community turnover and untransformed
-physical climate-change rate, plus pace- and direction-corrected lag-change
-rates at each offset from 0 to 900 years. The shared
-specifications below apply to all five responses. Within an
-offset, all candidates use exactly the same actual 1,000-year Holocene
-transitions and finite modern responses, the same `era * site` fixed effects, REML,
-and separate residual variances for the four era/site groups. All 30 fits per
-response converged. The following focused specifications show the three structures;
-`d` is the finite-response dataset for one offset, prepared by
-[tracking_offset_model_input()](../R/helpers/tracking_model_data.R).
+Figure 3 retains its layout and modern paths. Holocene period centroids first average primary
+occupied centuries within lake/period, then average available lakes equally. Period membership
+uses the unchanged CC/S catalog boundaries. Missing lake/period coverage is not manufactured.
+The fitted species/climate panels remain based on the unchanged CCA.
 
-### AR(1)
+| Site | Survey | Same paired plots | Observed CCA1 | Observed CCA2 | Predicted CCA1 | Predicted CCA2 |
+| --- | --- | --- | --- | --- | --- | --- |
+| MORA | legacy | 330 | 0.01916 | -0.2931 | 0.02739 | -0.2841 |
+| MORA | resurvey | 330 | 0.007418 | -0.3313 | -0.3602 | -0.1502 |
+| NOCA | legacy | 277 | -0.1207 | 0.4995 | -0.1007 | 0.455 |
+| NOCA | resurvey | 277 | -0.1448 | 0.3547 | -0.24 | 0.4876 |
+
+[Full modern centroids table](assets/analysis/tables/modern_centroids.csv).
+
+| Site | Era | Positioned dates | Observed CCA1 | Observed CCA2 | Predicted CCA1 | Predicted CCA2 |
+| --- | --- | --- | --- | --- | --- | --- |
+| MORA | S1 | 2 | 0.2127 | 0.4883 | -0.03114 | -0.8229 |
+| MORA | CC2 | 8 | 0.2847 | 0.5589 | 0.1101 | -0.8018 |
+| MORA | S2 | 13 | 0.5182 | 0.5153 | 0.1399 | -0.7939 |
+| MORA | CC3 | 6 | 0.5117 | 0.5778 | 0.1425 | -0.7903 |
+| MORA | S3 | 35 | 0.7423 | 0.2939 | 0.07991 | -0.8344 |
+| MORA | CC4 | 7 | 0.7548 | -0.2904 | 0.1232 | -0.8378 |
+| MORA | S4 | 5 | 0.7197 | 0.006679 | 0.05344 | -0.9019 |
+| NOCA | CC1 | 24 | -0.1832 | 1.375 | -0.3386 | 0.3744 |
+| NOCA | S1 | 4 | -0.1259 | 0.8604 | -0.4065 | 0.2482 |
+| NOCA | CC2 | 6 | -0.2318 | 1.012 | -0.3466 | 0.2963 |
+| NOCA | S2 | 8 | -0.01874 | 0.9342 | -0.3134 | 0.2727 |
+| NOCA | CC3 | 5 | 0.02032 | 0.7776 | -0.3194 | 0.19 |
+| NOCA | S3 | 27 | -0.2153 | 0.6146 | -0.3436 | 0.207 |
+| NOCA | CC4 | 5 | -0.2352 | 0.4099 | -0.328 | 0.3002 |
+| NOCA | S4 | 4 | -0.3268 | 0.06199 | -0.3654 | 0.2114 |
+
+[Full era centroids table](assets/analysis/tables/era_centroids.csv).
+
+### Figure 3. Observed and climate-predicted community trajectories
+
+![Figure 3. fig cca trajectories](assets/analysis/figure-3.png)
+
+[Full PDF](../plot/fig_cca_trajectories.pdf) · [Figure script](../R/stages/08_cca_figure.R).
+
+## Tracking example and actual-transition displays
+
+The worked example uses one primary actual transition. Temporal displays show actual transition
+midpoints and spans with matching climate and fire exposure. Both tracking ratios remain in the
+tables; their identical Holocene values need only one display. Modern fire activity is unavailable
+as a continuous charcoal measure; original binary burned assignments remain available.
+
+### Work through WA/LC movement, lag, ratio, and angle
+
+One actual primary Panther Potholes transition shows WA/LC endpoints, counterfactuals, seven responses, endpoint samples and actual elapsed time. Corrections are nonadditive.
+
+Script: [09_tracking_example_and_visualizations.R](../R/stages/09_tracking_example_and_visualizations.R). [Complete PDF](../plot/test_figures/worked_examples/fig_method_worked_example.pdf) (1 page).
+
+![Work through WA/LC movement, lag, ratio, and angle. — PDF page 1](assets/analysis/tracking_example-p1.png)
+
+### Compare tracking responses, climate and fire under established regional climate-period bands, with Anthropocene boxplots
+
+Actual primary transition estimates, without vegetation interpolation or bin offsets. Fire is events per century per eligible core. **Primary reconstruction; conditional inference**.
+
+Script: [09_tracking_example_and_visualizations.R](../R/stages/09_tracking_example_and_visualizations.R). [Complete PDF](../plot/test_figures/fig_tracking_transition_rates.pdf) (1 page).
+
+![Compare tracking responses, climate and fire under established regional climate-period bands, with Anthropocene boxplots. — PDF page 1](assets/analysis/tracking_transition_rates-p1.png)
+
+### Compare magnitude tracking ratio, angle, climate and fire under the same regional climate-period bands, one variable per row
+
+Actual primary transition estimates, without vegetation interpolation or bin offsets. Fire is events per century per eligible core. **Primary reconstruction; conditional inference**.
+
+Script: [09_tracking_example_and_visualizations.R](../R/stages/09_tracking_example_and_visualizations.R). [Complete PDF](../plot/test_figures/fig_tracking_transition_ratios_angles.pdf) (1 page).
+
+![Compare magnitude tracking ratio, angle, climate and fire under the same regional climate-period bands, one variable per row. — PDF page 1](assets/analysis/tracking_transition_ratios_angles-p1.png)
+
+| Constraint | Units | Holocene regional signed maximum | Peak cal BP | MORA modern median | NOCA modern median |
+| --- | --- | --- | --- | --- | --- |
+| Spring temperature | deg C / century | 0.04175 | 7500 | 1.288 | 0.7691 |
+| Winter temperature | deg C / century | 0.05504 | 9500 | 3.271 | 1.359 |
+| Summer precipitation | mm / century | -1.087 | 8900 | -142.6 | 103.6 |
+| Winter precipitation | mm / century | 2.338 | 8100 | -937.2 | -411.2 |
+
+[Full raw climate rates table](assets/analysis/tables/raw_climate_rates.csv).
+
+### Figure 2. Climate eras, climate rates and high-fire periods
+
+![Figure 2. fig standardized climate change eras fire](assets/analysis/figure-2.png)
+
+[Full PDF](../plot/fig_standardized_climate_change_eras_fire.pdf) · [Figure script](../R/stages/10_climate_change_figure.R).
+
+## Primary models and residual covariance comparisons
+
+Primary, Bacon sensitivity and lake-check results use separate folders. Metric-specific figures
+are consolidated into multipage PDFs by purpose, with one labeled response per page.
+
+[Primary, Bacon sensitivity and lake-check folder guide](assets/analysis/tracking_result_guide.txt).
+
+### Residual covariance comparison
+
+Combined-era models use `estimate ~ era * site` and separate residual variances by era/site.
+Modern plots are singleton series. Applicable Holocene models compare independent residuals,
+neighboring-transition MA(1), and continuous-time AR(1). Transition indices are assigned before
+exclusions; gaps are not renumbered. Continuous-time correlation uses actual midpoints in centuries.
+Compare REML AIC only on identical rows and fixed effects. **MA(1) is the primary covariance
+for every model containing Holocene observations**, as explicitly retained by the user.
+Independent and CAR1 are comparison diagnostics only; AIC recommendations never replace
+MA(1). Failed fits and boundary/covariance warnings remain in the result tables.
+Modern-only models retain independent residuals.
 
 ```r
-m_ar1 <- nlme::gls(
-  estimate ~ era * site, data = d,
-  correlation = nlme::corAR1(form = ~ time_index | series),
-  weights = nlme::varIdent(form = ~ 1 | era_site),
-  method = "REML", na.action = na.fail,
-  control = nlme::glsControl(msMaxIter = 200)
-)
+# Same fixed effects and rows; Independent/CAR1 are comparisons only.
+correlation = NULL
+correlation = nlme::corARMA(p = 0, q = 1, form = ~ time_index | series)
+correlation = nlme::corCAR1(form = ~ time_centuries | series)
+# Primary Holocene community and species explanatory models: MA(1).
+correlation = nlme::corARMA(p = 0, q = 1, form = ~ time_index | series)
+nlme::gls(estimate ~ site + climate_rate + fire_activity, data = d,
+  correlation = correlation, weights = nlme::varIdent(form = ~ 1 | site),
+  method = 'REML', na.action = na.fail)
+# Anthropocene species and basic community model:
+nlme::gls(estimate ~ site + burned, data = d,
+  weights = nlme::varIdent(form = ~ 1 | site), method = 'REML')
+# Extended Anthropocene COMMUNITY model only:
+nlme::gls(estimate ~ site + elevation + climate_rate + burned, data = d,
+  weights = nlme::varIdent(form = ~ 1 | site), method = 'REML')
 ```
 
-### MA(1)
+### Observed lag change
 
-```r
-m_ma1 <- nlme::gls(
-  estimate ~ era * site, data = d,
-  correlation = nlme::corARMA(p = 0, q = 1, form = ~ time_index | series),
-  weights = nlme::varIdent(form = ~ 1 | era_site),
-  method = "REML", na.action = na.fail,
-  control = nlme::glsControl(msMaxIter = 200)
-)
-```
+### Compare independent, neighboring MA(1), and continuous-time AR(1) residual covariance on identical primary observations
 
-### No temporal autocorrelation
+One primary median-age reconstruction. MA(1) is primary for models containing Holocene observations; Independent and CAR1 are comparisons only. Confidence intervals are conditional on the reconstruction. **Primary reconstruction; conditional inference**.
 
-```r
-m_independent <- nlme::gls(
-  estimate ~ era * site, data = d,
-  correlation = NULL,
-  weights = nlme::varIdent(form = ~ 1 | era_site),
-  method = "REML", na.action = na.fail,
-  control = nlme::glsControl(msMaxIter = 200)
-)
-```
+Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/primary_models/fig_tracking_model_aic.pdf) (5 pages).
 
-The [30 fit comparisons](assets/analysis/tables/tracking_model_comparison.csv)
-record restricted likelihoods, parameter counts, AIC, within-offset ΔAIC,
-relative Akaike weights and ranks. ΔAIC is each candidate's AIC minus the
-minimum for that same offset. Offsets are sensitivity realizations that reuse
-modern plots; AICs are compared within an offset, where observations agree.
-MA1 has the lowest AIC at five offsets, independent residuals at four and AR1
-at one. All three candidates are within two AIC units at nine of ten offsets.
+![Compare independent, neighboring MA(1), and continuous-time AR(1) residual covariance on identical primary observations. — PDF page 1](assets/analysis/tracking_model_aic-p1.png)
 
-### Compare AR1, MA1 and no temporal autocorrelation using AIC across all ten offsets
+### Selected-covariance fitted Holocene/Anthropocene group means and contrasts for the primary reconstruction
 
-Boxes summarize within-offset delta AIC; raw values remain in the comparison CSV. Dots show each fit and lines link the same offset. Candidates within an offset share observations, fixed effects, REML and era/site residual variances. MA1 minimizes AIC at five offsets, independent residuals at four and AR1 at one; all three candidates are within two AIC units at nine offsets. The author chose MA1 for reported analyses; the small AIC differences do not uniquely identify a covariance structure. **Covariance comparison; MA1 selected**.
+One primary median-age reconstruction. MA(1) is primary for models containing Holocene observations; Independent and CAR1 are comparisons only. Confidence intervals are conditional on the reconstruction. **Primary reconstruction; conditional inference**.
 
-Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/fig_tracking_model_aic_lag_rate_per_century.pdf) (1 page).
+Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/primary_models/fig_tracking_model_group_means.pdf) (5 pages).
 
-![Compare AR1, MA1 and no temporal autocorrelation using AIC across all ten offsets. — PDF page 1](assets/analysis/tracking_model_aic-p1.png)
+![Selected-covariance fitted Holocene/Anthropocene group means and contrasts for the primary reconstruction. — PDF page 1](assets/analysis/tracking_model_group_means-p1.png)
 
-**We chose MA(1) for the reported lag-change analyses.** This is the author's
-covariance decision following the comparison above. MA1 accommodates residual
-dependence between immediately neighboring transitions, which share endpoint
-information, while setting correlation beyond one actual time step to zero.
-The small AIC differences provide limited separation between candidates;
-this choice does not imply that AIC uniquely identified MA1. Missing time
-steps retain their original indices, and modern plot pairs are singleton series.
-The selected covariance is recorded in
-[tracking_model_reporting.R](../R/helpers/tracking_model_reporting.R).
+### Selected-covariance coefficients for the primary reconstruction
 
-## Lag-change rate: MA(1) group means, coefficients and contrasts across offsets
+One primary median-age reconstruction. MA(1) is primary for models containing Holocene observations; Independent and CAR1 are comparisons only. Confidence intervals are conditional on the reconstruction. **Primary reconstruction; conditional inference**.
 
-The figures below show **MA(1) only**, fitted separately at each of the ten
-alternative bin placements. They display 40 coefficients and 20 within-park
-era contrasts. The full [coefficient](assets/analysis/tables/tracking_model_coefficients.csv)
-and [contrast](assets/analysis/tables/tracking_model_contrasts.csv) calculation
-records retain the comparison candidates; select `model_type == "MA1"` for
-these reported results. The reference categories are Holocene and MORA.
+Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/primary_models/fig_tracking_model_coefficients.pdf) (5 pages).
 
-Contrasts are Anthropocene minus Holocene within MORA and within NOCA.
-Positive values indicate higher Anthropocene lag-change rates. Coefficient
-bars are unadjusted 95% t intervals; contrast bars use Satterthwaite degrees
-of freedom. Points and intervals use the same MA1 color in the offset and
-lake figures. Offsets are alternative sensitivity fits, not independent
-replicates, and are not pooled into one coefficient or contrast.
+![Selected-covariance coefficients for the primary reconstruction. — PDF page 1](assets/analysis/tracking_model_coefficients-p1.png)
 
-### Fitted group means and their differences
+### Selected-covariance Anthropocene-minus-Holocene contrasts for the primary reconstruction within each park
 
-The [40 MA1 group means](assets/analysis/tables/tracking_model_group_means.csv)
-retain era, park, offset, estimate, SE, degrees of freedom, interval bounds and
-cell observation counts. The figure places MORA and NOCA in two columns and
-uses three aligned rows: Holocene means across offsets, one Anthropocene mean
-per park, and the offset-specific differences. Rows have separate y-scales;
-parks share a scale within each row. The modern observations are reused unchanged,
-so their means stay constant across offsets and appear only once. The displayed
-modern interval comes from offset 0; each fit's interval remains in the table.
-Contrasts retain each offset's covariance between fitted means; their intervals
-are not obtained by subtracting mean bounds.
+One primary median-age reconstruction. MA(1) is primary for models containing Holocene observations; Independent and CAR1 are comparisons only. Confidence intervals are conditional on the reconstruction. **Primary reconstruction; conditional inference**.
 
-### MA(1) fitted Holocene/Anthropocene group means and contrasts across offsets
+Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/primary_models/fig_tracking_model_contrasts.pdf) (5 pages).
 
-MORA and NOCA columns show offset-specific Holocene means, one Anthropocene mean per park, and Anthropocene-minus-Holocene contrasts for all ten MA1 fits. The single modern interval is from offset 0; each fit's interval remains in the result table and each contrast uses its own fitted covariance. Bars are unadjusted 95% Satterthwaite intervals. Rows have separate y-scales; parks share a scale within each row. Units are CCA units per century. Modern means are constant because plots are reused across offsets; offsets are sensitivity realizations, not independent replicates. **MA1 selected; exploratory inference**.
+![Selected-covariance Anthropocene-minus-Holocene contrasts for the primary reconstruction within each park. — PDF page 1](assets/analysis/tracking_model_contrasts-p1.png)
 
-Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/fig_tracking_model_group_means_lag_rate_per_century.pdf) (1 page).
+### Residual checks for the selected Selected-covariance for the primary reconstruction
 
-![MA(1) fitted Holocene/Anthropocene group means and contrasts across offsets. — PDF page 1](assets/analysis/tracking_model_group_means-p1.png)
+One primary median-age reconstruction. MA(1) is primary for models containing Holocene observations; Independent and CAR1 are comparisons only. Confidence intervals are conditional on the reconstruction. **Primary reconstruction; conditional inference**.
 
-### Coefficients and era contrasts
+Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/primary_models/fig_tracking_model_residuals.pdf) (5 pages).
 
-### MA(1) coefficients across all ten offsets
+![Residual checks for the selected Selected-covariance for the primary reconstruction. — PDF page 1](assets/analysis/tracking_model_residuals-p1.png)
 
-Only the selected MA1 covariance is shown: four coefficients at each offset for era-by-site fixed effects, with REML and separate era/site residual variances. Points show estimates and bars unadjusted 95% t intervals. Reference categories are Holocene and MORA. Offsets reuse modern plots and are alternative sensitivity fits, not independent replicates. Comparison fits remain in the calculation records. **MA1 selected; exploratory inference**.
+[Complete primary results and covariance comparisons](assets/analysis/model_results.txt).
 
-Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/fig_tracking_model_coefficients_lag_rate_per_century.pdf) (1 page).
+### Selected-covariance individual-lake coefficients for the primary reconstruction
 
-![MA(1) coefficients across all ten offsets. — PDF page 1](assets/analysis/tracking_model_coefficients-p1.png)
+Primary individual-lake comparison with modern plots in its park; the primary MA(1) covariance is reestimated. **Primary reconstruction; conditional inference**.
 
-### MA(1) Anthropocene-minus-Holocene contrasts across offsets within each park
+Script: [13_tracking_lake_sensitivity.R](../R/stages/13_tracking_lake_sensitivity.R). [Complete PDF](../plot/test_figures/sensitivity/lake_checks/fig_tracking_lake_coefficients.pdf) (5 pages).
 
-Only MA1 contrasts are shown, with separate MORA/NOCA panels. Positive values indicate higher Anthropocene lag-change rates. Bars show unadjusted 95% intervals with Satterthwaite degrees of freedom; park panels have separate y-scales. The ten offsets reuse modern pairs and are sensitivity fits, not independent replicates. **MA1 selected; exploratory inference**.
+![Selected-covariance individual-lake coefficients for the primary reconstruction. — PDF page 1](assets/analysis/tracking_lake_coefficients-p1.png)
 
-Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/fig_tracking_model_contrasts_lag_rate_per_century.pdf) (1 page).
+### Selected-covariance Anthropocene-minus-Holocene lake contrasts for the primary reconstruction
 
-![MA(1) Anthropocene-minus-Holocene contrasts across offsets within each park. — PDF page 1](assets/analysis/tracking_model_contrasts-p1.png)
+Primary individual-lake comparison with modern plots in its park; the primary MA(1) covariance is reestimated. **Primary reconstruction; conditional inference**.
 
-[Complete results for all offset/covariance fits](assets/analysis/model_results.txt).
+Script: [13_tracking_lake_sensitivity.R](../R/stages/13_tracking_lake_sensitivity.R). [Complete PDF](../plot/test_figures/sensitivity/lake_checks/fig_tracking_lake_contrasts.pdf) (5 pages).
 
-## Lag-change rate: MA(1) lake comparisons at offset 0
+![Selected-covariance Anthropocene-minus-Holocene lake contrasts for the primary reconstruction. — PDF page 1](assets/analysis/tracking_lake_contrasts-p1.png)
 
-[Stage 13](../R/stages/13_tracking_lake_sensitivity.R) compares each Holocene
-lake with modern pairs from its own park at **offset 0 only**. These figures
-show four MA(1) fits: eight coefficients and four era contrasts. The formula
-is `estimate ~ era`, with REML and era-specific residual variances, since
-park is constant within each lake comparison. Original time gaps are retained.
-The [coefficient](assets/analysis/tables/tracking_lake_coefficients.csv) and
-[contrast](assets/analysis/tables/tracking_lake_contrasts.csv) records retain
-AR1 sensitivity fits as an audit; the displayed results use MA1 only.
+[Complete primary lake sensitivity results](assets/analysis/lake_model_results.txt).
 
-Reflection Pond and Panther Potholes MA1 fits approach the parameter boundary;
-triangles identify absolute parameters above 0.98. These fits are retained.
-MORA comparisons reuse the same 330 modern plots and are overlapping
-sensitivities. Each lake provides only 6–10 Holocene transitions at offset 0.
-MA(2) is outside the maintained workflow.
+### Community turnover
 
-### MA(1) individual-lake coefficients at offset 0
+### Compare independent, neighboring MA(1), and continuous-time AR(1) residual covariance on identical primary observations
 
-Only MA1 is shown at offset 0: each Holocene lake is compared with modern responses from its own park, using era fixed effects, REML and separate residual variances by era. Bars show unadjusted 95% intervals. Triangles flag absolute correlation parameters above 0.98; Reflection Pond and Panther Potholes MA1 fits approach the boundary and are retained. MORA comparisons reuse modern plots and are overlapping sensitivities. AR1 fits remain in the calculation audit. **MA1 selected; offset-0 sensitivity**.
+One primary median-age reconstruction. MA(1) is primary for models containing Holocene observations; Independent and CAR1 are comparisons only. Confidence intervals are conditional on the reconstruction. **Primary reconstruction; conditional inference**.
 
-Script: [13_tracking_lake_sensitivity.R](../R/stages/13_tracking_lake_sensitivity.R). [Complete PDF](../plot/test_figures/fig_tracking_lake_coefficients_lag_rate_per_century_offset_0.pdf) (1 page).
+Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/primary_models/fig_tracking_model_aic.pdf) (5 pages).
 
-![MA(1) individual-lake coefficients at offset 0. — PDF page 1](assets/analysis/tracking_lake_coefficients-p1.png)
+![Compare independent, neighboring MA(1), and continuous-time AR(1) residual covariance on identical primary observations. — PDF page 2](assets/analysis/turnover_model_aic-p2.png)
 
-### MA(1) Anthropocene-minus-Holocene lake contrasts at offset 0
+### Observed turnover: Selected-covariance fitted Holocene/Anthropocene group means and contrasts for the primary reconstruction
 
-Only MA1 is shown at offset 0: each Holocene lake is compared with modern responses from its own park, using era fixed effects, REML and separate residual variances by era. Bars show unadjusted 95% intervals. Triangles flag absolute correlation parameters above 0.98; Reflection Pond and Panther Potholes MA1 fits approach the boundary and are retained. MORA comparisons reuse modern plots and are overlapping sensitivities. AR1 fits remain in the calculation audit. **MA1 selected; offset-0 sensitivity**.
+One primary median-age reconstruction. MA(1) is primary for models containing Holocene observations; Independent and CAR1 are comparisons only. Confidence intervals are conditional on the reconstruction. **Primary reconstruction; conditional inference**.
 
-Script: [13_tracking_lake_sensitivity.R](../R/stages/13_tracking_lake_sensitivity.R). [Complete PDF](../plot/test_figures/fig_tracking_lake_contrasts_lag_rate_per_century_offset_0.pdf) (1 page).
+Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/primary_models/fig_tracking_model_group_means.pdf) (5 pages).
 
-![MA(1) Anthropocene-minus-Holocene lake contrasts at offset 0. — PDF page 1](assets/analysis/tracking_lake_contrasts-p1.png)
+![Observed turnover: Selected-covariance fitted Holocene/Anthropocene group means and contrasts for the primary reconstruction. — PDF page 2](assets/analysis/turnover_model_group_means-p2.png)
 
-[Complete offset-0 lake sensitivity results](assets/analysis/lake_model_results.txt).
+### Observed turnover: Selected-covariance coefficients for the primary reconstruction
 
-### MA(1) residual checks
+One primary median-age reconstruction. MA(1) is primary for models containing Holocene observations; Independent and CAR1 are comparisons only. Confidence intervals are conditional on the reconstruction. **Primary reconstruction; conditional inference**.
 
-### Residual checks for the selected MA(1) at every offset
+Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/primary_models/fig_tracking_model_coefficients.pdf) (5 pages).
 
-Each offset row shows MA1 scatter, normal Q-Q and Holocene residual lag products. Normalized residuals account for the fitted variance/correlation structure. Lag products preserve actual within-lake gaps and exclude modern singleton series; pair counts are shown without formal tests. Only 26–30 Holocene transitions support each offset fit. Distribution and uncertainty treatment remain exploratory. **MA1 selected; exploratory inference**.
+![Observed turnover: Selected-covariance coefficients for the primary reconstruction. — PDF page 2](assets/analysis/turnover_model_coefficients-p2.png)
 
-Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/fig_tracking_model_residuals_lag_rate_per_century.pdf) (1 page).
+### Observed turnover: Selected-covariance Anthropocene-minus-Holocene contrasts for the primary reconstruction within each park
 
-![Residual checks for the selected MA(1) at every offset. — PDF page 1](assets/analysis/tracking_model_residuals-p1.png)
+One primary median-age reconstruction. MA(1) is primary for models containing Holocene observations; Independent and CAR1 are comparisons only. Confidence intervals are conditional on the reconstruction. **Primary reconstruction; conditional inference**.
 
-MA1 is the chosen covariance structure for these results. Distribution,
-lake effects, response inclusion and chronology uncertainty treatment remain
-subjects for later model development. These fits do not propagate chronology
-uncertainty or add lake random intercepts or climate/fire fixed effects.
+Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/primary_models/fig_tracking_model_contrasts.pdf) (5 pages).
 
-## Observed community turnover: the same model exercise
+![Observed turnover: Selected-covariance Anthropocene-minus-Holocene contrasts for the primary reconstruction within each park. — PDF page 2](assets/analysis/turnover_model_contrasts-p2.png)
 
-The second response is `observed_turnover_rate`, defined as observed CCA
-movement magnitude multiplied by 100 and divided by **vegetation elapsed
-time**. It is a nonnegative rate in CCA units per century. Both maintained
-model stages include lag-change rate and turnover in their default responses; standalone
-`--metric=observed_turnover_rate` selects just this exercise. No response
-transformation, additional filtering or new data assembly is applied.
+### Observed turnover: residual checks for the selected Selected-covariance for the primary reconstruction
 
-### Covariance comparison
+One primary median-age reconstruction. MA(1) is primary for models containing Holocene observations; Independent and CAR1 are comparisons only. Confidence intervals are conditional on the reconstruction. **Primary reconstruction; conditional inference**.
 
-The three GLS specifications above are refitted to turnover at every offset:
-`estimate ~ era * site`, REML, AR1/MA1/independent residuals and separate era/site
-variances. The [30 turnover comparisons](assets/analysis/tables/turnover_model_comparison.csv)
-are evaluated within offset, independently of the lag-rate comparison.
-**Independent residuals have the lowest AIC at all ten offsets.** MA1 remains
-within two AIC units of the minimum at every offset. The requested MA1
-exercise is retained for comparable reporting; the lag-rate decision does not
-establish which covariance structure is best for turnover.
+Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/primary_models/fig_tracking_model_residuals.pdf) (5 pages).
 
-### Observed turnover: compare AR1, MA1 and no temporal autocorrelation using AIC across all ten offsets
+![Observed turnover: residual checks for the selected Selected-covariance for the primary reconstruction. — PDF page 2](assets/analysis/turnover_model_residuals-p2.png)
 
-Within-offset delta AIC compares AR1, MA1 and independent residuals using the same turnover observations and fixed effects. Independent residuals minimize AIC at all ten offsets; MA1 delta AIC ranges from 1.72 to 1.99. The requested MA1 exercise is shown for comparison, without treating the lag-rate choice as evidence for turnover. Offsets are sensitivity realizations, not independent replicates. **Response-specific covariance comparison**.
+[Complete observed-turnover primary covariance fit results](assets/analysis/turnover_model_results.txt).
 
-Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/fig_tracking_model_aic_observed_turnover_rate.pdf) (1 page).
+### Observed turnover: Selected-covariance individual-lake coefficients for the primary reconstruction
 
-![Observed turnover: compare AR1, MA1 and no temporal autocorrelation using AIC across all ten offsets. — PDF page 1](assets/analysis/turnover_model_aic-p1.png)
+Primary individual-lake comparison with modern plots in its park; the primary MA(1) covariance is reestimated. **Primary reconstruction; conditional inference**.
 
-### MA(1) fitted groups and contrasts across offsets
+Script: [13_tracking_lake_sensitivity.R](../R/stages/13_tracking_lake_sensitivity.R). [Complete PDF](../plot/test_figures/sensitivity/lake_checks/fig_tracking_lake_coefficients.pdf) (5 pages).
 
-The [40 fitted group means](assets/analysis/tables/turnover_model_group_means.csv)
-and contrast figure use the same aligned three-row layout as lag rate.
-Each mean is conditional on its own offset fit. The modern means stay constant
-because the same plots are reused: approximately 0.930 CCA units/century at
-MORA and 2.125 at NOCA. Each modern mean appears once per park with its offset-0
-interval; Holocene means and contrasts retain all ten offsets.
-The fitted Anthropocene-minus-Holocene contrasts are
-positive at every offset in both parks. The full
-[coefficient](assets/analysis/tables/turnover_model_coefficients.csv) and
-[contrast](assets/analysis/tables/turnover_model_contrasts.csv) records retain
-all comparison candidates; displayed results select `model_type == "MA1"`.
+![Observed turnover: Selected-covariance individual-lake coefficients for the primary reconstruction. — PDF page 2](assets/analysis/turnover_lake_coefficients-p2.png)
 
-### Observed turnover: mA(1) fitted Holocene/Anthropocene group means and contrasts across offsets
+### Observed turnover: Selected-covariance Anthropocene-minus-Holocene lake contrasts for the primary reconstruction
 
-MORA and NOCA columns show offset-specific Holocene means, one Anthropocene mean per park, and Anthropocene-minus-Holocene contrasts for all ten MA1 fits. The single modern interval is from offset 0; each fit's interval remains in the result table and each contrast uses its own fitted covariance. Bars are unadjusted 95% Satterthwaite intervals. Rows have separate y-scales; parks share a scale within each row. Units are CCA units per century. Modern means are constant because plots are reused across offsets; offsets are sensitivity realizations, not independent replicates. **MA1 working specification; exploratory turnover**.
+Primary individual-lake comparison with modern plots in its park; the primary MA(1) covariance is reestimated. **Primary reconstruction; conditional inference**.
 
-Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/fig_tracking_model_group_means_observed_turnover_rate.pdf) (1 page).
+Script: [13_tracking_lake_sensitivity.R](../R/stages/13_tracking_lake_sensitivity.R). [Complete PDF](../plot/test_figures/sensitivity/lake_checks/fig_tracking_lake_contrasts.pdf) (5 pages).
 
-![Observed turnover: mA(1) fitted Holocene/Anthropocene group means and contrasts across offsets. — PDF page 1](assets/analysis/turnover_model_group_means-p1.png)
+![Observed turnover: Selected-covariance Anthropocene-minus-Holocene lake contrasts for the primary reconstruction. — PDF page 2](assets/analysis/turnover_lake_contrasts-p2.png)
 
-### Observed turnover: mA(1) coefficients across all ten offsets
+[Complete observed-turnover primary lake sensitivity results](assets/analysis/turnover_lake_results.txt).
 
-Only the selected MA1 covariance is shown: four coefficients at each offset for era-by-site fixed effects, with REML and separate era/site residual variances. Points show estimates and bars unadjusted 95% t intervals. Reference categories are Holocene and MORA. Offsets reuse modern plots and are alternative sensitivity fits, not independent replicates. Comparison fits remain in the calculation records. **MA1 working specification; exploratory turnover**.
+### Standardized climate-change rate
 
-Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/fig_tracking_model_coefficients_observed_turnover_rate.pdf) (1 page).
+### Compare independent, neighboring MA(1), and continuous-time AR(1) residual covariance on identical primary observations
 
-![Observed turnover: mA(1) coefficients across all ten offsets. — PDF page 1](assets/analysis/turnover_model_coefficients-p1.png)
+One primary median-age reconstruction. MA(1) is primary for models containing Holocene observations; Independent and CAR1 are comparisons only. Confidence intervals are conditional on the reconstruction. **Primary reconstruction; conditional inference**.
 
-### Observed turnover: mA(1) Anthropocene-minus-Holocene contrasts across offsets within each park
+Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/primary_models/fig_tracking_model_aic.pdf) (5 pages).
 
-Only MA1 contrasts are shown, with separate MORA/NOCA panels. Positive values indicate higher Anthropocene observed turnover rates. Bars show unadjusted 95% intervals with Satterthwaite degrees of freedom; park panels have separate y-scales. The ten offsets reuse modern pairs and are sensitivity fits, not independent replicates. **MA1 working specification; exploratory turnover**.
+![Compare independent, neighboring MA(1), and continuous-time AR(1) residual covariance on identical primary observations. — PDF page 3](assets/analysis/climate_model_aic-p3.png)
 
-Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/fig_tracking_model_contrasts_observed_turnover_rate.pdf) (1 page).
+### Untransformed physical climate-change rate: Selected-covariance fitted Holocene/Anthropocene group means and contrasts for the primary reconstruction
 
-![Observed turnover: mA(1) Anthropocene-minus-Holocene contrasts across offsets within each park. — PDF page 1](assets/analysis/turnover_model_contrasts-p1.png)
+One primary median-age reconstruction. MA(1) is primary for models containing Holocene observations; Independent and CAR1 are comparisons only. Confidence intervals are conditional on the reconstruction. **Primary reconstruction; conditional inference**.
 
-[Complete observed-turnover offset/covariance fit results](assets/analysis/turnover_model_results.txt).
+Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/primary_models/fig_tracking_model_group_means.pdf) (5 pages).
 
-### MA(1) lake comparisons at offset 0
+![Untransformed physical climate-change rate: Selected-covariance fitted Holocene/Anthropocene group means and contrasts for the primary reconstruction. — PDF page 3](assets/analysis/climate_model_group_means-p3.png)
 
-The identical lake sensitivity compares each Holocene lake with its own park's
-modern turnover responses, using `estimate ~ era`, REML, separate era residual
-variances and actual time gaps. Only offset 0 and MA1 are displayed: eight
-coefficients and four contrasts. The
-[coefficient](assets/analysis/tables/turnover_lake_coefficients.csv) and
-[contrast](assets/analysis/tables/turnover_lake_contrasts.csv) calculation
-records also retain AR1 sensitivity fits. Jay Bath's MA1 parameter approaches
-+1 and is retained with the same boundary flag used for lag rate. The three
-MORA comparisons reuse the same modern plots and are overlapping sensitivities.
+### Untransformed physical climate-change rate: Selected-covariance coefficients for the primary reconstruction
 
-### Observed turnover: mA(1) individual-lake coefficients at offset 0
+One primary median-age reconstruction. MA(1) is primary for models containing Holocene observations; Independent and CAR1 are comparisons only. Confidence intervals are conditional on the reconstruction. **Primary reconstruction; conditional inference**.
 
-MA1 results at offset 0 compare each Holocene lake with its own park’s modern turnover responses, using era fixed effects, REML and era-specific residual variances. Bars show unadjusted 95% intervals. Jay Bath has an MA1 parameter above 0.98 in absolute value and is retained with a triangle. MORA fits reuse modern plots and are overlapping sensitivities. AR1 sensitivity fits remain in the calculation audit. **MA1 working specification; exploratory turnover**.
+Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/primary_models/fig_tracking_model_coefficients.pdf) (5 pages).
 
-Script: [13_tracking_lake_sensitivity.R](../R/stages/13_tracking_lake_sensitivity.R). [Complete PDF](../plot/test_figures/fig_tracking_lake_coefficients_observed_turnover_rate_offset_0.pdf) (1 page).
+![Untransformed physical climate-change rate: Selected-covariance coefficients for the primary reconstruction. — PDF page 3](assets/analysis/climate_model_coefficients-p3.png)
 
-![Observed turnover: mA(1) individual-lake coefficients at offset 0. — PDF page 1](assets/analysis/turnover_lake_coefficients-p1.png)
+### Untransformed physical climate-change rate: Selected-covariance Anthropocene-minus-Holocene contrasts for the primary reconstruction within each park
 
-### Observed turnover: mA(1) Anthropocene-minus-Holocene lake contrasts at offset 0
+One primary median-age reconstruction. MA(1) is primary for models containing Holocene observations; Independent and CAR1 are comparisons only. Confidence intervals are conditional on the reconstruction. **Primary reconstruction; conditional inference**.
 
-MA1 results at offset 0 compare each Holocene lake with its own park’s modern turnover responses, using era fixed effects, REML and era-specific residual variances. Bars show unadjusted 95% intervals. Jay Bath has an MA1 parameter above 0.98 in absolute value and is retained with a triangle. MORA fits reuse modern plots and are overlapping sensitivities. AR1 sensitivity fits remain in the calculation audit. **MA1 working specification; exploratory turnover**.
+Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/primary_models/fig_tracking_model_contrasts.pdf) (5 pages).
 
-Script: [13_tracking_lake_sensitivity.R](../R/stages/13_tracking_lake_sensitivity.R). [Complete PDF](../plot/test_figures/fig_tracking_lake_contrasts_observed_turnover_rate_offset_0.pdf) (1 page).
+![Untransformed physical climate-change rate: Selected-covariance Anthropocene-minus-Holocene contrasts for the primary reconstruction within each park. — PDF page 3](assets/analysis/climate_model_contrasts-p3.png)
 
-![Observed turnover: mA(1) Anthropocene-minus-Holocene lake contrasts at offset 0. — PDF page 1](assets/analysis/turnover_lake_contrasts-p1.png)
+### Untransformed physical climate-change rate: residual checks for the selected Selected-covariance for the primary reconstruction
 
-[Complete observed-turnover offset-0 lake sensitivity results](assets/analysis/turnover_lake_results.txt).
+One primary median-age reconstruction. MA(1) is primary for models containing Holocene observations; Independent and CAR1 are comparisons only. Confidence intervals are conditional on the reconstruction. **Primary reconstruction; conditional inference**.
 
-### MA(1) residual checks and interpretation
+Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/primary_models/fig_tracking_model_residuals.pdf) (5 pages).
 
-### Observed turnover: residual checks for the selected MA(1) at every offset
+![Untransformed physical climate-change rate: residual checks for the selected Selected-covariance for the primary reconstruction. — PDF page 3](assets/analysis/climate_model_residuals-p3.png)
 
-Each offset row shows MA1 scatter, normal Q-Q and Holocene residual lag products. Normalized residuals account for the fitted variance/correlation structure. Lag products preserve actual within-lake gaps and exclude modern singleton series; pair counts are shown without formal tests. Only 26–30 Holocene transitions support each offset fit. Distribution and uncertainty treatment remain exploratory. **MA1 working specification; exploratory turnover**.
+[Complete raw climate-rate primary covariance fit results](assets/analysis/climate_model_results.txt).
 
-Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/fig_tracking_model_residuals_observed_turnover_rate.pdf) (1 page).
+### Untransformed physical climate-change rate: Selected-covariance individual-lake coefficients for the primary reconstruction
 
-![Observed turnover: residual checks for the selected MA(1) at every offset. — PDF page 1](assets/analysis/turnover_model_residuals-p1.png)
+Primary individual-lake comparison with modern plots in its park; the primary MA(1) covariance is reestimated. **Primary reconstruction; conditional inference**.
 
-This is the requested Gaussian GLS working exercise for a nonnegative response.
-Some unbounded Holocene mean intervals extend below zero; they are shown in
-full. Distribution choice remains open. Chronology uncertainty is not
-propagated, offsets are not pooled and no lake random effects or climate/fire
-fixed effects have been added. Covariance support and residual behavior must
-be assessed separately for turnover before making its specification definitive.
+Script: [13_tracking_lake_sensitivity.R](../R/stages/13_tracking_lake_sensitivity.R). [Complete PDF](../plot/test_figures/sensitivity/lake_checks/fig_tracking_lake_coefficients.pdf) (5 pages).
 
-## Physical climate-change rate: the same untransformed GLS exercise
+![Untransformed physical climate-change rate: Selected-covariance individual-lake coefficients for the primary reconstruction. — PDF page 3](assets/analysis/climate_lake_coefficients-p3.png)
 
-The third response is `standardized_climate_change_rate`: the Euclidean magnitude
-of changes in the four seasonal climate variables, scaled by the pooled legacy
-calibration SDs and expressed per century. It measures physical climate change,
-not climate-predicted CCA movement. The author requested the same GLS exercise
-on its **original scale, without logging or any other transformation**.
-Both maintained model stages include it by default; standalone
-`--metric=standardized_climate_change_rate` selects this response.
+### Untransformed physical climate-change rate: Selected-covariance Anthropocene-minus-Holocene lake contrasts for the primary reconstruction
 
-The combined CSV already repeats this fixed climate field on each of the nine
-response rows. The selector reduces those copies to one observation
-per actual transition or modern plot, checking that their fixed fields agree.
-It assigns the original climate rate to `estimate` and checks its own finite-value
-eligibility, independently of tracking validity. The canonical CSV schemas and
-seven tracking-response names remain unchanged.
+Primary individual-lake comparison with modern plots in its park; the primary MA(1) covariance is reestimated. **Primary reconstruction; conditional inference**.
 
-```r
-d <- tracking_offset_model_input(
-  combined, metric = "standardized_climate_change_rate", offset = offset
-)$data
-# estimate is the original standardized climate-change rate.
-# Fit the same three GLS structures shown above, without transforming estimate.
-```
+Script: [13_tracking_lake_sensitivity.R](../R/stages/13_tracking_lake_sensitivity.R). [Complete PDF](../plot/test_figures/sensitivity/lake_checks/fig_tracking_lake_contrasts.pdf) (5 pages).
 
-### Covariance comparison
+![Untransformed physical climate-change rate: Selected-covariance Anthropocene-minus-Holocene lake contrasts for the primary reconstruction. — PDF page 3](assets/analysis/climate_lake_contrasts-p3.png)
 
-All 30 climate offset fits converge without warnings. The same `estimate ~ era * site`,
-REML, four era/site residual variances and actual time indices are used.
-The [30 climate comparisons](assets/analysis/tables/climate_model_comparison.csv)
-show minimum AIC for independent residuals at four offsets, MA1 at three and
-AR1 at three. MA1's within-offset delta AIC ranges from 0 to approximately 2.65.
-MA1 remains the requested reporting specification; this comparison is separate
-from the lag-rate and turnover evidence.
+[Complete raw climate-rate primary lake sensitivity results](assets/analysis/climate_lake_results.txt).
 
-### Untransformed physical climate-change rate: compare AR1, MA1 and no temporal autocorrelation using AIC across all ten offsets
+### Corrected lag-change rates
 
-Within-offset delta AIC compares AR1, MA1 and independent residuals using identical raw climate-rate observations, fixed effects and residual variance groups. Independent residuals minimize AIC at four offsets, MA1 at three and AR1 at three. MA1 delta AIC ranges from zero to about 2.65. The requested MA1 reporting specification is retained; offsets are sensitivity fits. **MA1 working specification; exploratory raw climate GLS**.
+### Compare independent, neighboring MA(1), and continuous-time AR(1) residual covariance on identical primary observations
 
-Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/fig_tracking_model_aic_standardized_climate_change_rate.pdf) (1 page).
+One primary median-age reconstruction. MA(1) is primary for models containing Holocene observations; Independent and CAR1 are comparisons only. Confidence intervals are conditional on the reconstruction. **Primary reconstruction; conditional inference**.
 
-![Untransformed physical climate-change rate: compare AR1, MA1 and no temporal autocorrelation using AIC across all ten offsets. — PDF page 1](assets/analysis/climate_model_aic-p1.png)
+Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/primary_models/fig_tracking_model_aic.pdf) (5 pages).
 
-### MA(1) fitted groups, coefficients and contrasts across offsets
+![Compare independent, neighboring MA(1), and continuous-time AR(1) residual covariance on identical primary observations. — PDF page 4](assets/analysis/pace_model_aic-p4.png)
 
-The [40 MA1 group means](assets/analysis/tables/climate_model_group_means.csv)
-use the same two-park, three-row layout: offset-specific Holocene means, one
-Anthropocene mean per park, and offset-specific differences, with separate row
-scales. The modern interval displayed is from offset 0; all fitted intervals
-remain in the table. Units are **calibration SD per century**.
-Modern means remain constant across offsets: approximately 5.260 at MORA and
-3.644 at NOCA. The Anthropocene-minus-Holocene contrasts are positive in both
-parks at every offset. The full
-[coefficient](assets/analysis/tables/climate_model_coefficients.csv) and
-[contrast](assets/analysis/tables/climate_model_contrasts.csv) records retain
-all covariance candidates; figures show MA1 only.
+### Pace-corrected lag-change rate: group means for the primary reconstruction
 
-### Untransformed physical climate-change rate: MA(1) fitted Holocene/Anthropocene group means and contrasts across offsets
+One primary median-age reconstruction. MA(1) is primary for models containing Holocene observations; Independent and CAR1 are comparisons only. Confidence intervals are conditional on the reconstruction. **Primary reconstruction; conditional inference**.
 
-MORA and NOCA columns show offset-specific Holocene means, one Anthropocene mean per park, and Anthropocene-minus-Holocene contrasts for all ten MA1 fits. The single modern interval is from offset 0; each fit's interval remains in the result table and each contrast uses its own fitted covariance. Bars are unadjusted 95% Satterthwaite intervals. Rows have separate y-scales; parks share a scale within each row. Units are calibration SD per century. Modern means are constant because plots are reused across offsets; offsets are sensitivity realizations, not independent replicates. **MA1 working specification; exploratory raw climate GLS**.
+Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/primary_models/fig_tracking_model_group_means.pdf) (5 pages).
 
-Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/fig_tracking_model_group_means_standardized_climate_change_rate.pdf) (1 page).
+![Pace-corrected lag-change rate: group means for the primary reconstruction. — PDF page 4](assets/analysis/pace_model_group_means-p4.png)
 
-![Untransformed physical climate-change rate: MA(1) fitted Holocene/Anthropocene group means and contrasts across offsets. — PDF page 1](assets/analysis/climate_model_group_means-p1.png)
+### Pace-corrected lag-change rate: coefficients for the primary reconstruction
 
-### Untransformed physical climate-change rate: MA(1) coefficients across all ten offsets
+One primary median-age reconstruction. MA(1) is primary for models containing Holocene observations; Independent and CAR1 are comparisons only. Confidence intervals are conditional on the reconstruction. **Primary reconstruction; conditional inference**.
 
-Only MA1 coefficients are shown across ten offsets, on the original physical climate-rate scale. Reference categories are Holocene and MORA; units are calibration SD per century. Bars are unadjusted 95% t intervals. The ten offsets reuse modern plots and are sensitivity fits, not independent replicates. **MA1 working specification; exploratory raw climate GLS**.
+Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/primary_models/fig_tracking_model_coefficients.pdf) (5 pages).
 
-Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/fig_tracking_model_coefficients_standardized_climate_change_rate.pdf) (1 page).
+![Pace-corrected lag-change rate: coefficients for the primary reconstruction. — PDF page 4](assets/analysis/pace_model_coefficients-p4.png)
 
-![Untransformed physical climate-change rate: MA(1) coefficients across all ten offsets. — PDF page 1](assets/analysis/climate_model_coefficients-p1.png)
+### Pace-corrected lag-change rate: contrasts for the primary reconstruction
 
-### Untransformed physical climate-change rate: MA(1) Anthropocene-minus-Holocene contrasts across offsets within each park
+One primary median-age reconstruction. MA(1) is primary for models containing Holocene observations; Independent and CAR1 are comparisons only. Confidence intervals are conditional on the reconstruction. **Primary reconstruction; conditional inference**.
 
-Only MA1 Anthropocene-minus-Holocene contrasts are shown, with separate MORA/NOCA panels. Positive values indicate higher Anthropocene physical climate-change rates. Units are calibration SD per century, with no response transformation. Bars show unadjusted 95% Satterthwaite intervals. Different temporal averaging is retained. **MA1 working specification; exploratory raw climate GLS**.
+Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/primary_models/fig_tracking_model_contrasts.pdf) (5 pages).
 
-Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/fig_tracking_model_contrasts_standardized_climate_change_rate.pdf) (1 page).
+![Pace-corrected lag-change rate: contrasts for the primary reconstruction. — PDF page 4](assets/analysis/pace_model_contrasts-p4.png)
 
-![Untransformed physical climate-change rate: MA(1) Anthropocene-minus-Holocene contrasts across offsets within each park. — PDF page 1](assets/analysis/climate_model_contrasts-p1.png)
+### Pace-corrected lag-change rate: residuals for the primary reconstruction
 
-[Complete raw climate-rate offset/covariance fit results](assets/analysis/climate_model_results.txt).
+One primary median-age reconstruction. MA(1) is primary for models containing Holocene observations; Independent and CAR1 are comparisons only. Confidence intervals are conditional on the reconstruction. **Primary reconstruction; conditional inference**.
 
-### MA(1) lake comparisons at offset 0
+Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/primary_models/fig_tracking_model_residuals.pdf) (5 pages).
 
-The same lake exercise uses each lake's climate transitions and its park's
-modern plot climate rates, with `estimate ~ era`, REML, era-specific residual
-variances and actual time gaps. All eight comparison fits converge without
-warnings. The [coefficient](assets/analysis/tables/climate_lake_coefficients.csv)
-and [contrast](assets/analysis/tables/climate_lake_contrasts.csv) records retain
-AR1 and MA1; figures display four MA1 fits at offset 0. Panther Potholes has
-an MA1 parameter near +1 and remains flagged. The three MORA comparisons reuse
-the same modern plots and are overlapping sensitivities.
-
-### Untransformed physical climate-change rate: MA(1) individual-lake coefficients at offset 0
-
-MA1 results at offset 0 compare each Holocene lake with its own park's modern physical climate-change rates, using era fixed effects, REML and era-specific residual variances. The response is untransformed, in calibration SD per century. Panther Potholes has an MA1 parameter above 0.98 in absolute value and is retained with a triangle. MORA fits reuse modern plots and are overlapping sensitivities. AR1 fits remain in the audit. **MA1 working specification; exploratory raw climate GLS**.
-
-Script: [13_tracking_lake_sensitivity.R](../R/stages/13_tracking_lake_sensitivity.R). [Complete PDF](../plot/test_figures/fig_tracking_lake_coefficients_standardized_climate_change_rate_offset_0.pdf) (1 page).
-
-![Untransformed physical climate-change rate: MA(1) individual-lake coefficients at offset 0. — PDF page 1](assets/analysis/climate_lake_coefficients-p1.png)
-
-### Untransformed physical climate-change rate: MA(1) Anthropocene-minus-Holocene lake contrasts at offset 0
-
-MA1 results at offset 0 compare each Holocene lake with its own park's modern physical climate-change rates, using era fixed effects, REML and era-specific residual variances. The response is untransformed, in calibration SD per century. Panther Potholes has an MA1 parameter above 0.98 in absolute value and is retained with a triangle. MORA fits reuse modern plots and are overlapping sensitivities. AR1 fits remain in the audit. **MA1 working specification; exploratory raw climate GLS**.
-
-Script: [13_tracking_lake_sensitivity.R](../R/stages/13_tracking_lake_sensitivity.R). [Complete PDF](../plot/test_figures/fig_tracking_lake_contrasts_standardized_climate_change_rate_offset_0.pdf) (1 page).
-
-![Untransformed physical climate-change rate: MA(1) Anthropocene-minus-Holocene lake contrasts at offset 0. — PDF page 1](assets/analysis/climate_lake_contrasts-p1.png)
-
-[Complete raw climate-rate offset-0 lake sensitivity results](assets/analysis/climate_lake_results.txt).
-
-### MA(1) residual checks and interpretation
-
-### Untransformed physical climate-change rate: residual checks for the selected MA(1) at every offset
-
-Only MA1 normalized residuals are shown, one row per offset: fitted scatter, normal Q-Q and Holocene residual lag products. Actual time gaps are retained and modern singleton series are excluded from lag products. Gaussian GLS uses the raw physical climate-rate response; chronology and modern spatial dependence are not modeled. **MA1 working specification; exploratory raw climate GLS**.
-
-Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/fig_tracking_model_residuals_standardized_climate_change_rate.pdf) (1 page).
-
-![Untransformed physical climate-change rate: residual checks for the selected MA(1) at every offset. — PDF page 1](assets/analysis/climate_model_residuals-p1.png)
-
-This is the requested raw-scale Gaussian GLS exercise. Per-century units do
-not equalize the temporal averaging of 1,000-year Holocene transitions and
-shorter modern climate intervals. Covariance comparison and residual checks
-are response-specific. These models do not propagate chronology uncertainty,
-model modern spatial dependence or add lake random effects. Offsets remain
-separate sensitivity fits. Continuous fire activity is outside this extension.
-
-## Corrected lag-change rates: the same MA(1) model exercise
-
-Two additional responses are derived from the stored counterfactual endpoints:
-`pace_corrected_lag_rate_per_century` and
-`direction_corrected_lag_rate_per_century`. Each is
-`(corrected final lag - initial lag) * 100 / climate_dt_years`.
-The maintained calculation excerpt above comes from
-[add_corrected_lag_rates()](../R/helpers/tracking_metrics.R).
-Stage 11 computes these within each chronology realization before taking the
-finite-draw median for that actual lake/offset transition. It never subtracts
-two summary medians. The original 23/21-column model tables and seven-response
-uncertainty/reporting contracts stay unchanged; the 28-column combined model
-input gains two response names as rows.
-
-These are signed corrected **changes**, not corrected final lag levels or the
-pace/direction effects. Within a draw, the observed lag-change rate minus its
-correction effect equals the corrected lag-change rate. The pace correction
-matches movement magnitude, retaining the original vegetation direction; the
-direction correction retains observed movement magnitude. These geometric
-counterfactuals are descriptive and do not establish causal effects.
-
-The same five output products and PDFs are produced for each new response.
-MA1 remains the author's reporting choice; the three covariance candidates
-are retained for response-specific audit, with identical finite observations
-within each offset. The corrected models also enter offset-0 lake sensitivity.
-All 607 modern pairs have direction-corrected rates. Pace is undefined for 142
-stationary modern plots, leaving 254 MORA and 211 NOCA pairs. These exclusions
-apply only to that response. No draw cutoff or replacement observations are added.
-
-### Pace-corrected lag-change rate
-
-[Coefficient records](assets/analysis/tables/pace_model_coefficients.csv),
-[park contrasts](assets/analysis/tables/pace_model_contrasts.csv),
-[fitted means](assets/analysis/tables/pace_model_group_means.csv) and
-[within-offset covariance comparisons](assets/analysis/tables/pace_model_comparison.csv)
-retain the same schemas used for the observed lag models.
-
-### Pace-corrected lag-change rate: group means across ten offsets
-
-Rates are (corrected final lag - initial lag)*100/climate elapsed years, calculated within each chronology draw before finite-draw medians. MA1 is the requested reporting covariance; original time gaps and response-specific exclusions remain. Chronology uncertainty is not propagated. The AIC page compares the same three covariance candidates within each offset; other pages show only MA1. Modern pace corrections exclude 142 undefined directions; direction corrections retain all 607 pairs. Offsets reuse modern plots and are sensitivity realizations. **MA1 working specification; descriptive counterfactual responses**.
-
-Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/fig_tracking_model_group_means_pace_corrected_lag_rate_per_century.pdf) (1 page).
-
-![Pace-corrected lag-change rate: group means across ten offsets. — PDF page 1](assets/analysis/pace_model_group_means-p1.png)
-
-### Pace-corrected lag-change rate: coefficients across ten offsets
-
-Rates are (corrected final lag - initial lag)*100/climate elapsed years, calculated within each chronology draw before finite-draw medians. MA1 is the requested reporting covariance; original time gaps and response-specific exclusions remain. Chronology uncertainty is not propagated. The AIC page compares the same three covariance candidates within each offset; other pages show only MA1. Modern pace corrections exclude 142 undefined directions; direction corrections retain all 607 pairs. Offsets reuse modern plots and are sensitivity realizations. **MA1 working specification; descriptive counterfactual responses**.
-
-Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/fig_tracking_model_coefficients_pace_corrected_lag_rate_per_century.pdf) (1 page).
-
-![Pace-corrected lag-change rate: coefficients across ten offsets. — PDF page 1](assets/analysis/pace_model_coefficients-p1.png)
-
-### Pace-corrected lag-change rate: contrasts across ten offsets
-
-Rates are (corrected final lag - initial lag)*100/climate elapsed years, calculated within each chronology draw before finite-draw medians. MA1 is the requested reporting covariance; original time gaps and response-specific exclusions remain. Chronology uncertainty is not propagated. The AIC page compares the same three covariance candidates within each offset; other pages show only MA1. Modern pace corrections exclude 142 undefined directions; direction corrections retain all 607 pairs. Offsets reuse modern plots and are sensitivity realizations. **MA1 working specification; descriptive counterfactual responses**.
-
-Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/fig_tracking_model_contrasts_pace_corrected_lag_rate_per_century.pdf) (1 page).
-
-![Pace-corrected lag-change rate: contrasts across ten offsets. — PDF page 1](assets/analysis/pace_model_contrasts-p1.png)
-
-### Pace-corrected lag-change rate: aic across ten offsets
-
-Rates are (corrected final lag - initial lag)*100/climate elapsed years, calculated within each chronology draw before finite-draw medians. MA1 is the requested reporting covariance; original time gaps and response-specific exclusions remain. Chronology uncertainty is not propagated. The AIC page compares the same three covariance candidates within each offset; other pages show only MA1. Modern pace corrections exclude 142 undefined directions; direction corrections retain all 607 pairs. Offsets reuse modern plots and are sensitivity realizations. **MA1 working specification; descriptive counterfactual responses**.
-
-Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/fig_tracking_model_aic_pace_corrected_lag_rate_per_century.pdf) (1 page).
-
-![Pace-corrected lag-change rate: aic across ten offsets. — PDF page 1](assets/analysis/pace_model_aic-p1.png)
-
-### Pace-corrected lag-change rate: residuals across ten offsets
-
-Rates are (corrected final lag - initial lag)*100/climate elapsed years, calculated within each chronology draw before finite-draw medians. MA1 is the requested reporting covariance; original time gaps and response-specific exclusions remain. Chronology uncertainty is not propagated. The AIC page compares the same three covariance candidates within each offset; other pages show only MA1. Modern pace corrections exclude 142 undefined directions; direction corrections retain all 607 pairs. Offsets reuse modern plots and are sensitivity realizations. **MA1 working specification; descriptive counterfactual responses**.
-
-Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/fig_tracking_model_residuals_pace_corrected_lag_rate_per_century.pdf) (1 page).
-
-![Pace-corrected lag-change rate: residuals across ten offsets. — PDF page 1](assets/analysis/pace_model_residuals-p1.png)
+![Pace-corrected lag-change rate: residuals for the primary reconstruction. — PDF page 4](assets/analysis/pace_model_residuals-p4.png)
 
 [Complete pace-corrected lag-change rate model results](assets/analysis/pace_model_results.txt).
 
-### Pace-corrected lag-change rate: offset-0 lake sensitivity coefficients
+### Pace-corrected lag-change rate: primary lake sensitivity coefficients
 
-Each lake is compared with its own park’s finite modern responses under era fixed effects, REML and era-specific variances. Figures report MA1 only; AR1 stays in the audit. Near-boundary parameters are flagged. MORA comparisons reuse the same modern pairs; corrected responses are descriptive, not causal interventions. **MA1 working specification; corrected lag lake sensitivity**.
+Primary individual-lake comparison with modern plots in its park; the primary MA(1) covariance is reestimated. **Primary reconstruction; conditional inference**.
 
-Script: [13_tracking_lake_sensitivity.R](../R/stages/13_tracking_lake_sensitivity.R). [Complete PDF](../plot/test_figures/fig_tracking_lake_coefficients_pace_corrected_lag_rate_per_century_offset_0.pdf) (1 page).
+Script: [13_tracking_lake_sensitivity.R](../R/stages/13_tracking_lake_sensitivity.R). [Complete PDF](../plot/test_figures/sensitivity/lake_checks/fig_tracking_lake_coefficients.pdf) (5 pages).
 
-![Pace-corrected lag-change rate: offset-0 lake sensitivity coefficients. — PDF page 1](assets/analysis/pace_lake_coefficients-p1.png)
+![Pace-corrected lag-change rate: primary lake sensitivity coefficients. — PDF page 4](assets/analysis/pace_lake_coefficients-p4.png)
 
-### Pace-corrected lag-change rate: offset-0 lake sensitivity contrasts
+### Pace-corrected lag-change rate: primary lake sensitivity contrasts
 
-Each lake is compared with its own park’s finite modern responses under era fixed effects, REML and era-specific variances. Figures report MA1 only; AR1 stays in the audit. Near-boundary parameters are flagged. MORA comparisons reuse the same modern pairs; corrected responses are descriptive, not causal interventions. **MA1 working specification; corrected lag lake sensitivity**.
+Primary individual-lake comparison with modern plots in its park; the primary MA(1) covariance is reestimated. **Primary reconstruction; conditional inference**.
 
-Script: [13_tracking_lake_sensitivity.R](../R/stages/13_tracking_lake_sensitivity.R). [Complete PDF](../plot/test_figures/fig_tracking_lake_contrasts_pace_corrected_lag_rate_per_century_offset_0.pdf) (1 page).
+Script: [13_tracking_lake_sensitivity.R](../R/stages/13_tracking_lake_sensitivity.R). [Complete PDF](../plot/test_figures/sensitivity/lake_checks/fig_tracking_lake_contrasts.pdf) (5 pages).
 
-![Pace-corrected lag-change rate: offset-0 lake sensitivity contrasts. — PDF page 1](assets/analysis/pace_lake_contrasts-p1.png)
+![Pace-corrected lag-change rate: primary lake sensitivity contrasts. — PDF page 4](assets/analysis/pace_lake_contrasts-p4.png)
 
 [Complete pace-corrected lag-change rate lake results](assets/analysis/pace_lake_results.txt).
 
-### Direction-corrected lag-change rate
+### Compare independent, neighboring MA(1), and continuous-time AR(1) residual covariance on identical primary observations
 
-[Coefficient records](assets/analysis/tables/direction_model_coefficients.csv),
-[park contrasts](assets/analysis/tables/direction_model_contrasts.csv),
-[fitted means](assets/analysis/tables/direction_model_group_means.csv) and
-[within-offset covariance comparisons](assets/analysis/tables/direction_model_comparison.csv)
-retain the same schemas used for the observed lag models.
+One primary median-age reconstruction. MA(1) is primary for models containing Holocene observations; Independent and CAR1 are comparisons only. Confidence intervals are conditional on the reconstruction. **Primary reconstruction; conditional inference**.
 
-### Direction-corrected lag-change rate: group means across ten offsets
+Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/primary_models/fig_tracking_model_aic.pdf) (5 pages).
 
-Rates are (corrected final lag - initial lag)*100/climate elapsed years, calculated within each chronology draw before finite-draw medians. MA1 is the requested reporting covariance; original time gaps and response-specific exclusions remain. Chronology uncertainty is not propagated. The AIC page compares the same three covariance candidates within each offset; other pages show only MA1. Modern pace corrections exclude 142 undefined directions; direction corrections retain all 607 pairs. Offsets reuse modern plots and are sensitivity realizations. **MA1 working specification; descriptive counterfactual responses**.
+![Compare independent, neighboring MA(1), and continuous-time AR(1) residual covariance on identical primary observations. — PDF page 5](assets/analysis/direction_model_aic-p5.png)
 
-Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/fig_tracking_model_group_means_direction_corrected_lag_rate_per_century.pdf) (1 page).
+### Direction-corrected lag-change rate: group means for the primary reconstruction
 
-![Direction-corrected lag-change rate: group means across ten offsets. — PDF page 1](assets/analysis/direction_model_group_means-p1.png)
+One primary median-age reconstruction. MA(1) is primary for models containing Holocene observations; Independent and CAR1 are comparisons only. Confidence intervals are conditional on the reconstruction. **Primary reconstruction; conditional inference**.
 
-### Direction-corrected lag-change rate: coefficients across ten offsets
+Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/primary_models/fig_tracking_model_group_means.pdf) (5 pages).
 
-Rates are (corrected final lag - initial lag)*100/climate elapsed years, calculated within each chronology draw before finite-draw medians. MA1 is the requested reporting covariance; original time gaps and response-specific exclusions remain. Chronology uncertainty is not propagated. The AIC page compares the same three covariance candidates within each offset; other pages show only MA1. Modern pace corrections exclude 142 undefined directions; direction corrections retain all 607 pairs. Offsets reuse modern plots and are sensitivity realizations. **MA1 working specification; descriptive counterfactual responses**.
+![Direction-corrected lag-change rate: group means for the primary reconstruction. — PDF page 5](assets/analysis/direction_model_group_means-p5.png)
 
-Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/fig_tracking_model_coefficients_direction_corrected_lag_rate_per_century.pdf) (1 page).
+### Direction-corrected lag-change rate: coefficients for the primary reconstruction
 
-![Direction-corrected lag-change rate: coefficients across ten offsets. — PDF page 1](assets/analysis/direction_model_coefficients-p1.png)
+One primary median-age reconstruction. MA(1) is primary for models containing Holocene observations; Independent and CAR1 are comparisons only. Confidence intervals are conditional on the reconstruction. **Primary reconstruction; conditional inference**.
 
-### Direction-corrected lag-change rate: contrasts across ten offsets
+Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/primary_models/fig_tracking_model_coefficients.pdf) (5 pages).
 
-Rates are (corrected final lag - initial lag)*100/climate elapsed years, calculated within each chronology draw before finite-draw medians. MA1 is the requested reporting covariance; original time gaps and response-specific exclusions remain. Chronology uncertainty is not propagated. The AIC page compares the same three covariance candidates within each offset; other pages show only MA1. Modern pace corrections exclude 142 undefined directions; direction corrections retain all 607 pairs. Offsets reuse modern plots and are sensitivity realizations. **MA1 working specification; descriptive counterfactual responses**.
+![Direction-corrected lag-change rate: coefficients for the primary reconstruction. — PDF page 5](assets/analysis/direction_model_coefficients-p5.png)
 
-Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/fig_tracking_model_contrasts_direction_corrected_lag_rate_per_century.pdf) (1 page).
+### Direction-corrected lag-change rate: contrasts for the primary reconstruction
 
-![Direction-corrected lag-change rate: contrasts across ten offsets. — PDF page 1](assets/analysis/direction_model_contrasts-p1.png)
+One primary median-age reconstruction. MA(1) is primary for models containing Holocene observations; Independent and CAR1 are comparisons only. Confidence intervals are conditional on the reconstruction. **Primary reconstruction; conditional inference**.
 
-### Direction-corrected lag-change rate: aic across ten offsets
+Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/primary_models/fig_tracking_model_contrasts.pdf) (5 pages).
 
-Rates are (corrected final lag - initial lag)*100/climate elapsed years, calculated within each chronology draw before finite-draw medians. MA1 is the requested reporting covariance; original time gaps and response-specific exclusions remain. Chronology uncertainty is not propagated. The AIC page compares the same three covariance candidates within each offset; other pages show only MA1. Modern pace corrections exclude 142 undefined directions; direction corrections retain all 607 pairs. Offsets reuse modern plots and are sensitivity realizations. **MA1 working specification; descriptive counterfactual responses**.
+![Direction-corrected lag-change rate: contrasts for the primary reconstruction. — PDF page 5](assets/analysis/direction_model_contrasts-p5.png)
 
-Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/fig_tracking_model_aic_direction_corrected_lag_rate_per_century.pdf) (1 page).
+### Direction-corrected lag-change rate: residuals for the primary reconstruction
 
-![Direction-corrected lag-change rate: aic across ten offsets. — PDF page 1](assets/analysis/direction_model_aic-p1.png)
+One primary median-age reconstruction. MA(1) is primary for models containing Holocene observations; Independent and CAR1 are comparisons only. Confidence intervals are conditional on the reconstruction. **Primary reconstruction; conditional inference**.
 
-### Direction-corrected lag-change rate: residuals across ten offsets
+Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/primary_models/fig_tracking_model_residuals.pdf) (5 pages).
 
-Rates are (corrected final lag - initial lag)*100/climate elapsed years, calculated within each chronology draw before finite-draw medians. MA1 is the requested reporting covariance; original time gaps and response-specific exclusions remain. Chronology uncertainty is not propagated. The AIC page compares the same three covariance candidates within each offset; other pages show only MA1. Modern pace corrections exclude 142 undefined directions; direction corrections retain all 607 pairs. Offsets reuse modern plots and are sensitivity realizations. **MA1 working specification; descriptive counterfactual responses**.
-
-Script: [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R). [Complete PDF](../plot/test_figures/fig_tracking_model_residuals_direction_corrected_lag_rate_per_century.pdf) (1 page).
-
-![Direction-corrected lag-change rate: residuals across ten offsets. — PDF page 1](assets/analysis/direction_model_residuals-p1.png)
+![Direction-corrected lag-change rate: residuals for the primary reconstruction. — PDF page 5](assets/analysis/direction_model_residuals-p5.png)
 
 [Complete direction-corrected lag-change rate model results](assets/analysis/direction_model_results.txt).
 
-### Direction-corrected lag-change rate: offset-0 lake sensitivity coefficients
+### Direction-corrected lag-change rate: primary lake sensitivity coefficients
 
-Each lake is compared with its own park’s finite modern responses under era fixed effects, REML and era-specific variances. Figures report MA1 only; AR1 stays in the audit. Near-boundary parameters are flagged. MORA comparisons reuse the same modern pairs; corrected responses are descriptive, not causal interventions. **MA1 working specification; corrected lag lake sensitivity**.
+Primary individual-lake comparison with modern plots in its park; the primary MA(1) covariance is reestimated. **Primary reconstruction; conditional inference**.
 
-Script: [13_tracking_lake_sensitivity.R](../R/stages/13_tracking_lake_sensitivity.R). [Complete PDF](../plot/test_figures/fig_tracking_lake_coefficients_direction_corrected_lag_rate_per_century_offset_0.pdf) (1 page).
+Script: [13_tracking_lake_sensitivity.R](../R/stages/13_tracking_lake_sensitivity.R). [Complete PDF](../plot/test_figures/sensitivity/lake_checks/fig_tracking_lake_coefficients.pdf) (5 pages).
 
-![Direction-corrected lag-change rate: offset-0 lake sensitivity coefficients. — PDF page 1](assets/analysis/direction_lake_coefficients-p1.png)
+![Direction-corrected lag-change rate: primary lake sensitivity coefficients. — PDF page 5](assets/analysis/direction_lake_coefficients-p5.png)
 
-### Direction-corrected lag-change rate: offset-0 lake sensitivity contrasts
+### Direction-corrected lag-change rate: primary lake sensitivity contrasts
 
-Each lake is compared with its own park’s finite modern responses under era fixed effects, REML and era-specific variances. Figures report MA1 only; AR1 stays in the audit. Near-boundary parameters are flagged. MORA comparisons reuse the same modern pairs; corrected responses are descriptive, not causal interventions. **MA1 working specification; corrected lag lake sensitivity**.
+Primary individual-lake comparison with modern plots in its park; the primary MA(1) covariance is reestimated. **Primary reconstruction; conditional inference**.
 
-Script: [13_tracking_lake_sensitivity.R](../R/stages/13_tracking_lake_sensitivity.R). [Complete PDF](../plot/test_figures/fig_tracking_lake_contrasts_direction_corrected_lag_rate_per_century_offset_0.pdf) (1 page).
+Script: [13_tracking_lake_sensitivity.R](../R/stages/13_tracking_lake_sensitivity.R). [Complete PDF](../plot/test_figures/sensitivity/lake_checks/fig_tracking_lake_contrasts.pdf) (5 pages).
 
-![Direction-corrected lag-change rate: offset-0 lake sensitivity contrasts. — PDF page 1](assets/analysis/direction_lake_contrasts-p1.png)
+![Direction-corrected lag-change rate: primary lake sensitivity contrasts. — PDF page 5](assets/analysis/direction_lake_contrasts-p5.png)
 
 [Complete direction-corrected lag-change rate lake results](assets/analysis/direction_lake_results.txt).
 
-## Manuscript comparison at offset 0
+## Manuscript comparison from the primary reconstruction
 
-The first row shows offset-0 MA1 **Anthropocene-minus-Holocene contrasts** for
-standardized climate change per century, community turnover rate and observed
-lag change. Parks appear side by side, with dots, error bars and numeric
-annotations in blue for MORA and orange for NOCA. The three response labels are
-uncolored. Climate and CCA responses retain separate scales with aligned zeros
-and both y-axes on the left. Community turnover and lag axes specify **CCA
-distance per century**. The top row labels the difference between Anthropocene
-and Holocene. All bars are the
-original covariance-based 95% Satterthwaite contrast intervals. A star marks
-unadjusted `p < 0.05`; nonsignificant error bars are faint. Nonsignificant NOCA
-dots and numeric annotations use the same opacity, with no transparency legend.
-Both manuscript figures use larger fonts, including numeric annotations and
-axis text. The number below each bar is
-the fitted Anthropocene/Holocene mean
-ratio without a ratio interval. Signed lag ratios can be negative because the
-means have opposite signs, and can be unstable when the Holocene mean is near
-zero; they are descriptive annotations, not multiplicative-effect inference.
+Raw distributions, fitted means and era contrasts refer to the primary reconstruction and selected
+models. Corrected-lag contrasts remain a separate figure. Scatterplots retain separate era scales,
+Spearman coefficients and p-values, and the gray 1:1 reference. Significance styling uses conditional
+model contrasts. Signed lag ratios are descriptive annotations and can be unstable near a zero mean.
 
-The second row contains separate Holocene and Anthropocene scatter panels on
-their own scales, pooling parks. The x-axis is observed lag-change rate;
-the y-axis is **Lag-change rate after correction**, with no unit suffixes on
-the scatter axes. Both quantities are CCA distance per century. Small transparent
-points retain park fills and correction outlines. Colored straight lines are
-descriptive linear fits; the dashed diagonal is 1:1. Colored Spearman rho and
-nominal p values do not adjust for lake, temporal dependence or the mathematical
-coupling of observed and corrected changes. A strong correlation therefore
-does not establish a mechanism or a causal contribution.
-
-The 1:1 reference has the following interpretation:
-
-- **Below 1:1:** Correction reduces final lag.
-- **Above 1:1:** Correction increases final lag.
-- **On 1:1:** No effect on final lag.
-
-The same three statements appear in grey within each scatter panel: increased
-final lag above the diagonal, reduced final lag below it, and no effect directly
-along the 1:1 line. Equal x/y distance scales keep the diagonal and its text at 45°.
-
-Within each calculated transition, observed and corrected rates share the actual
-initial lag and climate elapsed time, so comparing their rates is equivalent to
-comparing final lags. Holocene points summarize finite chronology draws separately
-for each response; their placement is a descriptive comparison of summarized
-rates, rather than a substitute for the draw-level correction effects.
-
-Only observed lag rates have top marginal densities, with each transition or
-plot counted once. The marginal bars reuse the existing offset-0 observed-lag
-GLS means and 95% intervals, placed near the scatter border with rounded mean
-labels. There are no corrected-lag density curves. Actual offset-0 counts are
-20 MORA/10 NOCA Holocene transitions, 330/277 observed and direction-corrected
-modern pairs, and 254/211 pace-corrected modern pairs. The figure has no overall
-title, caption or sample-count subtitles; definitions and limitations stay in this
-review.
-
-Stage 14 reads the combined model input and existing results without fitting,
-transforming responses or reconstructing geometry. It validates 20 group means
-and ten contrasts before writing the primary PDF/PNG and the separate corrected
-contrast PDF. Figure 2/3 assets
-and the calibration/chronology inputs remain unchanged.
-
-### Figure 4. Offset-0 era contrasts and observed-versus-corrected lag changes
+### Figure 4. Primary era contrasts and observed-versus-corrected lag changes
 
 ![Figure 4. fig tracking era distributions](assets/analysis/figure-4.png)
 
 [Full PDF](../plot/fig_tracking_era_distributions.pdf) · [Figure script](../R/stages/14_tracking_manuscript_figure.R).
 
-The pace- and direction-corrected lag contrasts are shown separately below,
-using the same offset-0 MA1 estimates, confidence intervals, park colors and
-significance opacity. Pink and purple x-axis labels identify the two corrections.
-These are signed changes in CCA distance per century, not corrected final lag
-levels. The fold annotations remain point ratios without ratio intervals.
+### Primary corrected lag-change contrasts
 
-### Offset-0 corrected lag-change contrasts
+Selected primary GLS Anthropocene-minus-Holocene contrasts for pace- and direction-corrected lag-change rates, with conditional 95% Satterthwaite intervals in CCA distance per century. MORA/NOCA are blue/orange; correction labels retain their colors. Stars mark unadjusted p < 0.05; nonsignificant dots, bars and annotations are faint. Signed fitted-mean ratios are descriptive and can be unstable near zero. Bacon sensitivity is reported separately. **Primary reconstruction; conditional inference**.
 
-Existing MA1 Anthropocene-minus-Holocene contrasts for pace- and direction-corrected lag-change rates, with 95% Satterthwaite intervals, in CCA distance per century. MORA/NOCA are blue/orange; pink/purple labels identify corrections. Stars mark unadjusted p < 0.05; nonsignificant NOCA dots, bars and numbers are faint. Numbers below bars are signed fitted-mean ratios without ratio intervals, which become unstable near zero. Responses are descriptive and chronology uncertainty is not propagated. This figure reuses the fitted results without refitting. **MA1 working specification; descriptive counterfactual responses**.
+Script: [14_tracking_manuscript_figure.R](../R/stages/14_tracking_manuscript_figure.R). [Complete PDF](../plot/test_figures/primary_models/fig_tracking_corrected_lag_contrasts.pdf) (1 page).
 
-Script: [14_tracking_manuscript_figure.R](../R/stages/14_tracking_manuscript_figure.R). [Complete PDF](../plot/test_figures/fig_tracking_corrected_lag_contrasts_offset_0.pdf) (1 page).
-
-![Offset-0 corrected lag-change contrasts — PDF page 1](assets/analysis/tracking_corrected_lag_contrasts-p1.png)
+![Primary corrected lag-change contrasts — PDF page 1](assets/analysis/tracking_corrected_lag_contrasts-p1.png)
 
 ## Within-era climate, fire and elevation predictor models
 
-[Stage 15](../R/stages/15_tracking_predictor_models.R) is a separate analysis of
-observed, pace-corrected and direction-corrected **lag-change rates**. These
-responses are signed CCA distance per century, not the unsigned final lag or
-the effect of a correction. The two correction rates retain the actual initial
-lag and the original magnitude-based counterfactual calculations. No response
-transformation is applied. Stage 15 reads the canonical combined transition
-input and leaves the era-comparison models and manuscript figures unchanged.
+Primary Holocene explanatory models fit observed and the two corrected lag-change rates against
+`site + climate_rate + fire_activity`, with site-specific residual variances and selected covariance.
+Primary Anthropocene basic models use `site + burned`; extended community models also include
+`elevation + climate_rate`. Responses remain untransformed. Modern-only models retain independent residuals.
 
-The maintained fitting functions below are extracted directly from
-[the predictor helper](../R/helpers/tracking_predictor_models.R).
+The lake random-intercept sensitivity uses the same primary observations and selected covariance.
+Its actual variance, coefficient changes and covariance-interval status are reported below; the older
+near-zero variance result is not assumed to recur.
 
-```r
-fit_tracking_holocene_predictors = function(d) {
-  nlme::gls(estimate ~ site + climate_rate + fire_activity, data=d,
-    correlation=nlme::corARMA(p=0,q=1,form=~time_index | series),
-    weights=nlme::varIdent(form=~1 | site), method='REML', na.action=na.fail,
-    control=nlme::glsControl(msMaxIter=200))
-}
-fit_tracking_holocene_lake_intercept = function(d) {
-  nlme::lme(fixed=estimate ~ site + climate_rate + fire_activity,
-    random=~1 | series, data=d,
-    correlation=nlme::corARMA(p=0,q=1,form=~time_index | series),
-    weights=nlme::varIdent(form=~1 | site), method='REML', na.action=na.fail,
-    control=nlme::lmeControl(msMaxIter=200))
-}
-fit_tracking_anthropocene_predictors = function(d) {
-  nlme::gls(estimate ~ site + burned, data=d,
-    weights=nlme::varIdent(form=~1 | site), method='REML', na.action=na.fail,
-    control=nlme::glsControl(msMaxIter=200))
-}
-fit_tracking_anthropocene_extended_predictors = function(d) {
-  nlme::gls(estimate ~ site + elevation + climate_rate + burned, data=d,
-    weights=nlme::varIdent(form=~1 | site), method='REML', na.action=na.fail,
-    control=nlme::glsControl(msMaxIter=200))
-}
-```
-
-### Holocene: ten separate offset fits
-
-For each response, the additive GLS uses `site + climate_rate + fire_activity`,
-MA(1) residual correlation within each lake, separate park residual variances
-and REML. `climate_rate` is the unchanged standardized physical climate-change
-rate per century; `fire_activity` is the unchanged unitless normalized event
-frequency. The three MORA lakes share regional fire exposure. Their repeated
-responses do not provide three independent regional fire histories.
-
-Every offset uses actual non-overlapping transitions and their finite
-chronology-draw medians. Original time-index gaps remain. There is no second
-median across offsets, draw-support cutoff or filling of missing transitions.
-Missing charcoal coverage excludes a transition from these predictor fits;
-covered zero-event windows retain `fire_activity = 0`. Response validity remains
-separate. Offset 0 has 30 observations for each response: 20 MORA and ten NOCA.
-The single undefined Holocene pace-corrected transition at offset 400 is
-excluded only from its own response fit. The two pace fits at offsets 400 and
-900 have MA parameters near −1; this boundary is retained and flagged in the
-performance CSV. It does not remove an offset or trigger a different model.
-
-Each response occupies one figure row: its four predictor coefficients, with
-95% intervals, followed by the corresponding descriptive R² across the same
-offsets. These panels use separate scales; the R² panel has no interval.
-
-### Holocene offset coefficients and R²
-
-One row per observed or corrected lag-change response, with the four coefficient panels and descriptive R² side by side across ten offsets. Coefficient bars are unadjusted 95% intervals; R² has no interval. Panels have separate scales, and offsets are alternative bin placements. **Exploratory**.
-
-Script: [15_tracking_predictor_models.R](../R/stages/15_tracking_predictor_models.R). [Complete PDF](../plot/test_figures/fig_tracking_predictor_offset_coefficients.pdf) (1 page).
-
-![Holocene offset coefficients and R² — PDF page 1](assets/analysis/tracking_predictor_offset_coefficients-p1.png)
-
-### Holocene reconstruction-ensemble averaging
-
-Immediately after the Holocene fits, stage 15 combines their **coefficients**
-with equal weights across **nine offsets, excluding offset 800** at the author's
-request for all three responses. All ten individual-offset fits and their
-sensitivity diagnostics remain available. It retains the existing observations, responses,
-predictors, MA(1), site variances and REML fits. For each response and offset,
-the component distribution is a joint multivariate-normal approximation
-centered on `coef(fit)`, with the full `vcov(fit)`. Each of the nine included components
-has weight 1/9 and contributes exactly 50,000 joint samples to a 450,000-sample mixture. Fixed
-seeds are recorded; sampling restores the caller's RNG state.
-
-The point estimate is the exact arithmetic mean of the nine included coefficients.
-Bounds are the mixture's 2.5 and 97.5 percentiles, labelled
-**reconstruction-ensemble uncertainty**, not conventional confidence intervals.
-The mixture retains conditional GLS coefficient uncertainty and variation
-between bin placements. Its covariance is the mean component covariance plus
-the population covariance of component means; there is no division of
-uncertainty by √9 and no pooled p-value. Bacon chronology uncertainty is
-**not propagated**: each model still uses the existing transition-level medians
-over chronology draws. Equal weighting assumes the nine included bin origins are
-equally plausible; it does not establish that the models target identical
-temporal coverage or that offsets are independent ecological replicates.
-
-This calculation excerpt comes directly from the maintained helper:
-
-```r
-  # Each component retains coef(fit) and the full vcov(fit).
-  sampling_components=components[included]
-  draws=lapply(sampling_components,function(component) {
-    z=matrix(rnorm(samples_per_offset*k),nrow=samples_per_offset,ncol=k)
-    sweep(z %*% chol(component$vcov),2,component$beta,'+')
-  })
-  names(draws)=as.character(offsets[included])
-  mixture=do.call(rbind,draws);colnames(mixture)=terms
-  betas=do.call(rbind,lapply(sampling_components,`[[`,'beta'))
-  estimate=colMeans(betas) # exact equal-weight mean, not a Monte Carlo mean
-  within=Reduce(`+`,lapply(sampling_components,`[[`,'vcov'))/n_offsets
-  centered=sweep(betas,2,estimate,'-')
-  between=crossprod(centered)/n_offsets
-  bounds=apply(mixture,2,quantile,probs=c(.025,.975),names=FALSE)
-```
-
-The compact results table retains the full range of offset estimates and
-positive/negative/zero sign counts. Sign consistency is the largest of those
-counts divided by nine, a sensitivity summary rather than a significance test.
-The intercept is available in the CSV; the figure focuses on the three
-predictors. All three climate and fire ensemble intervals span zero in this
-run, even where some individual-offset coefficients have narrow intervals.
-
-| Response | Predictor | Ensemble estimate | 2.5% | 97.5% | Offset minimum | Offset maximum | Positive offsets | Negative offsets |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| lag_rate_per_century | siteNOCA | -0.003794 | -0.01552 | 0.008821 | -0.007698 | -0.0007178 | 0 | 9 |
-| lag_rate_per_century | climate_rate | 0.485 | -1.067 | 2.014 | -0.5594 | 1.513 | 7 | 2 |
-| lag_rate_per_century | fire_activity | 0.000669 | -0.03606 | 0.05135 | -0.01705 | 0.03513 | 5 | 4 |
-| pace_corrected_lag_rate_per_century | siteNOCA | 0.003117 | -0.00624 | 0.01668 | -0.002185 | 0.007484 | 6 | 3 |
-| pace_corrected_lag_rate_per_century | climate_rate | -0.1147 | -1.171 | 0.5686 | -0.972 | 0.2973 | 5 | 4 |
-| pace_corrected_lag_rate_per_century | fire_activity | 0.004932 | -0.006749 | 0.03077 | -0.0005308 | 0.01939 | 8 | 1 |
-| direction_corrected_lag_rate_per_century | siteNOCA | 0.006465 | -0.008323 | 0.02191 | 0.002114 | 0.01324 | 9 | 0 |
-| direction_corrected_lag_rate_per_century | climate_rate | 0.7827 | -0.556 | 2.108 | -0.2014 | 1.497 | 8 | 1 |
-| direction_corrected_lag_rate_per_century | fire_activity | 0.0004234 | -0.03598 | 0.04555 | -0.02205 | 0.02692 | 4 | 5 |
-
-### Holocene reconstruction-ensemble coefficients
-
-Exact equal-weight means of coefficients from nine unchanged Holocene MA1 GLS fits, excluding offset 800 for all responses at the author's request. Each included offset has weight 1/9; the unchanged offset-800 fits remain in individual sensitivity diagnostics and the full audit at weight zero. Bars are 2.5–97.5% reconstruction-ensemble uncertainty from an equal mixture of joint multivariate-normal coefficient distributions using each fit's full fixed-effect covariance. Predictor panels have separate scales. Offsets are dependent reconstructions; uncertainty is not divided by sqrt(9), p-values are not pooled and Bacon chronology uncertainty is not propagated. Flagged correlation-boundary fits remain included. **Reconstruction-ensemble sensitivity excluding offset 800; conditional coefficient uncertainty**.
-
-Script: [15_tracking_predictor_models.R](../R/stages/15_tracking_predictor_models.R). [Complete PDF](../plot/test_figures/fig_tracking_predictor_ensemble_coefficients.pdf) (1 page).
-
-![Holocene reconstruction-ensemble coefficients — PDF page 1](assets/analysis/tracking_predictor_ensemble_coefficients-p1.png)
-
-The separate offset audit records valid/excluded transitions, park counts,
-chronology support, convergence and covariance status, MA(1) boundary flags,
-residual SDs, descriptive R² and climate coefficients/response correlations.
-Its comparison with offset 0 uses lake/site/time-index phase keys: shared
-phase keys identify shifted alternative intervals, not equal endpoint ages.
-There are 26–30 valid transitions per fit. No failed or unavailable offset is
-silently dropped. All ten configured fits and their full covariance matrices
-remain in the audit; offset 800 has `included_in_ensemble = FALSE`, weight zero
-and an explicit author-requested exclusion reason. The ensemble table records
-`n_offsets = 9` and `excluded_offsets = 800`.
-
-The unusual direction-corrected offset 800 remains in the individual-offset
-diagnostics, although it is excluded from this ensemble. Near 3,800 BP,
-its MORA climate-predicted directions rotate about 117–142° relative to offset
-700, reversing the sign of the three corrected transition rates. Those
-transitions have all 100 chronology draws. At offset 800 the climate–response
-relationship differs between parks, and the fitted common slope and variance
-weights favor MORA, producing poor unweighted fit in NOCA and R² about −0.78.
-The exclusion is a requested bin-placement sensitivity decision, not a
-convergence failure or an upstream calculation change. The two
-pace-corrected MA(1) boundary fits at offsets 400 and 900 also remain included.
-
-`--ensemble-only` reproduces just these additional outputs from saved fits
-after checking their width and canonical-input fingerprint. It leaves existing
-model objects, individual-offset tables and figures unchanged.
-
-[Reconstruction-ensemble method, coefficients and offset audit](assets/analysis/predictor_ensemble_results.txt).
-
-### Offset-0 random lake intercept sensitivity
-
-Only offset 0 is refitted with an LME random intercept for the four lake series,
-using precisely the same observations, predictors, MA(1) and residual variance
-structure. All three fits return without optimizer warnings. Estimated lake SDs
-are approximately 3.8×10⁻⁷, 2.5×10⁻⁷ and 1.8×10⁻⁷ for observed, pace-corrected
-and direction-corrected rates. The maximum coefficient changes relative to GLS
-are less than 3.3×10⁻⁷; fixed predictions change by less than 2.8×10⁻⁸.
-
-For observed lag, the approximate covariance calculation is non-positive
-definite and variance-component intervals fail. For the corrected responses,
-`apVar` returns positive-definite matrices, but the lake-SD intervals run from
-zero to infinity. Thus those intervals also provide no useful precision for
-the essentially zero lake variance. This is an estimated variance boundary,
-not an optimizer failure or evidence that lake differences are biologically
-absent. With only four lakes, the random-intercept sensitivity does not establish
-general independence between lake responses. The primary fits remain GLS.
-
-| Response | Lake SD | Maximum coefficient change | Covariance uncertainty | Finite lake-SD interval |
+| Response | Lake SD | Maximum coefficient change | Covariance uncertainty | Lake-SD interval available |
 | --- | --- | --- | --- | --- |
-| lag_rate_per_century | 3.792e-07 | 3.283e-07 | Non-positive definite approximate variance-covariance | FALSE |
-| pace_corrected_lag_rate_per_century | 2.515e-07 | 2.747e-07 | positive_definite | FALSE |
-| direction_corrected_lag_rate_per_century | 1.838e-07 | 1.353e-08 | positive_definite | FALSE |
-
-### Supported temporal predictions and descriptive R²
-
-Each Holocene model predicts its response using the corresponding interval's
-site, physical climate rate and fire activity. Predictions span that lake's
-supported intervals; unsupported periods stay blank. The plotting grid repeats
-each fitted rate within `[age_lo, age_hi)` at 100-year display dates, without
-interpolating endpoints or adding model observations. Ten offset trajectories
-are retained separately as stepped paths. Adjacent supported intervals are
-joined by vertical jumps at their shared boundary; missing intervals break the
-path. They are **predicted lag-change rates**, not a
-reconstruction of absolute lag over the whole Holocene. Grey backgrounds reuse
-the previously defined regional CC/S catalog and CC1 subdivisions; they are
-context, not extra predictors or new lake-specific classifications.
-
-MORA fitted trajectories can coincide wherever their predictors coincide:
-the GLS has park, climate and fire effects, without a lake intercept. This does
-not replace the separate lake response observations used to estimate it.
-The prediction CSV includes fixed-effect mean intervals conditional on the
-estimated residual covariance. These do not propagate chronology uncertainty
-or describe future-observation prediction intervals.
+| lag_rate_per_century | 0.01664 | 0.02304 | positive_definite | TRUE |
+| pace_corrected_lag_rate_per_century | 4.563e-06 | 1.473e-08 | Non-positive definite approximate variance-covariance | FALSE |
+| direction_corrected_lag_rate_per_century | 3.338e-06 | 2.602e-08 | positive_definite | TRUE |
 
 ### Holocene predicted lag-change trajectories
 
-One stepped fitted trajectory per offset over supported actual intervals. Adjacent intervals join at their shared boundary; missing intervals break the line. There is no interpolation, extrapolation or averaging offsets. Grey CC/S bands and CC1 subdivisions reuse the frozen regional climate catalog. These are predicted rates, not cumulative lag levels or 100-year independent observations. **Exploratory**.
+Primary explanatory models with actual transition durations and matching climate/fire exposures. See separate whole-chronology sensitivity results. **Primary reconstruction; conditional inference**.
 
-Script: [15_tracking_predictor_models.R](../R/stages/15_tracking_predictor_models.R). [Complete PDF](../plot/test_figures/fig_tracking_predictor_holocene_predictions.pdf) (1 page).
+Script: [15_tracking_predictor_models.R](../R/stages/15_tracking_predictor_models.R). [Complete PDF](../plot/test_figures/primary_models/fig_tracking_predictor_holocene_predictions.pdf) (1 page).
 
 ![Holocene predicted lag-change trajectories — PDF page 1](assets/analysis/tracking_predictor_holocene_predictions-p1.png)
 
-Performance is reported as one explicit descriptive R²:
-`1 - sum((observed - fitted)^2) / sum((observed - mean(observed))^2)`.
-It is unweighted and in sample. GLS fits a covariance-weighted objective, so
-this R² can be negative; the direction-corrected offset-800 value is about
-−0.78 and remains visible. R² does not test model significance or demonstrate
-predictive performance on independent data. Offset-0 R² is about 0.025 for
-observed lag, −0.005 for pace correction and 0.263 for direction correction.
-
 | Response | Specification | Observations | Descriptive R² |
 | --- | --- | --- | --- |
-| lag_rate_per_century | Holocene_MA1 | 30 | 0.0248 |
+| lag_rate_per_century | Holocene | 210 | 0.00512 |
 | lag_rate_per_century | Anthropocene_basic | 607 | 0.04691 |
 | lag_rate_per_century | Anthropocene_extended | 607 | 0.05036 |
-| pace_corrected_lag_rate_per_century | Holocene_MA1 | 30 | -0.004746 |
+| pace_corrected_lag_rate_per_century | Holocene | 184 | -0.005691 |
 | pace_corrected_lag_rate_per_century | Anthropocene_basic | 465 | 0.04797 |
 | pace_corrected_lag_rate_per_century | Anthropocene_extended | 465 | 0.04678 |
-| direction_corrected_lag_rate_per_century | Holocene_MA1 | 30 | 0.2631 |
+| direction_corrected_lag_rate_per_century | Holocene | 210 | 0.01805 |
 | direction_corrected_lag_rate_per_century | Anthropocene_basic | 607 | 0.001562 |
 | direction_corrected_lag_rate_per_century | Anthropocene_extended | 607 | 0.006557 |
 
 ### Descriptive R² for the predictor models
 
-Holocene offset sensitivity above, modern basic and extended fits below. R² = 1 − unweighted SSE/SST. Negative values remain visible because GLS optimizes a covariance-weighted objective, not unweighted SSE. This is in-sample descriptive performance, not validation or a significance test. **Exploratory**.
+Primary explanatory models with actual transition durations and matching climate/fire exposures. See separate whole-chronology sensitivity results. **Primary reconstruction; conditional inference**.
 
-Script: [15_tracking_predictor_models.R](../R/stages/15_tracking_predictor_models.R). [Complete PDF](../plot/test_figures/fig_tracking_predictor_R2.pdf) (1 page).
+Script: [15_tracking_predictor_models.R](../R/stages/15_tracking_predictor_models.R). [Complete PDF](../plot/test_figures/primary_models/fig_tracking_predictor_R2.pdf) (1 page).
 
 ![Descriptive R² for the predictor models — PDF page 1](assets/analysis/tracking_predictor_R2-p1.png)
 
-### Anthropocene: binary burn and extended predictor models
+### Holocene primary and Anthropocene predictor coefficients
 
-Each response has two additive modern GLS specifications: `site + burned`
-and `site + elevation + climate_rate + burned`. Both use independent plot
-residuals, separate residual SDs by park and REML. Elevation remains in meters;
-it is joined by normalized site/plot identity from MORA's cleaned `plot_info`
-and NOCA's Wilson coordinate table. All 607 paired identities have elevation.
-The observed and direction-corrected fits use 607 plots; pace-corrected fits
-use 465 because 142 stationary observed displacements make that correction
-undefined. Other responses retain those plots. Modern records are fitted once
-per specification/response and have no offset.
+Primary explanatory models with actual transition durations and matching climate/fire exposures. See separate whole-chronology sensitivity results. **Primary reconstruction; conditional inference**.
 
-References are MORA and Unburned. `burnedBurned` estimates one additive
-burn association shared between parks; there is no site-by-burn interaction.
-Observed and direction-corrected inputs have two burned MORA and 24 burned
-NOCA plots; pace correction retains two and 17, respectively. Burn estimates
-are consequently supported chiefly by NOCA and are associations, not causal
-fire effects. Continuous charcoal activity is not assigned to modern plots.
-REML AICs are not used to rank the two different fixed-effect specifications.
+Script: [15_tracking_predictor_models.R](../R/stages/15_tracking_predictor_models.R). [Complete PDF](../plot/test_figures/primary_models/fig_tracking_predictor_era_coefficients.pdf) (1 page).
 
-The following figure places the three Holocene offset-0 coefficient sets beside
-both modern specifications. Bars show unadjusted 95% coefficient intervals.
-Original predictor scales remain visible in the tables: per meter for elevation,
-per unit climate rate for its slope, normalized charcoal activity in Holocene
-and a binary burn difference in Anthropocene. Their coefficients do not
-measure equivalent exposure effects across eras or across predictors.
-
-### Holocene offset-0 and Anthropocene predictor coefficients
-
-Rows distinguish observed, pace-corrected and direction-corrected lag changes. Columns distinguish Holocene MA1, modern site-plus-burned, and the extended modern model. Predictors retain their original scales; coefficients have different units and are not directly comparable across predictors. **Exploratory**.
-
-Script: [15_tracking_predictor_models.R](../R/stages/15_tracking_predictor_models.R). [Complete PDF](../plot/test_figures/fig_tracking_predictor_era_coefficients_offset_0.pdf) (1 page).
-
-![Holocene offset-0 and Anthropocene predictor coefficients — PDF page 1](assets/analysis/tracking_predictor_era_coefficients_offset_0-p1.png)
-
-### Residual and spatial checks
-
-Normalized Q-Q and residual-versus-fitted plots are produced for every
-Holocene offset and both modern models. The linked nine-page PDF has three
-pages per response; the review previews observed-lag diagnostics. These
-Gaussian fits remain exploratory if their residual distributions are unsuitable.
+![Holocene primary and Anthropocene predictor coefficients — PDF page 1](assets/analysis/tracking_predictor_era_coefficients-p1.png)
 
 ### Predictor-model normalized residual diagnostics
 
-Response-specific Holocene Q-Q and residual/fitted pages for every offset, plus modern basic/extended diagnostics by park. Complete PDF contains nine pages; selected pages show observed-lag fits. **Exploratory**.
+Primary explanatory models with actual transition durations and matching climate/fire exposures. See separate whole-chronology sensitivity results. **Primary reconstruction; conditional inference**.
 
-Script: [15_tracking_predictor_models.R](../R/stages/15_tracking_predictor_models.R). [Complete PDF](../plot/test_figures/fig_tracking_predictor_residuals.pdf) (9 pages).
+Script: [15_tracking_predictor_models.R](../R/stages/15_tracking_predictor_models.R). [Complete PDF](../plot/test_figures/primary_models/fig_tracking_predictor_residuals.pdf) (1 page).
 
 ![Predictor-model normalized residual diagnostics — PDF page 1](assets/analysis/tracking_predictor_residuals-p1.png)
 
-![Predictor-model normalized residual diagnostics — PDF page 2](assets/analysis/tracking_predictor_residuals-p2.png)
+[Complete era-specific predictor results, lake sensitivity](assets/analysis/predictor_model_results.txt).
 
-![Predictor-model normalized residual diagnostics — PDF page 3](assets/analysis/tracking_predictor_residuals-p3.png)
+### Whole-chronology reconstruction sensitivity
 
-Following the author's choice, spatial covariance is not yet fitted.
-Within each park, a symmetric eight-nearest-neighbor graph in UTM zone 10N
-coordinates, row-standardized, is used for Moran I of normalized residuals.
-The fixed-seed diagnostic uses 999 permutations and nominal two-sided p values.
-Observed-lag residuals show positive spatial association in both parks under
-both specifications (nominal p ≤ 0.043). NOCA also shows association in several
-corrected-rate fits. These exploratory diagnostics do not adjust for twelve
-checks or fitted-model uncertainty, but they show that residual independence
-deserves further spatial sensitivity before treating modern coefficient
-intervals as final inference. The requested independent models remain intact.
+Each of 1,000 complete chronologies constructs its own occupied cells, transitions and endpoint
+climate/fire exposures. The same explanatory model is refitted, retaining the primary MA(1)
+covariance family while reestimating covariance parameters. Combined-era models, lake comparisons,
+random-intercept diagnostics and standalone modern models are primary-only.
 
-| Response | Specification | Park | Moran I | Nominal permutation p |
-| --- | --- | --- | --- | --- |
-| lag_rate_per_century | Anthropocene_basic | MORA | 0.07503 | 0.002 |
-| lag_rate_per_century | Anthropocene_basic | NOCA | 0.0542 | 0.028 |
-| lag_rate_per_century | Anthropocene_extended | MORA | 0.07732 | 0.002 |
-| lag_rate_per_century | Anthropocene_extended | NOCA | 0.05038 | 0.043 |
-| pace_corrected_lag_rate_per_century | Anthropocene_basic | MORA | 0.04154 | 0.109 |
-| pace_corrected_lag_rate_per_century | Anthropocene_basic | NOCA | 0.06853 | 0.018 |
-| pace_corrected_lag_rate_per_century | Anthropocene_extended | MORA | 0.04541 | 0.087 |
-| pace_corrected_lag_rate_per_century | Anthropocene_extended | NOCA | 0.05376 | 0.05 |
-| direction_corrected_lag_rate_per_century | Anthropocene_basic | MORA | -0.01613 | 0.603 |
-| direction_corrected_lag_rate_per_century | Anthropocene_basic | NOCA | 0.1139 | 0.001 |
-| direction_corrected_lag_rate_per_century | Anthropocene_extended | MORA | -0.01436 | 0.656 |
-| direction_corrected_lag_rate_per_century | Anthropocene_extended | NOCA | 0.1089 | 0.001 |
+Sensitivity quantiles describe the distribution of reconstruction-specific coefficient estimates;
+they are not conventional confidence intervals or posterior probabilities. The primary coefficient
+and its conditional confidence interval remain the reported primary result. There is no averaging
+of primary coefficients, pooling of p-values, R² weighting or uncertainty reduction by √1,000.
+Successful-fit and valid-interval denominators, sign agreement, magnitude ranges, interval-conclusion
+agreement, transition counts/durations, coverage losses and failures are retained explicitly.
 
-### Anthropocene residual spatial pattern
+The temporal-range figure shows 50% and 95% ranges across complete Bacon reconstructions,
+with the primary reconstruction retained as solid transition spans. Each draw's own
+transition-average rate or fire exposure is mapped only over that transition's actual duration.
+Vegetation is not interpolated. The bottom panels show transition and valid fire-exposure availability;
+finite-draw denominators and all quantiles are retained in the
+[temporal range audit](assets/analysis/tables/chronology_temporal_ranges.csv).
 
-Projected plot maps of normalized residuals, with separate parks and specifications. Independent residuals remain the initial model; within-park Moran checks record remaining spatial dependence separately. **Exploratory**.
+| Response | Predictor | Successful fits | Primary estimate | Sensitivity median | Sensitivity 2.5% | Sensitivity 97.5% | Sign agreement | Interval conclusion agreement |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| direction_corrected_lag_rate_per_century | (Intercept) | 1000 | -0.0001659 | 0.0003903 | -0.03171 | 0.02903 | 0.487 | 0.995 |
+| direction_corrected_lag_rate_per_century | climate_rate | 1000 | 0.003739 | 0.004083 | -0.1523 | 0.1498 | 0.519 | 0.965 |
+| direction_corrected_lag_rate_per_century | fire_activity | 1000 | 0.02407 | -0.01719 | -0.07173 | 0.03587 | 0.25 | 0.941 |
+| direction_corrected_lag_rate_per_century | siteNOCA | 1000 | 0.02144 | 0.06541 | 0.01043 | 0.1253 | 0.994 | 0.354 |
+| lag_rate_per_century | (Intercept) | 1000 | -0.02119 | -0.002919 | -0.03178 | 0.02443 | 0.572 | 0.992 |
+| lag_rate_per_century | climate_rate | 1000 | 0.01389 | -0.05198 | -0.2044 | 0.0787 | 0.216 | 0.916 |
+| lag_rate_per_century | fire_activity | 1000 | 0.01679 | 0.0001512 | -0.04638 | 0.05378 | 0.502 | 0.99 |
+| lag_rate_per_century | siteNOCA | 1000 | 0.003645 | 0.01427 | -0.01722 | 0.0433 | 0.816 | 0.963 |
+| pace_corrected_lag_rate_per_century | (Intercept) | 1000 | -0.0123 | 0.00125 | -0.03313 | 0.03308 | 0.477 | 0.989 |
+| pace_corrected_lag_rate_per_century | climate_rate | 1000 | 0.03037 | -0.0178 | -0.1965 | 0.1875 | 0.424 | 0.885 |
+| pace_corrected_lag_rate_per_century | fire_activity | 1000 | -0.02128 | -0.008456 | -0.05091 | 0.03618 | 0.648 | 0.964 |
+| pace_corrected_lag_rate_per_century | siteNOCA | 1000 | 0.02188 | 0.001756 | -0.0348 | 0.04136 | 0.542 | 0.948 |
 
-Script: [15_tracking_predictor_models.R](../R/stages/15_tracking_predictor_models.R). [Complete PDF](../plot/test_figures/fig_tracking_predictor_spatial_residuals.pdf) (1 page).
+### Community coefficient sensitivity to 1,000 whole Bacon chronologies
 
-![Anthropocene residual spatial pattern — PDF page 1](assets/analysis/tracking_predictor_spatial_residuals-p1.png)
+Primary and chronology sensitivity are reported separately. Reconstructions are sensitivity realizations, not independent observations.
 
-[Complete era-specific predictor results, lake sensitivity and spatial diagnostics](assets/analysis/predictor_model_results.txt).
+Script: [15_tracking_predictor_models.R](../R/stages/15_tracking_predictor_models.R). [Complete PDF](../plot/test_figures/sensitivity/bacon_chronologies/fig_tracking_predictor_chronology_sensitivity.pdf) (1 page).
 
-Stage 15 saves 36 primary GLS fits (30 Holocene and six modern), three offset-0
-lake sensitivities, 144 coefficient rows, response-specific exclusions, original
-prediction inputs, support, spatial diagnostics and one full TXT. A local RDS
-retains fits for independent numerical checks. The following portable CSVs are
-calculation/report records; the canonical model-ready tables stay unchanged.
+![Community coefficient sensitivity to 1,000 whole Bacon chronologies. — PDF page 1](assets/analysis/tracking_predictor_chronology_sensitivity-p1.png)
 
-- [model coefficients](assets/analysis/tables/predictor_model_coefficients.csv)
-- [model performance](assets/analysis/tables/predictor_model_performance.csv)
-- [holocene ensemble coefficients](assets/analysis/tables/predictor_holocene_ensemble_coefficients.csv)
-- [holocene ensemble offset audit](assets/analysis/tables/predictor_holocene_ensemble_offset_audit.csv)
-- [holocene ensemble offset vcov](assets/analysis/tables/predictor_holocene_ensemble_offset_vcov.csv)
-- [lake random intercept sensitivity](assets/analysis/tables/predictor_lake_random_intercept_sensitivity.csv)
-- [transition predictions](assets/analysis/tables/predictor_transition_predictions.csv)
-- [holocene prediction timeseries](assets/analysis/tables/predictor_holocene_prediction_timeseries.csv)
-- [model exclusions](assets/analysis/tables/predictor_model_exclusions.csv)
-- [anthropocene spatial checks](assets/analysis/tables/predictor_anthropocene_spatial_checks.csv)
-- [anthropocene elevations](assets/analysis/tables/predictor_anthropocene_elevations.csv)
+### Temporal ranges across 1,000 complete Bacon reconstructions
+
+Each chronology constructs its own transitions. Transition-average values are mapped over their actual spans. Bands show conditional finite-draw 50% and 95% ranges; solid spans retain the primary reconstruction. Availability counts are shown separately. These are sensitivity ranges, not model confidence intervals or interpolated vegetation.
+
+Script: [15_tracking_predictor_models.R](../R/stages/15_tracking_predictor_models.R). [Complete PDF](../plot/test_figures/sensitivity/bacon_chronologies/fig_tracking_bacon_chronology_ranges.pdf) (1 page).
+
+![Temporal ranges across 1,000 complete Bacon reconstructions. — PDF page 1](assets/analysis/tracking_bacon_ranges-p1.png)
+
+## Species and seasonal climate contributions
+
+Species vectors use changes in mean normalized sample weights and fixed species coordinates.
+They sum exactly to delta WA before projections and rates. Species parallel contributions are
+signed along delta LC and expressed per century. Seasonal climate-variable vectors are one-variable
+LC perturbations; their sum equals delta LC, and their projections along delta WA retain displacement
+units. Undefined directions stay NA. Perpendicular contributions remain retired.
+
+Boxplots use one primary transition per species/variable and one modern pair, without flattening
+chronology reconstructions into observations. The same conservation checks run within each draw.
+These distributions describe differences among actual transitions, rather than uncertainty across
+offsets or Bacon draws. Climate displacements retain their actual, variable-duration endpoints.
+
+### Species contribution rates by era and park
+
+Each primary lake transition and each modern plot pair contributes once per component. Boxes describe variation among actual transitions, not among offsets or Bacon draws. Species contributions are rates; climate contributions remain displacements. Undefined reference directions are omitted, with counts retained.
+
+Script: [16_cca_transition_contributions.R](../R/stages/16_cca_transition_contributions.R). [Complete PDF](../plot/test_figures/fig_cca_transition_species_boxplots.pdf) (1 page).
+
+![Species contribution rates by era and park. — PDF page 1](assets/analysis/species_contributions-p1.png)
+
+### Seasonal climate displacement contributions by era and park
+
+Each primary lake transition and each modern plot pair contributes once per component. Boxes describe variation among actual transitions, not among offsets or Bacon draws. Species contributions are rates; climate contributions remain displacements. Undefined reference directions are omitted, with counts retained.
+
+Script: [16_cca_transition_contributions.R](../R/stages/16_cca_transition_contributions.R). [Complete PDF](../plot/test_figures/fig_cca_transition_climate_boxplots.pdf) (1 page).
+
+![Seasonal climate displacement contributions by era and park. — PDF page 1](assets/analysis/climate_contributions-p1.png)
+
+Stage 17 fits Holocene species rates with `site + climate_rate + fire_activity`, using the shared
+covariance comparison. Anthropocene species use `site + burned` only. Constant or rank-deficient
+models and numerical failures are reported explicitly; zeros are retained. A constant response
+within a variance group can produce no finite heteroscedastic Gaussian optimum.
+
+| Species | Era | Covariance | Converged | Selected | Failure reason |
+| --- | --- | --- | --- | --- | --- |
+| Abies amabilis | Holocene | Independent | FALSE | FALSE | constant_variance_group: no finite heteroscedastic Gaussian optimum |
+| Abies amabilis | Holocene | MA1 | FALSE | FALSE | constant_variance_group: no finite heteroscedastic Gaussian optimum |
+| Abies amabilis | Holocene | CAR1 | FALSE | FALSE | constant_variance_group: no finite heteroscedastic Gaussian optimum |
+| Abies amabilis | Anthropocene | Independent | TRUE | TRUE | — |
+| Abies grandis | Holocene | Independent | FALSE | FALSE | constant_response |
+| Abies grandis | Holocene | MA1 | FALSE | FALSE | constant_response |
+| Abies grandis | Holocene | CAR1 | FALSE | FALSE | constant_response |
+| Abies grandis | Anthropocene | Independent | TRUE | TRUE | — |
+| Abies lasiocarpa | Holocene | Independent | TRUE | FALSE | — |
+| Abies lasiocarpa | Holocene | MA1 | TRUE | TRUE | — |
+| Abies lasiocarpa | Holocene | CAR1 | TRUE | FALSE | — |
+| Abies lasiocarpa | Anthropocene | Independent | TRUE | TRUE | — |
+| Abies procera | Holocene | Independent | FALSE | FALSE | constant_variance_group: no finite heteroscedastic Gaussian optimum |
+| Abies procera | Holocene | MA1 | FALSE | FALSE | constant_variance_group: no finite heteroscedastic Gaussian optimum |
+| Abies procera | Holocene | CAR1 | FALSE | FALSE | constant_variance_group: no finite heteroscedastic Gaussian optimum |
+| Abies procera | Anthropocene | Independent | FALSE | FALSE | constant_variance_group: no finite heteroscedastic Gaussian optimum |
+| Callitropsis nootkatensis | Holocene | Independent | TRUE | FALSE | — |
+| Callitropsis nootkatensis | Holocene | MA1 | TRUE | TRUE | — |
+| Callitropsis nootkatensis | Holocene | CAR1 | TRUE | FALSE | — |
+| Callitropsis nootkatensis | Anthropocene | Independent | TRUE | TRUE | — |
+| Picea engelmannii | Holocene | Independent | TRUE | FALSE | — |
+| Picea engelmannii | Holocene | MA1 | TRUE | TRUE | — |
+| Picea engelmannii | Holocene | CAR1 | TRUE | FALSE | — |
+| Picea engelmannii | Anthropocene | Independent | TRUE | TRUE | — |
+| Pinus albicaulis | Holocene | Independent | FALSE | FALSE | constant_response |
+| Pinus albicaulis | Holocene | MA1 | FALSE | FALSE | constant_response |
+| Pinus albicaulis | Holocene | CAR1 | FALSE | FALSE | constant_response |
+| Pinus albicaulis | Anthropocene | Independent | TRUE | TRUE | — |
+| Pinus contorta | Holocene | Independent | TRUE | FALSE | — |
+| Pinus contorta | Holocene | MA1 | TRUE | TRUE | — |
+| Pinus contorta | Holocene | CAR1 | TRUE | FALSE | — |
+| Pinus contorta | Anthropocene | Independent | TRUE | TRUE | — |
+| Pinus monticola | Holocene | Independent | TRUE | FALSE | — |
+| Pinus monticola | Holocene | MA1 | TRUE | TRUE | — |
+| Pinus monticola | Holocene | CAR1 | TRUE | FALSE | — |
+| Pinus monticola | Anthropocene | Independent | TRUE | TRUE | — |
+| Pinus ponderosa | Holocene | Independent | FALSE | FALSE | constant_response |
+| Pinus ponderosa | Holocene | MA1 | FALSE | FALSE | constant_response |
+| Pinus ponderosa | Holocene | CAR1 | FALSE | FALSE | constant_response |
+| Pinus ponderosa | Anthropocene | Independent | TRUE | TRUE | — |
+| Pseudotsuga menziesii | Holocene | Independent | TRUE | FALSE | — |
+| Pseudotsuga menziesii | Holocene | MA1 | TRUE | TRUE | — |
+| Pseudotsuga menziesii | Holocene | CAR1 | TRUE | FALSE | — |
+| Pseudotsuga menziesii | Anthropocene | Independent | TRUE | TRUE | — |
+| Thuja plicata | Holocene | Independent | FALSE | FALSE | constant_variance_group: no finite heteroscedastic Gaussian optimum |
+| Thuja plicata | Holocene | MA1 | FALSE | FALSE | constant_variance_group: no finite heteroscedastic Gaussian optimum |
+| Thuja plicata | Holocene | CAR1 | FALSE | FALSE | constant_variance_group: no finite heteroscedastic Gaussian optimum |
+| Thuja plicata | Anthropocene | Independent | TRUE | TRUE | — |
+| Tsuga heterophylla | Holocene | Independent | TRUE | FALSE | — |
+| Tsuga heterophylla | Holocene | MA1 | TRUE | TRUE | — |
+| Tsuga heterophylla | Holocene | CAR1 | TRUE | FALSE | — |
+| Tsuga heterophylla | Anthropocene | Independent | TRUE | TRUE | — |
+| Tsuga mertensiana | Holocene | Independent | TRUE | FALSE | — |
+| Tsuga mertensiana | Holocene | MA1 | TRUE | TRUE | — |
+| Tsuga mertensiana | Holocene | CAR1 | TRUE | FALSE | — |
+| Tsuga mertensiana | Anthropocene | Independent | TRUE | TRUE | — |
+
+### Primary species-model coefficients
+
+Primary and chronology sensitivity are reported separately. Reconstructions are sensitivity realizations, not independent observations.
+
+Script: [17_species_contribution_models.R](../R/stages/17_species_contribution_models.R). [Complete PDF](../plot/test_figures/primary_models/fig_species_contribution_model_coefficients.pdf) (1 page).
+
+![Primary species-model coefficients. — PDF page 1](assets/analysis/species_model_coefficients-p1.png)
+
+### Primary species-model normalized residual diagnostics
+
+Primary and chronology sensitivity are reported separately. Reconstructions are sensitivity realizations, not independent observations.
+
+Script: [17_species_contribution_models.R](../R/stages/17_species_contribution_models.R). [Complete PDF](../plot/test_figures/primary_models/fig_species_contribution_model_residuals.pdf) (1 page).
+
+![Primary species-model normalized residual diagnostics. — PDF page 1](assets/analysis/species_model_residuals-p1.png)
+
+### Species coefficient sensitivity to whole Bacon chronologies
+
+Primary and chronology sensitivity are reported separately. Reconstructions are sensitivity realizations, not independent observations.
+
+Script: [17_species_contribution_models.R](../R/stages/17_species_contribution_models.R). [Complete PDF](../plot/test_figures/sensitivity/bacon_chronologies/fig_species_contribution_chronology_sensitivity.pdf) (1 page).
+
+![Species coefficient sensitivity to whole Bacon chronologies. — PDF page 1](assets/analysis/species_chronology_sensitivity-p1.png)
+
+- [species occupancy](assets/analysis/tables/species_occupancy.csv)
+- [predictor model coefficients](assets/analysis/tables/predictor_model_coefficients.csv)
+- [predictor model performance](assets/analysis/tables/predictor_model_performance.csv)
+- [predictor lake random intercept sensitivity](assets/analysis/tables/predictor_lake_random_intercept_sensitivity.csv)
+- [predictor transition predictions](assets/analysis/tables/predictor_transition_predictions.csv)
+- [predictor model exclusions](assets/analysis/tables/predictor_model_exclusions.csv)
+- [predictor anthropocene elevations](assets/analysis/tables/predictor_anthropocene_elevations.csv)
+- [predictor model selection](assets/analysis/tables/predictor_model_selection.csv)
+- [predictor chronology summary](assets/analysis/tables/predictor_chronology_summary.csv)
+- [predictor chronology status](assets/analysis/tables/predictor_chronology_status.csv)
+- [predictor chronology support](assets/analysis/tables/predictor_chronology_support.csv)
+- [species model coefficients](assets/analysis/tables/species_model_coefficients.csv)
+- [species model selection](assets/analysis/tables/species_model_selection.csv)
+- [species model performance](assets/analysis/tables/species_model_performance.csv)
+- [species chronology summary](assets/analysis/tables/species_chronology_summary.csv)
+- [species chronology status](assets/analysis/tables/species_chronology_status.csv)
 
 ## Limitations and remaining questions
 
@@ -2212,9 +1637,9 @@ They distinguish planned or optional sensitivities from decisions already made.
 | Raw versus V2.1-anchored TraCE21k climate | The active Holocene analysis uses raw TraCE21k values; the V2.1 anchoring diagnostic is not authoritative. | Absolute Holocene climate levels and cross-product comparisons may retain product bias, although the active within-series change calculations are internally consistent. | A validated overlap-period comparison showing whether anchoring reduces bias without introducing a discontinuity or changing the intended anomaly interpretation. |
 | Legacy-calibration versus full-record climate SDs | Changes are divided by SDs from the 607 matched legacy CCA calibration plots. | The reference is tied to the fitted model. A full-record SD would change displayed standardized magnitudes, cross-variable weighting, the unthresholded composite, and standardized climate rates, but not CC/S boundaries under the current variable-specific 50%-of-own-maximum rule. | A prespecified full-record sensitivity with explicit temporal/site weighting and a scientific choice between calibration-relative and dataset-relative effect sizes. |
 | Anthropocene precipitation continuity | Historical climate remains 1979–1989; modern climate uses adult Y−5 through Y at both sites (2026-10-07 decision). The MORA precipitation contrast is flagged. | The apparent post-2010 MORA precipitation shift may partly reflect CHELSA inhomogeneity rather than climate. | Independent station/reanalysis validation and a documented decision on whether post-2010 MORA precipitation is usable. The agreed years are not a pending decision. |
-| Own-origin versus common-origin taxon target geometry | Deferred: the target-alignment analysis is retired. Existing CCA scores and reference matrices are preserved for future contribution analysis. | The two cosines answer alignment relative to each trajectory's own starting community; part of their difference can arise because LC₁ and WA₁ differ. | A prespecified common-origin sensitivity and an ecological decision about whether the estimand should condition on each starting state or hold the target vector fixed across observed and predicted movement. |
+| Own-origin versus common-origin taxon target geometry | Deferred: the target-alignment analysis is retired. Existing CCA scores and reference matrices are preserved; the parallel contribution decomposition does not implement that separate target-origin sensitivity. | The two cosines answer alignment relative to each trajectory's own starting community; part of their difference can arise because LC₁ and WA₁ differ. | A prespecified common-origin sensitivity and an ecological decision about whether the estimand should condition on each starting state or hold the target vector fixed across observed and predicted movement. |
 
-This snapshot uses verified existing analysis outputs, including stored CCA summaries and permutation tests. It does not represent a new full analysis run. [Checks and rebuilding instructions](WORKFLOW.md#tests-and-decisions).
+The analysis checks passed, including paired exclusions, chronology, climate matching, tracking arithmetic and figure outputs. Stored chronologies were unchanged. [Checks and rebuilding instructions](WORKFLOW.md#tests-and-decisions).
 
 ## Diagnostic PDFs
 
@@ -2229,7 +1654,7 @@ current-results analysis.
 | [NOCA_dynamics.pdf](../plot/test_figures/NOCA_dynamics.pdf) | Compare corrected legacy and resurvey species counts. | [000_NOCA_cleaning.R](../R/stages/000_NOCA_cleaning.R) | 3 | current |
 | [species_counts_consolidated.pdf](../plot/test_figures/species_counts_consolidated.pdf) | Inspect consolidated occurrence counts in each site-period group. | [000_occurrence_data_consolidate.R](../R/stages/000_occurrence_data_consolidate.R) | 1 | current |
 | [stage_adult_seedling_past_present.pdf](../plot/test_figures/stage_adult_seedling_past_present.pdf) | Expose adult versus regeneration support for presence. | [000_occurrence_data_consolidate.R](../R/stages/000_occurrence_data_consolidate.R) | 1 | current |
-| [species_through_time.pdf](../plot/test_figures/species_through_time.pdf) | Inspect taxon site confounding and temporal occupancy. | [test_species_through_time.R](../R/diagnostics/test_species_through_time.R) | 1 | 500-year sensitivity |
+| [species_through_time.pdf](../plot/test_figures/species_through_time.pdf) | Inspect taxon site confounding and temporal occupancy. | [test_species_through_time.R](../R/diagnostics/test_species_through_time.R) | 1 | current |
 | [plots_to_cca.pdf](../plot/test_figures/plots_to_cca.pdf) | From starting plots and core samples to the CCA. | [plot_sample_selection.R](../R/diagnostics/plot_sample_selection.R) | 1 | current |
 | [fig_bacon_agedepth_slump.pdf](../plot/test_figures/fig_bacon_agedepth_slump.pdf) | Inspect four fitted age-depth models and slump treatment. | [000_PALEO_a_agedepth.R](../R/stages/000_PALEO_a_agedepth.R) | 1 | current |
 | [fig_bacon_pb210_sensitivity.pdf](../plot/test_figures/fig_bacon_pb210_sensitivity.pdf) | Compare published activity errors with assumed ±10-year age uncertainty. | [000_PALEO_a_agedepth.R](../R/stages/000_PALEO_a_agedepth.R) | 1 | chronology sensitivity |
@@ -2237,58 +1662,62 @@ current-results analysis.
 | [climate_holocene_timeseries.pdf](../plot/test_figures/climate_holocene_timeseries.pdf) | Inspect redundancy among candidate climate variables. | [test_climate_change_variables.R](../R/diagnostics/test_climate_change_variables.R) | 2 | correlation diagnostic; full PDF includes 500-year sensitivity |
 | [fig_cca_scaling_comparison.pdf](../plot/test_figures/fig_cca_scaling_comparison.pdf) | Compare scaling 1 and 2 of the same fitted CCA. | [test_cca_scaling_comparison.R](../R/diagnostics/test_cca_scaling_comparison.R) | 1 | current |
 | [NOCA_fire_map_Wilson2024_PaleoACES.pdf](../plot/test_figures/NOCA_fire_map_Wilson2024_PaleoACES.pdf) | Audit NOCA modern fire assignment against Wilson reference plots. | [01_get_fire_info.R](../R/stages/01_get_fire_info.R) | 1 | current |
-| [fig_fire_event_detection_workflow.pdf](../plot/test_figures/fig_fire_event_detection_workflow.pdf) | Compare fire-event detection in all four lake records. | [03_fire_event_detection_worked_example.R](../R/stages/03_fire_event_detection_worked_example.R) | 2 | current |
+| [fig_fire_event_detection_workflow.pdf](../plot/test_figures/worked_examples/fig_fire_event_detection_workflow.pdf) | Compare fire-event detection in all four lake records. | [03_fire_event_detection_worked_example.R](../R/stages/03_fire_event_detection_worked_example.R) | 2 | current |
 | [fig_walsh_charanalysis_reproduction.pdf](../plot/test_figures/fig_walsh_charanalysis_reproduction.pdf) | Compare official CharAnalysis results with published Walsh totals. | [02_walsh_fire_reproduction.R](../R/stages/02_walsh_fire_reproduction.R) | 3 | current |
-| [fig_holocene_climate_period_method_worked_example.pdf](../plot/test_figures/fig_holocene_climate_period_method_worked_example.pdf) | Expose signed changes, phase support, and era construction. | [05_holocene_climate_fire_eras.R](../R/stages/05_holocene_climate_fire_eras.R) | 1 | current |
-| [fig_holocene_fire_method_worked_example.pdf](../plot/test_figures/fig_holocene_fire_method_worked_example.pdf) | Work through centered event frequencies at 2,300 cal BP. | [06_fire_method_worked_example.R](../R/stages/06_fire_method_worked_example.R) | 1 | current |
+| [fig_holocene_climate_period_method_worked_example.pdf](../plot/test_figures/worked_examples/fig_holocene_climate_period_method_worked_example.pdf) | Expose signed changes, phase support, and era construction. | [05_holocene_climate_fire_eras.R](../R/stages/05_holocene_climate_fire_eras.R) | 1 | current |
+| [fig_holocene_fire_method_worked_example.pdf](../plot/test_figures/worked_examples/fig_holocene_fire_method_worked_example.pdf) | Work through centered event frequencies at 2,300 cal BP. | [06_fire_method_worked_example.R](../R/stages/06_fire_method_worked_example.R) | 1 | current |
 | [fig_holocene_sampling_fire_100yr.pdf](../plot/test_figures/fig_holocene_sampling_fire_100yr.pdf) | Inspect macrofossil sampling and accepted fire detections on native 100-year climate cells before CCA. | [000_occurrence_data_consolidate.R](../R/stages/000_occurrence_data_consolidate.R) | 1 | current |
-| [fig_method_worked_example.pdf](../plot/test_figures/fig_method_worked_example.pdf) | Work through WA/LC movement, lag, ratio, and angle. | [09_tracking_example_and_visualizations.R](../R/stages/09_tracking_example_and_visualizations.R) | 1 | current |
-| [fig_tracking_offset_rates.pdf](../plot/test_figures/fig_tracking_offset_rates.pdf) | Compare tracking responses, climate and fire under established regional climate-period bands, with Anthropocene boxplots. | [09_tracking_example_and_visualizations.R](../R/stages/09_tracking_example_and_visualizations.R) | 1 | current |
-| [fig_tracking_offset_ratios_angles.pdf](../plot/test_figures/fig_tracking_offset_ratios_angles.pdf) | Compare magnitude tracking ratio, angle, climate and fire under the same regional climate-period bands, one variable per row. | [09_tracking_example_and_visualizations.R](../R/stages/09_tracking_example_and_visualizations.R) | 1 | current |
+| [fig_method_worked_example.pdf](../plot/test_figures/worked_examples/fig_method_worked_example.pdf) | Work through WA/LC movement, lag, ratio, and angle. | [09_tracking_example_and_visualizations.R](../R/stages/09_tracking_example_and_visualizations.R) | 1 | current |
+| [fig_tracking_transition_rates.pdf](../plot/test_figures/fig_tracking_transition_rates.pdf) | Compare tracking responses, climate and fire under established regional climate-period bands, with Anthropocene boxplots. | [09_tracking_example_and_visualizations.R](../R/stages/09_tracking_example_and_visualizations.R) | 1 | primary reconstruction; conditional inference |
+| [fig_tracking_transition_ratios_angles.pdf](../plot/test_figures/fig_tracking_transition_ratios_angles.pdf) | Compare magnitude tracking ratio, angle, climate and fire under the same regional climate-period bands, one variable per row. | [09_tracking_example_and_visualizations.R](../R/stages/09_tracking_example_and_visualizations.R) | 1 | primary reconstruction; conditional inference |
 | [test_chelsa_cruts_vs_present.pdf](../plot/test_figures/test_chelsa_cruts_vs_present.pdf) | Retain the older product-comparison reference outside current results. | [test_chelsa_cruts_vs_present.R](../R/diagnostics/test_chelsa_cruts_vs_present.R) | Full PDF only | historical reference |
-| [fig_tracking_model_group_means_lag_rate_per_century.pdf](../plot/test_figures/fig_tracking_model_group_means_lag_rate_per_century.pdf) | MA(1) fitted Holocene/Anthropocene group means and contrasts across offsets. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 1 | MA1 selected; exploratory inference |
-| [fig_tracking_model_coefficients_lag_rate_per_century.pdf](../plot/test_figures/fig_tracking_model_coefficients_lag_rate_per_century.pdf) | MA(1) coefficients across all ten offsets. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 1 | MA1 selected; exploratory inference |
-| [fig_tracking_model_contrasts_lag_rate_per_century.pdf](../plot/test_figures/fig_tracking_model_contrasts_lag_rate_per_century.pdf) | MA(1) Anthropocene-minus-Holocene contrasts across offsets within each park. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 1 | MA1 selected; exploratory inference |
-| [fig_tracking_model_residuals_lag_rate_per_century.pdf](../plot/test_figures/fig_tracking_model_residuals_lag_rate_per_century.pdf) | Residual checks for the selected MA(1) at every offset. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 1 | MA1 selected; exploratory inference |
-| [fig_tracking_model_aic_lag_rate_per_century.pdf](../plot/test_figures/fig_tracking_model_aic_lag_rate_per_century.pdf) | Compare AR1, MA1 and no temporal autocorrelation using AIC across all ten offsets. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 1 | covariance comparison; MA1 selected |
-| [fig_tracking_lake_coefficients_lag_rate_per_century_offset_0.pdf](../plot/test_figures/fig_tracking_lake_coefficients_lag_rate_per_century_offset_0.pdf) | MA(1) individual-lake coefficients at offset 0. | [13_tracking_lake_sensitivity.R](../R/stages/13_tracking_lake_sensitivity.R) | 1 | MA1 selected; offset-0 sensitivity |
-| [fig_tracking_lake_contrasts_lag_rate_per_century_offset_0.pdf](../plot/test_figures/fig_tracking_lake_contrasts_lag_rate_per_century_offset_0.pdf) | MA(1) Anthropocene-minus-Holocene lake contrasts at offset 0. | [13_tracking_lake_sensitivity.R](../R/stages/13_tracking_lake_sensitivity.R) | 1 | MA1 selected; offset-0 sensitivity |
-| [fig_tracking_model_group_means_observed_turnover_rate.pdf](../plot/test_figures/fig_tracking_model_group_means_observed_turnover_rate.pdf) | Observed turnover: mA(1) fitted Holocene/Anthropocene group means and contrasts across offsets. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 1 | MA1 working specification; exploratory turnover |
-| [fig_tracking_model_coefficients_observed_turnover_rate.pdf](../plot/test_figures/fig_tracking_model_coefficients_observed_turnover_rate.pdf) | Observed turnover: mA(1) coefficients across all ten offsets. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 1 | MA1 working specification; exploratory turnover |
-| [fig_tracking_model_contrasts_observed_turnover_rate.pdf](../plot/test_figures/fig_tracking_model_contrasts_observed_turnover_rate.pdf) | Observed turnover: mA(1) Anthropocene-minus-Holocene contrasts across offsets within each park. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 1 | MA1 working specification; exploratory turnover |
-| [fig_tracking_model_residuals_observed_turnover_rate.pdf](../plot/test_figures/fig_tracking_model_residuals_observed_turnover_rate.pdf) | Observed turnover: residual checks for the selected MA(1) at every offset. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 1 | MA1 working specification; exploratory turnover |
-| [fig_tracking_model_aic_observed_turnover_rate.pdf](../plot/test_figures/fig_tracking_model_aic_observed_turnover_rate.pdf) | Observed turnover: compare AR1, MA1 and no temporal autocorrelation using AIC across all ten offsets. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 1 | response-specific covariance comparison |
-| [fig_tracking_lake_coefficients_observed_turnover_rate_offset_0.pdf](../plot/test_figures/fig_tracking_lake_coefficients_observed_turnover_rate_offset_0.pdf) | Observed turnover: mA(1) individual-lake coefficients at offset 0. | [13_tracking_lake_sensitivity.R](../R/stages/13_tracking_lake_sensitivity.R) | 1 | MA1 working specification; exploratory turnover |
-| [fig_tracking_lake_contrasts_observed_turnover_rate_offset_0.pdf](../plot/test_figures/fig_tracking_lake_contrasts_observed_turnover_rate_offset_0.pdf) | Observed turnover: mA(1) Anthropocene-minus-Holocene lake contrasts at offset 0. | [13_tracking_lake_sensitivity.R](../R/stages/13_tracking_lake_sensitivity.R) | 1 | MA1 working specification; exploratory turnover |
-| [fig_tracking_model_group_means_standardized_climate_change_rate.pdf](../plot/test_figures/fig_tracking_model_group_means_standardized_climate_change_rate.pdf) | Untransformed physical climate-change rate: MA(1) fitted Holocene/Anthropocene group means and contrasts across offsets. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 1 | MA1 working specification; exploratory raw climate GLS |
-| [fig_tracking_model_coefficients_standardized_climate_change_rate.pdf](../plot/test_figures/fig_tracking_model_coefficients_standardized_climate_change_rate.pdf) | Untransformed physical climate-change rate: MA(1) coefficients across all ten offsets. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 1 | MA1 working specification; exploratory raw climate GLS |
-| [fig_tracking_model_contrasts_standardized_climate_change_rate.pdf](../plot/test_figures/fig_tracking_model_contrasts_standardized_climate_change_rate.pdf) | Untransformed physical climate-change rate: MA(1) Anthropocene-minus-Holocene contrasts across offsets within each park. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 1 | MA1 working specification; exploratory raw climate GLS |
-| [fig_tracking_model_residuals_standardized_climate_change_rate.pdf](../plot/test_figures/fig_tracking_model_residuals_standardized_climate_change_rate.pdf) | Untransformed physical climate-change rate: residual checks for the selected MA(1) at every offset. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 1 | MA1 working specification; exploratory raw climate GLS |
-| [fig_tracking_model_aic_standardized_climate_change_rate.pdf](../plot/test_figures/fig_tracking_model_aic_standardized_climate_change_rate.pdf) | Untransformed physical climate-change rate: compare AR1, MA1 and no temporal autocorrelation using AIC across all ten offsets. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 1 | MA1 working specification; exploratory raw climate GLS |
-| [fig_tracking_lake_coefficients_standardized_climate_change_rate_offset_0.pdf](../plot/test_figures/fig_tracking_lake_coefficients_standardized_climate_change_rate_offset_0.pdf) | Untransformed physical climate-change rate: MA(1) individual-lake coefficients at offset 0. | [13_tracking_lake_sensitivity.R](../R/stages/13_tracking_lake_sensitivity.R) | 1 | MA1 working specification; exploratory raw climate GLS |
-| [fig_tracking_lake_contrasts_standardized_climate_change_rate_offset_0.pdf](../plot/test_figures/fig_tracking_lake_contrasts_standardized_climate_change_rate_offset_0.pdf) | Untransformed physical climate-change rate: MA(1) Anthropocene-minus-Holocene lake contrasts at offset 0. | [13_tracking_lake_sensitivity.R](../R/stages/13_tracking_lake_sensitivity.R) | 1 | MA1 working specification; exploratory raw climate GLS |
-| [fig_tracking_model_group_means_pace_corrected_lag_rate_per_century.pdf](../plot/test_figures/fig_tracking_model_group_means_pace_corrected_lag_rate_per_century.pdf) | Pace-corrected lag-change rate: group means across ten offsets. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 1 | MA1 working specification; descriptive counterfactual responses |
-| [fig_tracking_model_coefficients_pace_corrected_lag_rate_per_century.pdf](../plot/test_figures/fig_tracking_model_coefficients_pace_corrected_lag_rate_per_century.pdf) | Pace-corrected lag-change rate: coefficients across ten offsets. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 1 | MA1 working specification; descriptive counterfactual responses |
-| [fig_tracking_model_contrasts_pace_corrected_lag_rate_per_century.pdf](../plot/test_figures/fig_tracking_model_contrasts_pace_corrected_lag_rate_per_century.pdf) | Pace-corrected lag-change rate: contrasts across ten offsets. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 1 | MA1 working specification; descriptive counterfactual responses |
-| [fig_tracking_model_residuals_pace_corrected_lag_rate_per_century.pdf](../plot/test_figures/fig_tracking_model_residuals_pace_corrected_lag_rate_per_century.pdf) | Pace-corrected lag-change rate: residuals across ten offsets. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 1 | MA1 working specification; descriptive counterfactual responses |
-| [fig_tracking_model_aic_pace_corrected_lag_rate_per_century.pdf](../plot/test_figures/fig_tracking_model_aic_pace_corrected_lag_rate_per_century.pdf) | Pace-corrected lag-change rate: aic across ten offsets. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 1 | MA1 working specification; descriptive counterfactual responses |
-| [fig_tracking_lake_coefficients_pace_corrected_lag_rate_per_century_offset_0.pdf](../plot/test_figures/fig_tracking_lake_coefficients_pace_corrected_lag_rate_per_century_offset_0.pdf) | Pace-corrected lag-change rate: offset-0 lake sensitivity coefficients. | [13_tracking_lake_sensitivity.R](../R/stages/13_tracking_lake_sensitivity.R) | 1 | MA1 working specification; corrected lag lake sensitivity |
-| [fig_tracking_lake_contrasts_pace_corrected_lag_rate_per_century_offset_0.pdf](../plot/test_figures/fig_tracking_lake_contrasts_pace_corrected_lag_rate_per_century_offset_0.pdf) | Pace-corrected lag-change rate: offset-0 lake sensitivity contrasts. | [13_tracking_lake_sensitivity.R](../R/stages/13_tracking_lake_sensitivity.R) | 1 | MA1 working specification; corrected lag lake sensitivity |
-| [fig_tracking_model_group_means_direction_corrected_lag_rate_per_century.pdf](../plot/test_figures/fig_tracking_model_group_means_direction_corrected_lag_rate_per_century.pdf) | Direction-corrected lag-change rate: group means across ten offsets. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 1 | MA1 working specification; descriptive counterfactual responses |
-| [fig_tracking_model_coefficients_direction_corrected_lag_rate_per_century.pdf](../plot/test_figures/fig_tracking_model_coefficients_direction_corrected_lag_rate_per_century.pdf) | Direction-corrected lag-change rate: coefficients across ten offsets. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 1 | MA1 working specification; descriptive counterfactual responses |
-| [fig_tracking_model_contrasts_direction_corrected_lag_rate_per_century.pdf](../plot/test_figures/fig_tracking_model_contrasts_direction_corrected_lag_rate_per_century.pdf) | Direction-corrected lag-change rate: contrasts across ten offsets. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 1 | MA1 working specification; descriptive counterfactual responses |
-| [fig_tracking_model_residuals_direction_corrected_lag_rate_per_century.pdf](../plot/test_figures/fig_tracking_model_residuals_direction_corrected_lag_rate_per_century.pdf) | Direction-corrected lag-change rate: residuals across ten offsets. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 1 | MA1 working specification; descriptive counterfactual responses |
-| [fig_tracking_model_aic_direction_corrected_lag_rate_per_century.pdf](../plot/test_figures/fig_tracking_model_aic_direction_corrected_lag_rate_per_century.pdf) | Direction-corrected lag-change rate: aic across ten offsets. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 1 | MA1 working specification; descriptive counterfactual responses |
-| [fig_tracking_lake_coefficients_direction_corrected_lag_rate_per_century_offset_0.pdf](../plot/test_figures/fig_tracking_lake_coefficients_direction_corrected_lag_rate_per_century_offset_0.pdf) | Direction-corrected lag-change rate: offset-0 lake sensitivity coefficients. | [13_tracking_lake_sensitivity.R](../R/stages/13_tracking_lake_sensitivity.R) | 1 | MA1 working specification; corrected lag lake sensitivity |
-| [fig_tracking_lake_contrasts_direction_corrected_lag_rate_per_century_offset_0.pdf](../plot/test_figures/fig_tracking_lake_contrasts_direction_corrected_lag_rate_per_century_offset_0.pdf) | Direction-corrected lag-change rate: offset-0 lake sensitivity contrasts. | [13_tracking_lake_sensitivity.R](../R/stages/13_tracking_lake_sensitivity.R) | 1 | MA1 working specification; corrected lag lake sensitivity |
-| [fig_tracking_corrected_lag_contrasts_offset_0.pdf](../plot/test_figures/fig_tracking_corrected_lag_contrasts_offset_0.pdf) | Offset-0 corrected lag-change contrasts | [14_tracking_manuscript_figure.R](../R/stages/14_tracking_manuscript_figure.R) | 1 | MA1 working specification; descriptive counterfactual responses |
-| [fig_tracking_predictor_offset_coefficients.pdf](../plot/test_figures/fig_tracking_predictor_offset_coefficients.pdf) | Holocene offset coefficients and R² | [15_tracking_predictor_models.R](../R/stages/15_tracking_predictor_models.R) | 1 | exploratory |
-| [fig_tracking_predictor_ensemble_coefficients.pdf](../plot/test_figures/fig_tracking_predictor_ensemble_coefficients.pdf) | Holocene reconstruction-ensemble coefficients | [15_tracking_predictor_models.R](../R/stages/15_tracking_predictor_models.R) | 1 | reconstruction-ensemble sensitivity excluding offset 800; conditional coefficient uncertainty |
-| [fig_tracking_predictor_era_coefficients_offset_0.pdf](../plot/test_figures/fig_tracking_predictor_era_coefficients_offset_0.pdf) | Holocene offset-0 and Anthropocene predictor coefficients | [15_tracking_predictor_models.R](../R/stages/15_tracking_predictor_models.R) | 1 | exploratory |
-| [fig_tracking_predictor_holocene_predictions.pdf](../plot/test_figures/fig_tracking_predictor_holocene_predictions.pdf) | Holocene predicted lag-change trajectories | [15_tracking_predictor_models.R](../R/stages/15_tracking_predictor_models.R) | 1 | exploratory |
-| [fig_tracking_predictor_R2.pdf](../plot/test_figures/fig_tracking_predictor_R2.pdf) | Descriptive R² for the predictor models | [15_tracking_predictor_models.R](../R/stages/15_tracking_predictor_models.R) | 1 | exploratory |
-| [fig_tracking_predictor_residuals.pdf](../plot/test_figures/fig_tracking_predictor_residuals.pdf) | Predictor-model normalized residual diagnostics | [15_tracking_predictor_models.R](../R/stages/15_tracking_predictor_models.R) | 1, 2, 3 | exploratory |
-| [fig_tracking_predictor_spatial_residuals.pdf](../plot/test_figures/fig_tracking_predictor_spatial_residuals.pdf) | Anthropocene residual spatial pattern | [15_tracking_predictor_models.R](../R/stages/15_tracking_predictor_models.R) | 1 | exploratory |
+| [fig_tracking_model_group_means.pdf](../plot/test_figures/primary_models/fig_tracking_model_group_means.pdf) | Selected-covariance fitted Holocene/Anthropocene group means and contrasts for the primary reconstruction. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 1 | primary reconstruction; conditional inference |
+| [fig_tracking_model_coefficients.pdf](../plot/test_figures/primary_models/fig_tracking_model_coefficients.pdf) | Selected-covariance coefficients for the primary reconstruction. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 1 | primary reconstruction; conditional inference |
+| [fig_tracking_model_contrasts.pdf](../plot/test_figures/primary_models/fig_tracking_model_contrasts.pdf) | Selected-covariance Anthropocene-minus-Holocene contrasts for the primary reconstruction within each park. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 1 | primary reconstruction; conditional inference |
+| [fig_tracking_model_residuals.pdf](../plot/test_figures/primary_models/fig_tracking_model_residuals.pdf) | Residual checks for the selected Selected-covariance for the primary reconstruction. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 1 | primary reconstruction; conditional inference |
+| [fig_tracking_model_aic.pdf](../plot/test_figures/primary_models/fig_tracking_model_aic.pdf) | Compare independent, neighboring MA(1), and continuous-time AR(1) residual covariance on identical primary observations. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 1 | primary reconstruction; conditional inference |
+| [fig_tracking_lake_coefficients.pdf](../plot/test_figures/sensitivity/lake_checks/fig_tracking_lake_coefficients.pdf) | Selected-covariance individual-lake coefficients for the primary reconstruction. | [13_tracking_lake_sensitivity.R](../R/stages/13_tracking_lake_sensitivity.R) | 1 | primary reconstruction; conditional inference |
+| [fig_tracking_lake_contrasts.pdf](../plot/test_figures/sensitivity/lake_checks/fig_tracking_lake_contrasts.pdf) | Selected-covariance Anthropocene-minus-Holocene lake contrasts for the primary reconstruction. | [13_tracking_lake_sensitivity.R](../R/stages/13_tracking_lake_sensitivity.R) | 1 | primary reconstruction; conditional inference |
+| [fig_tracking_model_group_means.pdf](../plot/test_figures/primary_models/fig_tracking_model_group_means.pdf) | Observed turnover: Selected-covariance fitted Holocene/Anthropocene group means and contrasts for the primary reconstruction. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 2 | primary reconstruction; conditional inference |
+| [fig_tracking_model_coefficients.pdf](../plot/test_figures/primary_models/fig_tracking_model_coefficients.pdf) | Observed turnover: Selected-covariance coefficients for the primary reconstruction. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 2 | primary reconstruction; conditional inference |
+| [fig_tracking_model_contrasts.pdf](../plot/test_figures/primary_models/fig_tracking_model_contrasts.pdf) | Observed turnover: Selected-covariance Anthropocene-minus-Holocene contrasts for the primary reconstruction within each park. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 2 | primary reconstruction; conditional inference |
+| [fig_tracking_model_residuals.pdf](../plot/test_figures/primary_models/fig_tracking_model_residuals.pdf) | Observed turnover: residual checks for the selected Selected-covariance for the primary reconstruction. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 2 | primary reconstruction; conditional inference |
+| [fig_tracking_model_aic.pdf](../plot/test_figures/primary_models/fig_tracking_model_aic.pdf) | Compare independent, neighboring MA(1), and continuous-time AR(1) residual covariance on identical primary observations. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 2 | primary reconstruction; conditional inference |
+| [fig_tracking_lake_coefficients.pdf](../plot/test_figures/sensitivity/lake_checks/fig_tracking_lake_coefficients.pdf) | Observed turnover: Selected-covariance individual-lake coefficients for the primary reconstruction. | [13_tracking_lake_sensitivity.R](../R/stages/13_tracking_lake_sensitivity.R) | 2 | primary reconstruction; conditional inference |
+| [fig_tracking_lake_contrasts.pdf](../plot/test_figures/sensitivity/lake_checks/fig_tracking_lake_contrasts.pdf) | Observed turnover: Selected-covariance Anthropocene-minus-Holocene lake contrasts for the primary reconstruction. | [13_tracking_lake_sensitivity.R](../R/stages/13_tracking_lake_sensitivity.R) | 2 | primary reconstruction; conditional inference |
+| [fig_tracking_model_group_means.pdf](../plot/test_figures/primary_models/fig_tracking_model_group_means.pdf) | Untransformed physical climate-change rate: Selected-covariance fitted Holocene/Anthropocene group means and contrasts for the primary reconstruction. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 3 | primary reconstruction; conditional inference |
+| [fig_tracking_model_coefficients.pdf](../plot/test_figures/primary_models/fig_tracking_model_coefficients.pdf) | Untransformed physical climate-change rate: Selected-covariance coefficients for the primary reconstruction. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 3 | primary reconstruction; conditional inference |
+| [fig_tracking_model_contrasts.pdf](../plot/test_figures/primary_models/fig_tracking_model_contrasts.pdf) | Untransformed physical climate-change rate: Selected-covariance Anthropocene-minus-Holocene contrasts for the primary reconstruction within each park. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 3 | primary reconstruction; conditional inference |
+| [fig_tracking_model_residuals.pdf](../plot/test_figures/primary_models/fig_tracking_model_residuals.pdf) | Untransformed physical climate-change rate: residual checks for the selected Selected-covariance for the primary reconstruction. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 3 | primary reconstruction; conditional inference |
+| [fig_tracking_model_aic.pdf](../plot/test_figures/primary_models/fig_tracking_model_aic.pdf) | Compare independent, neighboring MA(1), and continuous-time AR(1) residual covariance on identical primary observations. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 3 | primary reconstruction; conditional inference |
+| [fig_tracking_lake_coefficients.pdf](../plot/test_figures/sensitivity/lake_checks/fig_tracking_lake_coefficients.pdf) | Untransformed physical climate-change rate: Selected-covariance individual-lake coefficients for the primary reconstruction. | [13_tracking_lake_sensitivity.R](../R/stages/13_tracking_lake_sensitivity.R) | 3 | primary reconstruction; conditional inference |
+| [fig_tracking_lake_contrasts.pdf](../plot/test_figures/sensitivity/lake_checks/fig_tracking_lake_contrasts.pdf) | Untransformed physical climate-change rate: Selected-covariance Anthropocene-minus-Holocene lake contrasts for the primary reconstruction. | [13_tracking_lake_sensitivity.R](../R/stages/13_tracking_lake_sensitivity.R) | 3 | primary reconstruction; conditional inference |
+| [fig_tracking_model_group_means.pdf](../plot/test_figures/primary_models/fig_tracking_model_group_means.pdf) | Pace-corrected lag-change rate: group means for the primary reconstruction. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 4 | primary reconstruction; conditional inference |
+| [fig_tracking_model_coefficients.pdf](../plot/test_figures/primary_models/fig_tracking_model_coefficients.pdf) | Pace-corrected lag-change rate: coefficients for the primary reconstruction. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 4 | primary reconstruction; conditional inference |
+| [fig_tracking_model_contrasts.pdf](../plot/test_figures/primary_models/fig_tracking_model_contrasts.pdf) | Pace-corrected lag-change rate: contrasts for the primary reconstruction. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 4 | primary reconstruction; conditional inference |
+| [fig_tracking_model_residuals.pdf](../plot/test_figures/primary_models/fig_tracking_model_residuals.pdf) | Pace-corrected lag-change rate: residuals for the primary reconstruction. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 4 | primary reconstruction; conditional inference |
+| [fig_tracking_model_aic.pdf](../plot/test_figures/primary_models/fig_tracking_model_aic.pdf) | Compare independent, neighboring MA(1), and continuous-time AR(1) residual covariance on identical primary observations. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 4 | primary reconstruction; conditional inference |
+| [fig_tracking_lake_coefficients.pdf](../plot/test_figures/sensitivity/lake_checks/fig_tracking_lake_coefficients.pdf) | Pace-corrected lag-change rate: primary lake sensitivity coefficients. | [13_tracking_lake_sensitivity.R](../R/stages/13_tracking_lake_sensitivity.R) | 4 | primary reconstruction; conditional inference |
+| [fig_tracking_lake_contrasts.pdf](../plot/test_figures/sensitivity/lake_checks/fig_tracking_lake_contrasts.pdf) | Pace-corrected lag-change rate: primary lake sensitivity contrasts. | [13_tracking_lake_sensitivity.R](../R/stages/13_tracking_lake_sensitivity.R) | 4 | primary reconstruction; conditional inference |
+| [fig_tracking_model_group_means.pdf](../plot/test_figures/primary_models/fig_tracking_model_group_means.pdf) | Direction-corrected lag-change rate: group means for the primary reconstruction. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 5 | primary reconstruction; conditional inference |
+| [fig_tracking_model_coefficients.pdf](../plot/test_figures/primary_models/fig_tracking_model_coefficients.pdf) | Direction-corrected lag-change rate: coefficients for the primary reconstruction. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 5 | primary reconstruction; conditional inference |
+| [fig_tracking_model_contrasts.pdf](../plot/test_figures/primary_models/fig_tracking_model_contrasts.pdf) | Direction-corrected lag-change rate: contrasts for the primary reconstruction. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 5 | primary reconstruction; conditional inference |
+| [fig_tracking_model_residuals.pdf](../plot/test_figures/primary_models/fig_tracking_model_residuals.pdf) | Direction-corrected lag-change rate: residuals for the primary reconstruction. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 5 | primary reconstruction; conditional inference |
+| [fig_tracking_model_aic.pdf](../plot/test_figures/primary_models/fig_tracking_model_aic.pdf) | Compare independent, neighboring MA(1), and continuous-time AR(1) residual covariance on identical primary observations. | [12_tracking_era_models.R](../R/stages/12_tracking_era_models.R) | 5 | primary reconstruction; conditional inference |
+| [fig_tracking_lake_coefficients.pdf](../plot/test_figures/sensitivity/lake_checks/fig_tracking_lake_coefficients.pdf) | Direction-corrected lag-change rate: primary lake sensitivity coefficients. | [13_tracking_lake_sensitivity.R](../R/stages/13_tracking_lake_sensitivity.R) | 5 | primary reconstruction; conditional inference |
+| [fig_tracking_lake_contrasts.pdf](../plot/test_figures/sensitivity/lake_checks/fig_tracking_lake_contrasts.pdf) | Direction-corrected lag-change rate: primary lake sensitivity contrasts. | [13_tracking_lake_sensitivity.R](../R/stages/13_tracking_lake_sensitivity.R) | 5 | primary reconstruction; conditional inference |
+| [fig_tracking_corrected_lag_contrasts.pdf](../plot/test_figures/primary_models/fig_tracking_corrected_lag_contrasts.pdf) | Primary corrected lag-change contrasts | [14_tracking_manuscript_figure.R](../R/stages/14_tracking_manuscript_figure.R) | 1 | primary reconstruction; conditional inference |
+| [fig_tracking_predictor_era_coefficients.pdf](../plot/test_figures/primary_models/fig_tracking_predictor_era_coefficients.pdf) | Holocene primary and Anthropocene predictor coefficients | [15_tracking_predictor_models.R](../R/stages/15_tracking_predictor_models.R) | 1 | primary reconstruction; conditional inference |
+| [fig_tracking_predictor_holocene_predictions.pdf](../plot/test_figures/primary_models/fig_tracking_predictor_holocene_predictions.pdf) | Holocene predicted lag-change trajectories | [15_tracking_predictor_models.R](../R/stages/15_tracking_predictor_models.R) | 1 | primary reconstruction; conditional inference |
+| [fig_tracking_predictor_R2.pdf](../plot/test_figures/primary_models/fig_tracking_predictor_R2.pdf) | Descriptive R² for the predictor models | [15_tracking_predictor_models.R](../R/stages/15_tracking_predictor_models.R) | 1 | primary reconstruction; conditional inference |
+| [fig_tracking_predictor_residuals.pdf](../plot/test_figures/primary_models/fig_tracking_predictor_residuals.pdf) | Predictor-model normalized residual diagnostics | [15_tracking_predictor_models.R](../R/stages/15_tracking_predictor_models.R) | 1 | primary reconstruction; conditional inference |
+| [fig_tracking_predictor_chronology_sensitivity.pdf](../plot/test_figures/sensitivity/bacon_chronologies/fig_tracking_predictor_chronology_sensitivity.pdf) | Community coefficient sensitivity to 1,000 whole Bacon chronologies. | [15_tracking_predictor_models.R](../R/stages/15_tracking_predictor_models.R) | 1 | current |
+| [fig_cca_transition_species_boxplots.pdf](../plot/test_figures/fig_cca_transition_species_boxplots.pdf) | Species contribution rates by era and park. | [16_cca_transition_contributions.R](../R/stages/16_cca_transition_contributions.R) | 1 | current |
+| [fig_cca_transition_climate_boxplots.pdf](../plot/test_figures/fig_cca_transition_climate_boxplots.pdf) | Seasonal climate displacement contributions by era and park. | [16_cca_transition_contributions.R](../R/stages/16_cca_transition_contributions.R) | 1 | current |
+| [fig_species_contribution_model_coefficients.pdf](../plot/test_figures/primary_models/fig_species_contribution_model_coefficients.pdf) | Primary species-model coefficients. | [17_species_contribution_models.R](../R/stages/17_species_contribution_models.R) | 1 | current |
+| [fig_species_contribution_model_residuals.pdf](../plot/test_figures/primary_models/fig_species_contribution_model_residuals.pdf) | Primary species-model normalized residual diagnostics. | [17_species_contribution_models.R](../R/stages/17_species_contribution_models.R) | 1 | current |
+| [fig_species_contribution_chronology_sensitivity.pdf](../plot/test_figures/sensitivity/bacon_chronologies/fig_species_contribution_chronology_sensitivity.pdf) | Species coefficient sensitivity to whole Bacon chronologies. | [17_species_contribution_models.R](../R/stages/17_species_contribution_models.R) | 1 | current |
+| [fig_tracking_bacon_chronology_ranges.pdf](../plot/test_figures/sensitivity/bacon_chronologies/fig_tracking_bacon_chronology_ranges.pdf) | Temporal ranges across 1,000 complete Bacon reconstructions. | [15_tracking_predictor_models.R](../R/stages/15_tracking_predictor_models.R) | 1 | current |
 
 ## TraCE21k–V2.1 comparison and planned sensitivity
 

@@ -28,15 +28,27 @@ for (site_name in c("MORA", "NOCA")) for (survey in c("legacy", "resurvey")) {
 eras = c("CC1", "S1", "CC2", "S2", "CC3", "S3", "CC4", "S4")
 stopifnot(
   setequal(centroids$site, c("MORA", "NOCA")),
-  all(table(centroids$site) == 8L),
-  all(table(centroids$era_id) == 2L),
-  identical(unique(centroids$era_id), eras),
+  all(centroids$era_id %in% eras),
+  setequal(centroids$era_id, eras),
   !anyDuplicated(centroids[c("site", "era_id")]),
   all(centroids$n_dates > 0L),
   all(is.finite(unlist(select(centroids, ends_with(c("CCA1", "CCA2"))))))
 )
 
-main_code = paste(readLines(here("R/stages/07_cca_figure.R")), collapse = "\n")
+# Independently verify equal-lake weighting and original primary century means.
+positions=read_csv(here('output/cca_tracking_holocene_century_positions.csv'),show_col_types=FALSE)
+catalog=read_csv(here('output/holocene_era_catalog.csv'),show_col_types=FALSE)
+for(i in seq_len(nrow(centroids))) {
+  row=centroids[i,];period=catalog[catalog$era_id==row$era_id,]
+  x=positions |> filter(site==row$site,century_cal_bp>=period$younger_cal_bp,
+    century_cal_bp<period$older_cal_bp)
+  lakes=split(x,x$lake)
+  expected=colMeans(do.call(rbind,lapply(lakes,function(z) colMeans(as.matrix(z[c('o1','o2','p1','p2')])))))
+  actual=as.numeric(row[c('observed_CCA1','observed_CCA2','predicted_CCA1','predicted_CCA2')])
+  stopifnot(row$n_lakes==length(lakes),max(abs(actual-expected))<1e-12)
+}
+
+main_code = paste(readLines(here("R/stages/08_cca_figure.R")), collapse = "\n")
 stopifnot(
   str_detect(main_code, 'holocene_display_mode = "era_centroid"'),
   str_detect(main_code, 'cca_figure_stem = "fig_cca_trajectories"'),
@@ -89,5 +101,5 @@ pdf_pages = function(path) {
 if (render_figures && nzchar(Sys.which("pdfinfo")))
   stopifnot(pdf_pages(figure_files[1]) == 1L)
 
-cat("PASS: publication CCA figure uses eight named CC1-S4 WA/LC paths and A-D panels",
+cat("PASS: publication CCA figure uses primary equal-lake period centroids and preserved A-D architecture",
     if (render_figures) ", including PDF/PNG outputs.\n" else ".\n", sep = "")

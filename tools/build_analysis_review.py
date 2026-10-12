@@ -91,7 +91,7 @@ COLUMNS = {
  'event_audit': [('lake','Lake'),('candidate_events','Candidates'),('rejected_by_count_screen','Count rejected'),('accepted_events','Accepted')],
  'walsh_audit': [('lake','Lake'),('official_r_episodes','Official R episodes'),('published_total_episodes','Published total'),('difference','Difference')],
  'raw_climate_rates': [('variable_label','Constraint'),('rate_unit','Units'),('holocene_max_signed_rate_per_century','Holocene regional signed maximum'),('holocene_peak_cal_bp','Peak cal BP'),('anthropocene_median_rate_per_century_MORA','MORA modern median'),('anthropocene_median_rate_per_century_NOCA','NOCA modern median')],
- 'lake_support': [('lake','Lake'),('offset','Offset'),('n_eligible_samples','Samples'),('n_transitions','Transitions'),('present_draws_min','Minimum draws'),('n_nmin2_realizations','Two-sample realizations')],
+ 'lake_support': [('lake','Lake'),('n_occupied_centuries','Occupied centuries'),('n_transitions','Transitions'),('n_gaps_over_100','Gaps over 100 years'),('duration_median','Median duration (years)'),('n_fire_coverage_losses','Missing fire exposure')],
  'era_centroids': [('site','Site'),('era_id','Era'),('n_dates','Positioned dates'),('observed_CCA1','Observed CCA1'),('observed_CCA2','Observed CCA2'),('predicted_CCA1','Predicted CCA1'),('predicted_CCA2','Predicted CCA2')],
 }
 
@@ -99,10 +99,10 @@ def workflow_stages():
     workflow = (ROOT / 'R/workflow.R').read_text()
     paths = re.findall(r'run_script\("(R/[^\"]+[.]R)"', workflow)
     paths = [p for p in paths if p.startswith('R/stages/')]
-    if len(paths) != 26 or len(set(paths)) != 26: raise ValueError('Expected exactly 26 ordered workflow analysis stages.')
+    if len(paths) != 28 or len(set(paths)) != 28: raise ValueError('Expected exactly 28 ordered workflow analysis stages.')
     numbered = [p for p in paths if not Path(p).name.startswith('000_')]
-    if [int(Path(p).name.split('_', 1)[0]) for p in numbered] != list(range(1, 16)):
-        raise ValueError('Numbered stages must follow the dependency-checked execution order 01–15.')
+    if [int(Path(p).name.split('_', 1)[0]) for p in numbered] != list(range(1, 18)):
+        raise ValueError('Numbered stages must follow the dependency-checked execution order 01–17.')
     if any(not (ROOT/p).is_file() for p in paths):
         raise ValueError('Workflow refers to a missing stage.')
     return paths
@@ -166,21 +166,29 @@ def combined_review():
     return text
 
 def script_map():
-    groups = [
-        ('Modern vegetation and fire', 3), ('Modern climate', 2),
-        ('Chronology (optional refit)', 1), ('Paleo vegetation and fire', 3),
-        ('Paleo climate', 2), ('Taxonomy consolidation', 1),
-        ('CCA eligibility, calibration and reference', 1),
-        ('Fire catalog and climate eras', 2), ('Canonical lake/plot tracking', 1), ('Combined transition input', 1), ('Covariance comparison and selected MA1', 1), ('Offset-0 lake sensitivity', 1), ('Offset-0 manuscript comparison: Figure 4', 1), ('Era-specific predictor models and lake-intercept sensitivity', 1), ('Community trajectories: Figure 3', 1),
-        ('Tracking and fire-detection examples', 2), ('Climate/fire display: Figure 2 and example', 2)]
-    paths = workflow_stages(); index = 0; data = []
-    for part,count in groups:
-        selected = paths[index:index+count]
-        scripts = '; '.join(f'[{Path(p).name}](../{p})' for p in selected)
-        data.append(dict(order=str(index+1) if count == 1 else f'{index+1}–{index+count}',part=part,scripts=scripts))
-        index += count
-    if index != len(paths): raise ValueError('Workflow script map is incomplete.')
-    return mdtable(data,[('order','Order'),('part','Analysis step'),('scripts','Scripts')])
+    data=[dict(order=i,part='Preparation' if Path(p).name.startswith('000_') else 'Analysis',
+        scripts=f'[{Path(p).name}](../{p})') for i,p in enumerate(workflow_stages(),1)]
+    return mdtable(data,[('order','Execution order'),('part','Role'),('scripts','Script')])
+
+def predictor_model_markdown():
+    return """```r
+# Same fixed effects and rows; Independent/CAR1 are comparisons only.
+correlation = NULL
+correlation = nlme::corARMA(p = 0, q = 1, form = ~ time_index | series)
+correlation = nlme::corCAR1(form = ~ time_centuries | series)
+# Primary Holocene community and species explanatory models: MA(1).
+correlation = nlme::corARMA(p = 0, q = 1, form = ~ time_index | series)
+nlme::gls(estimate ~ site + climate_rate + fire_activity, data = d,
+  correlation = correlation, weights = nlme::varIdent(form = ~ 1 | site),
+  method = 'REML', na.action = na.fail)
+# Anthropocene species and basic community model:
+nlme::gls(estimate ~ site + burned, data = d,
+  weights = nlme::varIdent(form = ~ 1 | site), method = 'REML')
+# Extended Anthropocene COMMUNITY model only:
+nlme::gls(estimate ~ site + elevation + climate_rate + burned, data = d,
+  weights = nlme::varIdent(form = ~ 1 | site), method = 'REML')
+```
+"""
 
 METRIC_LABELS = {'lag_rate_per_century': 'Δlag per century',
                  'rate_tracking_ratio': 'Tracking rate ratio', 'angle_degrees': 'Movement angle (°)'}
@@ -198,58 +206,39 @@ def local_links(text):
         yield target.split('#',1)[0]
 
 def validate_tracking_contracts(root):
-    # Portable readers must see the same compact contracts as local model users.
-    responses = ['lag_rate_per_century', 'observed_turnover_rate', 'magnitude_tracking_ratio',
-                 'rate_tracking_ratio', 'angle_degrees', 'pace_effect_on_lag_per_century',
-                 'direction_effect_on_lag_per_century']
-    keys = ['site', 'lake', 'offset', 'age_hi', 'age_lo']
-    contracts = {
-        'lake_by_offset': keys + ['interval_mid_cal_bp', 'vegetation_dt_years', 'climate_dt_years',
-            'standardized_climate_change_rate', 'fire_activity', 'fire_coverage_valid', 'high_fire'] +
-            responses + ['n_draws_present', 'n_draws_nmin2', 'n_samples_t1_median', 'n_samples_t2_median'],
-        'modern_model_input': ['site', 'plot_id', 'vegetation_t1_year', 'vegetation_t2_year',
-            'climate_t1_midyear', 'climate_t2_midyear', 'vegetation_dt_years', 'climate_dt_years',
-            'standardized_climate_change_rate', 'burned'] + responses + ['angle_valid',
-            'pace_counterfactual_valid', 'direction_counterfactual_valid', 'tracking_ratio_valid'],
-        'lake_uncertainty': keys + ['metric', 'sampling_rule', 'median', 'q025', 'q975',
-            'n_expected_draws', 'n_present_draws', 'n_eligible_draws', 'n_valid_draws', 'n_undefined_draws'],
-        'era_by_offset': ['era', 'site', 'lake', 'plot_id', 'offset', 'age_hi', 'age_lo',
-            'interval_mid_cal_bp', 'vegetation_t1_year', 'vegetation_t2_year',
-            'climate_t1_midyear', 'climate_t2_midyear', 'vegetation_dt_years', 'climate_dt_years',
-            'metric', 'estimate', 'response_valid', 'standardized_climate_change_rate',
-            'fire_activity', 'fire_coverage_valid', 'high_fire', 'burned', 'n_draws_present',
-            'n_draws_nmin2', 'n_samples_t1_median', 'n_samples_t2_median', 'longitude', 'latitude']}
-    for name, expected in contracts.items():
-        with (root/ASSETS/'tables'/f'{name}.csv').open(newline='') as f:
-            header = next(csv.reader(f))
-        if header != expected: raise ValueError('Portable tracking contract differs: '+name)
-    combined = rows(root/ASSETS/'tables/era_by_offset.csv')
-    combined_metrics = responses + ['pace_corrected_lag_rate_per_century',
-                                    'direction_corrected_lag_rate_per_century']
-    observations = {}
+    combined=rows(root/ASSETS/'tables/era_model_input.csv')
+    expected={'lag_rate_per_century','observed_turnover_rate','magnitude_tracking_ratio',
+        'rate_tracking_ratio','angle_degrees','pace_effect_on_lag_per_century',
+        'direction_effect_on_lag_per_century','pace_corrected_lag_rate_per_century',
+        'direction_corrected_lag_rate_per_century'}
+    observations={}
     for r in combined:
-        if r['era'] not in ('Holocene', 'Anthropocene'):
-            raise ValueError('Invalid era in combined tracking input.')
-        identity = (r['era'],) + tuple(r[k] for k in
-            (keys if r['era']=='Holocene' else ['site', 'plot_id']))
-        metrics = observations.setdefault(identity, set())
-        if r['metric'] in metrics:
-            raise ValueError('Duplicate combined tracking response identity.')
+        if 'offset' in r: raise ValueError('Retired phase field in ecological model input')
+        key=(r['era'],r['transition_id'])
+        metrics=observations.setdefault(key,set())
+        if r['metric'] in metrics: raise ValueError('Duplicate primary response')
         metrics.add(r['metric'])
-        finite = r['estimate'] not in ('NA', '', 'NaN', 'Inf', '-Inf') and math.isfinite(float(r['estimate']))
-        if (r['response_valid']=='TRUE') != finite:
-            raise ValueError('Combined response validity disagrees with finite estimate.')
-    if any(metrics != set(combined_metrics) for metrics in observations.values()):
-        raise ValueError('Combined tracking input is missing original or corrected response rows.')
-    modern = rows(root/ASSETS/'tables/modern_model_input.csv')
-    calculations = rows(root/ASSETS/'tables/modern_calculations.csv')
-    indexed = {(r['site'], r['plot_id']): r for r in calculations}
-    if len(indexed) != len(calculations) or len(modern) != len(calculations):
-        raise ValueError('Modern model/calculation keys differ.')
+        finite=r['estimate'] not in ('NA','','NaN','Inf','-Inf') and math.isfinite(float(r['estimate']))
+        if (r['response_valid']=='TRUE')!=finite: raise ValueError('Invalid response flag')
+        if r['era']=='Holocene':
+            dt=float(r['age_hi'])-float(r['age_lo'])
+            if dt<=0 or float(r['vegetation_dt_years'])!=dt or float(r['climate_dt_years'])!=dt:
+                raise ValueError('Invalid actual transition duration')
+            if r['fire_coverage_valid']=='FALSE' and r['fire_activity']!='NA':
+                raise ValueError('Missing fire coverage is not NA')
+    if any(metrics!=expected for metrics in observations.values()): raise ValueError('Missing primary responses')
+    if sum(k[0]=='Anthropocene' for k in observations)!=607: raise ValueError('Modern pair identities changed')
+    for name,n_metrics in [('predictor_chronology_status',3),('species_chronology_status',14)]:
+        status=rows(root/ASSETS/'tables'/f'{name}.csv')
+        if len(status)!=1000*n_metrics or len({(r['draw'],r['metric']) for r in status})!=len(status):
+            raise ValueError('Incomplete whole-chronology fit audit: '+name)
+    modern=rows(root/ASSETS/'tables/modern_model_input.csv')
+    calculations=rows(root/ASSETS/'tables/modern_calculations.csv')
+    indexed={(r['site'],r['plot_id']):r for r in calculations}
+    if len(indexed)!=607 or len(modern)!=607: raise ValueError('Modern model/calculation keys differ')
     for r in modern:
-        audit = indexed.get((r['site'], r['plot_id']), {})
-        if any(value != audit.get(column) for column, value in r.items()):
-            raise ValueError('Modern model differs from calculation record: '+r['plot_id'])
+        if any(value!=indexed[r['site'],r['plot_id']].get(column) for column,value in r.items()):
+            raise ValueError('Modern model differs from calculation record')
 
 def validate(root=ROOT):
     validate_tracking_contracts(root)
@@ -319,49 +308,25 @@ def validate(root=ROOT):
             raise ValueError('Figure 3 does not use the valid paired CCA set: '+site)
     if '## Plots and samples included in CCA' not in text or 'Loss of all recorded tree-taxon presence at resurvey' not in text:
         raise ValueError('Report omitted the CCA exclusion explanation/table.')
-    calculations = tracking_calculation_markdown()
-    if calculations.rstrip() not in text or any(name not in text for name in
-            ['n_draws_present', 'n_draws_nmin2', 'undefined', 'nmin2']):
-        raise ValueError('Review omitted maintained calculation code or support definitions.')
-    if (ROOT/'R/helpers/tracking_metrics.R').read_text().rstrip() in text:
-        raise ValueError('Review embeds the whole tracking helper instead of calculation excerpts.')
-    if '### Figure 5.' in text:
-        raise ValueError('Retired manuscript Figure 5 remains active.')
-    if '### Figure 4.' not in text or '../R/stages/14_tracking_manuscript_figure.R)' not in text:
-        raise ValueError('Review omitted the new offset-0 manuscript figure.')
-    helper = (ROOT/'R/helpers/tracking_predictor_models.R').read_text()
-    predictor_code = helper.split('# BEGIN PREDICTOR MODEL STRUCTURES\n',1)[1].split('# END PREDICTOR MODEL STRUCTURES',1)[0].rstrip()
-    if predictor_code not in text or '## Within-era climate, fire and elevation predictor models' not in text:
-        raise ValueError('Review omitted maintained predictor-model structures or interpretation.')
-    ensemble_code = helper.split('# BEGIN RECONSTRUCTION ENSEMBLE SAMPLING\n',1)[1].split('# END RECONSTRUCTION ENSEMBLE SAMPLING',1)[0].rstrip()
-    if ensemble_code not in text:
-        raise ValueError('Review omitted the maintained reconstruction-ensemble calculation excerpt.')
-    coefficients = rows(root/ASSETS/'tables/predictor_model_coefficients.csv')
-    performance = rows(root/ASSETS/'tables/predictor_model_performance.csv')
-    if len(coefficients)!=144 or len(performance)!=36:
-        raise ValueError('Predictor review omits fitted specifications.')
-    if len(rows(root/ASSETS/'tables/predictor_lake_random_intercept_sensitivity.csv'))!=3 or len(rows(root/ASSETS/'tables/predictor_anthropocene_spatial_checks.csv'))!=12:
-        raise ValueError('Predictor review omits lake or spatial sensitivity evidence.')
-    ensemble = rows(root/ASSETS/'tables/predictor_holocene_ensemble_coefficients.csv')
-    audit = rows(root/ASSETS/'tables/predictor_holocene_ensemble_offset_audit.csv')
-    if (len(ensemble)!=12 or len(audit)!=30 or
-            len(rows(root/ASSETS/'tables/predictor_holocene_ensemble_offset_vcov.csv'))!=480 or
-            any(row['interval_type']!='reconstruction-ensemble uncertainty' for row in ensemble) or
-            any(int(row['n_offsets'])!=9 or row['excluded_offsets']!='800' for row in ensemble) or
-            any(row['included_in_ensemble']!=('FALSE' if float(row['offset'])==800 else 'TRUE') or
-                abs(float(row['offset_weight'])-(0 if float(row['offset'])==800 else 1/9))>1e-12 or
-                row['ensemble_exclusion']!=('author_requested_offset_exclusion' if float(row['offset'])==800 else 'none')
-                for row in audit) or
-            '### Holocene reconstruction-ensemble averaging' not in text):
-        raise ValueError('Predictor review omits complete, correctly labelled reconstruction ensembles.')
+    if tracking_calculation_markdown().rstrip() not in text:
+        raise ValueError('Review omitted focused maintained calculation excerpts')
+    if predictor_model_markdown().rstrip() not in text:
+        raise ValueError('Review omitted model structures')
+    if any(word in text for word in ['across ten offsets','offset-0','reconstruction-ensemble averaging']):
+        raise ValueError('Retired ecological analysis remains in the review')
+    if '### Figure 4.' not in text: raise ValueError('Missing primary manuscript figure')
+    performance=rows(root/ASSETS/'tables/predictor_model_performance.csv')
+    if len(performance)!=9: raise ValueError('Missing primary explanatory specifications')
+    if len(rows(root/ASSETS/'tables/predictor_lake_random_intercept_sensitivity.csv'))!=3:
+        raise ValueError('Missing actual lake-intercept diagnostics')
     stages = workflow_stages()
     if any(f'../{p})' not in text for p in stages): raise ValueError('Report script map omits an active workflow stage.')
     review = root/'docs/review/00_main_analysis_review.R'
     if review.read_text() != combined_review(): raise ValueError('Combined analysis review differs from current workflow sources.')
     headings = re.findall(r'^## (.+)$',text,re.M)
     dependency_headings = ['Accepted fire events', 'CCA calibration and geometry',
-                           'Climate eras and high-fire periods', 'Community trajectories',
-                           'Tracking calculations']
+                           'Climate eras and high-fire periods', 'Tracking calculations',
+                           'Community trajectories']
     positions = [headings.index(h) for h in dependency_headings]
     if positions != sorted(positions):
         raise ValueError('Review must explain source fire reconstruction before CCA, then calibration-dependent classifications and tracking.')
@@ -448,7 +413,7 @@ def build(mode):
         if current != start: raise ValueError('Report inputs or code changed during the run; start a new validated workflow.')
         recorded={r['path']:r for r in run['records']}
         required=[x['pdf'] for x in registry['diagnostics'] if x['status']!='historical reference']
-        required += ['plot/'+x['stem']+'.'+ext for x in registry['main_figures'] for ext in ['pdf','png']]
+        required += ['plot/'+x['stem']+'.'+ext for x in registry['main_figures'] for ext in x.get('formats',['pdf','png'])]
         required += [x['source'] for x in registry['tables'].values() if not x['source'].endswith('bacon_run_manifest.csv')]
         required += [x['source'] for x in registry.get('text_outputs', {}).values()]
         required += [x['source'] for x in registry.get('reference_bundles', {}).values()]
@@ -477,7 +442,7 @@ def build(mode):
         result_files=[p for p in (ROOT/'output').iterdir() if p.is_file() and p.suffix in ['.csv','.gz','.rds']]
         result_files += [ROOT/x['source'] for x in registry['tables'].values()]
         result_files += [ROOT/x['source'] for x in registry.get('text_outputs', {}).values()]
-        result_files += [ROOT/x['pdf'] for x in registry['diagnostics']] + [ROOT/'plot'/(x['stem']+'.'+e) for x in registry['main_figures'] for e in ['pdf','png']]
+        result_files += [ROOT/x['pdf'] for x in registry['diagnostics']] + [ROOT/'plot'/(x['stem']+'.'+e) for x in registry['main_figures'] for e in x.get('formats',['pdf','png'])]
         write_csv(out/'results.csv',manifest(sorted(set(result_files))))
         ih=sha(out/'inputs.csv'); sh=sha(out/'sources.csv'); rh=sha(out/'results.csv')
         artifacts=[]
@@ -507,29 +472,23 @@ def build(mode):
             source = ROOT/x['source']
             if not source.is_file(): raise FileNotFoundError('Missing registered text output: '+x['source'])
             dst = out/x.get('asset_name', source.name)
-            dst.write_text('\n'.join(line.rstrip() for line in source.read_text().splitlines())+'\n')
+            dst.write_text('\n'.join(line.rstrip() for line in source.read_text().splitlines()).rstrip()+'\n')
             record(dst, x['producer'], x['source'], status=x.get('status', 'current fitted CCA output'))
             if name in ('tracking_model_results', 'tracking_lake_results') or x.get('link_label'):
-                label = x.get('link_label') or ('Complete offset-0 lake sensitivity results' if name == 'tracking_lake_results'
-                         else 'Complete results for all offset/covariance fits')
+                label = x.get('link_label') or ('Complete primary lake sensitivity results' if name == 'tracking_lake_results'
+                         else 'Complete primary results and covariance comparisons')
                 text_blocks[name] = f'[{label}](assets/analysis/{dst.name}).\n'
             elif name != 'cca_anova_output':
                 language = 'r' if name == 'cca_model_code' else 'text'
                 text_blocks[name] = f'```{language}\n{dst.read_text().rstrip()}\n```\n'
         text_blocks['tracking_metrics_code'] = tracking_calculation_markdown()
-        predictor_helper = (ROOT/'R/helpers/tracking_predictor_models.R').read_text()
-        predictor_code = predictor_helper.split('# BEGIN PREDICTOR MODEL STRUCTURES\n',1)[1].split('# END PREDICTOR MODEL STRUCTURES',1)[0].rstrip()
-        text_blocks['predictor_model_code'] = f'```r\n{predictor_code}\n```\n'
-        ensemble_code = predictor_helper.split('# BEGIN RECONSTRUCTION ENSEMBLE SAMPLING\n',1)[1].split('# END RECONSTRUCTION ENSEMBLE SAMPLING',1)[0].rstrip()
-        text_blocks['predictor_ensemble_code'] = f'```r\n{ensemble_code}\n```\n'
-        predictor_names = [name for name in tables if name.startswith('predictor_')]
-        text_blocks['predictor_tables'] = '\n'.join(f'- [{name.removeprefix("predictor_").replace("_", " ")}](assets/analysis/tables/{name}.csv)' for name in predictor_names)+'\n'
-        focal = [row for row in tables['predictor_model_performance'] if row['era']=='Anthropocene' or row['offset']=='0']
-        text_blocks['predictor_focal_performance'] = mdtable(focal,[('metric','Response'),('model_type','Specification'),('n','Observations'),('R2','Descriptive R²')])
-        text_blocks['predictor_random_sensitivity'] = mdtable(tables['predictor_lake_random_intercept_sensitivity'],[('metric','Response'),('random_intercept_sd','Lake SD'),('max_abs_coefficient_difference','Maximum coefficient change'),('covariance_status','Covariance uncertainty'),('variance_intervals_finite','Finite lake-SD interval')])
-        text_blocks['predictor_spatial_table'] = mdtable(tables['predictor_anthropocene_spatial_checks'],[('metric','Response'),('model_type','Specification'),('site','Park'),('moran_I','Moran I'),('p_permutation_two_sided','Nominal permutation p')])
-        ensemble = [row for row in tables['predictor_holocene_ensemble_coefficients'] if row['term']!='(Intercept)']
-        text_blocks['predictor_ensemble_table'] = mdtable(ensemble,[('metric','Response'),('term','Predictor'),('ensemble_estimate','Ensemble estimate'),('ensemble_lower','2.5%'),('ensemble_upper','97.5%'),('offset_estimate_min','Offset minimum'),('offset_estimate_max','Offset maximum'),('n_positive_offsets','Positive offsets'),('n_negative_offsets','Negative offsets')])
+        text_blocks['predictor_model_code']=predictor_model_markdown()
+        predictor_names=[name for name in tables if name.startswith(('predictor_','species_'))]
+        text_blocks['predictor_tables']='\n'.join(f'- [{name.replace("_"," ")}](assets/analysis/tables/{name}.csv)' for name in predictor_names)+'\n'
+        text_blocks['predictor_focal_performance']=mdtable(tables['predictor_model_performance'],[('metric','Response'),('specification','Specification'),('n','Observations'),('R2','Descriptive R²')])
+        text_blocks['predictor_random_sensitivity']=mdtable(tables['predictor_lake_random_intercept_sensitivity'],[('metric','Response'),('random_intercept_sd','Lake SD'),('max_abs_coefficient_difference','Maximum coefficient change'),('covariance_status','Covariance uncertainty'),('variance_intervals_available','Lake-SD interval available')])
+        text_blocks['chronology_summary']=mdtable(tables['predictor_chronology_summary'],[('metric','Response'),('term','Predictor'),('n_successful_fits','Successful fits'),('primary_estimate','Primary estimate'),('median','Sensitivity median'),('q025','Sensitivity 2.5%'),('q975','Sensitivity 97.5%'),('sign_agreement','Sign agreement'),('support_agreement','Interval conclusion agreement')])
+        text_blocks['species_selection']=mdtable(tables['species_model_selection'],[('metric','Species'),('era','Era'),('model_type','Covariance'),('converged','Converged'),('selected','Selected'),('fit_error','Failure reason')])
         table_blocks={}
         for name,cols in COLUMNS.items():
             data=tables[name]
@@ -587,9 +546,14 @@ def build(mode):
             inventory.append(dict(diagnostic=f'[{Path(x["pdf"]).name}](../{x["pdf"]})',purpose=x['purpose'],producer=f'[{Path(x["producer"]).name}](../{x["producer"]})',pages=', '.join(map(str,x['pages'])) or 'Full PDF only',interpretation=x['interpretation'],status=status))
         fig_blocks={}
         titles={2:'Climate eras, climate rates and high-fire periods',3:'Observed and climate-predicted community trajectories',
-                4:'Offset-0 era contrasts and observed-versus-corrected lag changes'}
+                4:'Primary era contrasts and observed-versus-corrected lag changes'}
         for x in registry['main_figures']:
-            src=ROOT/'plot'/(x['stem']+'.png'); dest=out/f'figure-{x["number"]}.png'; shutil.copyfile(src,dest)
+            dest=out/f'figure-{x["number"]}.png'
+            if 'png' in x.get('formats',['pdf','png']):
+                src=ROOT/'plot'/(x['stem']+'.png'); shutil.copyfile(src,dest)
+            else:
+                src=ROOT/'plot'/(x['stem']+'.pdf')
+                command(['pdftoppm','-f','1','-l','1','-singlefile','-png','-r','170',src,out/f'figure-{x["number"]}'])
             record(dest,x['producer'],relative(src),status='manuscript figure')
             record(ROOT/'plot'/(x['stem']+'.pdf'),x['producer'],'plot/'+x['stem']+'.pdf',status='manuscript PDF')
             fig_blocks['figure_'+str(x['number'])]=f'### Figure {x["number"]}. {titles[x["number"]]}\n\n![Figure {x["number"]}. {x["stem"].replace("_"," ")}](assets/analysis/figure-{x["number"]}.png)\n\n[Full PDF](../plot/{x["stem"]}.pdf) · [Figure script](../{x["producer"]}).\n'

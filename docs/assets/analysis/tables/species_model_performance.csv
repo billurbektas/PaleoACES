@@ -1,0 +1,22 @@
+metric,era,model_type,specification,n,R2
+Abies amabilis,Anthropocene,Independent,site_burned,607,1.9853961220284155e-4
+Abies grandis,Anthropocene,Independent,site_burned,607,3.329857500493638e-4
+Abies lasiocarpa,Holocene,MA1,site_climate_fire,210,0.016162925563857455
+Abies lasiocarpa,Anthropocene,Independent,site_burned,607,0.004769007513404477
+Callitropsis nootkatensis,Holocene,MA1,site_climate_fire,210,0.015273008037266056
+Callitropsis nootkatensis,Anthropocene,Independent,site_burned,607,6.890274902463522e-4
+Picea engelmannii,Holocene,MA1,site_climate_fire,210,0.04329895894805991
+Picea engelmannii,Anthropocene,Independent,site_burned,607,0.007230838245036786
+Pinus albicaulis,Anthropocene,Independent,site_burned,607,0.015125653282985096
+Pinus contorta,Holocene,MA1,site_climate_fire,210,0.020690662232146217
+Pinus contorta,Anthropocene,Independent,site_burned,607,3.6353927610099923e-4
+Pinus monticola,Holocene,MA1,site_climate_fire,210,0.001040858207444928
+Pinus monticola,Anthropocene,Independent,site_burned,607,0.0019485633326077334
+Pinus ponderosa,Anthropocene,Independent,site_burned,607,0.0032369924681918683
+Pseudotsuga menziesii,Holocene,MA1,site_climate_fire,210,0.01120668436107175
+Pseudotsuga menziesii,Anthropocene,Independent,site_burned,607,0.0010024072562797581
+Thuja plicata,Anthropocene,Independent,site_burned,607,3.4237454591901084e-4
+Tsuga heterophylla,Holocene,MA1,site_climate_fire,210,0.015522422204957032
+Tsuga heterophylla,Anthropocene,Independent,site_burned,607,0.0052227364527202
+Tsuga mertensiana,Holocene,MA1,site_climate_fire,210,0.016784551022276495
+Tsuga mertensiana,Anthropocene,Independent,site_burned,607,0.008524215676061209

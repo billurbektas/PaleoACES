@@ -1,4 +1,4 @@
-# Manuscript Figure 4 and separate corrected-lag contrasts at offset 0.
+# Manuscript Figure 4 and separate corrected-lag contrasts at primary reconstruction.
 # Read maintained model input/results; no refitting, transforms or geometry calculations.
 # Rscript R/stages/14_tracking_manuscript_figure.R
 suppressPackageStartupMessages({library(here);library(tidyverse);library(patchwork)})
@@ -8,13 +8,11 @@ source(here('R/helpers/tracking_model_reporting.R'),local=TRUE)
 render_figures=isTRUE(getOption('paleoaces.render_figures',TRUE))
 metrics=c('standardized_climate_change_rate','observed_turnover_rate','lag_rate_per_century',
   tracking_corrected_response_names())
-combined=read_csv(here('output/cca_tracking_era_by_offset.csv'),show_col_types=FALSE)
-if(validate_tracking_model_data(combined)!=1000L)
-  stop('The primary manuscript figure requires the 1,000-year analysis')
-raw=map_dfr(metrics,function(metric) tracking_offset_model_input(combined,metric,0)$data)
+combined=read_csv(here('output/cca_tracking_era_model_input.csv'),show_col_types=FALSE)
+validate_tracking_model_data(combined)
+raw=map_dfr(metrics,function(metric) tracking_primary_model_input(combined,metric)$data)
 read_results=function(metric,filename) {
-  read_csv(here('output/exploratory/tracking_offset_models',metric,filename),show_col_types=FALSE) |>
-    filter(offset==0,model_type==tracking_selected_model_type())
+  read_csv(here('output/tracking_analysis/primary/era_comparison',metric,filename),show_col_types=FALSE)
 }
 means=map_dfr(metrics,read_results,filename='model_group_means.csv')
 contrasts=map_dfr(metrics,read_results,filename='model_contrasts.csv')
@@ -27,7 +25,7 @@ if(nrow(means)!=20L || anyDuplicated(means[keys]) ||
    any(!is.finite(as.matrix(means[c('estimate','conf_low','conf_high')]))) ||
    any(!is.finite(as.matrix(contrasts[c('estimate','conf_low','conf_high','p_value')]))) ||
    any(contrasts$p_value<0 | contrasts$p_value>1))
-  stop('Missing, duplicate or inconsistent offset-0 model results and raw inputs')
+  stop('Missing, duplicate or inconsistent primary model results and raw inputs')
 ratios=means |> select(all_of(keys),estimate) |>
   pivot_wider(names_from=era,values_from=estimate) |>
   left_join(contrasts |> select(metric,site,contrast_estimate=estimate),
@@ -106,10 +104,9 @@ contrast_plot=function(response_metrics,bounds,correction_labels=FALSE) {
   p+theme(plot.margin=margin(10,14,if(correction_labels) 58 else 86,14))
 }
 # Each pair is an actual transition/plot; corrected medians were calculated from
-# draw-level geometry by stage 11, never as a difference between two medians.
-pair_keys=c('era','site','lake','plot_id','offset','age_hi','age_lo')
-pairs=combined |> filter(era=='Anthropocene' | offset==0,
-    metric %in% c('lag_rate_per_century',tracking_corrected_response_names())) |>
+# each primary transition geometry, using its actual elapsed time.
+pair_keys=c('era','site','lake','plot_id','age_hi','age_lo')
+pairs=combined |> filter(metric %in% c('lag_rate_per_century',tracking_corrected_response_names())) |>
   select(all_of(pair_keys),metric,estimate) |>
   pivot_wider(names_from=metric,values_from=estimate) |>
   pivot_longer(all_of(tracking_corrected_response_names()),names_to='metric',values_to='corrected_rate') |>
@@ -206,8 +203,8 @@ if(render_figures) {
   stem=here('plot/fig_tracking_era_distributions')
   ggsave(paste0(stem,'.pdf'),figure,width=19,height=19.5,device=cairo_pdf,bg='white')
   ggsave(paste0(stem,'.png'),figure,width=19,height=19.5,dpi=300,bg='white')
-  ggsave(here('plot/test_figures/fig_tracking_corrected_lag_contrasts_offset_0.pdf'),
+  ggsave(tracking_model_figure('fig_tracking_corrected_lag_contrasts.pdf'),
     corrected_figure,width=12,height=7.5,device=cairo_pdf,bg='white')
 }
-cat('Manuscript figure verified: offset 0; 20 MA1 means, ten covariance-based contrasts;',
+cat('Manuscript figure verified: primary reconstruction; 20 fitted means, ten covariance-based contrasts;',
   nrow(raw),'untransformed input values.\n')

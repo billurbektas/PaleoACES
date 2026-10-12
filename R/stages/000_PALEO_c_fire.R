@@ -57,7 +57,7 @@ paleo_fire =
   paleo_prev_fire %>%
   select(site, depth, year, charcoal_fragments, needle_concentration, charred_needles, fire_lake, fire_peak_magnitude, years_before_fire)%>%
   right_join(paleo_fire)%>%
-  mutate(plot_id = paste0(site, "_", year, "_BP"))%>%
+  mutate(plot_id = paste0(site, ":depth:", as.character(depth)))%>%
   mutate(period = "paleo")%>%
   rename(lake = site)
 
@@ -69,26 +69,7 @@ paleo_fire =
          fire_lake = ifelse(is.na(fire_lake), "no_fire_record", fire_lake)
          )
 
-# -----------------------------------------------------------------------------
-# Collapse to ONE row per plot_id
-# -----------------------------------------------------------------------------
-# plot_id is built from the AGE, so several core DEPTHS whose Bacon ages round to
-# the same year share one plot_id. At ReflectionPond, 47 / 49 / 64 cm all date to
-# 3641 cal BP - the age-depth model is flat over that 17 cm because the core has
-# no radiocarbon (see the Reflection Pond caveat in Cores/SOURCES_MORA.md).
-#
-# 000_PALEO_b_vegetation.R already collapses exactly this collision on the
-# vegetation side ("present if present in any contributing row"), so paleo_occ has
-# one row per sample while paleo_fire had three. Left unmerged, the left_join in
-# 04_cca_model.R multiplies that sample's env row threefold and it is counted
-# three times in the CCA.
-#
-# Two different rules, because the columns are two different kinds of thing:
-#   fire_peak_magnitude  max  - a peak at ANY contributing depth means the sample
-#                              is burnt; mirrors b's any(occurrence == 1)
-#   the Dunwiddie percentages  mean - concentrations measured on depths that are
-#                              contemporaneous within dating resolution, so the
-#                              honest summary is their average, not the largest
+# Harmonize fire categories within each original sample; retain separate depths.
 paleo_fire = paleo_fire %>%
   group_by(lake, period, plot_id, year) %>%
   summarize(depth               = mean(depth),
@@ -184,8 +165,8 @@ write_csv(sens, here("output/fire_noca_tapas_sensitivity.csv"))
 noca_samples = read_csv(here("output", "paleo_occ.csv"), show_col_types = FALSE) %>%
   filter(lake == "PantherPotholes") %>%
   distinct(period, plot_id, lake, site) %>%
-  mutate(year = as.numeric(regmatches(plot_id,
-                  regexpr("-?[0-9.]+(?=_BP$)", plot_id, perl = TRUE))))
+  left_join(read_csv(here('output/paleo_sample_depths.csv'),show_col_types=FALSE) |>
+    select(plot_id,year=median_age),by='plot_id',relationship='one-to-one')
 
 # The nearest significant peak in the 50 yr before each sample. NOTE the right_join
 # back onto noca_samples: the filter drops samples that matched a peak but none

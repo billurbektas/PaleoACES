@@ -284,9 +284,8 @@ stopifnot(!any(file.exists(retired_scripts)), !length(retired_generated))
 hashes = read_csv(here("output/holocene_era_protected_hash_audit.csv"),
   show_col_types = FALSE)
 required_figures = here(c("plot/fig_standardized_climate_change_eras_fire.pdf",
-  "plot/fig_standardized_climate_change_eras_fire.png",
-  "plot/test_figures/fig_holocene_climate_period_method_worked_example.pdf",
-  "plot/test_figures/fig_holocene_fire_method_worked_example.pdf"))
+  "plot/test_figures/worked_examples/fig_holocene_climate_period_method_worked_example.pdf",
+  "plot/test_figures/worked_examples/fig_holocene_fire_method_worked_example.pdf"))
 stopifnot(all(hashes$unchanged))
 if (render_figures)
   stopifnot(all(file.exists(required_figures)),

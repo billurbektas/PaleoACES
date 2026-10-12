@@ -1,5 +1,6 @@
 # Resolve historical chronology hashes only for the exact recorded substitutions
-# (relocated paths and authorized figure-caption and typography changes).
+# (relocated paths, authorized figure-caption/typography changes and the
+# retired chronology-reader path in comments).
 # Any other source edit uses the physical file identity and invalidates old caches.
 chronology_source_identity = function(path, actual_path = here::here(path)) {
   physical_md5 = unname(tools::md5sum(actual_path))
@@ -21,6 +22,10 @@ chronology_source_identity = function(path, actual_path = here::here(path)) {
   expected = rawToChar(read_bytes(snapshot))
   for (replacement in entry$replacements)
     expected = gsub(replacement$old, replacement$new, expected, fixed = TRUE)
+  # Documentation-only migration: the stored Bacon configuration and model
+  # code remain byte-identical apart from this obsolete reader-path reference.
+  expected = gsub("R/helpers/paleo_runs.R", "R/helpers/holocene_reconstruction.R",
+                  expected, fixed = TRUE)
   if (identical(read_bytes(actual_path), charToRaw(expected))) {
     result$historical_path = here::here(entry$original_path)
     result$historical_md5 = entry$original_md5

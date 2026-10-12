@@ -83,7 +83,7 @@ sensitivity = read_csv(here("output/fire_noca_tapas_sensitivity.csv"),
 stopifnot(sensitivity$n_sig[
   sensitivity$setting == "publication12.5_smooth500_q99"] == 72L)
 required = c("plot/test_figures/fig_walsh_charanalysis_reproduction.pdf",
-  "plot/test_figures/fig_fire_event_detection_workflow.pdf")
+  "plot/test_figures/worked_examples/fig_fire_event_detection_workflow.pdf")
 if (render_figures) {
   sizes = file.info(here(required))$size
   stopifnot(all(file.exists(here(required))),

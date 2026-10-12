@@ -27,8 +27,7 @@
 # "next" slice would move it a century.
 #
 # AGE -> SLICE IS A JOIN, NOT AN INTERPOLATION. Slices are the native 100-yr step
-# and primary tracking averages ten of them per 1,000-year bin, so interpolating here would
-# invent structure the binning then smooths away. paleo_env.csv records which slice
+# and samples use their own native interval; there is no interpolation. paleo_env.csv records which slice
 # each sample got and that slice's age, so R/tests/test_paleo_climate_age_match.R can
 # verify the match rather than trusting it.
 #
@@ -63,24 +62,14 @@ stopifnot(setequal(unique(env_slice$slice), unique(ponds$slice)))
 cat("variables built for ", nrow(env_slice), " lake x slice combinations\n", sep = "")
 
 # --- each sample -> the slice covering its age -------------------------------
-samples = occ %>%
-  distinct(period, plot_id, site, era, lake) %>%
-  mutate(age = as.numeric(regmatches(plot_id,
-                regexpr("-?[0-9.]+(?=_BP$)", plot_id, perl = TRUE))))
-stopifnot(!any(is.na(samples$age)))
-
-nearest_slice = function(age, lake_slices) lake_slices[which.min(abs(lake_slices - age))]
-
-paleo_env = samples %>%
-  rowwise() %>%
-  mutate(slice_age_calBP = nearest_slice(
-    age, env_slice$slice_age_calBP[env_slice$lake == lake])) %>%
-  ungroup() %>%
-  left_join(env_slice, by = c("lake", "slice_age_calBP")) %>%
-  mutate(age_error = slice_age_calBP - age) %>%
-  select(period = period.x, plot_id, site, era, lake, age, slice, slice_age_calBP,
-         age_error, MAT, MSpT, MST, MWT, AP, SpP, SP, WP,
-         ends_with("_min"), ends_with("_max"), ends_with("_mean"))
+samples = occ %>% distinct(period,plot_id,site,era,lake) %>%
+  left_join(read_csv(here('output/paleo_sample_depths.csv'),show_col_types=FALSE) %>%
+    select(plot_id,age=median_age),by='plot_id',relationship='one-to-one') %>%
+  mutate(slice_age_calBP=floor(age/100)*100+50)
+paleo_env = samples %>% left_join(env_slice,by=c('lake','slice_age_calBP')) %>%
+  mutate(age_error=slice_age_calBP-age) %>%
+  select(period=period.x,plot_id,site,era,lake,age,slice,slice_age_calBP,age_error,
+    MAT,MSpT,MST,MWT,AP,SpP,SP,WP,ends_with('_min'),ends_with('_max'),ends_with('_mean'))
 
 # --- checks before writing ---------------------------------------------------
 cat("\nsamples: ", nrow(paleo_env), " of ", n_distinct(occ$plot_id), "\n", sep = "")

@@ -173,7 +173,7 @@ stopifnot(nrow(retained_areas) == sum(pairs$calibration_included),
   all(is.na(retained_areas$legacy_area_m2) | retained_areas$legacy_area_m2 > 0))
 plot_sizes = retained_areas |> count(site, legacy_area_m2, resurvey_area_m2, name = "plots")
 
-# Core depths sharing one modeled age are combined, rather than excluded.
+# Original sample identities are retained even when median ages coincide.
 depths = read_table("output/paleo_sample_depths.csv")
 raw_mora = read_excel(here("data/PALEO/DunwiddieMacrofossils.xlsx"), sheet = "MacrofossilData") |>
   distinct(Location, Depth)
@@ -188,7 +188,7 @@ for (site_name in c("MORA", "NOCA")) {
   if (site_name == "MORA") stopifnot(setequal(paste(raw_mora$Location, raw_mora$Depth), paste(d$lake, d$depth)))
   merged = raw_n - nrow(x); final_n = sum(x$eligible)
   add_count(site_name, "Holocene", 1, "Starting core sample depths", raw_n)
-  add_count(site_name, "Holocene", 2, "Combine depths with the same modeled age", nrow(x), combined = merged)
+  add_count(site_name, "Holocene", 2, "Retain original sample identities", nrow(x), combined = merged)
   remaining = nrow(x)
   for (code in c("missing_occurrence", "no_recorded_taxa", "consolidation", "species_selection", "no_calibration_taxa", "climate")) {
     n = reason_count(x, code)
@@ -307,7 +307,7 @@ paleo_plot = function(site_name) {
     labels = c(no_recorded_taxa="no study tree species detected",consolidation="only species removed from the study",species_selection="only species below the CCA cutoff",no_calibration_taxa="only species absent from the legacy CCA",climate="missing climate values",missing_occurrence="no prepared vegetation record")
     paste(vapply(unique(exclusions$reason_code),function(code) paste0("\u2212",reason_count(exclusions,code)," ",labels[[code]]),character(1)),collapse="\n")
   }
-  notes = bind_rows(note(75,36,sprintf("%d sample depths combined\nwith other depths at the same modeled age\nThese are combined, not excluded",p$combined)),
+  notes = bind_rows(note(75,36,sprintf("%d sample depths merged\nOriginal sample identities are retained\nMedian age never defines identity",p$combined)),
     note(75,10,paste0(lines,"\nNo further losses to other species rules\nor climate matching")))
   draw_flow(site_name,paste0(site_name," \u00b7 Holocene samples"),nodes,
     bind_rows(edge(35,54,35,44),edge(35,28,35,18)),notes,75)

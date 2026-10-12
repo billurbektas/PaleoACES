@@ -547,13 +547,10 @@ holocene_sampling_fire_counts = function(draws, climate, events, series, n_draws
   list(samples = samples, macro = macro, core = core, fire = fire)
 }
 
-source(here("R/helpers/paleo_runs.R"), local = TRUE)
-sampling_draws = paleo_age_draws(allow_rebuild = FALSE)
-sampling_ids = read_csv(here("output/paleo_occ.csv"), show_col_types = FALSE) |>
-  distinct(lake, plot_id)
-stopifnot(setequal(sampling_draws$plot_id, sampling_ids$plot_id),
-  !nrow(anti_join(sampling_draws |> distinct(lake, plot_id), sampling_ids,
-    by = c("lake", "plot_id"))))
+# Original sample identities and unrounded full-posterior median ages.
+sampling_draws=read_csv(here('output/paleo_sample_depths.csv'),show_col_types=FALSE) |>
+  transmute(lake,plot_id,draw=1L,age=median_age)
+N_DRAWS=1L
 sampling_counts = holocene_sampling_fire_counts(
   sampling_draws,
   read_csv(here("output/chelsa_paleo_ponds.csv"), show_col_types = FALSE),
@@ -612,7 +609,7 @@ sampling_caption_counts = paste(paste0(sampling_lake_labels, " ",
 sampling_figure = patchwork::wrap_plots(sampling_macro_plot, sampling_fire_plot,
   ncol = 1, heights = c(1.1, 1)) + patchwork::plot_annotation(
     title = "Macrofossil sampling by lake and total fire-event detections",
-    caption = paste0("Each prepared sample ID enters once at its median cached Bacon age: ",
+    caption = paste0("Each prepared sample ID enters once at its unrounded full-posterior median Bacon age: ",
       sampling_caption_counts, ". Cells are [younger edge, older edge).\n",
       "Fire totals sum accepted detections from fully covered charcoal cores; MORA requires at least two. ",
       "These are source detections, not unique regional fires, normalized fire_activity or CHAR.\n",

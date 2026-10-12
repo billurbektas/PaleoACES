@@ -9,4 +9,4 @@ anthropocene,NOCA,Modern paired comparison,past,no_recorded_taxa,No tree taxa re
 anthropocene,NOCA,Modern paired comparison,past,species_selection,Only taxa excluded by CCA species selection,11
 anthropocene,NOCA,Modern paired comparison,present,no_recorded_taxa,Loss of all recorded tree-taxon presence at resurvey,9
 anthropocene,NOCA,Modern paired comparison,present,species_selection,Only taxa excluded by CCA species selection,2
-holocene,NOCA,Paleo projection,paleo,no_recorded_taxa,No tree taxa detected in paleo sample,56
+holocene,NOCA,Paleo projection,paleo,no_recorded_taxa,No tree taxa detected in paleo sample,58

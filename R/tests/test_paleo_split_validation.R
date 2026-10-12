@@ -20,13 +20,13 @@ cat("\n=== paleo_occ.csv ===\n")
 occ = read_csv(here("output/paleo_occ.csv"), show_col_types = FALSE)
 samples = occ %>% distinct(lake, plot_id)
 expected_samples = c(JayBath = 48L, LogWallow = 40L,
-                     PantherPotholes = 846L, ReflectionPond = 29L)
+                     PantherPotholes = 870L, ReflectionPond = 31L)
 got_samples = table(samples$lake)
 
 note(identical(names(occ), c("period", "plot_id", "species", "occurrence",
                              "site", "era", "lake")), "columns")
-note(nrow(occ) == 9590L, "row count", as.character(nrow(occ)))
-note(nrow(samples) == 963L, "sample count", as.character(nrow(samples)))
+note(!anyDuplicated(occ[c("plot_id","species")]), "unique original sample x taxon records")
+note(nrow(samples) == 989L, "sample count", as.character(nrow(samples)))
 note(identical(as.integer(got_samples[names(expected_samples)]),
                unname(expected_samples)), "samples per lake",
      paste(sprintf("%s=%d", names(expected_samples), got_samples[names(expected_samples)]),
@@ -37,8 +37,7 @@ note(all(occ$period == "paleo" & occ$era == "holocene"),
      "paleo period and era labels")
 note(all(ifelse(occ$lake == "PantherPotholes", occ$site == "NOCA",
                 occ$site == "MORA")), "lake-to-site mapping")
-note(all(startsWith(occ$plot_id, paste0(occ$lake, "_"))) &&
-       all(grepl("_-?[0-9]+_BP$", occ$plot_id)), "chronology-bearing sample IDs")
+note(all(startsWith(occ$plot_id,paste0(occ$lake,':'))), 'Source-based sample identities')
 note(all(occ$occurrence %in% c(0, 1)), "occurrence in {0,1}")
 note(!anyNA(occ), "no NA")
 bad = grep("unknown|sp\\.$|^Abies sp|^Salix sp", unique(occ$species),

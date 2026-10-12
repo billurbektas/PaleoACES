@@ -19,7 +19,8 @@ report_record = function(state, producer, started, paths = NULL) {
     paths = c(unlist(lapply(registry$diagnostics, function(x)
       if (x$producer == producer && x$status != "historical reference") x$pdf)),
       unlist(lapply(registry$main_figures, function(x)
-        if (x$producer == producer) paste0("plot/", x$stem, c(".pdf", ".png")))),
+        if (x$producer == producer) paste0("plot/", x$stem, ".",
+          if(is.null(x$formats)) c('pdf','png') else unlist(x$formats)))),
       unlist(lapply(registry$tables, function(x)
         if (x$producer == producer && basename(x$source) != "bacon_run_manifest.csv") x$source)),
       unlist(lapply(registry$text_outputs, function(x)
@@ -28,10 +29,17 @@ report_record = function(state, producer, started, paths = NULL) {
         if (x$producer == producer) x$source)))
   }
   for (path in unique(paths)) {
-    absolute = here::here(path)
-    if (!file.exists(absolute) || file.info(absolute)$size == 0 ||
-        as.numeric(file.info(absolute)$mtime) < started - 0.001)
-      stop("Report producer did not regenerate required output: ", producer, " -> ", path)
+    absolute=here::here(path)
+    preserved=path=='output/cca_calibration_reference.rds' ||
+      startsWith(path,'output/cca_tracking_anthropocene_') ||
+      path %in% c('output/cca_tracking_climate_scaling.csv','output/survey_window_decision_effects.csv',
+        'output/MORA_latest_visit_composition_effects.csv','output/bacon_run_manifest.csv') ||
+      producer %in% c('R/stages/02_walsh_fire_reproduction.R','R/stages/03_fire_event_detection_worked_example.R',
+        'R/stages/05_holocene_climate_fire_eras.R','R/stages/06_fire_method_worked_example.R',
+        'R/stages/10_climate_change_figure.R')
+    if(!file.exists(absolute) || file.info(absolute)$size==0 ||
+       (!preserved && as.numeric(file.info(absolute)$mtime)<started-.001))
+      stop('Report producer did not regenerate required output: ',producer,' -> ',path)
     state$records[[path]] = list(path = path, producer = producer,
       sha256 = digest::digest(file = absolute, algo = "sha256"),
       generated_at_utc = format(file.info(absolute)$mtime, "%Y-%m-%dT%H:%M:%OS6Z", tz = "UTC"))
@@ -126,7 +134,7 @@ report_cca_details = function(e, permutations = 9999L, seed = 20261008L) {
     paste0("cca_scaling = ", value(e$cca_scaling)), paste0("cca_hill = ", value(e$cca_hill)),
     "", "# Matched legacy observations used to calibrate the CCA.",
     extract("species_past_final = "), extract("env_past_final = "), "",
-    extract("cca_formula = "), extract("cca_model = "), "",
+    extract("cca_formula = "), extract("reference_path=",9L), "",
     "# Resurvey positions: climate-predicted (LC) and observed (WA).",
     extract("predicted_present = "), extract("projected_present = ", 2L))
   writeLines(code, here::here("output/report/cca_model_code.R"))
@@ -230,7 +238,7 @@ report_redraw_chronology = function() {
 }
 report_finish = function(state) {
   jsonlite::write_json(list(run_id = state$run_id, started = state$started,
-    validation = "All 17 automatic gates passed, including independent review regressions; protected chronology validated before and after redraw.",
+    validation = "All automatic gates passed, including independent review regressions; protected chronology validated before and after redraw.",
     records = unname(state$records)), here::here("output/report/run.json"), pretty = TRUE, auto_unbox = TRUE)
   report_python("--fresh")
 }

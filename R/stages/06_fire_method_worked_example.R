@@ -208,7 +208,7 @@ figure = (p1 | p2) / (p3 | p4) / (p5 | p6) +
                                              hjust = .5)))
 
 if (render_figures) {
-  ggsave(here("plot/test_figures/fig_holocene_fire_method_worked_example.pdf"), figure,
+  ggsave(here("plot/test_figures/worked_examples/fig_holocene_fire_method_worked_example.pdf"), figure,
          width = 14, height = 11, units = "in", bg = "white")
   cat("Written Holocene fire worked example for 2,300 cal BP.\n")
 }

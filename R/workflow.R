@@ -24,6 +24,7 @@ if (length(unknown)) stop("Unknown workflow option(s): ", paste(unknown, collaps
 if (build_report && (skip_figures || skip_tests))
   stop("--report requires figures and all checks; remove --skip-figures and --skip-tests.")
 options(paleoaces.offline = offline, paleoaces.report_pending = build_report)
+options(device=function(...) grDevices::pdf(file=tempfile(fileext='.pdf'),...))
 if (build_report) {
   source(here("R/helpers/analysis_report.R"))
   report_state = report_begin()
@@ -32,13 +33,18 @@ if (build_report) {
 # Shared by every workflow-owned script that can persist a PDF or PNG. Scripts
 # run directly still render by default; the workflow option suppresses only
 # persistent figure writes, never analytical tables or classifications.
-options(paleoaces.render_figures = !skip_figures)
+options(paleoaces.render_figures = !skip_figures, paleoaces.primary_only=FALSE)
 
 run_script = function(path, label = basename(path)) {
   cat("\n", strrep("=", 78), "\n", label, "\n", strrep("=", 78), "\n", sep = "")
   started = as.numeric(Sys.time())
   env = new.env(parent = globalenv())
-  sys.source(here(path), envir = env)
+  protected_display=path %in% c('R/stages/02_walsh_fire_reproduction.R',
+    'R/stages/03_fire_event_detection_worked_example.R','R/stages/05_holocene_climate_fire_eras.R',
+    'R/stages/06_fire_method_worked_example.R','R/stages/10_climate_change_figure.R')
+  previous_render=getOption('paleoaces.render_figures')
+  if(protected_display) options(paleoaces.render_figures=FALSE)
+  tryCatch(sys.source(here(path),envir=env),finally=options(paleoaces.render_figures=previous_render))
   if (build_report) {
     if (path == "R/stages/04_cca_model.R") report_export_cca(env)
     report_state <<- report_record(report_state, path, started)
@@ -91,29 +97,27 @@ run_script("R/stages/04_cca_model.R")
 # Freeze these before CCA trajectories or tracking use their boundaries.
 run_script("R/stages/05_holocene_climate_fire_eras.R")
 run_script("R/stages/06_fire_method_worked_example.R")
-run_script("R/stages/07_cca_figure.R")
 
 # 7. Calculate tracking once, then derive examples, displays and model input.
 # All stages run under --skip-figures; only persistent PDF/PNG writes stop.
-run_script("R/stages/08_tracking_metrics.R")
+run_script("R/stages/07_tracking_metrics.R")
+run_script("R/stages/08_cca_figure.R")
 run_script("R/stages/09_tracking_example_and_visualizations.R")
 run_script("R/stages/10_climate_change_figure.R")
 run_script("R/stages/11_tracking_model_data.R")
 
 # 8. Model comparisons and downstream manuscript/predictor products.
-# Compare covariance candidates, then present the author-selected MA1; inference
-# and model development remain exploratory. Lag-change rate, observed turnover
-# and untransformed physical climate-change rate run in the same stages,
-# together with pace- and direction-corrected lag-change rates.
-# Lake reporting uses offset 0 only.
+# Compare independent, neighboring MA1 and continuous-time AR1 on identical primary rows.
+# Lake comparisons are primary-only; explanatory community/species stages refit
+# their primary selected covariance families under 1,000 whole chronologies.
 run_script("R/stages/12_tracking_era_models.R")
 run_script("R/stages/13_tracking_lake_sensitivity.R")
 run_script("R/stages/14_tracking_manuscript_figure.R")
 # Separate within-era predictor models, preserving the era-comparison products.
 run_script("R/stages/15_tracking_predictor_models.R")
 
-# Stage 16 is the standalone contribution analysis, run explicitly when needed.
-# Its products remain separate from this workflow.
+run_script("R/stages/16_cca_transition_contributions.R")
+run_script("R/stages/17_species_contribution_models.R")
 
 # Reporting-only diagnostics run in the same isolated script environments.
 if (build_report) {
@@ -137,7 +141,9 @@ if (!skip_tests) {
   run_script("R/tests/test_paleo_split_validation.R")
   run_script("R/tests/test_bacon_provenance.R")
   run_script("R/tests/test_cca_tracking_metrics.R")
-  run_script("R/tests/test_tracking_offset_models.R")
+  run_script("R/tests/test_century_tracking.R")
+  run_script("R/tests/test_cca_transition_contributions.R")
+  run_script("R/tests/test_chronology_figures.R")
   run_script("R/tests/test_tracking_predictor_models.R")
   run_script("R/tests/test_review_edge_cases.R")
   run_script("R/tests/test_walsh_fire_reproduction.R")

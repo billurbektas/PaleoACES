@@ -1,0 +1,16 @@
+TRACKING ANALYSIS RESULTS
+primary/era_comparison/<response>: combined-era primary MA(1) fits, means and contrasts.
+primary/community_predictor_models: primary within-era community models.
+primary/species_contribution_models: primary species models.
+sensitivity/bacon_chronologies/community: all 1,000 community reconstructions and fit outcomes.
+sensitivity/bacon_chronologies/species: all 1,000 species reconstructions and fit outcomes.
+sensitivity/lake_checks/era_comparisons/<response>: individual-lake comparisons.
+sensitivity/lake_checks/random_intercepts: lake random-intercept diagnostic.
+
+Primary intervals condition on median-age reconstruction; Bacon summaries are sensitivity results.
+MA(1) is primary for Holocene-containing fits; Independent/CAR1 are comparisons only.
+Modern-only models use independent residuals. Failed/unestimable models remain recorded.
+
+PDFs: plot/test_figures/primary_models/ and plot/test_figures/sensitivity/.
+Each combined-era and lake PDF has five clearly labeled response pages:
+1 observed lag; 2 community turnover; 3 climate change; 4 pace-corrected lag; 5 direction-corrected lag.

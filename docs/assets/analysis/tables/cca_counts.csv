@@ -1,7 +1,7 @@
 site,period,input_samples,calibration_samples,positioned_samples
-MORA,paleo,117,NA,117
+MORA,paleo,119,NA,119
 MORA,past,331,330,NA
 MORA,present,331,NA,330
-NOCA,paleo,846,NA,790
+NOCA,paleo,870,NA,812
 NOCA,past,305,277,NA
 NOCA,present,305,NA,277

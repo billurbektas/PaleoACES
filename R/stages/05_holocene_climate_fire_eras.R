@@ -325,7 +325,7 @@ worked = w1 / w2 / w3 / w4 / w5 / w6 +
   plot_layout(heights = c(1.1, 1.4, 1.1, .8, 1.0, 1.8)) +
   plot_annotation(title = "Worked example: unified Holocene climate eras and fire periods")
 if (render_figures) {
-  ggsave(here("plot/test_figures/fig_holocene_climate_period_method_worked_example.pdf"),
+  ggsave(here("plot/test_figures/worked_examples/fig_holocene_climate_period_method_worked_example.pdf"),
     worked, width = 15, height = 20)
 }
 

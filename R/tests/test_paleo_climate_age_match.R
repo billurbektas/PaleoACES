@@ -34,12 +34,12 @@ note = function(ok, what, detail = "") {
               if (nzchar(detail)) paste0(" - ", detail) else ""))
   if (!ok) fails <<- c(fails, what)
 }
-age_of = function(x) as.numeric(regmatches(x, regexpr("-?[0-9.]+(?=_BP$)", x, perl = TRUE)))
-
 occ = read_csv(here("output/paleo_occ.csv"), show_col_types = FALSE)
 env = read_csv(here("output/paleo_env.csv"), show_col_types = FALSE)
 
-samples = occ %>% distinct(lake, site, plot_id) %>% mutate(age = age_of(plot_id))
+samples = occ %>% distinct(lake,site,plot_id) %>% left_join(
+  read_csv(here('output/paleo_sample_depths.csv'),show_col_types=FALSE) %>% select(plot_id,age=median_age),
+  by='plot_id',relationship='one-to-one')
 climate = env %>% distinct(plot_id, .keep_all = TRUE)
 
 cat("=== 1. COVERAGE: does every vegetation sample have USABLE climate? ===\n")

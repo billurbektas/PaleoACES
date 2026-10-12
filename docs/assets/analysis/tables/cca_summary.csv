@@ -8,5 +8,5 @@ constraints,MSpT;MWT;SP;WP
 total_inertia,3.46479574647074
 constrained_inertia,0.530986711437871
 constrained_percent,15.3251952002867
-projection_candidates,1599
-positioned_samples,1514
+projection_candidates,1625
+positioned_samples,1538

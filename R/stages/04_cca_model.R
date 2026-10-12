@@ -540,7 +540,15 @@ if (count.thr == CCA_COUNT_THRESHOLD && !length(extra_exclude) && !nzchar(cca_su
 # Fit the pooled CCA ONLY after resolving and reporting eligibility
 # -----------------------------------------------------------------------------
 cca_formula = reformulate(CCA_VARIABLES, response = "species_past_final")
-cca_model = cca(cca_formula, data = env_past_final)
+reference_path=here('output/cca_calibration_reference.rds')
+if(file.exists(reference_path) && count.thr==CCA_COUNT_THRESHOLD && !length(extra_exclude) && !nzchar(cca_suffix)) {
+  frozen=readRDS(reference_path)
+  if(!isTRUE(all.equal(species_past_final,frozen$legacy_species,tolerance=0)) ||
+     !isTRUE(all.equal(env_past_final,frozen$legacy_climate,tolerance=0)) ||
+     !identical(keep_species,frozen$retained_species))
+    stop('Fixed CCA calibration inputs changed; do not recalibrate during reconstruction migration')
+  cca_model=frozen$model
+} else cca_model=cca(cca_formula,data=env_past_final)
 
 # Projection helper. Rows are matched by plot_id, not by position: the former
 # model reused the `valid_plots` logical built from the PAST
@@ -620,5 +628,9 @@ comparison_df = bind_rows(
 # Diagnostic alternative calibrations must never overwrite this reference.
 if (count.thr == CCA_COUNT_THRESHOLD && !length(extra_exclude) && !nzchar(cca_suffix)) {
   source(here('R/helpers/cca_reference.R'), local = TRUE)
-  export_cca_reference(environment())
+  if(!file.exists(reference_path)) export_cca_reference(environment())
+  # New projection provenance is separate from the unchanged calibration bundle.
+  write_csv(tibble(path=c("output/paleo_occ.csv","output/paleo_env.csv"),
+    md5=unname(tools::md5sum(here(c("output/paleo_occ.csv","output/paleo_env.csv"))))),
+    here("output/cca_projection_provenance.csv"))
 }

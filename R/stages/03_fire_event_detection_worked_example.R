@@ -216,7 +216,7 @@ p_audit_note = ggplot() +
 audit_page = p_audit / p_audit_note + plot_layout(heights = c(3, 1))
 pages = list(overview, lake_page, audit_page)
 
-pdf_path = here("plot/test_figures/fig_fire_event_detection_workflow.pdf")
+pdf_path = here("plot/test_figures/worked_examples/fig_fire_event_detection_workflow.pdf")
 if (render_figures) {
   grDevices::pdf(pdf_path, width = 14, height = 9, onefile = TRUE)
   purrr::walk(pages, print)

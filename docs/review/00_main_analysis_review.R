@@ -22,8 +22,8 @@
 # 15. R/stages/04_cca_model.R
 # 16. R/stages/05_holocene_climate_fire_eras.R
 # 17. R/stages/06_fire_method_worked_example.R
-# 18. R/stages/07_cca_figure.R
-# 19. R/stages/08_tracking_metrics.R
+# 18. R/stages/07_tracking_metrics.R
+# 19. R/stages/08_cca_figure.R
 # 20. R/stages/09_tracking_example_and_visualizations.R
 # 21. R/stages/10_climate_change_figure.R
 # 22. R/stages/11_tracking_model_data.R
@@ -31,6 +31,8 @@
 # 24. R/stages/13_tracking_lake_sensitivity.R
 # 25. R/stages/14_tracking_manuscript_figure.R
 # 26. R/stages/15_tracking_predictor_models.R
+# 27. R/stages/16_cca_transition_contributions.R
+# 28. R/stages/17_species_contribution_models.R
 
 # ============================================================================
 # BEGIN R/stages/000_MORA_cleaning.R
@@ -2214,7 +2216,7 @@ run_bacon <- function(core, ...) {
 # cannot drift apart.
 
 # bacon_draws() - posterior age draws for a finished run - now lives in
-# R/helpers/bacon_settings.R, sourced above, because R/helpers/paleo_runs.R needs it too. It
+# R/helpers/bacon_settings.R, sourced above, because R/helpers/holocene_reconstruction.R needs it too. It
 # could not move into R/helpers/paleo_ages.R: that file reads Cores/*_ages.txt at source
 # time, and THIS script is what creates them.
 
@@ -2451,7 +2453,7 @@ write_core_files("PantherPotholes", pp_dates)
 # consistency with NOCA (whose core top was derived as -49 cal BP = A.D. 1999),
 # not because it moves any result.
 # `slumps` and CORE_ARGS - the single definition of every core's Bacon settings,
-# used to run the models, to redraw them in section 5, and by R/helpers/paleo_runs.R to
+# used to run the models, to redraw them in section 5, and by R/helpers/holocene_reconstruction.R to
 # read their posteriors - are defined in R/helpers/bacon_settings.R, sourced at the top.
 
 # d.max. JayBath has a macrofossil sample at 153 cm but its deepest date sits at
@@ -2751,254 +2753,28 @@ cat("Written output/bacon_run_manifest.csv for", nrow(bacon_manifest), "seeded r
 # ============================================================================
 # BEGIN R/stages/000_PALEO_b_vegetation.R
 # ============================================================================
-# =============================================================================
-# 000_PALEO_b_vegetation.R - paleo macrofossil occurrences
-# =============================================================================
-# Paleo vegetation preparation; see docs/WORKFLOW.md.
-# The fire third is now 000_PALEO_c_fire.R; the climate third was NOT split out -
-# The downstream climate-match stage replaces its former embedded implementation.
-#
-# Ages come from R/stages/000_PALEO_a_agedepth.R via R/helpers/paleo_ages.R. Run that first.
-#
-# Provenance of every control point: Cores/CONTROL_POINTS.md, with the detail in
-# Cores/SOURCES_MORA.md and data/NOCA/NOCA_paleo/SOURCES.md.
-#
-# Outputs
-#   output/paleo_occ.csv             presence/absence, one row per plot_id x species
-#   output/paleo_macrofossil_long.csv  MORA long table WITH Percentage and the fire
-#                                      categories still in it - the input to
-#                                      000_PALEO_c_fire.R. Written here because the
-#                                      fire categories are only separable partway
-#                                      through this script's harmonisation, and
-#                                      re-deriving them in the fire script would
-#                                      duplicate that logic.
-#
-# Dropped in the split as dead code (assigned, never used in the original):
-#   `occ`         - a bind_rows of NOCA_occ/MORA_occ, unreferenced
-#   `paleo_plots` / `paleo_coords` / `paleo_coords_sf` - pond coordinates,
-#                   unreferenced. They now live in 000_PALEO_d_climate_download.R.
-# =============================================================================
-
-library(readr)
-library(tidyverse)
-library(here)
-library(readxl)     # DunwiddieMacrofossils.xlsx
-
-source(here("R/helpers/paleo_ages.R"), local = TRUE)
-
-# -----------------------------------------------------------------------------
-# MORA: Dunwiddie macrofossils -> harmonised species
-# -----------------------------------------------------------------------------
-takeoutpaleosp = c("Carex Achenes Lenticular", "Carex Achenes Trigonous",
-                   "Isoetes Megaspores", "Nuphar Polysepalum Seeds",
-                   "Potamogeton Species Achenes", "Ranunculus CF Aquatilis Achenes",
-                   "Juncus Seeds", "Sparganium Seeds", "Phyllodoce Leaves",
-                   "Abies-Type Seeds", "Tsuga-Type Seeds")
-paleo_occ = read_excel(here("data/PALEO/DunwiddieMacrofossils.xlsx"), sheet = "MacrofossilData")
-paleo_occ = paleo_occ %>%
-  rename(species = Species) %>%
-  filter(!species %in% takeoutpaleosp)%>%
-  mutate(
-    species = str_squish(species),
-    species = case_when(
-      species == "Abies Amabilis" ~ "Abies amabilis",
-      species == "Abies Lasiocarpa" ~ "Abies lasiocarpa",
-      species == "Abies Procera" ~ "Abies procera",
-      species %in% c("Pinus Contorta Fascilcles", "Pinus Contorta Fascicles",
-                     "Pinus Contorta Needle Fragments") ~ "Pinus contorta",
-      species %in% c("Pinus Monticola Fascicles", "Pinus Monticola Needle Fragments",
-                     "Pinus Montocola Needle Fragments") ~ "Pinus monticola",
-      species == "Picea Engelmannii" ~ "Picea engelmannii",
-      species == "Pseudotsuga Menziesii" ~ "Pseudotsuga menziesii",
-      species == "Tsuga Heterophylla" ~ "Tsuga heterophylla",
-      species %in% c("Tsuga Mertensiana", "Tsuga Mertinsiana") ~ "Tsuga mertensiana",
-      species %in% c("Chamaecyparis", "Chamaecyparis Seeds") ~ "Callitropsis nootkatensis",
-      species %in% c("Needle Concentration (per CC)", "Needle Concentration (Per CC)") ~ "needle_concentration",
-      species == "Charcoal Fragments" ~ "charcoal_fragments",
-      species == "Charred Needles" ~ "charred_needles",
-      TRUE ~ species
-    )
-  )
-
-
-paleo_occ =
-  paleo_occ %>%
-  rename(site = Location, depth = Depth)%>%
-  select(site, species, depth, Percentage)%>%
-  left_join(age_depth)
-
-# Hand-off to 000_PALEO_c_fire.R: this is the state the fire categories are read
-# from, before they are filtered out below.
-write_csv(paleo_occ, here("output", "paleo_macrofossil_long.csv"))
-
-# THE DEPTH LOOKUP THE AGE DRAWS NEED -----------------------------------------
-# plot_id is built from the Bacon MEDIAN age, i.e. a point estimate. The moving-
-# window analysis (R/helpers/paleo_runs.R) needs the full age POSTERIOR, and Bacon
-# delivers that per DEPTH - which the select() below otherwise discards. Captured
-# here, while depth is still attached, and written as its OWN table rather than a
-# column on paleo_occ because a plot_id can cover MORE THAN ONE depth: three
-# ReflectionPond depths (47/49/64 cm) all date to 3641 cal BP, because that core
-# has no radiocarbon and its age-depth model is flat over 17 cm. Adding depth as
-# a column would multiply those samples' rows - the exact bug that tripled a
-# sample in the CCA via paleo_fire (see 000_PALEO_c_fire.R).
-mora_depths = paleo_occ %>% distinct(lake = site, depth, year)
-
-paleo_occ =
-  paleo_occ %>%
-  filter(!species %in% c("charred_needles", "needle_concentration", "charcoal_fragments"))%>%
-  mutate(occurrence = ifelse(Percentage>0, 1, 0))%>%
-  mutate(plot_id = paste0(site, "_", year, "_BP"),
-         lake = site,
-         era = "holocene",
-         period = "paleo",
-         site = "MORA")%>%
-  select(period, plot_id, species, occurrence, site, era, lake)%>%
-  distinct()
-
-# -----------------------------------------------------------------------------
-# NOCA paleo: Panther Potholes core
-# -----------------------------------------------------------------------------
-# Macrofossil counts: Neotoma dataset 52207, site 13042 (Prichard et al. 2009).
-# Ages: OUR Bacon run, NOT the "Gavin 2021" column in this file. Both describe the
-# same chronology - our medians reproduce Gavin's to a median of 14 yr over a
-# 10,600 yr record - but Neotoma publishes only three quantiles per level, and the
-# interval metrics need the full posterior (see SOURCES.md). Taking ages from our
-# own run keeps the point estimates and the draws from one and the same model.
-# Mirrors the MORA structure (one plot_id per dated sample). Charcoal is NOT in
-# this file, so NOCA paleo enters paleo_occ and paleo_env but not paleo_fire.
-noca_raw = read_csv(here("data/NOCA/NOCA_paleo/dataset52207_site13042.csv"),
-                    show_col_types = FALSE)
-noca_desc = c("name", "group", "element", "units", "context")
-noca_samples = setdiff(names(noca_raw), noca_desc)
-
-# Per-sample depth, and the age our Bacon model gives at that depth.
-# Sample depths are 0.5, 1.5, ... 869.5; Bacon was run with d.by = 0.5, so every
-# sample depth is on the output grid and approx() is an exact lookup, not a
-# smoothing step. The Gavin column is retained alongside purely as a check.
-noca_bacon = read_bacon_ages("PantherPotholes", coredir)
-
-noca_meta = noca_raw %>%
-  filter(name %in% c("Depth", "Gavin 2021")) %>%
-  select(name, all_of(noca_samples)) %>%
-  pivot_longer(-name, names_to = "sample", values_to = "value") %>%
-  pivot_wider(names_from = name, values_from = value) %>%
-  transmute(
-    sample,
-    depth      = as.numeric(Depth),
-    year       = round(approx(noca_bacon$depth, noca_bacon$median, depth)$y),
-    year_gavin = as.numeric(str_split_i(`Gavin 2021`, "/", 2))
-  )
-
-# Report the agreement rather than assume it.
-cat("\nPantherPotholes ages, ours vs Gavin 2021 (cal yr BP):\n")
-print(summary(noca_meta$year - noca_meta$year_gavin))
-stopifnot(!any(is.na(noca_meta$year)))
-noca_meta = noca_meta %>% select(sample, depth, year)
-
-# Tree/shrub macrofossils -> harmonized species (drop genus/family "undiff.")
-noca_paleo_occ = noca_raw %>%
-  filter(group == "TRSH") %>%
-  mutate(species = case_when(
-    name == "Abies lasiocarpa"       ~ "Abies lasiocarpa",
-    name == "Cupressus nootkatensis" ~ "Callitropsis nootkatensis",
-    name == "Picea engelmannii"      ~ "Picea engelmannii",
-    name == "Pinus contorta"         ~ "Pinus contorta",
-    name == "Pinus monticola"        ~ "Pinus monticola",
-    name == "Pseudotsuga menziesii"  ~ "Pseudotsuga menziesii",
-    name == "Thuja plicata"          ~ "Thuja plicata",
-    name == "Tsuga heterophylla"     ~ "Tsuga heterophylla",
-    name == "Tsuga mertensiana"      ~ "Tsuga mertensiana",
-    name == "Juniperus communis"     ~ "Juniperus communis",
-    TRUE ~ NA_character_
-  )) %>%
-  filter(!is.na(species)) %>%
-  select(species, all_of(noca_samples)) %>%
-  pivot_longer(-species, names_to = "sample", values_to = "count") %>%
-  mutate(count = replace_na(as.numeric(count), 0)) %>%
-  group_by(species, sample) %>%
-  summarize(count = sum(count), .groups = "drop") %>%
-  left_join(noca_meta, by = "sample") %>%
-  mutate(
-    occurrence = ifelse(count > 0, 1, 0),
-    lake = "PantherPotholes",
-    site = "NOCA",
-    era  = "holocene",
-    period = "paleo",
-    plot_id = paste0(lake, "_", year, "_BP")
-  ) %>%
-  select(period, plot_id, species, occurrence, site, era, lake) %>%
-  distinct()
-
-paleo_occ = bind_rows(paleo_occ, noca_paleo_occ)
-
-# -----------------------------------------------------------------------------
-# Collapse to ONE row per (plot_id, species)
-# -----------------------------------------------------------------------------
-# distinct() above left 71 (plot_id, species) pairs with TWO rows - one saying
-# occurrence 0 and the other 1 - from two unrelated causes:
-#
-# MORA (59 pairs). Several raw categories map to one species, and they are
-# recorded on DIFFERENT bases:
-#   Pinus contorta   <- "Pinus Contorta Fascicles" / "...Fascilcles" (typo)
-#                       / "Pinus Contorta Needle Fragments"
-#   Pinus monticola  <- "Pinus Monticola Fascicles"
-#                       / "Pinus Monticola Needle Fragments" / "...Montocola..." (typo)
-#   Callitropsis nootkatensis <- "Chamaecyparis" / "Chamaecyparis Seeds"
-#   Dunwiddie 1986 counted Pinus fascicles as needle equivalents but tallied
-#   needle FRAGMENTS separately, and Fig. 2's caption states "Pinus fragments
-#   ... are excluded from the needle sum". Seeds are likewise on their own basis.
-#   So the percentages must NOT be summed - they are not commensurable. For a
-#   presence/absence analysis it does not matter: any category above zero means
-#   the species is present.
-#
-# NOCA (12 pairs, at PantherPotholes 2678 / 3785 / 7616 BP). Two different core
-# DEPTHS whose ages round to the same year, so they share a plot_id. Same
-# situation as macrofossil samples inside a slump: contemporaneous within dating
-# resolution, so merging them is the honest reading.
-#
-# Both are handled by the same rule - present if present in any contributing row.
-paleo_occ = paleo_occ %>%
-  group_by(period, plot_id, species, site, era, lake) %>%
-  summarize(occurrence = as.integer(any(occurrence == 1)), .groups = "drop") %>%
-  select(period, plot_id, species, occurrence, site, era, lake)
-
-write_csv(paleo_occ, here("output", "paleo_occ.csv"))
-
-cat("\npaleo_occ.csv: ", nrow(paleo_occ), " rows, ",
-    n_distinct(paleo_occ$plot_id), " samples, ",
-    n_distinct(paleo_occ$species), " species\n", sep = "")
-
-# -----------------------------------------------------------------------------
-# paleo_sample_depths.csv - which core depth(s) each sample came from
-# -----------------------------------------------------------------------------
-# One row per (plot_id, depth). Consumed by R/helpers/paleo_runs.R, which asks Bacon for
-# the age posterior AT A DEPTH; without this the age draws cannot be attached to
-# a sample at all, because plot_id carries only the median age.
-#
-# n_depths > 1 marks the samples where two or more depths collapsed onto one
-# median age. They are contemporaneous within dating resolution - that is why
-# they were merged - but their POSTERIORS are not identical, so the run
-# machinery must decide what to draw for them rather than inherit an accident.
-sample_depths = bind_rows(
-  mora_depths,
-  noca_meta %>% distinct(depth, year) %>% mutate(lake = "PantherPotholes")
-) %>%
-  mutate(plot_id = paste0(lake, "_", year, "_BP")) %>%
-  group_by(plot_id) %>%
-  mutate(n_depths = n()) %>%
-  ungroup() %>%
-  select(lake, plot_id, depth, median_age = year, n_depths) %>%
-  arrange(lake, depth)
-
-# The two tables must describe the SAME samples, or a sample would silently get
-# no age draws (and vanish from every binned figure) while looking healthy here.
-stopifnot(setequal(sample_depths$plot_id, paleo_occ$plot_id),
-          !any(is.na(sample_depths$depth)))
-
-write_csv(sample_depths, here("output", "paleo_sample_depths.csv"))
-cat("paleo_sample_depths.csv: ", nrow(sample_depths), " depths for ",
-    n_distinct(sample_depths$plot_id), " samples; ",
-    sum(sample_depths$n_depths > 1), " depths share a collapsed age\n", sep = "")
+# Restore original macrofossil sample IDs; ages never determine sample identity.
+suppressPackageStartupMessages({library(here);library(tidyverse)})
+source(here('R/helpers/century_tracking.R'),local=TRUE)
+bundle=century_prepare()
+original=reconstruction_read_original_samples()
+metadata=bundle$samples |> transmute(site,lake,plot_id=sample_id,sample_id,
+  source_sample_id,depth=depth_cm,median_age=median_age_cal_bp,n_depths=1L,eligible,exclusion)
+occ=original$occurrence |> left_join(metadata |> select(site,lake,sample_id),
+  by='sample_id',relationship='many-to-one') |>
+  transmute(period='paleo',plot_id=sample_id,species,occurrence,site,era='holocene',lake)
+stopifnot(!anyDuplicated(metadata$plot_id),!anyDuplicated(occ[c('plot_id','species')]))
+write_csv(occ,here('output/paleo_occ.csv'))
+write_csv(metadata,here('output/paleo_sample_depths.csv'))
+# Fire preparation keeps its source-category measurements and detector ages.
+source(here('R/helpers/paleo_ages.R'),local=TRUE)
+long=readxl::read_excel(here('data/PALEO/DunwiddieMacrofossils.xlsx'),sheet='MacrofossilData') |>
+  transmute(site=Location,depth=Depth,Percentage,species=case_when(
+    Species %in% c('Needle Concentration (per CC)','Needle Concentration (Per CC)')~'needle_concentration',
+    Species=='Charcoal Fragments'~'charcoal_fragments',Species=='Charred Needles'~'charred_needles',
+    TRUE~Species)) |> left_join(age_depth,by=c('site','depth'),relationship='many-to-one')
+write_csv(long,here('output/paleo_macrofossil_long.csv'))
+cat('Original macrofossil samples:',nrow(metadata),'; fixed-CCA eligible:',sum(metadata$eligible),'\n')
 # END R/stages/000_PALEO_b_vegetation.R
 
 # ============================================================================
@@ -3110,7 +2886,7 @@ paleo_fire =
   paleo_prev_fire %>%
   select(site, depth, year, charcoal_fragments, needle_concentration, charred_needles, fire_lake, fire_peak_magnitude, years_before_fire)%>%
   right_join(paleo_fire)%>%
-  mutate(plot_id = paste0(site, "_", year, "_BP"))%>%
+  mutate(plot_id = paste0(site, ":depth:", as.character(depth)))%>%
   mutate(period = "paleo")%>%
   rename(lake = site)
 
@@ -3122,26 +2898,7 @@ paleo_fire =
          fire_lake = ifelse(is.na(fire_lake), "no_fire_record", fire_lake)
          )
 
-# -----------------------------------------------------------------------------
-# Collapse to ONE row per plot_id
-# -----------------------------------------------------------------------------
-# plot_id is built from the AGE, so several core DEPTHS whose Bacon ages round to
-# the same year share one plot_id. At ReflectionPond, 47 / 49 / 64 cm all date to
-# 3641 cal BP - the age-depth model is flat over that 17 cm because the core has
-# no radiocarbon (see the Reflection Pond caveat in Cores/SOURCES_MORA.md).
-#
-# 000_PALEO_b_vegetation.R already collapses exactly this collision on the
-# vegetation side ("present if present in any contributing row"), so paleo_occ has
-# one row per sample while paleo_fire had three. Left unmerged, the left_join in
-# 04_cca_model.R multiplies that sample's env row threefold and it is counted
-# three times in the CCA.
-#
-# Two different rules, because the columns are two different kinds of thing:
-#   fire_peak_magnitude  max  - a peak at ANY contributing depth means the sample
-#                              is burnt; mirrors b's any(occurrence == 1)
-#   the Dunwiddie percentages  mean - concentrations measured on depths that are
-#                              contemporaneous within dating resolution, so the
-#                              honest summary is their average, not the largest
+# Harmonize fire categories within each original sample; retain separate depths.
 paleo_fire = paleo_fire %>%
   group_by(lake, period, plot_id, year) %>%
   summarize(depth               = mean(depth),
@@ -3237,8 +2994,8 @@ write_csv(sens, here("output/fire_noca_tapas_sensitivity.csv"))
 noca_samples = read_csv(here("output", "paleo_occ.csv"), show_col_types = FALSE) %>%
   filter(lake == "PantherPotholes") %>%
   distinct(period, plot_id, lake, site) %>%
-  mutate(year = as.numeric(regmatches(plot_id,
-                  regexpr("-?[0-9.]+(?=_BP$)", plot_id, perl = TRUE))))
+  left_join(read_csv(here('output/paleo_sample_depths.csv'),show_col_types=FALSE) |>
+    select(plot_id,year=median_age),by='plot_id',relationship='one-to-one')
 
 # The nearest significant peak in the 50 yr before each sample. NOTE the right_join
 # back onto noca_samples: the filter drops samples that matched a peak but none
@@ -3626,8 +3383,7 @@ cat("\nwritten: ", OUT, "  (", nrow(out), " rows)\n",
 # "next" slice would move it a century.
 #
 # AGE -> SLICE IS A JOIN, NOT AN INTERPOLATION. Slices are the native 100-yr step
-# and primary tracking averages ten of them per 1,000-year bin, so interpolating here would
-# invent structure the binning then smooths away. paleo_env.csv records which slice
+# and samples use their own native interval; there is no interpolation. paleo_env.csv records which slice
 # each sample got and that slice's age, so R/tests/test_paleo_climate_age_match.R can
 # verify the match rather than trusting it.
 #
@@ -3662,24 +3418,14 @@ stopifnot(setequal(unique(env_slice$slice), unique(ponds$slice)))
 cat("variables built for ", nrow(env_slice), " lake x slice combinations\n", sep = "")
 
 # --- each sample -> the slice covering its age -------------------------------
-samples = occ %>%
-  distinct(period, plot_id, site, era, lake) %>%
-  mutate(age = as.numeric(regmatches(plot_id,
-                regexpr("-?[0-9.]+(?=_BP$)", plot_id, perl = TRUE))))
-stopifnot(!any(is.na(samples$age)))
-
-nearest_slice = function(age, lake_slices) lake_slices[which.min(abs(lake_slices - age))]
-
-paleo_env = samples %>%
-  rowwise() %>%
-  mutate(slice_age_calBP = nearest_slice(
-    age, env_slice$slice_age_calBP[env_slice$lake == lake])) %>%
-  ungroup() %>%
-  left_join(env_slice, by = c("lake", "slice_age_calBP")) %>%
-  mutate(age_error = slice_age_calBP - age) %>%
-  select(period = period.x, plot_id, site, era, lake, age, slice, slice_age_calBP,
-         age_error, MAT, MSpT, MST, MWT, AP, SpP, SP, WP,
-         ends_with("_min"), ends_with("_max"), ends_with("_mean"))
+samples = occ %>% distinct(period,plot_id,site,era,lake) %>%
+  left_join(read_csv(here('output/paleo_sample_depths.csv'),show_col_types=FALSE) %>%
+    select(plot_id,age=median_age),by='plot_id',relationship='one-to-one') %>%
+  mutate(slice_age_calBP=floor(age/100)*100+50)
+paleo_env = samples %>% left_join(env_slice,by=c('lake','slice_age_calBP')) %>%
+  mutate(age_error=slice_age_calBP-age) %>%
+  select(period=period.x,plot_id,site,era,lake,age,slice,slice_age_calBP,age_error,
+    MAT,MSpT,MST,MWT,AP,SpP,SP,WP,ends_with('_min'),ends_with('_max'),ends_with('_mean'))
 
 # --- checks before writing ---------------------------------------------------
 cat("\nsamples: ", nrow(paleo_env), " of ", n_distinct(occ$plot_id), "\n", sep = "")
@@ -4121,7 +3867,7 @@ p_audit_note = ggplot() +
 audit_page = p_audit / p_audit_note + plot_layout(heights = c(3, 1))
 pages = list(overview, lake_page, audit_page)
 
-pdf_path = here("plot/test_figures/fig_fire_event_detection_workflow.pdf")
+pdf_path = here("plot/test_figures/worked_examples/fig_fire_event_detection_workflow.pdf")
 if (render_figures) {
   grDevices::pdf(pdf_path, width = 14, height = 9, onefile = TRUE)
   purrr::walk(pages, print)
@@ -4682,13 +4428,10 @@ holocene_sampling_fire_counts = function(draws, climate, events, series, n_draws
   list(samples = samples, macro = macro, core = core, fire = fire)
 }
 
-source(here("R/helpers/paleo_runs.R"), local = TRUE)
-sampling_draws = paleo_age_draws(allow_rebuild = FALSE)
-sampling_ids = read_csv(here("output/paleo_occ.csv"), show_col_types = FALSE) |>
-  distinct(lake, plot_id)
-stopifnot(setequal(sampling_draws$plot_id, sampling_ids$plot_id),
-  !nrow(anti_join(sampling_draws |> distinct(lake, plot_id), sampling_ids,
-    by = c("lake", "plot_id"))))
+# Original sample identities and unrounded full-posterior median ages.
+sampling_draws=read_csv(here('output/paleo_sample_depths.csv'),show_col_types=FALSE) |>
+  transmute(lake,plot_id,draw=1L,age=median_age)
+N_DRAWS=1L
 sampling_counts = holocene_sampling_fire_counts(
   sampling_draws,
   read_csv(here("output/chelsa_paleo_ponds.csv"), show_col_types = FALSE),
@@ -4747,7 +4490,7 @@ sampling_caption_counts = paste(paste0(sampling_lake_labels, " ",
 sampling_figure = patchwork::wrap_plots(sampling_macro_plot, sampling_fire_plot,
   ncol = 1, heights = c(1.1, 1)) + patchwork::plot_annotation(
     title = "Macrofossil sampling by lake and total fire-event detections",
-    caption = paste0("Each prepared sample ID enters once at its median cached Bacon age: ",
+    caption = paste0("Each prepared sample ID enters once at its unrounded full-posterior median Bacon age: ",
       sampling_caption_counts, ". Cells are [younger edge, older edge).\n",
       "Fire totals sum accepted detections from fully covered charcoal cores; MORA requires at least two. ",
       "These are source detections, not unique regional fires, normalized fire_activity or CHAR.\n",
@@ -5309,7 +5052,15 @@ if (count.thr == CCA_COUNT_THRESHOLD && !length(extra_exclude) && !nzchar(cca_su
 # Fit the pooled CCA ONLY after resolving and reporting eligibility
 # -----------------------------------------------------------------------------
 cca_formula = reformulate(CCA_VARIABLES, response = "species_past_final")
-cca_model = cca(cca_formula, data = env_past_final)
+reference_path=here('output/cca_calibration_reference.rds')
+if(file.exists(reference_path) && count.thr==CCA_COUNT_THRESHOLD && !length(extra_exclude) && !nzchar(cca_suffix)) {
+  frozen=readRDS(reference_path)
+  if(!isTRUE(all.equal(species_past_final,frozen$legacy_species,tolerance=0)) ||
+     !isTRUE(all.equal(env_past_final,frozen$legacy_climate,tolerance=0)) ||
+     !identical(keep_species,frozen$retained_species))
+    stop('Fixed CCA calibration inputs changed; do not recalibrate during reconstruction migration')
+  cca_model=frozen$model
+} else cca_model=cca(cca_formula,data=env_past_final)
 
 # Projection helper. Rows are matched by plot_id, not by position: the former
 # model reused the `valid_plots` logical built from the PAST
@@ -5389,7 +5140,11 @@ comparison_df = bind_rows(
 # Diagnostic alternative calibrations must never overwrite this reference.
 if (count.thr == CCA_COUNT_THRESHOLD && !length(extra_exclude) && !nzchar(cca_suffix)) {
   source(here('R/helpers/cca_reference.R'), local = TRUE)
-  export_cca_reference(environment())
+  if(!file.exists(reference_path)) export_cca_reference(environment())
+  # New projection provenance is separate from the unchanged calibration bundle.
+  write_csv(tibble(path=c("output/paleo_occ.csv","output/paleo_env.csv"),
+    md5=unname(tools::md5sum(here(c("output/paleo_occ.csv","output/paleo_env.csv"))))),
+    here("output/cca_projection_provenance.csv"))
 }
 # END R/stages/04_cca_model.R
 
@@ -5723,7 +5478,7 @@ worked = w1 / w2 / w3 / w4 / w5 / w6 +
   plot_layout(heights = c(1.1, 1.4, 1.1, .8, 1.0, 1.8)) +
   plot_annotation(title = "Worked example: unified Holocene climate eras and fire periods")
 if (render_figures) {
-  ggsave(here("plot/test_figures/fig_holocene_climate_period_method_worked_example.pdf"),
+  ggsave(here("plot/test_figures/worked_examples/fig_holocene_climate_period_method_worked_example.pdf"),
     worked, width = 15, height = 20)
 }
 
@@ -5955,17 +5710,68 @@ figure = (p1 | p2) / (p3 | p4) / (p5 | p6) +
                                              hjust = .5)))
 
 if (render_figures) {
-  ggsave(here("plot/test_figures/fig_holocene_fire_method_worked_example.pdf"), figure,
+  ggsave(here("plot/test_figures/worked_examples/fig_holocene_fire_method_worked_example.pdf"), figure,
          width = 14, height = 11, units = "in", bg = "white")
   cat("Written Holocene fire worked example for 2,300 cal BP.\n")
 }
 # END R/stages/06_fire_method_worked_example.R
 
 # ============================================================================
-# BEGIN R/stages/07_cca_figure.R
+# BEGIN R/stages/07_tracking_metrics.R
+# ============================================================================
+# Canonical century reconstruction and tracking: one producer, no model fits.
+suppressPackageStartupMessages({library(here);library(tidyverse);library(vegan)})
+source(here('R/helpers/century_tracking.R'),local=TRUE)
+if(any(grepl('^--(bin-width|offset|reconstruction-audit|century-reconstruction)',commandArgs(trailingOnly=TRUE))))
+  stop('Ecological phase/width and support-audit options are retired')
+bundle=century_prepare();primary=century_reconstruct(bundle)
+hc=primary$calculations
+h=hc |> select(all_of(century_holocene_columns()))
+# Modern calculations are protected and already contain their distinct elapsed times.
+a=read_csv(here('output/cca_tracking_anthropocene_plot_model_input.csv'),show_col_types=FALSE)
+ac=read_csv(here('output/cca_tracking_anthropocene_plot_calculations.csv'),show_col_types=FALSE)
+stopifnot(nrow(a)==607L,!anyDuplicated(a[c('site','plot_id')]),nrow(ac)==607L,
+  !anyDuplicated(h[c('site','lake','age_hi','age_lo')]),
+  all(h$vegetation_dt_years==h$age_hi-h$age_lo),all(h$climate_dt_years==h$vegetation_dt_years),
+  all(is.na(h$fire_activity[!h$fire_coverage_valid])))
+# Occupancy is descriptive support, never a primary exclusion policy.
+assignments=reconstruction_century_assignments(bundle$cache$draws,bundle$samples,bundle$grid)
+centroids=assignments |> filter(is.finite(century_cal_bp)) |> group_by(site,lake,draw,century_cal_bp) |>
+  summarise(observed_CCA1=mean(observed_CCA1),observed_CCA2=mean(observed_CCA2),n_samples=n(),.groups='drop')
+occupancy=centroids |> count(site,lake,century_cal_bp,name='n_occupied_draws') |>
+  mutate(n_expected_draws=HOLOCENE_RECONSTRUCTION_DRAWS,occupancy_proportion=n_occupied_draws/n_expected_draws)
+positions=primary$positions |> left_join(occupancy,by=c('site','lake','century_cal_bp'),relationship='one-to-one') |>
+  mutate(n_occupied_draws=coalesce(n_occupied_draws,0L),n_expected_draws=HOLOCENE_RECONSTRUCTION_DRAWS,
+    occupancy_proportion=n_occupied_draws/n_expected_draws)
+century_support=bundle$grid |> left_join(occupancy,by=c('site','lake','century_cal_bp')) |>
+  mutate(n_occupied_draws=coalesce(n_occupied_draws,0L),n_expected_draws=HOLOCENE_RECONSTRUCTION_DRAWS,
+    occupancy_proportion=n_occupied_draws/n_expected_draws,
+    occupied_primary=paste(lake,century_cal_bp) %in% paste(positions$lake,positions$century_cal_bp))
+support=h |> group_by(site,lake) |> summarise(n_occupied_centuries=n()+1L,n_transitions=n(),
+  n_gaps_over_100=sum(vegetation_dt_years>100),duration_min=min(vegetation_dt_years),
+  duration_median=median(vegetation_dt_years),duration_max=max(vegetation_dt_years),
+  n_fire_coverage_losses=sum(!fire_coverage_valid),.groups='drop')
+tables=list(cca_tracking_holocene_century_positions=positions,
+  cca_tracking_holocene_century_support=century_support,
+  cca_tracking_holocene_century_draws=centroids,cca_tracking_holocene_lake_transitions=h,
+  cca_tracking_holocene_lake_calculations=hc,cca_tracking_holocene_lake_support=support,
+  cca_tracking_holocene_sample_projections=bundle$samples,
+  cca_tracking_holocene_sample_assignments=primary$assignments,
+  cca_tracking_holocene_fire_provenance=primary$fire$core,
+  cca_tracking_holocene_fire_events=primary$fire$events,
+  cca_tracking_holocene_posterior_rows=bundle$cache$posterior_rows)
+for(name in names(tables)) write_csv(tables[[name]],here('output',paste0(name,'.csv')))
+write_csv(century_schema(c(tables,list(cca_tracking_anthropocene_plot_model_input=a,
+  cca_tracking_anthropocene_plot_calculations=ac))),here('output/cca_tracking_schema.csv'))
+saveRDS(primary,here('output/chronology_reconstruction/primary.rds'))
+cat('Primary native-century tracking:',nrow(h),'actual transitions; no interpolation or offsets.\n')
+# END R/stages/07_tracking_metrics.R
+
+# ============================================================================
+# BEGIN R/stages/08_cca_figure.R
 # ============================================================================
 # =============================================================================
-# 07_cca_figure.R - the main CCA figure: observed vs predicted trajectories
+# 08_cca_figure.R - the main CCA figure: observed vs predicted trajectories
 # =============================================================================
 # Panel A: the pooled ordination, showing for each site x era BOTH trajectories
 #          through time -
@@ -5979,8 +5785,7 @@ if (render_figures) {
 #          climate variance is reported but is not plotted as a separate bar.
 # Panel D: species contributions to constrained inertia, with occurrence shading.
 #
-# Holocene points are site x frozen CC/S-era centroids of the complete 1,000-year
-# site-date path; Anthropocene is one point per site per survey. Sources
+# Holocene points are equal-lake CC/S-era centroids of primary occupied centuries; Anthropocene is one point per site per survey. Sources
 # R/stages/04_cca_model.R for the model.
 # =============================================================================
 
@@ -6001,22 +5806,6 @@ source(here("R/helpers/figure_style.R"), local = TRUE)
 holocene_display_mode = "era_centroid"
 cca_figure_stem = "fig_cca_trajectories"
 write_cca_png = TRUE
-
-# Inactive retained alternative: the moving-window trajectory branch below is
-# available for sensitivity work but is not the selected publication display.
-# Its run machinery uses 1,000-yr bins x 10 offsets x age draws and defines
-# HOLO_BIN, OFFSETS, N_DRAWS and make_runs(). Sourced rather than reimplemented
-# so this figure and the tracking metrics cannot disagree about what a bin is.
-HOLO_BIN = 1000
-OFFSETS = seq(0, HOLO_BIN - 100, by = 100)
-source(here("R/helpers/paleo_runs.R"), local = TRUE)
-
-# A bin_mid is kept only if it is occupied in at least this fraction of the age
-# DRAWS. Each bin_mid belongs to exactly one offset, so the denominator is
-# N_DRAWS, not the number of runs. Without it the
-# oldest and youngest ends of each path sprout ghost bins that exist in one draw
-# out of a hundred - a single sample's age tail, drawn as if it were a time step.
-min_draw_frac = 0.5
 
 # Species LABELLED in the inset biplot: those whose arrow reaches at least this
 # percent of the longest species arrow. Purely a legibility rule - shorter arrows
@@ -6063,144 +5852,27 @@ stopifnot(identical(rownames(species_past_paired), rownames(species_present_fina
 # Persist the exact paired site means so report claims and Figure 3 are auditable.
 write_csv(anth_pts, here("output/cca_trajectory_anthropocene_centroids.csv"))
 
-# Holocene: the 1,000-yr MOVING WINDOW, median across runs.
-#
-# TWO NESTED AVERAGES, in this order and not the other:
-#   1. WITHIN a run - mean POSITION of the samples in the bin. Positions, never
-#      pooled assemblages: pooling takes the union of species in the bin, which
-#      grows with the number of samples in it (rho up to 0.79) and manufactures
-#      compositional change out of sampling effort. Averaging positions has no
-#      such dependence.
-#   2. ACROSS runs - MEDIAN of those per-run means. Median not mean, because a
-#      run whose age draw empties a bin makes that bin's mean jump.
-#
-# The offsets are POOLED rather than averaged pointwise: each offset produces
-# bins at different times, so there is nothing to average pointwise. Ordered by
-# bin_mid they ARE the 1,000-yr window slid in 100-yr steps.
-#
-# The spread across runs is not drawn in this inactive alternative. It is
-# quantified by the maintained tracking realization tables and audit figures.
-runs = make_runs(bin_width = HOLO_BIN, offsets = OFFSETS)
-
-holo_pos = comparison_df %>%
-  filter(era == "holocene") %>%
-  select(plot_id, site, o1 = projected_CCA1, o2 = projected_CCA2,
-         p1 = predicted_CCA1, p2 = predicted_CCA2)
-
-holo_all = runs %>%
-  inner_join(holo_pos, by = "plot_id") %>%
-  group_by(site, run_id, bin_mid) %>%
-  summarize(across(c(o1, o2, p1, p2), mean), n = n(), .groups = "drop") %>%
-  group_by(site, bin_mid) %>%
-  summarize(across(c(o1, o2, p1, p2), median), n = median(n),
-            n_draws = n(), .groups = "drop") %>%
-  mutate(draw_frac = n_draws / N_DRAWS)
-
-# ⚠ THE PATH IS THINNED FOR DISPLAY, NOT DRAWN AT EVERY 100-YR PHASE STEP -
-# a DISPLAY decision, and the only place in the analysis where one bin phase is
-# privileged over the other four. Why:
-#
-# Consecutive moving-window points share 9 of their 10 centuries, so 90% of each
-# step is the same samples. In a time series that is fine - it is a smoother. In
-# a 2-D trajectory it is not: it draws five times more path length than there is
-# independent information, and the wander between overlapping windows is mostly
-# sampling noise. MORA's median bin holds 7 samples, so exchanging one sample
-# moves the point substantially, and the pooled path became an unreadable
-# tangle. NOCA (median 35 per bin) was far smoother - i.e. the tangle scales with
-# thinness of sampling, which is the signature of noise, not of signal.
-#
-# What this does and does not cost:
-#   costs    the phase of the drawn path is arbitrary (offset 0 of 10).
-#   does NOT cost anything in the numbers. The tracking stage computes lag,
-#            tracking ratio, and angle per run over all 10 offsets before
-#            summarization. Only this inactive display branch fixes a phase.
-#   keeps    the age draws. Every point is still the median over N_DRAWS
-#            chronologies; it is the bin PHASE that is fixed here, not the age.
-#
-# Set traj_step = 100 to draw the full moving window instead.
-#
-# ⚠ SET TO 2000 (Billur, 2026-08-13), so the drawn points coincide with the
-# 2000-yr time labels - every vertex is dated, and the path drops from 15 (MORA)
-# / 23 (NOCA) points to 4 / 6.
-#
-# What this does and does not mean:
-#   EVERY POINT IS STILL A 1,000-YR BIN MEAN. traj_step selects WHICH bins are
-#   drawn; it does not widen them. A vertex at 2250 cal BP is the mean position
-#   over its stated 1,000-year window - not a 2,000-yr average.
-#   THE PATH THEREFORE SKIPS EVERY OTHER PRIMARY BIN. A segment between two vertices
-#   spans 2000 yr, and whatever the composition did in between is not drawn. For
-#   a trajectory that is the point - it is a summary of direction - but it means
-#   the line must NOT be read as "nothing happened in between".
-#   NOTHING IN THE NUMBERS CHANGES. The tracking stage computes all three metrics over EVERY
-#   adjacent 1,000-yr bin pair, across all 10 offsets and all age draws. This
-#   parameter touches only what this one panel draws.
-if (!exists("traj_step")) traj_step = 2000
-traj_phase = 0                                  # which of OFFSETS is drawn
-
-holo_pts = if (holocene_display_mode == "trajectory") {
-  holo_all %>%
-    filter(draw_frac >= min_draw_frac) %>%
-    filter(traj_step == 100 |
-             (bin_mid - HOLO_BIN / 2 - traj_phase) %% traj_step == 0) %>%
-    mutate(era = "holocene", order = -bin_mid, lab = NA_character_)
-} else {
-  # Selected display: one observed WA and one predicted LC centroid per site x
-  # frozen CC/S era. Centroids are calculated from the complete site-date path,
-  # then ordered from CC1 to S4 so the original trajectory machinery draws the
-  # observed and predicted paths separately with time-direction arrows.
-  era_grid_path = here("output/holocene_era_grid.csv")
-  if (!file.exists(era_grid_path))
-    stop("Missing output/holocene_era_grid.csv; run R/stages/05_holocene_climate_fire_eras.R first.")
-  era_grid = read_csv(era_grid_path, show_col_types = FALSE)
-  era_levels = c("CC1", "S1", "CC2", "S2", "CC3", "S3", "CC4", "S4")
-  if (!identical(unique(era_grid$era_id), era_levels))
-    stop("Unexpected Holocene era sequence in holocene_era_grid.csv.")
-
-  era_centroid_audit = holo_all %>%
-    filter(draw_frac >= min_draw_frac) %>%
-    left_join(select(era_grid, t, era_id, era_class),
-              by = c("bin_mid" = "t")) %>%
-    filter(!is.na(era_id)) %>%
-    group_by(site, era_id, era_class) %>%
-    summarize(across(c(o1, o2, p1, p2), mean),
-              n_dates = n_distinct(bin_mid), n = median(n), .groups = "drop") %>%
-    mutate(era_id = factor(era_id, levels = era_levels),
-           era = "holocene", order = match(era_id, era_levels),
-           lab = as.character(era_id), bin_mid = NA_real_,
-           n_draws = NA_integer_, draw_frac = NA_real_) %>%
-    arrange(site, order)
-
-  if (n_distinct(era_centroid_audit$site) != 2L ||
-      any(table(era_centroid_audit$site) != length(era_levels)) ||
-      anyDuplicated(era_centroid_audit[c("site", "era_id")]))
-    stop("Holocene era-centroid construction failed.")
-
-  write_csv(era_centroid_audit %>%
-              transmute(site, era_id = as.character(era_id), era_class,
-                        observed_CCA1 = o1, observed_CCA2 = o2,
-                        predicted_CCA1 = p1, predicted_CCA2 = p2,
-                        n_dates, median_samples = n, order),
-            here("output/cca_trajectory_era_centroids.csv"))
-  era_centroid_audit
-}
-
-# Labels at even millennia. With 1,000-year windows and 100-year phases, a bin
-# midpoint need not fall exactly on the target; the nearest point within half a
-# bin is labelled instead.
-if (holocene_display_mode == "trajectory") {
-  holo_pts = holo_pts %>%
-    group_by(site) %>%
-    group_modify(function(g, k) {
-      targets = seq(0, 11000, by = 2000)
-      hit = purrr::map_int(targets, function(t) {
-        i = which.min(abs(g$bin_mid - t))
-        if (length(i) && abs(g$bin_mid[i] - t) <= HOLO_BIN / 2) i else NA_integer_
-      })
-      g$lab[na.omit(hit)] = paste0(targets[!is.na(hit)] / 1000, " ka")
-      g
-    }) %>%
-    ungroup()
-}
+# Primary occupied-century positions, averaged within lake/period and then
+# equally across available lakes. No interpolation or support filtering.
+positions=read_csv(here('output/cca_tracking_holocene_century_positions.csv'),show_col_types=FALSE)
+catalog=read_csv(here('output/holocene_era_catalog.csv'),show_col_types=FALSE)
+era_levels=catalog$era_id
+positions$era_id=vapply(positions$century_cal_bp,function(age) {
+  k=which(age>=catalog$younger_cal_bp & age<catalog$older_cal_bp)
+  if(length(k)>1L) stop('Overlapping climate-period boundaries')
+  if(length(k)) catalog$era_id[k] else NA_character_
+},character(1))
+lake_centroids=positions |> filter(!is.na(era_id)) |> group_by(site,lake,era_id) |>
+  summarise(across(c(o1,o2,p1,p2),mean),n_dates=n(),n=median(n_samples),.groups='drop')
+era_centroid_audit=lake_centroids |> group_by(site,era_id) |>
+  summarise(across(c(o1,o2,p1,p2),mean),n_lakes=n(),n_dates=sum(n_dates),n=mean(n),.groups='drop') |>
+  left_join(select(catalog,era_id,era_class),by='era_id',relationship='many-to-one') |>
+  mutate(era='holocene',order=match(era_id,era_levels),lab=era_id) |> arrange(site,order)
+write_csv(lake_centroids,here('output/cca_trajectory_lake_period_centroids.csv'))
+write_csv(era_centroid_audit |> transmute(site,era_id,era_class,
+  observed_CCA1=o1,observed_CCA2=o2,predicted_CCA1=p1,predicted_CCA2=p2,
+  n_lakes,n_dates,median_samples=n,order),here('output/cca_trajectory_era_centroids.csv'))
+holo_pts=era_centroid_audit
 
 traj = bind_rows(anth_pts %>% select(-t),
                  holo_pts %>% select(site, era, o1, o2, p1, p2, n, order, lab)) %>%
@@ -6267,7 +5939,7 @@ stopifnot(nrow(series_lab) == 8L,
 # Arrowheads every arrow_every-th step. With few, widely spaced points every
 # segment should carry its own head; at traj_step = 100 a head on every step
 # would be a solid line of arrowheads.
-arrow_every = if (traj_step >= 1000) 1 else if (traj_step >= 500) 2 else 5
+arrow_every = 1L
 
 steps = traj_long %>%
   group_by(grp, type) %>%
@@ -6289,26 +5961,11 @@ lab_pts = traj_long %>%
   group_by(grp, type) %>%
   mutate(is_end = row_number() %in% c(1, n())) %>%
   ungroup()
-if (holocene_display_mode == "trajectory") {
-  lab_pts = lab_pts %>%
-    filter(type == "observed" | (type == "predicted" & era == "holocene" & is_end)) %>%
-    # Holocene labels are pre-thinned to the millennia above; everything else
-    # (both Anthropocene points, and the ends of the predicted Holocene paths)
-    # keeps whatever label it has.
-    filter(!is.na(lab) | (era == "holocene" & type == "predicted" & is_end)) %>%
-    # The two ends of a predicted Holocene path rarely fall on a millennium, so
-    # they get their own age rather than an empty label - they run far from their
-    # observed counterparts and need anchoring in time. order = -bin_mid.
-    mutate(lab = if_else(is.na(lab), sprintf("%.1f ka", -order / 1000), lab),
-           ny = if_else(type == "predicted", -0.03 * diff(range(traj_long$y)), 0))
-} else {
   # Label the observed CC/S centroids. Predicted centroids remain visible through
   # the original observed/predicted alpha legend without duplicating every label.
   lab_pts = lab_pts %>%
     filter(type == "observed", !is.na(lab)) %>%
     mutate(ny = 0)
-}
-
 
 # -----------------------------------------------------------------------------
 # Inset: the plain biplot - climate constraint arrows + species scores
@@ -6508,8 +6165,7 @@ traj_panel = function(colour_var, pal, tag, facet = FALSE, title = NULL,
     # circles, or a white-filled point masks the head of the arrow arriving at it.
     # At traj_step = 100 a circle on every Holocene point beads the whole path, so
     # vertices are drawn only for the Anthropocene pair.
-    geom_point(data = if (traj_step >= 500) traj_long
-                      else traj_long %>% filter(era == "anthropocene"),
+    geom_point(data = traj_long,
                aes(x, y, color = !!cv, alpha = type),
                shape = 21, fill = "white", size = 1.9, stroke = 0.7,
                show.legend = FALSE) +
@@ -6720,14 +6376,9 @@ if (render_figures) {
 # need is printed here instead.
 cat("\n=== CAPTION MATERIAL (figure carries no caption) ===\n")
 cat(zoom_note, "\n", sep = "")
-if (holocene_display_mode == "trajectory") {
-  cat("Panel A: points every ", traj_step, " yr, each one a ", HOLO_BIN,
-      "-yr bin mean (median over ", N_DRAWS, " age draws).\n", sep = "")
-} else {
   cat("Panel A: one WA and one LC centroid per site x frozen CC/S era,",
       " connected separately from CC1 through S4 with time-direction arrows;",
       " Anthropocene legacy-to-resurvey trajectories are unchanged.\n")
-}
 cat("Observed = WA scores (alpha ", alpha_type["observed"],
     "); predicted = LC scores (alpha ", alpha_type["predicted"], ").\n", sep = "")
 cat("Ordination scaling: ", cca_scaling, " (hill = ", cca_hill, ")\n", sep = "")
@@ -6758,180 +6409,29 @@ cat("  climate shares sum to", round(sum(clim_share$share_pct), 1),
     "% is shared between\n  the collinear constraints and cannot be attributed",
     "(VIF 22-39; r = 0.90 temperatures, 0.95 precipitations).\n")
 
-if (holocene_display_mode == "trajectory") {
-  cat("\nTrajectory points per group. The Holocene path is a ", HOLO_BIN,
-      "-yr window at 100-yr steps\n(", length(OFFSETS), " bin offsets x ", N_DRAWS,
-      " age draws = ", length(OFFSETS) * N_DRAWS, " runs; median across runs), so",
-      " `n samples per bin`\nis the median bin occupancy, not a total:\n", sep = "")
-  trajectory_audit = traj %>% group_by(site, era) %>%
-    summarize(points = n(),
-              span = if (first(era) == "holocene")
-                       sprintf("%.1f - %.1f ka", max(-order) / 1000,
-                               min(-order) / 1000)
-                     else "legacy -> resurvey",
-              n_per_bin_min = min(n), n_per_bin_median = median(n),
-              n_per_bin_max = max(n), .groups = "drop")
-} else {
-  cat("\nTrajectory points per group. Holocene entries are site x CC/S-era",
-      " centroids connected chronologically from CC1 through S4:\n")
-  trajectory_audit = traj %>% group_by(site, era) %>%
-    summarize(points = n(),
-              span = if_else(first(era) == "holocene",
-                             "CC1 -> S4", "legacy -> resurvey"),
-              n_per_bin_min = min(n), n_per_bin_median = median(n),
-              n_per_bin_max = max(n), .groups = "drop")
-}
-print(as.data.frame(trajectory_audit), row.names = FALSE)
-
-# Bins that exist in too few age draws to be a time step. Reported, not hidden:
-# they are the ends of the record, where a single sample's age tail reaches into
-# a bin no other draw occupies.
-ghost = holo_all %>% filter(draw_frac < min_draw_frac)
-cat("\nHolocene bins DROPPED (occupied in < ", 100 * min_draw_frac,
-    "% of age draws): ", nrow(ghost), " of ", nrow(holo_all), "\n", sep = "")
-if (nrow(ghost))
-  print(as.data.frame(ghost %>% group_by(site) %>%
-    summarize(n_bins = n(), ages = sprintf("%.2f - %.2f ka", min(bin_mid) / 1000,
-                                           max(bin_mid) / 1000),
-              max_draw_frac = round(max(draw_frac), 2), .groups = "drop")),
-    row.names = FALSE)
+trajectory_audit=traj %>% group_by(site,era) %>% summarize(points=n(),.groups='drop')
+print(as.data.frame(trajectory_audit),row.names=FALSE)
 if (render_figures) {
   cat("\nWritten: plot/", cca_figure_stem, ".pdf and .png\n", sep = "")
 } else {
   cat("\nFigure rendering skipped; trajectory data and audits were refreshed.\n")
 }
-# END R/stages/07_cca_figure.R
-
-# ============================================================================
-# BEGIN R/stages/08_tracking_metrics.R
-# ============================================================================
-# Canonical lake-level and paired-plot tracking datasets. No figure/model fits.
-# Rscript R/stages/08_tracking_metrics.R [--bin-width-years=500]
-# Nondefault widths write only suffixed Holocene products.
-suppressPackageStartupMessages({library(here);library(tidyverse);library(vegan)})
-source(here('R/helpers/config.R'),local=TRUE)
-source(here('R/helpers/tracking_metrics.R'),local=TRUE)
-source(here('R/helpers/tracking_data.R'),local=TRUE)
-N_DRAWS = 100; DRAW_SEED = 42
-source(here('R/helpers/paleo_runs.R'),local=TRUE)
-source(here('R/helpers/climate_variables.R'),local=TRUE)
-source(here('R/helpers/holocene_climate_fire_era_functions.R'),local=TRUE)
-width_arg = grep('^--bin-width-years=',commandArgs(trailingOnly=TRUE),value=TRUE)
-if (length(width_arg)>1L) stop('Specify one bin width')
-bin_width_years = validate_tracking_width(if(length(width_arg))
-  as.numeric(sub('^--bin-width-years=','',width_arg)) else 1000L)
-suffix = if (bin_width_years==1000L) '' else paste0('_',bin_width_years,'yr')
-output_path = function(stem) here('output',paste0(stem,suffix,'.csv'))
-required = here('output',c('cca_calibration_reference.rds','chelsa_paleo_ponds.csv',
-  'paleo_age_draws.rds','holocene_fire_source_events.csv','holocene_fire_source_series.csv',
-  'holocene_era_fire_core_frequency.csv','holocene_era_fire_site_frequency.csv'))
-if (!all(file.exists(required))) stop('Run CCA reference and climate/fire stages first')
-reference = readRDS(required[1])
-if (!identical(reference$scaling,'sites') || reference$hill ||
-    nrow(reference$legacy_species)!=607L || length(reference$retained_species)!=14L)
-  stop('Expected the unchanged primary 607-plot, 14-taxon CCA')
-if (any(tools::md5sum(names(reference$provenance$input_md5)) != reference$provenance$input_md5) ||
-    any(tools::md5sum(names(reference$provenance$model_source_md5)) != reference$provenance$model_source_md5))
-  stop('CCA reference is stale; rerun the unchanged calibration stage')
-# Cache-only chronology access: never regenerate draws or mutate Bacon products.
-draws = paleo_age_draws(allow_rebuild=FALSE)
-ponds = read_csv(required[2],show_col_types=FALSE)
-env_slice = ponds |> transmute(unit=lake,period=site,variable,time=slice,month,
-  value=if(PALEO_USE_BIAS_CORRECTED) value_corrected else value_raw) |>
-  derive_climate_vars(winter_shift=FALSE) |> rename(lake=unit,site=period,slice=time) |>
-  mutate(age=1950-slice*100)
-built = build_lake_tracking(reference,draws,env_slice,bin_width_years)
-realizations = built$realizations
-events = read_csv(required[4],show_col_types=FALSE)
-continuous = read_csv(required[5],show_col_types=FALSE)
-fire = transition_fire(realizations,events,continuous,bin_width_years,
-  core_reference=if(bin_width_years==1000L) read_csv(required[6],show_col_types=FALSE) else NULL,
-  high_fire=read_csv(required[7],show_col_types=FALSE))
-realizations = realizations |> left_join(fire,by=c('site','offset','age_hi','age_lo'),relationship='many-to-one')
-keys = c('site','lake','draw','offset','age_hi','age_lo')
-if (anyDuplicated(realizations[keys])) stop('Duplicate lake realization key')
-uncertainty = lake_uncertainty(realizations,N_DRAWS)
-by_offset = lake_offset_summary(realizations,uncertainty)
-timeseries = lake_reporting_grid(uncertainty,bin_width_years)
-sample_support = built$samples |> distinct(site,lake,plot_id) |> count(site,lake,name='n_eligible_samples')
-excluded = built$raw |> group_by(site,lake,offset) |> summarize(
-  n_observed_realizations=n(),n_incomplete_climate_realizations=sum(!climate_complete),.groups='drop')
-support = realizations |> group_by(site,lake,offset) |> summarize(
-  n_realizations=n(),n_nmin2_realizations=sum(n_min>=2),
-  youngest_endpoint=min(age_lo),oldest_endpoint=max(age_hi),
-  endpoint_samples_min=min(c(n_samples,n_samples_2)),
-  endpoint_samples_median=median(c(n_samples,n_samples_2)),
-  endpoint_samples_max=max(c(n_samples,n_samples_2)),.groups='drop') |>
-  left_join(by_offset |> group_by(site,lake,offset) |> summarize(
-    n_transitions=n(),n_transitions_nmin2=sum(n_draws_nmin2>0),
-    n_transitions_full_draw_support=sum(n_draws_present==N_DRAWS),
-    n_transitions_majority_draw_support=sum(n_draws_present>=N_DRAWS/2),
-    n_transitions_nmin2_majority_support=sum(n_draws_nmin2>=N_DRAWS/2),
-    present_draws_min=min(n_draws_present),present_draws_median=median(n_draws_present),
-    n_fire_missing_transitions=sum(!is.finite(fire_activity)),.groups='drop'),by=c('site','lake','offset')) |>
-  left_join(sample_support,by=c('site','lake')) |> left_join(excluded,by=c('site','lake','offset')) |>
-  mutate(bin_width_years=bin_width_years,n_expected_draws=N_DRAWS)
-if (bin_width_years==1000L) {
-  modern_fire = bind_rows(
-    read_csv(here('output/MORA_plot_info_fire.csv'),show_col_types=FALSE) |>
-      transmute(site='MORA',plot_id=str_to_upper(plot_id),burned=burnt,
-        fire_assignment_source='MORA mapped disturbance 1987-2017'),
-    read_csv(here('output/NOCA_fire_assignment_audit.csv'),show_col_types=FALSE) |>
-      transmute(site='NOCA',plot_id=str_to_upper(plot_id),burned=burnt,
-        fire_assignment_source=assignment_source))
-  if (anyDuplicated(modern_fire[c('site','plot_id')])) stop('Duplicate plot fire assignment')
-  anth = reference$modern_endpoints |> calculate_tracking_metrics() |>
-    add_climate_change_metrics(reference$climate_scaling) |>
-    mutate(fire_plot_key=str_to_upper(plot_id)) |>
-    left_join(modern_fire |> rename(fire_plot_key=plot_id),
-      by=c('site','fire_plot_key'),relationship='many-to-one') |> select(-fire_plot_key)
-  if (anyNA(anth$burned)) stop('Missing modern plot fire assignment')
-  anth_model = anth |> select(all_of(anthropocene_model_columns()))
-}
-# Validate calculated products and regression keys before replacing any exports.
-tryCatch(validate_tracking_products(by_offset,uncertainty,
-  if(bin_width_years==1000L) anth_model else NULL,bin_width_years),error=function(e) {
-  stop(conditionMessage(e),'\nObserved/excluded realization diagnostics:\n',
-    paste(capture.output(print(excluded,n=40)),collapse='\n'),call.=FALSE)
-})
-tables = list(cca_tracking_holocene_lake_realizations=realizations,
-  cca_tracking_holocene_lake_by_offset=by_offset,
-  cca_tracking_holocene_lake_uncertainty=uncertainty,
-  cca_tracking_holocene_lake_timeseries=timeseries,
-  cca_tracking_holocene_lake_support=support)
-for(stem in names(tables)) write_csv(tables[[stem]],output_path(stem))
-if(bin_width_years==1000L) {
-  tables$cca_tracking_anthropocene_plot_model_input = anth_model
-  tables$cca_tracking_anthropocene_plot_calculations = anth
-  write_csv(anth_model,here('output/cca_tracking_anthropocene_plot_model_input.csv'))
-  write_csv(anth,here('output/cca_tracking_anthropocene_plot_calculations.csv'))
-  write_csv(tracking_schema(tables),here('output/cca_tracking_schema.csv'))
-  source(here('R/helpers/survey_decision_effects.R'),local=TRUE)
-  export_survey_decision_effects(anth)
-}
-cat('Tracking completed:',nrow(realizations),'lake realizations;',nrow(by_offset),
-  'actual lake/offset transitions;',nrow(uncertainty),'uncertainty rows; width',
-  bin_width_years,'years.\n')
-# END R/stages/08_tracking_metrics.R
+# END R/stages/08_cca_figure.R
 
 # ============================================================================
 # BEGIN R/stages/09_tracking_example_and_visualizations.R
 # ============================================================================
 # Worked geometry example and descriptive lake-level tracking visualizations.
-# Run after stages 13 and 09; read their canonical tables and write diagnostic PDFs.
+# Run after canonical stage 07; read primary tables and write diagnostic PDFs.
 # Rscript R/stages/09_tracking_example_and_visualizations.R
 suppressPackageStartupMessages({library(here);library(tidyverse);library(patchwork)})
 source(here('R/helpers/tracking_data.R'),local=TRUE)
 render_figures = isTRUE(getOption('paleoaces.render_figures',TRUE))
-r = read_csv(here('output/cca_tracking_holocene_lake_realizations.csv'),show_col_types=FALSE)
-b = read_csv(here('output/cca_tracking_holocene_lake_by_offset.csv'),show_col_types=FALSE)
-interval = b |> filter(lake=='PantherPotholes',offset==0) |>
-  mutate(distance=abs((age_hi+age_lo)/2-3000)) |> arrange(distance) |> slice(1)
-draws = r |> filter(lake=='PantherPotholes',offset==0,
-  age_hi==interval$age_hi,age_lo==interval$age_lo)
-example = draws |> filter(pace_counterfactual_valid,direction_counterfactual_valid) |>
-  arrange(draw) |> slice(1)
-if(nrow(example)!=1L) stop('No valid canonical worked-example realization')
+r=read_csv(here('output/cca_tracking_holocene_lake_calculations.csv'),show_col_types=FALSE)
+b=read_csv(here('output/cca_tracking_holocene_lake_transitions.csv'),show_col_types=FALSE)
+example=r |> filter(lake=='PantherPotholes',pace_counterfactual_valid,direction_counterfactual_valid) |>
+  mutate(distance=abs(interval_mid_cal_bp-3000)) |> arrange(distance) |> slice(1)
+if(nrow(example)!=1L) stop('No valid primary worked example')
 points = tibble(label=c('O1','O2','P1','P2','Pace corrected','Direction corrected'),
   CCA1=c(example$o1,example$o1_2,example$p1,example$p1_2,example$pace_corrected_CCA1,example$direction_corrected_CCA1),
   CCA2=c(example$o2,example$o2_2,example$p2,example$p2_2,example$pace_corrected_CCA2,example$direction_corrected_CCA2))
@@ -6943,32 +6443,28 @@ a = ggplot(points,aes(CCA1,CCA2)) + geom_segment(data=vectors,
   aes(x=x,y=y,xend=xend,yend=yend,color=type),inherit.aes=FALSE,
   arrow=grid::arrow(length=grid::unit(2,'mm'))) + geom_point() +
   geom_text(aes(label=label),vjust=-.7,size=3) + coord_equal() +
-  labs(title='A. Actual and corrected movement',color=NULL) + theme_minimal(base_size=10)
+  labs(title='A. Actual and corrected movement',color=NULL) + theme_minimal(base_size=14)
 lag = tibble(endpoint=c('Initial','Actual final','Pace corrected','Direction corrected'),
   lag=c(example$lag_t1,example$lag_t2,example$lag_t2_pace_corrected,example$lag_t2_direction_corrected))
 p = ggplot(lag,aes(endpoint,lag)) + geom_col(fill='#4477AA') +
   geom_text(aes(label=sprintf('%.3f',lag)),vjust=-.3,size=3) +
-  labs(title='B. Distance to actual predicted position',x=NULL,y='Lag (CCA units)') +
-  theme_minimal(base_size=10) + theme(axis.text.x=element_text(angle=20,hjust=1))
+  labs(title='B. Distance to actual predicted position',x=NULL,y='Lag (CCA distance)') +
+  theme_minimal(base_size=14) + theme(axis.text.x=element_text(angle=20,hjust=1))
 metrics = tracking_response_names()
 values = example |> select(all_of(metrics)) |> pivot_longer(everything(),names_to='metric',values_to='value')
 q = ggplot(values,aes(x=1,y=value)) + geom_point(size=2) +
   geom_text(aes(label=sprintf('%.3f',value)),nudge_x=.2,size=3) +
-  facet_wrap(~metric,scales='free_y',ncol=2) + labs(title='C. Focused quantities for this draw',x=NULL,y=NULL) +
+  facet_wrap(~metric,scales='free_y',ncol=2) + labs(title='C. Focused quantities for this transition',x=NULL,y=NULL) +
   theme_minimal(base_size=9) + theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())
-uncertainty = draws |> select(draw,lag_rate_per_century,pace_effect_on_lag_per_century,
-  direction_effect_on_lag_per_century) |> pivot_longer(-draw,names_to='metric',values_to='value')
-s = ggplot(uncertainty,aes(value)) + geom_histogram(bins=15,fill='#228833',color='white',na.rm=TRUE) +
-  facet_wrap(~metric,scales='free',ncol=1) + labs(title='D. Valid chronology-draw distributions',
-    x='CCA units per century',y='Draws') + theme_minimal(base_size=9)
-figure = (a+p)/(q+s) + plot_annotation(title=paste0('Panther Potholes: ',example$age_hi,' to ',example$age_lo,' cal BP'),
-  subtitle=paste0('Offset 0; geometry draw ',example$draw,'; ',nrow(draws),' of 100 draws support this actual transition.'),
-  caption='Both corrections start at O1. Effects compare with the actual final lag and are nonadditive. Climate bins contain ten native slices.\nChronology distributions are conditional on valid realizations; draws and offsets are not ecological replicates.')
-if(render_figures) ggsave(here('plot/test_figures/fig_method_worked_example.pdf'),figure,width=12,height=11)
+support=tibble(endpoint=c('Older century','Younger century'),n_samples=c(example$n_samples_t1,example$n_samples_t2))
+s=ggplot(support,aes(endpoint,n_samples))+geom_col(fill='grey70')+
+  labs(title='D. Actual endpoint sampling',x=NULL,y='Original macrofossil samples')+theme_minimal(base_size=16)
+figure=(a+p)/(q+s)+plot_annotation(title=paste0('Panther Potholes: ',example$age_hi,' to ',example$age_lo,' cal BP'),
+  subtitle=paste('Primary median-age reconstruction; elapsed time:',example$vegetation_dt_years,'years'),
+  caption='Sample WA positions are averaged within native centuries. No vegetation interpolation. Corrections start at O1.')
+if(render_figures) ggsave(here('plot/test_figures/worked_examples/fig_method_worked_example.pdf'),figure,width=14,height=12)
 
-# Descriptive temporal panels and paired-plot boxplots. Response lines reuse
-# maintained reporting estimates and their aligned transition predictors,
-# following the same half-open mapping and complete-offset support rule.
+# Descriptive temporal panels use actual primary transitions and matching predictors.
 # This stage never modifies or exports scientific tables.
 # Regional climate bands reuse Figure 2's frozen catalog and subdivisions.
 # These annotations do not classify lakes or change any tracking estimates.
@@ -6997,32 +6493,15 @@ climate_period_labels=bind_rows(
  mutate(midpoint=(older_cal_bp+younger_cal_bp)/2) |> arrange(desc(older_cal_bp))
 climate_internal_boundaries=climate_subphases |> group_by(parent_era_id) |>
  filter(older_cal_bp<max(older_cal_bp)) |> ungroup() |> transmute(cal_bp=older_cal_bp)
-bin_width_years=unique(b$climate_dt_years)
-stopifnot(length(bin_width_years)==1L,all(b$vegetation_dt_years==bin_width_years))
-offsets=seq(0,bin_width_years-100,100)
-n_offsets=length(offsets)
 lake_order=c('JayBath','LogWallow','ReflectionPond','PantherPotholes')
 lake_labels=c('Jay Bath (MORA)','Log Wallow (MORA)','Reflection Pond (MORA)','Panther Potholes (NOCA)')
 predictors=c('standardized_climate_change_rate','fire_activity')
-thin=b |> pivot_longer(all_of(c(metrics,predictors)),names_to='metric',values_to='value') |>
- mutate(lake=factor(lake,levels=lake_order,labels=lake_labels)) |>
- arrange(metric,lake,offset,interval_mid_cal_bp) |> group_by(metric,lake,offset) |>
- mutate(segment=cumsum(row_number()==1L |
-   coalesce(interval_mid_cal_bp-lag(interval_mid_cal_bp)>bin_width_years,TRUE) |
-   !is.finite(value) | !coalesce(is.finite(lag(value)),FALSE))) |> ungroup()
-response_grid=read_csv(here('output/cca_tracking_holocene_lake_timeseries.csv'),show_col_types=FALSE) |>
- filter(metric %in% metrics) |> select(site,lake,t,metric,estimate,n_offsets,n_valid_offsets)
-predictor_grid=lake_reporting_context(b,response_grid,bin_width_years) |>
- distinct(site,lake,t,n_valid_offsets,
-   standardized_climate_change_rate=climate_rate,fire_activity) |>
- pivot_longer(all_of(predictors),names_to='metric',values_to='estimate') |>
- mutate(n_offsets=n_valid_offsets) |> filter(is.finite(estimate))
-stopifnot(!anyDuplicated(predictor_grid[c('site','lake','t','metric')]))
-thick=bind_rows(response_grid,predictor_grid) |>
- mutate(lake=factor(lake,levels=lake_order,labels=lake_labels)) |>
- arrange(metric,lake,t) |> group_by(metric,lake) |>
- mutate(segment=cumsum(row_number()==1L | coalesce(t-lag(t)>100,TRUE))) |> ungroup()
-stopifnot(all(thick$n_offsets==n_offsets),all(thick$n_valid_offsets==n_offsets))
+thick=b |> pivot_longer(all_of(c(metrics,predictors)),names_to='metric',values_to='estimate') |>
+  mutate(lake=factor(lake,levels=lake_order,labels=lake_labels),t=interval_mid_cal_bp) |>
+  arrange(metric,lake,transition_index) |> group_by(metric,lake) |>
+  mutate(segment=cumsum(row_number()==1L | !is.finite(estimate) |
+    !coalesce(is.finite(lag(estimate)),FALSE))) |> ungroup()
+thin=thick |> rename(value=estimate)
 modern=read_csv(here('output/cca_tracking_anthropocene_plot_model_input.csv'),show_col_types=FALSE) |>
  mutate(site=factor(site,levels=c('MORA','NOCA')))
 # FireActivity is a charcoal-frequency measure and is unavailable for modern
@@ -7036,16 +6515,16 @@ palette=c(lag_rate_per_century='#2563eb',observed_turnover_rate='#059669',
  magnitude_tracking_ratio='#5b56b8',angle_degrees='#157d91',
  standardized_climate_change_rate='#665641',fire_activity='#b63c35')
 rate_labels=c('Lag-change rate','Observed turnover','Pace effect','Direction effect')
-common=theme_minimal(base_size=12,base_family='sans')+
- theme(plot.title=element_text(size=20,face='bold',color='#152536'),
+common=theme_minimal(base_size=16,base_family='sans')+
+ theme(plot.title=element_text(size=25,face='bold',color='#152536'),
   plot.subtitle=element_text(size=12,color='#526273',margin=margin(b=12)),
-  plot.caption=element_text(size=10,color='#526273',hjust=0,margin=margin(t=12)),
+  plot.caption=element_text(size=14,color='#526273',hjust=0,margin=margin(t=12)),
   panel.grid.minor=element_blank(),panel.grid.major=element_line(color='#e4e8ee',linewidth=.3),
-  strip.text=element_text(face='bold',size=11,color='#233647'),
+  strip.text=element_text(face='bold',size=16,color='#233647'),
   strip.background=element_rect(fill='#f0f3f7',color=NA),
-  strip.placement='outside',strip.text.y.left=element_text(angle=0,size=10),
+  strip.placement='outside',strip.text.y.left=element_text(angle=0,size=14),
   strip.background.y=element_blank(),panel.spacing=grid::unit(.8,'lines'),
-  legend.position='bottom',legend.title=element_blank(),legend.text=element_text(size=11),
+  legend.position='bottom',legend.title=element_blank(),legend.text=element_text(size=16),
   plot.background=element_rect(fill='white',color=NA),plot.margin=margin(8,8,8,8))
 oldest_age=(ceiling(max(c(thin$interval_mid_cal_bp,thick$t))/500)+1)*500
 x_scale=scale_x_reverse(limits=c(oldest_age,0),breaks=seq(0,oldest_age,2500),
@@ -7083,15 +6562,15 @@ tracking_panels=function(display_metrics,rows,row_labels,title,subtitle,rate_leg
     geom_text(data=era_labels,aes(x=midpoint,y=Inf,label=label),inherit.aes=FALSE,
       color='#3f4855',size=2.7,fontface='bold',angle=90,hjust=1.15,vjust=.5,show.legend=FALSE)+
     geom_hline(data=baseline,aes(yintercept=y),color='#8796a5',linewidth=.35,linetype='dashed')+
-    geom_line(data=left_thin,aes(interval_mid_cal_bp,value,color=metric,
-      group=interaction(metric,offset,segment)),linewidth=.35,alpha=.27,na.rm=TRUE)+
+    geom_segment(data=left_thick,aes(x=age_lo,xend=age_hi,y=estimate,yend=estimate,color=metric),
+      alpha=.4,linewidth=.5,na.rm=TRUE)+
     geom_line(data=left_thick,aes(t,estimate,color=metric,
       group=interaction(metric,segment)),linewidth=1.05)+
     facet_grid(display_row~lake,scales='free_y',switch='y',drop=FALSE)+x_scale+
     scale_fill_manual(values=climate_era_colors,guide='none')+
     scale_color_manual(values=palette,breaks=legend_breaks,labels=legend_labels,
       guide=if(rate_legend) guide_legend(override.aes=list(alpha=1,linewidth=1.2),nrow=1) else 'none')+
-    labs(x='Transition midpoint / reporting age (cal BP)',y=NULL)+common
+    labs(x='Actual transition midpoint (cal BP)',y=NULL)+common
   right=ggplot(modern_values,aes(site,value,color=metric,fill=metric))+
     geom_hline(data=baseline,aes(yintercept=y),inherit.aes=FALSE,
       color='#8796a5',linewidth=.35,linetype='dashed')+
@@ -7101,7 +6580,7 @@ tracking_panels=function(display_metrics,rows,row_labels,title,subtitle,rate_leg
     scale_color_manual(values=palette,guide='none')+scale_fill_manual(values=palette,guide='none')+
     labs(x='Paired plots',y=NULL)+common+
     theme(strip.text.y=element_blank(),strip.background.y=element_blank(),
-      axis.text.x=element_text(size=11))
+      axis.text.x=element_text(size=16))
   # Retain the modern fire row without inventing continuous charcoal activity.
   missing_fire=tibble(display_row=factor(unname(rows['fire_activity']),levels=row_labels),
     era='Anthropocene',site=factor('MORA',levels=c('MORA','NOCA')),value=.5)
@@ -7111,15 +6590,10 @@ tracking_panels=function(display_metrics,rows,row_labels,title,subtitle,rate_leg
     geom_text(data=missing_fire,aes(x=1.5,y=.25),inherit.aes=FALSE,
       label='Continuous fire activity\nunavailable for modern plots',
       color=unname(palette['fire_activity']),size=3.1,lineheight=1.2)
-  caption=paste0('Thin: individual offsets. Thick: medians across all ',n_offsets,
-    ' offsets with complete finite support. Response medians reuse the maintained reporting grid.\n',
-    'The four Holocene columns share scales by row; the Anthropocene column uses its own labeled y-scales. ',
-    'Boxes show finite values from ',sum(modern$site=='MORA'),' MORA / ',
-    sum(modern$site=='NOCA'),' NOCA paired plots.\n',
-    'Climate is the standardized physical climate-change rate. MORA lakes share regional fire exposure; ',
-    'modern fire is binary burned, not continuous charcoal activity.\n',
-    'Regional climate periods: darker gray = climate change (CC); lighter gray = relative stability (S). ',
-    'CC1a, CC1b and CC1c subdivide CC1; blank margins are outside the classified domain.')
+  caption=paste0('Primary reconstructed transitions. Horizontal spans show actual elapsed intervals; points and lines show transition estimates.\n',
+    'Four lake columns share response scales and cal-BP axes. Modern plots have separate scales. ',
+    'MORA lakes share regional fire exposure, measured in events per century per eligible core.\n',
+    'Gray bands retain the separate established climate-change and stability periods.')
   combined=(left+right)+plot_layout(widths=c(4,1.5),guides='collect')+
     plot_annotation(title=title,subtitle=subtitle,caption=caption,
       theme=common)
@@ -7138,8 +6612,8 @@ tracking_panels=function(display_metrics,rows,row_labels,title,subtitle,rate_leg
   combined_grob$grobs[[axis_group]]$grobs[[fire_axis]]=grid::nullGrob()
   combined_grob
 }
-rate_rows=c('Tracking responses\n(CCA units / century)',
- 'Climate-change rate\n(calibration SD / century)','Fire activity\n(normalized frequency)')
+rate_rows=c('Tracking responses\n(CCA distance per century)',
+ 'Climate-change rate\n(standardized change per century)','Fire activity\n(events per century per core)')
 rate_map=setNames(c(rep(rate_rows[1],length(rates)),rate_rows[2:3]),c(rates,predictors))
 p_rates=tracking_panels(c(rates,predictors),rate_map,rate_rows,
  'Tracking responses, climate and fire',
@@ -7153,8 +6627,8 @@ p_other=tracking_panels(other,setNames(other_rows,other),other_rows,
  'Tracking magnitude ratio, angle, climate and fire',
  'One row per variable with established climate periods; duplicate Holocene rate-ratio display omitted')
 if(render_figures) {
-  ggsave(here('plot/test_figures/fig_tracking_offset_rates.pdf'),p_rates,width=20,height=10)
-  ggsave(here('plot/test_figures/fig_tracking_offset_ratios_angles.pdf'),p_other,width=20,height=12)
+  ggsave(here('plot/test_figures/fig_tracking_transition_rates.pdf'),p_rates,width=20,height=10)
+  ggsave(here('plot/test_figures/fig_tracking_transition_ratios_angles.pdf'),p_other,width=20,height=12)
 }
 # END R/stages/09_tracking_example_and_visualizations.R
 
@@ -7183,7 +6657,7 @@ required = c(
   anthropocene = here("output/cca_tracking_anthropocene_plot_calculations.csv"),
   regional_phases = here("output/holocene_era_climate_regional_phase_changes.csv"))
 if (!all(file.exists(required))) stop(
-  "Run R/stages/08_tracking_metrics.R and R/stages/05_holocene_climate_fire_eras.R first.")
+  "Run R/stages/07_tracking_metrics.R and R/stages/05_holocene_climate_fire_eras.R first.")
 
 climate = read_csv(required[["climate"]], show_col_types = FALSE)
 eras = read_csv(required[["eras"]], show_col_types = FALSE)
@@ -7498,8 +6972,6 @@ figure = top_row / bottom_row +
 if (render_figures) {
   ggsave(here("plot/fig_standardized_climate_change_eras_fire.pdf"), figure,
     width = 16.2, height = 9.5)
-  ggsave(here("plot/fig_standardized_climate_change_eras_fire.png"), figure,
-    width = 16.2, height = 9.5, dpi = 300, bg = "white")
 }
 cat("Written fire-threshold ratio and raw-rate comparison CSV",
     if (render_figures) ", plus the climate/fire figure.\n" else ".\n", sep = "")
@@ -7509,24 +6981,18 @@ cat("Written fire-threshold ratio and raw-rate comparison CSV",
 # BEGIN R/stages/11_tracking_model_data.R
 # ============================================================================
 # One combined model input, assembled after the canonical tracking calculations.
-# Rscript R/stages/11_tracking_model_data.R [--bin-width-years=500]
+# Rscript R/stages/11_tracking_model_data.R
 suppressPackageStartupMessages({library(here);library(tidyverse)})
 source(here('R/helpers/config.R'),local=TRUE)
 source(here('R/helpers/tracking_metrics.R'),local=TRUE)
 source(here('R/helpers/tracking_data.R'),local=TRUE)
 source(here('R/helpers/tracking_model_data.R'),local=TRUE)
-width_arg=grep('^--bin-width-years=',commandArgs(trailingOnly=TRUE),value=TRUE)
-if(length(width_arg)>1L) stop('Specify one bin width')
-width=validate_tracking_width(if(length(width_arg))
-  as.numeric(sub('^--bin-width-years=','',width_arg)) else 1000L)
-suffix=if(width==1000L) '' else paste0('_',width,'yr')
-b=read_csv(here('output',paste0('cca_tracking_holocene_lake_by_offset',suffix,'.csv')),
-  show_col_types=FALSE)
+source(here('R/helpers/tracking_result_paths.R'),local=TRUE)
+tracking_result_guide()
+h=read_csv(here('output/cca_tracking_holocene_lake_transitions.csv'),show_col_types=FALSE)
 a=read_csv(here('output/cca_tracking_anthropocene_plot_model_input.csv'),show_col_types=FALSE)
-hc=read_csv(here('output',paste0('cca_tracking_holocene_lake_realizations',suffix,'.csv')),
-  show_col_types=FALSE)
+hc=read_csv(here('output/cca_tracking_holocene_lake_calculations.csv'),show_col_types=FALSE)
 ac=read_csv(here('output/cca_tracking_anthropocene_plot_calculations.csv'),show_col_types=FALSE)
-if(any(b$climate_dt_years!=width)) stop('Requested width and source table disagree')
 lake_locations=read_csv(here('output/chelsa_paleo_ponds.csv'),show_col_types=FALSE) |>
   distinct(site,lake,longitude=lon,latitude=lat)
 plot_locations=bind_rows(
@@ -7534,484 +7000,124 @@ plot_locations=bind_rows(
     transmute(site='MORA',plot_id,longitude,latitude),
   read_csv(here('output/NOCA_plot_info_fire.csv'),show_col_types=FALSE) |>
     transmute(site='NOCA',plot_id,longitude,latitude))
-combined=combine_tracking_model_data(b,a,lake_locations,plot_locations,hc,ac)
-write_csv(combined,here('output',paste0('cca_tracking_era_by_offset',suffix,'.csv')))
-if(width==1000L) {
-  schema=read_csv(here('output/cca_tracking_schema.csv'),show_col_types=FALSE) |>
-    filter(!dataset %in% c('cca_tracking_era_comparison','cca_tracking_era_by_offset'))
-  schema=bind_rows(schema,tracking_schema(list(cca_tracking_era_by_offset=combined)))
-  write_csv(schema,here('output/cca_tracking_schema.csv'))
-}
-cat('Combined model input:',nrow(combined),'rows;',ncol(combined),'columns;',
-  nrow(b),'Holocene transitions and',nrow(a),'modern pairs, each with',
-  length(tracking_combined_response_names()),'responses.\n')
+combined=combine_tracking_model_data(h,a,lake_locations,plot_locations,hc,ac)
+write_csv(combined,here('output/cca_tracking_era_model_input.csv'))
+schema=read_csv(here('output/cca_tracking_schema.csv'),show_col_types=FALSE) |>
+  filter(dataset!='cca_tracking_era_model_input')
+write_csv(bind_rows(schema,tracking_schema(list(cca_tracking_era_model_input=combined))),
+  here('output/cca_tracking_schema.csv'))
+cat('Primary combined model input:',nrow(h),'Holocene transitions and',nrow(a),'modern pairs.\n')
 # END R/stages/11_tracking_model_data.R
 
 # ============================================================================
 # BEGIN R/stages/12_tracking_era_models.R
 # ============================================================================
-# Covariance comparison and selected MA1 results: one transition offset per fit.
-# Default: observed and two corrected lag rates, turnover and physical climate rate.
-# --metric=NAME selects one response; no response transformation is applied.
-# Rscript R/stages/12_tracking_era_models.R [--metric=observed_turnover_rate]
-# Optional later width experiments: --bin-width-years=N; never run automatically.
-# Same fixed effects and variance groups for AR1, MA1 and independent residuals.
-suppressPackageStartupMessages({
-  library(here);library(tidyverse);library(nlme);library(emmeans);library(patchwork)
-})
-source(here('R/helpers/tracking_data.R'),local=TRUE)
-source(here('R/helpers/tracking_model_data.R'),local=TRUE)
+# Primary combined-era GLS: compare covariance candidates on identical rows.
+suppressPackageStartupMessages({library(here);library(tidyverse);library(nlme);library(emmeans);library(patchwork)})
+source(here('R/helpers/reconstruction_models.R'),local=TRUE)
 source(here('R/helpers/tracking_model_reporting.R'),local=TRUE)
-render_figures=isTRUE(getOption('paleoaces.render_figures',TRUE))
-argument=function(name,default) {
-  prefix=paste0('--',name,'=')
-  found=commandArgs(trailingOnly=TRUE)
-  found=found[startsWith(found,prefix)]
-  if(length(found)>1L) stop('Specify ',name,' once')
-  if(length(found)) substring(found,nchar(prefix)+1L) else default
-}
-response_metrics=trimws(strsplit(argument('metric',paste(tracking_model_response_names(),collapse=',')),
-  ',',fixed=TRUE)[[1]])
-if(!length(response_metrics) || any(!response_metrics %in% tracking_model_available_names()) ||
-   anyDuplicated(response_metrics)) stop('Specify distinct known responses with --metric')
-width=validate_tracking_width(as.numeric(argument('bin-width-years','1000')))
-suffix=if(width==1000L) '' else paste0('_',width,'yr')
-input_path=here('output',paste0('cca_tracking_era_by_offset',suffix,'.csv'))
-combined=read_csv(input_path,show_col_types=FALSE)
-if(validate_tracking_model_data(combined)!=width) stop('Requested interval width differs from input')
-offsets=seq(0,width-100,100)
-model_types=c('AR1','MA1','Independent')
-selected_model_type=tracking_selected_model_type()
-
-for(response_metric in response_metrics) {
-  response_label=tracking_model_response_label(response_metric)
-  response_unit=tracking_model_response_unit(response_metric)
-
-  fit_offset=function(offset,model_type) {
-    selected=tracking_offset_model_input(combined,response_metric,offset)
-    d=selected$data
-    correlation=switch(model_type,
-      AR1=corAR1(form=~time_index | series),
-      MA1=corARMA(p=0,q=1,form=~time_index | series),
-      Independent=NULL,stop('Unknown covariance model'))
-    warnings=character()
-    fit=withCallingHandlers(
-      gls(estimate ~ era * site,data=d,correlation=correlation,
-        weights=varIdent(form=~1 | era_site),method='REML',na.action=na.fail,
-        control=glsControl(msMaxIter=200)),
-      warning=function(w) {warnings <<- c(warnings,conditionMessage(w));invokeRestart('muffleWarning')})
-    summary_fit=summary(fit)
-    tt=summary_fit$tTable
-    df=fit$dims$N-fit$dims$p
-    ci=qt(.975,df)*tt[,'Std.Error']
-    parameters=if(is.null(fit$modelStruct$corStruct)) numeric() else
-      unname(coef(fit$modelStruct$corStruct,unconstrained=FALSE))
-    if(length(parameters)!=as.integer(model_type!='Independent') ||
-       any(!is.finite(parameters)) || any(!is.finite(tt)) || !is.finite(as.numeric(logLik(fit))))
-      stop('Invalid fitted numerical results')
-    parameter=if(length(parameters)) parameters else NA_real_
-    coefficients=tibble(metric=response_metric,offset,model_type,term=rownames(tt),
-      estimate=tt[,'Value'],std_error=tt[,'Std.Error'],df,
-      t_value=tt[,'t-value'],p_value=tt[,'p-value'],
-      conf_low=tt[,'Value']-ci,conf_high=tt[,'Value']+ci,
-      n_holocene=sum(d$era=='Holocene'),n_anthropocene=sum(d$era=='Anthropocene'),
-      correlation_parameter=parameter,converged=TRUE)
-    residuals=d
-    residuals$fitted=as.numeric(fitted(fit))
-    residuals$normalized_residual=as.numeric(stats::residuals(fit,type='normalized'))
-    h=residuals[residuals$era=='Holocene',]
-    scale=mean(h$normalized_residual^2)
-    lag_products=map_dfr(1:3,function(lag) {
-      j=match(paste(h$series,h$time_index+lag),paste(h$series,h$time_index))
-      keep=!is.na(j)
-      tibble(lag,lag_years=lag*width,n_pairs=sum(keep),
-        lag_product=if(any(keep) && scale>0)
-          mean(h$normalized_residual[keep]*h$normalized_residual[j[keep]])/scale else NA_real_)
-    })
-    means=emmeans(fit,~era | site,data=d,mode='satterthwaite')
-    mt=as.data.frame(summary(means,infer=c(TRUE,FALSE)))
-    mean_table=tibble(metric=response_metric,offset,model_type,site=as.character(mt$site),
-      era=as.character(mt$era),estimate=mt$emmean,std_error=mt$SE,df=mt$df,
-      conf_low=mt$lower.CL,conf_high=mt$upper.CL,
-      n=vapply(seq_len(nrow(mt)),function(i) sum(d$site==mt$site[i] & d$era==mt$era[i]),integer(1)))
-    contrasts=contrast(means,method=list('Anthropocene - Holocene'=c(-1,1)))
-    ct=as.data.frame(summary(contrasts,infer=c(TRUE,TRUE),adjust='none'))
-    contrast_table=tibble(metric=response_metric,offset,model_type,site=as.character(ct$site),
-      contrast=as.character(ct$contrast),estimate=ct$estimate,std_error=ct$SE,df=ct$df,
-      t_value=ct$t.ratio,p_value=ct$p.value,conf_low=ct$lower.CL,conf_high=ct$upper.CL,
-      n_holocene=vapply(as.character(ct$site),function(s) sum(d$era=='Holocene' & d$site==s),integer(1)),
-      n_anthropocene=vapply(as.character(ct$site),function(s) sum(d$era=='Anthropocene' & d$site==s),integer(1)))
-    counts=as.data.frame(table(d$era,d$site))
-    names(counts)=c('era','site','n')
-    variance=coef(fit$modelStruct$varStruct,unconstrained=FALSE,allCoef=TRUE)
-    block=c(paste0('OFFSET ',offset,' | MODEL ',model_type),
-      paste('Selected rows:',nrow(d)+nrow(selected$excluded),
-        '| Finite rows:',nrow(d),'| Undefined selected responses:',nrow(selected$excluded)),
-      if(model_type=='Independent') 'Temporal correlation: none; era/site residual variances retained' else
-        paste('Correlation parameter:',format(parameter,digits=8),
-          if(model_type=='AR1') '(phi; lag-1 correlation)' else
-            paste0('(theta; lag-1 correlation = ',format(parameter/(1+parameter^2),digits=8),')')),
-      paste('Warnings:',if(length(warnings)) paste(unique(warnings),collapse='; ') else 'none'),
-      capture.output(print(counts)),capture.output(print(summary_fit)),
-      'Era means within each park:',capture.output(summary(means,infer=c(TRUE,FALSE))),
-      'Anthropocene - Holocene within each park (unadjusted exploratory contrasts):',
-      capture.output(summary(contrasts,infer=c(TRUE,TRUE),adjust='none')),
-      'Residual SDs:',capture.output(print(fit$sigma*variance)),
-      'Holocene normalized residual lag products (diagnostic, not significance tests):',
-      capture.output(print(lag_products)),
-      if(nrow(selected$excluded)) c('Undefined response identities:',
-        capture.output(print(selected$excluded[c('era','site','lake','plot_id','age_hi','age_lo')]))),
-      '')
-    list(fit=fit,data=d,coefficients=coefficients,means=mean_table,contrasts=contrast_table,residuals=residuals,
-      lag_products=lag_products,text=block,offset=offset,model_type=model_type)
-  }
-
-  # Calculate every fit before replacing results. A failed fit stops with its key;
-  # it never changes observation selection or silently omits an offset/model type.
-  fits=list()
-  for(offset in offsets) for(model_type in model_types) {
-    cat('Fitting',response_metric,'| offset',offset,'|',model_type,'\n')
-    fits[[paste(offset,model_type,sep='_')]]=tryCatch(fit_offset(offset,model_type),
-      error=function(e) stop('Offset ',offset,' / ',model_type,': ',conditionMessage(e),call.=FALSE))
-  }
-  coefficients=bind_rows(purrr::map(fits,'coefficients'))
-  contrasts=bind_rows(purrr::map(fits,'contrasts'))
-  group_means=tracking_selected_model_results(bind_rows(purrr::map(fits,'means')))
-  if(nrow(group_means)!=length(offsets)*4L ||
-     anyDuplicated(group_means[c('metric','offset','model_type','site','era')]) ||
-     any(!is.finite(as.matrix(group_means[c('estimate','std_error','df','conf_low','conf_high')]))))
-    stop('Missing, duplicate or undefined selected-model group means')
-  if(anyDuplicated(coefficients[c('metric','offset','model_type','term')]) ||
-     nrow(coefficients)!=length(offsets)*length(model_types)*4L)
-    stop('Missing or duplicate fitted coefficients')
-  if(anyDuplicated(contrasts[c('metric','offset','model_type','site')]) ||
-     nrow(contrasts)!=length(offsets)*length(model_types)*2L ||
-     any(!is.finite(contrasts$estimate) | !is.finite(contrasts$std_error)))
-    stop('Missing, duplicate or undefined park contrasts')
-  # AIC comparisons require identical observations and fixed effects within an
-  # offset. Different offsets remain sensitivity fits with different input rows.
-  for(offset in offsets) {
-    group=fits[paste(offset,model_types,sep='_')]
-    if(!all(vapply(group,function(x) identical(x$data,group[[1]]$data),logical(1))))
-      stop('Covariance models use different observations at offset ',offset)
-  }
-  fit_overview=map_dfr(fits,function(x) tibble(metric=response_metric,offset=x$offset,
-    model_type=x$model_type,n_holocene=sum(x$data$era=='Holocene'),
-    n_anthropocene=sum(x$data$era=='Anthropocene'),n=nrow(x$data),method=x$fit$method,
-    n_parameters=attr(logLik(x$fit),'df'),log_likelihood=as.numeric(logLik(x$fit)),AIC=AIC(x$fit),
-    correlation_parameter=x$coefficients$correlation_parameter[1],converged=TRUE)) |>
-    group_by(offset) |> mutate(delta_AIC=AIC-min(AIC),
-      akaike_weight=exp(-delta_AIC/2)/sum(exp(-delta_AIC/2)),aic_rank=min_rank(AIC)) |>
-    ungroup() |> select(metric,offset,model_type,n_holocene,n_anthropocene,n,method,
-      n_parameters,log_likelihood,AIC,delta_AIC,akaike_weight,aic_rank,correlation_parameter,converged)
-  notes=c('MA1 covariance selected by the author on 2026-10-09; model development and inference remain exploratory.',
-    paste('Response:',response_metric,'| Holocene interval / time step:',width,'years'),
-    paste('Response units:',response_unit,'| Transformation: none'),
-    'Fixed effects: estimate ~ era * site; REML; separate residual SDs by era/site.',
-    'Reference categories: Holocene and MORA. Coefficient units follow the selected response.',
-    'AR1: corAR1(~ time_index | series). MA1: corARMA(p=0, q=1, ~ time_index | series).',
-    'Independent: correlation=NULL; the same era/site residual SDs and fixed effects are retained.',
-    'MA1 correlates only observations one actual time step apart within a series; gaps are retained.',
-    'For MA1, theta is not the lag-1 correlation: rho(1) = theta/(1 + theta^2); rho(k)=0 for k>1.',
-    'Each fit uses one offset and all original modern pairs with a finite selected response.',
-    'Modern pairs are singleton series; their internal time index is 0 and their actual dates are retained.',
-    'Offsets are sensitivity realizations; the same modern data are reused, so fits are not independent.',
-    'Holocene responses are finite chronology-draw medians within actual transitions, without offset aggregation.',
-    'Corrected lag rates use (corrected final lag - initial lag)*100/climate elapsed years within each draw before summarizing.',
-    'Pace correction remains magnitude-based. Its undefined directions exclude only the pace-corrected response.',
-    'No chronology uncertainty propagation, lake random intercept, climate/fire fixed effects or support threshold.',
-    'Adjacent Holocene transitions share endpoints; only four lakes and two fire histories are available.',
-    'AIC comparisons are meaningful between covariance types within the same offset, not across offsets.',
-    'Delta AIC is measured from the minimum within each offset; Akaike weights are relative to these three candidates only.',
-    'Boxplots show within-offset delta AIC and summarize offset sensitivity, not independent samples; raw AIC remains in the CSV.',
-    'REML is retained because these covariance comparisons use identical fixed effects and observations within each offset.',
-    'The comparison retains all candidates; reported coefficients, contrasts and residuals use the author-selected MA1.',
-    'The MA1 reporting specification is applied to every requested response; covariance comparisons and diagnostics are response-specific.',
-    'Group means and era contrasts use emmeans with Satterthwaite degrees of freedom; contrast SEs use the fitted covariance of the means.',
-    'Coefficient intervals and park contrasts are unadjusted exploratory intervals/tests.',
-    paste('Input:',basename(input_path),'| MD5:',unname(tools::md5sum(input_path))),
-    paste('Script MD5:',unname(tools::md5sum(here('R/stages/12_tracking_era_models.R')))),
-    paste('Packages:',paste(sapply(c('nlme','emmeans'),function(p)
-      paste(p,as.character(packageVersion(p)))),collapse='; ')))
-  out=here('output/exploratory/tracking_offset_models',paste0(response_metric,suffix))
-  dir.create(out,recursive=TRUE,showWarnings=FALSE)
-  write_csv(coefficients,file.path(out,'model_coefficients.csv'))
-  write_csv(contrasts,file.path(out,'model_contrasts.csv'))
-  write_csv(fit_overview,file.path(out,'model_comparison.csv'))
+combined=read_csv(here('output/cca_tracking_era_model_input.csv'),show_col_types=FALSE)
+validate_tracking_model_data(combined)
+figure_pages=list()
+for(metric in tracking_model_response_names()) {
+  selected=tracking_primary_model_input(combined,metric)
+  entry=reconstruction_select(selected$data,estimate~era*site,variance='era_site')
+  if(is.null(entry$fit)) stop('All combined-era covariance fits failed: ',metric)
+  entry$metric=metric;entry$era='Combined';entry$specification='era_by_site'
+  out=here('output/tracking_analysis/primary/era_comparison',metric)
+  tables=reconstruction_export(list(primary=entry),out,selected$excluded)
+  means=emmeans(entry$fit,~era | site,data=entry$data,mode='satterthwaite')
+  mt=as.data.frame(summary(means,infer=c(TRUE,FALSE)))
+  group_means=as_tibble(mt) |> transmute(metric=metric,model_type=entry$selected,site,era,
+    estimate=emmean,std_error=SE,df,conf_low=lower.CL,conf_high=upper.CL,
+    n=map2_int(as.character(site),as.character(era),~sum(entry$data$site==.x & entry$data$era==.y)))
+  ct=as.data.frame(summary(contrast(means,method=list('Anthropocene - Holocene'=c(-1,1))),
+    infer=c(TRUE,TRUE),adjust='none'))
+  contrasts=as_tibble(ct) |> transmute(metric=metric,model_type=entry$selected,site,contrast,
+    estimate,std_error=SE,df,p_value=p.value,conf_low=lower.CL,conf_high=upper.CL)
   write_csv(group_means,file.path(out,'model_group_means.csv'))
-  writeLines(c(notes,'','Fit overview:',capture.output(print(as.data.frame(fit_overview),
-    digits=8,row.names=FALSE)), '',
-    unlist(purrr::map(fits,'text')),capture.output(sessionInfo())),file.path(out,'model_results.txt'))
-
-  # Only the selected covariance is presented after the comparison figure.
-  model_colors=tracking_model_colors()
-  plot_coefficients=tracking_selected_model_results(coefficients)
-  plot_contrasts=tracking_selected_model_results(contrasts)
-  selected_fits=fits[vapply(fits,function(x) x$model_type==selected_model_type,logical(1))]
-  means_plot=tracking_model_group_means_plot(group_means,plot_contrasts,response_metric,offsets)
-  coef_plot=ggplot(plot_coefficients,aes(offset,estimate))+
-    geom_hline(yintercept=0,color='grey65',linetype='dashed')+
-    geom_errorbar(aes(ymin=conf_low,ymax=conf_high),width=20,
-      color=unname(model_colors[selected_model_type]),linewidth=.6)+
-    geom_line(color=unname(model_colors[selected_model_type]),linewidth=.6)+
-    geom_point(color=unname(model_colors[selected_model_type]),size=2.8)+
-    facet_wrap(~term,scales='free_y',ncol=2)+
-    scale_x_continuous(breaks=offsets)+
-    labs(title=paste('MA(1) coefficients:',response_label),
-      subtitle=paste(length(offsets),'offsets; era × site; REML and separate era/site residual variances'),
-      x='Bin offset (years)',y='Coefficient estimate',
-      caption='Points: coefficients; bars: unadjusted 95% t intervals. Reference: Holocene / MORA.\nOffsets reuse the same modern pairs and are sensitivity fits, not independent replicates.')+
-    tracking_model_plot_theme()+theme(
-      axis.text.x=element_text(angle=45,hjust=1))
-  contrast_plot=ggplot(plot_contrasts,aes(offset,estimate))+
-    geom_hline(yintercept=0,color='grey65',linetype='dashed')+
-    geom_errorbar(aes(ymin=conf_low,ymax=conf_high),width=20,
-      color=unname(model_colors[selected_model_type]),linewidth=.6)+
-    geom_line(color=unname(model_colors[selected_model_type]),linewidth=.6)+
-    geom_point(color=unname(model_colors[selected_model_type]),size=2.8)+
-    facet_wrap(~site,scales='free_y',nrow=1)+
-    scale_x_continuous(breaks=offsets)+
-    labs(title=paste('MA(1) era contrasts:',response_label),
-      subtitle='Anthropocene minus Holocene within each park; selected MA(1) at every offset',
-      x='Bin offset (years)',y='Anthropocene - Holocene',
-      caption='Points: model-based era contrasts; bars: unadjusted 95% intervals with Satterthwaite degrees of freedom.\nPositive estimates indicate higher Anthropocene responses. Parks have separate y-scales. Offsets reuse modern pairs and are sensitivity fits.')+
-    tracking_model_plot_theme()+theme(
-      axis.text.x=element_text(angle=45,hjust=1))
-
-  # Pair each offset's three comparisons. Deterministic point displacement keeps
-  # identical-offset pairs visible without treating them as independent samples.
-  aic_data=fit_overview |> mutate(model_index=match(model_type,model_types),
-    point_x=model_index+(match(offset,offsets)-(length(offsets)+1)/2)/
-      max(1,length(offsets)-1)*.24)
-  aic_plot=ggplot(aic_data,
-    aes(model_index,delta_AIC,group=model_type,fill=model_type))+
-    geom_hline(yintercept=0,color='grey55',linetype='dashed')+
-    geom_boxplot(width=.48,alpha=.2,outlier.shape=NA,color='grey45')+
-    geom_line(aes(x=point_x,group=offset),color='grey65',alpha=.6,linewidth=.4)+
-    geom_point(aes(x=point_x,color=model_type),size=2.4)+
-    scale_x_continuous(breaks=seq_along(model_types),labels=c('AR(1)','MA(1)','No temporal\nautocorrelation'))+
-    scale_color_manual(values=model_colors)+scale_fill_manual(values=model_colors)+
-    labs(title=paste('Within-offset covariance comparison:',response_label),
-      subtitle=paste(length(offsets),'offsets; same observations, fixed effects, REML and era/site residual variances within each offset'),
-      x=NULL,y='AIC - minimum AIC within offset (lower is better)',
-      caption='Zero identifies the lowest AIC within each offset. Boxes summarize offsets; dots are fits; grey lines connect the same offset.\nOffsets reuse modern plots and are sensitivity fits, not independent replicates. Raw AIC values remain in model_comparison.csv.\nMA(1) is the requested reporting structure. Assess covariance support separately for each response using this comparison.')+
-    theme_minimal(base_size=12)+theme(legend.position='none',panel.grid.minor=element_blank(),
-      plot.title=element_text(size=17,face='bold'),plot.subtitle=element_text(size=11),
-      plot.caption=element_text(size=10,hjust=0))
-  group_colors=c(Holocene.MORA='#059669',Anthropocene.MORA='#2563eb',
-    Holocene.NOCA='#c97710',Anthropocene.NOCA='#d42d75')
-  residual_panels=list()
-  for(x in selected_fits) {
-    tag=paste('Offset',x$offset,'|',x$model_type)
-    common=theme_minimal(base_size=8)+theme(legend.position='none',
-      plot.title=element_text(size=9,face='bold'),plot.subtitle=element_text(size=7))
-    p1=ggplot(x$residuals,aes(fitted,normalized_residual,color=era_site))+
-      geom_hline(yintercept=0,color='grey65')+geom_point(alpha=.35,size=.5)+
-      scale_color_manual(values=group_colors)+
-      labs(title=tag,subtitle='Normalized residuals versus fitted',x='Fitted',y='Normalized residual')+common
-    qq=x$residuals[order(x$residuals$normalized_residual),]
-    qq$theoretical=qnorm(ppoints(nrow(qq)))
-    p2=ggplot(qq,aes(theoretical,normalized_residual,color=era_site))+
-      geom_abline(intercept=0,slope=1,color='grey50')+geom_point(alpha=.4,size=.5)+
-      scale_color_manual(values=group_colors)+
-      labs(title=tag,subtitle='Normal Q-Q; pooled normalized residuals',x='Normal quantile',y='Normalized residual')+common
-    p3=ggplot(x$lag_products,aes(lag,lag_product))+
-      geom_hline(yintercept=0,color='grey65')+
-      geom_segment(aes(xend=lag,yend=0),color=unname(model_colors[x$model_type]))+
-      geom_point(color=unname(model_colors[x$model_type]),size=1)+
-      geom_text(aes(label=paste0('n=',n_pairs)),vjust=-.7,size=2)+
-      scale_x_continuous(breaks=1:3)+
-      labs(title=tag,subtitle='Holocene residual lag products',x=paste0('Lag (',width,'-year steps)'),y='Lag product')+common
-    residual_panels=c(residual_panels,list(p1,p2,p3))
+  write_csv(contrasts,file.path(out,'model_contrasts.csv'))
+  cat(capture.output(print(group_means)),capture.output(print(contrasts)),sep='\n',
+    file=file.path(out,'model_results.txt'),append=TRUE)
+  if(isTRUE(getOption('paleoaces.render_figures',TRUE))) {
+    theme=reconstruction_model_theme()
+    gp=ggplot(group_means,aes(era,estimate,color=site,group=site))+
+      geom_line()+geom_errorbar(aes(ymin=conf_low,ymax=conf_high),width=.1)+geom_point(size=3)+
+      facet_wrap(~site)+scale_color_manual(values=c(MORA='#648FFF',NOCA='#FE6100'))+
+      labs(x=NULL,y=tracking_model_response_unit(metric),title=tracking_model_response_label(metric))+theme
+    cp=ggplot(contrasts,aes(site,estimate,color=site))+geom_hline(yintercept=0,linetype='dashed',color='grey60')+
+      geom_errorbar(aes(ymin=conf_low,ymax=conf_high),width=.12)+geom_point(size=3)+
+      scale_color_manual(values=c(MORA='#648FFF',NOCA='#FE6100'))+
+      labs(x=NULL,y='Anthropocene - Holocene',title=tracking_model_response_label(metric))+theme
+    ap=ggplot(entry$audit,aes(model_type,delta_AIC,fill=selected))+geom_col(width=.55)+
+      geom_hline(yintercept=2,linetype='dashed',color='grey50')+
+      scale_fill_manual(values=c('TRUE'='#648FFF','FALSE'='grey80'),guide='none')+
+      labs(x='Residual covariance',y='Delta REML AIC',
+        subtitle='MA(1) is primary. Independent and CAR1 are comparisons only.\nAll candidates use identical observations and fixed effects.')+theme
+    figures=list(group_means=gp,coefficients=reconstruction_coefficient_plot(tables$model_coefficients)+
+      labs(title=tracking_model_response_label(metric),subtitle='Primary MA(1): era × site')+
+      theme(legend.position='none',axis.text.y=element_blank(),axis.ticks.y=element_blank()),
+      contrasts=cp,residuals=reconstruction_residual_plot(tables$transition_predictions),aic=ap)
+    for(name in names(figures)) figure_pages[[name]]=c(figure_pages[[name]],list(figures[[name]]))
   }
-  residual_plot=wrap_plots(residual_panels,ncol=3)+plot_annotation(
-    title=paste('MA(1) offset-model residual checks:',response_label),
-    subtitle='One row per offset: scatter / Q-Q / Holocene lag products for the selected MA(1)',
-    caption='Colors: Holocene MORA green, Holocene NOCA orange, Anthropocene MORA blue, Anthropocene NOCA pink.\nHolocene lag products match actual within-lake time gaps; labels give pair counts. Modern singletons are excluded. No formal lag tests or confidence bands.\nMA(1) selected; distribution and inference remain exploratory. Chronology uncertainty is not propagated.',
-    theme=theme(plot.title=element_text(size=18,face='bold'),plot.subtitle=element_text(size=11),
-      plot.caption=element_text(size=10,hjust=0)))
-  figure_stem=paste0(response_metric,suffix)
-  if(render_figures) {
-    ggsave(here('plot/test_figures',paste0('fig_tracking_model_group_means_',figure_stem,'.pdf')),
-      means_plot,width=14,height=11)
-    ggsave(here('plot/test_figures',paste0('fig_tracking_model_coefficients_',figure_stem,'.pdf')),
-      coef_plot,width=13,height=9)
-    ggsave(here('plot/test_figures',paste0('fig_tracking_model_contrasts_',figure_stem,'.pdf')),
-      contrast_plot,width=13,height=7)
-    ggsave(here('plot/test_figures',paste0('fig_tracking_model_residuals_',figure_stem,'.pdf')),
-      residual_plot,width=12,height=2.6*length(offsets)+1.5,limitsize=FALSE)
-    ggsave(here('plot/test_figures',paste0('fig_tracking_model_aic_',figure_stem,'.pdf')),
-      aic_plot,width=13,height=7)
-  }
-  cat('Saved',length(fits),'comparison fits; MA1 reported;',nrow(coefficients),'coefficient rows and',
-    nrow(contrasts),'park contrasts in',out,'\n')
 }
+for(name in names(figure_pages)) tracking_pdf_pages(figure_pages[[name]],
+  tracking_model_figure(paste0('fig_tracking_model_',name,'.pdf')),
+  width=12,height=if(name=='residuals') 10 else if(name=='coefficients') 12 else 6)
 # END R/stages/12_tracking_era_models.R
 
 # ============================================================================
 # BEGIN R/stages/13_tracking_lake_sensitivity.R
 # ============================================================================
-# Maintained sensitivity: offset 0, one Holocene lake versus its park's modern pairs.
-# Default: five rate responses, including the two corrected lag rates; offset 0 only.
-# Rscript R/stages/13_tracking_lake_sensitivity.R [--metric=NAME]
-# Optional manual runs: --metric=NAME --offset=N --bin-width-years=N.
-suppressPackageStartupMessages({
-  library(here);library(tidyverse);library(nlme);library(emmeans)
-})
-source(here('R/helpers/tracking_data.R'),local=TRUE)
-source(here('R/helpers/tracking_model_data.R'),local=TRUE)
+# Primary lake comparisons; use the parent combined-era selected covariance family.
+suppressPackageStartupMessages({library(here);library(tidyverse);library(nlme);library(emmeans)})
+source(here('R/helpers/reconstruction_models.R'),local=TRUE)
 source(here('R/helpers/tracking_model_reporting.R'),local=TRUE)
-render_figures=isTRUE(getOption('paleoaces.render_figures',TRUE))
-argument=function(name,default) {
-  prefix=paste0('--',name,'=')
-  found=commandArgs(trailingOnly=TRUE)
-  found=found[startsWith(found,prefix)]
-  if(length(found)>1L) stop('Specify ',name,' once')
-  if(length(found)) substring(found,nchar(prefix)+1L) else default
+combined=read_csv(here('output/cca_tracking_era_model_input.csv'),show_col_types=FALSE)
+figure_pages=list()
+for(metric in tracking_model_response_names()) {
+  parent=readRDS(here('output/tracking_analysis/primary/era_comparison',metric,'primary_fits.rds'))$primary
+  selected=tracking_primary_model_input(combined,metric)
+  coefficients=contrasts=audits=text=list();fits=list()
+  for(lake in unique(selected$data$lake[selected$data$era=='Holocene'])) {
+    park=as.character(unique(selected$data$site[selected$data$lake==lake & !is.na(selected$data$lake)]))
+    d=selected$data |> filter(site==park,era=='Anthropocene' | lake==.env$lake)
+    d$era_site=interaction(d$era,d$site,drop=TRUE)
+    e=reconstruction_select(d,estimate~era,variance='era',families=parent$selected)
+    audits[[lake]]=mutate(e$audit,lake=lake,site=park,metric=metric)
+    if(is.null(e$fit)) {text[[lake]]=paste(lake,'fit failed');next}
+    coefficients[[lake]]=reconstruction_coefficients(e$fit,metric,'Combined',e$selected) |> mutate(lake=lake,site=park)
+    mm=emmeans(e$fit,~era,data=d,mode='satterthwaite')
+    ct=as_tibble(as.data.frame(summary(contrast(mm,method=list('Anthropocene - Holocene'=c(-1,1))),
+      infer=c(TRUE,TRUE),adjust='none')))
+    contrasts[[lake]]=ct |> transmute(metric=metric,lake=lake,site=park,model_type=e$selected,
+      estimate,std_error=SE,df,p_value=p.value,conf_low=lower.CL,conf_high=upper.CL)
+    fits[[lake]]=e;text[[lake]]=c(lake,capture.output(print(summary(e$fit))),capture.output(print(ct)))
+  }
+  out=here('output/tracking_analysis/sensitivity/lake_checks/era_comparisons',metric);dir.create(out,recursive=TRUE,showWarnings=FALSE)
+  co=bind_rows(coefficients);ct=bind_rows(contrasts)
+  write_csv(co,file.path(out,'model_coefficients.csv'));write_csv(ct,file.path(out,'model_contrasts.csv'))
+  write_csv(bind_rows(audits),file.path(out,'covariance_comparison.csv'));saveRDS(fits,file.path(out,'primary_fits.rds'))
+  writeLines(unlist(text),file.path(out,'model_results.txt'))
+  if(isTRUE(getOption('paleoaces.render_figures',TRUE))) for(type in c('coefficients','contrasts')) {
+    x=if(type=='coefficients') co else ct
+    p=ggplot(x,aes(estimate,lake,color=site))+geom_vline(xintercept=0,linetype='dashed',color='grey60')+
+      geom_errorbar(aes(xmin=conf_low,xmax=conf_high),orientation='y',width=.12)+geom_point(size=3)+
+      scale_color_manual(values=c(MORA='#648FFF',NOCA='#FE6100'))+
+      labs(x=if(type=='contrasts') 'Anthropocene - Holocene' else 'Coefficient estimate',y=NULL)+reconstruction_model_theme()
+    if(type=='coefficients') p=p+facet_wrap(~term,scales='free_x')
+    p=p+labs(title=tracking_model_response_label(metric))
+    figure_pages[[type]]=c(figure_pages[[type]],list(p))
+  }
 }
-response_metrics=trimws(strsplit(argument('metric',paste(tracking_model_response_names(),collapse=',')),
-  ',',fixed=TRUE)[[1]])
-if(!length(response_metrics) || any(!response_metrics %in% tracking_model_available_names()) ||
-   anyDuplicated(response_metrics)) stop('Specify distinct known responses with --metric')
-width=validate_tracking_width(as.numeric(argument('bin-width-years','1000')))
-offset=as.numeric(argument('offset','0'))
-suffix=if(width==1000L) '' else paste0('_',width,'yr')
-input_path=here('output',paste0('cca_tracking_era_by_offset',suffix,'.csv'))
-combined=read_csv(input_path,show_col_types=FALSE)
-if(validate_tracking_model_data(combined)!=width) stop('Requested width differs from input')
-lakes=combined |> filter(era=='Holocene') |> distinct(site,lake) |> arrange(site,lake)
-model_types=c('AR1','MA1')
-selected_model_type=tracking_selected_model_type()
-
-for(response_metric in response_metrics) {
-  response_label=tracking_model_response_label(response_metric)
-
-  fit_lake=function(lake,model_type) {
-    selected=tracking_lake_model_input(combined,response_metric,lake,offset)
-    d=selected$data
-    correlation=if(model_type=='AR1') corAR1(form=~time_index | series) else
-      corARMA(p=0,q=1,form=~time_index | series)
-    warnings=character()
-    fit=withCallingHandlers(
-      gls(estimate ~ era,data=d,correlation=correlation,
-        weights=varIdent(form=~1 | era),method='REML',na.action=na.fail,
-        control=glsControl(msMaxIter=200)),
-      warning=function(w) {warnings <<- c(warnings,conditionMessage(w));invokeRestart('muffleWarning')})
-    tt=summary(fit)$tTable
-    df=fit$dims$N-fit$dims$p
-    ci=qt(.975,df)*tt[,'Std.Error']
-    parameter=unname(coef(fit$modelStruct$corStruct,unconstrained=FALSE))
-    boundary=abs(parameter)>.98
-    means=emmeans(fit,~era,data=d,mode='satterthwaite')
-    ct=as.data.frame(summary(contrast(means,
-      method=list('Anthropocene - Holocene'=c(-1,1))),infer=c(TRUE,TRUE),adjust='none'))
-    if(length(parameter)!=1L || any(!is.finite(tt)) ||
-       any(!is.finite(ct$estimate) | !is.finite(ct$SE) | !is.finite(ct$df)) ||
-       !is.finite(as.numeric(logLik(fit)))) stop('Invalid lake fit or contrast')
-    coefficients=tibble(metric=response_metric,offset,site=selected$site,lake,model_type,
-      term=rownames(tt),estimate=tt[,'Value'],std_error=tt[,'Std.Error'],df,
-      t_value=tt[,'t-value'],p_value=tt[,'p-value'],
-      conf_low=tt[,'Value']-ci,conf_high=tt[,'Value']+ci,
-      n_holocene=sum(d$era=='Holocene'),n_anthropocene=sum(d$era=='Anthropocene'),
-      correlation_parameter=parameter,near_correlation_boundary=boundary,converged=TRUE)
-    contrasts=tibble(metric=response_metric,offset,site=selected$site,lake,model_type,
-      contrast=as.character(ct$contrast),estimate=ct$estimate,std_error=ct$SE,df=ct$df,
-      t_value=ct$t.ratio,p_value=ct$p.value,conf_low=ct$lower.CL,conf_high=ct$upper.CL,
-      n_holocene=sum(d$era=='Holocene'),n_anthropocene=sum(d$era=='Anthropocene'),
-      correlation_parameter=parameter,near_correlation_boundary=boundary,converged=TRUE)
-    block=c(paste('LAKE',lake,'| PARK',selected$site,'| OFFSET',offset,'| MODEL',model_type),
-      paste('Holocene transitions:',sum(d$era=='Holocene'),'| Modern pairs:',sum(d$era=='Anthropocene'),
-        '| Undefined selected responses:',nrow(selected$excluded)),
-      paste('Correlation parameter:',format(parameter,digits=8),
-        if(model_type=='AR1') '(phi)' else paste0('(theta; rho(1) = ',
-          format(parameter/(1+parameter^2),digits=8),')')),
-      paste('Near correlation boundary (absolute parameter > 0.98):',boundary),
-      paste('Warnings:',if(length(warnings)) paste(unique(warnings),collapse='; ') else 'none'),
-      capture.output(print(summary(fit))),
-      'Era means:',capture.output(summary(means,infer=c(TRUE,FALSE))),
-      'Anthropocene - Holocene:',capture.output(print(ct)),
-      if(nrow(selected$excluded)) c('Undefined response identities:',
-        capture.output(print(selected$excluded[c('era','site','lake','plot_id','age_hi','age_lo')]))),'')
-    list(coefficients=coefficients,contrasts=contrasts,text=block)
-  }
-
-  # A failed fit stops with its key before replacing the sensitivity products.
-  fits=list()
-  for(lake in lakes$lake) for(model_type in model_types) {
-    cat('Lake sensitivity:',lake,'| offset',offset,'|',model_type,'\n')
-    fits[[paste(lake,model_type,sep='_')]]=tryCatch(fit_lake(lake,model_type),
-      error=function(e) stop('Lake ',lake,' / ',model_type,': ',conditionMessage(e),call.=FALSE))
-  }
-  coefficients=bind_rows(purrr::map(fits,'coefficients'))
-  contrasts=bind_rows(purrr::map(fits,'contrasts'))
-  if(nrow(coefficients)!=nrow(lakes)*length(model_types)*2L ||
-     anyDuplicated(coefficients[c('metric','offset','site','lake','model_type','term')]) ||
-     nrow(contrasts)!=nrow(lakes)*length(model_types) ||
-     anyDuplicated(contrasts[c('metric','offset','site','lake','model_type')]))
-    stop('Missing or duplicate lake sensitivity results')
-  out=here('output/exploratory/tracking_lake_sensitivity',paste0(response_metric,suffix),paste0('offset_',offset))
-  dir.create(out,recursive=TRUE,showWarnings=FALSE)
-  write_csv(coefficients,file.path(out,'model_coefficients.csv'))
-  write_csv(contrasts,file.path(out,'model_contrasts.csv'))
-  notes=c('Lake sensitivity; MA1 selected by the author on 2026-10-09; inference remains exploratory.',
-    paste('Response:',response_metric,'| Offset:',offset,'| Holocene interval:',width,'years'),
-    paste('Response units:',tracking_model_response_unit(response_metric),'| Transformation: none'),
-    'Each fit compares one Holocene lake with all finite modern responses from the same park.',
-    'Constant site is removed: estimate ~ era; REML; separate residual variances by era.',
-    'AR1 or MA1 correlation retains actual within-lake gaps; modern pairs are singleton series.',
-    'Comparison records retain AR1 and MA1; reported lake coefficients and contrasts use only the selected MA1.',
-    'MORA lake fits reuse the same modern plots; they are not independent comparisons.',
-    'Near-boundary fits are retained and flagged when the absolute correlation parameter exceeds 0.98.',
-    'No chronology propagation, support cutoff, lake random effect or climate/fire fixed effects.',
-    'No pooled averaging of lake fits and no AIC comparisons between different lake inputs.',
-    paste('Input MD5:',unname(tools::md5sum(input_path))),
-    paste('Script MD5:',unname(tools::md5sum(here('R/stages/13_tracking_lake_sensitivity.R')))))
-  writeLines(c(notes,'',unlist(purrr::map(fits,'text')),capture.output(sessionInfo())),file.path(out,'model_results.txt'))
-
-  lake_labels=c(JayBath='Jay Bath',LogWallow='Log Wallow',ReflectionPond='Reflection Pond',
-    PantherPotholes='Panther Potholes')
-  counts=contrasts |> distinct(lake,site,n_holocene,n_anthropocene)
-  counts$label=paste0(unname(lake_labels[counts$lake]),' (',counts$site,')\n',
-    counts$n_holocene,' Holocene / ',counts$n_anthropocene,' modern')
-  plot_coefficients=tracking_selected_model_results(coefficients) |>
-    left_join(counts |> select(lake,label),by='lake',relationship='many-to-one')
-  plot_contrasts=tracking_selected_model_results(contrasts) |>
-    left_join(counts |> select(lake,label),by='lake',relationship='many-to-one')
-  plot_coefficients$label=factor(plot_coefficients$label,levels=rev(counts$label))
-  plot_contrasts$label=factor(plot_contrasts$label,levels=rev(counts$label))
-  plot_coefficients$term=factor(plot_coefficients$term,levels=c('(Intercept)','eraAnthropocene'),
-    labels=c('Holocene mean (intercept)','Anthropocene - Holocene (era coefficient)'))
-  colors=tracking_model_colors()
-  base_plot=function(tbl) ggplot(tbl,aes(estimate,label))+
-    geom_vline(xintercept=0,linetype='dashed',color='grey60')+
-    geom_errorbar(aes(xmin=conf_low,xmax=conf_high),orientation='y',width=.2,
-      color=unname(colors[selected_model_type]),linewidth=.6)+
-    geom_point(aes(shape=near_correlation_boundary),color=unname(colors[selected_model_type]),size=2.8)+
-    scale_shape_manual(values=c('FALSE'=16,'TRUE'=17),labels=c('FALSE'='No','TRUE'='Yes'))+
-    tracking_model_plot_theme()
-  coef_plot=base_plot(plot_coefficients)+facet_wrap(~term,scales='free_x',nrow=1)+
-    labs(title=paste('MA(1) lake sensitivity coefficients:',response_label),
-      subtitle=paste('Offset',offset,'; each lake compared with modern pairs from its own park'),
-      x='Coefficient estimate',y=NULL,shape='Near boundary',
-      caption='Bars: unadjusted 95% t intervals. Coefficient panels use separate x-scales.\nTriangles flag absolute correlation parameters > 0.98. MORA fits reuse modern plots. MA(1) selected; inference remains exploratory.')
-  contrast_plot=base_plot(plot_contrasts)+
-    labs(title=paste('MA(1) lake sensitivity era contrasts:',response_label),
-      subtitle=paste('Offset',offset,'; Anthropocene minus Holocene within each lake/park comparison'),
-      x='Anthropocene - Holocene',y=NULL,shape='Near boundary',
-      caption='Bars: unadjusted 95% intervals with Satterthwaite degrees of freedom.\nTriangles flag absolute correlation parameters > 0.98. Only 6-10 Holocene transitions support primary fits; inference remains exploratory.')
-  if(render_figures) {
-    stem=paste0(response_metric,suffix,'_offset_',offset)
-    ggsave(here('plot/test_figures',paste0('fig_tracking_lake_coefficients_',stem,'.pdf')),coef_plot,width=14,height=7.5)
-    ggsave(here('plot/test_figures',paste0('fig_tracking_lake_contrasts_',stem,'.pdf')),contrast_plot,width=12,height=7)
-  }
-  cat('Saved',length(fits),'lake sensitivity fits in',out,'\n')
-}
+for(type in names(figure_pages)) tracking_pdf_pages(figure_pages[[type]],
+  tracking_model_figure(paste0('fig_tracking_lake_',type,'.pdf'),role='lake'),width=12,height=7)
 # END R/stages/13_tracking_lake_sensitivity.R
 
 # ============================================================================
 # BEGIN R/stages/14_tracking_manuscript_figure.R
 # ============================================================================
-# Manuscript Figure 4 and separate corrected-lag contrasts at offset 0.
+# Manuscript Figure 4 and separate corrected-lag contrasts at primary reconstruction.
 # Read maintained model input/results; no refitting, transforms or geometry calculations.
 # Rscript R/stages/14_tracking_manuscript_figure.R
 suppressPackageStartupMessages({library(here);library(tidyverse);library(patchwork)})
@@ -8021,13 +7127,11 @@ source(here('R/helpers/tracking_model_reporting.R'),local=TRUE)
 render_figures=isTRUE(getOption('paleoaces.render_figures',TRUE))
 metrics=c('standardized_climate_change_rate','observed_turnover_rate','lag_rate_per_century',
   tracking_corrected_response_names())
-combined=read_csv(here('output/cca_tracking_era_by_offset.csv'),show_col_types=FALSE)
-if(validate_tracking_model_data(combined)!=1000L)
-  stop('The primary manuscript figure requires the 1,000-year analysis')
-raw=map_dfr(metrics,function(metric) tracking_offset_model_input(combined,metric,0)$data)
+combined=read_csv(here('output/cca_tracking_era_model_input.csv'),show_col_types=FALSE)
+validate_tracking_model_data(combined)
+raw=map_dfr(metrics,function(metric) tracking_primary_model_input(combined,metric)$data)
 read_results=function(metric,filename) {
-  read_csv(here('output/exploratory/tracking_offset_models',metric,filename),show_col_types=FALSE) |>
-    filter(offset==0,model_type==tracking_selected_model_type())
+  read_csv(here('output/tracking_analysis/primary/era_comparison',metric,filename),show_col_types=FALSE)
 }
 means=map_dfr(metrics,read_results,filename='model_group_means.csv')
 contrasts=map_dfr(metrics,read_results,filename='model_contrasts.csv')
@@ -8040,7 +7144,7 @@ if(nrow(means)!=20L || anyDuplicated(means[keys]) ||
    any(!is.finite(as.matrix(means[c('estimate','conf_low','conf_high')]))) ||
    any(!is.finite(as.matrix(contrasts[c('estimate','conf_low','conf_high','p_value')]))) ||
    any(contrasts$p_value<0 | contrasts$p_value>1))
-  stop('Missing, duplicate or inconsistent offset-0 model results and raw inputs')
+  stop('Missing, duplicate or inconsistent primary model results and raw inputs')
 ratios=means |> select(all_of(keys),estimate) |>
   pivot_wider(names_from=era,values_from=estimate) |>
   left_join(contrasts |> select(metric,site,contrast_estimate=estimate),
@@ -8119,10 +7223,9 @@ contrast_plot=function(response_metrics,bounds,correction_labels=FALSE) {
   p+theme(plot.margin=margin(10,14,if(correction_labels) 58 else 86,14))
 }
 # Each pair is an actual transition/plot; corrected medians were calculated from
-# draw-level geometry by stage 11, never as a difference between two medians.
-pair_keys=c('era','site','lake','plot_id','offset','age_hi','age_lo')
-pairs=combined |> filter(era=='Anthropocene' | offset==0,
-    metric %in% c('lag_rate_per_century',tracking_corrected_response_names())) |>
+# each primary transition geometry, using its actual elapsed time.
+pair_keys=c('era','site','lake','plot_id','age_hi','age_lo')
+pairs=combined |> filter(metric %in% c('lag_rate_per_century',tracking_corrected_response_names())) |>
   select(all_of(pair_keys),metric,estimate) |>
   pivot_wider(names_from=metric,values_from=estimate) |>
   pivot_longer(all_of(tracking_corrected_response_names()),names_to='metric',values_to='corrected_rate') |>
@@ -8219,346 +7322,197 @@ if(render_figures) {
   stem=here('plot/fig_tracking_era_distributions')
   ggsave(paste0(stem,'.pdf'),figure,width=19,height=19.5,device=cairo_pdf,bg='white')
   ggsave(paste0(stem,'.png'),figure,width=19,height=19.5,dpi=300,bg='white')
-  ggsave(here('plot/test_figures/fig_tracking_corrected_lag_contrasts_offset_0.pdf'),
+  ggsave(tracking_model_figure('fig_tracking_corrected_lag_contrasts.pdf'),
     corrected_figure,width=12,height=7.5,device=cairo_pdf,bg='white')
 }
-cat('Manuscript figure verified: offset 0; 20 MA1 means, ten covariance-based contrasts;',
+cat('Manuscript figure verified: primary reconstruction; 20 fitted means, ten covariance-based contrasts;',
   nrow(raw),'untransformed input values.\n')
 # END R/stages/14_tracking_manuscript_figure.R
 
 # ============================================================================
 # BEGIN R/stages/15_tracking_predictor_models.R
 # ============================================================================
-# Era-specific predictor models for observed and two corrected lag-change rates.
-# Rscript R/stages/15_tracking_predictor_models.R
-# --bin-width-years=N uses separately suffixed inputs/outputs; default 1000 only.
-# --ensemble-only adds reconstruction summaries from stored fits without refitting.
-# Holocene: each offset, MA1 within lake, site residual variances; offset-0
-# random-intercept sensitivity. Modern: independent plot residuals, site variances,
-# both site + burned and site + elevation + climate_rate + burned; spatial checks.
-suppressPackageStartupMessages({
-  library(here);library(tidyverse);library(nlme);library(patchwork)
-})
-source(here('R/helpers/tracking_data.R'),local=TRUE)
-source(here('R/helpers/tracking_model_data.R'),local=TRUE)
+# Primary explanatory GLS and whole-chronology community sensitivity.
+suppressPackageStartupMessages({library(here);library(tidyverse);library(nlme);library(patchwork)})
+source(here('R/helpers/reconstruction_models.R'),local=TRUE)
 source(here('R/helpers/tracking_predictor_models.R'),local=TRUE)
-render_figures=isTRUE(getOption('paleoaces.render_figures',TRUE))
-args=commandArgs(trailingOnly=TRUE)
-width_arg=args[startsWith(args,'--bin-width-years=')]
-if(length(width_arg)>1L) stop('Specify --bin-width-years=N once')
-width=validate_tracking_width(if(length(width_arg)) as.numeric(sub('--bin-width-years=','',width_arg,fixed=TRUE)) else 1000)
-suffix=if(width==1000L) '' else paste0('_',width,'yr')
-input_path=here('output',paste0('cca_tracking_era_by_offset',suffix,'.csv'))
-combined=read_csv(input_path,show_col_types=FALSE)
-if(validate_tracking_model_data(combined)!=width) stop('Requested width differs from input')
-offsets=seq(0,width-100,100)
-# Author-requested ensemble exclusion; all ten primary offset fits stay unchanged.
-ensemble_excluded_offsets=if(width==1000L) 800L else numeric()
-metrics=tracking_predictor_responses()
-labels=tracking_predictor_labels()
-out=here('output/exploratory',paste0('tracking_predictor_models',suffix))
-export_ensembles=function(ensembles) {
-  dir.create(out,recursive=TRUE,showWarnings=FALSE)
-  summary=bind_rows(purrr::map(ensembles,'summary'))
-  audit=bind_rows(purrr::map(ensembles,'offset_audit'))
-  covariance=bind_rows(purrr::map(ensembles,'offset_vcov'))
-  if(nrow(summary)!=length(metrics)*4L || nrow(audit)!=length(metrics)*length(offsets) ||
-     nrow(covariance)!=length(metrics)*length(offsets)*16L ||
-     anyDuplicated(summary[c('metric','term')]) || anyDuplicated(audit[c('metric','offset')]))
-    stop('Missing or duplicate reconstruction-ensemble results')
-  write_csv(summary,file.path(out,'holocene_ensemble_coefficients.csv'))
-  write_csv(audit,file.path(out,'holocene_ensemble_offset_audit.csv'))
-  write_csv(covariance,file.path(out,'holocene_ensemble_offset_vcov.csv'))
-  saveRDS(list(responses=ensembles,input_md5=unname(tools::md5sum(input_path))),
-    file.path(out,'holocene_ensemble_components.rds'))
-  notes=c('Holocene reconstruction-ensemble averaging; existing explanatory GLS fits are unchanged.',
-    paste(length(offsets)-length(ensemble_excluded_offsets),
-      'included offsets, equally weighted; 50,000 joint coefficient samples per included offset and response.'),
-    paste('Excluded ensemble offsets:',if(length(ensemble_excluded_offsets))
-      paste(ensemble_excluded_offsets,collapse=', ') else 'none'),
-    'All configured offset fits and full covariance matrices remain in the audit; excluded offsets receive zero ensemble weight.',
-    'Component distribution: multivariate normal centered on fitted coefficients, with the full fitted fixed-effect vcov.',
-    'Point estimates are exact means of offset coefficients. Bounds are 2.5 and 97.5 percentiles of the equal mixture.',
-    'Intervals are reconstruction-ensemble uncertainty, not conventional confidence intervals. No pooled p-values.',
-    'No independence assumption for offsets and no division of uncertainty by sqrt(number of offsets).',
-    'Bacon chronology uncertainty is not propagated: transition responses remain their existing chronology-draw medians.',
-    'Transition support and temporal coverage differ among offsets; phase-key comparisons align site/lake/time_index with offset 0.',
-    'An aligned phase key identifies shifted alternative intervals, not identical ages or independent observations.',
-    'All configured fits are required; failed fits or invalid fixed-effect covariance stop the ensemble rather than changing weights.',
-    'MA1 boundary fits are retained; offset 800 is excluded from the primary ensemble for all responses at the author\'s request, and its unchanged fit remains flagged in the audit.',
-    'Sign consistency is the largest positive/negative/zero coefficient count divided by the number of offsets; it is not a probability or significance test.',
-    if(width==1000L) 'Offset 800: direction correction is sensitive to climate-vector rotation around 3,800 BP; the shared slope and site weights amplify the difference.',
-    paste('Input MD5:',unname(tools::md5sum(input_path))),
-    paste('Seeds by response:',paste(map_int(ensembles,~.x$settings$seed),collapse=', ')))
-  writeLines(c(notes,'','Ensemble coefficients:',capture.output(print(as.data.frame(summary))),
-    'Offset support, covariance and convergence audit:',capture.output(print(as.data.frame(audit)))),
-    file.path(out,'holocene_ensemble_results.txt'))
-  if(render_figures) {
-    dir.create(here('plot/test_figures'),recursive=TRUE,showWarnings=FALSE)
-    ggsave(here('plot/test_figures',paste0('fig_tracking_predictor_ensemble_coefficients',suffix,'.pdf')),
-      tracking_reconstruction_ensemble_plot(summary),width=17,height=6.5,device=cairo_pdf,bg='white')
-  }
-  invisible(summary)
-}
-ensembles=list()
-if('--ensemble-only' %in% args) {
-  stored=readRDS(file.path(out,'model_fits.rds'))
-  if(stored$width!=width || stored$input_md5!=unname(tools::md5sum(input_path)))
-    stop('Stored fits do not match the configured width and current canonical input')
-  for(i in seq_along(metrics)) {
-    metric=metrics[i]
-    ensembles[[metric]]=tracking_reconstruction_ensemble(
-      stored$fits[paste(metric,offsets,sep='_')],offsets,width,seed=20261011L+i-1L,
-      excluded_offsets=ensemble_excluded_offsets)
-    ensembles[[metric]]$draws=NULL
-  }
-  export_ensembles(ensembles)
-  cat('Reconstruction ensemble completed from unchanged stored fits:',out,'\n')
-  quit(save='no',status=0)
-}
-elevation_env=new.env(parent=emptyenv())
-load(here('data/MORA_plots.rda'),envir=elevation_env)
+metrics=c('lag_rate_per_century',tracking_corrected_response_names())
+h=read_csv(here('output/cca_tracking_holocene_lake_calculations.csv'),show_col_types=FALSE)
+a=read_csv(here('output/cca_tracking_anthropocene_plot_calculations.csv'),show_col_types=FALSE) |>
+  add_corrected_lag_rates()
+combined=read_csv(here('output/cca_tracking_era_model_input.csv'),show_col_types=FALSE)
+locations=combined |> filter(era=='Anthropocene') |> distinct(site,plot_id,longitude,latitude)
+a=left_join(a,locations,by=c('site','plot_id'),relationship='one-to-one')
+elevation_env=new.env(parent=emptyenv());load(here('data/MORA_plots.rda'),envir=elevation_env)
 elevations=tracking_modern_elevations(elevation_env$plot_info,
-  read_csv(here('data/NOCA/NOCA_plots_fromWilson.csv'),show_col_types=FALSE),
-  combined |> filter(era=='Anthropocene') |> distinct(site,plot_id))
-fits=list(); sensitivities=list(); blocks=list(); exclusions=list()
-run_fit=function(metric,era,offset,model_type) {
-  selected=tracking_predictor_input(combined,metric,era,if(is.na(offset)) 0 else offset)
-  d=selected$data
-  if(era=='Anthropocene') d=d |> left_join(elevations,by=c('site','plot_id'),relationship='one-to-one')
-  fit_function=switch(model_type,Holocene_MA1=fit_tracking_holocene_predictors,
-    Anthropocene_basic=fit_tracking_anthropocene_predictors,
-    Anthropocene_extended=fit_tracking_anthropocene_extended_predictors)
-  captured=tracking_capture_fit(function() fit_function(d))
-  key=paste(metric,era,offset,model_type,sep=' | ')
-  if(is.null(captured$fit)) stop(key,': ',captured$error)
-  fit=captured$fit
-  coefficients=tracking_predictor_coefficients(fit,metric,era,offset,model_type)
-  predictions=tracking_predictor_predictions(fit,d,metric,era,offset,model_type)
-  theta=if(era=='Holocene') unname(coef(fit$modelStruct$corStruct,unconstrained=FALSE)) else NA_real_
-  performance=tibble(metric,era,offset,model_type,n=nrow(d),n_MORA=sum(d$site=='MORA'),
-    n_NOCA=sum(d$site=='NOCA'),n_excluded=nrow(selected$excluded),
-    R2=tracking_descriptive_r2(d$estimate,predictions$predicted_lag_rate),
-    theta,lag1_residual_correlation=theta/(1+theta^2),
-    near_correlation_boundary=if(is.na(theta)) FALSE else abs(theta)>.98,
-    covariance_status=tracking_covariance_status(fit),converged=TRUE,
-    warnings=if(length(captured$warnings)) paste(captured$warnings,collapse='; ') else 'none')
-  exclusions[[key]] <<- selected$excluded |> mutate(metric=.env$metric,
-    era=.env$era,offset=.env$offset,model_type=.env$model_type)
-  blocks[[key]] <<- c(key,paste('Input rows:',nrow(d),'| Excluded:',nrow(selected$excluded)),
-    paste('Warnings:',performance$warnings),paste('Covariance uncertainty:',performance$covariance_status),
-    capture.output(print(summary(fit))),
-    'Residual SDs:',capture.output(print(fit$sigma*coef(fit$modelStruct$varStruct,
-      unconstrained=FALSE,allCoef=TRUE))),
-    paste('Descriptive in-sample R2 = 1 - SSE/SST:',format(performance$R2,digits=8)),
-    'Unadjusted coefficient intervals:',capture.output(print(as.data.frame(coefficients))),
-    'Input group support:',capture.output(print(d |> count(site,burned))), '')
-  list(fit=fit,data=d,coefficients=coefficients,predictions=predictions,performance=performance)
+  read_csv(here('data/NOCA/NOCA_plots_fromWilson.csv'),show_col_types=FALSE),locations)
+a=left_join(a,elevations |> select(site,plot_id,elevation,elevation_source),by=c('site','plot_id'),relationship='one-to-one')
+entries=exclusions=random=list()
+for(metric in metrics) for(spec in c('Holocene','Anthropocene_basic','Anthropocene_extended')) {
+  era=if(spec=='Holocene') 'Holocene' else 'Anthropocene'
+  input=reconstruction_explanatory_input(if(era=='Holocene') h else a,metric,era,extended=spec=='Anthropocene_extended')
+  entry=reconstruction_select(input$data,input$fixed,families=if(era=='Holocene')
+    c('Independent','MA1','CAR1') else 'Independent')
+  entry$metric=metric;entry$era=era;entry$specification=spec
+  if(is.null(entry$fit)) stop('Primary community explanatory fit failed: ',metric,' / ',spec)
+  name=paste(metric,spec,sep=':');entries[[name]]=entry;exclusions[[name]]=input$excluded
+  if(era=='Holocene') random[[metric]]=reconstruction_lake_random(entry,metric)
 }
-# Complete all main fits before replacing exports. Sensitivity failures are
-# recorded explicitly and never change the primary GLS specification or data.
-for(metric in metrics) {
-  for(offset in offsets) {
-    cat('Holocene predictors:',metric,'| offset',offset,'\n')
-    key=paste(metric,offset,sep='_')
-    fits[[key]]=run_fit(metric,'Holocene',offset,'Holocene_MA1')
-    if(offset==0) {
-      sensitivity=tracking_lake_intercept_sensitivity(fits[[key]]$fit,fits[[key]]$data,metric)
-      sensitivities[[metric]]=sensitivity
-      blocks[[paste0(metric,'_lake_sensitivity')]]=c(
-        paste('OFFSET-0 RANDOM LAKE INTERCEPT SENSITIVITY:',metric),
-        capture.output(print(as.data.frame(sensitivity$summary))),
-        if(!is.null(sensitivity$captured$fit)) c(capture.output(summary(sensitivity$captured$fit)),
-          capture.output(VarCorr(sensitivity$captured$fit))), '')
-    }
-  }
-  # Integrate this response's selected reconstructions immediately after its Holocene
-  # fits. The sampler restores RNG state and never changes a fit or its data.
-  ensembles[[metric]]=tracking_reconstruction_ensemble(
-    fits[paste(metric,offsets,sep='_')],offsets,width,
-    seed=20261011L+match(metric,metrics)-1L,excluded_offsets=ensemble_excluded_offsets)
-  ensembles[[metric]]$draws=NULL
-  for(type in c('Anthropocene_basic','Anthropocene_extended')) {
-    cat('Anthropocene predictors:',metric,'|',type,'\n')
-    fits[[paste(metric,type,sep='_')]]=run_fit(metric,'Anthropocene',NA_real_,type)
-  }
+out=tracking_primary_results('community')
+tables=reconstruction_export(entries,out,bind_rows(exclusions))
+lake_out=tracking_lake_results('random')
+dir.create(lake_out,recursive=TRUE,showWarnings=FALSE)
+write_csv(bind_rows(lapply(random,`[[`,'summary')),file.path(lake_out,'lake_random_intercept_sensitivity.csv'))
+saveRDS(random,file.path(lake_out,'lake_random_intercept_fits.rds'))
+write_csv(elevations,file.path(out,'anthropocene_elevations.csv'))
+cat('Random-lake-intercept sensitivity:',capture.output(print(bind_rows(lapply(random,`[[`,'summary')))),
+  sep='\n',file=file.path(lake_out,'model_results.txt'))
+if(isTRUE(getOption('paleoaces.render_figures',TRUE))) {
+  co=tables$model_coefficients;pr=tables$transition_predictions
+  specification_labels=c(Holocene='Holocene',Anthropocene_basic='Anthropocene: basic',
+    Anthropocene_extended='Anthropocene: extended')
+  co$model_type=recode(co$specification,Holocene='Site + climate + fire',
+    Anthropocene_basic='Site + burned',Anthropocene_extended='Site + elevation + climate + burned')
+  ggsave(tracking_model_figure('fig_tracking_predictor_era_coefficients.pdf'),
+    reconstruction_coefficient_plot(co),width=16,height=14,device=cairo_pdf)
+  performance=tables$model_performance |> mutate(specification=unname(specification_labels[specification]))
+  r2=ggplot(performance,aes(specification,R2,fill=era))+geom_col(width=.6)+
+    facet_wrap(~metric,labeller=labeller(metric=reconstruction_metric_label))+
+    labs(x=NULL,y='Descriptive R2')+reconstruction_model_theme()+
+    theme(axis.text.x=element_text(angle=25,hjust=1))
+  ggsave(tracking_model_figure('fig_tracking_predictor_R2.pdf'),r2,width=15,height=7,device=cairo_pdf)
+  # Each model has its own residual distribution: never pool basic and extended
+  # modern fits into a single era panel.
+  diagnostic_predictions=pr |> mutate(era=unname(specification_labels[specification]))
+  ggsave(tracking_model_figure('fig_tracking_predictor_residuals.pdf'),
+    reconstruction_residual_plot(diagnostic_predictions),width=16,height=18,device=cairo_pdf)
+  catalog=read_csv(here('output/holocene_era_catalog.csv'),show_col_types=FALSE)
+  hp=pr |> filter(era=='Holocene') |> arrange(metric,lake,transition_index) |>
+    group_by(metric,lake) |> mutate(next_predicted=lead(predicted),
+      joins_next=lead(transition_index)==transition_index+1L & lead(age_hi)==age_lo) |> ungroup()
+  # Actual spans; gaps from exclusions remain blank instead of being bridged.
+  prediction=ggplot(hp,aes(interval_mid_cal_bp,predicted))+
+    geom_rect(data=catalog,aes(xmin=younger_cal_bp,xmax=older_cal_bp,ymin=-Inf,ymax=Inf,
+      fill=era_class),inherit.aes=FALSE,alpha=.35)+
+    scale_fill_manual(values=c('climate change'='#D3D3D6','relative stability'='#EEEEF0'),guide='none')+
+    geom_rect(aes(xmin=age_lo,xmax=age_hi,ymin=conf_low,ymax=conf_high),
+      fill='#648FFF',alpha=.18,inherit.aes=FALSE)+
+    geom_segment(aes(x=age_lo,xend=age_hi,yend=predicted),color='#648FFF',linewidth=1)+
+    geom_segment(data=hp |> filter(joins_next),aes(x=age_lo,xend=age_lo,yend=next_predicted),
+      color='#648FFF',linewidth=1)+
+    facet_grid(metric~lake,scales='free_y',labeller=labeller(metric=reconstruction_metric_label))+
+    scale_x_reverse()+
+    labs(x='Transition age (cal BP)',y='Lag-change rate (CCA distance per century)',
+      caption='Joined fitted values over actual transition intervals; shaded bands: conditional 95% mean-confidence intervals. Excluded transitions remain gaps.')+
+    reconstruction_model_theme()
+  ggsave(tracking_model_figure('fig_tracking_predictor_holocene_predictions.pdf'),prediction,width=19,height=12,device=cairo_pdf)
 }
-coefficients=bind_rows(purrr::map(fits,'coefficients'))
-performance=bind_rows(purrr::map(fits,'performance'))
-predictions=bind_rows(purrr::map(fits,'predictions'))
-lake_sensitivity=bind_rows(purrr::map(sensitivities,'summary'))
-holocene_predictions=tracking_prediction_reporting_grid(predictions |> filter(era=='Holocene'))
-spatial=purrr::map(fits[vapply(fits,function(x) x$performance$era=='Anthropocene',logical(1))],
-  ~tracking_spatial_residual_check(.x$predictions))
-spatial_checks=bind_rows(purrr::map(spatial,'checks'))
-spatial_locations=bind_rows(purrr::map(spatial,'locations'))
-all_exclusions=bind_rows(exclusions)
-if(nrow(coefficients)!=length(metrics)*(length(offsets)*4L+3L+5L) ||
-   nrow(performance)!=length(metrics)*(length(offsets)+2L) ||
-   anyDuplicated(coefficients[c('metric','era','offset','model_type','term')]) ||
-   anyDuplicated(performance[c('metric','era','offset','model_type')]) ||
-   nrow(lake_sensitivity)!=length(metrics)) stop('Missing or duplicate predictor model results')
-
-dir.create(out,recursive=TRUE,showWarnings=FALSE)
-export_ensembles(ensembles)
-tables=list(model_coefficients=coefficients,model_performance=performance,
-  lake_random_intercept_sensitivity=lake_sensitivity,transition_predictions=predictions,
-  holocene_prediction_timeseries=holocene_predictions,model_exclusions=all_exclusions,
-  anthropocene_spatial_checks=spatial_checks,anthropocene_elevations=elevations)
-iwalk(tables,~write_csv(.x,file.path(out,paste0(.y,'.csv'))))
-saveRDS(list(fits=fits,sensitivities=sensitivities,width=width,input_md5=unname(tools::md5sum(input_path))),
-  file.path(out,'model_fits.rds'))
-notes=c('Exploratory era-specific predictor models; no response transformations.',
-  'Responses: observed, pace-corrected and direction-corrected lag-change rates (CCA distance per century).',
-  'Holocene: estimate ~ site + climate_rate + fire_activity; REML; MA1 within each lake; site residual SDs.',
-  'Each offset uses actual transition medians over valid chronology draws; offsets are sensitivities, not replicates.',
-  'Observed and corrected responses have independent validity selection. No draw-support threshold is imposed.',
-  'Climate rate is physical seasonal change standardized by pooled legacy calibration SDs per century.',
-  'Fire activity is unitless same-window normalized accepted event frequency. MORA lakes share regional fire exposure.',
-  'Missing fire coverage excludes that transition from the predictor model, never converts it to zero.',
-  'Temporal indices retain actual gaps. MA1 theta gives rho(1)=theta/(1+theta^2), with rho(k)=0 for k>1.',
-  'Offset-0 LME: random intercept by lake, same rows and fixed/correlation/variance structure; actual apVar/interval outcomes reported.',
-  'A returned covariance matrix does not establish reliable random variance estimation when its estimate is essentially zero.',
-  'Predictions are fixed-effect fitted lag-change rates, not cumulative lag levels or newly observed vegetation.',
-  '100-year prediction displays repeat supported transition predictions on [age_lo, age_hi); gaps are not filled or extrapolated.',
-  'Prediction intervals in the CSV are fixed-effect mean intervals conditional on estimated residual covariance; no chronology propagation.',
-  'R2 is descriptive, unweighted, in-sample 1-SSE/SST; it can be negative and does not assess independent validation or model significance.',
-  'Modern basic: estimate ~ site + burned; extended: estimate ~ site + elevation + climate_rate + burned.',
-  'Both modern models use REML, independent residuals and separate site SDs; no temporal or spatial covariance is fitted.',
-  'Elevation is in meters, joined by normalized site/plot identity to original sources; modern inputs are used once per response/model.',
-  'Modern references: MORA and Unburned; burned coefficient assumes the same additive effect in both parks.',
-  'Only two burned MORA plots: the burn association is mostly supported by NOCA; no site-by-burn interaction is fitted.',
-  'Spatial checks: within-park Moran I of normalized residuals, UTM 10N symmetric 8-nearest-neighbor graph, 999 permutations.',
-  'Spatial p values are exploratory, conditional on estimated models; no multiplicity correction or automatic covariance change.',
-  'Different fixed-effect models are not ranked using REML AIC. Coefficient intervals/tests are unadjusted.',
-  'Only four Holocene lakes and two fire histories; site and fire effects are not independent lake-level exposures.',
-  paste('Input MD5:',unname(tools::md5sum(input_path))),
-  paste('Elevation MD5s:',paste(tools::md5sum(here(c('data/MORA_plots.rda',
-    'data/NOCA/NOCA_plots_fromWilson.csv'))),collapse=', ')))
-writeLines(c(notes,'','Performance:',capture.output(print(as.data.frame(performance))),
-  'Spatial diagnostics:',capture.output(print(as.data.frame(spatial_checks))),
-  unlist(blocks),capture.output(sessionInfo())),file.path(out,'model_results.txt'))
-
-if(render_figures) {
-  plot_dir=here('plot/test_figures');dir.create(plot_dir,recursive=TRUE,showWarnings=FALSE)
-  save_plot=function(name,p,w,h) ggsave(file.path(plot_dir,paste0('fig_tracking_predictor_',name,suffix,'.pdf')),
-    p,width=w,height=h,device=cairo_pdf,bg='white')
-  common=theme_bw(base_size=17)+theme(panel.grid.minor=element_blank(),
-    strip.background=element_rect(fill='#f0f2f5',color=NA),strip.text=element_text(size=16,face='bold'),
-    axis.text=element_text(size=14),plot.title=element_text(size=21,face='bold'),
-    legend.position='bottom',plot.margin=margin(12,15,12,12))
-  palette=c(lag_rate_per_century='#43AA9C',pace_corrected_lag_rate_per_century='#DE85F0',
-    direction_corrected_lag_rate_per_century='#8B85F1')
-  response_factor=function(x) factor(unname(labels[x]),levels=unname(labels))
-  cf=coefficients |> mutate(response=response_factor(metric),term=factor(term,
-    levels=c('(Intercept)','siteNOCA','climate_rate','fire_activity','elevation','burnedBurned')))
-  offset_summary=bind_rows(cf |> filter(era=='Holocene') |> mutate(term=as.character(term)),
-    performance |> filter(era=='Holocene') |> transmute(metric,offset,estimate=R2,
-      conf_low=NA_real_,conf_high=NA_real_,response=response_factor(metric),term='R²')) |>
-    mutate(term=factor(term,levels=c('(Intercept)','siteNOCA','climate_rate','fire_activity','R²')))
-  pc=ggplot(offset_summary,aes(offset,estimate,color=metric))+
-    geom_hline(yintercept=0,color='grey60',linetype='dashed')+
-    geom_errorbar(data=offset_summary |> filter(term!='R²'),
-      aes(ymin=conf_low,ymax=conf_high),width=18,linewidth=.6)+
-    geom_line(linewidth=.65)+geom_point(size=2.2)+
-    facet_wrap(vars(response,term),scales='free_y',ncol=5)+
-    scale_color_manual(values=palette,guide='none')+scale_x_continuous(breaks=offsets)+
-    labs(title='Holocene offsets: predictor coefficients and R²',x='Bin offset (years)',
-      y='Coefficient estimate / descriptive R²')+
-    common+theme(axis.text.x=element_text(angle=45,hjust=1))
-  save_plot('offset_coefficients',pc,22,13)
-  both=cf |> filter(era=='Anthropocene' | offset==0) |>
-    mutate(specification=factor(model_type,levels=c('Holocene_MA1','Anthropocene_basic','Anthropocene_extended'),
-      labels=c('Holocene · offset 0','Anthropocene · site + burned','Anthropocene · extended')),
-      term=droplevels(term))
-  joint=ggplot(both,aes(estimate,term,color=metric))+
-    geom_vline(xintercept=0,color='grey65',linetype='dashed')+
-    geom_errorbar(aes(xmin=conf_low,xmax=conf_high),orientation='y',width=.18,linewidth=.75)+
-    geom_point(size=2.6)+facet_wrap(vars(response,specification),scales='free',ncol=3)+
-    scale_color_manual(values=palette,guide='none')+
-    labs(title='Predictor coefficients: Holocene offset 0 and Anthropocene',
-      x='Coefficient estimate (original predictor scales)',y=NULL)+common
-  save_plot('era_coefficients_offset_0',joint,19,13)
-  eras=read_csv(here('output/holocene_era_catalog.csv'),show_col_types=FALSE)
-  subphases=read_csv(here('output/holocene_era_climate_change_subphases.csv'),show_col_types=FALSE)
-  period_labels=bind_rows(subphases |> transmute(label=subphase_id,older_cal_bp,younger_cal_bp),
-    eras |> filter(era_class=='relative stability') |> transmute(label=era_id,older_cal_bp,younger_cal_bp)) |>
-    mutate(midpoint=(older_cal_bp+younger_cal_bp)/2)
-  lakes=c('JayBath','LogWallow','ReflectionPond','PantherPotholes')
-  grid=holocene_predictions |> mutate(response=response_factor(metric),lake=factor(lake,levels=lakes))
-  # Follow each offset from older to younger intervals. Duplicate a shared
-  # boundary to draw a vertical jump; a missing interval starts a new path.
-  # Horizontal sections retain the interval's fitted rate without interpolation.
-  trajectories=predictions |> filter(era=='Holocene') |>
-    mutate(response=response_factor(metric),lake=factor(lake,levels=lakes)) |>
-    arrange(metric,site,lake,offset,desc(age_hi)) |>
-    group_by(metric,site,lake,offset) |>
-    mutate(path_segment=cumsum(row_number()==1L | age_hi!=lag(age_lo))) |>
-    ungroup() |> mutate(path_age=map2(age_hi,age_lo,~c(.x,.y))) |> unnest(path_age)
-  periods=ggplot(grid,aes(t,predicted_lag_rate))+
-    geom_rect(data=eras,aes(xmin=younger_cal_bp,xmax=older_cal_bp,ymin=-Inf,ymax=Inf,fill=era_class),
-      inherit.aes=FALSE,alpha=.55,color=NA)+
-    geom_text(data=period_labels,aes(x=midpoint,y=Inf,label=label),inherit.aes=FALSE,
-      size=3.5,angle=90,hjust=1.1,vjust=.5,color='grey35')+
-    geom_hline(yintercept=0,color='grey50',linetype='dashed',linewidth=.4)+
-    geom_path(data=trajectories,
-      aes(x=path_age,y=predicted_lag_rate,color=factor(offset),
-        group=interaction(metric,site,lake,offset,path_segment)),
-      linewidth=.65,alpha=.8)+
-    facet_grid(response~lake,scales='free_y')+scale_x_reverse(breaks=seq(0,10000,2000))+
-    scale_fill_manual(values=c(`climate change`='#D3D3D6',`relative stability`='#EEEEF0'),guide='none')+
-    scale_color_viridis_d(name='Offset (years)',option='D',end=.85)+
-    labs(title='Predicted Holocene lag-change rates within supported intervals',
-      x='Age (cal BP)',y='Lag-change rate (CCA distance per century)')+common
-  save_plot('holocene_predictions',periods,20,13)
-  r2=ggplot(performance |> filter(era=='Holocene') |> mutate(response=response_factor(metric)),
-    aes(offset,R2,color=metric))+
-    geom_hline(yintercept=0,color='grey60',linetype='dashed')+geom_line(linewidth=.8)+geom_point(size=3)+
-    facet_wrap(~response,nrow=1)+scale_color_manual(values=palette,guide='none')+
-    scale_x_continuous(breaks=offsets)+labs(title='Holocene predictor models: descriptive in-sample R²',
-      x='Bin offset (years)',y='R² = 1 − SSE/SST')+common+theme(axis.text.x=element_text(angle=45,hjust=1))
-  modern_r2=ggplot(performance |> filter(era=='Anthropocene') |> mutate(response=response_factor(metric),
-    specification=factor(model_type,levels=c('Anthropocene_basic','Anthropocene_extended'),
-      labels=c('Site + burned','Extended'))),aes(specification,R2,color=metric))+
-    geom_hline(yintercept=0,color='grey60',linetype='dashed')+geom_point(size=3)+
-    facet_wrap(~response,nrow=1)+scale_color_manual(values=palette,guide='none')+
-    labs(x='Anthropocene specification',y='R² = 1 − SSE/SST')+common
-  save_plot('R2',r2/modern_r2+plot_layout(heights=c(2,1)),17,10)
-  # One diagnostic PDF: each response has Holocene QQ/residual panels by offset,
-  # followed by modern basic and extended diagnostics with park-specific QQs.
-  cairo_pdf(file.path(plot_dir,paste0('fig_tracking_predictor_residuals',suffix,'.pdf')),width=17,height=10)
-  for(metric in metrics) {
-    h=predictions |> filter(era=='Holocene',.data$metric==.env$metric)
-    qq=ggplot(h,aes(sample=normalized_residual))+stat_qq(size=1.1,alpha=.65)+stat_qq_line(color='grey45')+
-      facet_wrap(~offset,ncol=5)+labs(title=paste(labels[metric],'· Holocene normalized residuals'),
-        x='Normal theoretical quantile',y='Normalized residual')+common
-    rv=ggplot(h,aes(predicted_lag_rate,normalized_residual,color=site))+
-      geom_hline(yintercept=0,color='grey55',linetype='dashed')+geom_point(size=1.7,alpha=.65)+
-      facet_wrap(~offset,ncol=5)+scale_color_manual(values=c(MORA='#648FFF',NOCA='#FE6100'))+
-      labs(x='Fitted lag-change rate',y='Normalized residual')+common
-    print(qq);print(rv)
-    a=predictions |> filter(era=='Anthropocene',.data$metric==.env$metric)
-    aq=ggplot(a,aes(sample=normalized_residual))+stat_qq(size=1.1,alpha=.5)+stat_qq_line(color='grey45')+
-      facet_grid(model_type~site)+labs(title=paste(labels[metric],'· modern models'),
-        x='Normal theoretical quantile',y='Normalized residual')+common
-    ar=ggplot(a,aes(predicted_lag_rate,normalized_residual,color=site))+
-      geom_hline(yintercept=0,color='grey55',linetype='dashed')+geom_point(size=1.2,alpha=.4)+
-      facet_wrap(~model_type,nrow=1)+scale_color_manual(values=c(MORA='#648FFF',NOCA='#FE6100'))+
-      labs(x='Fitted lag-change rate',y='Normalized residual')+common
-    print(aq+ar+plot_layout(widths=c(1,1)))
-  }
-  dev.off()
-  maps=spatial_locations |> mutate(response=response_factor(metric),
-    panel=paste(response,sub('Anthropocene_','',model_type),sep=' · '))
-  map_plot=ggplot(maps,aes(easting_m/1000,northing_m/1000,color=normalized_residual))+
-    geom_point(size=1.5,alpha=.75)+facet_wrap(vars(panel,site),ncol=4,scales='free')+
-    scale_color_gradient2(low='#2874A6',mid='white',high='#BB3D40',midpoint=0)+
-    labs(title='Anthropocene normalized residuals in space',x='UTM 10N easting (km)',y='UTM 10N northing (km)',
-      color='Normalized\nresidual')+common
-  save_plot('spatial_residuals',map_plot,20,13)
+if(!isTRUE(getOption('paleoaces.primary_only',FALSE))) {
+  sensitivity_out=tracking_bacon_results('community')
+  sensitivity=reconstruction_sensitivity(century_prepare(),entries,'community',sensitivity_out)
+  source(here('R/helpers/chronology_exports.R'),local=TRUE)
+  export_chronology_records(sensitivity_out,'community')
+  source(here('R/helpers/chronology_figures.R'),local=TRUE)
+  temporal_ranges=chronology_temporal_ranges(century_prepare(),sensitivity_out)
+  if(isTRUE(getOption('paleoaces.render_figures',TRUE))) ggsave(
+    tracking_model_figure('fig_tracking_bacon_chronology_ranges.pdf',role='bacon'),
+    chronology_temporal_range_plot(temporal_ranges,h),width=20,height=17,device=cairo_pdf)
+  if(isTRUE(getOption('paleoaces.render_figures',TRUE))) ggsave(
+    tracking_model_figure('fig_tracking_predictor_chronology_sensitivity.pdf',role='bacon'),
+    reconstruction_sensitivity_plot(sensitivity),width=16,height=9,device=cairo_pdf)
 }
-cat('Predictor model outputs:',out,'\n')
 # END R/stages/15_tracking_predictor_models.R
+
+# ============================================================================
+# BEGIN R/stages/16_cca_transition_contributions.R
+# ============================================================================
+# Fixed-CCA species rates and seasonal climate displacement contributions.
+suppressPackageStartupMessages({library(here);library(tidyverse);library(vegan)})
+source(here('R/helpers/century_tracking.R'),local=TRUE)
+source(here('R/helpers/cca_transition_contributions.R'),local=TRUE)
+bundle=century_prepare();primary=readRDS(here('output/chronology_reconstruction/primary.rds'))
+h=century_species_contributions(primary,bundle)
+a=read_csv(here('output/cca_tracking_anthropocene_plot_calculations.csv'),show_col_types=FALSE)
+basis=contribution_reference(bundle$reference)
+occ=read_csv(here('output/occ_consolidated.csv'),show_col_types=FALSE)
+ids=select(a,site,plot_id)
+first=contribution_weights(contribution_species_matrix(occ,ids,'past',bundle$reference$retained_species))
+last=contribution_weights(contribution_species_matrix(occ,ids,'present',bundle$reference$retained_species))
+contribution_close((last-first)%*%basis$positions,as.matrix(a[c('delta_observed_CCA1','delta_observed_CCA2')]),
+  'Modern species-vector conservation')
+modern=contribution_species(century_contribution_context(a,'Anthropocene'),first,last,basis$positions,a)
+modern$contribution_rate=modern$parallel_contribution*100/modern$vegetation_dt_years
+species=bind_rows(h,modern)
+climate=bind_rows(century_climate_contributions(century_contribution_context(primary$calculations,'Holocene'),
+  primary$calculations,bundle$reference),century_climate_contributions(century_contribution_context(a,'Anthropocene'),a,bundle$reference))
+out=here('output/cca_transition_contributions');dir.create(out,recursive=TRUE,showWarnings=FALSE)
+write_csv(species,file.path(out,'species_primary.csv'));write_csv(climate,file.path(out,'climate_primary.csv'))
+write_csv(century_schema(list(species_primary=species,climate_primary=climate)),file.path(out,'schema.csv'))
+writeLines(c('One primary reconstructed transition or modern pair per component.',
+  'Species signed parallel contributions: CCA distance per century; raw vectors and weights also retained.',
+  'Climate signed parallel contributions: CCA displacement, without dividing by elapsed time.',
+  'Species reference is delta LC; climate reference is delta WA. Undefined directions remain NA.',
+  'Additivity is verified for each primary or whole-draw transition before any summaries.'),file.path(out,'calculation_notes.txt'))
+if(isTRUE(getOption('paleoaces.render_figures',TRUE))) for(type in c('species','climate')) {
+  data=if(type=='species') species |> mutate(component=species,value=contribution_rate) else
+    climate |> mutate(component=variable,value=parallel_contribution)
+  p=ggplot(data,aes(value,component,fill=era))+geom_vline(xintercept=0,linetype='dashed',color='grey60')+
+    geom_boxplot(outlier.shape=NA,position=position_dodge(width=.8))+
+    facet_wrap(~site)+scale_fill_manual(values=c(Holocene='#785EF0',Anthropocene='#DC267F'))+
+    labs(x=if(type=='species') 'Parallel species contribution (CCA distance per century)' else
+      'Parallel climate contribution (CCA displacement)',y=NULL,fill='Era',
+      caption=paste0('One value per primary Holocene lake transition (MORA: ',sum(primary$calculations$site=='MORA'),
+        '; NOCA: ',sum(primary$calculations$site=='NOCA'),') or modern plot pair (MORA: ',sum(a$site=='MORA'),
+        '; NOCA: ',sum(a$site=='NOCA'),').\n',
+        'Boxes show variation among actual transitions/plots, not offsets or Bacon chronologies. Undefined directions are omitted; zeros remain.\n',
+        if(type=='species') 'Species contributions are projected along climate-predicted movement and divided by each transition duration, in centuries.' else
+          'Climate-variable contributions are projected along observed community movement; displacements use actual endpoints and are not divided by duration.'))+
+    theme_minimal(base_size=18)+theme(legend.position='bottom',axis.text.y=element_text(size=16),
+      plot.caption=element_text(size=14,hjust=0))
+  if(type=='species') {
+    # Keep all finite values in the box statistics; zoom to displayed whiskers.
+    boxes=ggplot_build(p)$data[[2]]
+    limit=max(max(abs(c(boxes$xmin,boxes$xmax)),na.rm=TRUE)*1.08,1e-5)
+    p=p+coord_cartesian(xlim=c(-limit,limit))+
+      labs(caption=paste0(p$labels$caption,'\nAxis zooms to visible boxes and whiskers; hidden outliers remain in all calculations.'))
+  }
+  ggsave(here('plot/test_figures',paste0('fig_cca_transition_',type,'_boxplots.pdf')),p,
+    width=16,height=if(type=='species') 10 else 6,device=cairo_pdf)
+}
+# END R/stages/16_cca_transition_contributions.R
+
+# ============================================================================
+# BEGIN R/stages/17_species_contribution_models.R
+# ============================================================================
+# Species explanatory GLS mirrors community models; modern species: site + burned only.
+suppressPackageStartupMessages({library(here);library(tidyverse);library(nlme);library(patchwork)})
+source(here('R/helpers/reconstruction_models.R'),local=TRUE)
+x=read_csv(here('output/cca_transition_contributions/species_primary.csv'),show_col_types=FALSE)
+entries=exclusions=list()
+for(species in sort(unique(x$species))) for(era in c('Holocene','Anthropocene')) {
+  input=reconstruction_explanatory_input(x[x$era==era,],species,era,species=TRUE)
+  e=reconstruction_select(input$data,input$fixed,families=if(era=='Holocene') c('Independent','MA1','CAR1') else 'Independent')
+  e$metric=species;e$era=era;e$specification=if(era=='Holocene') 'site_climate_fire' else 'site_burned'
+  name=paste(species,era,sep=':');entries[[name]]=e;exclusions[[name]]=input$excluded
+}
+out=tracking_primary_results('species')
+tables=reconstruction_export(entries,out,bind_rows(exclusions))
+if(isTRUE(getOption('paleoaces.render_figures',TRUE))) {
+  ggsave(tracking_model_figure('fig_species_contribution_model_coefficients.pdf'),
+    reconstruction_coefficient_plot(tables$model_coefficients)+facet_grid(metric~term,scales='free_x'),width=22,height=22,device=cairo_pdf)
+  ggsave(tracking_model_figure('fig_species_contribution_model_residuals.pdf'),
+    reconstruction_residual_plot(tables$transition_predictions),width=22,height=24,device=cairo_pdf)
+}
+if(!isTRUE(getOption('paleoaces.primary_only',FALSE))) {
+  sensitivity_out=tracking_bacon_results('species')
+  sensitivity=reconstruction_sensitivity(century_prepare(),entries,'species',sensitivity_out)
+  source(here('R/helpers/chronology_exports.R'),local=TRUE)
+  export_chronology_records(sensitivity_out,'species')
+  if(isTRUE(getOption('paleoaces.render_figures',TRUE))) ggsave(
+    tracking_model_figure('fig_species_contribution_chronology_sensitivity.pdf',role='bacon'),
+    reconstruction_sensitivity_plot(sensitivity),width=22,height=14,device=cairo_pdf)
+}
+# END R/stages/17_species_contribution_models.R
 
 # BEGIN R/helpers/tracking_metrics.R — calculation excerpts; see helper for full functions
 # Endpoint geometry and lag/turnover rates

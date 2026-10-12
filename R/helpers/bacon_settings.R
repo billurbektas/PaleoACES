@@ -10,7 +10,7 @@
 # two need in common has to live somewhere neither of them produces.
 #
 #   sourced by  R/stages/000_PALEO_a_agedepth.R   (to run and redraw the models)
-#               R/helpers/paleo_runs.R             (to read the age posteriors)
+#               R/helpers/holocene_reconstruction.R             (to read the age posteriors)
 #
 # Defines:
 #   slumps       the slumped depth intervals, per MORA core

@@ -23,20 +23,14 @@
 # sample - it carries no information for the ordination even though it is
 # abundant.
 #
-# BINNING deliberately retains the former 500-year resolution as a sampling-density
-# sensitivity: all 5 moving-window offsets are pooled.
-# so the line is a 500-yr window slid in 100-yr steps. Bins are NOT required to
-# be full here (unlike the climate figure) because a bin's sample count is set by
-# the core, not by the product, and dropping thin bins would silently delete the
-# sparsest parts of the record. Instead n is shown directly.
+# Native 100-year cells; primary unrounded median sample ages, no moving windows.
 # =============================================================================
 
 library(here)
 library(tidyverse)
 source(here("R/helpers/config.R"), local = TRUE)
 
-HOLO_BIN = 500
-OFFSETS  = seq(0, HOLO_BIN - 100, by = 100)
+HOLO_BIN = 100
 
 occ = read_csv(here("output/occ_consolidated.csv"), show_col_types = FALSE)
 env = read_csv(here("output/paleo_env.csv"), show_col_types = FALSE) %>%
@@ -52,7 +46,7 @@ occ_summary = occ %>% filter(occurrence == 1) %>%
   pivot_wider(names_from = c(site, period), values_from = n, values_fill = 0)
 dropped = occ_summary %>%
   filter(if_all(-species, ~ .x < COUNT_THR)) %>% pull(species)
-ALL_SP = setdiff(sort(unique(occ$species)), dropped)
+ALL_SP = readRDS(here('output/cca_calibration_reference.rds'))$retained_species
 
 cat("count.thr = ", COUNT_THR, " -> ", length(ALL_SP), " species retained, ",
     length(dropped), " dropped:\n  ", paste(sort(dropped), collapse = ", "), "\n", sep = "")
@@ -79,13 +73,8 @@ pa = grid %>%
             by = c("plot_id", "species")) %>%
   mutate(present = replace_na(present, 0L))
 
-binned = map_dfr(OFFSETS, function(off) {
-  pa %>%
-    mutate(bin = floor((age - off) / HOLO_BIN) * HOLO_BIN + off) %>%
-    group_by(site, lake, species, bin) %>%
-    summarize(occupancy = mean(present), n = n(), .groups = "drop") %>%
-    mutate(offset = off, mid = bin + HOLO_BIN / 2)
-})
+binned=pa |> mutate(bin=floor(age/100)*100) |> group_by(site,lake,species,bin) |>
+  summarize(occupancy=mean(present),n=n(),.groups='drop') |> mutate(mid=bin+50)
 
 # ordered by overall occupancy so the legend runs common -> rare
 SP_ORDER = occ %>% filter(occurrence == 1) %>% count(species) %>%
@@ -99,10 +88,7 @@ sep = pa %>% group_by(species, site) %>% summarize(o = mean(present), .groups = 
   pivot_wider(names_from = site, values_from = o, values_fill = 0) %>%
   mutate(separation = abs(MORA - NOCA)) %>% arrange(desc(separation))
 
-# ONE line per species per pond: the 5 offsets pooled and ordered by midpoint IS
-# the 500-yr window slid in 100-yr steps, so it is the moving-window estimate
-# itself. Drawing all 5 offsets would multiply every retained species by five
-# lines per panel and obscure rather than diagnose the trajectories.
+# Each original sample enters exactly one native century.
 holo_line = binned %>%
   group_by(site, lake, species, mid) %>%
   summarize(occupancy = mean(occupancy), n = sum(n), .groups = "drop") %>%

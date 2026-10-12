@@ -83,7 +83,7 @@ run_bacon <- function(core, ...) {
 # cannot drift apart.
 
 # bacon_draws() - posterior age draws for a finished run - now lives in
-# R/helpers/bacon_settings.R, sourced above, because R/helpers/paleo_runs.R needs it too. It
+# R/helpers/bacon_settings.R, sourced above, because R/helpers/holocene_reconstruction.R needs it too. It
 # could not move into R/helpers/paleo_ages.R: that file reads Cores/*_ages.txt at source
 # time, and THIS script is what creates them.
 
@@ -320,7 +320,7 @@ write_core_files("PantherPotholes", pp_dates)
 # consistency with NOCA (whose core top was derived as -49 cal BP = A.D. 1999),
 # not because it moves any result.
 # `slumps` and CORE_ARGS - the single definition of every core's Bacon settings,
-# used to run the models, to redraw them in section 5, and by R/helpers/paleo_runs.R to
+# used to run the models, to redraw them in section 5, and by R/helpers/holocene_reconstruction.R to
 # read their posteriors - are defined in R/helpers/bacon_settings.R, sourced at the top.
 
 # d.max. JayBath has a macrofossil sample at 153 cm but its deepest date sits at

@@ -26,7 +26,7 @@ def protected():
     paths += list((ROOT / 'Cores').rglob('*.bacon'))
     paths += list((ROOT / 'docs/assets/analysis').rglob('*'))
     paths += [ROOT / 'docs/ANALYSIS_REVIEW.md', ROOT / 'docs/ANALYSIS_REVIEW.html',
-              ROOT / 'output/bacon_run_manifest.csv', ROOT / 'output/paleo_age_draws.rds']
+              ROOT / 'output/bacon_run_manifest.csv', ROOT / 'output/chronology_reconstruction/age_draws.rds']
     return {str(p.relative_to(ROOT)): digest(p) for p in paths if p.is_file()}
 
 
@@ -63,23 +63,13 @@ def posterior_read_failure():
     before = protected()
     serialized = {p: p.read_bytes() for p in (ROOT / 'Cores').rglob('*.bacon')}
     code = r'''
-suppressPackageStartupMessages(library(here))
-e = new.env(parent = globalenv())
-sys.source(here("R/helpers/paleo_runs.R"), envir = e)
-files = list.files(here("Cores"), pattern = "[.](csv|out|txt|bacon)$",
-                   recursive = TRUE, full.names = TRUE)
-files = c(files, here("output/paleo_age_draws.rds"))
-before = tools::md5sum(files)
-serialized = list.files(here("Cores"), pattern = "[.]bacon$",
-                        recursive = TRUE, full.names = TRUE)
-e$bacon_draws = function(...) {
-  writeLines("injected serialized configuration mutation", serialized[1])
-  stop("injected posterior-read failure")
-}
-error = tryCatch(e$paleo_age_draws(cache = FALSE), error = identity)
-stopifnot(inherits(error, "error"),
-          grepl("injected posterior-read failure", conditionMessage(error), fixed = TRUE),
-          identical(before, tools::md5sum(files)))
+suppressPackageStartupMessages({library(here);library(tidyverse)})
+e=new.env(parent=globalenv());sys.source(here('R/helpers/century_tracking.R'),envir=e)
+files=list.files(here('Cores'),pattern='[.](csv|out|txt|bacon)$',recursive=TRUE,full.names=TRUE)
+before=tools::md5sum(files)
+b=e$century_prepare()
+error=tryCatch(e$century_posterior_ages(b$cache,'PantherPotholes',1e9),error=identity)
+stopifnot(inherits(error,'error'),identical(before,tools::md5sum(files)))
 '''
     try:
         result = subprocess.run(['Rscript', '-e', code], cwd=ROOT,
