@@ -1,7 +1,7 @@
 # =============================================================================
 # climate_variables.R - THE definition of the climate variables. Used by BOTH arms.
 # =============================================================================
-# Sourced by 000_PALEO_e_climate.R (Holocene) and 04_cca_model.R (Anthropocene).
+# Sourced by 07_paleo_climate.R (Holocene) and 10_cca.R (Anthropocene).
 # If the two arms ever define a season differently - DJF vs JF, tasmin vs the
 # tasmin/tasmax mean - then MWT means two different things, the CCA is calibrated
 # on one and projected with the other, and the resulting displacement is
@@ -125,7 +125,7 @@ derive_climate_vars <- function(x, winter_shift = TRUE, temp_source = TEMP_SOURC
   # with no `pr` rows this used to fail in the final relocate(). It must be
   # possible to run the whole pipeline on temperature alone - that is exactly the
   # comparison the variable diagnostic needs (dropping pr frees MORA legacy temperature from
-  # precipitation's 1979 start; see R/diagnostics/test_climate_change_variables.R).
+  # precipitation's 1979 start; see R/figures/supp_climate_correlations.R).
   out <- temp
   if ("pr" %in% vars_present) {
     p <- x %>% filter(variable == "pr")

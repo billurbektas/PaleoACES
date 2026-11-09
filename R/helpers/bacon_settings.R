@@ -5,11 +5,11 @@
 # so it can be sourced from anywhere in the chain regardless of what has been run.
 #
 # That is why it is a separate file from R/helpers/paleo_ages.R. paleo_ages.R reads
-# Cores/*_ages.txt AT SOURCE TIME, and R/stages/000_PALEO_a_agedepth.R is the script
-# that CREATES those files - so 000_PALEO_a cannot source it, and anything the
+# Cores/*_ages.txt AT SOURCE TIME, and R/pipeline/05_age_depth_models.R is the script
+# that CREATES those files - so 05_age_depth_models.R cannot source it, and anything the
 # two need in common has to live somewhere neither of them produces.
 #
-#   sourced by  R/stages/000_PALEO_a_agedepth.R   (to run and redraw the models)
+#   sourced by  R/pipeline/05_age_depth_models.R   (to run and redraw the models)
 #               R/helpers/holocene_reconstruction.R             (to read the age posteriors)
 #
 # Defines:
@@ -26,6 +26,10 @@
 # than the one on disk.
 # -----------------------------------------------------------------------------
 slumps = list(JayBath = c(87, 105), LogWallow = c(40, 98), ReflectionPond = c(45, 64))
+
+# Age error assigned to each 210Pb control in the Panther Potholes sensitivity run
+# (the primary run keeps the archived Gavin values; see 05_age_depth_models.R).
+PB210_ASSUMED_ERROR = 10
 
 CORE_ARGS = list(
   JayBath         = list(thick = 5, slump = c(87, 105), d.max = 153, remove = FALSE,

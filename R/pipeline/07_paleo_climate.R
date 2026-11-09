@@ -1,0 +1,344 @@
+# 07 Paleo climate: CHELSA-TraCE21k monthly climate at each lake and century,
+# then the climate at each macrofossil sample's own age (paleo_env.csv).
+# The download is resumable and cached in output/cache/chelsa_paleo/; an
+# --offline run assembles the pond climate from that cache and stops if a chunk is missing.
+
+# =============================================================================
+# 1. CHELSA-TraCE21k for the four ponds (cache first; network only for missing chunks)
+# =============================================================================
+library(here)
+suppressMessages({library(dplyr); library(tidyr); library(readr)})
+source(here("R/vendor/get_chelsa.R"), local = TRUE)          # vendored, commit 3d410b8
+source(here("R/helpers/get_chelsa_monthly.R"), local = TRUE)  # V2.1 monthly, for the bias anchor
+source(here("R/helpers/config.R"), local = TRUE)
+source(here("R/helpers/offline_cache.R"), local = TRUE)
+
+CACHE        = out("chelsa_paleo")
+OUT          = out("chelsa_paleo_ponds.csv")
+OUT_BIAS     = out("chelsa_paleo_bias_correction.csv")
+BIAS_CORRECT = TRUE
+V21_REF      = 1979:2021
+SLICE_MODERN = 20L
+
+# TraCE21k slice ids: integers -200..20, one step ~100 yr, 20 = present, 0 = 0 CE.
+# -90 is ~11 kyr BP, covering NOCA's 10,609 cal BP, so both sites get the SAME
+# window - which they never had before (MORA was cut at 6000 BP while its cores
+# reach 6841). Slice 21 and 22 are 404: 20 really is the last.
+SLICES = -90:20
+VARS   = c("tasmin", "tasmax", "pr")
+
+# MORA coords per Dunwiddie 1986; NOCA per Prichard 2009.
+# =============================================================================
+# POND COORDINATES - provenance and precision (audited 2026-08-13)
+# =============================================================================
+# CHELSA is 30 arcsec (~0.00833 deg, ~700 m E-W here), so coordinate precision
+# below ~1 km changes the grid cell. Every coordinate below was traced to its
+# most precise published source; GNIS, Neotoma, NOAA WDS-Paleo and the open web
+# were all searched.
+#
+# PantherPotholes - CHANGED 2026-08-13, was (-121.0333, 48.6500).
+#   Neotoma site 13042 carries a site POLYGON:
+#     [-121.04089, 48.65816] .. [-121.0381, 48.65952], altitude 1033 m
+#   centre = (-121.0395, 48.6588). This is the dataset PI's own site footprint,
+#   precise to ~150 m. The old value was Prichard (2009)'s published
+#   "48 deg 39' N, 121 deg 02' W" - the SAME site, rounded to arcminutes, which
+#   put it 1.1 km away in a DIFFERENT CHELSA cell in both axes.
+#   Measured cost of the old coordinate: precipitation was unaffected (annual
+#   1231 vs 1224 mm) but temperature ran 0.85 degC COOL in every month - a
+#   constant displacement of 0.171 CCA units, 47% of the span of the entire NOCA
+#   Holocene climate trajectory. Corrected because it is wrong, not because of
+#   the size of its effect.
+#
+# The three MORA ponds - ALL CHANGED 2026-08-13. The previous values were
+# Dunwiddie (1986)'s published coordinates, given only to the ARCMINUTE:
+#     Jay Bath          46 deg 46' N, 121 deg 46' W, 1311 m
+#     Log Wallow        46 deg 46' N, 121 deg 45' W, "1.2 km NE of Jay Bath, +50 m"
+#     Reflection Pond 1 46 deg 46' N, 121 deg 43' W, "2.4 km E of Log Wallow,
+#                       easternmost of the ponds called the Reflection Lakes"
+#   Arcminute rounding at 46.77 N is +/-928 m in latitude and +/-635 m in
+#   longitude - MORE than one CHELSA cell - and it put all three ponds at the
+#   IDENTICAL latitude, which is a rounding artefact, not geography.
+#   ⚠ THE OLD JAY BATH COORDINATE HAD NO POND AT IT. Confirmed on satellite
+#   imagery by Billur, 2026-08-13. These are not small errors; they were the
+#   wrong locations.
+#
+#   The ponds are Dunwiddie's own informal names and appear in NO gazetteer or
+#   database - GNIS, Neotoma and NOAA WDS-Paleo all return nothing - so the
+#   ponds were located directly on satellite imagery by Billur. The values below
+#   are those, and they are INDEPENDENTLY CORROBORATED three ways:
+#
+#     1. they reproduce Dunwiddie's published arcminutes
+#          Jay Bath          46 46.23' / 121 46.10'   -> 46 46' / 121 46'  exact
+#          Log Wallow        46 46.50' / 121 45.23'   -> 121 45' exact; the
+#                            latitude falls exactly on the .50 rounding
+#                            boundary, which truncation renders as 46 46'
+#          Reflection Pond 1 46 46.17' / 121 43.49'   -> 46 46' / 121 43'  exact
+#     2. they reproduce his stated inter-pond distances
+#          Jay Bath -> Log Wallow    1.22 km   (he says 1.2 km)
+#          Log Wallow -> Reflection  2.30 km   (he says 2.4 km)
+#          Jay Bath -> Reflection    3.32 km   (he says a 3.5-km transect)
+#     3. they RESOLVE the contradiction the old coordinates carried. Dunwiddie's
+#        text says Log Wallow is NORTHEAST of Jay Bath; the rounded coordinates
+#        put it due EAST at identical latitude. The located ponds give a bearing
+#        of 65 deg - north of east. His prose was right; the rounding was the
+#        artefact.
+#
+#   ⚠ GNIS "Reflection Lakes" (46.7695, -121.7300, 1481 m) is NOT this pond: it
+#   is the group centroid, and Dunwiddie specifies the EASTERNMOST pond of that
+#   group. Do not substitute it.
+#
+# CRS: all coordinates are WGS 84 decimal degrees (EPSG:4326), which is what
+# Google Maps reports and what CHELSA rasters are stored in - verified directly
+# from a CHELSA GeoTIFF header (EPSG:4326, 0.008333 deg = 30 arcsec). NO
+# reprojection is needed or applied anywhere in this pipeline.
+ponds = data.frame(
+  ID  = c("JayBath", "LogWallow", "ReflectionPond", "PantherPotholes"),
+  lon = c(-121.768404, -121.753865, -121.724790,   -121.0395),
+  lat = c(  46.770463,   46.775068,   46.769559,     48.6588),
+  site = c("MORA", "MORA", "MORA", "NOCA"), stringsAsFactors = FALSE)
+
+if (!dir.exists(CACHE)) dir.create(CACHE, recursive = TRUE)
+
+# -----------------------------------------------------------------------------
+# 1. download, one chunk per (variable, slice), skipping what is already there
+# -----------------------------------------------------------------------------
+todo = expand.grid(var = VARS, slice = SLICES, stringsAsFactors = FALSE)
+todo$key  = sprintf("%s_sl%+04d", todo$var, todo$slice)
+todo$path = file.path(CACHE, paste0(todo$key, ".csv"))
+
+EXPECT = 12 * nrow(ponds)     # 12 months x 4 ponds
+paleo_cache_valid = function(path, variable, slice) {
+  if (!file.exists(path)) return(FALSE)
+  x = tryCatch(read_csv(path, show_col_types = FALSE), error = function(e) NULL)
+  required = c("id", "lon", "lat", "source", "variable", "month", "slice", "value")
+  if (is.null(x) || !all(required %in% names(x)) || nrow(x) != EXPECT ||
+      anyNA(x[required]) || !is.numeric(x$value) ||
+      !is.numeric(x$lon) || !is.numeric(x$lat) ||
+      any(!is.finite(x$value) | !is.finite(x$lon) | !is.finite(x$lat)) ||
+      !all(x$source == "paleo") ||
+      !all(x$variable == variable) || !all(x$slice == slice) ||
+      anyDuplicated(x[c("id", "month")]) ||
+      !setequal(x$month, 1:12) || !setequal(x$id, ponds$ID)) return(FALSE)
+  got = unique(x[c("id", "lon", "lat")])
+  if (anyDuplicated(got$id)) return(FALSE)
+  got = got[match(ponds$ID, got$id), ]
+  all(abs(got$lon - ponds$lon) < 1e-8 & abs(got$lat - ponds$lat) < 1e-8)
+}
+todo$cache_valid = mapply(paleo_cache_valid, todo$path, todo$var, todo$slice)
+require_offline_cache(todo$path, todo$cache_valid, "TraCE21k climate")
+file.remove(list.files(CACHE, "\\.tmp$", full.names = TRUE))   # from a killed run
+cat("TraCE21k: ", sum(!todo$cache_valid), " of ", nrow(todo),
+    " chunks to fetch (each = 12 months x 4 ponds)\n", sep = "")
+
+# get_chelsa() swallows errors AND warnings (error = NULL, warning = NULL), so a
+# transient network failure comes back as ZERO ROWS rather than an error. Caching
+# that would mark the chunk done and never retry it. Only cache a COMPLETE chunk.
+incomplete = character(0)
+
+for (i in seq_len(nrow(todo))) {
+  if (todo$cache_valid[i]) next
+  if (file.exists(todo$path[i])) {
+    message("invalidating stale paleo climate chunk: ", basename(todo$path[i]))
+    file.remove(todo$path[i])
+  }
+  x = get_chelsa(ponds, vars = todo$var[i], source = "paleo",
+                 start = todo$slice[i], end = todo$slice[i], months = 1:12,
+                 to_celsius = TRUE, id_col = "ID", verbose = FALSE)
+  if (nrow(x) != EXPECT) {
+    incomplete = c(incomplete, todo$key[i])
+    cat(sprintf("  [%4d/%4d] %-16s INCOMPLETE %d/%d - not cached, will retry\n",
+                i, nrow(todo), todo$key[i], nrow(x), EXPECT))
+    next
+  }
+  tmp = paste0(todo$path[i], ".tmp"); write_csv(x, tmp); file.rename(tmp, todo$path[i])
+  cat(sprintf("  [%4d/%4d] %-16s %3d rows\n", i, nrow(todo), todo$key[i], nrow(x)))
+}
+if (length(incomplete))
+  cat("\n", length(incomplete), " chunk(s) came back short and were NOT cached.\n",
+      "Re-run to retry them: ", paste(head(incomplete, 8), collapse = ", "), "\n", sep = "")
+
+todo$cache_valid = mapply(paleo_cache_valid, todo$path, todo$var, todo$slice)
+got = todo$path[todo$cache_valid]
+if (length(got) < nrow(todo))
+  stop(nrow(todo) - length(got), " valid chunk(s) missing - re-run to finish the download.")
+
+saveRDS(list(
+  signature = object_fingerprint(list(points = ponds, variables = VARS,
+                                      slices = SLICES, source = "CHELSA_TraCE21k_V1")),
+  points = ponds, variables = VARS, slices = SLICES,
+  source = "CHELSA_TraCE21k_V1"
+), file.path(CACHE, "_paleo_cache_fingerprint.rds"))
+
+paleo = bind_rows(lapply(got, read_csv, show_col_types = FALSE, progress = FALSE))
+
+# -----------------------------------------------------------------------------
+# 2. slice -> age, and check it rather than assuming it
+# -----------------------------------------------------------------------------
+paleo = paleo %>% mutate(year_CE = slice * 100, cal_BP = 1950 - year_CE)
+cat("\nslices ", min(paleo$slice), " to ", max(paleo$slice), " -> cal BP ",
+    max(paleo$cal_BP), " to ", min(paleo$cal_BP), "\n", sep = "")
+stopifnot(max(paleo$cal_BP) > 10609,   # must cover NOCA's oldest sample
+          min(paleo$cal_BP) <= -49)    # must reach the youngest (1999 CE)
+
+# Do the three MORA ponds land in different ~1 km grid cells? They are 1.3-3.8 km
+# apart. If the series are identical, "per-lake climate" is fiction and MORA is one
+# climate point, which changes the interpretation of the per-lake sensitivity.
+cat("\n--- do the 3 MORA ponds differ? (0 spread = same grid cell) ---\n")
+print(as.data.frame(paleo %>%
+  filter(id %in% c("JayBath", "LogWallow", "ReflectionPond")) %>%
+  group_by(variable, slice, month) %>%
+  summarise(spread = max(value) - min(value), .groups = "drop") %>%
+  group_by(variable) %>%
+  summarise(mean_spread = mean(spread), max_spread = max(spread),
+            pct_identical = 100 * mean(spread == 0), .groups = "drop")), digits = 3)
+
+# -----------------------------------------------------------------------------
+# 3. bias correction against V2.1 (cached the same way)
+# -----------------------------------------------------------------------------
+if (BIAS_CORRECT) {
+  v21_paths = file.path(CACHE, sprintf("v21_%s_%d.csv",
+                        rep(VARS, each = length(V21_REF)), rep(V21_REF, length(VARS))))
+  pond_points = ponds %>% transmute(id = ID, lon, lat)
+  v21_vars = rep(VARS, each = length(V21_REF))
+  v21_years = rep(V21_REF, length(VARS))
+  v21_valid = mapply(climate_cache_valid, v21_paths,
+                     MoreArgs = list(points = pond_points),
+                     variable = v21_vars, year = v21_years,
+                     expected_source = "v21_monthly")
+  require_offline_cache(v21_paths, v21_valid, "paleo V2.1 bias anchor")
+  cat("\nV2.1 monthly anchor: ", sum(!v21_valid), " of ",
+      length(v21_paths), " chunks to fetch\n", sep = "")
+  k = 0
+  for (v in VARS) for (yr in V21_REF) {
+    k = k + 1; p = file.path(CACHE, sprintf("v21_%s_%d.csv", v, yr))
+    if (climate_cache_valid(p, pond_points, v, yr,
+                            expected_source = "v21_monthly")) next
+    if (file.exists(p)) file.remove(p)
+    x = get_chelsa_monthly(ponds, vars = v, years = yr, months = 1:12,
+                           to_celsius = TRUE, id_col = "ID", verbose = FALSE)
+    if (nrow(x) != 12L * nrow(ponds) || anyNA(x$value)) {
+      cat(sprintf("  [%3d/%3d] v21_%s_%d INCOMPLETE - not cached\n",
+                  k, length(v21_paths), v, yr))
+      next
+    }
+    tmp = paste0(p, ".tmp"); write_csv(x, tmp); file.rename(tmp, p)
+    cat(sprintf("  [%3d/%3d] v21_%s_%d\n", k, length(v21_paths), v, yr))
+  }
+
+  v21_valid = mapply(climate_cache_valid, v21_paths,
+                     MoreArgs = list(points = pond_points),
+                     variable = v21_vars, year = v21_years,
+                     expected_source = "v21_monthly")
+  if (!all(v21_valid))
+    stop(sum(!v21_valid), " incomplete V2.1 anchor chunks; rerun to finish.")
+  v21 = bind_rows(lapply(v21_paths[v21_valid], read_csv,
+                         show_col_types = FALSE, progress = FALSE)) %>%
+    group_by(id, variable, month) %>%
+    summarise(v21_mean = mean(value, na.rm = TRUE), .groups = "drop")
+
+  bias = paleo %>% filter(slice == SLICE_MODERN) %>%
+    select(id, variable, month, trace_slice20 = value) %>%
+    inner_join(v21, by = c("id", "variable", "month")) %>%
+    mutate(add_offset = ifelse(variable == "pr", NA_real_, trace_slice20 - v21_mean),
+           mul_factor = ifelse(variable == "pr" & trace_slice20 > 0,
+                               v21_mean / trace_slice20, NA_real_))
+
+  cat("\n--- bias: TraCE21k slice 20 minus V2.1 (degC; pr as ratio) ---\n")
+  print(as.data.frame(bias %>% group_by(variable) %>%
+    summarise(
+      n = n(),
+      mean_add = if (all(is.na(add_offset))) NA_real_ else mean(add_offset, na.rm = TRUE),
+      min_add = if (all(is.na(add_offset))) NA_real_ else min(add_offset, na.rm = TRUE),
+      max_add = if (all(is.na(add_offset))) NA_real_ else max(add_offset, na.rm = TRUE),
+      mean_mul = if (all(is.na(mul_factor))) NA_real_ else mean(mul_factor, na.rm = TRUE),
+      .groups = "drop"
+    )), digits = 3)
+  write_csv(bias, OUT_BIAS)
+
+  paleo = paleo %>%
+    left_join(bias %>% select(id, variable, month, add_offset, mul_factor),
+              by = c("id", "variable", "month")) %>%
+    mutate(value_raw = value,
+           value_corrected = ifelse(variable == "pr", value * mul_factor,
+                                    value - add_offset))
+
+  chk = paleo %>% filter(slice == SLICE_MODERN) %>%
+    inner_join(v21, by = c("id", "variable", "month"))
+  stopifnot(max(abs(chk$value_corrected - chk$v21_mean), na.rm = TRUE) < 1e-6)
+  cat("check: slice 20 now equals the V2.1 reference exactly\n")
+
+} else {
+  cat("\n!! BIAS_CORRECT = FALSE - paleo climate is raw TraCE21k, on a different\n",
+      "   scale from the V2.1 climate the CCA is calibrated on.\n", sep = "")
+  paleo = paleo %>% mutate(value_raw = value, value_corrected = value,
+                           add_offset = NA_real_, mul_factor = NA_real_)
+}
+
+paleo_out = paleo %>%
+  left_join(ponds %>% select(id = ID, site), by = "id") %>%
+  select(lake = id, site, lon, lat, variable, slice, year_CE, cal_BP, month,
+         value_raw, value_corrected, add_offset, mul_factor)
+
+write_csv(paleo_out, OUT)
+cat("\nwritten: ", OUT, "  (", nrow(paleo_out), " rows)\n",
+    "Downstream uses value_raw by default; value_corrected is retained for the documented sensitivity run.\n", sep = "")
+
+# =============================================================================
+# 2. Climate at each sample age
+# =============================================================================
+library(here)
+suppressMessages({library(dplyr); library(tidyr); library(readr)})
+source(here("R/helpers/climate_variables.R"), local = TRUE)
+source(here("R/helpers/config.R"), local = TRUE)
+
+if (!exists("USE_CORRECTED")) USE_CORRECTED = PALEO_USE_BIAS_CORRECTED
+
+ponds = read_csv(out("chelsa_paleo_ponds.csv"), show_col_types = FALSE)
+occ   = read_csv(out("paleo_occ.csv"),          show_col_types = FALSE)
+
+cat("pond series: ", nrow(ponds), " rows | ", n_distinct(ponds$lake), " lakes | slices ",
+    min(ponds$slice), " to ", max(ponds$slice), "\n", sep = "")
+
+# --- climate variables, per lake x slice -------------------------------------
+env_slice = ponds %>%
+  transmute(unit = lake, period = "paleo", variable, time = slice, month,
+            value = if (USE_CORRECTED) value_corrected else value_raw) %>%
+  derive_climate_vars(winter_shift = FALSE) %>%
+  rename(lake = unit, slice = time) %>%
+  mutate(slice_age_calBP = 1950 - slice * 100)
+
+# The winter group of the OLDEST slice has no December from a previous slice and
+# the youngest has a December that belongs nowhere - with winter_shift = FALSE
+# neither happens, but check the slice set survived intact.
+stopifnot(setequal(unique(env_slice$slice), unique(ponds$slice)))
+cat("variables built for ", nrow(env_slice), " lake x slice combinations\n", sep = "")
+
+# --- each sample -> the slice covering its age -------------------------------
+samples = occ %>% distinct(period,plot_id,site,era,lake) %>%
+  left_join(read_csv(out('paleo_sample_depths.csv'),show_col_types=FALSE) %>%
+    select(plot_id,age=median_age),by='plot_id',relationship='one-to-one') %>%
+  mutate(slice_age_calBP=floor(age/100)*100+50)
+paleo_env = samples %>% left_join(env_slice,by=c('lake','slice_age_calBP')) %>%
+  mutate(age_error=slice_age_calBP-age) %>%
+  select(period=period.x,plot_id,site,era,lake,age,slice,slice_age_calBP,age_error,
+    MAT,MSpT,MST,MWT,AP,SpP,SP,WP,ends_with('_min'),ends_with('_max'),ends_with('_mean'))
+
+# --- checks before writing ---------------------------------------------------
+cat("\nsamples: ", nrow(paleo_env), " of ", n_distinct(occ$plot_id), "\n", sep = "")
+stopifnot(nrow(paleo_env) == n_distinct(occ$plot_id))
+
+ccavars = CCA_VARIABLES
+na_n = sapply(paleo_env[ccavars], function(z) sum(is.na(z)))
+cat("NA in the CCA variables: ", paste(sprintf("%s=%d", names(na_n), na_n),
+    collapse = " "), "\n", sep = "")
+
+cat("\nage match (assigned slice age minus sample age, yr):\n")
+print(as.data.frame(paleo_env %>% group_by(lake) %>%
+  summarise(n = n(), min = min(age_error), max = max(age_error),
+            n_over_50 = sum(abs(age_error) > 50), .groups = "drop")))
+
+cat("\nCCA variable ranges:\n")
+print(as.data.frame(t(sapply(paleo_env[ccavars], range))), digits = 4)
+
+write_csv(paleo_env, out("paleo_env.csv"))
+cat("\nwritten: output/paleo_env.csv\n")

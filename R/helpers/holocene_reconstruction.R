@@ -8,7 +8,7 @@ reconstruction_read_original_samples = function() {
     dplyr::mutate(site = 'MORA', source_sample_id = as.character(depth_cm),
       sample_id = paste0(lake, ':depth:', source_sample_id),
       source = 'DunwiddieMacrofossils.xlsx:MacrofossilData')
-  # Same within-sample harmonization as 000_PALEO_b_vegetation.R. No merging
+  # Same within-sample harmonization as 06_paleo_samples.R. No merging
   # across depths or averaging raw percentages across botanical categories.
   aliases = c('Abies Amabilis' = 'Abies amabilis',
     'Abies Lasiocarpa' = 'Abies lasiocarpa', 'Abies Procera' = 'Abies procera',

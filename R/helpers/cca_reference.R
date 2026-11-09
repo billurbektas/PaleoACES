@@ -40,7 +40,7 @@ export_cca_reference = function(e) {
     scaling=e$cca_scaling, hill=e$cca_hill, axes=1:2,
     comparison=e$comparison_df, modern_endpoints=modern,
     provenance=list(input_md5=tools::md5sum(inputs),
-      model_source_md5=tools::md5sum(here::here(c('R/stages/04_cca_model.R',
+      model_source_md5=tools::md5sum(here::here(c('R/pipeline/10_cca.R',
         'R/helpers/config.R','R/helpers/climate_variables.R','R/helpers/survey_years.R',
         'R/helpers/cca_reference.R','R/helpers/tracking_metrics.R'))),
       R_version=as.character(getRversion()), vegan_version=as.character(utils::packageVersion('vegan'))))

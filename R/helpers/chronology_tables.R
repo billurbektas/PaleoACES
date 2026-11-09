@@ -12,7 +12,7 @@
 # control file. A control without wording, or wording without a control, stops.
 #
 # Reads only; writes only via write_chronology_tables(). Called by
-# R/stages/000_PALEO_b_vegetation.R; checked by R/tests/test_chronology_tables.R.
+# R/pipeline/06_paleo_samples.R; checked by R/tests/test_chronology_tables.R.
 # =============================================================================
 source(here::here('R/helpers/config.R'), local = TRUE)
 source(here::here("R/helpers/bacon_settings.R"), local = TRUE)

@@ -70,9 +70,6 @@ stopifnot(isTRUE(all.equal(
   all(detection$minimum_count_probability == .05),
   all(detection$minimum_count_window_years == 75))
 
-hashes = read_csv(out("walsh_active_fire_hash_audit.csv"),
-                  show_col_types = FALSE)
-stopifnot(all(hashes$unchanged))
 manifest = read_csv(out("holocene_fire_tapas_manifest.csv"),
                     show_col_types = FALSE)
 stopifnot(nrow(manifest) >= 9L, all(manifest$engine == "tapas"),

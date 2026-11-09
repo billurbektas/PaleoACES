@@ -7,11 +7,11 @@ source(here("R/helpers/chronology_tables.R"), local = TRUE)
 for (kind in names(CHRONOLOGY_TABLE_PATHS)) {
   path = out(CHRONOLOGY_TABLE_PATHS[[kind]])
   if (!file.exists(path)) stop("Missing ", CHRONOLOGY_TABLE_PATHS[[kind]],
-    ". Run: Rscript R/stages/000_PALEO_b_vegetation.R")
+    ". Run: Rscript R/pipeline/06_paleo_samples.R")
   written = read_csv(path, col_types = cols(.default = col_character()))
   rebuilt = if (kind == "controls") chronology_controls_table() else bacon_parameters_table()
   if (!identical(as.data.frame(written), as.data.frame(rebuilt)))
-    stop(CHRONOLOGY_TABLE_PATHS[[kind]], " is stale. Run: Rscript R/stages/000_PALEO_b_vegetation.R")
+    stop(CHRONOLOGY_TABLE_PATHS[[kind]], " is stale. Run: Rscript R/pipeline/06_paleo_samples.R")
 }
 
 # 2. Every Bacon control appears exactly once, with its entered depth, age, error and cc.

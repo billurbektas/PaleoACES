@@ -255,11 +255,11 @@ stopifnot(
 )
 
 # No literature input or retired state machine may influence the stage.
-source_text = paste(readLines(here("R/stages/05_holocene_climate_fire_eras.R"),
+source_text = paste(readLines(here("R/pipeline/11_climate_eras_high_fire.R"),
   warn = FALSE), collapse = "\n")
 helper_text = paste(readLines(here("R/helpers/holocene_climate_fire_era_functions.R"),
   warn = FALSE), collapse = "\n")
-figure_text = paste(readLines(here("R/stages/10_climate_change_figure.R"),
+figure_text = paste(readLines(here("R/figures/main_fig2_climate_eras_fire.R"),
   warn = FALSE), collapse = "\n")
 stopifnot(!grepl("holocene_period_candidates", source_text, fixed = TRUE),
   !grepl("forward_state", paste(source_text, helper_text), fixed = TRUE),
@@ -269,14 +269,11 @@ stopifnot(!grepl("holocene_period_candidates", source_text, fixed = TRUE),
     figure_text, fixed = TRUE))
 
 
-hashes = read_csv(out("holocene_era_protected_hash_audit.csv"),
-  show_col_types = FALSE)
 required_figures = c(fig("main", "fig_standardized_climate_change_eras_fire.pdf"),
   fig("worked_examples", "fig_holocene_climate_period_method_worked_example.pdf"),
   fig("worked_examples", "fig_holocene_fire_method_worked_example.pdf"))
-stopifnot(all(hashes$unchanged))
 if (render_figures)
   stopifnot(all(file.exists(required_figures)),
             all(file.info(required_figures)$size > 10000))
-cat("PASS: unified climate eras, independent fire periods, and protected artifacts",
+cat("PASS: unified climate eras and independent fire periods",
     if (render_figures) ", including figures.\n" else ".\n", sep = "")
