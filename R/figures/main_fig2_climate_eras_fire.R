@@ -459,31 +459,83 @@ levels_panel = function(vars, show_rates = TRUE) {
       show.legend = FALSE)
   p
 }
-p_levels = levels_panel(variables) +
-  scale_color_manual(values = c(variable_colors, context = "grey25"), breaks = variables,
-    labels = variable_labels[variables], name = NULL) +
-  guides(color = guide_legend(nrow = 1, override.aes = list(linewidth = 1.6))) +
-  theme(legend.position = "bottom", legend.text = element_text(size = 12.5 * FIG2_TEXT), legend.margin = margin(0, 0, 0, 0))
-# Anthropocene rates as text outside the right edge of panel A, each at the
-# height where its variable's running-mean line ends.
-y_range = ggplot_build(p_levels)$layout$panel_params[[1]]$y.range
-line_end = climate_levels |> filter(in_view, variable %in% variables, is.finite(level_1000yr)) |>
-  group_by(variable) |> slice_min(t, n = 1) |> ungroup() |> select(variable, end_level = level_1000yr)
-anthropocene_text = anthropocene_rates |> left_join(line_end, by = "variable") |>
-  group_by(variable) |> arrange(site, .by_group = TRUE) |>
-  mutate(y = end_level + (row_number() - 1.5) * diff(y_range) * .055) |> ungroup()
-p_anthropocene = ggplot(anthropocene_text, aes(0, y, label = label, color = variable)) +
-  geom_text(hjust = 0, size = 3.1 * FIG2_TEXT, show.legend = FALSE) +
-  annotate("text", x = 0, y = y_range[2], label = "Anthropocene\nper century", hjust = 0, vjust = 1,
-    size = 3.2 * FIG2_TEXT, fontface = "bold", color = "grey20") +
-  scale_color_manual(values = variable_colors) +
-  coord_cartesian(xlim = c(0, 1), ylim = y_range, expand = FALSE, clip = "off") +
-  theme_void()
-# One grid, so that the time axes of A and B line up.
-figure = wrap_plots(p_levels, p_anthropocene, p_fire, plot_spacer(), ncol = 2,
-  widths = c(5.2, 1), heights = c(4.5, 1.45))
-if (render_figures) for (ext in c("pdf", "png"))
-  ggsave(fig("main", paste0("fig_climate_levels_eras_fire.", ext)), figure, width = 16, height = 11, dpi = 300)
+# Figure 2 in raw units (Bills, 9 Nov 2026): one panel per CCA variable in °C
+# or mm, black lines, rates only in real units per century, then fire. The
+# park-average lake climate is the same series as above, before standardizing.
+raw_unit = c(MSpT = "°C", SP = "mm")
+raw_axis = c(MSpT = "Spring temperature (°C)", SP = "Summer precipitation (mm)")
+rate_text = function(v, x) if (v == "SP") sprintf("%+.1f mm", x) else sprintf("%+.2f °C", x)
+raw_panel = function(v, tag, show_periods) {
+  d = climate_levels |> filter(in_view, variable == v)
+  line = d |> filter(is.finite(regional_raw_1000yr))
+  yr = range(d$regional_raw)
+  span = diff(yr)
+  top = if (show_periods) yr[2] + span * 1.05 else yr[2] + span * .08
+  rates = period_rates |> filter(variable == v) |>
+    mutate(y = approx(line$t, line$regional_raw_1000yr, t)$y, label = paste0(rate_text(v, rate), "/century"),
+      # Neighbouring periods alternate above and below the line, so labels never touch.
+      vjust = if_else(row_number() %% 2 == 1, -.45, 1.45))
+  step = largest_steps |> filter(variable == v) |>
+    mutate(y = d$regional_raw[match(t, d$t)], label = paste0("largest step ", rate_text(v, step), "/century"))
+  p = ggplot(d, aes(t, regional_raw)) +
+    era_background() +
+    geom_line(linewidth = .35 * sqrt(FIG2_TEXT), color = "grey55", alpha = .7) +
+    geom_line(data = line, aes(y = regional_raw_1000yr), linewidth = 1.1 * sqrt(FIG2_TEXT), color = "grey10") +
+    geom_point(data = rates, aes(t, y), size = 2.2, color = "grey10") +
+    geom_label(data = rates, aes(t, y, label = label, vjust = vjust), size = 3 * FIG2_TEXT, color = "grey10",
+      label.size = 0, fill = alpha("white", .85), label.padding = unit(.08, "lines")) +
+    geom_point(data = step, aes(t, y), shape = 4, size = 3.2, stroke = 1.2, color = "grey10") +
+    geom_label(data = step, aes(t, y, label = label, hjust = if_else(t > 9500, 0, .5)), vjust = 1.5,
+      size = 2.8 * FIG2_TEXT, color = "grey25", label.size = 0, fill = alpha("white", .85),
+      label.padding = unit(.08, "lines")) +
+    time_axis() +
+    scale_y_continuous(expand = expansion(mult = 0)) +
+    scale_fill_manual(values = era_colors, guide = "none") +
+    coord_cartesian(ylim = c(yr[1] - span * .14, top), clip = "off") +
+    labs(tag = tag, x = NULL, y = raw_axis[[v]]) +
+    theme_paleoaces(base_size = 13 * FIG2_TEXT) +
+    theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(), panel.grid.minor = element_blank())
+  if (show_periods) {
+    # Period names, interval arrows and driver words above the series, in grey.
+    ann = phase_annotations |> mutate(id_y = yr[2] + span * .95, arrow_y = yr[2] + span * .72,
+      description_y = yr[2] + span * .45)
+    p = p +
+      geom_segment(data = ann, aes(x = older_cal_bp, xend = younger_cal_bp, y = arrow_y, yend = arrow_y),
+        inherit.aes = FALSE, color = "grey25", linewidth = 1, arrow = arrow(type = "closed", length = unit(.08, "in"))) +
+      geom_text(data = ann, aes(midpoint, description_y, label = gsub(";", "\n", active_driver_labels)), inherit.aes = FALSE,
+        size = 3 * FIG2_TEXT, lineheight = .9, color = "grey30") +
+      geom_text(data = ann, aes(midpoint, id_y, label = subphase_id), inherit.aes = FALSE, fontface = "bold",
+        size = 4 * FIG2_TEXT, color = "grey10") +
+      geom_text(data = stable_annotations |> mutate(id_y = yr[2] + span * .95), aes(midpoint, id_y, label = era_id),
+        inherit.aes = FALSE, fontface = "bold", size = 4 * FIG2_TEXT, color = "grey10")
+  }
+  p
+}
+# Anthropocene change per century, plot median per park, as text beside each
+# panel at the height where its running-mean line ends.
+anthropocene_column = function(v, panel, first) {
+  y_range = ggplot_build(panel)$layout$panel_params[[1]]$y.range
+  end = climate_levels |> filter(in_view, variable == v, is.finite(regional_raw_1000yr)) |> slice_min(t, n = 1)
+  d = anthropocene_rates |> filter(variable == v) |> arrange(site) |>
+    mutate(y = end$regional_raw_1000yr + (row_number() - 1.5) * diff(y_range) * .14,
+      label = paste0(site, " ", rate_text(v, rate), "/century"))
+  p = ggplot(d, aes(0, y, label = label)) + geom_text(hjust = 0, size = 3.2 * FIG2_TEXT, color = "grey10") +
+    coord_cartesian(xlim = c(0, 1), ylim = y_range, expand = FALSE, clip = "off") + theme_void()
+  if (first) p = p + annotate("text", x = 0, y = y_range[2], label = "Anthropocene", hjust = 0, vjust = 1,
+    size = 3.3 * FIG2_TEXT, fontface = "bold", color = "grey20")
+  p
+}
+p_spring = raw_panel("MSpT", "A.", TRUE)
+p_summer = raw_panel("SP", "B.", FALSE)
+# One grid, so that the time axes of A, B and C line up.
+figure = wrap_plots(p_spring, anthropocene_column("MSpT", p_spring, TRUE),
+  p_summer, anthropocene_column("SP", p_summer, FALSE),
+  p_fire + labs(tag = "C."), plot_spacer(), ncol = 2, widths = c(5.2, 1), heights = c(3.4, 2.2, 1.6))
+if (render_figures) {
+  # cairo_pdf draws the degree signs and arrows.
+  ggsave(fig("main", "fig_climate_levels_eras_fire.pdf"), figure, width = 16, height = 13, device = cairo_pdf)
+  ggsave(fig("main", "fig_climate_levels_eras_fire.png"), figure, width = 16, height = 13, dpi = 300)
+}
 
 # Appendix: the same levels for all four seasonal variables, without rates.
 p_levels_four = four_variable_key(levels_panel(CLIMATE_DISPLAY_VARIABLES, show_rates = FALSE))

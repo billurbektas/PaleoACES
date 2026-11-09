@@ -221,27 +221,23 @@ and are unchanged.
 
 <img src="report/figures/png/fig_climate_levels_eras_fire.png" alt="" width="100%" />
 
-**Figure 2. Holocene climate and fire.** (A) Standardized level of
-spring temperature and summer precipitation, the two CCA constraints,
-averaged over the lakes of each park with the two parks weighted
-equally. Values are in units of the standard deviation across the 607
-legacy calibration plots, with zero at their mean (the modern climate of
-the CCA). Bold lines are 1,000-year running means and thin lines the
-centennial series. Shading marks the climate-change (C) and stability
-(S) periods, with the variables that drove each climate-change period
-written below its name. Labels on the bold lines give the change per
-century over a period, in °C or mm, for each variable that drove that
-period. A cross marks the largest step between two consecutive centuries
-of each variable. To the right of the panel, the Anthropocene change per
-century from the legacy to the resurvey climate window, the median over
-plots in each park, is given in real units and in calibration SD: spring
-temperature +1.29 °C (+0.5 SD) at MORA and +0.77 °C (+0.3 SD) at NOCA,
-summer precipitation -143 mm (-2.3 SD) at MORA and +104 mm (+1.7 SD) at
-NOCA. These come from a change over about 29 years, while each Holocene
-rate spans a whole period of 400 to 2,700 years. (B) Fire-frequency
-ratio of each park, the frequency of accepted fire events relative to
-the park’s high-fire threshold. Values above 1 (red) are high-fire
-periods.
+**Figure 2. Holocene climate and fire.** (A) Spring temperature (°C) and
+(B) summer precipitation (mm), the two CCA constraints, averaged over
+the lakes of each park with the two parks weighted equally
+(CHELSA-TraCE21k). Bold lines are 1,000-year running means and thin
+lines the centennial series. Shading marks the climate-change (C) and
+stability (S) periods, with the variables that drove each climate-change
+period written below its name. Labels on the bold lines give the change
+per century over a period for each variable that drove it. A cross marks
+the largest step between two consecutive centuries. To the right of each
+panel, the Anthropocene change per century from the legacy to the
+resurvey climate window, the median over plots in each park: spring
+temperature +1.29 °C at MORA and +0.77 °C at NOCA, summer precipitation
+-142.6 mm at MORA and +103.6 mm at NOCA. These come from a change over
+about 29 years, while each Holocene rate spans a whole period of 400 to
+2,700 years. (C) Fire-frequency ratio of each park, the frequency of
+accepted fire events relative to the park’s high-fire threshold. Values
+above 1 (red) are high-fire periods.
 
 Stages and helpers:
 [`R/pipeline/11_climate_eras_high_fire.R`](R/pipeline/11_climate_eras_high_fire.R),
