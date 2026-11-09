@@ -206,9 +206,37 @@ modern IntCal-style calibration (5740, exact). Individually defensible, but mixe
 Using IntCal20 throughout would move C from 2250 to ~2190 — a 60 yr shift, well
 inside any sensible error, so this is tidiness rather than a correction.
 
+## Reflection Pond basal date (2026-11-09)
+
+**Supersedes the 2026-10-06 retention below.** Reflection Pond's basal control is now
+`Basal_date_mean`, **6015 ± 110 ¹⁴C yr BP at 90 cm, `cc = 1`** (IntCal20 ≈ 6867 cal BP,
+95% 6595–7153). Decision record:
+[Reflection Pond basal date](../docs/SCIENTIFIC_DECISIONS.md#reflection-pond-basal-date-2026-11-09).
+
+| Evidence | What it supports |
+|---|---|
+| Dunwiddie, pers. comm. (relayed by B. Bektas) | *"This should be the same basal date as the other two sites. I suggest using 6015 (average of my two dates) for all three sites."* |
+| Dunwiddie (1986) Table 1 | The two basal dates: Jay Bath QL-1704 **6050 ± 110** (149.5–155 cm, organic sediment begins at 155 cm on the lahar) and Log Wallow QL-1728 **5980 ± 60** (138–142 cm). They agree (Ward & Wilson T = 0.31 < 3.84). IntCal20: 6910 and 6818 cal BP. |
+| Dunwiddie (1986), Results | *"Low sedimentation rates prior to 4900 BP at Jay Bath and Reflection Pond 1 result in sample durations from 300 to 370 yr."* The Crandell control left only ~380 yr below tephra F (~95 yr per 2-cm sample); the borrowed date restores ~1,100 yr. |
+| Crandell (1971) p.63 and Table 6 | The 5,800–6,600 bracket's upper bound is layer O = Mazama "about 6,600 years ago", ~7,630 cal BP by modern dating, so the bracket is radiocarbon-era rather than calendar; the 6180 cal BP control sat ~700 yr younger than both measured basal dates on the same surface. |
+
+**Error.** ±110 is the larger of the two laboratory errors. The error of the mean
+(√(110² + 60²)/2 = ±63) is measurement error only; it would make this undated core
+more precise than Jay Bath's own basal date and ignores the assumption that organic
+sedimentation began at the same time in all three ponds. The calibrated median is
+insensitive to this choice (6857 vs 6867 cal BP); only the interval width changes.
+
+**Scope.** Jay Bath and Log Wallow keep their own measured basal dates. Only the two
+Reflection Pond samples below tephra F (84 and 86 cm) can change age.
+
+**Remaining assumption.** As before, 90 cm is taken as the base of the organic
+sequence; Dunwiddie's Fig. 5 ends around 88–90 cm without labelling the contact.
+The borrowed date is younger than the Reflection Lakes lahar of Vallance and Sisson
+(2022, 7250–7000 cal BP) at its median, as sediment above that deposit must be.
+
 ## Basal-lahar reconsideration (2026-10-06)
 
-**Author decision: retain the current chronology and Bacon controls for this
+**Author decision (superseded 2026-11-09, above): retain the current chronology and Bacon controls for this
 analysis.** Reflection Pond's `Basal_lahar` remains **6180 ± 400 cal BP at 90 cm,
 `cc = 0`**. No chronology refit, replacement control, or new sensitivity was
 authorized. This is a settled choice for the current analysis; the evidence gaps

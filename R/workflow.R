@@ -143,6 +143,7 @@ if (!skip_tests) {
   run_script("R/tests/test_paleo_climate_age_match.R")
   run_script("R/tests/test_paleo_split_validation.R")
   run_script("R/tests/test_bacon_provenance.R")
+  run_script("R/tests/test_chronology_tables.R")
   run_script("R/tests/test_cca_tracking_metrics.R")
   run_script("R/tests/test_century_tracking.R")
   run_script("R/tests/test_cca_transition_contributions.R")

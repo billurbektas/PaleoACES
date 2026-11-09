@@ -174,24 +174,25 @@ rp_dates <- tribble(
   "Tephra_Y",       45,   3650,    100,   0,
   "Tephra_Y_alt",   64,   3650,    100,   0,
   "Tephra_F",       82,   5740,    100,   0,
-  # Paradise lahar - the mudflow all three ponds sit ON, so a MAXIMUM age for the
-  # basal sediment. Crandell 1971 (USGS Prof. Paper 677) p.63: "The Paradise lahar
-  # is between 5,800 and 6,600 years old" -> midpoint 6200, half-range 400.
-  #
-  # TWO CONVERSIONS, both easy to get wrong:
-  # 1. Crandell's ages are ALREADY CALIBRATED, so cc = 0 is correct. p.11: ages
-  #    under 6,000 yr "have been corrected ... take into account past variations in
-  #    atmospheric C14", and his Table 4 calls them "true dates". Re-calibrating
-  #    them (which would give ~6845 cal BP) DOUBLE-COUNTS the correction.
-  # 2. He reports "Years ago in 1970", NOT cal BP. Verified on his own row: W-1120,
-  #    290 14C -> "1525 A.D." -> "450 years ago in 1970" (1970-1525 = 445). So
-  #    cal BP = years_ago_in_1970 - 20, giving 5780-6580 cal BP -> 6180 +- 400.
-  #
-  # Was 6000 +- 600 (Dunwiddie p.59's rounded "6000-yr-old Paradise lahar"). That
-  # spans 5400-6600 and so covered the truth, but sat ~180 yr low with a wider error
-  # than the source needs. This matters most for ReflectionPond, which has NO
-  # radiocarbon at all - it is dated entirely by tephra plus this lahar.
-  "Basal_lahar",    90,   6180,    400,   0
+  # BASAL DATE (decided 2026-11-09, supersedes the 6180 +- 400 cal BP Crandell
+  # lahar control). Reflection Pond has no radiocarbon, so its base borrows the
+  # basal dates of the other two ponds on the same surface, as Dunwiddie himself
+  # advised (pers. comm.): "This should be the same basal date as the other two
+  # sites. I suggest using 6015 (average of my two dates) for all three sites."
+  #   6015 = mean of QL-1704 (Jay Bath, 6050 +- 110) and QL-1728 (Log Wallow,
+  #   5980 +- 60). The two pass Ward & Wilson (T = 0.31 < 3.84).
+  # It is a 14C AGE, so cc = 1: entered as cc = 0 it would sit ~800 yr too young.
+  # Error = the LARGER lab error (110), not the error of the mean (63): the mean's
+  # error is measurement error only and would make this undated core more precise
+  # than Jay Bath's own basal date; it ignores the transfer between ponds.
+  # Jay Bath and Log Wallow keep their own measured basal dates.
+  # Why the Crandell control was wrong: his 5,800-6,600 bracket tops out at layer
+  # O = Mazama "about 6,600 years ago", which is ~7,630 cal BP today, so the
+  # bracket is radiocarbon-era, not calendar; and both measured basal dates on the
+  # lahar (6910 and 6818 cal BP) were older than its supposed maximum age. It also
+  # compressed the core: ~380 yr below tephra F, i.e. ~95 yr per 2-cm sample,
+  # against the 300-370 yr per sample Dunwiddie (1986) reports before 4900 BP.
+  "Basal_date_mean", 90,  6015,    110,   1
 )
 
 rp_dates = bind_rows(rp_dates)

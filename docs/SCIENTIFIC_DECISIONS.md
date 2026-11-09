@@ -192,9 +192,31 @@ is an explicit reproduction decision.
   "harmless". Source-supported replacements would require a separate future
   decision before refitting; no refit or new sensitivity is authorized now.
 
+### Reflection Pond basal date (2026-11-09)
+
+**Decision: replace Reflection Pond's `Basal_lahar` control with `Basal_date_mean`,
+6015 ± 110 ¹⁴C yr BP at 90 cm, `cc = 1` (IntCal20).** This supersedes the
+2026-10-06 retention below.
+
+6015 is the mean of the two measured basal dates on the same lahar surface, Jay Bath
+QL-1704 (6050 ± 110) and Log Wallow QL-1728 (5980 ± 60), as Dunwiddie advised
+(pers. comm.: "This should be the same basal date as the other two sites. I suggest
+using 6015 (average of my two dates) for all three sites."). The two dates agree
+(Ward & Wilson T = 0.31). It is a radiocarbon age, so it is calibrated (`cc = 1`).
+The error is the larger laboratory error rather than the error of the mean (±63),
+because the mean's error omits the transfer of the date to an undated pond.
+Jay Bath and Log Wallow keep their own measured dates.
+
+The Crandell (1971) control was replaced because its 5,800–6,600 bracket is
+radiocarbon-era (upper bound = Mazama, "about 6,600 years ago", ~7,630 cal BP today),
+both measured basal dates on the lahar were older than its supposed maximum, and it
+compressed the pre-4900 BP part of the core well below the 300–370 yr per sample
+that Dunwiddie (1986) reports. Detail:
+[MORA sources](../Cores/SOURCES_MORA.md#reflection-pond-basal-date-2026-11-09).
+
 ### MORA basal-lahar reconsideration (2026-10-06)
 
-**Decision: retain Reflection Pond's existing `Basal_lahar` control at 90 cm,
+**Decision (superseded 2026-11-09, above): retain Reflection Pond's existing `Basal_lahar` control at 90 cm,
 6180 ± 400 cal BP (`cc = 0`), and the current chronology.** The author reconsidered
 the later geological evidence and elected to keep the current analysis unchanged.
 

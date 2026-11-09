@@ -141,7 +141,7 @@ limiting dates**, not by their individual errors.
 
 ## MORA — Reflection Pond
 
-`slump = c(45, 64)` · no radiocarbon at all — this core is dated **entirely** by tephra + the lahar
+`slump = c(45, 64)` · no radiocarbon of its own — dated by tephra plus a basal date borrowed from the two dated ponds on the same surface
 
 | ID | what it is | depth | age | err | cc | age source | error source |
 |---|---|---|---|---|---|---|---|
@@ -151,7 +151,10 @@ limiting dates**, not by their individual errors.
 | `Tephra_Y` | MSH Yn — **top of slump** | 45 | 3650 | 100 | 0 | M74 T5 + **W17** | **DERIVED** — M96 bracket ±103 |
 | `Tephra_Y_alt` | same layer — **base of slump** | 64 | 3650 | 100 | 0 | M74 T5 + **W17** | **DERIVED** — M96 bracket ±103 |
 | `Tephra_F` | Mt Rainier layer F | 82 | 5740 | 100 | 0 | M74 T1 + **W17** | **UNPUBLISHED** — no source gives ± |
-| `Basal_lahar` | Paradise lahar — the mudflow the ponds sit **on** (max age) | 90 | 6180 | 400 | 0 | **C71 p.63** ✓ | **DERIVED** — half-range of 5800–6600 |
+| `Basal_date_mean` | basal sediment — **mean of QL-1704 and QL-1728** (¹⁴C) | 90 | 6015 | 110 | 1 | D86 Table 1 + **Dunwiddie pers. comm.** ✓ | **ADOPTED** — larger of the two lab errors (allows for transfer between ponds) |
+
+The basal control replaced `Basal_lahar` (6180 ± 400 cal BP, `cc = 0`, Crandell 1971) on
+2026-11-09 — see [the decision record](../docs/SCIENTIFIC_DECISIONS.md#reflection-pond-basal-date-2026-11-09).
 
 ## NOCA — Panther Potholes
 
@@ -220,7 +223,7 @@ a defect.
 
 | # | issue | impact |
 |---|---|---|
-| 1 | ~~Paradise lahar~~ **RESOLVED AND APPLIED — 6180 ± 400.** Crandell p.11: ages under 6,000 yr *"have been corrected … take into account past variations in atmospheric C¹⁴"*; Table 4 calls them *"true dates"*. So `cc = 0` is right, and the earlier "~6845 cal BP" idea would have **double-calibrated**. ⚠ He reports **"Years ago in 1970"**, so `cal BP = yr_ago_in_1970 − 20`. p.63: *"between 5,800 and 6,600 years old"* → 5780–6580 → **6180 ± 400**. | applied; Reflection Pond basal 6086 → 6118, 95% width 1050 → 957. Elsewhere ≤8 yr |
+| 1 | **SUPERSEDED 2026-11-09** by `Basal_date_mean` 6015 ± 110 ¹⁴C (`cc = 1`): Crandell's bracket tops out at Mazama "about 6,600 years ago" (~7,630 cal BP today), so it is radiocarbon-era, not calendar, and both measured basal dates on the lahar are older than its supposed maximum. Historical entry: ~~Paradise lahar~~ **RESOLVED AND APPLIED — 6180 ± 400.** Crandell p.11: ages under 6,000 yr *"have been corrected … take into account past variations in atmospheric C¹⁴"*; Table 4 calls them *"true dates"*. So `cc = 0` is right, and the earlier "~6845 cal BP" idea would have **double-calibrated**. ⚠ He reports **"Years ago in 1970"**, so `cal BP = yr_ago_in_1970 − 20`. p.63: *"between 5,800 and 6,600 years old"* → 5780–6580 → **6180 ± 400**. | applied; Reflection Pond basal 6086 → 6118, 95% width 1050 → 957. Elsewhere ≤8 yr |
 | 2 | ~~`Surface, 0, ±5`~~ **RESOLVED.** Billur confirmed with Dunwiddie that the lakes were cored **1981–1982** → core top = **−31.5 cal BP**, entered with ±10 for interface recovery. Neither Dunwiddie paper states the year (1986 Methods gives the corer but no date; the published bound is only "manuscript received 17 April 1984"). | applied — tops move to ~−32, median change below 40 cm is 1–5 yr |
 | 3 | ~~Layer F has no bracketing sample~~ **RESOLVED (one-sided).** Crandell p.30 dates organic material *beneath* F at 5780 cal BP (W-2053) — a **maximum** age, satisfied by the coded 5740. No date exists above F, so there is still no minimum and no two-sided bracket for an error. | age corroborated from a third direction; error still unpublished |
 | 4 | `Tephra_MSH_P` 2620 ± 70 sits at the extreme young end of M96's set-P span (3,000–2,500 ¹⁴C = 3185–2579 cal BP) | low — bracketed by AMS dates at 214 and 363 cm |

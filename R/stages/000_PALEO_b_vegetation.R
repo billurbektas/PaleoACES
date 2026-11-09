@@ -19,4 +19,9 @@ long=readxl::read_excel(here('data/PALEO/DunwiddieMacrofossils.xlsx'),sheet='Mac
     Species=='Charcoal Fragments'~'charcoal_fragments',Species=='Charred Needles'~'charred_needles',
     TRUE~Species)) |> left_join(age_depth,by=c('site','depth'),relationship='many-to-one')
 write_csv(long,here('output/paleo_macrofossil_long.csv'))
+# Supplementary Tables S1.1 (chronological controls) and S1.2 (rbacon parameters),
+# rebuilt from the Bacon inputs and settings this stage's ages come from.
+# Written here, not in 000_PALEO_a, because that script's bytes are provenance-locked.
+source(here('R/helpers/chronology_tables.R'),local=TRUE)
+write_chronology_tables()
 cat('Original macrofossil samples:',nrow(metadata),'; fixed-CCA eligible:',sum(metadata$eligible),'\n')
