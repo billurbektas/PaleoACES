@@ -1,5 +1,0 @@
-metric,era,model_type,draw,term,estimate,std_error,df,p_value,conf_low,conf_high,specification
-standardized_climate_change_rate,Combined,MA1,NA,(Intercept),0.2373449757942545,0.016797720356296092,814,1.0608802703501106e-40,0.20437302300287813,0.2703169285856309,era_by_site
-standardized_climate_change_rate,Combined,MA1,NA,eraAnthropocene,5.022482844590971,0.047152286277034244,814,0,4.929928442912941,5.115037246269,era_by_site
-standardized_climate_change_rate,Combined,MA1,NA,siteNOCA,0.03604567274243421,0.02137813918468679,814,0.09215982102231428,-0.005917104409095451,0.07800844989396388,era_by_site
-standardized_climate_change_rate,Combined,MA1,NA,eraAnthropocene:siteNOCA,-1.6513894671682987,0.10642871994826222,814,9.25494008093489e-48,-1.8602965483285956,-1.4424823860080018,era_by_site

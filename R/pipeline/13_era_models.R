@@ -14,6 +14,7 @@ validate_tracking_model_data(combined)
 figure_pages=list()
 for(metric in tracking_model_response_names()) {
   selected=tracking_primary_model_input(combined,metric)
+# report-snippet: era-model
   entry=reconstruction_select(selected$data,estimate~era*site,variance='era_site')
   if(is.null(entry$fit)) stop('All combined-era covariance fits failed: ',metric)
   entry$metric=metric;entry$era='Combined';entry$specification='era_by_site'
@@ -26,6 +27,7 @@ for(metric in tracking_model_response_names()) {
     n=map2_int(as.character(site),as.character(era),~sum(entry$data$site==.x & entry$data$era==.y)))
   ct=as.data.frame(summary(contrast(means,method=list('Anthropocene - Holocene'=c(-1,1))),
     infer=c(TRUE,TRUE),adjust='none'))
+# end-snippet: era-model
   contrasts=as_tibble(ct) |> transmute(metric=metric,model_type=entry$selected,site,contrast,
     estimate,std_error=SE,df,p_value=p.value,conf_low=lower.CL,conf_high=upper.CL)
   write_csv(group_means,file.path(results_dir,'model_group_means.csv'))
@@ -66,9 +68,11 @@ joint_out=out('era_comparison/joint_correction_effects')
 dir.create(joint_out,recursive=TRUE,showWarnings=FALSE)
 write_csv(d,file.path(joint_out,'model_input.csv'))
 captured=reconstruction_capture(function() {
+# report-snippet: joint-correction-model
   fit=gls(estimate~era*site*correction,data=d,correlation=corPairedMA1(),
     weights=varIdent(form=~1 | era_site_correction),method='REML',na.action=na.fail,
     control=glsControl(msMaxIter=500))
+# end-snippet: joint-correction-model
   fit$call$model=estimate~era*site*correction
   fit$call$correlation=quote(corPairedMA1())
   fit$call$weights=quote(nlme::varIdent(form=~1 | era_site_correction))

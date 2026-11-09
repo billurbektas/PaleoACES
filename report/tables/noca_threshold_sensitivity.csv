@@ -1,0 +1,8 @@
+Setting,Background (yr),Interpolation (yr),Threshold,Accepted events
+primary_native12_smooth500_q99,500,12,0.99,66
+native12_smooth500_q95,500,12,0.95,77
+native12_smooth500_q999,500,12,0.999,57
+native12_smooth800_q99,800,12,0.99,74
+native12_smooth1000_q99,1000,12,0.99,73
+publication12.5_smooth500_q99,500,12.5,0.99,72
+coarse45_smooth500_q99,500,45,0.99,35

@@ -1,5 +1,0 @@
-site,lake,engine,chronology,input_source,interpolation_years,smoothing_years,threshold_probability,threshold_type,transform,background_method,minimum_count_probability,minimum_count_window_years,consecutive_rule
-MORA,Sunrise Lake,tapas,published core chronology,data/PALEO/char_sunrise_lake.xlsx,48,800,0.95,local Gaussian-mixture noise,none,robust LOWESS,0.05,75,collapse adjacent exceedances
-MORA,Shadow Lake,tapas,published core chronology,data/PALEO/char_shadow_lake.xlsx,47,1000,0.95,local Gaussian-mixture noise,none,robust LOWESS,0.05,75,collapse adjacent exceedances
-MORA,Little Sunrise Lake,tapas,published core chronology,data/PALEO/char_little_sunrise.xlsx,42,500,0.95,local Gaussian-mixture noise,none,robust LOWESS,0.05,75,collapse adjacent exceedances
-NOCA,PantherPotholes,tapas,active PaleoACES Bacon median chronology,data/NOCA/NOCA_paleo/neotoma_macrocharcoal_52210.csv,12,500,0.99,local Gaussian-mixture noise,none,robust LOWESS,0.05,75,collapse adjacent exceedances

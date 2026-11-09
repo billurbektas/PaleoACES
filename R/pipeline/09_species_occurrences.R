@@ -14,7 +14,7 @@
 # so a decision here can be changed and re-applied in seconds.
 #
 # Full prose rationale, with the quotes and the evidence tables:
-#   docs/review/README_occurrence_consolidation.md
+#   report/details/05_species_occurrence_consolidation.md
 #
 # =============================================================================
 # WHY THERE IS AN UNDERSTORY PROBLEM AT ALL
@@ -156,7 +156,7 @@ NON_TAXA = c("unknown", "Abies sp.", "Unknown tree.")
 # ordination position are not exclusion criteria. It now follows the same >=20
 # species-selection rule as other tree taxa in 10_cca.R.
 # The former rationale and the author's reversal are recorded in
-# docs/review/README_occurrence_consolidation.md and SCIENTIFIC_DECISIONS.md.
+# report/details/05_species_occurrence_consolidation.md and report/details/10_decisions.md.
 
 # (3) TAXONOMIC HARMONISATION.
 # Each entry says WHICH SITE and WHICH PERIOD it applies to, because two of the

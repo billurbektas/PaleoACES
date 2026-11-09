@@ -46,41 +46,21 @@ po/*~
 # RStudio Connect folder
 rsconnect/
 
-# Local research data, caches, large results, and historical products
+# Local research data, Bacon runs and outputs (rebuilt by R/run_all.R)
 /data/**
 !/data/**/
-!/data/MORA/README_data_raw.md
-!/data/MORA/README_data_raw.html
-!/data/NOCA/NOCA_paleo/SOURCES.md
-!/data/NOCA/NOCA_paleo/SOURCES.html
-!/data/README_outputs_MORA_AT.md
-!/data/README_outputs_MORA_AT.html
-!/data/SOURCES_SURVEY_YEARS.md
-!/data/SOURCES_SURVEY_YEARS.html
 !/data/MORA/resurvey_seedling_visit_mapping.csv
 !/data/MORA/resurvey_year_source_discrepancies.csv
-/Cores/**
-!/Cores/**/
-!/Cores/CONTROL_POINTS.md
-!/Cores/CONTROL_POINTS.html
-!/Cores/SOURCES_MORA.md
-!/Cores/SOURCES_MORA.html
-!/Cores/provenance/chronology_relocation.json
-!/Cores/provenance/chronology_sources_before_move/000_PALEO_a_agedepth.R.txt
-!/Cores/provenance/chronology_sources_before_move/bacon_settings.R.txt
-!/Cores/provenance/chronology_sources_before_move/config.R.txt
-!/Cores/provenance/pb210_caption_revision.json
+/Cores/
 /output/
 /archive/
-/plot/archive/
-/R/archive/
-/docs/archive/
 /related_publications/
 /notes_from_Rachel/
 /PaleoNeoCommunity Shifts Mt. Rainier.pdf
+# Unpublished manuscript drafts stay local (the repository is public)
+/report/manuscript/
 .DS_Store
 *.log.tmp
-/docs/.analysis-review-*/
 
 # Local assistant/cloud settings and Python bytecode
 /.claude/

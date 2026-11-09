@@ -1,0 +1,12 @@
+rbacon argument,What it controls,MORA,Panther Potholes,Rationale
+"cc, cc1",Determines whether a date requires radiocarbon calibration and which calibration curve is used,"cc=1, cc1=""IntCal20"" for ¹⁴C dates; cc=0 for calendar-age controls",Same,Northern Hemisphere terrestrial ¹⁴C dates were calibrated with IntCal20; already calendar-dated controls were not recalibrated
+thick,Thickness of the sediment sections for which accumulation rates are estimated,5 cm,5 cm,Standard Bacon section thickness; for Panther Potholes this value reproduced the archived Gavin chronology
+acc.mean,"Mean of the prior distribution for accumulation time, in yr cm⁻¹",50,10,MORA cores accumulate substantially more slowly; 10 yr cm⁻¹ reproduces the Gavin chronology and is close to the approximately 12.8 yr cm⁻¹ reported for Panther Potholes
+acc.shape,Shape of the gamma prior around acc.mean; larger values impose a more concentrated accumulation prior,1.5,1.5,Broad rbacon default retained for MORA and Gavin setting retained for Panther Potholes
+mem.mean,Prior mean dependence between accumulation rates in adjacent sediment sections,0.5,0.7,rbacon default retained for MORA; Gavin setting retained for Panther Potholes
+mem.strength,Strength of the prior around mem.mean; larger values impose the assumed memory more strongly,10,10,Broad rbacon default retained for MORA and Gavin setting retained for Panther Potholes
+slump,Depth intervals treated as effectively instantaneous accumulation rather than gradual sedimentation,Jay Bath: 87–105 cm; Log Wallow: 40–98 cm; Reflection Pond: 45–64 cm,"303–308, 396–406, and 623–635 cm",Prevents thick tephra deposits from being interpreted as long periods of sediment accumulation
+"normal, t.a, t.b",Distribution used to accommodate chronological-control scatter and potential outlying dates,"FALSE, 3, 4","FALSE, 15, 16",rbacon default robust t-distribution retained for MORA; Gavin settings retained for Panther Potholes
+ssize,Number of MCMC iterations retained for the posterior,"4,000","10,000",Default sampling was retained for MORA; Panther Potholes required the larger value for adequate MCMC mixing and reproduction of the archived chronology
+prob,Posterior interval reported for the chronology,0.95,0.95,Ages are summarized with 95% posterior intervals
+d.max,Maximum core depth included in the model,Jay Bath: 153 cm; no manual extension for Log Wallow or Reflection Pond,870 cm,Jay Bath was extended to 153 cm to retain its deepest macrofossil sample; Panther Potholes retained the Gavin model extent

@@ -303,7 +303,7 @@ NOCA_plot_info_fire = read_csv(out("NOCA_plot_info_fire.csv"), show_col_types = 
 MORA_plot_info_fire = read_csv(out("MORA_plot_info_fire.csv"), show_col_types = FALSE)
 
 # Paleo fire now exists for BOTH sites - NOCA's came from Neotoma dataset 52210
-# (see data/NOCA/NOCA_paleo/SOURCES.md), so the site is read from the lake instead of being
+# (see report/details/03_chronology_sources_NOCA.md), so the site is read from the lake instead of being
 # hardcoded to "MORA" as it was while PantherPotholes had no charcoal.
 # The two sites' fire evidence is not the same KIND (MORA = in-core Dunwiddie
 # percentages plus a REGIONAL Walsh proxy from three other lakes; NOCA = in-core
@@ -539,8 +539,11 @@ if (count.thr == CCA_COUNT_THRESHOLD && !length(extra_exclude) && !nzchar(cca_su
 # -----------------------------------------------------------------------------
 # Fit the pooled CCA ONLY after resolving and reporting eligibility
 # -----------------------------------------------------------------------------
+# report-snippet: cca-fit
 cca_formula = reformulate(CCA_VARIABLES, response = "species_past_final")
 cca_model = cca(cca_formula, data = env_past_final)
+# end-snippet: cca-fit
+
 
 # Projection helper. Rows are matched by plot_id, not by position: the former
 # model reused the `valid_plots` logical built from the PAST
@@ -556,6 +559,7 @@ project_period = function(sp, en, era_label) {
 }
 
 # All projection inputs are already eligible: never filter WA and LC separately.
+# report-snippet: cca-projection
 predicted_present = predict(cca_model, newdata = env_present_final, type = "lc", scaling = cca_scaling, hill = cca_hill)
 projected_present = predict(cca_model, newdata = species_present_final,
                             type = "wa", scaling = cca_scaling, hill = cca_hill)
@@ -564,6 +568,7 @@ predicted_paleo = predict(cca_model, newdata = env_paleo[, CCA_VARIABLES, drop =
                           type = "lc", scaling = cca_scaling, hill = cca_hill)
 projected_paleo = predict(cca_model, newdata = species_paleo[, keep_species, drop = FALSE],
                           type = "wa", scaling = cca_scaling, hill = cca_hill)
+# end-snippet: cca-projection
 stopifnot(identical(rownames(predicted_present), rownames(projected_present)),
           identical(rownames(predicted_paleo), rownames(projected_paleo)),
           all(is.finite(predicted_present)), all(is.finite(projected_present)),

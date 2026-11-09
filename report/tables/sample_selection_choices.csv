@@ -1,0 +1,6 @@
+Site,Choice,Number,Unit,Plots removed,Explanation
+MORA,Assign seedling dates from adult visits,93,seedling records,0,Correct years before selecting visits; supplied files are preserved.
+MORA,Keep the latest adult visit,13,plots,0,Earlier records removed: 698 adult and 22 seedling records. Visits tied within the same year remain pooled.
+NOCA,Apply corrected tree records,54,plots,0,"Their exclusions, where applicable, are counted under GPS or missing legacy surveys; renaming and splitting source labels is not plot loss."
+MORA,Complete climate at both dates,0,incomplete observations,0,Missing climate excludes both observed and predicted positions; the current modern data have complete climate.
+NOCA,Complete climate at both dates,0,incomplete observations,0,Missing climate excludes both observed and predicted positions; the current modern data have complete climate.

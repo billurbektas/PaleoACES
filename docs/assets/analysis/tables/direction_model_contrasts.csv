@@ -1,3 +1,0 @@
-metric,model_type,site,contrast,estimate,std_error,df,p_value,conf_low,conf_high
-direction_effect_on_lag_per_century,MA1,MORA,Anthropocene - Holocene,0.28819306617423607,0.06254121044505805,358.9297746055478,5.65614695981276e-6,0.16519981945665496,0.4111863128918172
-direction_effect_on_lag_per_century,MA1,NOCA,Anthropocene - Holocene,-0.33090971495438276,0.14522344716172678,285.3745344692626,0.0234282624006699,-0.616754708718526,-0.04506472119023952

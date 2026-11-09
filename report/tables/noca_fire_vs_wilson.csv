@@ -1,0 +1,6 @@
+Plot universe,PaleoACES burned,Wilson burned,Discrepancy,Plots
+PaleoACES_only,FALSE,,,2
+Wilson_only,,FALSE,,60
+Wilson_only,,TRUE,,6
+shared,FALSE,FALSE,FALSE,271
+shared,TRUE,TRUE,FALSE,32

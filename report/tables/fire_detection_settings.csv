@@ -1,0 +1,5 @@
+Site,Lake,Engine,Chronology,Interpolation (yr),Background (yr),Threshold,Threshold type,Background,Count test p,Count window (yr)
+MORA,Sunrise Lake,tapas,published core chronology,48,800,0.95,local Gaussian-mixture noise,robust LOWESS,0.05,75
+MORA,Shadow Lake,tapas,published core chronology,47,1000,0.95,local Gaussian-mixture noise,robust LOWESS,0.05,75
+MORA,Little Sunrise Lake,tapas,published core chronology,42,500,0.95,local Gaussian-mixture noise,robust LOWESS,0.05,75
+NOCA,PantherPotholes,tapas,active PaleoACES Bacon median chronology,12,500,0.99,local Gaussian-mixture noise,robust LOWESS,0.05,75

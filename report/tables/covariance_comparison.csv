@@ -1,0 +1,16 @@
+Response,Covariance,n,AIC,Δ AIC,Correlation parameter,Status,Selected
+direction_effect_on_lag_per_century,Independent,817,2395.567790255855,26.829141074696057,,positive_definite,FALSE
+direction_effect_on_lag_per_century,MA1,817,2368.738649181159,0,-0.4034129634433355,positive_definite,TRUE
+direction_effect_on_lag_per_century,CAR1,817,2397.5677907662225,28.829141585063553,3.953463408689576e-9,Non-positive definite approximate variance-covariance,FALSE
+lag_rate_per_century,Independent,817,2393.1512185306806,63.30823804767988,,positive_definite,FALSE
+lag_rate_per_century,MA1,817,2329.8429804830007,0,-0.7684704884425619,positive_definite,TRUE
+lag_rate_per_century,CAR1,817,2395.1512189768614,65.3082384938607,3.525854674004456e-9,Non-positive definite approximate variance-covariance,FALSE
+observed_turnover_rate,Independent,817,1841.5188477171648,11.336435058790812,,positive_definite,FALSE
+observed_turnover_rate,MA1,817,1830.1824126583736,0,0.23300370924672695,positive_definite,TRUE
+observed_turnover_rate,CAR1,817,1830.1993490076525,0.01693634927869425,0.2784570171326724,positive_definite,FALSE
+pace_effect_on_lag_per_century,Independent,651,1383.612919241244,6.55307084252081,,positive_definite,FALSE
+pace_effect_on_lag_per_century,MA1,651,1377.0598483987233,0,-0.25115578802427174,positive_definite,TRUE
+pace_effect_on_lag_per_century,CAR1,651,1385.6129196268307,8.553071228107456,9.072060163753594e-9,Non-positive definite approximate variance-covariance,FALSE
+standardized_climate_change_rate,Independent,817,1580.013512177879,20.44404561628653,,positive_definite,FALSE
+standardized_climate_change_rate,MA1,817,1559.5694665615924,0,0.29374641259486844,positive_definite,TRUE
+standardized_climate_change_rate,CAR1,817,1562.902495389057,3.333028827464659,0.3723645972479283,positive_definite,FALSE

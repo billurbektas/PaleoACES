@@ -1,0 +1,36 @@
+Site,Period,Step,Label,Remaining,Removed,Explanation
+MORA,Modern,1,Starting legacy plots,518,0,
+MORA,Modern,2,Starting resurvey plots,386,0,
+MORA,Modern,2.5,Legacy plots with a matched resurvey,331,187,
+MORA,Modern,3,Matched legacy and resurvey plots,331,55,187 legacy plots and 55 resurvey plots have no entry in the paired-plot list; the latter include the practice plot PRAC-1.
+MORA,Modern,4,Keep the latest adult visit,331,0,"13 plots have visits in multiple years; discard 698 earlier adult records and 22 earlier seedling records, without removing plots."
+MORA,Modern,5,"Combine adults, seedlings and study tree species",331,0,No matched plot disappears when the two vegetation stages are combined or the species lists are aligned.
+NOCA,Modern,1,Starting legacy plots,366,0,
+NOCA,Modern,2,Starting registered resurvey plots,378,0,Wilson's plot list defines the starting resurvey plots; corrected tree names are applied to this list.
+NOCA,Modern,2.5,Legacy plots with usable matched locations,312,54,
+NOCA,Modern,3,Remove supplementary and reference plots,375,3,ROSS4001REF; SUPP2026; SUPP5127
+NOCA,Modern,4,Require usable GPS coordinates,370,5,
+NOCA,Modern,5,Require usable tree identifications,368,2,The two removed plots have only unsupported tree identifications.
+NOCA,Modern,6,Match a legacy tree survey,312,56,54 legacy plots also have no usable matched location. Counts for the two starting surveys must not be added.
+NOCA,Modern,7,Remove plots empty at both dates,309,3,
+NOCA,Modern,8,Apply the agreed plot exclusions,305,4,"One old clearcut, one uncertain resurvey location, and two unresolved GPS problems."
+MORA,Modern,9,Eligible legacy plots,331,0,Each legacy plot must contain a retained tree species and complete climate data.
+MORA,Modern,10,CCA calibration and comparisons at both dates,330,1,Fit the CCA on these matched legacy plots; use the same plots for observed and predicted positions at both dates.
+NOCA,Modern,9,Eligible legacy plots,288,17,Each legacy plot must contain a retained tree species and complete climate data.
+NOCA,Modern,10,CCA calibration and comparisons at both dates,277,11,Fit the CCA on these matched legacy plots; use the same plots for observed and predicted positions at both dates.
+MORA,Holocene,1,Starting core sample depths,119,0,
+MORA,Holocene,2,Retain original sample identities,119,0,
+MORA,Holocene,3,No prepared vegetation record,119,0,
+MORA,Holocene,4,No study tree species detected,119,0,
+MORA,Holocene,5,Only species removed from the study,119,0,
+MORA,Holocene,6,Only species below the CCA cutoff,119,0,
+MORA,Holocene,7,Only species absent from the legacy CCA,119,0,
+MORA,Holocene,8,Missing climate values,119,0,
+NOCA,Holocene,1,Starting core sample depths,870,0,
+NOCA,Holocene,2,Retain original sample identities,870,0,
+NOCA,Holocene,3,No prepared vegetation record,870,0,
+NOCA,Holocene,4,No study tree species detected,812,58,
+NOCA,Holocene,5,Only species removed from the study,812,0,
+NOCA,Holocene,6,Only species below the CCA cutoff,812,0,
+NOCA,Holocene,7,Only species absent from the legacy CCA,812,0,
+NOCA,Holocene,8,Missing climate values,812,0,

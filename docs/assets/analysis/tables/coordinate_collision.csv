@@ -1,3 +1,0 @@
-plot_id,raw_latitude,raw_longitude,normalized_latitude,normalized_longitude,elevation,shared_coordinate_count,elevation_range_m,status
-CARI449,48.51429,121.21725,48.51429,-121.21725,622,2,527,excluded—GPS problem; no verified coordinate correction
-CARI450,48.51429,-121.21725,48.51429,-121.21725,1149,2,527,excluded—GPS problem; no verified coordinate correction

@@ -49,9 +49,11 @@ reconstruction_capture = function(call) {
   list(fit=if(inherits(fit,'error')) NULL else fit,
     error=if(inherits(fit,'error')) conditionMessage(fit) else NA_character_,warnings=unique(warnings))
 }
+# report-snippet: gls-covariance
 reconstruction_correlation = function(type) switch(type,
   Independent=NULL,MA1=nlme::corARMA(p=0,q=1,form=~time_index | series),
   CAR1=nlme::corCAR1(form=~time_centuries | series),stop('Unknown covariance family'))
+# end-snippet: gls-covariance
 reconstruction_fit = function(d,fixed,type,variance='site') {
   X=model.matrix(fixed,d)
   if(nrow(X)<=ncol(X) || qr(X)$rank<ncol(X)) stop('rank_deficient')
@@ -63,9 +65,11 @@ reconstruction_fit = function(d,fixed,type,variance='site') {
   groups=if(is.null(variance)) rep('within_site',nrow(d)) else if(variance=='era_site') d$era_site else d[[variance]]
   if(any(vapply(split(d$estimate,groups),function(y) length(y)>1L && var(y)==0,logical(1))))
     stop('constant_variance_group: no finite heteroscedastic Gaussian optimum')
+# report-snippet: gls-fit
   fit=nlme::gls(fixed,data=d,correlation=reconstruction_correlation(type),
     weights=if(is.null(variance)) NULL else nlme::varIdent(form=as.formula(paste('~1 |',variance))),method='REML',
     na.action=na.fail,control=nlme::glsControl(msMaxIter=300))
+# end-snippet: gls-fit
   # Store evaluable model/covariance calls for emmeans covariance derivatives.
   fit$call$model=fixed
   fit$call$weights=if(is.null(variance)) NULL else substitute(nlme::varIdent(form=F),list(F=as.formula(paste('~1 |',variance))))
@@ -145,6 +149,7 @@ reconstruction_explanatory_input = function(x,metric,era='Holocene',species=FALS
   d$metric=metric;d$era=era
   d$climate_rate=d$standardized_climate_change_rate
   d$site=factor(d$site,levels=c('MORA','NOCA'))
+# report-snippet: predictor-formulas
   if(era=='Holocene') {
     if('burned' %in% names(d)) d$burned=factor(rep(NA_character_,nrow(d)),levels=c('Unburned','Burned'))
     d$series=paste('H',d$site,d$lake,sep='_')
@@ -155,6 +160,7 @@ reconstruction_explanatory_input = function(x,metric,era='Holocene',species=FALS
     d$burned=factor(d$burned,levels=c(FALSE,TRUE),labels=c('Unburned','Burned'))
     fixed=if(extended) estimate~site+elevation+climate_rate+burned else estimate~site+burned
   }
+# end-snippet: predictor-formulas
   if(!is.null(within_site)) fixed=update(fixed,~ . - site)
   if(!is.null(fixed_override)) fixed=fixed_override
   fields=all.vars(fixed)

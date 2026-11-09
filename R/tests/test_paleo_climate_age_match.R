@@ -16,7 +16,7 @@
 #
 # Check 2 is only possible if paleo_env.csv records WHICH slice each sample was
 # matched to. R/pipeline/07_paleo_climate.R must therefore carry `slice` and
-# `slice_age_calBP` through; see docs/WORKFLOW.md. Without those columns this
+# `slice_age_calBP` through; see R/pipeline/07_paleo_climate.R. Without those columns this
 # script can only test coverage, and says so.
 #
 # Run after R/pipeline/07_paleo_climate.R. Exits non-zero on any failure.

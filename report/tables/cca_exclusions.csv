@@ -1,0 +1,12 @@
+Era,Site,Use,Excluded at,Reason,Excluded
+anthropocene,MORA,Legacy calibration,present,Only taxa excluded by CCA species selection,1
+anthropocene,MORA,Modern paired comparison,present,Only taxa excluded by CCA species selection,1
+anthropocene,NOCA,Legacy calibration,past,No tree taxa recorded at legacy,6
+anthropocene,NOCA,Legacy calibration,past,Only taxa excluded by CCA species selection,11
+anthropocene,NOCA,Legacy calibration,present,Loss of all recorded tree-taxon presence at resurvey,9
+anthropocene,NOCA,Legacy calibration,present,Only taxa excluded by CCA species selection,2
+anthropocene,NOCA,Modern paired comparison,past,No tree taxa recorded at legacy,6
+anthropocene,NOCA,Modern paired comparison,past,Only taxa excluded by CCA species selection,11
+anthropocene,NOCA,Modern paired comparison,present,Loss of all recorded tree-taxon presence at resurvey,9
+anthropocene,NOCA,Modern paired comparison,present,Only taxa excluded by CCA species selection,2
+holocene,NOCA,Paleo projection,paleo,No tree taxa detected in paleo sample,58

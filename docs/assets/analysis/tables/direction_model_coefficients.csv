@@ -1,5 +1,0 @@
-metric,era,model_type,draw,term,estimate,std_error,df,p_value,conf_low,conf_high,specification
-direction_effect_on_lag_per_century,Combined,MA1,NA,(Intercept),-0.01957818995679512,0.018111543944591687,814,0.2800268205441432,-0.05512902419223853,0.01597264427864829,era_by_site
-direction_effect_on_lag_per_century,Combined,MA1,NA,eraAnthropocene,0.28819306617423607,0.06254121044505805,814,4.716610727686476e-6,0.16543201321164913,0.410954119136823,era_by_site
-direction_effect_on_lag_per_century,Combined,MA1,NA,siteNOCA,-0.02013696154348251,0.026579145620195,814,0.4488962053572091,-0.07230870366298445,0.03203478057601942,era_by_site
-direction_effect_on_lag_per_century,Combined,MA1,NA,eraAnthropocene:siteNOCA,-0.6191027811286188,0.1581178440577403,814,9.779165525107318e-5,-0.929469543949023,-0.3087360183082146,era_by_site

@@ -121,7 +121,7 @@ paleo_fire = paleo_fire %>%
 # =============================================================================
 # Charcoal is a SEPARATE Neotoma dataset from the macrofossils (52207), which is
 # why it looked missing - 52207 holds only TRSH and LABO. See
-# data/NOCA/NOCA_paleo/SOURCES.md.
+# report/details/03_chronology_sources_NOCA.md.
 #
 # 870 samples, contiguous 1 cm, on exactly the same depths as the macrofossils, so
 # fire and vegetation are measured on the SAME samples. Counts of 150-1000 um

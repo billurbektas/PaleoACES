@@ -1,22 +1,28 @@
 # PaleoACES
 
-PaleoACES compares climate-predicted and observed forest composition in Mount Rainier (MORA) and North Cascades (NOCA), using forest resurveys and four Holocene records. A pooled CCA calibrated on legacy survey plots provides the shared coordinate system.
+PaleoACES compares climate-predicted and observed forest composition in Mount Rainier (MORA) and
+North Cascades (NOCA) National Parks, using forest resurveys and four Holocene macrofossil records.
+One CCA calibrated on the legacy survey plots provides the shared coordinate system.
 
-```bash
-# Rebuild with existing climate aggregates
-Rscript R/workflow.R --offline
+**Read the [analysis report](report/README.md)**: the supplementary appendix, with every figure,
+reported table and modelling code in the order of the analysis, and links to the detailed
+records in [`report/details/`](report/details).
 
-# Rebuild analysis, report diagnostics, checks, and review report from native caches
-Rscript R/workflow.R --offline --report
-
-# Render maintained documentation
-Rscript R/render_docs.R
+```sh
+Rscript R/run_all.R --offline   # run the whole analysis from the cached climate
+Rscript R/build_report.R        # rebuild the report from the outputs
 ```
 
-The entrypoint, [R/workflow.R](R/workflow.R), runs each script in its own environment. Analysis stages live in `R/stages/`; shared settings and functions live in `R/helpers/`. Active input, cache, and result paths are preserved. Raw inputs and native caches are local research materials; a Git checkout contains the review, previews, curated summaries, linked PDFs, and provenance documents. Running the analysis requires those local inputs and the R packages used by the scripts (the validated chronology used R 4.6.1 and rbacon 3.5.2; fire processing uses tapas 0.1.5 and CharAnalysis 2.0.3).
+| Folder | Contents |
+|---|---|
+| `R/pipeline/` | The analysis, numbered in run order (01–15); writes `output/` only |
+| `R/figures/` | Main and supplementary figures, drawn from `output/` |
+| `R/worked_examples.R` | Step-by-step method illustrations |
+| `R/tests/` | Scientific regression checks, run last by `R/run_all.R` |
+| `R/helpers/` | Shared functions; `paths.R` declares every output file |
+| `report/` | The report, its figures, tables and detail pages |
+| `data/`, `Cores/`, `output/` | Raw data, Bacon runs and outputs (local, not in git) |
 
-Read the **[analysis review](docs/ANALYSIS_REVIEW.md)** or its [self-contained HTML](docs/ANALYSIS_REVIEW.html) for the scientific narrative, intermediate diagnostics, and manuscript Figures 2–4. The [documentation index](docs/INDEX.md) connects all maintained methods and provenance. The [workflow](docs/WORKFLOW.md) gives execution order and commands, and [scientific decisions](docs/SCIENTIFIC_DECISIONS.md) records rationale and unresolved questions.
-
-The [repository inventory](docs/REPOSITORY_INVENTORY.md) explains current file roles and authoritative inputs; the [output inventory](docs/OUTPUTS.md) describes result tables. Main figures remain PDF/PNG pairs in `plot/`; diagnostics remain PDF-only in `plot/test_figures/`. Retired scripts are preserved in Git history. The [combined analysis script](docs/review/00_main_analysis_review.R) is a generated reading copy; execute the workflow driver for a real run.
-
-Tracking uses individual lakes and paired modern plots, with compact 23/21-column model inputs, separate chronology uncertainty and detailed calculation records. See the [canonical datasets and schemas](docs/OUTPUTS.md#canonical-tracking-schemas). Historical tracking and target-direction figures are preserved in Git.
+[Outputs and workflow](report/details/11_outputs_and_workflow.md) lists every script and every
+output file. Software: R with rbacon 3.5.2, tapas 0.1.5 and CharAnalysis 2.0.3, plus `pdftoppm`
+(poppler) for the report.

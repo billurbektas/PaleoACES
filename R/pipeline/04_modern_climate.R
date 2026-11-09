@@ -163,7 +163,7 @@ pr_past = coverage %>% filter(period == "past", variable == "pr")
 if (nrow(pr_past) && pr_past$n_years < length(WINDOWS$past))
   cat("\n⚠ MORA legacy PRECIPITATION covers ", pr_past$n_years, " of ",
       length(WINDOWS$past), " window years (", pr_past$years,
-      "). No V2.1 precipitation exists before 1979; see data/SOURCES_SURVEY_YEARS.md.\n",
+      "). No V2.1 precipitation exists before 1979; see report/details/01_vegetation_survey_years.md.\n",
       sep = "")
 
 # If the historical daily option is restored, be explicit that alignment removes

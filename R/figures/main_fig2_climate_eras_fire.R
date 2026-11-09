@@ -394,7 +394,6 @@ p_levels = climate_panel(
     legend.margin = margin(0, 0, 0, 0))
 figure_levels = p_levels / p_fire + plot_layout(heights = c(4.5, 1.45))
 if (render_figures) {
-  dir.create(fig("main", "test_figures"), showWarnings = FALSE)
   ggsave(fig("supplementary", "fig_standardized_climate_levels_eras_fire.pdf"),
     figure_levels, width = 12.5, height = 9.5)
 }

@@ -1,0 +1,44 @@
+Script,Role,What it does,Lines
+R/pipeline/01_clean_mora_vegetation.R,pipeline,Clean MORA occurrence data (past 1978 survey + present resurvey) ----,546
+R/pipeline/02_clean_noca_vegetation.R,pipeline,Get overstory ----,827
+R/pipeline/03_modern_fire.R,pipeline,Anthropocene fire assignments for MORA and NOCA ----------------------------,318
+R/pipeline/04_modern_climate.R,pipeline,Modern climate: CHELSA V2.1 survey-window climate for every paired plot.,368
+R/pipeline/05_age_depth_models.R,pipeline,Age-depth models: the four Bacon chronologies (Appendix S1).,503
+R/pipeline/06_paleo_samples.R,pipeline,"Paleo samples: original macrofossil sample identities, presences and the",33
+R/pipeline/07_paleo_climate.R,pipeline,"Paleo climate: CHELSA-TraCE21k monthly climate at each lake and century,",344
+R/pipeline/08_fire_records.R,pipeline,Fire records (Appendix S2): tapas event detection for the three MORA charcoal,406
+R/pipeline/09_species_occurrences.R,pipeline,09_species_occurrences.R,626
+R/pipeline/10_cca.R,pipeline,10_cca.R - the pooled CCA and everything derived from it. NO FIGURES.,632
+R/pipeline/11_climate_eras_high_fire.R,pipeline,11_climate_eras_high_fire.R,143
+R/pipeline/12_tracking.R,pipeline,"Tracking: native-century Holocene reconstruction, tracking metrics for both",86
+R/pipeline/13_era_models.R,pipeline,"Era models: Holocene vs Anthropocene GLS for each response, residual",196
+R/pipeline/14_predictor_models.R,pipeline,Primary explanatory GLS.,35
+R/pipeline/15_contributions.R,pipeline,Contributions: species rates and seasonal climate contributions to each CCA,91
+R/figures/supp_age_depth_models.R,figure,Figures S5 (four Bacon age-depth models) and S6 (Panther Potholes 210Pb,109
+R/figures/supp_cca_scaling.R,figure,supp_cca_scaling.R - one CCA drawn at scaling 1 and scaling 2,108
+R/figures/supp_climate_correlations.R,figure,supp_climate_correlations.R,626
+R/figures/supp_climate_windows.R,figure,Compare the actual plot-specific survey windows with V2.1 1979-2021.,174
+R/figures/supp_sample_selection.R,figure,"Show which plots and core samples reach CCA, starting with the supplied data.",333
+R/figures/supp_species_through_time.R,figure,"supp_species_through_time.R  -  STEP 4, the species half",199
+R/figures/supp_tracking_transitions.R,figure,"Descriptive lake-level tracking displays: actual transition rates, ratios and",177
+R/figures/main_fig2_climate_eras_fire.R,figure,main_fig2_climate_eras_fire.R,517
+R/figures/main_fig3_cca_trajectories.R,figure,"Figure 3: A, species/climate biplot; B, observed and predicted trajectories.",359
+R/figures/main_fig4_era_contrasts.R,figure,Manuscript Figure 4 and separate corrected-lag contrasts at primary reconstruction.,188
+R/figures/main_fig5_predictor_effects.R,figure,"Figure 5: site, climate and fire effects on lag-change rates by era, plus the",71
+R/worked_examples.R,worked examples,"Worked examples: step-by-step illustrations of four methods, drawn from the",651
+R/tests/test_bacon_provenance.R,test,The stored Bacon chronologies are exactly what the current age-model script and,32
+R/tests/test_cca_tracking_metrics.R,test,Independent geometry and integration checks for the canonical tracking data.,38
+R/tests/test_cca_trajectory_figure.R,test,Offline gate for the selected publication CCA trajectory architecture.,94
+R/tests/test_cca_transition_contributions.R,test,"Independent primary contribution gate: original sample weights, CCA scaling,",94
+R/tests/test_century_tracking.R,test,"Independent native-century reconstruction, geometry and contribution checks.",92
+R/tests/test_check_vegetation.R,test,Standalone integrity checks for cleaned MORA and NOCA vegetation outputs.,31
+R/tests/test_chronology_tables.R,test,Supplementary Tables S1.1 and S1.2 must match what Bacon actually ran with.,49
+R/tests/test_holocene_climate_fire_eras.R,test,"Offline gate for the unified, literature-blind climate-era/fire analysis.",279
+R/tests/test_known_examples.R,test,Independent known examples and regressions from the 2026-10-06 audit.,254
+R/tests/test_NOCA_fire_assignments.R,test,Offline regression checks for Wilson-style fire assignments on PaleoACES plots.,25
+R/tests/test_NOCA_tree_corrections.R,test,Offline regression checks for the authoritative 2026 NOCA tree patch.,73
+R/tests/test_paleo_climate_age_match.R,test,"test_paleo_climate_age_match.R - does every sample have climate, at its OWN age?",152
+R/tests/test_paleo_split_validation.R,test,Semantic validation of the refactored paleo vegetation and fire stages.,88
+R/tests/test_pipeline_outputs.R,test,"Every file under output/ is declared in R/helpers/paths.R, every declared output",43
+R/tests/test_tracking_predictor_models.R,test,"Independent GLS algebra, selection, predictions and chronology-result audit.",169
+R/tests/test_walsh_fire_reproduction.R,test,Offline gate for the official Walsh source-method reproduction.,91

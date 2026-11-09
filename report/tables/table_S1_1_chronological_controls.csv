@@ -1,0 +1,41 @@
+Site,Core,Chronological control,Depth (cm),Age entered ± error,Bacon treatment,Age source,Uncertainty source
+MORA,Jay Bath,Core surface,0,−31.5 ± 10 cal yr BP,cc = 0,"Coring date, 1981–1982",Assumed ±10 yr to account for uncertainty in recovery of the sediment–water interface
+MORA,Jay Bath,MSH-W tephra,22,470 ± 10 cal yr BP,cc = 0,Yamaguchi 1983; Walsh et al. 2017,Assumed ±10 yr around the tree-ring-dated eruption age; no published statistical age error
+MORA,Jay Bath,QL-1729,39.5,1320 ± 30 ¹⁴C yr BP,"cc = 1, IntCal20",Dunwiddie 1986,Published laboratory error
+MORA,Jay Bath,MR-C tephra,62,2250 ± 100 cal yr BP,cc = 0,Mullineaux 1974; Walsh et al. 2017,Assumed ±100 yr; no published statistical age error
+MORA,Jay Bath,QL-1730,70,2920 ± 60 ¹⁴C yr BP,"cc = 1, IntCal20",Dunwiddie 1986,Published laboratory error
+MORA,Jay Bath,"MSH-Y tephra, upper boundary",87,3650 ± 100 cal yr BP,cc = 0,Mullineaux 1974; Walsh et al. 2017,±100 yr derived approximately from radiocarbon dates bracketing the eruption age (bracket half-width ≈103 yr; Mullineaux 1996)
+MORA,Jay Bath,"MSH-Y tephra, lower boundary",105,3650 ± 100 cal yr BP,cc = 0,Mullineaux 1974; Walsh et al. 2017,Same uncertainty as upper boundary; both depths represent the same instantaneous tephra deposit
+MORA,Jay Bath,Beta-6332,124.5,3740 ± 80 ¹⁴C yr BP,"cc = 1, IntCal20",Dunwiddie 1986,Published laboratory error
+MORA,Jay Bath,MR-F tephra,142,5740 ± 100 cal yr BP,cc = 0,Mullineaux 1974; Walsh et al. 2017,Assumed ±100 yr; no published statistical age error
+MORA,Jay Bath,QL-1704,152.25,6050 ± 110 ¹⁴C yr BP,"cc = 1, IntCal20",Dunwiddie 1986,Published laboratory error
+MORA,Log Wallow,Core surface,0,−31.5 ± 10 cal yr BP,cc = 0,"Coring date, 1981–1982",Assumed ±10 yr to account for uncertainty in recovery of the sediment–water interface
+MORA,Log Wallow,MSH-W tephra,22,470 ± 10 cal yr BP,cc = 0,Yamaguchi 1983; Walsh et al. 2017,Assumed ±10 yr around the tree-ring-dated eruption age; no published statistical age error
+MORA,Log Wallow,QL-1726,29,1650 ± 80 ¹⁴C yr BP,"cc = 1, IntCal20",Dunwiddie 1986,Published laboratory error
+MORA,Log Wallow,"MSH-Y tephra, upper boundary",40,3650 ± 100 cal yr BP,cc = 0,Mullineaux 1974; Walsh et al. 2017,±100 yr derived approximately from radiocarbon dates bracketing the eruption age (bracket half-width ≈103 yr; Mullineaux 1996)
+MORA,Log Wallow,"MSH-Y tephra, lower boundary",98,3650 ± 100 cal yr BP,cc = 0,Mullineaux 1974; Walsh et al. 2017,Same uncertainty as upper boundary; both depths represent the same instantaneous tephra deposit
+MORA,Log Wallow,MR-F tephra,116,5740 ± 100 cal yr BP,cc = 0,Mullineaux 1974; Walsh et al. 2017,Assumed ±100 yr; no published statistical age error
+MORA,Log Wallow,QL-1727,117,4900 ± 80 ¹⁴C yr BP,"cc = 1, IntCal20",Dunwiddie 1986,Published laboratory error
+MORA,Log Wallow,QL-1728,140,5980 ± 60 ¹⁴C yr BP,"cc = 1, IntCal20",Dunwiddie 1986,Published laboratory error
+MORA,Reflection Pond,Core surface,0,−31.5 ± 10 cal yr BP,cc = 0,"Coring date, 1981–1982",Assumed ±10 yr to account for uncertainty in recovery of the sediment–water interface
+MORA,Reflection Pond,MSH-W tephra,10,470 ± 10 cal yr BP,cc = 0,Yamaguchi 1983; Walsh et al. 2017,Assumed ±10 yr around the tree-ring-dated eruption age; no published statistical age error
+MORA,Reflection Pond,MR-C tephra,26,2250 ± 100 cal yr BP,cc = 0,Mullineaux 1974; Walsh et al. 2017,Assumed ±100 yr; no published statistical age error
+MORA,Reflection Pond,"MSH-Y tephra, upper boundary",45,3650 ± 100 cal yr BP,cc = 0,Mullineaux 1974; Walsh et al. 2017,±100 yr derived approximately from radiocarbon dates bracketing the eruption age (bracket half-width ≈103 yr; Mullineaux 1996)
+MORA,Reflection Pond,"MSH-Y tephra, lower boundary",64,3650 ± 100 cal yr BP,cc = 0,Mullineaux 1974; Walsh et al. 2017,Same uncertainty as upper boundary; both depths represent the same instantaneous tephra deposit
+MORA,Reflection Pond,MR-F tephra,82,5740 ± 100 cal yr BP,cc = 0,Mullineaux 1974; Walsh et al. 2017,Assumed ±100 yr; no published statistical age error
+MORA,Reflection Pond,"Basal sediment, mean of QL-1704 and QL-1728",90,6015 ± 110 ¹⁴C yr BP,"cc = 1, IntCal20","Dunwiddie 1986; P. Dunwiddie, pers. comm.","Larger of the two laboratory errors (±110 yr), allowing for transfer of the Jay Bath and Log Wallow basal age to Reflection Pond"
+NOCA,Panther Potholes,Core surface,0.5,−49 ± 1 cal yr BP,cc = 0,Gavin 2021 Neotoma chronology; coring year 1999,±1 yr retained from the archived Gavin chronology
+NOCA,Panther Potholes,²¹⁰Pb CRS age,7,−36.7; error entered = 3.47,cc = 0,Prichard et al. 2009; Gavin 2021,"Inherited Gavin value; 3.47 is numerically the published ²¹⁰Pb activity uncertainty in DPM g⁻¹, not a verified age error in years"
+NOCA,Panther Potholes,²¹⁰Pb CRS age,14,−9; error entered = 1.15,cc = 0,Prichard et al. 2009; Gavin 2021,"Inherited Gavin value; 1.15 is numerically the published ²¹⁰Pb activity uncertainty in DPM g⁻¹, not a verified age error in years"
+NOCA,Panther Potholes,²¹⁰Pb CRS age,21,12; error entered = 0.72,cc = 0,Prichard et al. 2009; Gavin 2021,"Inherited Gavin value; 0.72 is numerically the published ²¹⁰Pb activity uncertainty in DPM g⁻¹, not a verified age error in years"
+NOCA,Panther Potholes,²¹⁰Pb CRS age,28,21; error entered = 0.74,cc = 0,Prichard et al. 2009; Gavin 2021,"Inherited Gavin value; 0.74 is numerically the published ²¹⁰Pb activity uncertainty in DPM g⁻¹, not a verified age error in years"
+NOCA,Panther Potholes,²¹⁰Pb CRS age,35,36; error entered = 0.77,cc = 0,Prichard et al. 2009; Gavin 2021,"Inherited Gavin value; 0.77 is numerically the published ²¹⁰Pb activity uncertainty in DPM g⁻¹, not a verified age error in years"
+NOCA,Panther Potholes,"Beta-172005, conifer seed",214,1950 ± 50 ¹⁴C yr BP,"cc = 1, IntCal20",Prichard et al. 2009,Published laboratory error
+NOCA,Panther Potholes,MSH-P tephra,305.5,2620 ± 70 cal yr BP,cc = 0,Gavin 2021 Neotoma chronology,Age and ±70-yr uncertainty retained from the archived chronology
+NOCA,Panther Potholes,"Beta-169623, seed",363,3260 ± 40 ¹⁴C yr BP,"cc = 1, IntCal20",Prichard et al. 2009,Published laboratory error
+NOCA,Panther Potholes,"Beta-169624, pollen cone",389,3520 ± 40 ¹⁴C yr BP,"cc = 1, IntCal20",Prichard et al. 2009,Published laboratory error
+NOCA,Panther Potholes,MSH-Y tephra,401,3660 ± 65 cal yr BP,cc = 0,Gavin 2021 Neotoma chronology,Age and ±65-yr uncertainty retained from the archived chronology
+NOCA,Panther Potholes,"Beta-169207, pollen cone",479,4500 ± 40 ¹⁴C yr BP,"cc = 1, IntCal20",Prichard et al. 2009,Published laboratory error
+NOCA,Panther Potholes,Mazama tephra,629,7633 ± 25 cal yr BP,cc = 0,Gavin 2021 Neotoma chronology; Egan et al. 2015,Age and ±25-yr uncertainty retained from the archived chronology
+NOCA,Panther Potholes,"Beta-169208, seed",678,7330 ± 40 ¹⁴C yr BP,"cc = 1, IntCal20",Prichard et al. 2009,Published laboratory error
+NOCA,Panther Potholes,"Beta-169625, Pinus contorta needles",864,9370 ± 40 ¹⁴C yr BP,"cc = 1, IntCal20",Prichard et al. 2009,Published laboratory error

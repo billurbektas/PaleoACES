@@ -199,7 +199,7 @@ if (isTRUE(getOption('paleoaces.run_age_models', FALSE)) || !file.exists(manifes
   # -------------------------
   # 3b) PANTHER POTHOLES (NOCA)
   # -------------------------
-  # FULL PROVENANCE: data/NOCA/NOCA_paleo/SOURCES.md. Summary of every number below.
+  # FULL PROVENANCE: report/details/03_chronology_sources_NOCA.md. Summary of every number below.
   #
   # The site already has a published Bayesian chronology - "Gavin 2021" (Daniel G.
   # Gavin, prepared 2021-11-09), which IS a Bacon run. Its complete settings string

@@ -361,9 +361,9 @@ NOCA_study_exclusions = tribble(
   "BEAV6061", "historic plot location uncertain; resurvey is an avalanche chute",
               "notes_from_Rachel/Missing trees.rtf",
   "CARI449", "GPS problem; shared coordinates conflict with elevations; no verified correction",
-              "data/NOCA/Correspondance_Kavya&Rachel_September2024.pdf (page 2); docs/review/NOCA_GPS_EXCLUSION.md",
+              "data/NOCA/Correspondance_Kavya&Rachel_September2024.pdf (page 2); report/details/01_vegetation_noca_gps_exclusion.md",
   "CARI450", "GPS problem; shared coordinates conflict with elevations; no verified correction",
-              "data/NOCA/Correspondance_Kavya&Rachel_September2024.pdf (page 2); docs/review/NOCA_GPS_EXCLUSION.md"
+              "data/NOCA/Correspondance_Kavya&Rachel_September2024.pdf (page 2); report/details/01_vegetation_noca_gps_exclusion.md"
 )
 study_exclusion_ids = intersect(plots_to_keep, NOCA_study_exclusions$plot_id)
 if (!setequal(study_exclusion_ids, NOCA_study_exclusions$plot_id)) {

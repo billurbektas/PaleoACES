@@ -1,5 +1,0 @@
-site,lake,n_occupied_centuries,n_transitions,n_gaps_over_100,duration_min,duration_median,duration_max,n_fire_coverage_losses
-MORA,JayBath,44,43,15,100,100,400,0
-MORA,LogWallow,35,34,15,100,100,600,0
-MORA,ReflectionPond,28,27,20,100,200,600,0
-NOCA,PantherPotholes,108,107,0,100,100,100,1

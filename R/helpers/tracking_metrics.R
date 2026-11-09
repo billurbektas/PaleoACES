@@ -85,6 +85,7 @@ calculate_tracking_metrics = function(x, epsilon = TRACKING_EPSILON) {
   if (any(!is.finite(x$vegetation_dt_years) | x$vegetation_dt_years <= 0) ||
       any(!is.finite(x$climate_dt_years) | x$climate_dt_years <= 0))
     stop("Elapsed times must be finite and positive")
+# report-snippet: tracking-geometry
   ox = x$o1_2-x$o1; oy = x$o2_2-x$o2
   px = x$p1_2-x$p1; py = x$p2_2-x$p2
   a = sqrt(ox^2+oy^2); b = sqrt(px^2+py^2)
@@ -111,8 +112,10 @@ calculate_tracking_metrics = function(x, epsilon = TRACKING_EPSILON) {
   x$lag_t2 = sqrt((x$o1_2-x$p1_2)^2+(x$o2_2-x$p2_2)^2)
   x$change_in_lag = x$lag_t2-x$lag_t1
   x$lag_rate_per_century = x$change_in_lag/x$climate_dt_years*100
+# end-snippet: tracking-geometry
 
   # Only divide by a direction's magnitude when that direction is defined.
+# report-snippet: tracking-corrections
   x$pace_corrected_CCA1 = x$pace_corrected_CCA2 = rep(NA_real_, nrow(x))
   x$direction_corrected_CCA1 = x$direction_corrected_CCA2 = rep(NA_real_, nrow(x))
   i = observed_direction
@@ -129,6 +132,7 @@ calculate_tracking_metrics = function(x, epsilon = TRACKING_EPSILON) {
   x$direction_effect_on_lag = x$lag_t2-x$lag_t2_direction_corrected
   x$pace_effect_on_lag_per_century = x$pace_effect_on_lag/x$climate_dt_years*100
   x$direction_effect_on_lag_per_century = x$direction_effect_on_lag/x$climate_dt_years*100
+# end-snippet: tracking-corrections
   x
 }
 
