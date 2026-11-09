@@ -50,7 +50,7 @@ sampled century. Each row below is filled when its step is finished.
 |----|----|----|
 | Step 0 | Climate variables and CCA refit | MSpT + SP: VIF 1.08, adjusted R² 0.126 (all four 0.148), no lake-century outside the calibration climate, display rotation -23.4° |
 | Step 1 | Climate periods and lake-periods | 10 periods from 9600 to 1300 cal BP (5 C, 5 S), none split |
-| Steps 2 to 4 | Mismatch, lag, turnover, pace, direction, climate change rate and fire per lake-period | (pending) |
+| Steps 2 to 4 | Mismatch, lag, turnover, pace, direction, climate change rate and fire per lake-period | 24 lake-periods (MORA 14, NOCA 10, 12 C, 12 S), 200 to 2600 years long |
 | Step 5 | Holocene explanatory models | (pending) |
 | Step 5a | Holocene against Anthropocene (era models) | (pending) |
 | Step 6 | Species contributions | (pending) |
@@ -232,6 +232,152 @@ Stages and helpers:
 [`R/pipeline/12_tracking.R`](R/pipeline/12_tracking.R),
 [`R/helpers/century_tracking.R`](R/helpers/century_tracking.R),
 [`R/helpers/tracking_metrics.R`](R/helpers/tracking_metrics.R).
+
+## Lake-periods
+
+**What and why.** Two scoops of sediment from the same forest in the
+same century differ by about as much as the forest drifts in many
+centuries, because one needle caught or missed moves a sample’s
+position. A lag computed between consecutive centuries is therefore
+mostly that noise. Comparing the two ends of a whole climate period lets
+the drift outgrow it. A lake-period is one lake within one climate
+period. Its start (t1) is the oldest and its end (t2) the youngest
+sampled century of that lake in that period, and a lake needs samples in
+at least two centuries of a period to have a lake-period there. The
+centuries in between enter no model.
+
+At each end the mismatch M is the distance between the observed and the
+climate-predicted positions. The lag rate is the change in M per
+century. The turnover rate is the length of the observed movement per
+century. The pace and direction effects ask how much smaller the final
+mismatch would have been if the community had moved the predicted
+distance in its own direction (pace) or its own distance in the
+predicted direction (direction). The climate change rate is the
+standardized end-to-end change of MSpT and SP in the lake’s own climate
+cell, per century. Fire activity is the number of accepted fire events
+between t1 and t2, per century and per charcoal core, averaged over the
+cores of the park that cover the whole lake-period.
+
+**Decisions.**
+
+- 9 Nov 2026 (Bills, `PLAN.md` rows 1, 2, 5 and 10): one lake in one
+  climate period, from the first to the last sampled century, the
+  two-century rule, one century per end, the end-to-end climate change
+  of the lake’s own climate.
+- 9 Nov 2026 (Bills, `PLAN.md` rows 6 and 24): all responses for C and S
+  lake-periods alike, fire per park in events per century per covered
+  core, not rescaled within park.
+- 9 Nov 2026 (taken in the run): the epsilon rule removes pace and
+  direction where either the observed or the predicted position did not
+  move, in both eras.
+- 9 Nov 2026 (taken in the run): an Anthropocene plot is a series of one
+  unit with `endpoint_var = 2` and `duration_yr` equal to the time
+  between the midpoints of its two climate windows.
+
+**Model code.** The geometry is the existing one of the tracking step,
+applied once per lake-period.
+
+``` r
+# R/helpers/tracking_metrics.R
+  ox = x$o1_2-x$o1; oy = x$o2_2-x$o2
+  px = x$p1_2-x$p1; py = x$p2_2-x$p2
+  a = sqrt(ox^2+oy^2); b = sqrt(px^2+py^2)
+  x$finite_endpoints = rowSums(!is.finite(as.matrix(x[coords]))) == 0L
+  x$small_observed_movement = is.finite(a) & a <= epsilon
+  x$small_predicted_movement = is.finite(b) & b <= epsilon
+  observed_direction = x$finite_endpoints & is.finite(a) & a > epsilon
+  predicted_direction = x$finite_endpoints & is.finite(b) & b > epsilon
+  x$angle_valid = observed_direction & predicted_direction
+  x$pace_counterfactual_valid = observed_direction
+  x$direction_counterfactual_valid = predicted_direction
+  x$tracking_ratio_valid = predicted_direction
+  x$delta_observed_CCA1 = ox; x$delta_observed_CCA2 = oy
+  x$delta_predicted_CCA1 = px; x$delta_predicted_CCA2 = py
+  x$observed_vegetation_displacement = a
+  x$predicted_vegetation_displacement = b
+  x$observed_turnover_rate = a/x$vegetation_dt_years*100
+  x$predicted_vegetation_change_rate = b/x$climate_dt_years*100
+  x$magnitude_tracking_ratio = ifelse(predicted_direction, a/b, NA_real_)
+  x$rate_tracking_ratio = ifelse(predicted_direction,
+    x$observed_turnover_rate/x$predicted_vegetation_change_rate, NA_real_)
+  x$angle_degrees = acos(safe_cosine_2d(ox, oy, px, py, epsilon))*180/pi
+  x$lag_t1 = sqrt((x$o1-x$p1)^2+(x$o2-x$p2)^2)
+  x$lag_t2 = sqrt((x$o1_2-x$p1_2)^2+(x$o2_2-x$p2_2)^2)
+  x$change_in_lag = x$lag_t2-x$lag_t1
+  x$lag_rate_per_century = x$change_in_lag/x$climate_dt_years*100
+```
+
+``` r
+# R/helpers/tracking_metrics.R
+  x$pace_corrected_CCA1 = x$pace_corrected_CCA2 = rep(NA_real_, nrow(x))
+  x$direction_corrected_CCA1 = x$direction_corrected_CCA2 = rep(NA_real_, nrow(x))
+  i = observed_direction
+  x$pace_corrected_CCA1[i] = x$o1[i]+b[i]*ox[i]/a[i]
+  x$pace_corrected_CCA2[i] = x$o2[i]+b[i]*oy[i]/a[i]
+  i = predicted_direction
+  x$direction_corrected_CCA1[i] = x$o1[i]+a[i]*px[i]/b[i]
+  x$direction_corrected_CCA2[i] = x$o2[i]+a[i]*py[i]/b[i]
+  x$lag_t2_pace_corrected = sqrt((x$pace_corrected_CCA1-x$p1_2)^2+
+    (x$pace_corrected_CCA2-x$p2_2)^2)
+  x$lag_t2_direction_corrected = sqrt((x$direction_corrected_CCA1-x$p1_2)^2+
+    (x$direction_corrected_CCA2-x$p2_2)^2)
+  x$pace_effect_on_lag = x$lag_t2-x$lag_t2_pace_corrected
+  x$direction_effect_on_lag = x$lag_t2-x$lag_t2_direction_corrected
+  x$pace_effect_on_lag_per_century = x$pace_effect_on_lag/x$climate_dt_years*100
+  x$direction_effect_on_lag_per_century = x$direction_effect_on_lag/x$climate_dt_years*100
+```
+
+**Result.**
+
+**Lake-periods.** Rates are per century: climate change in calibration
+SD, fire in events per covered core, the others in CCA distance. Pace
+and direction are undefined where the observed or the predicted position
+did not move.
+
+| Park | Lake | Period | t1 (cal BP) | t2 (cal BP) | Years | Samples t1 | Samples t2 | Climate change rate | MSpT change (°C) | SP change (mm) | Fire activity | M t1 | M t2 | Lag rate | Turnover rate | Pace effect | Direction effect |
+|:---|:---|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| MORA | JayBath | C3 | 6550 | 6250 | 300 | 1 | 1 | 0.119 | -0.350 | -20 | 0.222 | 0.357 | 0.455 | 0.033 | 0.092 | 0.036 | -0.004 |
+| MORA | JayBath | S3 | 5950 | 5650 | 300 | 1 | 1 | 0.013 | -0.050 | -2 | 0.111 | 0.475 | 0.269 | -0.069 | 0.073 | -0.057 | -0.132 |
+| MORA | JayBath | C4 | 5350 | 5050 | 300 | 1 | 1 | 0.021 | -0.150 | -1 | 0.111 | 0.506 | 0.491 | -0.005 | 0.000 | — | — |
+| MORA | JayBath | S4 | 4750 | 2350 | 2400 | 1 | 1 | 0.007 | -0.267 | 8 | 0.125 | 0.280 | 0.696 | 0.017 | 0.025 | 0.019 | -0.004 |
+| MORA | JayBath | C5 | 2150 | 1750 | 400 | 1 | 1 | 0.091 | 0.567 | -17 | 0.333 | 0.482 | 0.538 | 0.014 | 0.082 | -0.004 | 0.037 |
+| MORA | JayBath | S5 | 1650 | 1350 | 300 | 1 | 1 | 0.049 | -0.167 | 8 | 0.111 | 0.519 | 0.691 | 0.058 | 0.107 | 0.063 | -0.018 |
+| MORA | LogWallow | C3 | 6750 | 6250 | 500 | 1 | 1 | 0.105 | -1.133 | -14 | 0.200 | 0.404 | 0.219 | -0.037 | 0.026 | -0.004 | -0.018 |
+| MORA | LogWallow | S3 | 6150 | 5550 | 600 | 1 | 1 | 0.076 | 0.567 | 24 | 0.111 | 0.261 | 0.475 | 0.036 | 0.042 | 0.001 | 0.041 |
+| MORA | LogWallow | C4 | 5350 | 5050 | 300 | 1 | 1 | 0.019 | -0.117 | -2 | 0.111 | 0.492 | 0.303 | -0.063 | 0.075 | -0.044 | -0.127 |
+| MORA | LogWallow | S4 | 4850 | 2450 | 2400 | 1 | 1 | 0.008 | -0.367 | -6 | 0.097 | 0.551 | 0.755 | 0.008 | 0.014 | 0.009 | -0.001 |
+| MORA | ReflectionPond | S3 | 5950 | 5450 | 500 | 1 | 1 | 0.026 | 0.250 | 5 | 0.133 | 0.817 | 0.874 | 0.011 | 0.000 | — | — |
+| MORA | ReflectionPond | C4 | 5250 | 4950 | 300 | 1 | 1 | 0.013 | -0.050 | -2 | 0.222 | 0.856 | 0.603 | -0.084 | 0.102 | -0.075 | -0.148 |
+| MORA | ReflectionPond | S4 | 4750 | 2250 | 2500 | 1 | 1 | 0.005 | -0.050 | 8 | 0.120 | 0.853 | 0.905 | 0.002 | 0.033 | 0.004 | -0.018 |
+| MORA | ReflectionPond | C5 | 2050 | 1850 | 200 | 1 | 1 | 0.134 | 0.583 | 7 | 0.333 | 0.925 | 1.232 | 0.154 | 0.153 | 0.078 | 0.142 |
+| NOCA | PantherPotholes | C1 | 9550 | 8650 | 900 | 8 | 7 | 0.044 | -0.933 | -6 | 0.778 | 1.004 | 1.072 | 0.007 | 0.018 | -0.007 | 0.011 |
+| NOCA | PantherPotholes | S1 | 8550 | 8250 | 300 | 8 | 7 | 0.075 | 0.517 | 4 | 0.667 | 1.129 | 0.958 | -0.057 | 0.100 | -0.050 | -0.020 |
+| NOCA | PantherPotholes | C2 | 8150 | 7250 | 900 | 8 | 5 | 0.057 | 0.967 | 20 | 0.889 | 0.750 | 0.911 | 0.018 | 0.057 | 0.004 | 0.027 |
+| NOCA | PantherPotholes | S2 | 7150 | 6850 | 300 | 5 | 6 | 0.039 | 0.283 | 0 | 0.667 | 0.784 | 1.021 | 0.079 | 0.074 | 0.043 | 0.117 |
+| NOCA | PantherPotholes | C3 | 6750 | 6250 | 500 | 6 | 6 | 0.095 | -1.100 | -8 | 0.600 | 1.109 | 0.732 | -0.075 | 0.065 | -0.006 | -0.083 |
+| NOCA | PantherPotholes | S3 | 6150 | 5450 | 700 | 6 | 5 | 0.033 | 0.533 | 4 | 0.429 | 0.836 | 0.481 | -0.051 | 0.062 | -0.043 | -0.033 |
+| NOCA | PantherPotholes | C4 | 5350 | 4950 | 400 | 6 | 5 | 0.013 | 0.117 | -1 | 0.500 | 0.577 | 0.569 | -0.002 | 0.194 | 0.004 | -0.119 |
+| NOCA | PantherPotholes | S4 | 4850 | 2250 | 2600 | 6 | 10 | 0.014 | -0.783 | -9 | 0.500 | 0.319 | 0.161 | -0.006 | 0.005 | 0.003 | -0.005 |
+| NOCA | PantherPotholes | C5 | 2150 | 1750 | 400 | 11 | 8 | 0.087 | 0.633 | -14 | 0.750 | 0.241 | 0.260 | 0.005 | 0.129 | 0.043 | -0.052 |
+| NOCA | PantherPotholes | S5 | 1650 | 1350 | 300 | 10 | 9 | 0.043 | -0.017 | 8 | 0.333 | 0.271 | 0.614 | 0.114 | 0.202 | 0.132 | -0.066 |
+
+<sub>Table file:
+[step24_lake_periods.csv](report/tables/step24_lake_periods.csv)</sub>
+
+Of the 30 lake and period combinations with at least one sampled
+century, 24 have samples in two or more centuries and become
+lake-periods (MORA 14, NOCA 10, 12 in climate-change and 12 in stability
+periods). They span 200 to 2600 years. Every MORA end rests on a single
+sample, and 2 MORA lake-periods have no defined direction because the
+observed or predicted position did not move. All lake-periods have fire
+coverage.
+
+Stages and helpers:
+[`R/pipeline/12_tracking.R`](R/pipeline/12_tracking.R),
+[`R/helpers/lake_periods.R`](R/helpers/lake_periods.R),
+[`R/helpers/tracking_metrics.R`](R/helpers/tracking_metrics.R),
+[`R/helpers/century_tracking.R`](R/helpers/century_tracking.R) (fire per
+interval), [`R/tests/test_lake_periods.R`](R/tests/test_lake_periods.R).
 
 # Figure 1. Conceptual framework
 

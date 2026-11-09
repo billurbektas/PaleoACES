@@ -68,6 +68,20 @@ for(name in names(tables)) write_csv(tables[[name]],out(paste0(name,'.csv')))
 write_csv(century_schema(c(tables,list(cca_tracking_anthropocene_plot_model_input=a,
   cca_tracking_anthropocene_plot_calculations=ac))),out('cca_tracking_schema.csv'))
 saveRDS(primary,out('chronology_reconstruction/primary.rds'))
+
+# Lake-periods (Steps 1 to 4): one row per lake within one climate period, from
+# its oldest to its youngest sampled century, and the combined era-model input.
+source(here('R/helpers/lake_periods.R'),local=TRUE)
+periods=read_csv(out('holocene_periods.csv'),show_col_types=FALSE)
+candidates=lake_period_candidates(primary$positions,periods)
+units=build_lake_periods(primary$positions,periods,bundle$reference$climate_scaling,
+  function(intervals) century_fire(intervals,bundle))
+both_eras=build_both_eras(units,ac)
+write_csv(candidates,out('cca_tracking_lake_period_candidates.csv'))
+write_csv(units |> select(all_of(lake_period_table_columns())),out('cca_tracking_lake_periods.csv'))
+write_csv(units,out('cca_tracking_lake_period_calculations.csv'))
+write_csv(both_eras,out('cca_tracking_both_eras.csv'))
+cat('Lake-periods:',nrow(candidates),'on paper,',nrow(units),'after the two-century rule.\n')
 cat('Primary native-century tracking:',nrow(h),'actual transitions; no interpolation or offsets.\n')
 
 # =============================================================================

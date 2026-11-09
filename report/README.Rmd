@@ -59,7 +59,7 @@ is finished.
 |---|---|---|
 | Step 0 | Climate variables and CCA refit | `r sprintf('MSpT + SP: VIF %.2f, adjusted R² %.3f (all four %.3f), no lake-century outside the calibration climate, display rotation %.1f°', max(read_output("cca_screening.csv")$VIF[read_output("cca_screening.csv")$set == "MSpT + SP"]), read_output("cca_screening.csv")$adjusted_R2[read_output("cca_screening.csv")$set == "MSpT + SP"][1], read_output("cca_screening.csv")$adjusted_R2[1], read_output("cca_display_rotation.csv")$angle_degrees)` |
 | Step 1 | Climate periods and lake-periods | `r p = read_output('holocene_periods.csv'); sprintf('%d periods from %d to %d cal BP (%d C, %d S), none split', nrow(p), max(p$older_cal_bp), min(p$younger_cal_bp), sum(p$period_type == "Holocene-C"), sum(p$period_type == "Holocene-S"))` |
-| Steps 2 to 4 | Mismatch, lag, turnover, pace, direction, climate change rate and fire per lake-period | (pending) |
+| Steps 2 to 4 | Mismatch, lag, turnover, pace, direction, climate change rate and fire per lake-period | `r u = read_output('cca_tracking_lake_periods.csv'); sprintf('%d lake-periods (MORA %d, NOCA %d, %d C, %d S), %d to %d years long', nrow(u), sum(u$site == "MORA"), sum(u$site == "NOCA"), sum(u$period_type == "Holocene-C"), sum(u$period_type == "Holocene-S"), min(u$duration_yr), max(u$duration_yr))` |
 | Step 5 | Holocene explanatory models | (pending) |
 | Step 5a | Holocene against Anthropocene (era models) | (pending) |
 | Step 6 | Species contributions | (pending) |
@@ -202,6 +202,76 @@ Panther Potholes (NOCA) covers the whole Holocene with several samples per centu
 Stages and helpers: [`R/pipeline/12_tracking.R`](R/pipeline/12_tracking.R),
 [`R/helpers/century_tracking.R`](R/helpers/century_tracking.R),
 [`R/helpers/tracking_metrics.R`](R/helpers/tracking_metrics.R).
+
+## Lake-periods
+
+**What and why.** Two scoops of sediment from the same forest in the same century differ by
+about as much as the forest drifts in many centuries, because one needle caught or missed moves a
+sample's position. A lag computed between consecutive centuries is therefore mostly that noise.
+Comparing the two ends of a whole climate period lets the drift outgrow it. A lake-period is one
+lake within one climate period. Its start (t1) is the oldest and its end (t2) the youngest
+sampled century of that lake in that period, and a lake needs samples in at least two centuries
+of a period to have a lake-period there. The centuries in between enter no model.
+
+At each end the mismatch M is the distance between the observed and the climate-predicted
+positions. The lag rate is the change in M per century. The turnover rate is the length of the
+observed movement per century. The pace and direction effects ask how much smaller the final
+mismatch would have been if the community had moved the predicted distance in its own direction
+(pace) or its own distance in the predicted direction (direction). The climate change rate is the
+standardized end-to-end change of MSpT and SP in the lake's own climate cell, per century. Fire
+activity is the number of accepted fire events between t1 and t2, per century and per charcoal
+core, averaged over the cores of the park that cover the whole lake-period.
+
+**Decisions.**
+
+- 9 Nov 2026 (Bills, `PLAN.md` rows 1, 2, 5 and 10): one lake in one climate period, from the
+  first to the last sampled century, the two-century rule, one century per end, the end-to-end
+  climate change of the lake's own climate.
+- 9 Nov 2026 (Bills, `PLAN.md` rows 6 and 24): all responses for C and S lake-periods alike, fire
+  per park in events per century per covered core, not rescaled within park.
+- 9 Nov 2026 (taken in the run): the epsilon rule removes pace and direction where either the
+  observed or the predicted position did not move, in both eras.
+- 9 Nov 2026 (taken in the run): an Anthropocene plot is a series of one unit with
+  `endpoint_var = 2` and `duration_yr` equal to the time between the midpoints of its two climate
+  windows.
+
+**Model code.** The geometry is the existing one of the tracking step, applied once per
+lake-period.
+
+```{r step24-code}
+code_snippet('R/helpers/tracking_metrics.R', 'tracking-geometry')
+code_snippet('R/helpers/tracking_metrics.R', 'tracking-corrections')
+```
+
+**Result.**
+
+```{r step24-units}
+candidates = read_output('cca_tracking_lake_period_candidates.csv')
+units = read_output('cca_tracking_lake_periods.csv')
+units |> transmute(Park = site, Lake = lake, Period = period, `t1 (cal BP)` = age_start,
+    `t2 (cal BP)` = age_end, `Years` = duration_yr, `Samples t1` = n_start, `Samples t2` = n_end,
+    `Climate change rate` = climate_rate, `MSpT change (°C)` = MSpT_change, `SP change (mm)` = SP_change,
+    `Fire activity` = fire_activity, `M t1` = M_start, `M t2` = M_end, `Lag rate` = lag_rate,
+    `Turnover rate` = turnover_rate, `Pace effect` = pace_effect, `Direction effect` = direction_effect) |>
+  show_table('step24_lake_periods', caption = paste('**Lake-periods.** Rates are per century: climate',
+    'change in calibration SD, fire in events per covered core, the others in CCA distance.',
+    'Pace and direction are undefined where the observed or the predicted position did not move.'))
+```
+
+Of the `r nrow(candidates)` lake and period combinations with at least one sampled century,
+`r nrow(units)` have samples in two or more centuries and become lake-periods
+(MORA `r sum(units$site == 'MORA')`, NOCA `r sum(units$site == 'NOCA')`,
+`r sum(units$period_type == 'Holocene-C')` in climate-change and
+`r sum(units$period_type == 'Holocene-S')` in stability periods). They span
+`r min(units$duration_yr)` to `r max(units$duration_yr)` years. Every MORA end rests on a
+single sample, and `r sum(!units$direction_defined & units$site == 'MORA')` MORA lake-periods have no defined direction
+because the observed or predicted position did not move. All lake-periods have fire coverage.
+
+Stages and helpers: [`R/pipeline/12_tracking.R`](R/pipeline/12_tracking.R),
+[`R/helpers/lake_periods.R`](R/helpers/lake_periods.R),
+[`R/helpers/tracking_metrics.R`](R/helpers/tracking_metrics.R),
+[`R/helpers/century_tracking.R`](R/helpers/century_tracking.R) (fire per interval),
+[`R/tests/test_lake_periods.R`](R/tests/test_lake_periods.R).
 
 # Figure 1. Conceptual framework
 
