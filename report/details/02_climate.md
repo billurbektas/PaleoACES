@@ -136,7 +136,7 @@ Fig. S4.
 <sub>Table file:
 [climate_change_by_variable.csv](../tables/climate_change_by_variable.csv)</sub>
 
-<img src="../figures/png/fig_standardized_climate_levels_four_variables.png" alt="" width="1375" />
+<img src="../figures/png/fig_standardized_climate_levels_four_variables.png" alt="" width="1650" />
 
 **Standardized climate levels** (rather than standardized change) with
 the climate eras and high-fire periods of Figure 2.

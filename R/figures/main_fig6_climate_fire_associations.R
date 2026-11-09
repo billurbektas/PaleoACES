@@ -31,7 +31,7 @@ panel = function(era_name, terms, tag) {
   ggplot(d, aes(estimate, y, color = response)) +
     geom_vline(xintercept = 0, color = 'grey55', linetype = 'dashed', linewidth = .6) +
     geom_errorbar(aes(xmin = conf_low, xmax = conf_high, alpha = faded), orientation = 'y', width = .12, linewidth = 1.3) +
-    geom_point(aes(alpha = faded), size = 3.8) +
+    geom_point(aes(alpha = faded), size = 5) +
     scale_y_continuous(breaks = seq_along(terms), labels = unname(term_labels[rev(terms)]),
       limits = c(.5, length(terms) + .5), expand = expansion(0)) +
     scale_color_manual(values = response_colors, labels = responses, name = NULL,
@@ -40,12 +40,12 @@ panel = function(era_name, terms, tag) {
     coord_cartesian(xlim = x_limits) +
     labs(tag = tag, title = era_name, x = 'Effect on response\n(CCA distance per century)', y = NULL,
       caption = paste0('Descriptive R²: ', paste(sprintf('%s %.3f', tolower(responses[r2$response]), r2$R2), collapse = ', '), '.')) +
-    theme_paleoaces(base_size = 20) +
-    theme(plot.title = element_text(size = 25, face = 'bold'), plot.tag = element_text(size = 27, face = 'bold'),
-      axis.text.y = element_text(size = 19, color = 'grey15', lineheight = .9), axis.text.x = element_text(size = 18),
-      axis.title.x = element_text(size = 19), panel.grid.minor = element_blank(), panel.grid.major.y = element_blank(),
-      legend.position = 'bottom', legend.text = element_text(size = 19),
-      plot.caption = element_text(size = 16, hjust = 0), plot.caption.position = 'plot')
+    theme_paleoaces(base_size = 25) +
+    theme(plot.title = element_text(size = 30, face = 'bold'), plot.tag = element_text(size = 32, face = 'bold'),
+      axis.text.y = element_text(size = 25, color = 'grey15', lineheight = .9), axis.text.x = element_text(size = 23),
+      axis.title.x = element_text(size = 25), panel.grid.minor = element_blank(), panel.grid.major.y = element_blank(),
+      legend.position = 'bottom', legend.text = element_text(size = 25),
+      plot.caption = element_text(size = 21, hjust = 0), plot.caption.position = 'plot')
 }
 figure = (panel('Holocene', c('siteNOCA', 'climate_rate', 'fire_activity'), 'A.') |
   panel('Anthropocene', c('siteNOCA', 'burnedBurned'), 'B.')) + plot_layout(guides = 'collect') &

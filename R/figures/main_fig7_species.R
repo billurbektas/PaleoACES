@@ -35,22 +35,22 @@ drawn = drawn |> mutate(y = as.integer(species) + nudge[as.character(period_type
 figure = ggplot(drawn, aes(estimate, y)) +
   geom_vline(xintercept = 0, color = 'grey60', linetype = 'dashed') +
   geom_errorbar(aes(xmin = conf_low, xmax = conf_high, color = site, alpha = spans_zero), orientation = 'y', width = .15, na.rm = TRUE) +
-  geom_point(aes(shape = period_type, fill = site, alpha = spans_zero), size = 2.4, color = 'grey15') +
+  geom_point(aes(shape = period_type, fill = site, alpha = spans_zero), size = 3.4, color = 'grey15') +
   geom_text(data = absent, aes(x = 0, y = as.integer(species) + .11, label = 'absent from Holocene record'),
-    size = 2.4, color = 'grey45', hjust = .5) +
+    size = 4, color = 'grey45', hjust = .5) +
   facet_grid(measure_label ~ site, scales = 'free_x', switch = 'y') +
   scale_y_reverse(breaks = seq_along(order_species), labels = order_species, expand = expansion(add = .6)) +
   scale_shape_manual(values = PERIOD_TYPE_SHAPES[c('Holocene-S', 'Holocene-C', 'Anthropocene')], name = NULL,
     labels = c('Holocene stability periods', 'Holocene climate-change periods', 'Anthropocene')) +
   scale_fill_manual(values = PAPER_SITE_COLORS, guide = 'none') + scale_color_manual(values = PAPER_SITE_COLORS, guide = 'none') +
   scale_alpha_manual(values = c(`FALSE` = 1, `TRUE` = .3), guide = 'none') +
-  guides(shape = guide_legend(override.aes = list(fill = 'grey60'))) +
+  guides(shape = guide_legend(override.aes = list(fill = 'grey60', size = 5))) +
   labs(x = 'Contribution (CCA distance per century)', y = NULL) +
-  theme_paleoaces(base_size = 11) +
+  theme_paleoaces(base_size = 18) +
   theme(axis.text.y = element_text(face = 'italic'), strip.placement = 'outside', legend.position = 'bottom',
     strip.text.y.left = element_text(angle = 90))
 if (render_figures) for (ext in c('pdf', 'png'))
-  ggsave(fig('main', paste0('fig_species_contributions.', ext)), figure, width = 12, height = 13, dpi = 300)
+  ggsave(fig('main', paste0('fig_species_contributions.', ext)), figure, width = 15, height = 16, dpi = 300)
 write_csv(tibble(rank = seq_along(order_species), species = order_species, rotated_axis_1 = species_scores[order_species, 1]),
   out('figures/species_order_rotated_axis_1.csv'))
 cat('Figure 7: species contributions drawn.\n')

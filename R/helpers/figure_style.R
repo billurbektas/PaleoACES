@@ -14,7 +14,7 @@ RESPONSE_AXIS_LABELS = c(climate_rate = "Standardized climate change rate per ce
 
 # Shared publication styling for the four main PaleoACES figures.
 
-PAPER_BASE_SIZE = 13
+PAPER_BASE_SIZE = 16
 PAPER_AXIS_TITLE_SIZE = 14
 PAPER_PANEL_TAG_SIZE = 15
 PAPER_LEGEND_TEXT_SIZE = 12
@@ -31,14 +31,15 @@ theme_paleoaces = function(base_size = PAPER_BASE_SIZE) {
     ggplot2::theme(
       panel.grid.minor = ggplot2::element_blank(),
       panel.grid.major = ggplot2::element_line(color = "grey90", linewidth = .35),
-      axis.title = ggplot2::element_text(size = PAPER_AXIS_TITLE_SIZE),
+      # Every text element scales with base_size, so one setting enlarges a figure.
+      axis.title = ggplot2::element_text(size = base_size + 1),
       axis.text = ggplot2::element_text(size = base_size - 1),
       strip.background = ggplot2::element_rect(fill = "grey95", color = "grey65"),
       strip.text = ggplot2::element_text(face = "bold", size = base_size),
-      plot.tag = ggplot2::element_text(face = "bold", size = PAPER_PANEL_TAG_SIZE),
+      plot.tag = ggplot2::element_text(face = "bold", size = base_size + 3),
       plot.tag.position = "topleft",
-      legend.title = ggplot2::element_text(size = PAPER_LEGEND_TITLE_SIZE),
-      legend.text = ggplot2::element_text(size = PAPER_LEGEND_TEXT_SIZE),
+      legend.title = ggplot2::element_text(size = base_size),
+      legend.text = ggplot2::element_text(size = base_size - 1),
       legend.key.height = grid::unit(.55, "cm"),
       legend.spacing.x = grid::unit(.25, "cm"),
       plot.margin = ggplot2::margin(7, 7, 7, 7)

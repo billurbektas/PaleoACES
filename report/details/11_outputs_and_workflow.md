@@ -56,8 +56,8 @@ for the report.
 | R/figures/supp_sample_selection.R | figure | Show which plots and core samples reach CCA, starting with the supplied data. | 333 |
 | R/figures/supp_species_through_time.R | figure | supp_species_through_time.R - STEP 4, the species half | 199 |
 | R/figures/supp_tracking_transitions.R | figure | Descriptive lake-level tracking displays: actual transition rates, ratios and | 177 |
-| R/figures/main_fig2_climate_eras_fire.R | figure | main_fig2_climate_eras_fire.R | 608 |
-| R/figures/main_fig3_cca_trajectories.R | figure | Figure 3: A, species and climate biplot; B, observed and predicted trajectories | 191 |
+| R/figures/main_fig2_climate_eras_fire.R | figure | main_fig2_climate_eras_fire.R | 609 |
+| R/figures/main_fig3_cca_trajectories.R | figure | Figure 3: A, species and climate biplot; B, observed and predicted trajectories | 205 |
 | R/figures/main_fig4_era_contrasts.R | figure | Figure 4 (PLAN.md section 6): era contrasts for climate change rate, turnover | 40 |
 | R/figures/main_fig5_lag_pace_direction.R | figure | Figure 5 (PLAN.md section 6): lag rate, pace effect and direction effect by | 51 |
 | R/figures/main_fig6_climate_fire_associations.R | figure | Figure 6: climate and fire associations as model slopes (Bills, 9 Nov 2026). | 58 |
@@ -153,7 +153,7 @@ the folder of the step that writes it.
 | 10_cca | cca_anova_cache.rds | Cached permutation tests, keyed on the fit | 1 |
 | 10_cca | cca_anova.csv | Permutation tests (model, axes, terms) | 0 |
 | 10_cca | cca_axes.csv | Constrained axes: eigenvalues and variance explained | 0 |
-| 10_cca | cca_calibration_reference.rds | The fitted CCA and its calibration inputs | 1972 |
+| 10_cca | cca_calibration_reference.rds | The fitted CCA and its calibration inputs | 1974 |
 | 10_cca | cca_climate_contributions.csv | Climate-variable contributions to the axes | 0 |
 | 10_cca | cca_counts.csv | Plots and samples used to fit and projected | 0 |
 | 10_cca | cca_display_rotation.csv | Display-only varimax angle, rotation matrix and axis orientation | 0 |

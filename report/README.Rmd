@@ -217,8 +217,8 @@ r2 = function(v, park) { x = rates2[rates2$variable == v & rates2$site == park, 
 
 **Figure 2. Holocene climate and fire.** (A) Standardized level of spring temperature and summer
 precipitation, the two CCA constraints, averaged over the lakes of each park with the two parks
-weighted equally. Values are anomalies from the Holocene mean of the plotted span, in units of the
-standard deviation across the `r cca_value('calibration_plots')` legacy calibration plots. Bold lines are
+weighted equally. Values are in units of the standard deviation across the
+`r cca_value('calibration_plots')` legacy calibration plots, with zero at their mean (the modern climate of the CCA). Bold lines are
 1,000-year running means and thin lines the centennial series. Shading marks the climate-change (C)
 and stability (S) periods, with the variables that drove each climate-change period written below
 its name. Labels on the bold lines give the change per century over a period, in °C or mm, for each

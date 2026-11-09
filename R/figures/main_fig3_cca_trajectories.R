@@ -57,17 +57,19 @@ traj = bind_rows(
   mutate(series = paste(site, type, sep = '_'), group = paste(site, era, type)) |> arrange(group, order)
 steps = traj |> group_by(group) |> mutate(xend = lead(x), yend = lead(y)) |> ungroup() |> filter(!is.na(xend))
 
-TEXT = 5.4  # label size in mm, matched to the larger axis text
-theme_fig3 = theme_paleoaces(base_size = 19) +
-  theme(legend.position = 'bottom', aspect.ratio = 1, axis.title = element_text(size = 19),
-    legend.text = element_text(size = 17), legend.title = element_text(size = 17),
-    plot.tag = element_text(size = 26, face = 'bold'), plot.margin = margin(12, 16, 12, 12))
-# Side labels on the axis titles: each end of an axis names the climate it leads to.
+TEXT = 7.4  # label size in mm, matched to the larger axis text
+theme_fig3 = theme_paleoaces(base_size = 26) +
+  theme(legend.position = 'bottom', aspect.ratio = 1, axis.title = element_text(size = 26),
+    axis.text = element_text(size = 23), legend.text = element_text(size = 25), legend.title = element_text(size = 24),
+    plot.tag = element_text(size = 34, face = 'bold'), plot.margin = margin(12, 16, 12, 12))
+# Side labels on the axis titles: the second line names the climate each end of
+# the axis leads to.
 rbp = rotate(bp)
-x_title = if (rbp['MSpT', 'x'] > 0) 'Colder springs  ←  Spring temperature (rotated axis 1)  →  Warmer springs' else
-  'Warmer springs  ←  Spring temperature (rotated axis 1)  →  Colder springs'
-y_title = if (rbp['SP', 'y'] > 0) 'Drier summers  ←  Summer precipitation (rotated axis 2)  →  Wetter summers' else
-  'Wetter summers  ←  Summer precipitation (rotated axis 2)  →  Drier summers'
+side_title = function(variable, low, high) paste0(variable, '\n\u2190 ', low, strrep(' ', 14), high, ' \u2192')
+x_title = if (rbp['MSpT', 'x'] > 0) side_title('Spring temperature (rotated axis 1)', 'Colder springs', 'Warmer springs') else
+  side_title('Spring temperature (rotated axis 1)', 'Warmer springs', 'Colder springs')
+y_title = if (rbp['SP', 'y'] > 0) side_title('Summer precipitation (rotated axis 2)', 'Drier summers', 'Wetter summers') else
+  side_title('Summer precipitation (rotated axis 2)', 'Wetter summers', 'Drier summers')
 square = function(xr, yr, pad = .06) {
   half = max(diff(xr), diff(yr)) / 2 * (1 + pad)
   list(x = mean(xr) + c(-half, half), y = mean(yr) + c(-half, half))
@@ -101,7 +103,7 @@ biplot = function(rotated = TRUE) {
       min.segment.length = 0, max.overlaps = Inf, max.iter = 200000, max.time = 10, seed = 11,
       xlim = lim$x, ylim = lim$y, show.legend = FALSE) +
     scale_color_gradient(low = 'grey65', high = 'grey5', na.value = 'black', name = 'Share of constrained inertia (%)',
-      guide = guide_colorbar(title.position = 'top', title.hjust = .5, barwidth = unit(7, 'cm'), barheight = unit(.45, 'cm'))) +
+      guide = guide_colorbar(title.position = 'top', title.hjust = .5, barwidth = unit(9, 'cm'), barheight = unit(.6, 'cm'))) +
     coord_cartesian(xlim = lim$x, ylim = lim$y, expand = FALSE) +
     labs(tag = if (rotated) 'A.' else NULL,
       x = if (rotated) x_title else sprintf('CCA1 (%.1f%% of total inertia)', imp[1]),
@@ -112,8 +114,7 @@ p_biplot = biplot(TRUE)
 
 # Panel B: the reduced Holocene trajectory of each park (first to last period
 # with samples) beside the Anthropocene legacy-to-resurvey movement. Panels C
-# and D: the full Holocene sequence of each park, framed and lettered like the
-# dashed box that marks its extent in B.
+# and D: the full Holocene sequence of each park, framed in the park's colour.
 cal = as_tibble(rotate(calibration))
 holocene = traj |> filter(era == 'Holocene')
 reduced = holocene |> group_by(site, type) |> filter(order %in% range(order)) |> ungroup()
@@ -125,44 +126,58 @@ boxes = holocene |> group_by(site) |> summarise(xmin = min(x), xmax = max(x), ym
   mutate(pad = .06 * pmax(xmax - xmin, ymax - ymin), xmin = xmin - pad, xmax = xmax + pad,
     ymin = ymin - pad, ymax = ymax + pad, letter = c(MORA = 'C', NOCA = 'D')[site],
     color = PAPER_SITE_COLORS[site])
-# Panel B is cropped tightly around the trajectories and the zoom boxes, with
+# Panel B is cropped tightly around the trajectories, with
 # equal scaling on both axes so that directions are not distorted; its frame is
 # a little taller than wide (width 0.84 of the height).
 B_ASPECT = 1 / .84
-xr = range(c(shown$x, boxes$xmin, boxes$xmax)); yr = range(c(shown$y, boxes$ymin, boxes$ymax))
-yr = yr + c(-1, 1) * .04 * diff(yr)
+xr = range(shown$x); yr = range(shown$y)
+yr = yr + c(-1, 1) * .06 * diff(yr)
 half_x = max(diff(xr) * 1.08, diff(yr) / B_ASPECT) / 2
 lim_b = list(x = mean(xr) + c(-half_x, half_x), y = mean(yr) + c(-1, 1) * max(diff(yr), 2 * half_x * B_ASPECT) / 2)
-series_labels = shown |> group_by(site, era, type, series) |> summarise(x = mean(x), y = mean(y), .groups = 'drop') |>
-  mutate(label = paste0(site, ' ', era, '\n', str_to_title(type)))
-end_labels = shown |> filter(type == 'observed')
+# In B the Holocene ends are named by their role, not their period (Bills).
+end_labels = shown |> filter(type == 'observed') |> group_by(site, era) |>
+  mutate(lab = if_else(era == 'Holocene', if_else(order == min(order), 'Holocene start', 'Holocene end'), lab)) |>
+  ungroup()
 labels_b = bind_rows(end_labels |> transmute(x, y, label = lab, series, fontface = 'plain', size = TEXT - .6),
-  series_labels |> transmute(x, y, label, series, fontface = 'bold', size = TEXT),
   shown |> filter(type == 'predicted') |> transmute(x, y, label = '', series, fontface = 'plain', size = TEXT))
-trajectory_layers = function(points, steps, labels, xl, yl) list(
-  geom_segment(data = steps, aes(x, y, xend = xend, yend = yend, color = series, linetype = type),
-    linewidth = 1.1, arrow = arrow(length = unit(.24, 'cm'), type = 'closed')),
-  geom_point(data = points, aes(x, y, color = series), shape = 21, fill = 'white', size = 2.8, stroke = 1),
+# Arrows run from the edge of one circle to the edge of the next instead of
+# across the circles: each step is trimmed by the circle radius at both ends
+# (the radius as a share of the panel width, matched to the point size below).
+trim_steps = function(steps, xl, r = .011 * diff(xl)) {
+  len = sqrt((steps$xend - steps$x)^2 + (steps$yend - steps$y)^2)
+  keep = len > 2.2 * r
+  steps = steps[keep, ]; len = len[keep]
+  ux = (steps$xend - steps$x) / len; uy = (steps$yend - steps$y) / len
+  steps |> mutate(x = x + ux * r, y = y + uy * r, xend = xend - ux * r, yend = yend - uy * r)
+}
+trajectory_layers = function(points, steps, labels, xl, yl, force = 3, box_padding = .45) list(
+  geom_segment(data = trim_steps(steps, xl), aes(x, y, xend = xend, yend = yend, color = series),
+    linewidth = 1.4, arrow = arrow(length = unit(.32, 'cm'), type = 'closed'), show.legend = FALSE),
+  geom_point(data = points, aes(x, y, color = series), shape = 21, fill = 'white', size = 4, stroke = 1.3,
+    show.legend = FALSE),
   geom_label_repel(data = labels, aes(x, y, label = label, color = series, fontface = fontface, size = size),
-    fill = 'white', linewidth = 0, label.padding = unit(.08, 'lines'), box.padding = .45, point.padding = .25,
-    force = 3, force_pull = 1.5, segment.size = .3, segment.color = 'grey60', min.segment.length = 0,
+    fill = 'white', linewidth = 0, label.padding = unit(.08, 'lines'), box.padding = box_padding, point.padding = .3,
+    force = force, force_pull = 1, segment.size = .3, segment.color = 'grey60', min.segment.length = 0,
     max.overlaps = Inf, max.iter = 200000, max.time = 10, seed = 3, lineheight = .9, xlim = xl, ylim = yl,
     show.legend = FALSE),
+  # Legend keys only: the parks in their dark colours, and observed against
+  # predicted as a dark and a light dot.
+  geom_point(data = tibble(x = NA_real_, y = NA_real_, park = c('MORA', 'NOCA'), kind = c('Observed', 'Predicted')),
+    aes(x, y, fill = park, shape = kind), na.rm = TRUE),
   scale_color_manual(values = PARK_COLORS, guide = 'none'),
-  scale_linetype_manual(values = c(observed = 'solid', predicted = 'solid'), labels = c('Observed', 'Predicted'), name = NULL,
-    guide = guide_legend(override.aes = list(color = c('grey20', 'grey70'), linewidth = 1.4))),
+  scale_fill_manual(values = PAPER_SITE_COLORS, name = NULL,
+    guide = guide_legend(order = 1, override.aes = list(shape = 21, size = 7, color = NA))),
+  scale_shape_manual(values = c(Observed = 21, Predicted = 21), name = NULL,
+    guide = guide_legend(order = 2, override.aes = list(fill = c('grey15', 'grey72'), color = NA, size = 7))),
   scale_size_identity())
 p_trajectories = ggplot() +
   geom_hline(yintercept = 0, color = 'grey90') + geom_vline(xintercept = 0, color = 'grey90') +
   geom_point(data = cal, aes(x, y), color = 'grey80', size = .7, alpha = .4) +
-  geom_rect(data = boxes, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), color = boxes$color,
-    fill = NA, linetype = 'dashed', linewidth = .8) +
-  geom_label(data = boxes, aes(xmax, ymax, label = letter), color = boxes$color, fill = 'white', fontface = 'bold',
-    size = TEXT + .6, linewidth = 0, hjust = .5, vjust = .5) +
-  trajectory_layers(shown, steps_b, labels_b, lim_b$x, lim_b$y) +
+  # Stronger repulsion in B, where the NOCA Anthropocene points crowd together.
+  trajectory_layers(shown, steps_b, labels_b, lim_b$x, lim_b$y, force = 10, box_padding = 1) +
   coord_cartesian(xlim = lim_b$x, ylim = lim_b$y, expand = FALSE) +
   labs(tag = 'B.', x = x_title, y = y_title) + theme_fig3 +
-  theme(legend.key.width = unit(2.2, 'cm'), aspect.ratio = diff(lim_b$y) / diff(lim_b$x))
+  theme(aspect.ratio = diff(lim_b$y) / diff(lim_b$x))
 
 zoom = function(park) {
   d = holocene |> filter(site == park) |> mutate(group = paste(site, era, type))
@@ -175,11 +190,10 @@ zoom = function(park) {
     coord_cartesian(xlim = c(box$xmin, box$xmax), ylim = c(box$ymin, box$ymax), expand = FALSE) +
     labs(tag = paste0(box$letter, '.'), title = paste(park, 'Holocene periods'), x = NULL, y = NULL) +
     theme_fig3 + theme(legend.position = 'none', aspect.ratio = (box$ymax - box$ymin) / (box$xmax - box$xmin),
-      panel.border = element_rect(color = box$color, linetype = 'dashed', linewidth = 1.2, fill = NA),
-      plot.title = element_text(size = 22, face = 'bold', color = box$color), axis.text = element_text(size = 17))
+      plot.title = element_text(size = 30, face = 'bold', color = box$color), axis.text = element_text(size = 22))
 }
 # A and B on top; the zooms C (MORA) and D (NOCA) below, as large as the top
-# panels allow, linked to B by their coloured dashed frames and letters.
+# panels allow, titled in the park's colour.
 figure = (p_biplot | p_trajectories) / (zoom('MORA') | zoom('NOCA')) + plot_layout(heights = c(1, .9))
 if (render_figures) {
   # cairo_pdf draws the arrows of the axis titles, which the default pdf device cannot.

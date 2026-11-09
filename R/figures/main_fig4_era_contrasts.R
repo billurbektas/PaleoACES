@@ -19,7 +19,7 @@ panel = function(r, tag) {
   p = ggplot(d, aes(site, estimate, group = against)) +
     geom_hline(yintercept = 0, color = 'grey60', linetype = 'dashed') +
     geom_errorbar(aes(ymin = conf_low, ymax = conf_high, color = site), width = .12, linewidth = .8, position = dodge) +
-    geom_point(aes(shape = against, fill = site), size = 3.6, color = 'grey15', position = dodge) +
+    geom_point(aes(shape = against, fill = site), size = 4.6, color = 'grey15', position = dodge) +
     scale_shape_manual(values = PERIOD_TYPE_SHAPES[c('Holocene-C', 'Holocene-S')], name = NULL,
       labels = c(`Holocene-C` = 'Anthropocene minus Holocene climate-change periods',
         `Holocene-S` = 'Anthropocene minus Holocene stability periods')) +
@@ -27,14 +27,14 @@ panel = function(r, tag) {
     scale_color_manual(values = PAPER_SITE_COLORS, guide = 'none') +
     labs(tag = tag, x = NULL, y = str_wrap(paste('Difference in', sub('^(.)', '\\L\\1', RESPONSE_AXIS_LABELS[[r]], perl = TRUE)), 30)) +
     guides(shape = guide_legend(override.aes = list(fill = 'grey60'), ncol = 1)) +
-    theme_paleoaces(base_size = 13) + theme(legend.position = 'bottom')
+    theme_paleoaces(base_size = 20) + theme(legend.position = 'bottom', legend.text = element_text(size = 19), plot.tag = element_text(size = 24, face = 'bold'))
   if (r %in% c('climate_rate', 'turnover_rate')) p = p +
     geom_text(data = filter(d, against == 'Holocene-C'), aes(label = sprintf('%.0f-fold', fold)),
-      position = position_nudge(x = -.36), size = 3.6, color = 'grey20')
+      position = position_nudge(x = -.2), hjust = 1, size = 6, color = 'grey20')
   p
 }
 figure = (panel('climate_rate', 'A.') | panel('turnover_rate', 'B.') | panel('lag_rate', 'C.')) +
   plot_layout(guides = 'collect') & theme(legend.position = 'bottom')
 if (render_figures) for (ext in c('pdf', 'png'))
-  ggsave(fig('main', paste0('fig_era_contrasts.', ext)), figure, width = 12, height = 5.5, dpi = 300)
+  ggsave(fig('main', paste0('fig_era_contrasts.', ext)), figure, width = 15, height = 7.5, dpi = 300)
 cat('Figure 4: era contrasts drawn.\n')

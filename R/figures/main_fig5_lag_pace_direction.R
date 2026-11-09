@@ -18,17 +18,17 @@ holocene_panel = function(r, tag) {
   m = means |> filter(response == r, period_type != 'Anthropocene')
   ggplot(d, aes(site, value, group = period_type)) +
     geom_hline(yintercept = 0, color = 'grey60', linetype = 'dashed') +
-    geom_point(aes(shape = period_type, fill = site), size = 1.8, alpha = .55, color = 'grey30',
+    geom_point(aes(shape = period_type, fill = site), size = 2.6, alpha = .55, color = 'grey30',
       position = position_jitterdodge(jitter.width = .12, dodge.width = .5, seed = 1)) +
     geom_errorbar(data = m, aes(y = estimate, ymin = conf_low, ymax = conf_high, color = site), width = .14,
       linewidth = 1.1, position = dodge) +
-    geom_point(data = m, aes(y = estimate, shape = period_type, fill = site), size = 2.6, color = 'grey10', position = dodge) +
+    geom_point(data = m, aes(y = estimate, shape = period_type, fill = site), size = 3.4, color = 'grey10', position = dodge) +
     scale_shape_manual(values = PERIOD_TYPE_SHAPES, name = NULL, breaks = c('Holocene-C', 'Holocene-S'),
       labels = c('Holocene climate-change periods', 'Holocene stability periods')) +
     scale_fill_manual(values = PAPER_SITE_COLORS, guide = 'none') + scale_color_manual(values = PAPER_SITE_COLORS, guide = 'none') +
-    guides(shape = guide_legend(override.aes = list(fill = 'grey60', alpha = 1, size = 3.5))) +
+    guides(shape = guide_legend(override.aes = list(fill = 'grey60', alpha = 1, size = 5))) +
     labs(tag = tag, x = NULL, y = str_wrap(RESPONSE_AXIS_LABELS[[r]], 24)) +
-    theme_paleoaces(base_size = 17)
+    theme_paleoaces(base_size = 22) + theme(legend.text = element_text(size = 21), plot.tag = element_text(size = 26, face = 'bold'))
 }
 anthropocene_panel = function(r, tag) {
   d = both |> filter(response == r, period_type == 'Anthropocene')
@@ -37,10 +37,10 @@ anthropocene_panel = function(r, tag) {
     geom_hline(yintercept = 0, color = 'grey60', linetype = 'dashed') +
     geom_violin(aes(fill = site), alpha = .3, color = NA, scale = 'width', width = .7) +
     geom_errorbar(data = m, aes(y = estimate, ymin = conf_low, ymax = conf_high), width = .14, linewidth = 1.1, color = 'grey10') +
-    geom_point(data = m, aes(y = estimate, fill = site), shape = PERIOD_TYPE_SHAPES[['Anthropocene']], size = 2.8, color = 'grey10') +
+    geom_point(data = m, aes(y = estimate, fill = site), shape = PERIOD_TYPE_SHAPES[['Anthropocene']], size = 3.6, color = 'grey10') +
     scale_fill_manual(values = PAPER_SITE_COLORS, guide = 'none') + scale_color_manual(values = PAPER_SITE_COLORS, guide = 'none') +
     labs(tag = tag, x = NULL, y = str_wrap(RESPONSE_AXIS_LABELS[[r]], 24)) +
-    theme_paleoaces(base_size = 17)
+    theme_paleoaces(base_size = 22) + theme(legend.text = element_text(size = 21), plot.tag = element_text(size = 26, face = 'bold'))
 }
 top = wrap_plots(holocene_panel('lag_rate', 'A.'), holocene_panel('pace_effect', NULL), holocene_panel('direction_effect', NULL), nrow = 1)
 bottom = wrap_plots(anthropocene_panel('lag_rate', 'B.'), anthropocene_panel('pace_effect', NULL),

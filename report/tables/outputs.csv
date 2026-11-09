@@ -59,7 +59,7 @@ Step,File,Description,Size (kB)
 10_cca,cca_anova_cache.rds,"Cached permutation tests, keyed on the fit",1
 10_cca,cca_anova.csv,"Permutation tests (model, axes, terms)",0
 10_cca,cca_axes.csv,Constrained axes: eigenvalues and variance explained,0
-10_cca,cca_calibration_reference.rds,The fitted CCA and its calibration inputs,1972
+10_cca,cca_calibration_reference.rds,The fitted CCA and its calibration inputs,1974
 10_cca,cca_climate_contributions.csv,Climate-variable contributions to the axes,0
 10_cca,cca_counts.csv,Plots and samples used to fit and projected,0
 10_cca,cca_display_rotation.csv,"Display-only varimax angle, rotation matrix and axis orientation",0
