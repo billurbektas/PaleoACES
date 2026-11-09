@@ -517,12 +517,12 @@ anthropocene_column = function(v, panel, first) {
   y_range = ggplot_build(panel)$layout$panel_params[[1]]$y.range
   end = climate_levels |> filter(in_view, variable == v, is.finite(regional_raw_1000yr)) |> slice_min(t, n = 1)
   d = anthropocene_rates |> filter(variable == v) |> arrange(site) |>
-    mutate(y = end$regional_raw_1000yr + (row_number() - 1.5) * diff(y_range) * .14,
+    mutate(y = end$regional_raw_1000yr + (row_number() - 1.5) * diff(y_range) * .2,
       label = paste0(site, " ", rate_text(v, rate), "/century"))
-  p = ggplot(d, aes(0, y, label = label)) + geom_text(hjust = 0, size = 3.2 * FIG2_TEXT, color = "grey10") +
+  p = ggplot(d, aes(0, y, label = label)) + geom_text(hjust = 0, size = 4.6 * FIG2_TEXT, color = "grey10") +
     coord_cartesian(xlim = c(0, 1), ylim = y_range, expand = FALSE, clip = "off") + theme_void()
   if (first) p = p + annotate("text", x = 0, y = y_range[2], label = "Anthropocene", hjust = 0, vjust = 1,
-    size = 3.3 * FIG2_TEXT, fontface = "bold", color = "grey20")
+    size = 4.8 * FIG2_TEXT, fontface = "bold", color = "grey20")
   p
 }
 p_spring = raw_panel("MSpT", "A.", TRUE)
@@ -530,11 +530,11 @@ p_summer = raw_panel("SP", "B.", FALSE)
 # One grid, so that the time axes of A, B and C line up.
 figure = wrap_plots(p_spring, anthropocene_column("MSpT", p_spring, TRUE),
   p_summer, anthropocene_column("SP", p_summer, FALSE),
-  p_fire + labs(tag = "C."), plot_spacer(), ncol = 2, widths = c(5.2, 1), heights = c(3.4, 2.2, 1.6))
+  p_fire + labs(tag = "C."), plot_spacer(), ncol = 2, widths = c(5.2, 1.45), heights = c(3.4, 2.2, 1.6))
 if (render_figures) {
   # cairo_pdf draws the degree signs and arrows.
-  ggsave(fig("main", "fig_climate_levels_eras_fire.pdf"), figure, width = 16, height = 13, device = cairo_pdf)
-  ggsave(fig("main", "fig_climate_levels_eras_fire.png"), figure, width = 16, height = 13, dpi = 300)
+  ggsave(fig("main", "fig_climate_levels_eras_fire.pdf"), figure, width = 17.5, height = 13, device = cairo_pdf)
+  ggsave(fig("main", "fig_climate_levels_eras_fire.png"), figure, width = 17.5, height = 13, dpi = 300)
 }
 
 # Appendix: the same levels for all four seasonal variables, without rates.
