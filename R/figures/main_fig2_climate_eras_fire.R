@@ -328,18 +328,9 @@ fire_panel = function(text_scale = 1, sites = c("MORA", "NOCA")) {
 }
 p_fire = fire_panel()
 
-# Manuscript figure: Holocene climate trajectories above the fire lanes. The
-# raw-rate comparison is shown separately as a presentation figure below.
-figure = p_climate / p_fire +
-  plot_layout(heights = c(4.5, 1.45))
-if (render_figures) {
-  ggsave(fig("main", "fig_standardized_climate_change_eras_fire.pdf"), figure,
-    width = 12.5, height = 9.5)
-}
-
-# Appendix figure: the same panels with all four seasonal variables. Only the CCA
-# constraints define the eras and carry qualifying points; the other variables
-# are shown with the same calibration standardization for context.
+# Appendix record of how the periods were drawn: the signed standardized
+# 1,000-year changes of all four seasonal variables. Only the CCA constraints
+# define the periods and carry qualifying points.
 display_cells = read_csv(out("holocene_era_display_directional_cells.csv"), show_col_types = FALSE)
 display_thresholds = read_csv(out("holocene_era_display_variable_thresholds.csv"), show_col_types = FALSE)
 stopifnot(setequal(unique(display_cells$variable), CLIMATE_DISPLAY_VARIABLES))
@@ -350,11 +341,7 @@ display_callouts = display_thresholds |>
     ymin = -threshold_standardized_change, ymax = threshold_standardized_change,
     cap_left = x - 27, cap_right = x + 27,
     label = sprintf("%s  [%+.3f, %+.3f]", variable, ymin, ymax))
-p_climate_display = climate_panel(
-  panel_data = display_cells |> mutate(value = regional_score,
-    qualifies = qualifies & variable %in% CCA_VARIABLES),
-  callouts = display_callouts,
-  title = "Holocene climate change: the four seasonal variables") +
+four_variable_key = function(p) p +
   scale_color_manual(values = c(variable_colors, context = "grey25"),
     breaks = CLIMATE_DISPLAY_VARIABLES,
     labels = paste0(CLIMATE_VARIABLE_LABELS[CLIMATE_DISPLAY_VARIABLES],
@@ -362,72 +349,145 @@ p_climate_display = climate_panel(
     name = NULL) +
   guides(color = guide_legend(nrow = 1, override.aes = list(linewidth = 1.6))) +
   theme(legend.position = "bottom", legend.text = element_text(size = 12))
+p_climate_display = four_variable_key(climate_panel(
+  panel_data = display_cells |> mutate(value = regional_score,
+    qualifies = qualifies & variable %in% CCA_VARIABLES),
+  callouts = display_callouts, title = NULL,
+  y_label = "Standardized 1,000-year change\n(calibration SD)"))
 if (render_figures) {
   ggsave(fig("supplementary", "fig_standardized_climate_change_four_variables.pdf"),
     p_climate_display / p_fire + plot_layout(heights = c(4.5, 1.45)),
     width = 12.5, height = 10)
 }
 
-# Companion figure: standardized climate LEVELS instead of 1,000-year changes.
-# Each lake's centennial CHELSA-TraCE value is scaled with the same legacy
-# calibration mean and SD as the CCA, (x - mean) / sd, so 0 is the mean modern
-# calibration plot and 1 is one calibration SD. Lakes are averaged within park
-# and the two parks weighted equally, as in panel A. Thin lines: centennial
-# slices; thick lines: centred 1,000-year running mean (11 slices), matching
-# the 1,000-year window of the change analysis. Era shading is unchanged.
+# Figure 2A: standardized climate LEVELS. Each lake's centennial CHELSA-TraCE
+# value is scaled with the legacy calibration SD of the CCA, lakes are averaged
+# within park and the parks weighted equally. The anomaly reference is the
+# Holocene mean of the plotted span (PLAN.md section 9 default). Thin lines:
+# centennial slices; bold lines: centred 1,000-year running mean (11 slices).
 climate_helpers = new.env()
 sys.source(here("R/helpers/config.R"), envir = climate_helpers)
 sys.source(here("R/helpers/climate_variables.R"), envir = climate_helpers)
 calibration_scaling = read_csv(required[["scaling"]], show_col_types = FALSE)
-stopifnot(setequal(intersect(calibration_scaling$variable, variables),
-  variables))
-climate_levels = read_csv(required[["paleo_climate"]],
-    show_col_types = FALSE) |>
-  transmute(unit = lake, period = site, variable, time = slice, month,
-    value = value_raw) |>
+level_series = function(vars) read_csv(required[["paleo_climate"]], show_col_types = FALSE) |>
+  transmute(unit = lake, period = site, variable, time = slice, month, value = value_raw) |>
   climate_helpers$derive_climate_vars(winter_shift = FALSE) |>
-  transmute(site = period, lake = unit, t = 1950 - time * 100,
-    across(all_of(variables))) |>
-  pivot_longer(all_of(variables), names_to = "variable",
-    values_to = "raw_value") |>
-  left_join(select(calibration_scaling, variable, calibration_mean = mean,
-    calibration_sd = sd), by = "variable") |>
-  mutate(z = (raw_value - calibration_mean) / calibration_sd) |>
+  transmute(site = period, lake = unit, t = 1950 - time * 100, across(all_of(vars))) |>
+  pivot_longer(all_of(vars), names_to = "variable", values_to = "raw_value") |>
+  left_join(select(calibration_scaling, variable, calibration_sd = sd), by = "variable") |>
   group_by(variable, site, t) |>
-  summarise(z = mean(z), n_lakes = n(), .groups = "drop") |>
-  pivot_wider(names_from = site, values_from = c(z, n_lakes)) |>
+  summarise(raw = mean(raw_value), sd = first(calibration_sd), n_lakes = n(), .groups = "drop") |>
+  pivot_wider(names_from = site, values_from = c(raw, n_lakes)) |>
   arrange(variable, t) |>
   group_by(variable) |>
-  mutate(regional_z = (z_MORA + z_NOCA) / 2,
-    regional_z_1000yr = as.numeric(stats::filter(regional_z, rep(1 / 11, 11),
-      sides = 2))) |>
+  mutate(regional_raw = (raw_MORA + raw_NOCA) / 2,
+    regional_raw_1000yr = as.numeric(stats::filter(regional_raw, rep(1 / 11, 11), sides = 2)),
+    in_view = between(t, time_limits[2], time_limits[1]),
+    reference = mean(regional_raw[in_view]),
+    level = (regional_raw - reference) / sd,
+    level_1000yr = (regional_raw_1000yr - reference) / sd) |>
   ungroup()
-stopifnot(nrow(climate_levels) == length(variables) * 111L,
-  all(climate_levels$n_lakes_MORA == 3L), all(climate_levels$n_lakes_NOCA == 1L))
+climate_levels = level_series(union(variables, CLIMATE_DISPLAY_VARIABLES))
+stopifnot(all(climate_levels$n_lakes_MORA == 3L), all(climate_levels$n_lakes_NOCA == 1L))
 write_csv(climate_levels, out("figures/holocene_standardized_climate_levels.csv"))
-levels_in_view = filter(climate_levels,
-  between(t, time_limits[2], time_limits[1]))
-p_levels = climate_panel(
-  panel_data = levels_in_view |>
-    filter(is.finite(regional_z_1000yr)) |>
-    transmute(t, variable, value = regional_z_1000yr, qualifies = FALSE),
-  background_data = transmute(levels_in_view, t, variable,
-    value = regional_z),
-  show_stability = FALSE, show_qualifying = FALSE,
-  title = "Holocene climate",
-  y_label = "Standardized climate\n(calibration SD from modern mean)") +
-  # Without the qualifying points the lines need a key of their own.
-  scale_color_manual(values = c(variable_colors, context = "grey25"),
-    breaks = variables, labels = variable_labels[variables], name = NULL) +
-  guides(color = guide_legend(nrow = 1,
-    override.aes = list(linewidth = 1.6))) +
-  theme(legend.position = "bottom", legend.text = element_text(size = 12.5),
-    legend.margin = margin(0, 0, 0, 0))
-figure_levels = p_levels / p_fire + plot_layout(heights = c(4.5, 1.45))
-if (render_figures) {
-  ggsave(fig("supplementary", "fig_standardized_climate_levels_eras_fire.pdf"),
-    figure_levels, width = 12.5, height = 9.5)
+unit_label = function(v) if_else(CLIMATE_VARIABLE_UNITS[v] == "mm", "mm", "°C")
+
+# Real-unit change per century over each period, read off the running-mean line
+# at the period boundaries, written only where the period names that driver.
+period_rates = read_csv(out("holocene_periods.csv"), show_col_types = FALSE) |>
+  separate_longer_delim(drivers, delim = ";") |>
+  filter(!is.na(drivers), drivers != "") |>
+  mutate(variable = case_when(str_detect(drivers, "^spring") ~ "MSpT", str_detect(drivers, "^summer") ~ "SP",
+    str_detect(drivers, "^winter (warming|cooling)") ~ "MWT", TRUE ~ "WP")) |>
+  filter(variable %in% variables) |>
+  rowwise() |>
+  # Climate slices sit at century centres (x50 cal BP) and period boundaries at
+  # whole centuries, so the line is interpolated at the boundaries.
+  mutate(line = list(filter(climate_levels, variable == .env$variable, is.finite(regional_raw_1000yr))),
+    older = approx(line$t, line$regional_raw_1000yr, older_cal_bp)$y,
+    younger = approx(line$t, line$regional_raw_1000yr, younger_cal_bp)$y,
+    rate = (younger - older) / duration_years * 100,
+    t = (older_cal_bp + younger_cal_bp) / 2,
+    level = approx(line$t, line$level_1000yr, t)$y) |>
+  ungroup() |> select(-line) |>
+  mutate(label = if_else(variable == "SP", sprintf("%+.1f mm/century", rate), sprintf("%+.2f °C/century", rate)))
+# The largest century-to-century step of the unsmoothed regional series.
+largest_steps = climate_levels |> filter(in_view, variable %in% variables) |> group_by(variable) |>
+  arrange(desc(t), .by_group = TRUE) |>
+  mutate(step = regional_raw - lag(regional_raw), from_t = lag(t)) |>
+  filter(is.finite(step)) |> slice_max(abs(step), n = 1, with_ties = FALSE) |> ungroup() |>
+  mutate(label = if_else(variable == "SP", sprintf("largest step %+.1f mm/century", step),
+    sprintf("largest step %+.2f °C/century", step)))
+write_csv(bind_rows(period_rates |> transmute(kind = "period", variable, period, t, rate, level),
+    largest_steps |> transmute(kind = "largest century step", variable, period = NA_character_, t, rate = step, level)),
+  out("figures/holocene_climate_level_rates.csv"))
+
+# Anthropocene rates per park: plot medians of the change from the legacy to
+# the resurvey climate window, per century, in real units and in SD.
+anthropocene_rates = anthropocene |>
+  select(site, plot_id, all_of(paste0(variables, "_rate_per_century")), all_of(paste0(variables, "_z_rate_per_century"))) |>
+  pivot_longer(-c(site, plot_id), names_to = c("variable", "kind"), names_pattern = "^(.*?)_(rate|z_rate)_per_century$") |>
+  group_by(variable, site, kind) |> summarise(median = median(value), .groups = "drop") |>
+  pivot_wider(names_from = kind, values_from = median) |>
+  mutate(label = if_else(variable == "SP", sprintf("%s %+.0f mm (%+.1f SD)", site, rate, z_rate),
+    sprintf("%s %+.2f °C (%+.1f SD)", site, rate, z_rate)))
+write_csv(anthropocene_rates, out("figures/anthropocene_climate_rates.csv"))
+
+levels_panel = function(vars, show_rates = TRUE) {
+  in_view = filter(climate_levels, in_view, variable %in% vars)
+  p = climate_panel(panel_data = in_view |> filter(is.finite(level_1000yr)) |>
+      transmute(t, variable, value = level_1000yr, qualifies = FALSE),
+    background_data = transmute(in_view, t, variable, value = level),
+    show_stability = FALSE, show_qualifying = FALSE, title = NULL,
+    y_label = "Standardized climate level\n(calibration SD from the Holocene mean)")
+  # White vertical lines separate the sub-periods of a split C period.
+  splits = subphases |> filter(phase_role != "unsplit")
+  if (nrow(splits)) splits = splits |> group_by(parent_era_id) |>
+    filter(younger_cal_bp > min(younger_cal_bp)) |> ungroup()
+  if (nrow(splits)) p = p + geom_vline(data = splits, aes(xintercept = younger_cal_bp), color = "white", linewidth = .9)
+  if (show_rates) p = p +
+    geom_point(data = period_rates, aes(t, level, color = variable), inherit.aes = FALSE, size = 1.8, show.legend = FALSE) +
+    # Spring labels above their line, summer labels below, so the two never collide.
+    geom_label(data = period_rates, aes(t, level, label = label, color = variable,
+        vjust = if_else(variable == "SP", 1.5, -.5)), inherit.aes = FALSE,
+      size = 2.9, label.size = 0, fill = alpha("white", .8), label.padding = unit(.08, "lines"), show.legend = FALSE) +
+    geom_point(data = largest_steps, aes(t, level, color = variable), inherit.aes = FALSE, shape = 4, size = 3,
+      stroke = 1.1, show.legend = FALSE) +
+    geom_label(data = largest_steps, aes(t, level, label = label, color = variable,
+        hjust = if_else(t > 9500, 0, .5)), inherit.aes = FALSE, size = 2.7, vjust = 1.5, label.size = 0, fill = alpha("white", .8), label.padding = unit(.08, "lines"),
+      show.legend = FALSE)
+  p
 }
+p_levels = levels_panel(variables) +
+  scale_color_manual(values = c(variable_colors, context = "grey25"), breaks = variables,
+    labels = variable_labels[variables], name = NULL) +
+  guides(color = guide_legend(nrow = 1, override.aes = list(linewidth = 1.6))) +
+  theme(legend.position = "bottom", legend.text = element_text(size = 12.5), legend.margin = margin(0, 0, 0, 0))
+# Anthropocene rates as text outside the right edge of panel A, each at the
+# height where its variable's running-mean line ends.
+y_range = ggplot_build(p_levels)$layout$panel_params[[1]]$y.range
+line_end = climate_levels |> filter(in_view, variable %in% variables, is.finite(level_1000yr)) |>
+  group_by(variable) |> slice_min(t, n = 1) |> ungroup() |> select(variable, end_level = level_1000yr)
+anthropocene_text = anthropocene_rates |> left_join(line_end, by = "variable") |>
+  group_by(variable) |> arrange(site, .by_group = TRUE) |>
+  mutate(y = end_level + (row_number() - 1.5) * diff(y_range) * .055) |> ungroup()
+p_anthropocene = ggplot(anthropocene_text, aes(0, y, label = label, color = variable)) +
+  geom_text(hjust = 0, size = 3.1, show.legend = FALSE) +
+  annotate("text", x = 0, y = y_range[2], label = "Anthropocene\nper century", hjust = 0, vjust = 1,
+    size = 3.2, fontface = "bold", color = "grey20") +
+  scale_color_manual(values = variable_colors) +
+  coord_cartesian(xlim = c(0, 1), ylim = y_range, expand = FALSE, clip = "off") +
+  theme_void()
+# One grid, so that the time axes of A and B line up.
+figure = wrap_plots(p_levels, p_anthropocene, p_fire, plot_spacer(), ncol = 2,
+  widths = c(5.2, 1), heights = c(4.5, 1.45))
+if (render_figures) for (ext in c("pdf", "png"))
+  ggsave(fig("main", paste0("fig_climate_levels_eras_fire.", ext)), figure, width = 14, height = 9.5, dpi = 300)
+
+# Appendix: the same levels for all four seasonal variables, without rates.
+p_levels_four = four_variable_key(levels_panel(CLIMATE_DISPLAY_VARIABLES, show_rates = FALSE))
+if (render_figures) ggsave(fig("supplementary", "fig_standardized_climate_levels_four_variables.pdf"),
+  p_levels_four / p_fire + plot_layout(heights = c(4.5, 1.45)), width = 12.5, height = 10)
 
 # Presentation version of panels A and B: no stability-range brackets, and all
 # text enlarged so the era annotations read from the back of a room.

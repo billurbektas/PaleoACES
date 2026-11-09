@@ -119,12 +119,33 @@ precipitation increasing upward. The pipeline asserts that mismatch,
 lag, turnover, pace and direction are identical before and after this
 rotation.
 
+<img src="report/figures/png/fig_cca_trajectories.png" alt="" width="100%" />
+
+**Figure 3. Climate and community positions in the CCA plane.** (A)
+Species (points, shaded from light to dark by their share of the
+constrained inertia) and the two climate constraints (arrows) of the CCA
+fitted on 607 legacy plots (grey dots). (B) Movement of the observed
+(dark colours) and climate-predicted (light colours) positions of each
+park. Holocene arrows run from the first to the last climate period with
+samples: at MORA from S2 to S5 (7200 to 1300 cal BP), and at NOCA from
+C1 to S5 (9600 to 1300 cal BP). The first MORA period rests on 2 samples
+in 2 lake-centuries. Anthropocene arrows (diamonds at the start) run
+from the legacy survey to the resurvey, averaged over 330 MORA and 277
+NOCA plot pairs. Dotted boxes mark the zoom windows. (C, D) The full
+Holocene sequence of period centroids at MORA and NOCA, observed and
+predicted, with climate-change periods as circles and stability periods
+as triangles. Each centroid averages the sampled centuries of each lake
+within the period, with the lakes weighted equally. Axes orthogonally
+rotated (varimax, -23.4 degrees) for display, so that axis 1 follows
+spring temperature and axis 2 summer precipitation. All metrics are
+rotation-invariant. The unrotated biplot is in the appendix figures.
+
 Stages and helpers: [`R/pipeline/10_cca.R`](R/pipeline/10_cca.R),
 [`R/helpers/cca_report.R`](R/helpers/cca_report.R) (screening and
 add-back test),
 [`R/helpers/cca_display_rotation.R`](R/helpers/cca_display_rotation.R),
-[`R/pipeline/12_tracking.R`](R/pipeline/12_tracking.R) (rotation check).
-Figure 3 is drawn in M08.
+[`R/pipeline/12_tracking.R`](R/pipeline/12_tracking.R) (rotation check),
+[`R/figures/main_fig3_cca_trajectories.R`](R/figures/main_fig3_cca_trajectories.R).
 
 # Step 1. Climate periods
 
@@ -193,10 +214,34 @@ constraint. From 7200 cal BP onward every boundary is unchanged, and the
 periods are renumbered. The high-fire periods do not depend on the CCA
 and are unchanged.
 
+<img src="report/figures/png/fig_climate_levels_eras_fire.png" alt="" width="100%" />
+
+**Figure 2. Holocene climate and fire.** (A) Standardized level of
+spring temperature and summer precipitation, the two CCA constraints,
+averaged over the lakes of each park with the two parks weighted
+equally. Values are anomalies from the Holocene mean of the plotted
+span, in units of the standard deviation across the 607 legacy
+calibration plots. Bold lines are 1,000-year running means and thin
+lines the centennial series. Shading marks the climate-change (C) and
+stability (S) periods, with the variables that drove each climate-change
+period written below its name. Labels on the bold lines give the change
+per century over a period, in °C or mm, for each variable that drove
+that period. A cross marks the largest step between two consecutive
+centuries of each variable. To the right of the panel, the Anthropocene
+change per century from the legacy to the resurvey climate window, the
+median over plots in each park, is given in real units and in
+calibration SD: spring temperature +1.29 °C (+0.5 SD) at MORA and +0.77
+°C (+0.3 SD) at NOCA, summer precipitation -143 mm (-2.3 SD) at MORA and
++104 mm (+1.7 SD) at NOCA. These come from a change over about 29 years,
+while each Holocene rate spans a whole period of 400 to 2,700 years. (B)
+Fire-frequency ratio of each park, the frequency of accepted fire events
+relative to the park’s high-fire threshold. Values above 1 (red) are
+high-fire periods.
+
 Stages and helpers:
 [`R/pipeline/11_climate_eras_high_fire.R`](R/pipeline/11_climate_eras_high_fire.R),
-[`R/helpers/holocene_climate_fire_era_functions.R`](R/helpers/holocene_climate_fire_era_functions.R).
-Figure 2 is drawn in M08.
+[`R/helpers/holocene_climate_fire_era_functions.R`](R/helpers/holocene_climate_fire_era_functions.R),
+[`R/figures/main_fig2_climate_eras_fire.R`](R/figures/main_fig2_climate_eras_fire.R).
 
 # Steps 1 to 4. Lake-periods and their responses
 
@@ -472,10 +517,33 @@ term absorbs the difference between the parks, so the fire slope comes
 from the narrow range within each park (MORA 0.10 to 0.33, NOCA 0.33 to
 0.89 events per century per core).
 
+<img src="report/figures/png/fig_climate_fire_associations.png" alt="" width="100%" />
+
+**Figure 6. Climate and fire associations.** (A) Holocene lake-periods.
+Rows are the lag rate, the pace effect and the direction effect. Columns
+are the standardized climate change rate and fire activity. Lines are
+the fitted partial effects of the model response ~ site + climate change
+rate + fire activity, drawn per park over the park’s own range of the
+predictor with the other predictor at the park’s mean, with 95%
+confidence bands. Points are partial residuals of the lake-periods
+(circles, climate-change periods, triangles, stability periods), 14 at
+MORA and 10 at NOCA for the lag rate and 12 and 10 for pace and
+direction. Descriptive R² is 0.09 for the lag rate, 0.17 for the pace
+effect and 0.22 for the direction effect. (B) Anthropocene plot pairs:
+MORA unburned, NOCA unburned and NOCA burned plots (points), with the
+fitted means and 95% confidence intervals of the model response ~ site +
+burned (diamonds, red for burned plots). The two burned MORA plots are
+in the model and not drawn. Descriptive R² is 0.03, 0.04 and 0.03.
+Holocene climate-change lake-periods span 200 to 900 years and stability
+lake-periods 300 to 2600 years between their first and last sampled
+century. Anthropocene plot pairs span 27.5 to 32.5 years between the
+midpoints of their climate windows (about 29 years). The coefficients
+are in the table above.
+
 Stages and helpers:
 [`R/pipeline/14_predictor_models.R`](R/pipeline/14_predictor_models.R),
-[`R/helpers/reconstruction_models.R`](R/helpers/reconstruction_models.R).
-Figure 6 is drawn in M08.
+[`R/helpers/reconstruction_models.R`](R/helpers/reconstruction_models.R),
+[`R/figures/main_fig6_climate_fire_associations.R`](R/figures/main_fig6_climate_fire_associations.R).
 
 # Step 5a. Holocene against Anthropocene
 
@@ -648,12 +716,50 @@ not differ in lag, pace or direction in either park. Holocene-C
 lake-periods span 200 to 900 years, Holocene-S lake-periods 300 to 2600
 years, and the Anthropocene plot pairs 27.5 to 32.5 years.
 
+<img src="report/figures/png/fig_era_contrasts.png" alt="" width="100%" />
+
+**Figure 4. Climate change, turnover and lag in the Anthropocene against
+the Holocene.** For each park, the difference between the Anthropocene
+and the Holocene climate-change periods (circles) and between the
+Anthropocene and the Holocene stability periods (triangles), with 95%
+confidence intervals, for (A) the standardized climate change rate, (B)
+the turnover rate and (C) the lag rate. The fold printed beside each
+circle is the Anthropocene fitted mean divided by the Holocene
+climate-change fitted mean. Differences come from the model response ~
+period type × site, with an AR(1) correlation within each lake and
+weights for the number of samples at each end, fitted on 7
+climate-change and 7 stability lake-periods and 330 plot pairs at MORA,
+and 5, 5 and 277 at NOCA. Holocene climate-change lake-periods span 200
+to 900 years and stability lake-periods 300 to 2600 years between their
+first and last sampled century. Anthropocene plot pairs span 27.5 to
+32.5 years between the midpoints of their climate windows (about 29
+years). Longer windows give lower rates, so the rates of the two eras
+are not on equal footing.
+
+<img src="report/figures/png/fig_lag_pace_direction.png" alt="" width="100%" />
+
+**Figure 5. Lag rate, pace effect and direction effect in the Holocene
+and the Anthropocene.** (A) Holocene lake-periods of each park,
+climate-change periods (circles) beside stability periods (triangles).
+Small symbols are single lake-periods, large symbols the fitted means
+with 95% confidence intervals. (B) Anthropocene plot pairs (points) with
+the fitted mean and 95% confidence interval (diamond). Fitted means come
+from the same models as Figure 4. Lake-periods and plots whose observed
+or predicted position did not move have no pace or direction effect: the
+pace and direction panels hold 6 climate-change and 6 stability
+lake-periods at MORA. Holocene climate-change lake-periods span 200 to
+900 years and stability lake-periods 300 to 2600 years between their
+first and last sampled century. Anthropocene plot pairs span 27.5 to
+32.5 years between the midpoints of their climate windows (about 29
+years).
+
 Stages and helpers:
 [`R/pipeline/13_era_models.R`](R/pipeline/13_era_models.R),
 [`R/helpers/tracking_model_reporting.R`](R/helpers/tracking_model_reporting.R)
 (period types, paired AR(1) correlation),
-[`R/helpers/reconstruction_models.R`](R/helpers/reconstruction_models.R).
-Figures 4 and 5 are drawn in M08.
+[`R/helpers/reconstruction_models.R`](R/helpers/reconstruction_models.R),
+[`R/figures/main_fig4_era_contrasts.R`](R/figures/main_fig4_era_contrasts.R),
+[`R/figures/main_fig5_lag_pace_direction.R`](R/figures/main_fig5_lag_pace_direction.R).
 
 # Step 6. Species
 
@@ -749,10 +855,66 @@ shifts of these species reduced the gap that existed at the legacy
 survey. The two measures do not agree species by species, so both stay
 in Figure 7.
 
+<img src="report/figures/png/fig_species_contributions.png" alt="" width="100%" />
+
+**Figure 7. Species contributions in the Holocene and the
+Anthropocene.** Each species’ vector is its change in share between the
+first and the last sampled century of a lake-period, or between the
+legacy survey and the resurvey of a plot, times its fixed position in
+the CCA plane. The upper row projects these vectors on the direction in
+which the climate-predicted position moved, and the lower row on the gap
+from the observed to the predicted position at the start. Positive
+values mean the species moved the community with the climate (upper row)
+or closed the starting gap (lower row). Species are ordered by their
+score on rotated axis 1, the species of colder springs at the top.
+Symbols are means with 95% t-intervals: triangles, Holocene stability
+periods, circles, Holocene climate-change periods, diamonds,
+Anthropocene plot pairs (burned and unburned together). Symbols are
+faded where the interval includes zero. Species absent from a park’s
+Holocene record are marked so. Each park has its own x scale. Holocene
+climate-change lake-periods span 200 to 900 years and stability
+lake-periods 300 to 2600 years between their first and last sampled
+century. Anthropocene plot pairs span 27.5 to 32.5 years between the
+midpoints of their climate windows (about 29 years).
+
 Stages and helpers:
 [`R/pipeline/15_contributions.R`](R/pipeline/15_contributions.R),
-[`R/helpers/cca_transition_contributions.R`](R/helpers/cca_transition_contributions.R).
-Figure 7 is drawn in M08.
+[`R/helpers/cca_transition_contributions.R`](R/helpers/cca_transition_contributions.R),
+[`R/figures/main_fig7_species.R`](R/figures/main_fig7_species.R).
+
+# Appendix figures of the remodelled analysis
+
+<img src="report/figures/png/fig_standardized_climate_levels_four_variables.png" alt="" width="100%" />
+
+**Fig. A1. Holocene climate levels of the four seasonal variables.** As
+Figure 2A for spring temperature, winter temperature, summer
+precipitation and winter precipitation, without the rate labels. Only
+spring temperature and summer precipitation constrain the CCA and define
+the periods. (B) Fire-frequency ratio as in Figure 2B.
+
+<img src="report/figures/png/fig_standardized_climate_change_four_variables.png" alt="" width="100%" />
+
+**Fig. A2. How the climate periods were drawn.** (A) Equal-site regional
+median of the signed 1,000-year change of the four seasonal variables,
+standardized by the legacy calibration standard deviation. Filled points
+mark the cells of the two CCA constraints that qualify as directional
+change (beyond 50% of the variable’s maximum, with at least 8 of 10
+phases agreeing in direction). The periods are classified from these
+points. Winter temperature and winter precipitation are shown for
+context. Brackets at the left give each variable’s stability range. (B)
+Fire-frequency ratio as in Figure 2B.
+
+<img src="report/figures/png/fig_cca_biplot_unrotated.png" alt="" width="100%" />
+
+**Fig. A3. Unrotated CCA biplot.** As Figure 3A on the unrotated axes,
+labelled with their share of the total inertia.
+
+**Figure 1. Conceptual framework (caption revisions).** The drawing is
+unchanged. In panel B, the lag is the difference between the mismatches
+at t2 and t1, the first and last sampled century of a lake-period (one
+lake within one climate period), and the lag rate is that difference per
+century. In panel C, “at the same time point t” becomes “at t2”. The
+axis labels may read “Spring temperature” and “Summer precipitation”.
 
 # Figure 1. Conceptual framework
 
@@ -1206,54 +1368,7 @@ combination, resulting in 14 species included in the CCA.
 [05_species_selection](report/details/05_species_selection.md)
 (consolidation rules, excluded taxa, occupancy through time).
 
-# 4. Climate eras and high-fire periods
-
-Holocene climate change is classified into eras of climate change and
-relative stability from signed, calibration-standardized 1,000-year
-changes of the CCA climate variables; fire is classified independently
-(S2.3). Both feed Figure 2.
-
-<img src="report/figures/png/fig_standardized_climate_change_four_variables.png" alt="" width="100%" />
-
-**Fig. S9. Holocene climate change of the four seasonal variables,
-climate eras and high-fire periods.** (A) Equal-site regional median of
-the signed 1,000-year change of spring temperature (MSpT), winter
-temperature (MWT), summer precipitation (SP) and winter precipitation
-(WP), standardized by the legacy calibration standard deviation of each
-variable. Shading marks the climate-change (CC) and relative-stability
-(S) eras, which are classified from the two CCA constraints, MSpT and
-SP; filled points mark their qualifying cells (change beyond 50% of the
-variable’s maximum, with at least 8 of 10 phases agreeing in direction).
-Winter temperature and winter precipitation are shown for context and do
-not define eras. Brackets at the left give each variable’s stability
-range. (B) Fire-frequency ratio at each park; values above 1 are
-high-fire periods (Eq. 1).
-
-<img src="report/figures/png/fig_standardized_climate_change_eras_fire.png" alt="" width="100%" />
-
-**Figure 2. Climate eras, climate-change rates and high-fire periods**
-(manuscript Figure 2: the same panels with the two CCA constraints
-only).
-
-**Climate eras.**
-
-| Era | Class | Older (cal BP) | Younger (cal BP) | Active variables |
-|:---|:---|---:|---:|:---|
-| C1 | climate change | 9600 | 8600 | spring cooling;summer drying |
-| S1 | relative stability | 8600 | 8200 | — |
-| C2 | climate change | 8200 | 7200 | spring warming;summer wetting |
-| S2 | relative stability | 7200 | 6800 | — |
-| C3 | climate change | 6800 | 6200 | spring cooling |
-| S3 | relative stability | 6200 | 5400 | — |
-| C4 | climate change | 5400 | 4900 | spring warming |
-| S4 | relative stability | 4900 | 2200 | — |
-| C5 | climate change | 2200 | 1700 | spring warming |
-| S5 | relative stability | 1700 | 1300 | — |
-
-<sub>Table file:
-[climate_eras.csv](report/tables/climate_eras.csv)</sub>
-
-# 5. Canonical correspondence analysis
+# 4. Canonical correspondence analysis
 
 One CCA is fitted to the legacy composition of the 607 matched plots
 (MORA and NOCA pooled), constrained by the climate variables above
@@ -1300,15 +1415,12 @@ within parks).
 <sub>Table file:
 [cca_permutation_tests.csv](report/tables/cca_permutation_tests.csv)</sub>
 
-<img src="report/figures/png/fig_cca_trajectories.png" alt="" width="100%" />
-
-**Figure 3. Observed and climate-predicted community trajectories**
-(manuscript Figure 3).
+Figure 3 is shown in the Step 0 section above.
 
 **CCA details →** [06_cca](report/details/06_cca.md) (full model output,
 species and climate contributions, scaling 1 against scaling 2).
 
-# 6. Limitations and open questions
+# 5. Limitations and open questions
 
 CCA sample eligibility, balanced observed/predicted exclusions and
 paired Figure 3 endpoints are resolved and require no further decision.

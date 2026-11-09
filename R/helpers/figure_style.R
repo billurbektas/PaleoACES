@@ -1,4 +1,16 @@
-PAPER_SITE_COLORS = c(MORA = "#648FFF", NOCA = "#FE6100")
+# Figure conventions (PLAN.md section 6, Bills 9 Nov 2026). Where observed and
+# predicted are not distinguished, a park takes its observed colour.
+PARK_COLORS = c(MORA_observed = "#294EFF", MORA_predicted = "#97A9FF",
+  NOCA_observed = "#D94000", NOCA_predicted = "#FF9163")
+PAPER_SITE_COLORS = c(MORA = "#294EFF", NOCA = "#D94000")
+# Holocene-C circle, Holocene-S triangle, Anthropocene diamond (filled shapes).
+PERIOD_TYPE_SHAPES = c(`Holocene-C` = 21, `Holocene-S` = 24, Anthropocene = 23)
+RESPONSE_AXIS_LABELS = c(climate_rate = "Standardized climate change rate per century",
+  turnover_rate = "Turnover rate (CCA distance per century)",
+  lag_rate = "Lag rate (CCA distance per century)",
+  pace_effect = "Pace effect (CCA distance per century)",
+  direction_effect = "Direction effect (CCA distance per century)",
+  fire_activity = "Fire activity (events per century per covered core)")
 
 # Shared publication styling for the four main PaleoACES figures.
 

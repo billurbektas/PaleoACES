@@ -260,7 +260,7 @@ stopifnot(!grepl("holocene_period_candidates", source_text, fixed = TRUE),
     figure_text, fixed = TRUE))
 
 
-required_figures = c(fig("main", "fig_standardized_climate_change_eras_fire.pdf"),
+required_figures = c(fig("main", "fig_climate_levels_eras_fire.pdf"),
   fig("worked_examples", "fig_holocene_climate_period_method_worked_example.pdf"),
   fig("worked_examples", "fig_holocene_fire_method_worked_example.pdf"))
 if (render_figures)
