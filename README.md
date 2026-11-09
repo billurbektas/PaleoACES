@@ -744,17 +744,16 @@ and the Anthropocene.** (A) Holocene lake-periods of each park,
 climate-change periods (circles) beside stability periods (triangles).
 Small symbols are single lake-periods, large symbols the fitted means
 with 95% confidence intervals. (B) Anthropocene plot pairs (transparent
-violins) with the fitted mean and 95% confidence interval (diamond).
-Stars mark fitted means that differ from zero (two-sided t test: \* p \<
-0.05, \*\* p \< 0.01, \*\*\* p \< 0.001). Fitted means come from the
-same models as Figure 4. Lake-periods and plots whose observed or
-predicted position did not move have no pace or direction effect: the
-pace and direction panels hold 6 climate-change and 6 stability
-lake-periods at MORA. Holocene climate-change lake-periods span 200 to
-900 years and stability lake-periods 300 to 2600 years between their
-first and last sampled century. Anthropocene plot pairs span 27.5 to
-32.5 years between the midpoints of their climate windows (about 29
-years).
+violins) with the fitted mean and 95% confidence interval (diamond). A
+star marks a fitted mean that differs from zero (two-sided t test, p \<
+0.05). Fitted means come from the same models as Figure 4. Lake-periods
+and plots whose observed or predicted position did not move have no pace
+or direction effect: the pace and direction panels hold 6 climate-change
+and 6 stability lake-periods at MORA. Holocene climate-change
+lake-periods span 200 to 900 years and stability lake-periods 300 to
+2600 years between their first and last sampled century. Anthropocene
+plot pairs span 27.5 to 32.5 years between the midpoints of their
+climate windows (about 29 years).
 
 Stages and helpers:
 [`R/pipeline/13_era_models.R`](R/pipeline/13_era_models.R),

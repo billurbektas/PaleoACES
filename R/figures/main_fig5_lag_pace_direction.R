@@ -12,8 +12,9 @@ responses = c('lag_rate', 'pace_effect', 'direction_effect')
 both = read_csv(out('cca_tracking_both_eras.csv'), show_col_types = FALSE) |>
   pivot_longer(all_of(responses), names_to = 'response', values_to = 'value') |> filter(is.finite(value))
 means = read_csv(out('era_comparison/era_means.csv'), show_col_types = FALSE) |> filter(response %in% responses) |>
-  # Stars beside a fitted mean that differs from zero (two-sided t test of the mean).
-  mutate(stars = case_when(p_value < .001 ~ '***', p_value < .01 ~ '**', p_value < .05 ~ '*', TRUE ~ ''))
+  # One star beside a fitted mean that differs from zero (two-sided t test of
+  # the mean, p < 0.05).
+  mutate(stars = if_else(p_value < .05, '*', ''))
 dodge = position_dodge(width = .5)
 holocene_panel = function(r, tag) {
   d = both |> filter(response == r, period_type != 'Anthropocene')
