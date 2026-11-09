@@ -359,7 +359,7 @@ count (`max_group` in the printed table).
 The table below records the historical sweep before the 2026-10-06 GPS
 exclusion of CARI449/CARI450; alternative thresholds have not been rerun.
 The current threshold-20 model, with ponderosa restored and calibration restricted to matched plots, has 607 calibration plots and 1,514 positioned
-samples. See the [analysis review](../README.md) for its current fit.
+samples. See the [report](../../README.md) for its current fit.
 
 | `count.thr` | species | calib plots | positioned | CCA1 | CCA2 | constrained |
 |---|---|---|---|---|---|---|

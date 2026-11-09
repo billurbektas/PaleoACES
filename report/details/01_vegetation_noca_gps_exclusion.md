@@ -50,6 +50,6 @@ with the same species rule, constraints and geometry. Consequently, downstream
 coordinates and metrics for retained observations may also change. Chronology
 controls and stored posteriors are not refitted.
 
-The [analysis review](../README.md) contains current tables and figures;
+The [report](../../README.md) contains current tables and figures;
 the [scientific decisions](10_decisions.md#study-universes-and-vegetation)
 records the adopted exclusion and its consequences.

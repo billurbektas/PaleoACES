@@ -105,7 +105,7 @@ they are excluded from both observed and climate-predicted comparisons.
   endpoints receive explicit reasons if encountered.
 
 Generated totals, reasons and linked per-observation audits are in the
-[analysis review](../README.md#plots-and-samples-included-in-cca).
+[report](../../README.md#1-modern-vegetation).
 Figure 3's previously unequal endpoint membership is corrected by this decision.
 
 ## Adult resurvey dates and plot-specific climate — decided 2026-10-07
@@ -145,7 +145,7 @@ reinstatement on 2026-10-08 refits the shared CCA as recorded above.
 [95-plot discrepancy table](../../data/MORA/resurvey_year_source_discrepancies.csv),
 [13 latest visits](../tables/mora_repeat_visits.csv),
 [seedling visit mapping](../../data/MORA/resurvey_seedling_visit_mapping.csv) and
-[measured effects](../README.md#effects-of-the-2026-10-07-survey-date-decision)
+[measured effects](../../README.md#2-climate)
 record the adopted treatment. The chronology decisions below remain settled.
 
 ## Chronology and the previously discussed ²¹⁰Pb uncertainty
@@ -257,7 +257,7 @@ The detailed evidence and publication links are in the
 - Binary presence retains CCA's chi-square row and taxon weighting; it does not
   make plots or taxa equally weighted. The CCA1–CCA2 plane represents only part
   of total community inertia. The current axis percentages are reported in the
-  [analysis review](../README.md#cca-calibration-and-geometry).
+  [report](../../README.md#5-canonical-correspondence-analysis).
 - Resurvey and paleo observations do not fit the ordination, but their species
   counts influence the cross-group retention rule. This is a descriptive
   calibration/projection design, not an independent predictive validation.

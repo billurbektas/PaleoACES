@@ -1,4 +1,4 @@
-# Helpers for the report (report/README.Rmd and report/details/*.Rmd).
+# Helpers for the report (README.Rmd and report/details/*.Rmd).
 # Figures are shown from report/figures/; tables are read from output/ and
 # also saved under report/tables/; code is quoted verbatim from the scripts.
 source(here::here('R/helpers/config.R'), local = TRUE)
