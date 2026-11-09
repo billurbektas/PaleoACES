@@ -142,10 +142,13 @@ rot = read_output('cca_display_rotation.csv')
 pos3 = read_output('cca_tracking_holocene_century_positions.csv')
 ```
 
-**Figure 3. Climate and community positions in the CCA plane.** (A) Species (vectors from the
-centre, shaded from light to dark by their share of the constrained inertia, with the percentage of
-legacy plots in which each species occurs) and the two climate constraints (bold arrows) of the CCA
-fitted on `r cca_value('calibration_plots')` legacy plots. (B) Observed (dark colours) and
+**Figure 3. Climate and community positions in the CCA plane.** (A) The species that carry more
+than an equal share of the constrained inertia (100% divided by the `r nrow(read_output('cca_species_contributions.csv'))` taxa),
+`r sp3 = read_output('cca_species_contributions.csv'); sum(sp3$percent_constrained_inertia > 100 / nrow(sp3))` taxa holding
+`r sprintf('%.0f%%', sum(sp3$percent_constrained_inertia[sp3$percent_constrained_inertia > 100 / nrow(sp3)]))` of it (vectors from the centre,
+shaded from light to dark by their share, with the percentage of legacy plots in which each occurs), and the two
+climate constraints (bold arrows) of the CCA fitted on `r cca_value('calibration_plots')` legacy plots. All taxa are
+shown in Fig. A3. (B) Observed (dark colours) and
 climate-predicted (light colours) movement of each park: in the Holocene from the first to the last
 climate period with samples, in the Anthropocene from the legacy survey to the resurvey (averaged over
 `r n_group('Anthropocene', 'MORA')` MORA and `r n_group('Anthropocene', 'NOCA')` NOCA plot pairs). The MORA arrows run
@@ -748,7 +751,7 @@ show_figure('report/figures/supplementary/fig_cca_biplot_unrotated.pdf', width =
 ```
 
 **Fig. A3. Unrotated CCA biplot.** As Figure 3A on the unrotated axes, labelled with their share of
-the total inertia.
+the total inertia, with all taxa.
 
 **Figure 1. Conceptual framework (caption revisions).** The drawing is unchanged. In panel B, the lag
 is the difference between the mismatches at t2 and t1, the first and last sampled century of a

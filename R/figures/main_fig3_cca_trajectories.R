@@ -81,12 +81,21 @@ biplot = function(rotated = TRUE) {
   tr = if (rotated) rotate else as_xy
   sp = as_tibble(tr(species_scores)) |> mutate(species = rownames(species_scores)) |>
     left_join(contributions |> select(species, share = percent_constrained_inertia, prevalence_percent), by = 'species')
+  # The main panel shows only species above an equal share of the constrained
+  # inertia (100% / number of taxa), to declutter it (Bills); the appendix
+  # biplot shows every taxon.
+  if (rotated) sp = sp |> filter(share > 100 / nrow(species_scores))
   arrows = as_tibble(tr(bp)) |> mutate(variable = rownames(bp), label = unname(CLIMATE_VARIABLE_LABELS[variable]))
   mult = .75 * max(sqrt(sp$x^2 + sp$y^2)) / max(sqrt(arrows$x^2 + arrows$y^2))
   arrows = mutate(arrows, x = x * mult, y = y * mult)
+  # Species labels repel each other, the species points and the arrow tips;
+  # the climate labels sit just beyond their arrow tips, clear of the arrowheads.
   labels = bind_rows(
     sp |> transmute(x, y, label = sprintf('%s (%.1f%%)', species, prevalence_percent), fontface = 'italic', share),
-    arrows |> transmute(x = x * 1.05, y = y * 1.05, label, fontface = 'bold', share = NA_real_))
+    arrows |> transmute(x, y, label = '', fontface = 'plain', share = NA_real_))
+  arrow_labels = arrows |> mutate(lx = x * 1.1, ly = y * 1.1,
+    hjust = if_else(abs(x) > abs(y), if_else(x > 0, 1, 0), .5),
+    vjust = if_else(abs(x) > abs(y), if_else(y > 0, -.6, 1.6), if_else(y > 0, -.4, 1.4)))
   lim = square(range(c(sp$x, arrows$x)), range(c(sp$y, arrows$y)), pad = .25)
   imp = 100 * model$CCA$eig[1:2] / model$tot.chi
   ggplot() +
@@ -95,6 +104,8 @@ biplot = function(rotated = TRUE) {
     geom_point(data = sp, aes(x, y, color = share), size = 2.2) +
     geom_segment(data = arrows, aes(0, 0, xend = x, yend = y), linewidth = 1.4, color = 'black',
       arrow = arrow(length = unit(.3, 'cm'), type = 'closed')) +
+    geom_text(data = arrow_labels, aes(lx, ly, label = label, hjust = hjust, vjust = vjust), size = TEXT,
+      fontface = 'bold', color = 'black') +
     # Labels as in the earlier figure: white boxes without a border, leaders to
     # the exact scores, species text shaded like its vector.
     geom_label_repel(data = labels, aes(x, y, label = label, fontface = fontface, color = share),
@@ -103,6 +114,7 @@ biplot = function(rotated = TRUE) {
       min.segment.length = 0, max.overlaps = Inf, max.iter = 200000, max.time = 10, seed = 11,
       xlim = lim$x, ylim = lim$y, show.legend = FALSE) +
     scale_color_gradient(low = 'grey65', high = 'grey5', na.value = 'black', name = 'Share of constrained inertia (%)',
+      limits = c(0, max(contributions$percent_constrained_inertia)),
       guide = guide_colorbar(title.position = 'top', title.hjust = .5, barwidth = unit(9, 'cm'), barheight = unit(.6, 'cm'))) +
     coord_cartesian(xlim = lim$x, ylim = lim$y, expand = FALSE) +
     labs(tag = if (rotated) 'A.' else NULL,

@@ -121,11 +121,13 @@ rotation.
 
 <img src="report/figures/png/fig_cca_trajectories.png" alt="" width="100%" />
 
-**Figure 3. Climate and community positions in the CCA plane.** (A)
-Species (vectors from the centre, shaded from light to dark by their
-share of the constrained inertia, with the percentage of legacy plots in
-which each species occurs) and the two climate constraints (bold arrows)
-of the CCA fitted on 607 legacy plots. (B) Observed (dark colours) and
+**Figure 3. Climate and community positions in the CCA plane.** (A) The
+species that carry more than an equal share of the constrained inertia
+(100% divided by the 14 taxa), 7 taxa holding 80% of it (vectors from
+the centre, shaded from light to dark by their share, with the
+percentage of legacy plots in which each occurs), and the two climate
+constraints (bold arrows) of the CCA fitted on 607 legacy plots. All
+taxa are shown in Fig. A3. (B) Observed (dark colours) and
 climate-predicted (light colours) movement of each park: in the Holocene
 from the first to the last climate period with samples, in the
 Anthropocene from the legacy survey to the resurvey (averaged over 330
@@ -1148,7 +1150,7 @@ Fire-frequency ratio as in Figure 2B.
 <img src="report/figures/png/fig_cca_biplot_unrotated.png" alt="" width="100%" />
 
 **Fig. A3. Unrotated CCA biplot.** As Figure 3A on the unrotated axes,
-labelled with their share of the total inertia.
+labelled with their share of the total inertia, with all taxa.
 
 **Figure 1. Conceptual framework (caption revisions).** The drawing is
 unchanged. In panel B, the lag is the difference between the mismatches
