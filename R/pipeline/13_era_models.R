@@ -1,196 +1,141 @@
-# 13 Era models: Holocene vs Anthropocene GLS for each response, residual
-# covariance comparison (independent, MA(1), CAR(1)), the joint pace/direction
-# correction model, and individual-lake checks.
-
-# =============================================================================
-# 1. Combined-era models
-# =============================================================================
+# 13 Era models (PLAN.md section 5, Step 5a): Holocene stability periods,
+# Holocene climate-change periods and the Anthropocene compared within each
+# park, for climate change rate, turnover rate, lag rate, pace effect and
+# direction effect, and the joint pace and direction model. The Holocene is
+# never pooled into one value and the parks are never pooled (standing rule).
 source(here::here('R/helpers/config.R'), local = TRUE)
-suppressPackageStartupMessages({library(here);library(tidyverse);library(nlme);library(emmeans);library(patchwork)})
-source(here('R/helpers/reconstruction_models.R'),local=TRUE)
-source(here('R/helpers/tracking_model_reporting.R'),local=TRUE)
-combined=read_csv(out('cca_tracking_era_model_input.csv'),show_col_types=FALSE)
-validate_tracking_model_data(combined)
-figure_pages=list()
-for(metric in tracking_model_response_names()) {
-  selected=tracking_primary_model_input(combined,metric)
+suppressPackageStartupMessages({library(here); library(tidyverse); library(nlme); library(patchwork)})
+source(here('R/helpers/reconstruction_models.R'), local = TRUE)
+
+both = read_csv(out('cca_tracking_both_eras.csv'), show_col_types = FALSE) |>
+  mutate(period_type = factor(period_type, levels = ERA_PERIOD_TYPES), site = factor(site, levels = c('MORA', 'NOCA')),
+    period_type_site = interaction(period_type, site, drop = TRUE, sep = ' ')) |>
+  arrange(series, unit_index)
+results_dir = out('era_comparison')
+dir.create(results_dir, recursive = TRUE, showWarnings = FALSE)
+groups = expand_grid(site = factor(c('MORA', 'NOCA'), levels = c('MORA', 'NOCA')),
+  period_type = factor(ERA_PERIOD_TYPES, levels = ERA_PERIOD_TYPES))
+
+# Linear combinations of the fixed effects, with conditional 95% intervals and
+# residual degrees of freedom, as in the Step 5 models.
+linear = function(fit, L) {
+  L = L[, names(coef(fit)), drop = FALSE]
+  est = as.numeric(L %*% coef(fit)); se = sqrt(rowSums((L %*% vcov(fit)) * L))
+  df = fit$dims$N - fit$dims$p; q = qt(.975, df)
+  tibble(estimate = est, std_error = se, df, conf_low = est - q * se, conf_high = est + q * se,
+    p_value = 2 * pt(-abs(est / se), df))
+}
+contrast_rows = function(X, labels, pairs) {
+  L = t(vapply(pairs, function(p) X[labels == p[1], ] - X[labels == p[2], ], numeric(ncol(X))))
+  colnames(L) = colnames(X); L
+}
+CONTRASTS = list(c('Anthropocene', 'Holocene-C'), c('Anthropocene', 'Holocene-S'), c('Holocene-C', 'Holocene-S'))
+
+means = contrasts = folds = summary_rows = coefficient_rows = predictions = list(); fits = list()
+for (response in names(ERA_RESPONSES)) {
+  d = both |> mutate(estimate = .data[[response]]) |> filter(is.finite(estimate))
+  # Rule (standing rule, PLAN.md section 4): all six period type x park groups are present.
+  stopifnot(nlevels(droplevels(d$period_type_site)) == 6L)
 # report-snippet: era-model
-  entry=reconstruction_select(selected$data,estimate~era*site,variance='era_site')
-  if(is.null(entry$fit)) stop('All combined-era covariance fits failed: ',metric)
-  entry$metric=metric;entry$era='Combined';entry$specification='era_by_site'
-  results_dir=file.path(out('era_comparison'),metric)
-  tables=reconstruction_export(list(primary=entry),results_dir,selected$excluded)
-  means=emmeans(entry$fit,~era | site,data=entry$data,mode='satterthwaite')
-  mt=as.data.frame(summary(means,infer=c(TRUE,FALSE)))
-  group_means=as_tibble(mt) |> transmute(metric=metric,model_type=entry$selected,site,era,
-    estimate=emmean,std_error=SE,df,conf_low=lower.CL,conf_high=upper.CL,
-    n=map2_int(as.character(site),as.character(era),~sum(entry$data$site==.x & entry$data$era==.y)))
-  ct=as.data.frame(summary(contrast(means,method=list('Anthropocene - Holocene'=c(-1,1))),
-    infer=c(TRUE,TRUE),adjust='none'))
+  # AR(1) on the unit order within each series, fixed a priori (PLAN.md row 7):
+  # a lake for Holocene rows, a plot (one unit) for Anthropocene rows.
+  captured = reconstruction_capture(function() gls(estimate ~ period_type * site,
+    correlation = corAR1(form = ~ unit_index | series),
+    weights = varComb(varIdent(form = ~ 1 | period_type_site), varFixed(~ endpoint_var)),
+    data = d, method = 'REML', control = glsControl(msMaxIter = 500)))
 # end-snippet: era-model
-  contrasts=as_tibble(ct) |> transmute(metric=metric,model_type=entry$selected,site,contrast,
-    estimate,std_error=SE,df,p_value=p.value,conf_low=lower.CL,conf_high=upper.CL)
-  write_csv(group_means,file.path(results_dir,'model_group_means.csv'))
-  write_csv(contrasts,file.path(results_dir,'model_contrasts.csv'))
-  cat(capture.output(print(group_means)),capture.output(print(contrasts)),sep='\n',
-    file=file.path(results_dir,'model_results.txt'),append=TRUE)
-  if(isTRUE(getOption('paleoaces.render_figures',TRUE))) {
-    theme=reconstruction_model_theme()
-    gp=ggplot(group_means,aes(era,estimate,color=site,group=site))+
-      geom_line()+geom_errorbar(aes(ymin=conf_low,ymax=conf_high),width=.1)+geom_point(size=3)+
-      facet_wrap(~site)+scale_color_manual(values=c(MORA='#648FFF',NOCA='#FE6100'))+
-      labs(x=NULL,y=tracking_model_response_unit(metric),title=tracking_model_response_label(metric))+theme
-    cp=ggplot(contrasts,aes(site,estimate,color=site))+geom_hline(yintercept=0,linetype='dashed',color='grey60')+
-      geom_errorbar(aes(ymin=conf_low,ymax=conf_high),width=.12)+geom_point(size=3)+
-      scale_color_manual(values=c(MORA='#648FFF',NOCA='#FE6100'))+
-      labs(x=NULL,y='Anthropocene - Holocene',title=tracking_model_response_label(metric))+theme
-    ap=ggplot(entry$audit,aes(model_type,delta_AIC,fill=selected))+geom_col(width=.55)+
-      geom_hline(yintercept=2,linetype='dashed',color='grey50')+
-      scale_fill_manual(values=c('TRUE'='#648FFF','FALSE'='grey80'),guide='none')+
-      labs(x='Residual covariance',y='Delta REML AIC',
-        subtitle='MA(1) is primary. Independent and CAR1 are comparisons only.\nAll candidates use identical observations and fixed effects.')+theme
-    figures=list(group_means=gp,coefficients=reconstruction_coefficient_plot(tables$model_coefficients)+
-      labs(title=tracking_model_response_label(metric),subtitle='Primary MA(1): era × site')+
-      theme(legend.position='none',axis.text.y=element_blank(),axis.ticks.y=element_blank()),
-      contrasts=cp,residuals=reconstruction_residual_plot(tables$transition_predictions),aic=ap)
-    for(name in names(figures)) figure_pages[[name]]=c(figure_pages[[name]],list(figures[[name]]))
+  if (is.null(captured$fit)) stop('Era model failed: ', response, ': ', captured$error)
+  fit = captured$fit; fits[[response]] = fit
+  X = model.matrix(~ period_type * site, groups)
+  m = bind_cols(groups, linear(fit, X)) |>
+    mutate(response, n = map2_int(as.character(site), as.character(period_type),
+      ~ sum(d$site == .x & d$period_type == .y)), .before = 1)
+  means[[response]] = m
+  for (park in c('MORA', 'NOCA')) {
+    Xp = X[groups$site == park, , drop = FALSE]; labels = as.character(groups$period_type[groups$site == park])
+    contrasts[[paste(response, park)]] = tibble(response, site = park,
+      contrast = vapply(CONTRASTS, paste, character(1), collapse = ' - ')) |>
+      bind_cols(linear(fit, contrast_rows(Xp, labels, CONTRASTS)))
+    if (response %in% c('climate_rate', 'turnover_rate')) {
+      mp = m[m$site == park, ]
+      folds[[paste(response, park)]] = tibble(response, site = park,
+        against = c('Holocene-C', 'Holocene-S'),
+        fold = mp$estimate[mp$period_type == 'Anthropocene'] / mp$estimate[match(c('Holocene-C', 'Holocene-S'), mp$period_type)],
+        quoted_as_speed = against == 'Holocene-C')
+    }
   }
+  variance = coef(fit$modelStruct$varStruct, unconstrained = FALSE)
+  summary_rows[[response]] = tibble(response, n = nrow(d),
+    AR1_phi = as.numeric(coef(fit$modelStruct$corStruct, unconstrained = FALSE)),
+    variance_parameters = paste(sprintf('%s=%.3f', names(variance), variance), collapse = ';'),
+    R2 = reconstruction_r2(d$estimate, fitted(fit)), warnings = paste(captured$warnings, collapse = '; '))
+  coefficient_rows[[response]] = reconstruction_coefficients(fit, response, 'Combined', 'AR1')
+  predictions[[response]] = d |> transmute(metric = response, era = as.character(period_type), site,
+    series, unit_index, estimate, predicted = as.numeric(fitted(fit)),
+    normalized_residual = as.numeric(residuals(fit, type = 'normalized')))
 }
-for(name in names(figure_pages)) tracking_pdf_pages(figure_pages[[name]],
-  tracking_model_figure(paste0('fig_tracking_model_',name,'.pdf')),
-  width=12,height=if(name=='residuals') 10 else if(name=='coefficients') 12 else 6)
+durations = both |> group_by(period_type, site) |>
+  summarise(n = n(), duration_min = min(duration_yr), duration_max = max(duration_yr), .groups = 'drop')
+tables = list(era_means = bind_rows(means), era_contrasts = bind_rows(contrasts), era_folds = bind_rows(folds),
+  era_model_summary = bind_rows(summary_rows), era_coefficients = bind_rows(coefficient_rows),
+  era_predictions = bind_rows(predictions), era_durations = durations)
+for (name in names(tables)) write_csv(tables[[name]], file.path(results_dir, paste0(name, '.csv')))
+saveRDS(fits, file.path(results_dir, 'primary_fits.rds'))
+writeLines(c('Step 5a era models: estimate ~ period_type * site, AR(1) within series, endpoint weights.',
+  'Intervals are conditional 95% confidence intervals with residual degrees of freedom.',
+  unlist(lapply(names(fits), function(n) c('', n, capture.output(print(summary(fits[[n]]))))))),
+  file.path(results_dir, 'model_results.txt'))
+print(as.data.frame(tables$era_folds), digits = 3)
 
-# Additional joint correction model; the five separate response models above
-# keep their own valid observations and are not replaced by this paired fit.
-paired=tracking_joint_correction_input(combined)
-d=paired$data
-joint_out=out('era_comparison/joint_correction_effects')
-dir.create(joint_out,recursive=TRUE,showWarnings=FALSE)
-write_csv(d,file.path(joint_out,'model_input.csv'))
-captured=reconstruction_capture(function() {
+# Joint pace and direction model: the two corrections on the same units, with
+# their within-unit correlation estimated for each era x park.
+d = tracking_joint_correction_input(both)
+joint_out = out('era_comparison/joint_correction_effects')
+dir.create(joint_out, recursive = TRUE, showWarnings = FALSE)
+captured = reconstruction_capture(function() {
 # report-snippet: joint-correction-model
-  fit=gls(estimate~era*site*correction,data=d,correlation=corPairedMA1(),
-    weights=varIdent(form=~1 | era_site_correction),method='REML',na.action=na.fail,
-    control=glsControl(msMaxIter=500))
+  gls(estimate ~ period_type * site * correction, data = d,
+    correlation = corPairedAR1(sort(unique(d$pair_group))),
+    weights = varComb(varIdent(form = ~ 1 | period_type_site_correction), varFixed(~ endpoint_var)),
+    method = 'REML', na.action = na.fail, control = glsControl(msMaxIter = 500))
 # end-snippet: joint-correction-model
-  fit$call$model=estimate~era*site*correction
-  fit$call$correlation=quote(corPairedMA1())
-  fit$call$weights=quote(nlme::varIdent(form=~1 | era_site_correction))
-  fit
 })
-fit=captured$fit
-valid=!is.null(fit) && all(is.finite(coef(fit))) && all(is.finite(vcov(fit)))
-parameters=if(valid) coef(fit$modelStruct$corStruct,unconstrained=FALSE) else rep(NA_real_,5)
-audit=tibble(model_type='Paired_MA1',n=nrow(d),n_paired_units=nrow(d)/2,
-  row_signature=object_fingerprint(d),method='REML',converged=valid,
-  AIC=if(valid) AIC(fit) else NA_real_,n_covariance_parameters=5L,
-  n_parameters=if(valid) attr(logLik(fit),'df') else NA_integer_,
-  correlation_parameter=parameters[1],boundary=any(abs(parameters)>1-1e-4,na.rm=TRUE),
-  covariance_status=if(valid) reconstruction_covariance_status(fit) else 'fit_failed',
-  warnings=paste(captured$warnings,collapse='; '),fit_error=captured$error,
-  selected=valid,selection_policy='Paired corrections with primary MA(1) temporal covariance')
-entry=list(fit=fit,data=d,selected='Paired_MA1',audit=audit,
-  metric='joint_correction_effect_rate',era='Combined',specification='era_site_correction',
-  fixed=estimate~era*site*correction,variance='era_site_correction')
-joint_tables=reconstruction_export(list(joint=entry),joint_out,paired$excluded)
-if(!valid) stop('Joint correction GLS failed; see joint_correction_effects/model_results.txt')
+fit = captured$fit
+if (is.null(fit)) stop('Joint correction GLS failed: ', captured$error)
+grid = expand_grid(site = factor(c('MORA', 'NOCA'), levels = c('MORA', 'NOCA')),
+  period_type = factor(ERA_PERIOD_TYPES, levels = ERA_PERIOD_TYPES),
+  correction = factor(c('Pace', 'Direction'), levels = c('Pace', 'Direction')))
+X = model.matrix(~ period_type * site * correction, grid)
+joint_means = bind_cols(grid, linear(fit, X)) |> mutate(n = pmap_int(list(as.character(site),
+  as.character(period_type), as.character(correction)), function(s, p, k) sum(d$site == s & d$period_type == p & d$correction == k)))
+holm = function(x, family) x |> mutate(p_adjusted = p.adjust(p_value, 'holm'), adjustment = paste('Holm across', n(), family))
+key = paste(grid$site, grid$period_type, grid$correction)
+correction_contrasts = holm(bind_rows(lapply(seq_len(nrow(groups)), function(i) {
+  g = paste(groups$site[i], groups$period_type[i])
+  L = X[key == paste(g, 'Direction'), , drop = FALSE] - X[key == paste(g, 'Pace'), , drop = FALSE]
+  tibble(site = groups$site[i], period_type = groups$period_type[i], contrast = 'Direction - Pace') |> bind_cols(linear(fit, L))
+})), 'within period type and park correction comparisons')
+period_contrasts = holm(bind_rows(lapply(c('MORA', 'NOCA'), function(park) bind_rows(lapply(c('Pace', 'Direction'), function(k) {
+  sel = grid$site == park & grid$correction == k
+  tibble(site = park, correction = k, contrast = vapply(CONTRASTS, paste, character(1), collapse = ' - ')) |>
+    bind_cols(linear(fit, contrast_rows(X[sel, , drop = FALSE], as.character(grid$period_type[sel]), CONTRASTS)))
+})))), 'within park and correction period type comparisons')
+parameters = coef(fit$modelStruct$corStruct, unconstrained = FALSE)
+write_csv(d, file.path(joint_out, 'model_input.csv'))
+write_csv(joint_means, file.path(joint_out, 'model_group_means.csv'))
+write_csv(correction_contrasts, file.path(joint_out, 'correction_contrasts.csv'))
+write_csv(period_contrasts, file.path(joint_out, 'period_type_contrasts.csv'))
+write_csv(tibble(parameter = names(parameters), estimate = unname(parameters),
+  warnings = paste(captured$warnings, collapse = '; ')), file.path(joint_out, 'correlation_parameters.csv'))
+writeLines(c('Joint pace and direction GLS: estimate ~ period_type * site * correction, paired AR(1).',
+  capture.output(print(summary(fit)))), file.path(joint_out, 'model_results.txt'))
+saveRDS(fit, file.path(joint_out, 'primary_fit.rds'))
 
-em=emmeans(fit,~correction | era*site,data=d,mode='satterthwaite')
-mt=as_tibble(as.data.frame(summary(em,infer=c(TRUE,TRUE),adjust='none'))) |>
-  transmute(era,site,correction,model_type='Paired_MA1',estimate=emmean,std_error=SE,df,
-    conf_low=lower.CL,conf_high=upper.CL,p_zero=p.value) |>
-  left_join(count(d,era,site,correction,name='n'),by=c('era','site','correction'),relationship='one-to-one')
-correction_em=contrast(em,method=list('Direction - Pace'=c(-1,1)))
-contrast_table=function(x,family) {
-  as_tibble(as.data.frame(summary(x,infer=c(TRUE,TRUE),adjust='none'))) |>
-    rename(std_error=SE,p_value=p.value,conf_low=lower.CL,conf_high=upper.CL) |>
-    mutate(model_type='Paired_MA1',p_adjusted=p.adjust(p_value,method='holm'),
-      adjustment=paste('Holm across',n(),family),
-      interval_type='Unadjusted conditional 95% confidence interval',
-      significant=p_adjusted<.05,
-      significance=case_when(p_adjusted<.001~'***',p_adjusted<.01~'**',p_adjusted<.05~'*',TRUE~''))
+if (isTRUE(getOption('paleoaces.render_figures', TRUE))) {
+  joint_predictions = d |> transmute(metric = as.character(correction), era = as.character(period_type), site,
+    predicted = as.numeric(fitted(fit)), normalized_residual = as.numeric(residuals(fit, type = 'normalized')))
+  tracking_pdf_pages(list(reconstruction_residual_plot(tables$era_predictions),
+      reconstruction_residual_plot(joint_predictions)),
+    tracking_model_figure('fig_tracking_model_residuals.pdf'), width = 14, height = 12)
 }
-ct=contrast_table(correction_em,'within-era/park correction comparisons')
-era_em=emmeans(fit,~era | site*correction,data=d,mode='satterthwaite')
-era_ct=contrast_table(contrast(era_em,method=list('Anthropocene - Holocene'=c(-1,1))),
-  'within-park/correction era comparisons')
-interaction_ct=contrast_table(contrast(correction_em,
-  method=list('Anthropocene - Holocene correction difference'=c(-1,1)),by='site'),
-  'park-specific correction-by-era interactions')
-for(name in c('model_group_means','correction_contrasts','era_contrasts','correction_by_era_contrasts'))
-  write_csv(switch(name,model_group_means=mt,correction_contrasts=ct,era_contrasts=era_ct,
-    correction_by_era_contrasts=interaction_ct),file.path(joint_out,paste0(name,'.csv')))
-observed_means=read_csv(out('era_comparison/lag_rate_per_century/model_group_means.csv'),
-  show_col_types=FALSE) |> mutate(correction='Observed',p_zero=2*pt(-abs(estimate/std_error),df))
-zero_tests=bind_rows(mt,observed_means) |>
-  mutate(zero_test='Fitted mean = 0; unadjusted, two-sided Satterthwaite t test',
-    zero_significant=p_zero<.05,
-    zero_significance=case_when(p_zero<.001~'***',p_zero<.01~'**',p_zero<.05~'*',TRUE~''))
-write_csv(zero_tests,file.path(joint_out,'displayed_mean_zero_tests.csv'))
-write_csv(tibble(parameter=names(parameters),estimate=unname(parameters)),
-  file.path(joint_out,'correlation_parameters.csv'))
-cat('\nJoint correction-effect analysis: pace and direction only, paired on the same transitions.\n',
-  'Fixed effects: estimate ~ era * site * correction.\n',
-  'Residual SDs: era x site x correction. Temporal MA(1) uses preserved transition indices.\n',
-  'Paired correction correlations vary by era x site; modern plots are singleton temporal series.\n',
-  'Primary-only analysis; no additional Bacon fits. Joint means refer to complete correction pairs.\n',
-  'Contrasts are Direction effect minus Pace effect. Positive effects mean reduced lag after correction. Holm-adjusted p-values use separate stated families.\n',
-  'Displayed mean stars test zero using unadjusted two-sided Satterthwaite t tests.\n',
-  capture.output(print(count(d,era,site,correction))),
-  capture.output(print(mt)),capture.output(print(ct)),capture.output(print(era_ct)),
-  capture.output(print(interaction_ct)),sep='\n',file=file.path(joint_out,'model_results.txt'),append=TRUE)
-if(isTRUE(getOption('paleoaces.render_figures',TRUE))) {
-  predictions=joint_tables$transition_predictions |>
-    mutate(metric=as.character(correction))
-  tracking_pdf_pages(list(reconstruction_residual_plot(predictions)+
-    plot_annotation(title='Joint pace/direction correction-effect GLS: paired outcomes, temporal MA(1)')),
-    tracking_model_figure('fig_tracking_joint_correction_residuals.pdf'),width=12,height=10)
-}
-cat('Joint correction GLS:',nrow(d)/2,'paired units;',audit$covariance_status,'covariance uncertainty.\n')
-
-# =============================================================================
-# 2. Individual-lake checks
-# =============================================================================
-source(here::here('R/helpers/config.R'), local = TRUE)
-suppressPackageStartupMessages({library(here);library(tidyverse);library(nlme);library(emmeans)})
-source(here('R/helpers/reconstruction_models.R'),local=TRUE)
-source(here('R/helpers/tracking_model_reporting.R'),local=TRUE)
-combined=read_csv(out('cca_tracking_era_model_input.csv'),show_col_types=FALSE)
-figure_pages=list()
-for(metric in tracking_model_response_names()) {
-  parent=readRDS(file.path(out('era_comparison'),metric,'primary_fits.rds'))$primary
-  selected=tracking_primary_model_input(combined,metric)
-  coefficients=contrasts=audits=text=list();fits=list()
-  for(lake in unique(selected$data$lake[selected$data$era=='Holocene'])) {
-    park=as.character(unique(selected$data$site[selected$data$lake==lake & !is.na(selected$data$lake)]))
-    d=selected$data |> filter(site==park,era=='Anthropocene' | lake==.env$lake)
-    d$era_site=interaction(d$era,d$site,drop=TRUE)
-    e=reconstruction_select(d,estimate~era,variance='era',families=parent$selected)
-    audits[[lake]]=mutate(e$audit,lake=lake,site=park,metric=metric)
-    if(is.null(e$fit)) {text[[lake]]=paste(lake,'fit failed');next}
-    coefficients[[lake]]=reconstruction_coefficients(e$fit,metric,'Combined',e$selected) |> mutate(lake=lake,site=park)
-    mm=emmeans(e$fit,~era,data=d,mode='satterthwaite')
-    ct=as_tibble(as.data.frame(summary(contrast(mm,method=list('Anthropocene - Holocene'=c(-1,1))),
-      infer=c(TRUE,TRUE),adjust='none')))
-    contrasts[[lake]]=ct |> transmute(metric=metric,lake=lake,site=park,model_type=e$selected,
-      estimate,std_error=SE,df,p_value=p.value,conf_low=lower.CL,conf_high=upper.CL)
-    fits[[lake]]=e;text[[lake]]=c(lake,capture.output(print(summary(e$fit))),capture.output(print(ct)))
-  }
-  results_dir=file.path(out('lake_checks'),metric);dir.create(results_dir,recursive=TRUE,showWarnings=FALSE)
-  co=bind_rows(coefficients);ct=bind_rows(contrasts)
-  write_csv(co,file.path(results_dir,'model_coefficients.csv'));write_csv(ct,file.path(results_dir,'model_contrasts.csv'))
-  write_csv(bind_rows(audits),file.path(results_dir,'covariance_comparison.csv'));saveRDS(fits,file.path(results_dir,'primary_fits.rds'))
-  writeLines(unlist(text),file.path(results_dir,'model_results.txt'))
-  if(isTRUE(getOption('paleoaces.render_figures',TRUE))) for(type in c('coefficients','contrasts')) {
-    x=if(type=='coefficients') co else ct
-    p=ggplot(x,aes(estimate,lake,color=site))+geom_vline(xintercept=0,linetype='dashed',color='grey60')+
-      geom_errorbar(aes(xmin=conf_low,xmax=conf_high),orientation='y',width=.12)+geom_point(size=3)+
-      scale_color_manual(values=c(MORA='#648FFF',NOCA='#FE6100'))+
-      labs(x=if(type=='contrasts') 'Anthropocene - Holocene' else 'Coefficient estimate',y=NULL)+reconstruction_model_theme()
-    if(type=='coefficients') p=p+facet_wrap(~term,scales='free_x')
-    p=p+labs(title=tracking_model_response_label(metric))
-    figure_pages[[type]]=c(figure_pages[[type]],list(p))
-  }
-}
-for(type in names(figure_pages)) tracking_pdf_pages(figure_pages[[type]],
-  tracking_model_figure(paste0('fig_tracking_lake_',type,'.pdf'),role='lake'),width=12,height=7)
+cat('Era models:', length(fits), 'responses; joint model on', nrow(d) / 2, 'paired units.\n')

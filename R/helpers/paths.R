@@ -102,7 +102,6 @@ OUTPUT_REGISTRY = tibble::tribble(
   "chronology_reconstruction", "12_tracking", "Reconstruction bundle and primary reconstruction",
   # 13-15 models ------------------------------------------------------------
   "era_comparison", "13_era_models", "Era-comparison GLS fits, means and contrasts per response",
-  "lake_checks", "13_era_models", "Individual-lake era comparisons per response",
   "community_predictor_models", "14_predictor_models", "Within-era predictor GLS fits",
   "cca_transition_contributions", "15_contributions", "Species and climate contributions to displacement",
   "species_contribution_models", "15_contributions", "Species-contribution GLS fits",

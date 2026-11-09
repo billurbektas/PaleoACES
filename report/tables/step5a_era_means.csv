@@ -1,0 +1,31 @@
+Response,Park,Period type,n,Fitted mean,95% CI
+Climate change rate,MORA,Holocene-S,7,0.02656274092724325,0.007 to 0.046
+Climate change rate,MORA,Holocene-C,7,0.07170233494914122,0.033 to 0.110
+Climate change rate,MORA,Anthropocene,330,2.595929858551967,2.505 to 2.687
+Climate change rate,NOCA,Holocene-S,5,0.04146409047636033,0.022 to 0.061
+Climate change rate,NOCA,Holocene-C,5,0.06210215348865409,0.034 to 0.090
+Climate change rate,NOCA,Anthropocene,277,2.7148174480385645,2.488 to 2.941
+Turnover rate,MORA,Holocene-S,7,0.04010520981302695,0.010 to 0.070
+Turnover rate,MORA,Holocene-C,7,0.07664562513980279,0.035 to 0.119
+Turnover rate,MORA,Anthropocene,330,0.9321728274778004,0.843 to 1.021
+Turnover rate,NOCA,Holocene-S,5,0.10837654342573602,0.032 to 0.185
+Turnover rate,NOCA,Holocene-C,5,0.07965778728011516,0.014 to 0.145
+Turnover rate,NOCA,Anthropocene,277,2.1301741374505117,1.905 to 2.355
+Lag rate,MORA,Holocene-S,7,0.00778256920932129,-0.022 to 0.037
+Lag rate,MORA,Holocene-C,7,-1.8085824895356e-4,-0.059 to 0.059
+Lag rate,MORA,Anthropocene,330,0.5433770580995678,0.424 to 0.663
+Lag rate,NOCA,Holocene-S,5,0.02132161033419441,-0.050 to 0.093
+Lag rate,NOCA,Holocene-C,5,-0.00876902334924555,-0.041 to 0.023
+Lag rate,NOCA,Anthropocene,277,-0.08159353698443395,-0.359 to 0.195
+Pace effect,MORA,Holocene-S,6,0.01041021289188902,-0.029 to 0.050
+Pace effect,MORA,Holocene-C,6,4.50931011571485e-4,-0.054 to 0.055
+Pace effect,MORA,Anthropocene,254,0.16741250839253163,0.075 to 0.260
+Pace effect,NOCA,Holocene-S,5,0.02529224472804458,-0.047 to 0.097
+Pace effect,NOCA,Holocene-C,5,0.01407512070918826,-0.007 to 0.035
+Pace effect,NOCA,Anthropocene,211,-0.2716912025561197,-0.553 to 0.009
+Direction effect,MORA,Holocene-S,6,-0.0220438851217475,-0.068 to 0.024
+Direction effect,MORA,Holocene-C,6,-0.01865889688993882,-0.104 to 0.067
+Direction effect,MORA,Anthropocene,254,0.34447554342271713,0.179 to 0.510
+Direction effect,NOCA,Holocene-S,5,-0.01064321566442216,-0.069 to 0.047
+Direction effect,NOCA,Holocene-C,5,-0.03949241334737005,-0.091 to 0.012
+Direction effect,NOCA,Anthropocene,211,-0.26387572246083935,-0.576 to 0.048

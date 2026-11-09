@@ -61,7 +61,7 @@ is finished.
 | Step 1 | Climate periods and lake-periods | `r p = read_output('holocene_periods.csv'); sprintf('%d periods from %d to %d cal BP (%d C, %d S), none split', nrow(p), max(p$older_cal_bp), min(p$younger_cal_bp), sum(p$period_type == "Holocene-C"), sum(p$period_type == "Holocene-S"))` |
 | Steps 2 to 4 | Mismatch, lag, turnover, pace, direction, climate change rate and fire per lake-period | `r u = read_output('cca_tracking_lake_periods.csv'); sprintf('%d lake-periods (MORA %d, NOCA %d, %d C, %d S), %d to %d years long', nrow(u), sum(u$site == "MORA"), sum(u$site == "NOCA"), sum(u$period_type == "Holocene-C"), sum(u$period_type == "Holocene-S"), min(u$duration_yr), max(u$duration_yr))` |
 | Step 5 | Holocene explanatory models | `r x = read_output('community_predictor_models/model_coefficients.csv') |> dplyr::filter(era == 'Holocene'); g = function(m, t) x[x$metric == m & x$term == t, ]; sprintf('Lag rate rises with climate change rate (%+.2f, %.2f to %.2f), fire goes with a larger direction effect (%+.2f, %.2f to %.2f)', g('lag_rate','climate_rate')$estimate, g('lag_rate','climate_rate')$conf_low, g('lag_rate','climate_rate')$conf_high, g('direction_effect','fire_activity')$estimate, g('direction_effect','fire_activity')$conf_low, g('direction_effect','fire_activity')$conf_high)` |
-| Step 5a | Holocene against Anthropocene (era models) | (pending) |
+| Step 5a | Holocene against Anthropocene (era models) | `r f = read_output('era_comparison/era_folds.csv'); g = function(r, p) f$fold[f$response == r & f$site == p & f$against == 'Holocene-C']; sprintf('Anthropocene climate change %.0f (MORA) and %.0f (NOCA) times faster than in Holocene-C periods, turnover %.0f and %.0f times faster', g('climate_rate','MORA'), g('climate_rate','NOCA'), g('turnover_rate','MORA'), g('turnover_rate','NOCA'))` |
 | Step 6 | Species contributions | (pending) |
 
 # Step 0. Climate variables and the CCA
@@ -335,6 +335,89 @@ events per century per core).
 
 Stages and helpers: [`R/pipeline/14_predictor_models.R`](R/pipeline/14_predictor_models.R),
 [`R/helpers/reconstruction_models.R`](R/helpers/reconstruction_models.R). Figure 6 is drawn in M08.
+
+# Step 5a. Holocene against Anthropocene
+
+**What and why.** Each response is compared between the Holocene stability periods, the
+Holocene climate-change periods and the Anthropocene, within each park. The two Holocene types
+are never pooled, so back-and-forth change in the stability periods cannot cancel the directional
+change of the climate-change periods, and the parks are never pooled. The Holocene rows are the
+lake-periods and the Anthropocene rows are the plot pairs, in one model per response with
+group-specific residual spread, the endpoint weights and the AR(1) within each lake. Fire stays
+out of these models, because it is measured differently in the two eras. Rates over a few decades
+and over centuries are not on equal footing, since longer windows give lower rates, and every
+comparison states both time spans.
+
+**Decisions.**
+
+- 9 Nov 2026 (Bills, standing rule and `PLAN.md` rows 2, 8 and 23): Holocene-C and Holocene-S are
+  separate levels of `period_type`, compared with the Anthropocene in each park. Folds for
+  climate change rate and turnover rate against each Holocene type, with the Holocene-C fold the
+  one quoted as a speed.
+- 9 Nov 2026 (Bills, `PLAN.md` row 7): AR(1) fixed a priori. The old comparison of independent,
+  MA(1) and CAR(1) residuals is removed.
+- 9 Nov 2026 (taken in the run): the individual-lake era comparisons of the old analysis are no
+  longer run. A MORA lake has four to six lake-periods split between C and S, too few to compare
+  each type of a single lake with the Anthropocene, and NOCA has one lake, which the park model
+  already is.
+- 9 Nov 2026 (taken in the run): in the joint pace and direction model the AR(1) replaces the
+  old MA(1), the endpoint weights are added, and the correlation between the two corrections of a
+  unit is estimated per era and park (Holocene or Anthropocene), because a lake's series contains
+  both C and S lake-periods.
+
+**Model code.**
+
+```{r step5a-code}
+code_snippet('R/pipeline/13_era_models.R', 'era-model')
+code_snippet('R/pipeline/13_era_models.R', 'joint-correction-model')
+```
+
+**Result.**
+
+```{r step5a-results}
+era_dir = 'era_comparison'
+means = read_output(file.path(era_dir, 'era_means.csv'))
+contrasts = read_output(file.path(era_dir, 'era_contrasts.csv'))
+folds = read_output(file.path(era_dir, 'era_folds.csv'))
+durations = read_output(file.path(era_dir, 'era_durations.csv'))
+response_label = c(climate_rate = 'Climate change rate', turnover_rate = 'Turnover rate', lag_rate = 'Lag rate',
+  pace_effect = 'Pace effect', direction_effect = 'Direction effect')
+span = function(type) { d = durations[durations$period_type == type, ]; sprintf('%g to %g', min(d$duration_min), max(d$duration_max)) }
+spans = sprintf(paste('Holocene-C lake-periods span %s years, Holocene-S lake-periods %s years, and the',
+  'Anthropocene plot pairs %s years.'), span('Holocene-C'), span('Holocene-S'), span('Anthropocene'))
+means |> transmute(Response = response_label[response], Park = site, `Period type` = period_type, n,
+    `Fitted mean` = estimate, `95% CI` = sprintf('%.3f to %.3f', conf_low, conf_high)) |>
+  show_table('step5a_era_means', caption = paste('**Fitted means by period type and park.** Climate change',
+    'rate in calibration SD per century, the other responses in CCA distance per century.', spans))
+contrasts |> transmute(Response = response_label[response], Park = site, Contrast = contrast,
+    Estimate = estimate, `95% CI` = sprintf('%.3f to %.3f', conf_low, conf_high), p = p_value) |>
+  show_table('step5a_era_contrasts', caption = paste('**Contrasts between period types within each park**,',
+    'with conditional 95% confidence intervals.', spans))
+folds |> transmute(Response = response_label[response], Park = site, `Anthropocene over` = against,
+    Fold = fold, `Quoted as speed` = ifelse(quoted_as_speed, 'yes', 'no')) |>
+  show_table('step5a_era_folds', caption = paste('**Folds**: the Anthropocene fitted mean divided by the',
+    'Holocene fitted mean of each type.', spans))
+fold = function(r, p, a) folds$fold[folds$response == r & folds$site == p & folds$against == a]
+ct = function(r, p, k) { x = contrasts[contrasts$response == r & contrasts$site == p & contrasts$contrast == k, ]
+  sprintf('%+.2f (%.2f to %.2f)', x$estimate, x$conf_low, x$conf_high) }
+```
+
+Climate changed `r sprintf('%.0f', fold('climate_rate', 'MORA', 'Holocene-C'))` times faster at MORA
+and `r sprintf('%.0f', fold('climate_rate', 'NOCA', 'Holocene-C'))` times faster at NOCA in the
+Anthropocene than in the Holocene climate-change periods. The forest turned over
+`r sprintf('%.0f', fold('turnover_rate', 'MORA', 'Holocene-C'))` times faster at MORA and
+`r sprintf('%.0f', fold('turnover_rate', 'NOCA', 'Holocene-C'))` times faster at NOCA. At MORA the lag
+grew in the Anthropocene and did not grow in either Holocene type (Anthropocene minus Holocene-C
+`r ct('lag_rate', 'MORA', 'Anthropocene - Holocene-C')`, minus Holocene-S
+`r ct('lag_rate', 'MORA', 'Anthropocene - Holocene-S')` CCA distance per century). At NOCA the lag
+rate did not differ between the period types (`r ct('lag_rate', 'NOCA', 'Anthropocene - Holocene-C')`
+against Holocene-C). Within the Holocene, the C and S lake-periods did not differ in lag, pace or
+direction in either park. `r spans`
+
+Stages and helpers: [`R/pipeline/13_era_models.R`](R/pipeline/13_era_models.R),
+[`R/helpers/tracking_model_reporting.R`](R/helpers/tracking_model_reporting.R) (period types, paired
+AR(1) correlation), [`R/helpers/reconstruction_models.R`](R/helpers/reconstruction_models.R).
+Figures 4 and 5 are drawn in M08.
 
 # Figure 1. Conceptual framework
 
@@ -740,115 +823,7 @@ show_figure('report/figures/main/fig_cca_trajectories.pdf')
 `r details_link('06_cca', 'CCA details')` (full model output, species and climate contributions,
 scaling 1 against scaling 2).
 
-# 6. Tracking metrics
-
-For every transition (Holocene: consecutive native centuries of a lake; Anthropocene: legacy to
-resurvey of a plot) the observed (WA) and climate-predicted (LC) positions give the community
-displacement, the predicted displacement, the lag between them and its change, the tracking ratio
-and the angle between the two directions (`R/pipeline/12_tracking.R`).
-
-```{r tracking-code}
-code_snippet('R/helpers/tracking_metrics.R', 'tracking-geometry')
-code_snippet('R/helpers/tracking_metrics.R', 'tracking-corrections')
-```
-
-```{r lake-support}
-read_output('cca_tracking_holocene_lake_support.csv') |>
-  transmute(Site = site, Lake = lake, `Occupied centuries` = n_occupied_centuries,
-    Transitions = n_transitions, `Gaps > 100 yr` = n_gaps_over_100,
-    `Median duration (yr)` = duration_median, `Longest (yr)` = duration_max) |>
-  show_table('holocene_lake_support', caption = '**Holocene transitions per lake.**')
-```
-
-```{r fig-sampling}
-show_figure('report/figures/supplementary/fig_holocene_sampling_fire_100yr.pdf')
-```
-
-**Fig. S10. Holocene sampling support.** Macrofossil samples and accepted fire events on the native
-100-year climate intervals.
-
-`r details_link('07_tracking', 'Tracking details')` (output schema, transition displays,
-species and climate contributions).
-
-# 7. Era models
-
-Each tracking response is compared between the Holocene and the Anthropocene with a GLS with an
-era × site mean structure and era-by-site variances. Holocene transitions of a lake are
-neighbours in time: the primary residual structure is MA(1) within each lake series, compared
-with independent and continuous-time AR(1) residuals on identical observations.
-
-```{r era-code}
-code_snippet('R/helpers/reconstruction_models.R', 'gls-covariance')
-code_snippet('R/helpers/reconstruction_models.R', 'gls-fit')
-code_snippet('R/pipeline/13_era_models.R', 'era-model')
-```
-
-```{r era-contrasts}
-list.files(out('era_comparison'), pattern = '^model_contrasts[.]csv$', recursive = TRUE, full.names = TRUE) |>
-  map_dfr(readr::read_csv, show_col_types = FALSE) |>
-  transmute(Response = metric, Site = site, `Anthropocene − Holocene` = estimate, SE = std_error,
-    `95% CI low` = conf_low, `95% CI high` = conf_high, p = p_value, Covariance = model_type) |>
-  show_table('era_contrasts', caption = '**Anthropocene − Holocene contrasts by response and park.**')
-```
-
-```{r fig-4}
-show_figure('report/figures/main/fig_tracking_era_distributions.pdf')
-```
-
-**Figure 4. Era contrasts, observed lag change and correction effects** (manuscript Figure 4).
-
-The pace and direction correction effects of a transition are estimated jointly, with a paired
-MA(1) structure that keeps the two effects of the same transition correlated:
-
-```{r joint-code}
-code_snippet('R/pipeline/13_era_models.R', 'joint-correction-model')
-```
-
-`r details_link('08_models', 'Model details')` (covariance comparison, coefficients, residual
-checks and individual-lake checks for every response).
-
-# 8. Climate and fire predictors within eras
-
-Within each era, lag change and the correction effects are related to site, the climate-change
-rate and fire (Holocene: fire activity; Anthropocene: burned plots).
-
-```{r predictor-code}
-code_snippet('R/helpers/reconstruction_models.R', 'predictor-formulas')
-```
-
-```{r fig-5}
-show_figure('report/figures/main/fig_tracking_predictor_era_coefficients.pdf')
-```
-
-**Figure 5. Site, climate and fire effects on lag-change rates by era** (manuscript Figure 5).
-
-```{r fig-extended}
-show_figure('report/figures/models/fig_tracking_predictor_extended_coefficients.pdf', width = '70%')
-```
-
-**Fig. S11. Extended Anthropocene predictor model** (site + elevation + climate-change rate +
-burned).
-
-# 9. Species and seasonal-climate contributions
-
-Each CCA displacement is split exactly into species contributions and seasonal-climate
-contributions (`R/pipeline/15_contributions.R`).
-
-```{r fig-contributions}
-show_figure('report/figures/supplementary/fig_cca_transition_species_boxplots.pdf')
-```
-
-**Fig. S12. Species contributions to community displacement, by era and park.**
-
-```{r fig-climate-contributions}
-show_figure('report/figures/supplementary/fig_cca_transition_climate_boxplots.pdf')
-```
-
-**Fig. S13. Seasonal-climate contributions to predicted displacement, by era and park.**
-
-`r details_link('07_tracking', 'Contribution details')`.
-
-# 10. Limitations and open questions
+# 6. Limitations and open questions
 
 ```{r open-questions, results = 'asis'}
 decisions = readLines(here('report/details/10_decisions.md'))
