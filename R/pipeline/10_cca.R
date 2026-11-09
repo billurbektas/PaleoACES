@@ -577,9 +577,9 @@ stopifnot(identical(rownames(predicted_present), rownames(projected_present)),
 # -----------------------------------------------------------------------------
 # Scores and plotting frames shared by the maintained figure stages
 # -----------------------------------------------------------------------------
-past_sites     = scores(cca_model, display = "sites",   choices = 1:3, scaling = cca_scaling, hill = cca_hill)
-species_scores = scores(cca_model, display = "species", choices = 1:3, scaling = cca_scaling, hill = cca_hill)
-env_scores     = scores(cca_model, display = "bp",      choices = 1:3, scaling = cca_scaling, hill = cca_hill)
+past_sites     = scores(cca_model, display = "sites",   choices = 1:2, scaling = cca_scaling, hill = cca_hill)
+species_scores = scores(cca_model, display = "species", choices = 1:2, scaling = cca_scaling, hill = cca_hill)
+env_scores     = scores(cca_model, display = "bp",      choices = 1:2, scaling = cca_scaling, hill = cca_hill)
 
 species_contribution = sqrt(species_scores[, 1]^2 + species_scores[, 2]^2)
 top_species = names(sort(species_contribution, decreasing = TRUE))
@@ -603,16 +603,12 @@ env_df = as_tibble(env_scores, rownames = "variable")
 comparison_df = bind_rows(
   tibble(plot_id = rownames(species_present_final),
          predicted_CCA1 = predicted_present[, 1], predicted_CCA2 = predicted_present[, 2],
-         predicted_CCA3 = predicted_present[, 3],
-         projected_CCA1 = projected_present[, 1], projected_CCA2 = projected_present[, 2],
-         projected_CCA3 = projected_present[, 3]) %>%
+         projected_CCA1 = projected_present[, 1], projected_CCA2 = projected_present[, 2]) %>%
     left_join(site_fire_info_present, by = "plot_id") %>%
     mutate(era = "anthropocene"),
   tibble(plot_id = rownames(species_paleo),
          predicted_CCA1 = predicted_paleo[, 1], predicted_CCA2 = predicted_paleo[, 2],
-         predicted_CCA3 = predicted_paleo[, 3],
-         projected_CCA1 = projected_paleo[, 1], projected_CCA2 = projected_paleo[, 2],
-         projected_CCA3 = projected_paleo[, 3]) %>%
+         projected_CCA1 = projected_paleo[, 1], projected_CCA2 = projected_paleo[, 2]) %>%
     left_join(site_fire_info_paleo, by = "plot_id") %>%
     mutate(era = "holocene")
 ) %>%

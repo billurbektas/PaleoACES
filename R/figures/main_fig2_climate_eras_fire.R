@@ -36,7 +36,7 @@ anthropocene = read_csv(required[["anthropocene"]], show_col_types = FALSE)
 regional_phases = read_csv(required[["regional_phases"]], show_col_types = FALSE)
 thresholds = read_csv(required[["thresholds"]], show_col_types = FALSE)
 
-variables = c("MSpT", "MWT", "SP", "WP")
+variables = CCA_VARIABLES
 variable_labels = c(MSpT = "Spring temperature", MWT = "Winter temperature",
   SP = "Summer precipitation", WP = "Winter precipitation")
 # Paul Tol-inspired, color-vision-deficiency-safe colors. Temperature and

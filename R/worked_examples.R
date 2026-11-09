@@ -345,8 +345,9 @@ p6 = ggplot(fire_band, aes(cal_bp, site, fill = state)) +
 # =============================================================================
 # REVISED WORKED EXAMPLE
 # =============================================================================
+example_variable = if ("MWT" %in% CCA_VARIABLES) "MWT" else CCA_VARIABLES[1]
 example_phase = climate$regional_phases |>
-  filter(variable == "MWT", between(t, 6500, 10000))
+  filter(variable == example_variable, between(t, 6500, 10000))
 example_grid = climate$variable_cells |>
   filter(between(t, 6500, 10000))
 w1 = ggplot(example_phase, aes(t, regional_score, group = factor(offset),
@@ -354,7 +355,7 @@ w1 = ggplot(example_phase, aes(t, regional_score, group = factor(offset),
   geom_hline(yintercept = 0, color = "grey65") + geom_line(alpha = .55) +
   time_scale() + scale_color_viridis_d(option = "turbo") + theme_bw() +
   labs(title = "1. Ten phases expose placement sensitivity",
-    subtitle = "Example: winter temperature; direction is evaluated regionally",
+    subtitle = paste0("Example: ", tolower(CLIMATE_VARIABLE_LABELS[[example_variable]]), "; direction is evaluated regionally"),
     x = NULL, y = "Regional standardized change", color = "Offset")
 w2 = ggplot(example_grid, aes(t, regional_score, color = variable)) +
   geom_hline(data = threshold_lines, aes(yintercept = y), inherit.aes = FALSE,

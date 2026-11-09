@@ -18,6 +18,20 @@ base_theme = theme_paleoaces(base_size = 16) +
     panel.grid.minor = element_blank())
 imp = summary(cca_model)$cont$importance[2, ] * 100
 ax_lab = paste0(c("CCA1", "CCA2"), " ", round(imp[1:2], 1), "%")
+# Display-only rotation of the CCA plane (R/helpers/cca_display_rotation.R): every
+# coordinate drawn below is rotated rigidly; no analysis table is affected.
+source(here("R/helpers/cca_display_rotation.R"), local = TRUE)
+rotate_display = isTRUE(get0("CCA_DISPLAY_ROTATION", ifnotfound = FALSE))
+if (rotate_display) {
+  display_rotation = cca_display_rotation(scores(cca_model, display = "bp", choices = 1:2,
+    scaling = cca_scaling, hill = cca_hill))
+  ax_lab = paste0("Rotated axis ", 1:2, " (",
+    tolower(CLIMATE_VARIABLE_LABELS[display_rotation$axis_variables]), ")")
+  cat(sprintf("Display rotation: %.1f degrees (varimax, Kaiser 1958).\n", display_rotation$angle_degrees))
+}
+display_xy = function(d, x, y) if (rotate_display) rotate_columns(d, display_rotation, x, y) else d
+# Hand-tuned label positions and panel limits fit only the unrotated four-variable layout.
+tuned_layout = !rotate_display && identical(CCA_VARIABLES, c("MSpT", "MWT", "SP", "WP"))
 clim_full = CLIMATE_VARIABLE_LABELS[CCA_VARIABLES]
 full_name = function(x) unname(ifelse(x %in% names(clim_full), clim_full[x], x))
 
@@ -72,6 +86,7 @@ holo_pts=era_centroid_audit
 
 traj = bind_rows(anth_pts %>% select(-t),
                  holo_pts %>% select(site, era, o1, o2, p1, p2, n, order, lab)) %>%
+  display_xy("o1", "o2") %>% display_xy("p1", "p2") %>%
   mutate(grp = interaction(site, era)) %>%
   arrange(grp, order)
 
@@ -107,8 +122,8 @@ series_lab = series_label_positions %>%
   left_join(series_centers, by = c("site", "era", "type")) %>%
   left_join(series_anchors, by = c("site", "era", "type", "anchor_lab")) %>%
   mutate(
-    x = if_else(is.na(anchor_lab), center_x, anchor_x),
-    y = if_else(is.na(anchor_lab), center_y, anchor_y),
+    x = coalesce(anchor_x, center_x),
+    y = coalesce(anchor_y, center_y),
     lab = paste0(site, " ",
       if_else(era == "holocene", "Holocene", "Anthropocene"), "\n",
       str_to_title(as.character(type))),
@@ -138,6 +153,7 @@ env_bp = as_tibble(scores(cca_model,display="bp",choices=1:2,
   scaling=cca_scaling,hill=cca_hill),rownames="variable")
 sp_bp = as_tibble(scores(cca_model,display="species",choices=1:2,
   scaling=cca_scaling,hill=cca_hill),rownames="species")
+env_bp = display_xy(env_bp, "CCA1", "CCA2"); sp_bp = display_xy(sp_bp, "CCA1", "CCA2")
 tot_constrained=sum(cca_model$CCA$eig)
 sp_inertia=inertcomp(cca_model,display="species")
 sp_share=tibble(species=rownames(sp_inertia),
@@ -186,11 +202,14 @@ biplot_label_positions=tribble(
   "MWT",-2.0,-3.0,
   "SP",1.6,-3.0,
   "WP",5.0,-3.0)
+if (!tuned_layout) biplot_label_positions = biplot_label_positions[0, ]
 biplot_labels=biplot_labels %>% left_join(biplot_label_positions,by="name",relationship="one-to-one") %>%
-  mutate(nudge_x=label_x-x,nudge_y=label_y-y)
-stopifnot(nrow(sp_bp)==14L,nrow(env_bp)==4L,abs(sum(sp_bp$share_pct)-100)<1e-8,
+  mutate(nudge_x=coalesce(label_x-x,nudge_x),nudge_y=coalesce(label_y-y,nudge_y))
+stopifnot(nrow(sp_bp)==14L,nrow(env_bp)==length(CCA_VARIABLES),abs(sum(sp_bp$share_pct)-100)<1e-8,
   all(is.finite(biplot_labels$share_pct)),all(sp_bp$prev_pct>=0 & sp_bp$prev_pct<=100))
 write_csv(biplot_labels,out("figures/cca_figure_biplot_annotations.csv"))
+biplot_xlim=range(c(sp_bp$CCA1,env_bp$CCA1*arrow_mult))+c(-1,1)*1.6
+biplot_ylim=range(c(sp_bp$CCA2,env_bp$CCA2*arrow_mult))+c(-1,1)*1.0
 p_biplot=ggplot()+
   geom_hline(yintercept=0,color="grey88",linewidth=.4)+
   geom_vline(xintercept=0,color="grey88",linewidth=.4)+
@@ -212,7 +231,8 @@ p_biplot=ggplot()+
     guide=guide_colorbar(title.position="top",title.hjust=.5,
       barwidth=unit(5,"cm"),barheight=unit(.35,"cm")))+
   scale_discrete_identity(aesthetics="fontface")+
-  coord_equal(xlim=c(-7.5,6.5),ylim=c(-3.6,6.1),expand=FALSE,clip="off")+
+  coord_equal(xlim=if (tuned_layout) c(-7.5,6.5) else biplot_xlim,
+    ylim=if (tuned_layout) c(-3.6,6.1) else biplot_ylim,expand=FALSE,clip="off")+
   labs(tag="A.",x=ax_lab[1],y=ax_lab[2])+
   base_theme+theme(legend.title=element_text(size=14),legend.text=element_text(size=13),
     plot.subtitle=element_text(size=13,color="grey35"),plot.margin=margin(10,20,10,10))
@@ -238,7 +258,7 @@ trajectory_labels=bind_rows(
 write_csv(traj_long %>% mutate(display_color=unname(path_colors[path_color]),display_alpha=1),
   out("figures/cca_figure_trajectory_display.csv"))
 calib_proj=predict(cca_model,newdata=species_past_final,type="wa",scaling=cca_scaling,hill=cca_hill)
-calib=tibble(o1=calib_proj[,1],o2=calib_proj[,2])
+calib=display_xy(tibble(o1=calib_proj[,1],o2=calib_proj[,2]),"o1","o2")
 zpad=.12
 zx=range(traj_long$x)+c(-1,1)*zpad*diff(range(traj_long$x))
 zy=range(traj_long$y)+c(-1,1)*zpad*diff(range(traj_long$y))

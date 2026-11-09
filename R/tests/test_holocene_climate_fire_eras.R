@@ -27,7 +27,7 @@ anthropocene_climate = read_csv(
   out("cca_tracking_anthropocene_plot_calculations.csv"), show_col_types = FALSE)
 
 stopifnot(
-  setequal(thresholds$variable, c("MSpT", "MWT", "SP", "WP")),
+  setequal(thresholds$variable, CCA_VARIABLES),
   all(thresholds$threshold_fraction_of_maximum == .5),
   all(thresholds$required_phases == 8L),
   isTRUE(all.equal(thresholds$threshold_standardized_change,

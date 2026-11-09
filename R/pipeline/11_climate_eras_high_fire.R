@@ -25,12 +25,10 @@ if (!all(file.exists(required))) stop("Missing unified-era input(s): ",
   paste(required[!file.exists(required)], collapse = ", "),
   ". Run CCA reference and R/pipeline/08_fire_records.R first.")
 
-PRIMARY_VARS = c("MSpT", "MWT", "SP", "WP")
-if (!identical(CCA_VARIABLES, PRIMARY_VARS))
-  stop("CCA variables changed; review the unified-era contract.")
-VARIABLE_UNITS = c(MSpT = "deg C", MWT = "deg C", SP = "mm", WP = "mm")
-VARIABLE_LABELS = c(MSpT = "Spring temperature", MWT = "Winter temperature",
-                    SP = "Summer precipitation", WP = "Winter precipitation")
+# Eras are classified from the CCA constraints (R/helpers/config.R).
+PRIMARY_VARS = CCA_VARIABLES
+VARIABLE_UNITS = setNames(ifelse(CLIMATE_VARIABLE_UNITS[PRIMARY_VARS] == "mm", "mm", "deg C"), PRIMARY_VARS)
+VARIABLE_LABELS = CLIMATE_VARIABLE_LABELS[PRIMARY_VARS]
 THRESHOLD_FRACTION = 0.50
 REQUIRED_PHASES = 8L
 
@@ -54,7 +52,7 @@ climate_raw = build_climate_changes_1000yr(levels, PRIMARY_VARS,
   VARIABLE_UNITS)
 scaling = read_csv(CLIMATE_SCALING, show_col_types = FALSE) |>
   filter(variable %in% PRIMARY_VARS)
-if (nrow(scaling) != 4L || any(!is.finite(scaling$sd)) || any(scaling$sd <= 0))
+if (nrow(scaling) != length(PRIMARY_VARS) || any(!is.finite(scaling$sd)) || any(scaling$sd <= 0))
   stop("Legacy CCA climate scaling is incomplete or invalid.")
 
 climate = classify_climate_era_union(climate_raw$site_cells, scaling,
