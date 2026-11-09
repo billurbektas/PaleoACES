@@ -154,7 +154,7 @@ from `r spans3$first_period[spans3$site == 'MORA']` to `r spans3$last_period[spa
 `r p3 = read_output('holocene_periods.csv'); f3 = p3[p3$period == spans3$first_period[spans3$site == 'MORA'], ]; in3 = pos3$site == 'MORA' & pos3$century_cal_bp < f3$older_cal_bp & pos3$century_cal_bp >= f3$younger_cal_bp; sum(pos3$n_samples[in3])` samples in `r sum(in3)` lake-centuries.
 The NOCA arrows run from `r spans3$first_period[spans3$site == 'NOCA']` to `r spans3$last_period[spans3$site == 'NOCA']`
 (`r spans3$first_older[spans3$site == 'NOCA']` to `r spans3$last_younger[spans3$site == 'NOCA']` cal BP). Grey dots are the legacy calibration
-plots. The dashed boxes C and D mark the extent of the zoomed panels. (C, D) The full Holocene sequence
+plots. Labels mark the Holocene start and end and the legacy survey and resurvey. (C, D) The full Holocene sequence
 of period centroids at MORA and NOCA, observed and predicted, each period named at its observed
 centroid (C, climate-change period, S, stability period). Each centroid averages the sampled centuries
 of each lake within the period, with the lakes weighted equally. Axes orthogonally rotated (varimax,

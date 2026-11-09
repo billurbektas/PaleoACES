@@ -132,15 +132,16 @@ Anthropocene from the legacy survey to the resurvey (averaged over 330
 MORA and 277 NOCA plot pairs). The MORA arrows run from S2 to S5 (7200
 to 1300 cal BP), and the first MORA period rests on 2 samples in 2
 lake-centuries. The NOCA arrows run from C1 to S5 (9600 to 1300 cal BP).
-Grey dots are the legacy calibration plots. The dashed boxes C and D
-mark the extent of the zoomed panels. (C, D) The full Holocene sequence
-of period centroids at MORA and NOCA, observed and predicted, each
-period named at its observed centroid (C, climate-change period, S,
-stability period). Each centroid averages the sampled centuries of each
-lake within the period, with the lakes weighted equally. Axes
-orthogonally rotated (varimax, -23.4 degrees) for display, so that axis
-1 follows spring temperature and axis 2 summer precipitation. All
-metrics are rotation-invariant. The unrotated biplot is Fig. A3.
+Grey dots are the legacy calibration plots. Labels mark the Holocene
+start and end and the legacy survey and resurvey. (C, D) The full
+Holocene sequence of period centroids at MORA and NOCA, observed and
+predicted, each period named at its observed centroid (C, climate-change
+period, S, stability period). Each centroid averages the sampled
+centuries of each lake within the period, with the lakes weighted
+equally. Axes orthogonally rotated (varimax, -23.4 degrees) for display,
+so that axis 1 follows spring temperature and axis 2 summer
+precipitation. All metrics are rotation-invariant. The unrotated biplot
+is Fig. A3.
 
 Stages and helpers: [`R/pipeline/10_cca.R`](R/pipeline/10_cca.R),
 [`R/helpers/cca_report.R`](R/helpers/cca_report.R) (screening and
