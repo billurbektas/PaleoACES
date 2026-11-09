@@ -198,6 +198,41 @@ Stages and helpers:
 [`R/helpers/holocene_climate_fire_era_functions.R`](R/helpers/holocene_climate_fire_era_functions.R).
 Figure 2 is drawn in M08.
 
+# Steps 1 to 4. Lake-periods and their responses
+
+## Positions per sampled century
+
+**What and why.** Each macrofossil sample has an observed position in
+the CCA plane (its WA score, from the taxa it contains). Each lake also
+has a climate-predicted position for every century (its LC score, from
+that lake’s own climate cell). Samples are dated by the median of their
+Bacon ages and grouped by century. The observed position of a century is
+the centroid of its samples’ WA positions. No vegetation is interpolated
+between sampled centuries. These century positions feed the lake-periods
+below and the period centroids of Figure 3. No model is fitted on the
+century steps any more.
+
+**Sampled centuries per lake** on the MSpT + SP CCA.
+
+| Park | Lake | Sampled centuries | Samples | Centuries with one sample | Oldest (cal BP) | Youngest (cal BP) |
+|:---|:---|---:|---:|---:|---:|---:|
+| MORA | JayBath | 44 | 48 | 41 | 6850 | -50 |
+| MORA | LogWallow | 35 | 40 | 31 | 6850 | -50 |
+| MORA | ReflectionPond | 27 | 31 | 24 | 6250 | -50 |
+| NOCA | PantherPotholes | 108 | 812 | 1 | 10650 | -50 |
+
+<sub>Table file:
+[step1_sampled_centuries.csv](report/tables/step1_sampled_centuries.csv)</sub>
+
+The three MORA lakes begin about 6,850 cal BP and most of their
+centuries rest on a single sample. Panther Potholes (NOCA) covers the
+whole Holocene with several samples per century.
+
+Stages and helpers:
+[`R/pipeline/12_tracking.R`](R/pipeline/12_tracking.R),
+[`R/helpers/century_tracking.R`](R/helpers/century_tracking.R),
+[`R/helpers/tracking_metrics.R`](R/helpers/tracking_metrics.R).
+
 # Figure 1. Conceptual framework
 
 *To be added (conceptual figure, not produced by the code).*
