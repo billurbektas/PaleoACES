@@ -400,8 +400,10 @@ R2 = function(r, e) sprintf('%.2f', perf6$R2[perf6$response == r & perf6$era == 
 ```
 
 **Figure 6. Climate and fire associations.** Model slopes with conditional 95% confidence
-intervals, grouped by response: lag rate, pace effect and direction effect. Faded estimates have
-intervals that include zero. (A) Holocene lake-periods, model response ~ site + climate change rate +
+intervals for the lag rate (black), the pace effect (pink) and the direction effect (blue), side by
+side for each term, in the colours of Figure 1. Both panels share one x scale. Faded estimates have
+intervals that include zero. All three responses are per century: the change in mismatch, or the
+reduction in final mismatch under the pace or direction correction, divided by the elapsed time. (A) Holocene lake-periods, model response ~ site + climate change rate +
 fire activity with an AR(1) correlation within each lake and weights for the number of samples at each
 end: `r perf6$n_MORA[perf6$response == 'lag_rate' & perf6$era == 'Holocene']` MORA and
 `r perf6$n_NOCA[perf6$response == 'lag_rate' & perf6$era == 'Holocene']` NOCA lake-periods for the lag rate, and

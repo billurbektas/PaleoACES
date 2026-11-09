@@ -522,21 +522,25 @@ from the narrow range within each park (MORA 0.10 to 0.33, NOCA 0.33 to
 <img src="report/figures/png/fig_climate_fire_associations.png" alt="" width="100%" />
 
 **Figure 6. Climate and fire associations.** Model slopes with
-conditional 95% confidence intervals, grouped by response: lag rate,
-pace effect and direction effect. Faded estimates have intervals that
-include zero. (A) Holocene lake-periods, model response ~ site + climate
-change rate + fire activity with an AR(1) correlation within each lake
-and weights for the number of samples at each end: 14 MORA and 10 NOCA
-lake-periods for the lag rate, and 12 and 10 for pace and direction. The
-climate slope is per standardized unit of climate change per century and
-the fire slope per accepted event per century per covered core. (B)
-Anthropocene plot pairs, model response ~ site + burned with
-park-specific variances: 607 plot pairs for the lag rate and 465 for
-pace and direction. Descriptive R² is given below each panel. Holocene
-climate-change lake-periods span 200 to 900 years and stability
-lake-periods 300 to 2600 years between their first and last sampled
-century. Anthropocene plot pairs span 27.5 to 32.5 years between the
-midpoints of their climate windows (about 29 years).
+conditional 95% confidence intervals for the lag rate (black), the pace
+effect (pink) and the direction effect (blue), side by side for each
+term, in the colours of Figure 1. Both panels share one x scale. Faded
+estimates have intervals that include zero. All three responses are per
+century: the change in mismatch, or the reduction in final mismatch
+under the pace or direction correction, divided by the elapsed time. (A)
+Holocene lake-periods, model response ~ site + climate change rate +
+fire activity with an AR(1) correlation within each lake and weights for
+the number of samples at each end: 14 MORA and 10 NOCA lake-periods for
+the lag rate, and 12 and 10 for pace and direction. The climate slope is
+per standardized unit of climate change per century and the fire slope
+per accepted event per century per covered core. (B) Anthropocene plot
+pairs, model response ~ site + burned with park-specific variances: 607
+plot pairs for the lag rate and 465 for pace and direction. Descriptive
+R² is given below each panel. Holocene climate-change lake-periods span
+200 to 900 years and stability lake-periods 300 to 2600 years between
+their first and last sampled century. Anthropocene plot pairs span 27.5
+to 32.5 years between the midpoints of their climate windows (about 29
+years).
 
 Stages and helpers:
 [`R/pipeline/14_predictor_models.R`](R/pipeline/14_predictor_models.R),
