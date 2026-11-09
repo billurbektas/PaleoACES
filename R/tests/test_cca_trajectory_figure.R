@@ -1,17 +1,17 @@
 # Offline gate for the selected publication CCA trajectory architecture.
+source(here::here('R/helpers/config.R'), local = TRUE)
 suppressPackageStartupMessages({library(here); library(tidyverse)})
 render_figures = isTRUE(getOption("paleoaces.render_figures", TRUE))
 
-centroid_path = here("output/cca_trajectory_era_centroids.csv")
-figure_files = here(c("plot/fig_cca_trajectories.pdf",
-                      "plot/fig_cca_trajectories.png"))
+centroid_path = out("figures/cca_trajectory_era_centroids.csv")
+figure_files = c(fig("main", "fig_cca_trajectories.pdf"), fig("main", "fig_cca_trajectories.png"))
 stopifnot(file.exists(centroid_path))
 if (render_figures)
   stopifnot(all(file.exists(figure_files)), all(file.info(figure_files)$size > 5000))
 
 centroids = read_csv(centroid_path, show_col_types = FALSE)
-modern = read_csv(here("output/cca_trajectory_anthropocene_centroids.csv"), show_col_types = FALSE)
-tracking_pairs = read_csv(here("output/cca_tracking_anthropocene_plot_calculations.csv"), show_col_types = FALSE)
+modern = read_csv(out("figures/cca_trajectory_anthropocene_centroids.csv"), show_col_types = FALSE)
+tracking_pairs = read_csv(out("cca_tracking_anthropocene_plot_calculations.csv"), show_col_types = FALSE)
 stopifnot(nrow(modern) == 4L, !anyDuplicated(modern[c("site", "t")]),
           all(is.finite(unlist(select(modern, o1, o2, p1, p2)))))
 # Independent means of the actual tracking endpoints must reproduce Figure 3;
@@ -36,8 +36,8 @@ stopifnot(
 )
 
 # Independently verify equal-lake weighting and original primary century means.
-positions=read_csv(here('output/cca_tracking_holocene_century_positions.csv'),show_col_types=FALSE)
-catalog=read_csv(here('output/holocene_era_catalog.csv'),show_col_types=FALSE)
+positions=read_csv(out('cca_tracking_holocene_century_positions.csv'),show_col_types=FALSE)
+catalog=read_csv(out('holocene_era_catalog.csv'),show_col_types=FALSE)
 for(i in seq_len(nrow(centroids))) {
   row=centroids[i,];period=catalog[catalog$era_id==row$era_id,]
   x=positions |> filter(site==row$site,century_cal_bp>=period$younger_cal_bp,
@@ -49,9 +49,9 @@ for(i in seq_len(nrow(centroids))) {
 }
 
 # Independently verify the information transferred from the former bar panels.
-labels=read_csv(here("output/cca_figure_biplot_annotations.csv"),show_col_types=FALSE)
-sp=read_csv(here("output/report/cca_species_contributions.csv"),show_col_types=FALSE)
-cl=read_csv(here("output/report/cca_climate_contributions.csv"),show_col_types=FALSE)
+labels=read_csv(out("figures/cca_figure_biplot_annotations.csv"),show_col_types=FALSE)
+sp=read_csv(out("cca_species_contributions.csv"),show_col_types=FALSE)
+cl=read_csv(out("cca_climate_contributions.csv"),show_col_types=FALSE)
 stopifnot(nrow(labels)==18L,!anyDuplicated(labels$name),all(is.finite(labels$share_pct)),
   setequal(labels$name, c(sp$species,cl$variable)))
 ls=labels |> filter(component=='Species') |> arrange(name)
@@ -64,7 +64,7 @@ lc=labels |> filter(component=='Climate') |> arrange(name)
 cl=arrange(cl,variable)
 stopifnot(max(abs(lc$share_pct-cl$unique_percent_constrained))<1e-10)
 # Full-opacity path colors are actual lighter RGB values, not alpha blending.
-display=read_csv(here('output/cca_figure_trajectory_display.csv'),show_col_types=FALSE)
+display=read_csv(out('figures/cca_figure_trajectory_display.csv'),show_col_types=FALSE)
 stopifnot(all(display$display_alpha==1),all(nchar(display$display_color)==7L))
 for(site_name in c('MORA','NOCA')) {
   observed=unique(display$display_color[display$site==site_name & display$type=='observed'])
@@ -81,14 +81,6 @@ if(render_figures && nzchar(Sys.which('pdftotext'))) {
     str_detect(text,fixed('Constrained inertia (%)')))
 }
 
-retired = here(c(
-  "R/05b_cca_trajectory_alternatives.R",
-  "output/cca_trajectory_alternatives_spec.csv",
-  "plot/fig_cca_trajectories_era_centroids.pdf",
-  "plot/fig_cca_trajectories_era_centroids.png",
-  "plot/fig_cca_trajectories_full_holocene_sites.pdf",
-  "plot/fig_cca_trajectories_full_holocene_sites.png"))
-stopifnot(!any(file.exists(retired)))
 
 pdf_pages = function(path) {
   if (!nzchar(Sys.which("pdfinfo"))) return(NA_integer_)

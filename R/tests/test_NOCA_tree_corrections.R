@@ -1,21 +1,22 @@
 # Offline regression checks for the authoritative 2026 NOCA tree patch.
+source(here::here('R/helpers/config.R'), local = TRUE)
 suppressPackageStartupMessages({library(here); library(dplyr); library(readr); library(readxl)})
 
 corrected = read_excel(
   here("data/NOCA/OriginalDataFiles_NOCA/2026_corrected_trees_for_Billur.xlsx"),
   sheet = "Trees"
 )
-audit = read_csv(here("output/NOCA_tree_correction_audit.csv"), show_col_types = FALSE)
+audit = read_csv(out("NOCA_tree_correction_audit.csv"), show_col_types = FALSE)
 composition_audit = read_csv(
-  here("output/NOCA_tree_composition_audit.csv"), show_col_types = FALSE
+  out("NOCA_tree_composition_audit.csv"), show_col_types = FALSE
 )
 study_exclusions = read_csv(
-  here("output/NOCA_study_exclusions.csv"), show_col_types = FALSE
+  out("NOCA_study_exclusions.csv"), show_col_types = FALSE
 )
-occ = read_csv(here("output/NOCA_occ.csv"), show_col_types = FALSE)
-plot_info = read_csv(here("output/NOCA_plot_info.csv"), show_col_types = FALSE)
+occ = read_csv(out("NOCA_occ.csv"), show_col_types = FALSE)
+plot_info = read_csv(out("NOCA_plot_info.csv"), show_col_types = FALSE)
 coordinate_audit = read_csv(
-  here("output/NOCA_coordinate_collision_audit.csv"), show_col_types = FALSE
+  out("NOCA_coordinate_collision_audit.csv"), show_col_types = FALSE
 )
 
 coordinate_collisions = plot_info %>%
@@ -59,10 +60,10 @@ stopifnot(
 )
 # Both dates, stage records and kept-plot accounting must share this exclusion.
 for (name in c("NOCA_present_occ", "NOCA_past_occ", "NOCA_occ_stage")) {
-  x = read_csv(here("output", paste0(name, ".csv")), show_col_types = FALSE)
+  x = read_csv(out(paste0(name, ".csv")), show_col_types = FALSE)
   stopifnot(!any(c("CARI449", "CARI450") %in% x$plot_id))
 }
-tracking = read_csv(here("output/NOCA_plot_tracking.csv"), show_col_types = FALSE)
+tracking = read_csv(out("NOCA_plot_tracking.csv"), show_col_types = FALSE)
 gps = tracking %>% filter(plot_id %in% c("CARI449", "CARI450"))
 stopifnot(nrow(gps) == 2L, all(gps$period == "both"),
           all(gps$status == "removed"), all(grepl("GPS problem", gps$reason)))

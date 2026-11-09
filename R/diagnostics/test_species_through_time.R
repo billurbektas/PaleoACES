@@ -32,8 +32,8 @@ source(here("R/helpers/config.R"), local = TRUE)
 
 HOLO_BIN = 100
 
-occ = read_csv(here("output/occ_consolidated.csv"), show_col_types = FALSE)
-env = read_csv(here("output/paleo_env.csv"), show_col_types = FALSE) %>%
+occ = read_csv(out("occ_consolidated.csv"), show_col_types = FALSE)
+env = read_csv(out("paleo_env.csv"), show_col_types = FALSE) %>%
   select(plot_id, lake, age)
 
 # THE SPECIES THE CCA ACTUALLY USES. count.thr must match R/stages/04_cca_model.R.
@@ -46,7 +46,7 @@ occ_summary = occ %>% filter(occurrence == 1) %>%
   pivot_wider(names_from = c(site, period), values_from = n, values_fill = 0)
 dropped = occ_summary %>%
   filter(if_all(-species, ~ .x < COUNT_THR)) %>% pull(species)
-ALL_SP = readRDS(here('output/cca_calibration_reference.rds'))$retained_species
+ALL_SP = readRDS(out('cca_calibration_reference.rds'))$retained_species
 
 cat("count.thr = ", COUNT_THR, " -> ", length(ALL_SP), " species retained, ",
     length(dropped), " dropped:\n  ", paste(sort(dropped), collapse = ", "), "\n", sep = "")
@@ -172,7 +172,7 @@ p1 = ggplot() +
         legend.text = element_text(face = "italic", size = 8),
         panel.grid.minor = element_blank())
 
-pdf(here("plot/test_figures/species_through_time.pdf"), width = 15, height = 9)
+pdf(fig("supplementary", "species_through_time.pdf"), width = 15, height = 9)
 print(p1)
 dev.off()
 
@@ -194,6 +194,6 @@ vary = binned %>% group_by(species, lake) %>%
   arrange(desc(max_sd_within_pond))
 print(as.data.frame(vary), row.names = FALSE)
 
-write_csv(sep %>% left_join(vary, by = "species"), here("output/test_species_occupancy.csv"))
+write_csv(sep %>% left_join(vary, by = "species"), out("report/test_species_occupancy.csv"))
 cat("\nWrote plot/test_figures/species_through_time.pdf\n")
 cat("Wrote output/test_species_occupancy.csv\n")

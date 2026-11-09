@@ -20,7 +20,7 @@ export_cca_reference = function(e) {
     dplyr::left_join(present,by='plot_id') |>
     dplyr::left_join(e$site_lookup,by='plot_id') |>
     dplyr::left_join(e$read_plot_years(),by=c('site','plot_id'))
-  inputs = here::here('output',c('occ_consolidated.csv','MORA_climate.csv',
+  inputs = out(c('occ_consolidated.csv','MORA_climate.csv',
     'NOCA_climate.csv','paleo_env.csv','modern_plot_years.csv'))
   inputs = inputs[file.exists(inputs)]
   # vegan prediction evaluates the formula response after deserialization.
@@ -47,7 +47,7 @@ export_cca_reference = function(e) {
   stopifnot(nrow(reference$legacy_species)==607L, length(reference$retained_species)==14L,
     identical(rownames(reference$legacy_species),rownames(reference$legacy_climate)),
     nrow(modern)==607L, !anyDuplicated(modern$plot_id))
-  readr::write_csv(scaling,here::here('output/cca_tracking_climate_scaling.csv'))
-  saveRDS(reference,here::here('output/cca_calibration_reference.rds'))
+  readr::write_csv(scaling,out('cca_tracking_climate_scaling.csv'))
+  saveRDS(reference,out('cca_calibration_reference.rds'))
   invisible(reference)
 }

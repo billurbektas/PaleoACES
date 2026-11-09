@@ -1,9 +1,10 @@
 # Offline regression checks for Wilson-style fire assignments on PaleoACES plots.
+source(here::here('R/helpers/config.R'), local = TRUE)
 suppressPackageStartupMessages({library(here); library(dplyr); library(readr)})
 
-fire = read_csv(here("output/NOCA_plot_info_fire.csv"), show_col_types = FALSE)
-occ = read_csv(here("output/NOCA_occ.csv"), show_col_types = FALSE)
-cmp = read_csv(here("output/NOCA_fire_Wilson2024_comparison.csv"), show_col_types = FALSE)
+fire = read_csv(out("NOCA_plot_info_fire.csv"), show_col_types = FALSE)
+occ = read_csv(out("NOCA_occ.csv"), show_col_types = FALSE)
+cmp = read_csv(out("NOCA_fire_Wilson2024_comparison.csv"), show_col_types = FALSE)
 
 stopifnot(
   nrow(fire) == 305L,

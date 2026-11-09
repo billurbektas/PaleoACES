@@ -5,6 +5,7 @@
 # background, local 95% threshold, and minimum-count settings. The implementation
 # is shared with Panther Potholes through R/helpers/fire_detection_functions.R.
 
+source(here::here('R/helpers/config.R'), local = TRUE)
 suppressPackageStartupMessages({
   library(here); library(tidyverse); library(readxl); library(tapas)
 })
@@ -28,10 +29,10 @@ settings_audit = map_dfr(results, "settings")
 if (nrow(events) == 0L || anyDuplicated(events[c("lake", "age_cal_yr_BP")]))
   stop("The harmonized MORA accepted-event catalog is empty or duplicated.")
 
-write_csv(fire_episodes_final, here("output/fire_walsh.csv"))
-write_csv(series, here("output/fire_mora_tapas_series.csv"))
-write_csv(events, here("output/fire_mora_tapas_events.csv"))
-write_csv(settings_audit, here("output/fire_mora_tapas_settings.csv"))
+write_csv(fire_episodes_final, out("fire_walsh.csv"))
+write_csv(series, out("fire_mora_tapas_series.csv"))
+write_csv(events, out("fire_mora_tapas_events.csv"))
+write_csv(settings_audit, out("fire_mora_tapas_settings.csv"))
 
 cat("Harmonized tapas MORA fire episodes:\n")
 print(as.data.frame(fire_episodes_final |>

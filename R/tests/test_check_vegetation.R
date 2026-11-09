@@ -1,4 +1,5 @@
 # Standalone integrity checks for cleaned MORA and NOCA vegetation outputs.
+source(here::here('R/helpers/config.R'), local = TRUE)
 suppressPackageStartupMessages({library(here); library(dplyr); library(readr)})
 
 check_site = function(site, occ_path, plot_path) {
@@ -26,5 +27,5 @@ check_site = function(site, occ_path, plot_path) {
       " plot-info rows outside the paired universe; checks passed.\n", sep = "")
 }
 
-check_site("MORA", here("output/MORA_occ.csv"), here("output/MORA_plot_info.csv"))
-check_site("NOCA", here("output/NOCA_occ.csv"), here("output/NOCA_plot_info.csv"))
+check_site("MORA", out("MORA_occ.csv"), out("MORA_plot_info.csv"))
+check_site("NOCA", out("NOCA_occ.csv"), out("NOCA_plot_info.csv"))

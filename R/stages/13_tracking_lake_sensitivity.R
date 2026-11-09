@@ -1,11 +1,12 @@
 # Primary lake comparisons; use the parent combined-era selected covariance family.
+source(here::here('R/helpers/config.R'), local = TRUE)
 suppressPackageStartupMessages({library(here);library(tidyverse);library(nlme);library(emmeans)})
 source(here('R/helpers/reconstruction_models.R'),local=TRUE)
 source(here('R/helpers/tracking_model_reporting.R'),local=TRUE)
-combined=read_csv(here('output/cca_tracking_era_model_input.csv'),show_col_types=FALSE)
+combined=read_csv(out('cca_tracking_era_model_input.csv'),show_col_types=FALSE)
 figure_pages=list()
 for(metric in tracking_model_response_names()) {
-  parent=readRDS(here('output/tracking_analysis/primary/era_comparison',metric,'primary_fits.rds'))$primary
+  parent=readRDS(file.path(out('era_comparison'),metric,'primary_fits.rds'))$primary
   selected=tracking_primary_model_input(combined,metric)
   coefficients=contrasts=audits=text=list();fits=list()
   for(lake in unique(selected$data$lake[selected$data$era=='Holocene'])) {
@@ -23,11 +24,11 @@ for(metric in tracking_model_response_names()) {
       estimate,std_error=SE,df,p_value=p.value,conf_low=lower.CL,conf_high=upper.CL)
     fits[[lake]]=e;text[[lake]]=c(lake,capture.output(print(summary(e$fit))),capture.output(print(ct)))
   }
-  out=here('output/tracking_analysis/sensitivity/lake_checks/era_comparisons',metric);dir.create(out,recursive=TRUE,showWarnings=FALSE)
+  results_dir=file.path(out('lake_checks'),metric);dir.create(results_dir,recursive=TRUE,showWarnings=FALSE)
   co=bind_rows(coefficients);ct=bind_rows(contrasts)
-  write_csv(co,file.path(out,'model_coefficients.csv'));write_csv(ct,file.path(out,'model_contrasts.csv'))
-  write_csv(bind_rows(audits),file.path(out,'covariance_comparison.csv'));saveRDS(fits,file.path(out,'primary_fits.rds'))
-  writeLines(unlist(text),file.path(out,'model_results.txt'))
+  write_csv(co,file.path(results_dir,'model_coefficients.csv'));write_csv(ct,file.path(results_dir,'model_contrasts.csv'))
+  write_csv(bind_rows(audits),file.path(results_dir,'covariance_comparison.csv'));saveRDS(fits,file.path(results_dir,'primary_fits.rds'))
+  writeLines(unlist(text),file.path(results_dir,'model_results.txt'))
   if(isTRUE(getOption('paleoaces.render_figures',TRUE))) for(type in c('coefficients','contrasts')) {
     x=if(type=='coefficients') co else ct
     p=ggplot(x,aes(estimate,lake,color=site))+geom_vline(xintercept=0,linetype='dashed',color='grey60')+

@@ -41,8 +41,8 @@ source(here("R/helpers/config.R"), local = TRUE)
 
 if (!exists("USE_CORRECTED")) USE_CORRECTED = PALEO_USE_BIAS_CORRECTED
 
-ponds = read_csv(here("output/chelsa_paleo_ponds.csv"), show_col_types = FALSE)
-occ   = read_csv(here("output/paleo_occ.csv"),          show_col_types = FALSE)
+ponds = read_csv(out("chelsa_paleo_ponds.csv"), show_col_types = FALSE)
+occ   = read_csv(out("paleo_occ.csv"),          show_col_types = FALSE)
 
 cat("pond series: ", nrow(ponds), " rows | ", n_distinct(ponds$lake), " lakes | slices ",
     min(ponds$slice), " to ", max(ponds$slice), "\n", sep = "")
@@ -63,7 +63,7 @@ cat("variables built for ", nrow(env_slice), " lake x slice combinations\n", sep
 
 # --- each sample -> the slice covering its age -------------------------------
 samples = occ %>% distinct(period,plot_id,site,era,lake) %>%
-  left_join(read_csv(here('output/paleo_sample_depths.csv'),show_col_types=FALSE) %>%
+  left_join(read_csv(out('paleo_sample_depths.csv'),show_col_types=FALSE) %>%
     select(plot_id,age=median_age),by='plot_id',relationship='one-to-one') %>%
   mutate(slice_age_calBP=floor(age/100)*100+50)
 paleo_env = samples %>% left_join(env_slice,by=c('lake','slice_age_calBP')) %>%
@@ -88,5 +88,5 @@ print(as.data.frame(paleo_env %>% group_by(lake) %>%
 cat("\nCCA variable ranges:\n")
 print(as.data.frame(t(sapply(paleo_env[ccavars], range))), digits = 4)
 
-write_csv(paleo_env, here("output/paleo_env.csv"))
+write_csv(paleo_env, out("paleo_env.csv"))
 cat("\nwritten: output/paleo_env.csv\n")

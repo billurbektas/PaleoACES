@@ -39,23 +39,21 @@ century_posterior_ages = function(cache, core, depths, posterior_rows=NULL) {
 }
 
 century_prepare = function() {
-  dir.create(here::here('output/chronology_reconstruction'),recursive=TRUE,showWarnings=FALSE)
-  dependencies=c('R/helpers/century_tracking.R','R/helpers/holocene_reconstruction.R',
+  dir.create(out('chronology_reconstruction'),recursive=TRUE,showWarnings=FALSE)
+  dependencies=c(here::here(c('R/helpers/century_tracking.R','R/helpers/holocene_reconstruction.R',
     'R/helpers/holocene_reconstruction_settings.R','R/helpers/bacon_settings.R',
-    'output/cca_calibration_reference.rds','output/chelsa_paleo_ponds.csv',
-    'output/holocene_fire_source_events.csv','output/holocene_fire_source_series.csv',
-    'data/PALEO/DunwiddieMacrofossils.xlsx','data/NOCA/NOCA_paleo/dataset52207_site13042.csv')
-  signature=object_fingerprint(tools::md5sum(here::here(dependencies)))
-  prepared_path=here::here('output/chronology_reconstruction/prepared.rds')
+    'data/PALEO/DunwiddieMacrofossils.xlsx','data/NOCA/NOCA_paleo/dataset52207_site13042.csv')),
+    out(c('cca_calibration_reference.rds','chelsa_paleo_ponds.csv',
+    'holocene_fire_source_events.csv','holocene_fire_source_series.csv')))
+  signature=object_fingerprint(unname(tools::md5sum(dependencies)))
+  prepared_path=out('chronology_reconstruction/prepared.rds')
   if(file.exists(prepared_path)) {
     saved=readRDS(prepared_path)
     if(identical(saved$signature,signature) && identical(unname(tools::md5sum(names(saved$cache$source_md5))),unname(saved$cache$source_md5))) return(saved)
   }
-  reference=readRDS(here::here('output/cca_calibration_reference.rds'))
+  reference=readRDS(out('cca_calibration_reference.rds'))
   projected=reconstruction_project_samples(reconstruction_read_original_samples(),reference)
-  cache_path=here::here('output/chronology_reconstruction/age_draws.rds')
-  old=here::here('output/reconstruction_audit/age_draws.rds')
-  if(!file.exists(cache_path) && file.exists(old)) file.copy(old,cache_path)
+  cache_path=out('age_draws.rds')
   cache=reconstruction_original_age_draws(projected$samples,cache_path,
     HOLOCENE_RECONSTRUCTION_DRAWS,HOLOCENE_RECONSTRUCTION_SEED)
   samples=projected$samples
@@ -64,7 +62,7 @@ century_prepare = function() {
     use=which(samples$lake==core)
     samples$median_age_cal_bp[use]=apply(century_posterior_ages(cache,core,samples$depth_cm[use]),2,median)
   }
-  ponds=readr::read_csv(here::here('output/chelsa_paleo_ponds.csv'),show_col_types=FALSE)
+  ponds=readr::read_csv(out('chelsa_paleo_ponds.csv'),show_col_types=FALSE)
   source(here::here('R/helpers/climate_variables.R'),local=TRUE)
   climate=ponds |> dplyr::transmute(unit=lake,period=site,variable,time=slice,month,
     value=if(PALEO_USE_BIAS_CORRECTED) value_corrected else value_raw) |>
@@ -73,8 +71,8 @@ century_prepare = function() {
     dplyr::mutate(century_cal_bp=1950-slice*100)
   lc=predict(reference$model,newdata=climate,type='lc',scaling='sites',hill=FALSE)[,1:2,drop=FALSE]
   climate$p1=lc[,1];climate$p2=lc[,2]
-  events=readr::read_csv(here::here('output/holocene_fire_source_events.csv'),show_col_types=FALSE)
-  series=readr::read_csv(here::here('output/holocene_fire_source_series.csv'),show_col_types=FALSE)
+  events=readr::read_csv(out('holocene_fire_source_events.csv'),show_col_types=FALSE)
+  series=readr::read_csv(out('holocene_fire_source_series.csv'),show_col_types=FALSE)
   coverage=series |> dplyr::group_by(site,lake) |> dplyr::summarise(
     younger_cal_bp=min(age_cal_yr_BP),older_cal_bp=max(age_cal_yr_BP),
     regular=dplyr::n()>1L && all(is.finite(char_interpolated)) &&

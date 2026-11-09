@@ -1,5 +1,6 @@
 # Show which plots and core samples reach CCA, starting with the supplied data.
 # This reads preparation results; it does not change observations or fit a model.
+source(here::here('R/helpers/config.R'), local = TRUE)
 suppressPackageStartupMessages({
   library(here); library(readr); library(readxl); library(dplyr)
   library(ggplot2); library(patchwork)
@@ -8,12 +9,12 @@ source(here("R/helpers/figure_style.R"), local = TRUE)
 source(here("R/helpers/survey_years.R"), local = TRUE)
 read_table = function(path) read_csv(here(path), show_col_types = FALSE)
 unique_values = function(x) sort(unique(x[!is.na(x)]))
-samples = read_table("output/cca_sample_eligibility.csv")
-pairs = read_table("output/cca_pair_eligibility.csv")
+samples = read_table(out("cca_sample_eligibility.csv"))
+pairs = read_table(out("cca_pair_eligibility.csv"))
 prepared = read_plot_years()
 original_records = bind_rows(
-  read_table("output/MORA_occ.csv") |> mutate(site = "MORA"),
-  read_table("output/NOCA_occ.csv") |> mutate(site = "NOCA"))
+  read_table(out("MORA_occ.csv")) |> mutate(site = "MORA"),
+  read_table(out("NOCA_occ.csv")) |> mutate(site = "NOCA"))
 counts = list(); choices = list()
 add_count = function(site, period, step, label, remaining, removed = 0L,
                      combined = 0L, explanation = "") {
@@ -56,8 +57,8 @@ add_count("MORA", "Modern", 3, "Matched legacy and resurvey plots", mn,
   length(resurvey_ids) - mn,
   explanation = sprintf("%d legacy plots and %d resurvey plots have no entry in the paired-plot list; the latter include the practice plot PRAC-1.",
     length(legacy_ids) - mn, length(resurvey_ids) - mn))
-visit_rows = read_table("output/MORA_resurvey_record_audit.csv")
-visits = read_table("output/MORA_resurvey_visit_audit.csv")
+visit_rows = read_table(out("MORA_resurvey_record_audit.csv"))
+visits = read_table(out("MORA_resurvey_visit_audit.csv"))
 repeated = visits |> filter(stage == "adult") |> group_by(plot_id) |>
   summarise(years = n_distinct(assigned_year), .groups = "drop") |> filter(years > 1)
 discarded_adults = sum(!visit_rows$selected & visit_rows$stage == "adult")
@@ -82,7 +83,7 @@ registered = read_table("data/NOCA/NOCA_plots_fromWilson.csv") |>
 stopifnot(!anyDuplicated(registered$plot_id))
 noca_legacy = read_excel(here("data/NOCA/AGEEDATA_NEW.xlsx"), sheet = "TREE")
 noca_legacy_ids = unique_values(noca_legacy$PLOT)
-tracking = read_table("output/NOCA_plot_tracking.csv")
+tracking = read_table(out("NOCA_plot_tracking.csv"))
 extra = registered$plot_id %in% c("SUPP2026", "ROSS4001REF", "SUPP5127")
 regular = registered[!extra, ]
 gps_removed = sum(is.na(regular$latitude))
@@ -91,7 +92,7 @@ unsupported = unique_values(tracking$plot_id[tracking$reason == "no species reco
 supported = located |> filter(!plot_id %in% unsupported)
 matched = supported |> filter(legacy_id %in% noca_legacy_ids)
 empty_both = unique_values(tracking$plot_id[tracking$reason == "empty in both periods"])
-study_removed = read_table("output/NOCA_study_exclusions.csv")
+study_removed = read_table(out("NOCA_study_exclusions.csv"))
 kept = setdiff(matched$plot_id, union(empty_both, study_removed$plot_id))
 noca = site_pairs("NOCA")
 stopifnot(setequal(kept, noca$plot_id),
@@ -116,7 +117,7 @@ add_count("NOCA", "Modern", 7, "Remove plots empty at both dates",
   nrow(matched) - length(empty_both), length(empty_both))
 add_count("NOCA", "Modern", 8, "Apply the agreed plot exclusions", nn, nrow(study_removed),
   explanation = "One old clearcut, one uncertain resurvey location, and two unresolved GPS problems.")
-corrected = read_table("output/NOCA_tree_correction_audit.csv")
+corrected = read_table(out("NOCA_tree_correction_audit.csv"))
 clearcuts = sum(grepl("clearcut", study_removed$exclusion_reason, fixed = TRUE))
 relocations = sum(grepl("location uncertain", study_removed$exclusion_reason, fixed = TRUE))
 gps_problems = sum(grepl("GPS problem", study_removed$exclusion_reason, fixed = TRUE))
@@ -174,7 +175,7 @@ stopifnot(nrow(retained_areas) == sum(pairs$calibration_included),
 plot_sizes = retained_areas |> count(site, legacy_area_m2, resurvey_area_m2, name = "plots")
 
 # Original sample identities are retained even when median ages coincide.
-depths = read_table("output/paleo_sample_depths.csv")
+depths = read_table(out("paleo_sample_depths.csv"))
 raw_mora = read_excel(here("data/PALEO/DunwiddieMacrofossils.xlsx"), sheet = "MacrofossilData") |>
   distinct(Location, Depth)
 raw_noca = read_table("data/NOCA/NOCA_paleo/dataset52207_site13042.csv")
@@ -203,10 +204,10 @@ for (site_name in c("MORA", "NOCA")) {
   paleo_info[[site_name]] = list(raw = raw_n, combined = merged,
     dated = nrow(x), final = final_n, excluded = x |> filter(!eligible))
 }
-dir.create(here("output/report"), recursive = TRUE, showWarnings = FALSE)
-write_csv(bind_rows(counts), here("output/report/sample_selection_counts.csv"))
-write_csv(bind_rows(choices), here("output/report/sample_selection_choices.csv"))
-write_csv(plot_sizes, here("output/report/sample_selection_plot_sizes.csv"))
+dir.create(out("report"), recursive = TRUE, showWarnings = FALSE)
+write_csv(bind_rows(counts), out("report/sample_selection_counts.csv"))
+write_csv(bind_rows(choices), out("report/sample_selection_choices.csv"))
+write_csv(plot_sizes, out("report/sample_selection_plot_sizes.csv"))
 
 # The display follows the count branches. Its labels use everyday descriptions.
 draw_flow = function(site_name, title, nodes, arrows, notes, ymax) {
@@ -325,7 +326,7 @@ figure = (modern_mora + modern_noca) /
     theme = theme(plot.title = element_text(size=28,face="bold"),
       plot.caption = element_text(size=14,hjust=0,lineheight=1.15),plot.margin=margin(14,14,14,14)))
 if (isTRUE(getOption("paleoaces.render_figures", TRUE))) {
-  ggsave(here("plot/test_figures/plots_to_cca.pdf"),figure,width=18,height=18,device=cairo_pdf)
+  ggsave(fig("supplementary", "plots_to_cca.pdf"),figure,width=18,height=18,device=cairo_pdf)
 }
 cat("Plot selection summary: modern CCA fits ",mi$fit," MORA + ",ni$fit,
   " NOCA; paired comparisons ",mi$paired," + ",ni$paired,

@@ -1,6 +1,7 @@
 # Manuscript Figure 4 and separate corrected-lag contrasts at primary reconstruction.
 # Read maintained model input/results; no refitting, transforms or geometry calculations.
 # Rscript R/stages/14_tracking_manuscript_figure.R
+source(here::here('R/helpers/config.R'), local = TRUE)
 suppressPackageStartupMessages({library(here);library(tidyverse);library(patchwork)})
 source(here('R/helpers/tracking_data.R'),local=TRUE)
 source(here('R/helpers/tracking_model_data.R'),local=TRUE)
@@ -8,11 +9,11 @@ source(here('R/helpers/tracking_model_reporting.R'),local=TRUE)
 render_figures=isTRUE(getOption('paleoaces.render_figures',TRUE))
 metrics=c('standardized_climate_change_rate','observed_turnover_rate','lag_rate_per_century',
   tracking_correction_effect_response_names())
-combined=read_csv(here('output/cca_tracking_era_model_input.csv'),show_col_types=FALSE)
+combined=read_csv(out('cca_tracking_era_model_input.csv'),show_col_types=FALSE)
 validate_tracking_model_data(combined)
 raw=map_dfr(metrics,function(metric) tracking_primary_model_input(combined,metric)$data)
 read_results=function(metric,filename) {
-  read_csv(here('output/tracking_analysis/primary/era_comparison',metric,filename),show_col_types=FALSE)
+  read_csv(file.path(out('era_comparison'),metric,filename),show_col_types=FALSE)
 }
 means=map_dfr(metrics,read_results,filename='model_group_means.csv')
 contrasts=map_dfr(metrics,read_results,filename='model_contrasts.csv')
@@ -105,7 +106,7 @@ contrast_plot=function(response_metrics,bounds,correction_labels=FALSE) {
 }
 # Joint correction comparisons use complete pace/direction pairs only.
 # The existing independent-response models remain the source for the top row.
-joint_out=here('output/tracking_analysis/primary/era_comparison/joint_correction_effects')
+joint_out=out('era_comparison/joint_correction_effects')
 paired_input=tracking_joint_correction_input(combined)$data
 joint_means=read_csv(file.path(joint_out,'model_group_means.csv'),show_col_types=FALSE)
 joint_contrasts=read_csv(file.path(joint_out,'correction_contrasts.csv'),show_col_types=FALSE)
@@ -176,7 +177,7 @@ figure=wrap_plots(first_row,second_row,ncol=1,heights=c(1,.85),guides='collect')
 corrected_figure=contrast_plot(corrected_metrics,corrected_limits,correction_labels=TRUE)+
   theme(legend.position='bottom',plot.background=element_rect(fill='white',color=NA))
 if(render_figures) {
-  stem=here('plot/fig_tracking_era_distributions')
+  stem=fig('main', 'fig_tracking_era_distributions')
   ggsave(paste0(stem,'.pdf'),figure,width=19,height=14.5,device=cairo_pdf,bg='white')
   ggsave(paste0(stem,'.png'),figure,width=19,height=14.5,dpi=300,bg='white')
   ggsave(tracking_model_figure('fig_tracking_correction_effect_contrasts.pdf'),

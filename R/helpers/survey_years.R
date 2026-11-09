@@ -1,6 +1,7 @@
 # Adult resurvey dates and plot-specific modern climate windows (2026-10-07).
 # Received CSVs remain unchanged. The same selected years feed vegetation,
 # climate aggregation, diagnostics and rate denominators.
+source(here::here('R/helpers/config.R'), local = TRUE)
 normalize_mora_visit = function(x) {
   x = toupper(gsub("[[:space:]]", "", as.character(x)))
   gsub("-0+([0-9])", "-\\1", x)
@@ -76,10 +77,10 @@ resolve_mora_resurveys = function(trees, seedlings, plot_library, visit_map) {
 }
 
 read_plot_years = function(site = NULL) {
-  signature = here::here("output/modern_plot_years_sources.rds")
+  signature = out("modern_plot_years_sources.rds")
   if (!file.exists(signature) || !identical(readRDS(signature), plot_year_input_hashes()))
     stop("Survey-date inputs changed: rerun both vegetation cleaners before using climate or tracking products.")
-  x = readr::read_csv(here::here("output/modern_plot_years.csv"), show_col_types = FALSE)
+  x = readr::read_csv(out("modern_plot_years.csv"), show_col_types = FALSE)
   expected = survey_windows(x |> dplyr::select(site, plot_id, vegetation_t2_year))
   if (!isTRUE(all.equal(as.data.frame(x), as.data.frame(expected), check.attributes = FALSE)))
     stop("Modern plot-year table has inconsistent climate windows or elapsed times.")
@@ -98,7 +99,7 @@ plot_year_input_hashes = function() {
 # An existing invalid native chunk still fails offline; it is never covered up.
 reuse_survey_diagnostic_cache = function(todo, points) {
   for (i in which(!file.exists(todo$path) & todo$route == "monthly")) {
-    alternate = here::here("output/anomaly_parts",
+    alternate = file.path(out("anomaly_parts"),
       sprintf("%s_%d.csv", todo$var[i], todo$year[i]))
     if (!climate_cache_valid(alternate, points, todo$var[i], todo$year[i],
           expected_source = "v21_monthly", allow_point_superset = TRUE)) next

@@ -17,8 +17,8 @@ source(here("R/helpers/config.R"), local = TRUE)
 source(here("R/helpers/offline_cache.R"), local = TRUE)
 source(here("R/helpers/survey_years.R"), local = TRUE)
 
-CACHE = here("output/noca_climate_parts")
-OUT   = here("output/NOCA_climate.csv")
+CACHE = out("noca_climate_parts")
+OUT   = out("NOCA_climate.csv")
 
 plot_years = read_plot_years("NOCA")
 PAST_START = 1979
@@ -36,8 +36,8 @@ V21_MONTHLY_FIRST   = 1979
 cat("windows: ", paste(sapply(names(WINDOWS), function(p)
   sprintf("%s %d-%d", p, min(WINDOWS[[p]]), max(WINDOWS[[p]]))), collapse = " | "), "\n", sep = "")
 
-NOCA_occ = read_csv(here("output/NOCA_occ.csv"), show_col_types = FALSE)
-pts = read_csv(here("output/NOCA_plot_info.csv"), show_col_types = FALSE) %>%
+NOCA_occ = read_csv(out("NOCA_occ.csv"), show_col_types = FALSE)
+pts = read_csv(out("NOCA_plot_info.csv"), show_col_types = FALSE) %>%
   rename(lon = Longitude, lat = Latitude) %>%
   filter(plot_id %in% NOCA_occ$plot_id, !is.na(lon), !is.na(lat)) %>%
   distinct(plot_id, .keep_all = TRUE) %>%

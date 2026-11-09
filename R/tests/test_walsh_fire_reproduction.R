@@ -1,11 +1,12 @@
 # Offline gate for the official Walsh source-method reproduction.
+source(here::here('R/helpers/config.R'), local = TRUE)
 suppressPackageStartupMessages({library(here); library(tidyverse)})
 render_figures = isTRUE(getOption("paleoaces.render_figures", TRUE))
 source(here("R/helpers/walsh_fire_functions.R"), local = TRUE)
 stopifnot(requireNamespace("CharAnalysis", quietly = TRUE),
           as.character(packageVersion("CharAnalysis")) == "2.0.3")
 
-audit = read_csv(here("output/walsh_charanalysis_table3_audit.csv"),
+audit = read_csv(out("walsh_charanalysis_table3_audit.csv"),
                  show_col_types = FALSE)
 expected_official = c("Little Sunrise Lake" = 14L, "Shadow Lake" = 16L,
                       "Sunrise Lake" = 15L)
@@ -15,7 +16,7 @@ stopifnot(setequal(audit$lake, names(expected_official)),
           all(!audit$exact_match),
           setequal(audit$published_total_episodes, c(16L, 18L, 24L)))
 
-settings = read_csv(here("output/walsh_charanalysis_settings.csv"),
+settings = read_csv(out("walsh_charanalysis_settings.csv"),
                     show_col_types = FALSE)
 stopifnot(nrow(settings) == 3L,
   identical(settings$interpolation_years[match("Sunrise Lake", settings$lake)], 48),
@@ -24,13 +25,13 @@ stopifnot(nrow(settings) == 3L,
   all(settings$minimum_count_probability == .05),
   all(settings$minimum_count_window_years == 75))
 
-events = read_csv(here("output/holocene_fire_source_events.csv"),
+events = read_csv(out("holocene_fire_source_events.csv"),
                   show_col_types = FALSE)
 expected_primary = c("Little Sunrise Lake" = 13L, "Shadow Lake" = 14L,
                      "Sunrise Lake" = 17L, "PantherPotholes" = 66L)
 primary_counts = events |> count(lake) |> deframe()
 stopifnot(all(primary_counts[names(expected_primary)] == expected_primary))
-primary_settings = read_csv(here("output/holocene_fire_source_settings.csv"),
+primary_settings = read_csv(out("holocene_fire_source_settings.csv"),
                             show_col_types = FALSE)
 stopifnot(nrow(primary_settings) == 4L,
   all(primary_settings$engine == "tapas"),
@@ -42,7 +43,7 @@ stopifnot(nrow(primary_settings) == 4L,
             c(.95, .95, .95, .99)),
   all(primary_settings$minimum_count_probability == .05),
   all(primary_settings$minimum_count_window_years == 75))
-series = read_csv(here("output/holocene_fire_source_series.csv"),
+series = read_csv(out("holocene_fire_source_series.csv"),
                   show_col_types = FALSE)
 stopifnot(setequal(unique(series$lake), c("Sunrise Lake", "Shadow Lake",
   "Little Sunrise Lake", "PantherPotholes")),
@@ -50,7 +51,7 @@ stopifnot(setequal(unique(series$lake), c("Sunrise Lake", "Shadow Lake",
     "candidate_before_count_screen", "rejected_by_count_screen",
     "is_significant") %in% names(series)))
 
-detection = read_csv(here("output/fire_event_detection_lake_audit.csv"),
+detection = read_csv(out("worked_examples/fire_event_detection_lake_audit.csv"),
                      show_col_types = FALSE)
 expected_detection = tribble(
   ~lake, ~interpolation_years, ~smoothing_years, ~threshold_probability,
@@ -69,24 +70,24 @@ stopifnot(isTRUE(all.equal(
   all(detection$minimum_count_probability == .05),
   all(detection$minimum_count_window_years == 75))
 
-hashes = read_csv(here("output/walsh_active_fire_hash_audit.csv"),
+hashes = read_csv(out("walsh_active_fire_hash_audit.csv"),
                   show_col_types = FALSE)
 stopifnot(all(hashes$unchanged))
-manifest = read_csv(here("output/holocene_fire_tapas_manifest.csv"),
+manifest = read_csv(out("holocene_fire_tapas_manifest.csv"),
                     show_col_types = FALSE)
 stopifnot(nrow(manifest) >= 9L, all(manifest$engine == "tapas"),
           all(manifest$analytical_role ==
                 "primary harmonized fire-event detector"),
           all(nzchar(manifest$md5)))
-sensitivity = read_csv(here("output/fire_noca_tapas_sensitivity.csv"),
+sensitivity = read_csv(out("fire_noca_tapas_sensitivity.csv"),
                        show_col_types = FALSE)
 stopifnot(sensitivity$n_sig[
   sensitivity$setting == "publication12.5_smooth500_q99"] == 72L)
-required = c("plot/test_figures/fig_walsh_charanalysis_reproduction.pdf",
-  "plot/test_figures/worked_examples/fig_fire_event_detection_workflow.pdf")
+required = c(fig("supplementary", "fig_walsh_charanalysis_reproduction.pdf"),
+  fig("worked_examples", "fig_fire_event_detection_workflow.pdf"))
 if (render_figures) {
   sizes = file.info(here(required))$size
-  stopifnot(all(file.exists(here(required))),
+  stopifnot(all(file.exists(required)),
             all(sizes > 3000))
 }
 cat("PASS: all-tapas primary catalogs and separate official Walsh audit",

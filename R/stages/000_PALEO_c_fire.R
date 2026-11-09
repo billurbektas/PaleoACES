@@ -15,13 +15,14 @@
 # Output: output/paleo_fire.csv
 # =============================================================================
 
+source(here::here('R/helpers/config.R'), local = TRUE)
 library(readr)
 library(tidyverse)
 library(here)
 
-macro_long = read_csv(here("output", "paleo_macrofossil_long.csv"),
+macro_long = read_csv(out("paleo_macrofossil_long.csv"),
                       show_col_types = FALSE)
-fire_walsh = read_csv(here("output", "fire_walsh.csv"), show_col_types = FALSE)
+fire_walsh = read_csv(out("fire_walsh.csv"), show_col_types = FALSE)
 
 paleo_fire =
   macro_long %>%
@@ -154,18 +155,18 @@ if (sum(noca_peaks$is_significant) != 66L ||
     sum(noca_peaks$is_significant & noca_peaks$age_cal_yr_BP > 8200 &
           noca_peaks$age_cal_yr_BP <= 9200) != 6L)
   stop("Primary NOCA source-faithful peak catalog changed unexpectedly.")
-write_csv(noca_peaks, here("output", "fire_noca_peaks.csv"))
-write_csv(noca_primary$series, here("output/fire_noca_tapas_series.csv"))
-write_csv(noca_primary$events, here("output/fire_noca_tapas_events.csv"))
-write_csv(noca_primary$settings, here("output/fire_noca_tapas_settings.csv"))
-write_csv(sens, here("output/fire_noca_tapas_sensitivity.csv"))
+write_csv(noca_peaks, out("fire_noca_peaks.csv"))
+write_csv(noca_primary$series, out("fire_noca_tapas_series.csv"))
+write_csv(noca_primary$events, out("fire_noca_tapas_events.csv"))
+write_csv(noca_primary$settings, out("fire_noca_tapas_settings.csv"))
+write_csv(sens, out("fire_noca_tapas_sensitivity.csv"))
 
 # Join to the NOCA samples with the SAME rule as MORA: the nearest significant peak
 # in the 50 yr before the sample.
-noca_samples = read_csv(here("output", "paleo_occ.csv"), show_col_types = FALSE) %>%
+noca_samples = read_csv(out("paleo_occ.csv"), show_col_types = FALSE) %>%
   filter(lake == "PantherPotholes") %>%
   distinct(period, plot_id, lake, site) %>%
-  left_join(read_csv(here('output/paleo_sample_depths.csv'),show_col_types=FALSE) |>
+  left_join(read_csv(out('paleo_sample_depths.csv'),show_col_types=FALSE) |>
     select(plot_id,year=median_age),by='plot_id',relationship='one-to-one')
 
 # The nearest significant peak in the 50 yr before each sample. NOTE the right_join
@@ -195,10 +196,10 @@ paleo_fire = bind_rows(paleo_fire, noca_fire)
 # left_join in 04_cca_model.R silently multiplies rows: a plot_id appearing twice
 # here makes that paleo sample count twice in the CCA.
 stopifnot(!any(duplicated(paleo_fire$plot_id)))
-paleo_occ_ids = read_csv(here("output", "paleo_occ.csv"), show_col_types = FALSE)$plot_id
+paleo_occ_ids = read_csv(out("paleo_occ.csv"), show_col_types = FALSE)$plot_id
 stopifnot(setequal(paleo_fire$plot_id, unique(paleo_occ_ids)))
 
-write_csv(paleo_fire, here("output", "paleo_fire.csv"))
+write_csv(paleo_fire, out("paleo_fire.csv"))
 
 cat("\npaleo_fire.csv: ", nrow(paleo_fire), " rows across ",
     n_distinct(paleo_fire$lake), " lakes\n", sep = "")

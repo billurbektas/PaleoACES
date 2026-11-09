@@ -72,8 +72,8 @@ UNIT = function(v) if_else(str_detect(v, "^(AP|SpP|SP|WP)$"), "mm", "degC")
 # thing in both. Site is folded into the grouping key because "past" is a
 # different set of years at the two sites.
 monthly = bind_rows(
-  read_csv(here("output/MORA_climate.csv"), show_col_types = FALSE),
-  read_csv(here("output/NOCA_climate.csv"), show_col_types = FALSE)
+  read_csv(out("MORA_climate.csv"), show_col_types = FALSE),
+  read_csv(out("NOCA_climate.csv"), show_col_types = FALSE)
 )
 
 anth_annual = monthly %>%
@@ -120,7 +120,7 @@ ANTH_INTERVAL = setNames(paste0(interval_support$climate_dt_min, "–",
 # Every pond has all 111 slices (-50 to 10,950 cal BP), evenly spaced at ~100 yr.
 # Using them gives the location's actual trend, with bins filled by real slices
 # instead of by 1-3 macrofossil samples.
-ponds_monthly = read_csv(here("output/chelsa_paleo_ponds.csv"), show_col_types = FALSE)
+ponds_monthly = read_csv(out("chelsa_paleo_ponds.csv"), show_col_types = FALSE)
 
 # winter_shift = FALSE: a slice is a 100-yr CLIMATOLOGY, so Dec/Jan/Feb of the
 # same slice already are its winter. Shifting December would strand it a century
@@ -147,7 +147,7 @@ stopifnot(nrow(pond_clim) == 111 * 4 * 2)      # every pond, every slice, both v
 stopifnot(!any(is.na(pond_clim[VARS])))        # and no holes
 
 # core coverage, for the caption only - the climate is not limited to it
-core_cov = read_csv(here("output/paleo_env.csv"), show_col_types = FALSE) %>%
+core_cov = read_csv(out("paleo_env.csv"), show_col_types = FALSE) %>%
   group_by(lake) %>% summarize(core_max = max(age), .groups = "drop")
 
 # --- MOVING WINDOW, former 500-year sensitivity -------------------------------
@@ -205,7 +205,7 @@ print(as.data.frame(summ %>%
   mutate(across(c(median, q05, q95), ~ round(.x, 2))) %>%
   select(variable, unit, site, era, interval, n, median, q05, q95)), row.names = FALSE)
 
-write_csv(summ, here("output/test_climate_change_variables.csv"))
+write_csv(summ, out("report/test_climate_change_variables.csv"))
 
 # --- which variables actually move, and where -------------------------------
 cat("\n=== Anthropocene change vs the Holocene 500-yr spread ===\n")
@@ -441,7 +441,7 @@ p_cor = ggplot(cor_df, aes(v1, v2, fill = r)) +
         panel.grid = element_blank(),
         axis.text.x = element_text(angle = 45, hjust = 1))
 
-pdf(here("plot/test_figures/climate_holocene_timeseries.pdf"), width = 13, height = 15)
+pdf(fig("supplementary", "climate_holocene_timeseries.pdf"), width = 13, height = 15)
 print(p_change); print(p_cor)
 dev.off()
 
@@ -516,7 +516,7 @@ cat("  min/median/max are over those intervals (signed); median_abs ignores sign
 print(as.data.frame(pace %>% mutate(across(c(min, median, max, median_abs), ~ round(.x, 3)))),
       row.names = FALSE)
 
-write_csv(pace, here("output/test_climate_pace_of_change.csv"))
+write_csv(pace, out("report/test_climate_pace_of_change.csv"))
 
 cat("\n=== how many times faster is the Anthropocene? (median |rate|) ===\n")
 ratio = pace %>% group_by(variable, site, era) %>%
@@ -544,10 +544,10 @@ cat("\n  ⚠ Read with the caveat above: the Holocene rate is a 500-yr average a
 # written, so this test has to go back to the cache. No re-download is needed -
 # dropping precipitation is a re-write of the download script's final step.
 parts_dir = c(MORA = "mora_climate_parts", NOCA = "noca_climate_parts")
-if (all(dir.exists(here("output", parts_dir)))) {
+if (all(dir.exists(out(parts_dir)))) {
 
   cache = imap(parts_dir, function(d, s) {
-    list.files(here("output", d), pattern = "csv$", full.names = TRUE) %>%
+    list.files(out(d), pattern = "csv$", full.names = TRUE) %>%
       purrr::map(read_csv, show_col_types = FALSE, progress = FALSE) %>% bind_rows() %>%
       mutate(site = s)
   }) %>% bind_rows()
@@ -591,7 +591,7 @@ if (all(dir.exists(here("output", parts_dir)))) {
     mutate(across(c(with_pr, temp_only, shift), ~ round(.x, 2)))
   cat("\n=== Anthropocene warming (present - past, degC) under each option ===\n")
   print(as.data.frame(step3), row.names = FALSE)
-  write_csv(step3, here("output/test_climate_step3_precip_cost.csv"))
+  write_csv(step3, out("report/test_climate_step3_precip_cost.csv"))
 
   shift_max = max(abs(step3$shift), na.rm = TRUE)
   if (shift_max < 0.005) {

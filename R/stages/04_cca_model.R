@@ -239,7 +239,7 @@ cca_pair_samples = function(samples) {
 # The ad-hoc filter that used to live on this line
 #     filter(!species %in% c("unknown", "Abies sp.", "Salix sp."))
 # is now part of that script, where it is justified rather than asserted.
-occ_consolidated = read_csv(here("output/occ_consolidated.csv"), show_col_types = FALSE) %>%
+occ_consolidated = read_csv(out("occ_consolidated.csv"), show_col_types = FALSE) %>%
   select(period, plot_id, species, occurrence, site, era)
 occ = occ_consolidated
 
@@ -299,8 +299,8 @@ occ = occ %>% filter(!species %in% takeoutsp)
 # -----------------------------------------------------------------------------
 # Fire and climate
 # -----------------------------------------------------------------------------
-NOCA_plot_info_fire = read_csv(here("output/NOCA_plot_info_fire.csv"), show_col_types = FALSE)
-MORA_plot_info_fire = read_csv(here("output/MORA_plot_info_fire.csv"), show_col_types = FALSE)
+NOCA_plot_info_fire = read_csv(out("NOCA_plot_info_fire.csv"), show_col_types = FALSE)
+MORA_plot_info_fire = read_csv(out("MORA_plot_info_fire.csv"), show_col_types = FALSE)
 
 # Paleo fire now exists for BOTH sites - NOCA's came from Neotoma dataset 52210
 # (see data/NOCA/NOCA_paleo/SOURCES.md), so the site is read from the lake instead of being
@@ -308,7 +308,7 @@ MORA_plot_info_fire = read_csv(here("output/MORA_plot_info_fire.csv"), show_col_
 # The two sites' fire evidence is not the same KIND (MORA = in-core Dunwiddie
 # percentages plus a REGIONAL Walsh proxy from three other lakes; NOCA = in-core
 # macrocharcoal from its own core) - that is a reporting caveat, not a data fix.
-paleo_info_fire = read_csv(here("output/paleo_fire.csv"), show_col_types = FALSE) %>%
+paleo_info_fire = read_csv(out("paleo_fire.csv"), show_col_types = FALSE) %>%
   mutate(burnt = fire_peak_magnitude > 0,
          site  = if_else(lake == "PantherPotholes", "NOCA", "MORA"),
          era   = "holocene")
@@ -338,8 +338,8 @@ source(here("R/helpers/survey_years.R"), local = TRUE)
 plot_years = read_plot_years()
 
 climate_monthly = bind_rows(
-  read_csv(here("output/MORA_climate.csv"), show_col_types = FALSE),
-  read_csv(here("output/NOCA_climate.csv"), show_col_types = FALSE)
+  read_csv(out("MORA_climate.csv"), show_col_types = FALSE),
+  read_csv(out("NOCA_climate.csv"), show_col_types = FALSE)
 ) %>% restrict_modern_months(plot_years)
 
 # site is folded into the grouping key because derive_climate_vars() groups by
@@ -382,7 +382,7 @@ cat("\nAnthropocene climate - complete season-years per window:\n")
 print(as.data.frame(climate_summary %>% group_by(site, period) %>%
   summarize(plots = n(), across(starts_with("n_"), max), .groups = "drop")))
 
-paleo_climate_summary = read_csv(here("output/paleo_env.csv"), show_col_types = FALSE)
+paleo_climate_summary = read_csv(out("paleo_env.csv"), show_col_types = FALSE)
 
 env = bind_rows(
   climate_summary %>% select(site, era, period, plot_id, all_of(CCA_VARIABLES)),
@@ -454,11 +454,11 @@ common_past = common_past[rowSums(species_past[common_past, , drop = FALSE]) > 0
 keep_species = colnames(species_past)[colSums(species_past[common_past, , drop = FALSE]) > 0]
 
 cleaned_occ = bind_rows(
-  read_csv(here("output/MORA_occ.csv"), show_col_types = FALSE) %>%
+  read_csv(out("MORA_occ.csv"), show_col_types = FALSE) %>%
     mutate(site = "MORA", era = "anthropocene"),
-  read_csv(here("output/NOCA_occ.csv"), show_col_types = FALSE) %>%
+  read_csv(out("NOCA_occ.csv"), show_col_types = FALSE) %>%
     mutate(site = "NOCA", era = "anthropocene"),
-  read_csv(here("output/paleo_occ.csv"), show_col_types = FALSE)
+  read_csv(out("paleo_occ.csv"), show_col_types = FALSE)
 ) %>% select(site, era, period, plot_id, species, occurrence)
 
 # Recheck eligibility if pairing leaves a taxon absent from calibration. Such a
@@ -530,17 +530,17 @@ print(as.data.frame(cca_exclusion_summary %>% select(-reason_code)), row.names =
 # Every primary model invocation regenerates these tables. Threshold variants
 # retain their own in-memory audit and cannot overwrite the primary report.
 if (count.thr == CCA_COUNT_THRESHOLD && !length(extra_exclude) && !nzchar(cca_suffix)) {
-  write_csv(cca_sample_eligibility, here("output/cca_sample_eligibility.csv"))
-  write_csv(cca_pair_eligibility, here("output/cca_pair_eligibility.csv"))
-  write_csv(cca_eligibility_counts, here("output/cca_eligibility_counts.csv"))
-  write_csv(cca_exclusion_summary, here("output/cca_exclusion_summary.csv"))
+  write_csv(cca_sample_eligibility, out("cca_sample_eligibility.csv"))
+  write_csv(cca_pair_eligibility, out("cca_pair_eligibility.csv"))
+  write_csv(cca_eligibility_counts, out("cca_eligibility_counts.csv"))
+  write_csv(cca_exclusion_summary, out("cca_exclusion_summary.csv"))
 }
 
 # -----------------------------------------------------------------------------
 # Fit the pooled CCA ONLY after resolving and reporting eligibility
 # -----------------------------------------------------------------------------
 cca_formula = reformulate(CCA_VARIABLES, response = "species_past_final")
-reference_path=here('output/cca_calibration_reference.rds')
+reference_path=out('cca_calibration_reference.rds')
 if(file.exists(reference_path) && count.thr==CCA_COUNT_THRESHOLD && !length(extra_exclude) && !nzchar(cca_suffix)) {
   frozen=readRDS(reference_path)
   if(!isTRUE(all.equal(species_past_final,frozen$legacy_species,tolerance=0)) ||
@@ -630,7 +630,10 @@ if (count.thr == CCA_COUNT_THRESHOLD && !length(extra_exclude) && !nzchar(cca_su
   source(here('R/helpers/cca_reference.R'), local = TRUE)
   if(!file.exists(reference_path)) export_cca_reference(environment())
   # New projection provenance is separate from the unchanged calibration bundle.
-  write_csv(tibble(path=c("output/paleo_occ.csv","output/paleo_env.csv"),
-    md5=unname(tools::md5sum(here(c("output/paleo_occ.csv","output/paleo_env.csv"))))),
-    here("output/cca_projection_provenance.csv"))
+  write_csv(tibble(path=c("paleo_occ.csv","paleo_env.csv"),
+    md5=unname(tools::md5sum(out(c("paleo_occ.csv","paleo_env.csv"))))),
+    out("cca_projection_provenance.csv"))
+  # Summary, axes, permutation tests and contributions for the report.
+  source(here('R/helpers/cca_report.R'), local = TRUE)
+  cca_report_tables(environment())
 }

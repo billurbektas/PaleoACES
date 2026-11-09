@@ -1,12 +1,13 @@
 # Independent GLS algebra, selection, predictions and chronology-result audit.
+source(here::here('R/helpers/config.R'), local = TRUE)
 suppressPackageStartupMessages({library(here);library(tidyverse);library(nlme)})
 source(here('R/helpers/reconstruction_models.R'),local=TRUE)
 close=function(x,y,tol=1e-8) stopifnot(length(x)==length(y),
   all(abs(as.numeric(x)-as.numeric(y))<=tol*pmax(1,abs(as.numeric(y)))))
 paths=c(tracking_primary_results('community'),tracking_primary_results('species'))
-for(out in paths) {
-  entries=readRDS(file.path(out,'primary_fits.rds'))
-  if(basename(out)=='species_contribution_models') {
+for(results_dir in paths) {
+  entries=readRDS(file.path(results_dir,'primary_fits.rds'))
+  if(basename(results_dir)=='species_contribution_models') {
     stopifnot(length(entries)==56L)
     for(e in entries) stopifnot(all(as.character(e$data$site)==e$site),
       !'site' %in% all.vars(e$fixed),is.null(e$variance))
@@ -26,12 +27,12 @@ for(out in paths) {
     if(!any(a$converged&a$model_type==primary)) {stopifnot(is.null(e$fit),all(!a$selected));next}
     stopifnot(e$selected==primary,sum(a$selected)==1L,all(a$primary_family==primary))
     d=e$data;fit=e$fit
-    if(basename(out)=='species_contribution_models' && e$era=='Anthropocene' && e$site=='MORA') {
+    if(basename(results_dir)=='species_contribution_models' && e$era=='Anthropocene' && e$site=='MORA') {
       stopifnot(identical(names(coef(fit)),'(Intercept)'),fit$dims$p==1L)
       close(coef(fit),mean(d$estimate))
       close(sqrt(vcov(fit)[1,1]),sd(d$estimate)/sqrt(nrow(d)))
     }
-    if(basename(out)=='species_contribution_models' && e$era=='Anthropocene' && e$site=='NOCA') {
+    if(basename(results_dir)=='species_contribution_models' && e$era=='Anthropocene' && e$site=='NOCA') {
       stopifnot(identical(names(coef(fit)),c('(Intercept)','burnedBurned')),
         identical(levels(d$burned),c('Unburned','Burned')))
       unburned_mean=mean(d$estimate[d$burned=='Unburned'])
@@ -69,24 +70,6 @@ for(out in paths) {
     if(e$era=='Holocene') stopifnot(all(d$time_index==d$transition_index),
       all(d$time_centuries==-d$interval_mid_cal_bp/100))
   }
-  if(!isTRUE(getOption('paleoaces.run_bacon_sensitivity',FALSE))) next # Both families are on hold.
-  chronology_out=tracking_bacon_results(if(basename(out)=='community_predictor_models') 'community' else 'species')
-  status=read_csv(file.path(chronology_out,'chronology_status.csv'),show_col_types=FALSE,
-    col_types=cols(fit_error=col_character(),warnings=col_character()))
-  co=read_csv(file.path(chronology_out,'chronology_coefficients.csv'),show_col_types=FALSE)
-  summary=read_csv(file.path(chronology_out,'chronology_summary.csv'),show_col_types=FALSE)
-  n_metrics=if(basename(out)=='community_predictor_models') 3L else 28L
-  stopifnot(nrow(status)==1000*n_metrics,!anyDuplicated(status[intersect(c('draw','metric','site'),names(status))]),
-    all(table(interaction(status[intersect(c('metric','site'),names(status))],drop=TRUE))==1000),
-    !anyDuplicated(co[intersect(c('draw','metric','site','term'),names(co))]))
-  for(i in seq_len(nrow(summary))) {
-    row=summary[i,];x=co[co$metric==row$metric & co$term==row$term,]
-    if('site' %in% names(row)) x=x[x$site==row$site,]
-    stopifnot(row$n_expected==1000,row$n_successful_fits==nrow(x),
-      row$n_valid_intervals==sum(is.finite(x$conf_low)&is.finite(x$conf_high)))
-    close(row$median,median(x$estimate));close(c(row$q025,row$q975),quantile(x$estimate,c(.025,.975)))
-    close(row$sign_agreement,mean(sign(x$estimate)==sign(row$primary_estimate)))
-  }
 }
 # Filtering must preserve original transition-neighbor gaps.
 d=tibble(estimate=c(1,NA,2,3),site=factor(c('MORA','MORA','NOCA','NOCA'),levels=c('MORA','NOCA')),
@@ -98,10 +81,10 @@ cat('Independent GLS covariance algebra, model selection, prediction/R2 and enab
 
 # Independently verify the additional paired-correction GLS. Neither outcome
 # may act as an independent replicate of the other on the same transition.
-joint_out=here('output/tracking_analysis/primary/era_comparison/joint_correction_effects')
+joint_out=out('era_comparison/joint_correction_effects')
 joint=readRDS(file.path(joint_out,'primary_fits.rds'))$joint
 fit=joint$fit;d=joint$data
-input=read_csv(here('output/cca_tracking_era_model_input.csv'),show_col_types=FALSE)
+input=read_csv(out('cca_tracking_era_model_input.csv'),show_col_types=FALSE)
 reselected=tracking_joint_correction_input(input)
 stopifnot(nrow(d)==nrow(reselected$data),all(d$paired),
   !anyDuplicated(d[c('era','site','transition_id','correction')]),
@@ -155,8 +138,8 @@ close(zero$p_zero,2*pt(-abs(zero$estimate/zero$std_error),zero$df))
 # Independently reconstruct both correction effects from endpoints. Effects
 # compare final observed and counterfactual lag, not change from initial lag.
 for(era_name in c('Holocene','Anthropocene')) {
-  path=if(era_name=='Holocene') 'output/cca_tracking_holocene_lake_calculations.csv' else
-    'output/cca_tracking_anthropocene_plot_calculations.csv'
+  path=if(era_name=='Holocene') out('cca_tracking_holocene_lake_calculations.csv') else
+    out('cca_tracking_anthropocene_plot_calculations.csv')
   x=read_csv(here(path),show_col_types=FALSE)
   a=sqrt((x$o1_2-x$o1)^2+(x$o2_2-x$o2)^2)
   b=sqrt((x$p1_2-x$p1)^2+(x$p2_2-x$p2)^2)

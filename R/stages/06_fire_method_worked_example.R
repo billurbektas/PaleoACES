@@ -3,6 +3,7 @@
 # Step-by-step worked example of the frozen Holocene high-fire method.
 # =============================================================================
 
+source(here::here('R/helpers/config.R'), local = TRUE)
 suppressPackageStartupMessages({
   library(here)
   library(tidyverse)
@@ -12,9 +13,9 @@ source(here("R/helpers/figure_style.R"), local = TRUE)
 render_figures = isTRUE(getOption("paleoaces.render_figures", TRUE))
 
 paths = c(
-  events = here("output/holocene_fire_source_events.csv"),
-  core = here("output/holocene_era_fire_core_frequency.csv"),
-  site = here("output/holocene_era_fire_site_frequency.csv"))
+  events = out("holocene_fire_source_events.csv"),
+  core = out("holocene_era_fire_core_frequency.csv"),
+  site = out("holocene_era_fire_site_frequency.csv"))
 if (!all(file.exists(paths))) stop(
   "Run the Walsh reconstruction and Holocene climate/fire stages first.")
 
@@ -71,7 +72,7 @@ audit = example_core %>%
              threshold_median, threshold_robust_sd, high_fire_threshold,
              fire_frequency_ratio, high_fire, decision),
     by = "site")
-write_csv(audit, here("output/holocene_fire_method_worked_example.csv"))
+write_csv(audit, out("worked_examples/holocene_fire_method_worked_example.csv"))
 
 theme_method = theme_bw(base_size = 11.5) +
   theme(panel.grid.minor = element_blank(),
@@ -208,7 +209,7 @@ figure = (p1 | p2) / (p3 | p4) / (p5 | p6) +
                                              hjust = .5)))
 
 if (render_figures) {
-  ggsave(here("plot/test_figures/worked_examples/fig_holocene_fire_method_worked_example.pdf"), figure,
+  ggsave(fig("worked_examples", "fig_holocene_fire_method_worked_example.pdf"), figure,
          width = 14, height = 11, units = "in", bg = "white")
   cat("Written Holocene fire worked example for 2,300 cal BP.\n")
 }

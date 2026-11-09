@@ -1,4 +1,5 @@
 # Independent native-century reconstruction, geometry and contribution checks.
+source(here::here('R/helpers/config.R'), local = TRUE)
 suppressPackageStartupMessages({library(here);library(tidyverse);library(vegan)})
 source(here('R/helpers/century_tracking.R'),local=TRUE)
 source(here('R/helpers/cca_transition_contributions.R'),local=TRUE)
@@ -7,7 +8,7 @@ close=function(x,y,tolerance=1e-9) {
   valid=is.finite(x)&is.finite(y)
   stopifnot(!any(abs(x[valid]-y[valid])>tolerance*pmax(1,abs(y[valid]))))
 }
-b=century_prepare();primary=readRDS(here('output/chronology_reconstruction/primary.rds'))
+b=century_prepare();primary=readRDS(out('chronology_reconstruction/primary.rds'))
 s=b$samples
 raw_mora=readxl::read_excel(here('data/PALEO/DunwiddieMacrofossils.xlsx'),sheet='MacrofossilData')
 stopifnot(nrow(distinct(raw_mora,Location,Depth))==sum(s$site=='MORA'),
@@ -40,7 +41,7 @@ for(core in unique(pos$lake)) {
   stopifnot(identical(x$transition_index,seq_len(nrow(x))))
 }
 h=primary$calculations
-for(x in list(h,read_csv(here('output/cca_tracking_anthropocene_plot_calculations.csv'),show_col_types=FALSE))) {
+for(x in list(h,read_csv(out('cca_tracking_anthropocene_plot_calculations.csv'),show_col_types=FALSE))) {
   ox=x$o1_2-x$o1;oy=x$o2_2-x$o2;px=x$p1_2-x$p1;py=x$p2_2-x$p2
   no=sqrt(ox^2+oy^2);np=sqrt(px^2+py^2)
   l1=sqrt((x$o1-x$p1)^2+(x$o2-x$p2)^2);l2=sqrt((x$o1_2-x$p1_2)^2+(x$o2_2-x$p2_2)^2)

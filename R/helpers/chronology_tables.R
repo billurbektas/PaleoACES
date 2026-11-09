@@ -14,6 +14,7 @@
 # Reads only; writes only via write_chronology_tables(). Called by
 # R/stages/000_PALEO_b_vegetation.R; checked by R/tests/test_chronology_tables.R.
 # =============================================================================
+source(here::here('R/helpers/config.R'), local = TRUE)
 source(here::here("R/helpers/bacon_settings.R"), local = TRUE)
 
 CHRONOLOGY_TABLE_CORES = c(JayBath = "Jay Bath", LogWallow = "Log Wallow",
@@ -21,8 +22,8 @@ CHRONOLOGY_TABLE_CORES = c(JayBath = "Jay Bath", LogWallow = "Log Wallow",
 CHRONOLOGY_TABLE_SITES = c(JayBath = "MORA", LogWallow = "MORA",
   ReflectionPond = "MORA", PantherPotholes = "NOCA")
 CHRONOLOGY_TABLE_PATHS = c(
-  controls = "output/table_S1_1_chronological_controls.csv",
-  parameters = "output/table_S1_2_rbacon_parameters.csv")
+  controls = "table_S1_1_chronological_controls.csv",
+  parameters = "table_S1_2_rbacon_parameters.csv")
 
 # Wording per Bacon control ID. `group` is MORA (shared by its three cores) or
 # NOCA. "{error}" is replaced by the error entered in the Bacon control file.
@@ -188,7 +189,7 @@ bacon_parameters_table = function() {
 }
 
 write_chronology_tables = function() {
-  readr::write_csv(chronology_controls_table(), here::here(CHRONOLOGY_TABLE_PATHS[["controls"]]))
-  readr::write_csv(bacon_parameters_table(), here::here(CHRONOLOGY_TABLE_PATHS[["parameters"]]))
-  invisible(here::here(CHRONOLOGY_TABLE_PATHS))
+  readr::write_csv(chronology_controls_table(), out(CHRONOLOGY_TABLE_PATHS[["controls"]]))
+  readr::write_csv(bacon_parameters_table(), out(CHRONOLOGY_TABLE_PATHS[["parameters"]]))
+  invisible(out(CHRONOLOGY_TABLE_PATHS))
 }

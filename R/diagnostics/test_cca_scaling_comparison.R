@@ -21,6 +21,7 @@
 # lengths differ.
 # =============================================================================
 
+source(here::here('R/helpers/config.R'), local = TRUE)
 library(here)
 if (!exists("extra_exclude")) extra_exclude = character(0)
 if (!exists("cca_suffix"))    cca_suffix    = ""
@@ -80,7 +81,7 @@ p1 = panel_for("sites",
 p2 = panel_for("species",
                "species scores x sqrt(eigenvalues); sites unscaled\na SPECIES sits at the centroid of the SAMPLES holding it")
 
-fig = p1 + p2 +
+composite = p1 + p2 +
   plot_annotation(
     title = "The same CCA under the two scalings",
     caption = paste0(
@@ -92,8 +93,8 @@ fig = p1 + p2 +
   theme(plot.title   = element_text(face = "bold", size = 15),
         plot.caption = element_text(hjust = 0, size = 9, color = "grey30"))
 
-pdf(here(paste0("plot/test_figures/fig_cca_scaling_comparison", cca_suffix, ".pdf")), height = 7.5, width = 14)
-print(fig)
+pdf(fig("supplementary", paste0("fig_cca_scaling_comparison", cca_suffix, ".pdf")), height = 7.5, width = 14)
+print(composite)
 dev.off()
 
 cat("\nMax |score| per block and scaling:\n")

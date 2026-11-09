@@ -17,8 +17,8 @@ source(here("R/helpers/config.R"), local = TRUE)
 source(here("R/helpers/offline_cache.R"), local = TRUE)
 source(here("R/helpers/survey_years.R"), local = TRUE)
 
-CACHE = here("output/mora_climate_parts")
-OUT   = here("output/MORA_climate.csv")
+CACHE = out("mora_climate_parts")
+OUT   = out("MORA_climate.csv")
 
 plot_years = read_plot_years("MORA")
 PAST_START = 1979
@@ -32,8 +32,8 @@ VARS    = c("tasmin", "tasmax", "pr")
 BACKFILL_DAILY_TEMP = FALSE    # 1978 daily temperature is unusable without 1978 pr
 V21_MONTHLY_FIRST   = 1979
 
-MORA_occ = read_csv(here("output/MORA_occ.csv"), show_col_types = FALSE)
-pts = read_csv(here("output/MORA_plot_info.csv"), show_col_types = FALSE) %>%
+MORA_occ = read_csv(out("MORA_occ.csv"), show_col_types = FALSE)
+pts = read_csv(out("MORA_plot_info.csv"), show_col_types = FALSE) %>%
   rename(lon = longitude, lat = latitude) %>%
   filter(plot_id %in% MORA_occ$plot_id, !is.na(lon), !is.na(lat)) %>%
   distinct(plot_id, .keep_all = TRUE) %>%

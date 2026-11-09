@@ -34,11 +34,11 @@ note = function(ok, what, detail = "") {
               if (nzchar(detail)) paste0(" - ", detail) else ""))
   if (!ok) fails <<- c(fails, what)
 }
-occ = read_csv(here("output/paleo_occ.csv"), show_col_types = FALSE)
-env = read_csv(here("output/paleo_env.csv"), show_col_types = FALSE)
+occ = read_csv(out("paleo_occ.csv"), show_col_types = FALSE)
+env = read_csv(out("paleo_env.csv"), show_col_types = FALSE)
 
 samples = occ %>% distinct(lake,site,plot_id) %>% left_join(
-  read_csv(here('output/paleo_sample_depths.csv'),show_col_types=FALSE) %>% select(plot_id,age=median_age),
+  read_csv(out('paleo_sample_depths.csv'),show_col_types=FALSE) %>% select(plot_id,age=median_age),
   by='plot_id',relationship='one-to-one')
 climate = env %>% distinct(plot_id, .keep_all = TRUE)
 

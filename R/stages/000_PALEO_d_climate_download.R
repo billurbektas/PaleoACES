@@ -36,9 +36,9 @@ source(here("R/helpers/get_chelsa_monthly.R"), local = TRUE)  # V2.1 monthly, fo
 source(here("R/helpers/config.R"), local = TRUE)
 source(here("R/helpers/offline_cache.R"), local = TRUE)
 
-CACHE        = here("output/chelsa_paleo")
-OUT          = here("output/chelsa_paleo_ponds.csv")
-OUT_BIAS     = here("output/chelsa_paleo_bias_correction.csv")
+CACHE        = out("chelsa_paleo")
+OUT          = out("chelsa_paleo_ponds.csv")
+OUT_BIAS     = out("chelsa_paleo_bias_correction.csv")
 BIAS_CORRECT = TRUE
 V21_REF      = 1979:2021
 SLICE_MODERN = 20L
@@ -297,11 +297,11 @@ if (BIAS_CORRECT) {
                            add_offset = NA_real_, mul_factor = NA_real_)
 }
 
-out = paleo %>%
+paleo_out = paleo %>%
   left_join(ponds %>% select(id = ID, site), by = "id") %>%
   select(lake = id, site, lon, lat, variable, slice, year_CE, cal_BP, month,
          value_raw, value_corrected, add_offset, mul_factor)
 
-write_csv(out, OUT)
-cat("\nwritten: ", OUT, "  (", nrow(out), " rows)\n",
+write_csv(paleo_out, OUT)
+cat("\nwritten: ", OUT, "  (", nrow(paleo_out), " rows)\n",
     "Downstream uses value_raw by default; value_corrected is retained for the documented sensitivity run.\n", sep = "")

@@ -1,11 +1,12 @@
 # Worked geometry example and descriptive lake-level tracking visualizations.
 # Run after canonical stage 07; read primary tables and write diagnostic PDFs.
 # Rscript R/stages/09_tracking_example_and_visualizations.R
+source(here::here('R/helpers/config.R'), local = TRUE)
 suppressPackageStartupMessages({library(here);library(tidyverse);library(patchwork)})
 source(here('R/helpers/tracking_data.R'),local=TRUE)
 render_figures = isTRUE(getOption('paleoaces.render_figures',TRUE))
-r=read_csv(here('output/cca_tracking_holocene_lake_calculations.csv'),show_col_types=FALSE)
-b=read_csv(here('output/cca_tracking_holocene_lake_transitions.csv'),show_col_types=FALSE)
+r=read_csv(out('cca_tracking_holocene_lake_calculations.csv'),show_col_types=FALSE)
+b=read_csv(out('cca_tracking_holocene_lake_transitions.csv'),show_col_types=FALSE)
 example=r |> filter(lake=='PantherPotholes',pace_counterfactual_valid,direction_counterfactual_valid) |>
   mutate(distance=abs(interval_mid_cal_bp-3000)) |> arrange(distance) |> slice(1)
 if(nrow(example)!=1L) stop('No valid primary worked example')
@@ -39,14 +40,14 @@ s=ggplot(support,aes(endpoint,n_samples))+geom_col(fill='grey70')+
 figure=(a+p)/(q+s)+plot_annotation(title=paste0('Panther Potholes: ',example$age_hi,' to ',example$age_lo,' cal BP'),
   subtitle=paste('Primary median-age reconstruction; elapsed time:',example$vegetation_dt_years,'years'),
   caption='Sample WA positions are averaged within native centuries. No vegetation interpolation. Corrections start at O1.')
-if(render_figures) ggsave(here('plot/test_figures/worked_examples/fig_method_worked_example.pdf'),figure,width=14,height=12)
+if(render_figures) ggsave(fig('worked_examples', 'fig_method_worked_example.pdf'),figure,width=14,height=12)
 
 # Descriptive temporal panels use actual primary transitions and matching predictors.
 # This stage never modifies or exports scientific tables.
 # Regional climate bands reuse Figure 2's frozen catalog and subdivisions.
 # These annotations do not classify lakes or change any tracking estimates.
-climate_era_rects=read_csv(here('output/holocene_era_catalog.csv'),show_col_types=FALSE)
-climate_subphases=read_csv(here('output/holocene_era_climate_change_subphases.csv'),show_col_types=FALSE)
+climate_era_rects=read_csv(out('holocene_era_catalog.csv'),show_col_types=FALSE)
+climate_subphases=read_csv(out('holocene_era_climate_change_subphases.csv'),show_col_types=FALSE)
 climate_era_colors=c(`climate change`='#D3D3D6',`relative stability`='#EEEEF0')
 stopifnot(nrow(climate_era_rects)>0L,!anyDuplicated(climate_era_rects$era_id),
  all(climate_era_rects$era_class %in% names(climate_era_colors)),
@@ -79,7 +80,7 @@ thick=b |> pivot_longer(all_of(c(metrics,predictors)),names_to='metric',values_t
   mutate(segment=cumsum(row_number()==1L | !is.finite(estimate) |
     !coalesce(is.finite(lag(estimate)),FALSE))) |> ungroup()
 thin=thick |> rename(value=estimate)
-modern=read_csv(here('output/cca_tracking_anthropocene_plot_model_input.csv'),show_col_types=FALSE) |>
+modern=read_csv(out('cca_tracking_anthropocene_plot_model_input.csv'),show_col_types=FALSE) |>
  mutate(site=factor(site,levels=c('MORA','NOCA')))
 # FireActivity is a charcoal-frequency measure and is unavailable for modern
 # plots. Their binary burned assignments remain available in the model input.
@@ -204,6 +205,6 @@ p_other=tracking_panels(other,setNames(other_rows,other),other_rows,
  'Tracking magnitude ratio, angle, climate and fire',
  'One row per variable with established climate periods; duplicate Holocene rate-ratio display omitted')
 if(render_figures) {
-  ggsave(here('plot/test_figures/fig_tracking_transition_rates.pdf'),p_rates,width=20,height=10)
-  ggsave(here('plot/test_figures/fig_tracking_transition_ratios_angles.pdf'),p_other,width=20,height=12)
+  ggsave(fig('supplementary', 'fig_tracking_transition_rates.pdf'),p_rates,width=20,height=10)
+  ggsave(fig('supplementary', 'fig_tracking_transition_ratios_angles.pdf'),p_other,width=20,height=12)
 }

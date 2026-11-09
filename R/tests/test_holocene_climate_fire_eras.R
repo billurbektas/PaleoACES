@@ -1,29 +1,30 @@
 # Offline gate for the unified, literature-blind climate-era/fire analysis.
+source(here::here('R/helpers/config.R'), local = TRUE)
 suppressPackageStartupMessages({library(here); library(tidyverse)})
 render_figures = isTRUE(getOption("paleoaces.render_figures", TRUE))
 source(here("R/helpers/holocene_climate_fire_era_functions.R"), local = TRUE)
 
-thresholds = read_csv(here("output/holocene_era_climate_variable_thresholds.csv"),
+thresholds = read_csv(out("holocene_era_climate_variable_thresholds.csv"),
   show_col_types = FALSE)
-phase = read_csv(here("output/holocene_era_climate_regional_phase_changes.csv"),
+phase = read_csv(out("holocene_era_climate_regional_phase_changes.csv"),
   show_col_types = FALSE)
-cells = read_csv(here("output/holocene_era_climate_directional_cells.csv"),
+cells = read_csv(out("holocene_era_climate_directional_cells.csv"),
   show_col_types = FALSE)
-era_grid = read_csv(here("output/holocene_era_grid.csv"), show_col_types = FALSE)
-eras = read_csv(here("output/holocene_era_catalog.csv"), show_col_types = FALSE)
-drivers = read_csv(here("output/holocene_era_driver_subintervals.csv"),
+era_grid = read_csv(out("holocene_era_grid.csv"), show_col_types = FALSE)
+eras = read_csv(out("holocene_era_catalog.csv"), show_col_types = FALSE)
+drivers = read_csv(out("holocene_era_driver_subintervals.csv"),
   show_col_types = FALSE)
-subphases = read_csv(here("output/holocene_era_climate_change_subphases.csv"),
+subphases = read_csv(out("holocene_era_climate_change_subphases.csv"),
   show_col_types = FALSE)
-site_changes = read_csv(here("output/holocene_era_climate_site_phase_changes.csv"),
+site_changes = read_csv(out("holocene_era_climate_site_phase_changes.csv"),
   show_col_types = FALSE)
-composite = read_csv(here("output/holocene_era_climate_composite_site_phase.csv"),
+composite = read_csv(out("holocene_era_climate_composite_site_phase.csv"),
   show_col_types = FALSE)
 rate_comparison = read_csv(
-  here("output/holocene_anthropocene_raw_climate_rate_comparison.csv"),
+  out("figures/holocene_anthropocene_raw_climate_rate_comparison.csv"),
   show_col_types = FALSE)
 anthropocene_climate = read_csv(
-  here("output/cca_tracking_anthropocene_plot_calculations.csv"), show_col_types = FALSE)
+  out("cca_tracking_anthropocene_plot_calculations.csv"), show_col_types = FALSE)
 
 stopifnot(
   setequal(thresholds$variable, c("MSpT", "MWT", "SP", "WP")),
@@ -135,22 +136,22 @@ stopifnot(isTRUE(all.equal(
 
 # Fire settings, normalization, equal-core aggregation, robust thresholds, and
 # every contiguous above-threshold run are independently checked.
-fire_settings = read_csv(here("output/holocene_era_fire_source_settings.csv"),
+fire_settings = read_csv(out("holocene_era_fire_source_settings.csv"),
   show_col_types = FALSE)
-core = read_csv(here("output/holocene_era_fire_core_frequency.csv"),
+core = read_csv(out("holocene_era_fire_core_frequency.csv"),
   show_col_types = FALSE)
-site = read_csv(here("output/holocene_era_fire_site_frequency.csv"),
+site = read_csv(out("holocene_era_fire_site_frequency.csv"),
   show_col_types = FALSE)
-fire_thresholds = read_csv(here("output/holocene_era_fire_thresholds.csv"),
+fire_thresholds = read_csv(out("holocene_era_fire_thresholds.csv"),
   show_col_types = FALSE)
-periods = read_csv(here("output/holocene_era_high_fire_periods.csv"),
+periods = read_csv(out("holocene_era_high_fire_periods.csv"),
   show_col_types = FALSE)
-events = read_csv(here("output/holocene_fire_source_events.csv"),
+events = read_csv(out("holocene_fire_source_events.csv"),
   show_col_types = FALSE)
-fire_ratio = read_csv(here("output/holocene_era_fire_threshold_ratio.csv"),
+fire_ratio = read_csv(out("figures/holocene_era_fire_threshold_ratio.csv"),
   show_col_types = FALSE)
 fire_example = read_csv(
-  here("output/holocene_fire_method_worked_example.csv"),
+  out("worked_examples/holocene_fire_method_worked_example.csv"),
   show_col_types = FALSE)
 stopifnot(
   nrow(fire_settings) == 4L,
@@ -267,27 +268,12 @@ stopifnot(!grepl("holocene_period_candidates", source_text, fixed = TRUE),
   grepl("`Holocene max` = holocene_max_signed_rate_per_century",
     figure_text, fixed = TRUE))
 
-retired_scripts = here(c("R/10_holocene_period_diagnostics.R",
-  "R/11_holocene_climate_periods_1000yr.R",
-  "R/13_holocene_climate_fire_correspondence.R",
-  "R/holocene_period_functions.R",
-  "R/test_holocene_period_diagnostics.R",
-  "R/test_holocene_climate_periods_1000yr.R"))
-retired_generated = c(
-  list.files(here("plot"), pattern = paste0(
-    "^fig_holocene_(period_diagnostics|climate_periods_1000yr|",
-    "1000yr_climate_fire_correspondence)"), full.names = TRUE),
-  list.files(here("output"), pattern = paste0(
-    "^(holocene_period_|holocene_climate_(500yr|1000yr|regimes)|",
-    "holocene_high_fire_|holocene_1000yr_|holocene_correspondence_)"),
-    full.names = TRUE))
-stopifnot(!any(file.exists(retired_scripts)), !length(retired_generated))
 
-hashes = read_csv(here("output/holocene_era_protected_hash_audit.csv"),
+hashes = read_csv(out("holocene_era_protected_hash_audit.csv"),
   show_col_types = FALSE)
-required_figures = here(c("plot/fig_standardized_climate_change_eras_fire.pdf",
-  "plot/test_figures/worked_examples/fig_holocene_climate_period_method_worked_example.pdf",
-  "plot/test_figures/worked_examples/fig_holocene_fire_method_worked_example.pdf"))
+required_figures = c(fig("main", "fig_standardized_climate_change_eras_fire.pdf"),
+  fig("worked_examples", "fig_holocene_climate_period_method_worked_example.pdf"),
+  fig("worked_examples", "fig_holocene_fire_method_worked_example.pdf"))
 stopifnot(all(hashes$unchanged))
 if (render_figures)
   stopifnot(all(file.exists(required_figures)),

@@ -1,4 +1,5 @@
 # Canonical century reconstruction and tracking: one producer, no model fits.
+source(here::here('R/helpers/config.R'), local = TRUE)
 suppressPackageStartupMessages({library(here);library(tidyverse);library(vegan)})
 source(here('R/helpers/century_tracking.R'),local=TRUE)
 if(any(grepl('^--(bin-width|offset|reconstruction-audit|century-reconstruction)',commandArgs(trailingOnly=TRUE))))
@@ -7,8 +8,8 @@ bundle=century_prepare();primary=century_reconstruct(bundle)
 hc=primary$calculations
 h=hc |> select(all_of(century_holocene_columns()))
 # Modern calculations are protected and already contain their distinct elapsed times.
-a=read_csv(here('output/cca_tracking_anthropocene_plot_model_input.csv'),show_col_types=FALSE)
-ac=read_csv(here('output/cca_tracking_anthropocene_plot_calculations.csv'),show_col_types=FALSE)
+a=read_csv(out('cca_tracking_anthropocene_plot_model_input.csv'),show_col_types=FALSE)
+ac=read_csv(out('cca_tracking_anthropocene_plot_calculations.csv'),show_col_types=FALSE)
 stopifnot(nrow(a)==607L,!anyDuplicated(a[c('site','plot_id')]),nrow(ac)==607L,
   !anyDuplicated(h[c('site','lake','age_hi','age_lo')]),
   all(h$vegetation_dt_years==h$age_hi-h$age_lo),all(h$climate_dt_years==h$vegetation_dt_years),
@@ -39,8 +40,8 @@ tables=list(cca_tracking_holocene_century_positions=positions,
   cca_tracking_holocene_fire_provenance=primary$fire$core,
   cca_tracking_holocene_fire_events=primary$fire$events,
   cca_tracking_holocene_posterior_rows=bundle$cache$posterior_rows)
-for(name in names(tables)) write_csv(tables[[name]],here('output',paste0(name,'.csv')))
+for(name in names(tables)) write_csv(tables[[name]],out(paste0(name,'.csv')))
 write_csv(century_schema(c(tables,list(cca_tracking_anthropocene_plot_model_input=a,
-  cca_tracking_anthropocene_plot_calculations=ac))),here('output/cca_tracking_schema.csv'))
-saveRDS(primary,here('output/chronology_reconstruction/primary.rds'))
+  cca_tracking_anthropocene_plot_calculations=ac))),out('cca_tracking_schema.csv'))
+saveRDS(primary,out('chronology_reconstruction/primary.rds'))
 cat('Primary native-century tracking:',nrow(h),'actual transitions; no interpolation or offsets.\n')

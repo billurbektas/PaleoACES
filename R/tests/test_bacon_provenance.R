@@ -8,7 +8,7 @@ source(here("R/helpers/config.R"), local = TRUE)
 source(here("R/helpers/bacon_settings.R"), local = TRUE)
 source(here("R/helpers/chronology_provenance.R"), local = TRUE)
 
-manifest_path = here("output/bacon_run_manifest.csv")
+manifest_path = out("bacon_run_manifest.csv")
 if (!file.exists(manifest_path)) {
   stop("Missing Bacon manifest. Run: Rscript R/workflow.R --age-models")
 }

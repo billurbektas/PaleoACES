@@ -14,12 +14,12 @@ source(here("R/helpers/offline_cache.R"), local = TRUE)
 source(here("R/helpers/survey_years.R"), local = TRUE)
 source(here("R/helpers/figure_style.R"), local = TRUE)
 
-CACHE  = here("output/anomaly_parts")
+CACHE  = out("anomaly_parts")
 ALL_YEARS = 1979:2021
 VARS   = c("tasmin", "tasmax", "pr")
 
 plot_years = read_plot_years()
-paired = read_csv(here("output/cca_pair_eligibility.csv"), show_col_types = FALSE) %>%
+paired = read_csv(out("cca_pair_eligibility.csv"), show_col_types = FALSE) %>%
   filter(comparison_included) %>% select(site, plot_id)
 plot_years = plot_years %>% semi_join(paired, by = c("site", "plot_id"))
 windows = bind_rows(
@@ -29,13 +29,13 @@ windows = bind_rows(
     survey_year = vegetation_t2_year, climate_start, climate_end))
 cohorts = windows %>% count(site, period, survey_year, climate_start, climate_end,
   name = "analyzed_plots")
-write_csv(cohorts, here("output/survey_climate_windows.csv"))
+write_csv(cohorts, out("report/survey_climate_windows.csv"))
 
-mora = read_csv(here("output/MORA_plot_info.csv"), show_col_types = FALSE) %>%
+mora = read_csv(out("MORA_plot_info.csv"), show_col_types = FALSE) %>%
   rename(lon = longitude, lat = latitude) %>%
   filter(!is.na(lon), !is.na(lat)) %>% distinct(plot_id, .keep_all = TRUE) %>%
   transmute(id = plot_id, lon, lat, site = "MORA")
-noca = read_csv(here("output/NOCA_plot_info.csv"), show_col_types = FALSE) %>%
+noca = read_csv(out("NOCA_plot_info.csv"), show_col_types = FALSE) %>%
   rename(lon = Longitude, lat = Latitude) %>%
   filter(!is.na(lon), !is.na(lat)) %>% distinct(plot_id, .keep_all = TRUE) %>%
   transmute(id = plot_id, lon, lat, site = "NOCA")
@@ -139,8 +139,8 @@ res = plot_results %>% group_by(site, period, survey_year, climate_start, climat
     across(c(z_record, z_roll, pct_roll, trend_per_decade, z_detrend, pct_detrend), median),
     z_detrend_min = min(z_detrend), z_detrend_max = max(z_detrend), .groups = "drop") %>%
   mutate(window = paste(site, period, if_else(is.na(survey_year), "legacy", as.character(survey_year)), sep = "_"))
-write_csv(res, here("output/test_survey_year_anomaly.csv"))
-write_csv(plot_results, here("output/test_survey_year_anomaly_plot.csv"))
+write_csv(res, out("report/test_survey_year_anomaly.csv"))
+write_csv(plot_results, out("report/test_survey_year_anomaly_plot.csv"))
 print(res %>% select(site, period, survey_year, variable, n_plots, n_yr, z_detrend), n = 60)
 
 # Annual series use the same paired comparison universe as the window counts.
@@ -171,4 +171,4 @@ p_bands = ggplot(bands, aes(y = label, colour = site)) +
     subtitle = "Separate bands: survey year, six climate years and number of analyzed plots. Winter begins with the preceding December.") +
   theme_bw(base_size = 10) + theme(panel.grid.major.y = element_blank())
 p = p_series / p_bands + plot_layout(heights = c(3, 1.2))
-ggsave(here("plot/test_figures/test_survey_year_anomaly.pdf"), p, width = 13, height = 13)
+ggsave(fig("supplementary", "test_survey_year_anomaly.pdf"), p, width = 13, height = 13)

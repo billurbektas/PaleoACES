@@ -1,12 +1,13 @@
 # Fixed-CCA species rates and seasonal climate displacement contributions.
+source(here::here('R/helpers/config.R'), local = TRUE)
 suppressPackageStartupMessages({library(here);library(tidyverse);library(vegan)})
 source(here('R/helpers/century_tracking.R'),local=TRUE)
 source(here('R/helpers/cca_transition_contributions.R'),local=TRUE)
-bundle=century_prepare();primary=readRDS(here('output/chronology_reconstruction/primary.rds'))
+bundle=century_prepare();primary=readRDS(out('chronology_reconstruction/primary.rds'))
 h=century_species_contributions(primary,bundle)
-a=read_csv(here('output/cca_tracking_anthropocene_plot_calculations.csv'),show_col_types=FALSE)
+a=read_csv(out('cca_tracking_anthropocene_plot_calculations.csv'),show_col_types=FALSE)
 basis=contribution_reference(bundle$reference)
-occ=read_csv(here('output/occ_consolidated.csv'),show_col_types=FALSE)
+occ=read_csv(out('occ_consolidated.csv'),show_col_types=FALSE)
 ids=select(a,site,plot_id)
 first=contribution_weights(contribution_species_matrix(occ,ids,'past',bundle$reference$retained_species))
 last=contribution_weights(contribution_species_matrix(occ,ids,'present',bundle$reference$retained_species))
@@ -17,14 +18,14 @@ modern$contribution_rate=modern$parallel_contribution*100/modern$vegetation_dt_y
 species=bind_rows(h,modern)
 climate=bind_rows(century_climate_contributions(century_contribution_context(primary$calculations,'Holocene'),
   primary$calculations,bundle$reference),century_climate_contributions(century_contribution_context(a,'Anthropocene'),a,bundle$reference))
-out=here('output/cca_transition_contributions');dir.create(out,recursive=TRUE,showWarnings=FALSE)
-write_csv(species,file.path(out,'species_primary.csv'));write_csv(climate,file.path(out,'climate_primary.csv'))
-write_csv(century_schema(list(species_primary=species,climate_primary=climate)),file.path(out,'schema.csv'))
+results_dir=out('cca_transition_contributions');dir.create(results_dir,recursive=TRUE,showWarnings=FALSE)
+write_csv(species,file.path(results_dir,'species_primary.csv'));write_csv(climate,file.path(results_dir,'climate_primary.csv'))
+write_csv(century_schema(list(species_primary=species,climate_primary=climate)),file.path(results_dir,'schema.csv'))
 writeLines(c('One primary reconstructed transition or modern pair per component.',
   'Species signed parallel contributions: CCA distance per century; raw vectors and weights also retained.',
   'Climate signed parallel contributions: CCA displacement, without dividing by elapsed time.',
   'Species reference is delta LC; climate reference is delta WA. Undefined directions remain NA.',
-  'Additivity is verified for each primary or whole-draw transition before any summaries.'),file.path(out,'calculation_notes.txt'))
+  'Additivity is verified for each primary or whole-draw transition before any summaries.'),file.path(results_dir,'calculation_notes.txt'))
 if(isTRUE(getOption('paleoaces.render_figures',TRUE))) for(type in c('species','climate')) {
   data=if(type=='species') species |> mutate(component=species,value=contribution_rate) else
     climate |> mutate(component=variable,value=parallel_contribution)
@@ -48,6 +49,6 @@ if(isTRUE(getOption('paleoaces.render_figures',TRUE))) for(type in c('species','
     p=p+coord_cartesian(xlim=c(-limit,limit))+
       labs(caption=paste0(p$labels$caption,'\nAxis zooms to visible boxes and whiskers; hidden outliers remain in all calculations.'))
   }
-  ggsave(here('plot/test_figures',paste0('fig_cca_transition_',type,'_boxplots.pdf')),p,
+  ggsave(fig('supplementary', paste0('fig_cca_transition_',type,'_boxplots.pdf')),p,
     width=16,height=if(type=='species') 10 else 6,device=cairo_pdf)
 }

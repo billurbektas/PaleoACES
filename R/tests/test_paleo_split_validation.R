@@ -6,6 +6,7 @@
 # content and cross-stage contracts; chronology file identity is handled by
 # test_bacon_provenance.R.
 
+source(here::here('R/helpers/config.R'), local = TRUE)
 library(here)
 suppressMessages({library(dplyr); library(readr)})
 
@@ -17,7 +18,7 @@ note = function(ok, what, detail = "") {
 }
 
 cat("\n=== paleo_occ.csv ===\n")
-occ = read_csv(here("output/paleo_occ.csv"), show_col_types = FALSE)
+occ = read_csv(out("paleo_occ.csv"), show_col_types = FALSE)
 samples = occ %>% distinct(lake, plot_id)
 expected_samples = c(JayBath = 48L, LogWallow = 40L,
                      PantherPotholes = 870L, ReflectionPond = 31L)
@@ -46,9 +47,9 @@ note(length(bad) == 0L, "no unsupported identification labels",
      paste(bad, collapse = ", "))
 
 cat("\n=== vegetation, depth, and fire contracts ===\n")
-depths = read_csv(here("output/paleo_sample_depths.csv"), show_col_types = FALSE)
-fire = read_csv(here("output/paleo_fire.csv"), show_col_types = FALSE)
-noca_peaks = read_csv(here("output/fire_noca_peaks.csv"), show_col_types = FALSE)
+depths = read_csv(out("paleo_sample_depths.csv"), show_col_types = FALSE)
+fire = read_csv(out("paleo_fire.csv"), show_col_types = FALSE)
+noca_peaks = read_csv(out("fire_noca_peaks.csv"), show_col_types = FALSE)
 note(setequal(samples$plot_id, depths$plot_id),
      "every vegetation sample has a depth mapping")
 note(setequal(samples$plot_id, fire$plot_id),
@@ -72,8 +73,8 @@ note(all(noca_peaks$interpolation_interval == 12L &
 
 cat("\n=== cross-arm species check (informational) ===\n")
 survey = bind_rows(
-  read_csv(here("output/MORA_occ.csv"), show_col_types = FALSE) %>% select(species),
-  read_csv(here("output/NOCA_occ.csv"), show_col_types = FALSE) %>% select(species)
+  read_csv(out("MORA_occ.csv"), show_col_types = FALSE) %>% select(species),
+  read_csv(out("NOCA_occ.csv"), show_col_types = FALSE) %>% select(species)
 )
 dropped = setdiff(unique(occ$species), unique(survey$species))
 cat("paleo species absent from survey species list: ",

@@ -194,11 +194,11 @@ RENAMES = tribble(
 # Load the three cleaned sources
 # -----------------------------------------------------------------------------
 occ = bind_rows(
-  read_csv(here("output/MORA_occ.csv"), show_col_types = FALSE) %>%
+  read_csv(out("MORA_occ.csv"), show_col_types = FALSE) %>%
     transmute(site = "MORA", era = "anthropocene", period, plot_id, species, occurrence),
-  read_csv(here("output/NOCA_occ.csv"), show_col_types = FALSE) %>%
+  read_csv(out("NOCA_occ.csv"), show_col_types = FALSE) %>%
     transmute(site = "NOCA", era = "anthropocene", period, plot_id, species, occurrence),
-  read_csv(here("output/paleo_occ.csv"), show_col_types = FALSE) %>%
+  read_csv(out("paleo_occ.csv"), show_col_types = FALSE) %>%
     transmute(site, era, period, plot_id, species, occurrence)
 )
 
@@ -272,7 +272,7 @@ if (!"past" %in% mora_pop$period)
 cat("\nNOTE - Juniperus communis (NOCA paleo only, 8 samples) is a shrub but has\n",
     "  no survey-stratum evidence either way; kept, and it never reaches the CCA.\n", sep = "")
 
-write_csv(occ, here("output/occ_consolidated.csv"))
+write_csv(occ, out("occ_consolidated.csv"))
 cat("\nWrote output/occ_consolidated.csv:", nrow(occ), "rows,",
     n_distinct(occ$species), "species,", n_distinct(occ$plot_id), "samples\n")
 
@@ -342,7 +342,7 @@ p_counts = ggplot(cnt_long, aes(species, n, fill = period)) +
         legend.position = "top")
 
 if (render_figures) {
-  ggsave(here("plot/test_figures/species_counts_consolidated.pdf"), p_counts,
+  ggsave(fig("supplementary", "species_counts_consolidated.pdf"), p_counts,
          width = 11, height = 8)
   cat("\nWrote plot/test_figures/species_counts_consolidated.pdf\n")
 }
@@ -372,8 +372,8 @@ if (render_figures) {
 SEED = "Seedling / regeneration"; ADULT = "Adult"
 
 stage = bind_rows(
-  read_csv(here("output/MORA_occ_stage.csv"), show_col_types = FALSE) %>% mutate(site = "MORA"),
-  read_csv(here("output/NOCA_occ_stage.csv"), show_col_types = FALSE) %>% mutate(site = "NOCA")
+  read_csv(out("MORA_occ_stage.csv"), show_col_types = FALSE) %>% mutate(site = "MORA"),
+  read_csv(out("NOCA_occ_stage.csv"), show_col_types = FALSE) %>% mutate(site = "NOCA")
 ) %>%
   # MORA writes "adult"/"seedling", NOCA writes "Adult"/"Seedling / regeneration"
   mutate(stage = if_else(str_starts(str_to_lower(stage), "a"), ADULT, SEED),
@@ -419,7 +419,7 @@ p_stage = ggplot(stage_counts, aes(species, n_plots, fill = period)) +
         plot.caption = element_text(size = 12, hjust = 0, colour = "grey35"))
 
 if (render_figures) {
-  ggsave(here("plot/test_figures/stage_adult_seedling_past_present.pdf"), p_stage,
+  ggsave(fig("supplementary", "stage_adult_seedling_past_present.pdf"), p_stage,
          width = 12, height = 12)
 }
 
@@ -548,16 +548,16 @@ holocene_sampling_fire_counts = function(draws, climate, events, series, n_draws
 }
 
 # Original sample identities and unrounded full-posterior median ages.
-sampling_draws=read_csv(here('output/paleo_sample_depths.csv'),show_col_types=FALSE) |>
+sampling_draws=read_csv(out('paleo_sample_depths.csv'),show_col_types=FALSE) |>
   transmute(lake,plot_id,draw=1L,age=median_age)
 N_DRAWS=1L
 sampling_counts = holocene_sampling_fire_counts(
   sampling_draws,
-  read_csv(here("output/chelsa_paleo_ponds.csv"), show_col_types = FALSE),
-  bind_rows(read_csv(here("output/fire_mora_tapas_events.csv"), show_col_types = FALSE),
-    read_csv(here("output/fire_noca_tapas_events.csv"), show_col_types = FALSE)),
-  bind_rows(read_csv(here("output/fire_mora_tapas_series.csv"), show_col_types = FALSE),
-    read_csv(here("output/fire_noca_tapas_series.csv"), show_col_types = FALSE)),
+  read_csv(out("chelsa_paleo_ponds.csv"), show_col_types = FALSE),
+  bind_rows(read_csv(out("fire_mora_tapas_events.csv"), show_col_types = FALSE),
+    read_csv(out("fire_noca_tapas_events.csv"), show_col_types = FALSE)),
+  bind_rows(read_csv(out("fire_mora_tapas_series.csv"), show_col_types = FALSE),
+    read_csv(out("fire_noca_tapas_series.csv"), show_col_types = FALSE)),
   N_DRAWS)
 sampling_lake_order = c("JayBath", "LogWallow", "ReflectionPond", "PantherPotholes")
 sampling_lake_labels = c("Jay Bath", "Log Wallow", "Reflection Pond", "Panther Potholes")
@@ -617,7 +617,7 @@ sampling_figure = patchwork::wrap_plots(sampling_macro_plot, sampling_fire_plot,
       "Lines do not bridge missing fire coverage."),
     theme = theme(plot.title = element_text(size = 25, face = "bold"),
       plot.caption = element_text(size = 12, hjust = 0), plot.margin = margin(14, 18, 14, 18)))
-if (render_figures) ggsave(here("plot/test_figures/fig_holocene_sampling_fire_100yr.pdf"),
+if (render_figures) ggsave(fig("supplementary", "fig_holocene_sampling_fire_100yr.pdf"),
   sampling_figure, width = 18, height = 11, device = cairo_pdf, bg = "white")
 cat("\nNative 100-year sampling counts before CCA:\n")
 print(sampling_totals)

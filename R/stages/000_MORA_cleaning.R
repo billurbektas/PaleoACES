@@ -11,6 +11,7 @@
 #   - seedlings: MORA_Seedlings_Resurvey_Cleaned.csv (10-50 + 51-140 cm tallies)
 #   - adult trees: MORA_TreeData_Resurvey_Cleaned.csv (individual tree records)
 
+source(here::here('R/helpers/config.R'), local = TRUE)
 library(tidyverse)
 library(readr)
 library(readxl)
@@ -45,9 +46,9 @@ MORA_visits = resolve_mora_resurveys(MORA_trees, MORA_seedlings, MORA_plot_lib,
   read_csv(here("data/MORA/resurvey_seedling_visit_mapping.csv"), show_col_types = FALSE))
 MORA_trees = MORA_visits$trees
 MORA_seedlings = MORA_visits$seedlings
-write_csv(MORA_visits$audit, here("output/MORA_resurvey_record_audit.csv"))
-write_csv(MORA_visits$visits, here("output/MORA_resurvey_visit_audit.csv"))
-write_csv(MORA_visits$years, here("output/MORA_plot_years.csv"))
+write_csv(MORA_visits$audit, out("MORA_resurvey_record_audit.csv"))
+write_csv(MORA_visits$visits, out("MORA_resurvey_visit_audit.csv"))
+write_csv(MORA_visits$years, out("MORA_plot_years.csv"))
 
 # ---- in-memory patch: the legacy Populus code (same pattern as TSH4 above) ---
 # MORA_spp_lib.csv's only Populus row is `past_code = "absent_past" / prst_code =
@@ -494,16 +495,16 @@ cat("- Past records:", sum(mora_occ$period == "past"), "\n")
 cat("- Present records:", sum(mora_occ$period == "present"), "\n")
 
 # Write to CSV (commented out for safety)
-write_csv(mora_occ, file = here("output/MORA_occ.csv"))
+write_csv(mora_occ, file = out("MORA_occ.csv"))
 # Stage-resolved companion. Same plots and species as MORA_occ.csv, but one row
 # per stage, so R/stages/000_occurrence_data_consolidate.R can draw the adult vs
 # seedling comparison WITHOUT source()-ing this script (which would rewrite these
 # outputs as a side effect, which was the problem in the removed historical stage diagnostic).
-write_csv(mora_stage, file = here("output/MORA_occ_stage.csv"))
+write_csv(mora_stage, file = out("MORA_occ_stage.csv"))
 stopifnot(setequal(paste(mora_stage$plot_id, mora_stage$species, mora_stage$period),
                    paste(mora_occ$plot_id,   mora_occ$species,   mora_occ$period)))
 load(here("data/MORA_plots.rda"))
-write_csv(plot_info, file = here("output/MORA_plot_info.csv"))
+write_csv(plot_info, file = out("MORA_plot_info.csv"))
 
 # Preview the result
 cat("\nFirst 10 rows:\n")
@@ -533,7 +534,7 @@ count_plot =
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 if (render_figures) {
-  pdf(file = here("plot/test_figures/MORA_dynamics.pdf"), width = 10, height = 8)
+  pdf(file = fig("supplementary", "MORA_dynamics.pdf"), width = 10, height = 8)
   print("Creating turnover heatmap...")
   print(heatmap_plot)
 

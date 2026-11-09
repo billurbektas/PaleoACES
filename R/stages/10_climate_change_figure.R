@@ -7,20 +7,21 @@
 suppressPackageStartupMessages({
   library(here); library(tidyverse); library(patchwork); library(grid)
 })
+source(here::here('R/helpers/config.R'), local = TRUE)
 source(here("R/helpers/figure_style.R"), local = TRUE)
 render_figures = isTRUE(getOption("paleoaces.render_figures", TRUE))
 
 required = c(
-  climate = here("output/holocene_era_climate_directional_cells.csv"),
-  eras = here("output/holocene_era_catalog.csv"),
-  subphases = here("output/holocene_era_climate_change_subphases.csv"),
-  fire = here("output/holocene_era_high_fire_periods.csv"),
-  fire_frequency = here("output/holocene_era_fire_site_frequency.csv"),
-  thresholds = here("output/holocene_era_climate_variable_thresholds.csv"),
-  anthropocene = here("output/cca_tracking_anthropocene_plot_calculations.csv"),
-  regional_phases = here("output/holocene_era_climate_regional_phase_changes.csv"),
-  paleo_climate = here("output/chelsa_paleo_ponds.csv"),
-  scaling = here("output/cca_tracking_climate_scaling.csv"))
+  climate = out("holocene_era_climate_directional_cells.csv"),
+  eras = out("holocene_era_catalog.csv"),
+  subphases = out("holocene_era_climate_change_subphases.csv"),
+  fire = out("holocene_era_high_fire_periods.csv"),
+  fire_frequency = out("holocene_era_fire_site_frequency.csv"),
+  thresholds = out("holocene_era_climate_variable_thresholds.csv"),
+  anthropocene = out("cca_tracking_anthropocene_plot_calculations.csv"),
+  regional_phases = out("holocene_era_climate_regional_phase_changes.csv"),
+  paleo_climate = out("chelsa_paleo_ponds.csv"),
+  scaling = out("cca_tracking_climate_scaling.csv"))
 if (!all(file.exists(required))) stop(
   "Run R/stages/07_tracking_metrics.R and R/stages/05_holocene_climate_fire_eras.R first.")
 
@@ -130,7 +131,7 @@ rate_comparison = holocene_max |>
 stopifnot(nrow(rate_comparison) == 4L,
   all(rate_comparison$holocene_offsets == 10L))
 write_csv(rate_comparison,
-  here("output/holocene_anthropocene_raw_climate_rate_comparison.csv"))
+  out("figures/holocene_anthropocene_raw_climate_rate_comparison.csv"))
 
 # Climate-change subphase arrows share a top annotation lane. CC1a--c are
 # derived from the internal driver-count trough; the shorter CC eras remain
@@ -291,7 +292,7 @@ fire_ratio = fire_frequency |>
 stopifnot(nrow(fire_ratio) > 0,
   all(fire_ratio$high_fire == (fire_ratio$high_fire_ratio > 1)))
 write_csv(fire_ratio,
-  here("output/holocene_era_fire_threshold_ratio.csv"))
+  out("figures/holocene_era_fire_threshold_ratio.csv"))
 
 # sites selects which fire lanes are drawn (both by default).
 fire_panel = function(text_scale = 1, sites = c("MORA", "NOCA")) {
@@ -330,7 +331,7 @@ p_fire = fire_panel()
 figure = p_climate / p_fire +
   plot_layout(heights = c(4.5, 1.45))
 if (render_figures) {
-  ggsave(here("plot/fig_standardized_climate_change_eras_fire.pdf"), figure,
+  ggsave(fig("main", "fig_standardized_climate_change_eras_fire.pdf"), figure,
     width = 12.5, height = 9.5)
 }
 
@@ -370,7 +371,7 @@ climate_levels = read_csv(required[["paleo_climate"]],
   ungroup()
 stopifnot(nrow(climate_levels) == 4L * 111L,
   all(climate_levels$n_lakes_MORA == 3L), all(climate_levels$n_lakes_NOCA == 1L))
-write_csv(climate_levels, here("output/holocene_standardized_climate_levels.csv"))
+write_csv(climate_levels, out("figures/holocene_standardized_climate_levels.csv"))
 levels_in_view = filter(climate_levels,
   between(t, time_limits[2], time_limits[1]))
 p_levels = climate_panel(
@@ -391,8 +392,8 @@ p_levels = climate_panel(
     legend.margin = margin(0, 0, 0, 0))
 figure_levels = p_levels / p_fire + plot_layout(heights = c(4.5, 1.45))
 if (render_figures) {
-  dir.create(here("plot/test_figures"), showWarnings = FALSE)
-  ggsave(here("plot/test_figures/fig_standardized_climate_levels_eras_fire.pdf"),
+  dir.create(fig("main", "test_figures"), showWarnings = FALSE)
+  ggsave(fig("supplementary", "fig_standardized_climate_levels_eras_fire.pdf"),
     figure_levels, width = 12.5, height = 9.5)
 }
 
@@ -403,9 +404,9 @@ figure_presentation = climate_panel(presentation_scale,
     show_stability = FALSE) / fire_panel(presentation_scale) +
   plot_layout(heights = c(4.5, 1.45))
 if (render_figures) {
-  dir.create(here("plot/presentation_figures"), showWarnings = FALSE)
+  dir.create(fig("main", "presentation_figures"), showWarnings = FALSE)
   for (ext in c("pdf", "png"))
-    ggsave(here("plot/presentation_figures",
+    ggsave(fig("presentation", 
         paste0("fig_holocene_climate_eras_fire.", ext)), figure_presentation,
       width = 16, height = 10.5, dpi = 300)
 }
@@ -417,7 +418,7 @@ figure_presentation_mora = climate_panel(presentation_scale,
   plot_layout(heights = c(4.5, 1.45))
 if (render_figures) {
   for (ext in c("pdf", "png"))
-    ggsave(here("plot/presentation_figures",
+    ggsave(fig("presentation", 
         paste0("fig_holocene_climate_eras_fire_MORA.", ext)),
       figure_presentation_mora, width = 16, height = 10.5, dpi = 300)
 }
@@ -506,9 +507,9 @@ p_rates = wrap_plots(map2(variables, variables %in% c("MSpT", "SP"),
     theme = theme(plot.title = element_text(face = "bold",
       size = 19 * rate_text_scale)))
 if (render_figures) {
-  dir.create(here("plot/presentation_figures"), showWarnings = FALSE)
+  dir.create(fig("main", "presentation_figures"), showWarnings = FALSE)
   for (ext in c("pdf", "png"))
-    ggsave(here("plot/presentation_figures",
+    ggsave(fig("presentation", 
         paste0("fig_raw_climate_rate_lollipops.", ext)), p_rates,
       width = 20, height = 11.25, dpi = 300)
 }

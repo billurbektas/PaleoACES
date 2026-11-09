@@ -1,10 +1,11 @@
 # Supplementary Tables S1.1 and S1.2 must match what Bacon actually ran with.
+source(here::here('R/helpers/config.R'), local = TRUE)
 suppressPackageStartupMessages({library(here);library(readr)})
 source(here("R/helpers/chronology_tables.R"), local = TRUE)
 
 # 1. The written tables are current: rebuilding from the Bacon files gives the same cells.
 for (kind in names(CHRONOLOGY_TABLE_PATHS)) {
-  path = here(CHRONOLOGY_TABLE_PATHS[[kind]])
+  path = out(CHRONOLOGY_TABLE_PATHS[[kind]])
   if (!file.exists(path)) stop("Missing ", CHRONOLOGY_TABLE_PATHS[[kind]],
     ". Run: Rscript R/stages/000_PALEO_b_vegetation.R")
   written = read_csv(path, col_types = cols(.default = col_character()))
@@ -14,7 +15,7 @@ for (kind in names(CHRONOLOGY_TABLE_PATHS)) {
 }
 
 # 2. Every Bacon control appears exactly once, with its entered depth, age, error and cc.
-s11 = read_csv(here(CHRONOLOGY_TABLE_PATHS[["controls"]]), col_types = cols(.default = col_character()))
+s11 = read_csv(out(CHRONOLOGY_TABLE_PATHS[["controls"]]), col_types = cols(.default = col_character()))
 controls = do.call(rbind, lapply(names(CHRONOLOGY_TABLE_CORES), function(core)
   cbind(core = core, read_csv(here("Cores", core, paste0(core, ".csv")), col_types = "cdddd"))))
 stopifnot(nrow(s11) == nrow(controls), nrow(s11) == 40L,
@@ -32,16 +33,16 @@ for (i in seq_len(nrow(controls))) {
 
 # 3. Table S1.2 describes the runs on disk: MORA cores share their priors, and
 #    the posterior files hold the ssize the table reports.
-s12 = read_csv(here(CHRONOLOGY_TABLE_PATHS[["parameters"]]), col_types = cols(.default = col_character()))
+s12 = read_csv(out(CHRONOLOGY_TABLE_PATHS[["parameters"]]), col_types = cols(.default = col_character()))
 for (core in names(CHRONOLOGY_TABLE_CORES)) {
   settings = read_bacon_settings_file(core)
   for (name in c("acc.mean", "acc.shape", "mem.mean", "mem.strength"))
     stopifnot(as.numeric(settings[[name]]) == CORE_ARGS[[core]][[name]])
-  out = Sys.glob(here("Cores", core, paste0(core, "_*.out")))
-  stopifnot(length(out) == 1L)
+  bacon_out = Sys.glob(here("Cores", core, paste0(core, "_*.out")))
+  stopifnot(length(bacon_out) == 1L)
   column = if (CHRONOLOGY_TABLE_SITES[[core]] == "MORA") "MORA" else "Panther Potholes"
   ssize = as.numeric(gsub(",", "", s12[[column]][s12$`rbacon argument` == "ssize"]))
-  if (length(readLines(out)) != ssize) stop("Table S1.2 ssize disagrees with ", basename(out))
+  if (length(readLines(bacon_out)) != ssize) stop("Table S1.2 ssize disagrees with ", basename(bacon_out))
 }
 stopifnot(nrow(s12) == 11L, !anyDuplicated(s12$`rbacon argument`))
 

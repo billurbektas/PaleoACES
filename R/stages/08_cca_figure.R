@@ -1,6 +1,7 @@
 # Figure 3: A, species/climate biplot; B, observed and predicted trajectories.
 # Constrained-inertia colors summarize all constrained axes. Biplot positions
 # and trajectory coordinates retain CCA1–CCA2 site scaling, Hill = FALSE.
+source(here::here('R/helpers/config.R'), local = TRUE)
 library(here)
 render_figures = isTRUE(getOption("paleoaces.render_figures", TRUE))
 source(here("R/stages/04_cca_model.R"), local = TRUE)
@@ -43,12 +44,12 @@ anth_pts = bind_rows(
 stopifnot(identical(rownames(species_past_paired), rownames(species_present_final)),
           all(is.finite(unlist(select(anth_pts, o1, o2, p1, p2)))))
 # Persist the exact paired site means so report claims and Figure 3 are auditable.
-write_csv(anth_pts, here("output/cca_trajectory_anthropocene_centroids.csv"))
+write_csv(anth_pts, out("figures/cca_trajectory_anthropocene_centroids.csv"))
 
 # Primary occupied-century positions, averaged within lake/period and then
 # equally across available lakes. No interpolation or support filtering.
-positions=read_csv(here('output/cca_tracking_holocene_century_positions.csv'),show_col_types=FALSE)
-catalog=read_csv(here('output/holocene_era_catalog.csv'),show_col_types=FALSE)
+positions=read_csv(out('cca_tracking_holocene_century_positions.csv'),show_col_types=FALSE)
+catalog=read_csv(out('holocene_era_catalog.csv'),show_col_types=FALSE)
 era_levels=catalog$era_id
 positions$era_id=vapply(positions$century_cal_bp,function(age) {
   k=which(age>=catalog$younger_cal_bp & age<catalog$older_cal_bp)
@@ -61,10 +62,10 @@ era_centroid_audit=lake_centroids |> group_by(site,era_id) |>
   summarise(across(c(o1,o2,p1,p2),mean),n_lakes=n(),n_dates=sum(n_dates),n=mean(n),.groups='drop') |>
   left_join(select(catalog,era_id,era_class),by='era_id',relationship='many-to-one') |>
   mutate(era='holocene',order=match(era_id,era_levels),lab=era_id) |> arrange(site,order)
-write_csv(lake_centroids,here('output/cca_trajectory_lake_period_centroids.csv'))
+write_csv(lake_centroids,out('figures/cca_trajectory_lake_period_centroids.csv'))
 write_csv(era_centroid_audit |> transmute(site,era_id,era_class,
   observed_CCA1=o1,observed_CCA2=o2,predicted_CCA1=p1,predicted_CCA2=p2,
-  n_lakes,n_dates,median_samples=n,order),here('output/cca_trajectory_era_centroids.csv'))
+  n_lakes,n_dates,median_samples=n,order),out('figures/cca_trajectory_era_centroids.csv'))
 holo_pts=era_centroid_audit
 
 traj = bind_rows(anth_pts %>% select(-t),
@@ -187,7 +188,7 @@ biplot_labels=biplot_labels %>% left_join(biplot_label_positions,by="name",relat
   mutate(nudge_x=label_x-x,nudge_y=label_y-y)
 stopifnot(nrow(sp_bp)==14L,nrow(env_bp)==4L,abs(sum(sp_bp$share_pct)-100)<1e-8,
   all(is.finite(biplot_labels$share_pct)),all(sp_bp$prev_pct>=0 & sp_bp$prev_pct<=100))
-write_csv(biplot_labels,here("output/cca_figure_biplot_annotations.csv"))
+write_csv(biplot_labels,out("figures/cca_figure_biplot_annotations.csv"))
 p_biplot=ggplot()+
   geom_hline(yintercept=0,color="grey88",linewidth=.4)+
   geom_vline(xintercept=0,color="grey88",linewidth=.4)+
@@ -233,7 +234,7 @@ trajectory_labels=bind_rows(
   add_path_color(series_lab) %>% transmute(x,y,label=lab,path_color,
     nudge_x=nx,nudge_y=ny,fontface="bold",label_size=4.6))
 write_csv(traj_long %>% mutate(display_color=unname(path_colors[path_color]),display_alpha=1),
-  here("output/cca_figure_trajectory_display.csv"))
+  out("figures/cca_figure_trajectory_display.csv"))
 calib_proj=predict(cca_model,newdata=species_past_final,type="wa",scaling=cca_scaling,hill=cca_hill)
 calib=tibble(o1=calib_proj[,1],o2=calib_proj[,2])
 zpad=.12
@@ -266,12 +267,12 @@ p_trajectories=ggplot()+
   theme(legend.text=element_text(size=15),legend.key.width=unit(2.2,"cm"),
     legend.key.height=unit(.65,"cm"),plot.margin=margin(10,12,10,12))
 
-fig=wrap_plots(p_biplot,p_trajectories,nrow=1,widths=c(1,1.15)) &
+composite=wrap_plots(p_biplot,p_trajectories,nrow=1,widths=c(1,1.15)) &
   theme(plot.tag=element_text(size=24,face="bold"),plot.tag.position="topleft")
 if(render_figures) {
-  ggsave(here("plot",paste0(cca_figure_stem,".pdf")),fig,width=18.5,height=8.5,
+  ggsave(fig("main", paste0(cca_figure_stem,".pdf")),composite,width=18.5,height=8.5,
     device=cairo_pdf,bg="white")
-  ggsave(here("plot",paste0(cca_figure_stem,".png")),fig,width=18.5,height=8.5,dpi=300,bg="white")
+  ggsave(fig("main", paste0(cca_figure_stem,".png")),composite,width=18.5,height=8.5,dpi=300,bg="white")
 }
 # Presentation versions of panel B alone. Every version keeps the full figure's
 # axis limits (zx, zy), calibration background and page size, so the slides
@@ -339,12 +340,12 @@ presentation_trajectories = list(
   fig_cca_trajectories_anthropocene_holocene_endpoints =
     bind_rows(anthropocene_long, holocene_endpoints_long))
 if (render_figures) {
-  dir.create(here("plot/presentation_figures"), showWarnings = FALSE)
+  dir.create(fig("main", "presentation_figures"), showWarnings = FALSE)
   for (stem in names(presentation_trajectories)) {
     p = trajectory_subset_panel(presentation_trajectories[[stem]])
-    ggsave(here("plot/presentation_figures", paste0(stem, ".pdf")), p,
+    ggsave(fig("presentation",  paste0(stem, ".pdf")), p,
       width = 10, height = 8.5, device = cairo_pdf, bg = "white")
-    ggsave(here("plot/presentation_figures", paste0(stem, ".png")), p,
+    ggsave(fig("presentation",  paste0(stem, ".png")), p,
       width = 10, height = 8.5, dpi = 300, bg = "white")
   }
 }

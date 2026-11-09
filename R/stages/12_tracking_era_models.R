@@ -1,8 +1,9 @@
 # Primary combined-era GLS: compare covariance candidates on identical rows.
+source(here::here('R/helpers/config.R'), local = TRUE)
 suppressPackageStartupMessages({library(here);library(tidyverse);library(nlme);library(emmeans);library(patchwork)})
 source(here('R/helpers/reconstruction_models.R'),local=TRUE)
 source(here('R/helpers/tracking_model_reporting.R'),local=TRUE)
-combined=read_csv(here('output/cca_tracking_era_model_input.csv'),show_col_types=FALSE)
+combined=read_csv(out('cca_tracking_era_model_input.csv'),show_col_types=FALSE)
 validate_tracking_model_data(combined)
 figure_pages=list()
 for(metric in tracking_model_response_names()) {
@@ -10,8 +11,8 @@ for(metric in tracking_model_response_names()) {
   entry=reconstruction_select(selected$data,estimate~era*site,variance='era_site')
   if(is.null(entry$fit)) stop('All combined-era covariance fits failed: ',metric)
   entry$metric=metric;entry$era='Combined';entry$specification='era_by_site'
-  out=here('output/tracking_analysis/primary/era_comparison',metric)
-  tables=reconstruction_export(list(primary=entry),out,selected$excluded)
+  results_dir=file.path(out('era_comparison'),metric)
+  tables=reconstruction_export(list(primary=entry),results_dir,selected$excluded)
   means=emmeans(entry$fit,~era | site,data=entry$data,mode='satterthwaite')
   mt=as.data.frame(summary(means,infer=c(TRUE,FALSE)))
   group_means=as_tibble(mt) |> transmute(metric=metric,model_type=entry$selected,site,era,
@@ -21,10 +22,10 @@ for(metric in tracking_model_response_names()) {
     infer=c(TRUE,TRUE),adjust='none'))
   contrasts=as_tibble(ct) |> transmute(metric=metric,model_type=entry$selected,site,contrast,
     estimate,std_error=SE,df,p_value=p.value,conf_low=lower.CL,conf_high=upper.CL)
-  write_csv(group_means,file.path(out,'model_group_means.csv'))
-  write_csv(contrasts,file.path(out,'model_contrasts.csv'))
+  write_csv(group_means,file.path(results_dir,'model_group_means.csv'))
+  write_csv(contrasts,file.path(results_dir,'model_contrasts.csv'))
   cat(capture.output(print(group_means)),capture.output(print(contrasts)),sep='\n',
-    file=file.path(out,'model_results.txt'),append=TRUE)
+    file=file.path(results_dir,'model_results.txt'),append=TRUE)
   if(isTRUE(getOption('paleoaces.render_figures',TRUE))) {
     theme=reconstruction_model_theme()
     gp=ggplot(group_means,aes(era,estimate,color=site,group=site))+
@@ -55,7 +56,7 @@ for(name in names(figure_pages)) tracking_pdf_pages(figure_pages[[name]],
 # keep their own valid observations and are not replaced by this paired fit.
 paired=tracking_joint_correction_input(combined)
 d=paired$data
-joint_out=here('output/tracking_analysis/primary/era_comparison/joint_correction_effects')
+joint_out=out('era_comparison/joint_correction_effects')
 dir.create(joint_out,recursive=TRUE,showWarnings=FALSE)
 write_csv(d,file.path(joint_out,'model_input.csv'))
 captured=reconstruction_capture(function() {
@@ -109,7 +110,7 @@ interaction_ct=contrast_table(contrast(correction_em,
 for(name in c('model_group_means','correction_contrasts','era_contrasts','correction_by_era_contrasts'))
   write_csv(switch(name,model_group_means=mt,correction_contrasts=ct,era_contrasts=era_ct,
     correction_by_era_contrasts=interaction_ct),file.path(joint_out,paste0(name,'.csv')))
-observed_means=read_csv(here('output/tracking_analysis/primary/era_comparison/lag_rate_per_century/model_group_means.csv'),
+observed_means=read_csv(out('era_comparison/lag_rate_per_century/model_group_means.csv'),
   show_col_types=FALSE) |> mutate(correction='Observed',p_zero=2*pt(-abs(estimate/std_error),df))
 zero_tests=bind_rows(mt,observed_means) |>
   mutate(zero_test='Fitted mean = 0; unadjusted, two-sided Satterthwaite t test',

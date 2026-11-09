@@ -1,4 +1,6 @@
 # Shared analysis settings. Source this file; do not run it as a pipeline stage.
+# Output and figure locations: out() and fig() from R/helpers/paths.R.
+source(here::here('R/helpers/paths.R'), local = TRUE)
 CCA_COUNT_THRESHOLD = 20L
 # Active CCA constraints, ordered by ecological interpretation. These are
 # seasonal climate correlates, not direct GDD, FDD, dryness, or snowpack:

@@ -1,4 +1,5 @@
 # Anthropocene fire assignments for MORA and NOCA ----------------------------
+source(here::here('R/helpers/config.R'), local = TRUE)
 suppressPackageStartupMessages({
   library(here)
   library(tidyverse)
@@ -16,8 +17,8 @@ FIELD_VERIFIED_100M = c("HIBR2052", "HIBR2082", "STE2047")
 mora_disturbances = st_read(
   here("data/MORA_disturbances/MORA_1987_2017_V2_1_UTM.shp"), quiet = TRUE
 )
-MORA_occ = read_csv(here("output/MORA_occ.csv"), show_col_types = FALSE)
-MORA_plot_info = read_csv(here("output/MORA_plot_info.csv"), show_col_types = FALSE) %>%
+MORA_occ = read_csv(out("MORA_occ.csv"), show_col_types = FALSE)
+MORA_plot_info = read_csv(out("MORA_plot_info.csv"), show_col_types = FALSE) %>%
   filter(plot_id %in% unique(MORA_occ$plot_id))
 
 mora_points = MORA_plot_info %>%
@@ -43,9 +44,9 @@ if (nrow(MORA_plot_info_fire) != n_distinct(MORA_plot_info_fire$plot_id)) {
 
 # NOCA: Wilson et al. (2024) method on the PaleoACES plot universe ------------
 fire_dir = here("data/MORA_disturbances/fire_mapping_for_Billur")
-NOCA_occ = read_csv(here("output/NOCA_occ.csv"), show_col_types = FALSE)
+NOCA_occ = read_csv(out("NOCA_occ.csv"), show_col_types = FALSE)
 noca_ids = sort(unique(str_to_upper(NOCA_occ$plot_id)))
-NOCA_plot_info = read_csv(here("output/NOCA_plot_info.csv"), show_col_types = FALSE) %>%
+NOCA_plot_info = read_csv(out("NOCA_plot_info.csv"), show_col_types = FALSE) %>%
   transmute(
     plot_id = str_to_upper(plot_id),
     longitude = if_else(Longitude > 0, -Longitude, Longitude),
@@ -161,7 +162,7 @@ if (sum(NOCA_plot_info_fire$burnt) != 32L ||
 }
 
 # Universe and assignment comparison -----------------------------------------
-study_exclusions = read_csv(here("output/NOCA_study_exclusions.csv"),
+study_exclusions = read_csv(out("NOCA_study_exclusions.csv"),
                             show_col_types = FALSE) %>%
   select(plot_id, study_exclusion_reason = exclusion_reason)
 comparison_ids = union(noca_ids, wilson_published$plot_id)
@@ -206,12 +207,12 @@ if (!identical(observed_universe_counts[names(expected_universe_counts)],
   stop("Unexpected PaleoACES/Wilson plot-universe comparison counts.")
 }
 
-write_csv(MORA_plot_info_fire, here("output/MORA_plot_info_fire.csv"))
-write_csv(NOCA_plot_info_fire, here("output/NOCA_plot_info_fire.csv"))
+write_csv(MORA_plot_info_fire, out("MORA_plot_info_fire.csv"))
+write_csv(NOCA_plot_info_fire, out("NOCA_plot_info_fire.csv"))
 write_csv(NOCA_plot_info_fire,
-          here("output/NOCA_fire_assignment_audit.csv"))
+          out("NOCA_fire_assignment_audit.csv"))
 write_csv(NOCA_fire_Wilson2024_comparison,
-          here("output/NOCA_fire_Wilson2024_comparison.csv"))
+          out("NOCA_fire_Wilson2024_comparison.csv"))
 
 cat("NOCA fire assignments: 305 plots; 32 burned, 273 unburned.\n")
 cat("Wilson comparison: 303 shared, 2 PaleoACES-only, 66 Wilson-only; ",
@@ -312,6 +313,6 @@ noca_fire_map = p_map + inset_element(
   align_to = "panel"
 )
 if (render_figures) {
-  ggsave(here("plot/test_figures/NOCA_fire_map_Wilson2024_PaleoACES.pdf"),
+  ggsave(fig("supplementary", "NOCA_fire_map_Wilson2024_PaleoACES.pdf"),
          noca_fire_map, width = 7.5, height = 10, bg = "white")
 }

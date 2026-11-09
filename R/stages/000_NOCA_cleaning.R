@@ -1,3 +1,4 @@
+source(here::here('R/helpers/config.R'), local = TRUE)
 suppressPackageStartupMessages({
   library(here)
   library(tidyverse)
@@ -545,7 +546,7 @@ p3 = ggplot(special_cases, aes(x = change_type, y = n_plots, fill = change_type)
 
 # Print plots
 if (render_figures) {
-  pdf(file = "plot/test_figures/NOCA_cleaning.pdf", height = 8, width = 10)
+  pdf(file = fig("supplementary", "NOCA_cleaning.pdf"), height = 8, width = 10)
   print(p1)
   print(p2)
   print(p3)
@@ -674,7 +675,7 @@ NOCA_stage = bind_rows(
   distinct(period, plot_id, species, stage) %>%
   arrange(plot_id, species, period, stage)
 
-write_csv(NOCA_stage, file = here("output/NOCA_occ_stage.csv"))
+write_csv(NOCA_stage, file = out("NOCA_occ_stage.csv"))
 
 # The stage table must not invent or lose plot x species x period combinations.
 # It CAN legitimately be a subset: NOCA_occ.csv carries synthetic all-zero rows
@@ -684,12 +685,12 @@ occ_key   = NOCA_occ %>% filter(occurrence == 1) %>%
   { paste(.$plot_id, .$species, .$period) }
 stopifnot(all(stage_key %in% occ_key))
 
-write_csv(NOCA_present_occ, file = here("output/NOCA_present_occ.csv"))
-write_csv(NOCA_past_occ, file = here("output/NOCA_past_occ.csv"))
-write_csv(NOCA_plot_info, file = here("output/NOCA_plot_info.csv"))
+write_csv(NOCA_present_occ, file = out("NOCA_present_occ.csv"))
+write_csv(NOCA_past_occ, file = out("NOCA_past_occ.csv"))
+write_csv(NOCA_plot_info, file = out("NOCA_plot_info.csv"))
 write_csv(NOCA_coordinate_collision_audit,
-          file = here("output/NOCA_coordinate_collision_audit.csv"))
-write_csv(NOCA_occ, file = here("output/NOCA_occ.csv"))
+          file = out("NOCA_coordinate_collision_audit.csv"))
+write_csv(NOCA_occ, file = out("NOCA_occ.csv"))
 # Wilson's plot-specific adult resurvey dates remain authoritative for NOCA.
 # One shared table now feeds both sites' climate windows and rate denominators.
 NOCA_plot_years = read_csv(here("data/NOCA/NOCA_plots_fromWilson.csv"),
@@ -697,18 +698,18 @@ NOCA_plot_years = read_csv(here("data/NOCA/NOCA_plots_fromWilson.csv"),
   transmute(site = "NOCA", plot_id = toupper(trimws(`2015.Plot.Name`)),
     vegetation_t2_year = as.numeric(Resurvey.Year)) %>%
   filter(plot_id %in% NOCA_occ$plot_id) %>% survey_windows()
-write_csv(NOCA_plot_years, here("output/NOCA_plot_years.csv"))
+write_csv(NOCA_plot_years, out("NOCA_plot_years.csv"))
 modern_plot_years = bind_rows(
-  read_csv(here("output/MORA_plot_years.csv"), show_col_types = FALSE) %>%
-    filter(plot_id %in% read_csv(here("output/MORA_occ.csv"),
+  read_csv(out("MORA_plot_years.csv"), show_col_types = FALSE) %>%
+    filter(plot_id %in% read_csv(out("MORA_occ.csv"),
       show_col_types = FALSE)$plot_id), NOCA_plot_years)
-write_csv(modern_plot_years, here("output/modern_plot_years.csv"))
-saveRDS(plot_year_input_hashes(), here("output/modern_plot_years_sources.rds"))
-write_csv(plot_tracking, file = here("output/NOCA_plot_tracking.csv"))
+write_csv(modern_plot_years, out("modern_plot_years.csv"))
+saveRDS(plot_year_input_hashes(), out("modern_plot_years_sources.rds"))
+write_csv(plot_tracking, file = out("NOCA_plot_tracking.csv"))
 write_csv(NOCA_study_exclusions,
-          file = here("output/NOCA_study_exclusions.csv"))
+          file = out("NOCA_study_exclusions.csv"))
 write_csv(NOCA_tree_composition_audit,
-          file = here("output/NOCA_tree_composition_audit.csv"))
+          file = out("NOCA_tree_composition_audit.csv"))
 
 # Per-corrected-plot provenance and inclusion audit. Raw inputs remain immutable.
 raw_plot_counts = NOCA_present_raw %>% count(plot_id, name = "old_rows_at_plot")
@@ -773,7 +774,7 @@ if (!setequal(actual_exclusions, expected_exclusions)) {
        paste(sort(actual_exclusions), collapse = ", "))
 }
 write_csv(NOCA_tree_correction_audit,
-          here("output/NOCA_tree_correction_audit.csv"))
+          out("NOCA_tree_correction_audit.csv"))
 
 # Calculate turnover for NOCA data
 noca_turnover_results = calculate_turnover(NOCA_occ)
@@ -814,7 +815,7 @@ noca_count_plot =
 # Display plots
 
 if (render_figures) {
-  pdf(file = here("plot/test_figures/NOCA_dynamics.pdf"), width = 10, height = 8)
+  pdf(file = fig("supplementary", "NOCA_dynamics.pdf"), width = 10, height = 8)
   print("NOCA Turnover heatmap...")
   print(noca_heatmap_plot)
 

@@ -5,6 +5,7 @@
 # later centered 1,000-year high-fire periods.
 # =============================================================================
 
+source(here::here('R/helpers/config.R'), local = TRUE)
 suppressPackageStartupMessages({
   library(here)
   library(tidyverse)
@@ -12,9 +13,9 @@ suppressPackageStartupMessages({
 })
 render_figures = isTRUE(getOption("paleoaces.render_figures", TRUE))
 
-series_path = here("output/holocene_fire_source_series.csv")
-events_path = here("output/holocene_fire_source_events.csv")
-settings_path = here("output/holocene_fire_source_settings.csv")
+series_path = out("holocene_fire_source_series.csv")
+events_path = out("holocene_fire_source_events.csv")
+settings_path = out("holocene_fire_source_settings.csv")
 if (!all(file.exists(c(series_path, events_path, settings_path)))) {
   stop("Run R/stages/02_walsh_fire_reproduction.R first.")
 }
@@ -73,7 +74,7 @@ audit = settings |>
       "regional MORA core evidence", "local Panther Potholes evidence")) |>
   arrange(match(lake, lake_order))
 
-write_csv(audit, here("output/fire_event_detection_lake_audit.csv"))
+write_csv(audit, out("worked_examples/fire_event_detection_lake_audit.csv"))
 
 theme_method = theme_bw(base_size = 12) +
   theme(panel.grid.minor = element_blank(),
@@ -185,7 +186,7 @@ lake_page = wrap_plots(lake_panels, ncol = 2) +
     subtitle = "Dashed = threshold; filled circle = accepted; red X = rejected by count screen",
     theme = theme(plot.title = element_text(face = "bold", size = 18),
                   plot.subtitle = element_text(size = 11, color = "grey25")))
-comparison_path = here("output/walsh_charanalysis_software_comparison.csv")
+comparison_path = out("walsh_charanalysis_software_comparison.csv")
 if (!file.exists(comparison_path)) stop("Missing Walsh software audit.")
 comparison = read_csv(comparison_path, show_col_types = FALSE) |>
   select(lake, published_total_episodes, official_r_episodes, tapas_episodes) |>
@@ -216,7 +217,7 @@ p_audit_note = ggplot() +
 audit_page = p_audit / p_audit_note + plot_layout(heights = c(3, 1))
 pages = list(overview, lake_page, audit_page)
 
-pdf_path = here("plot/test_figures/worked_examples/fig_fire_event_detection_workflow.pdf")
+pdf_path = fig("worked_examples", "fig_fire_event_detection_workflow.pdf")
 if (render_figures) {
   grDevices::pdf(pdf_path, width = 14, height = 9, onefile = TRUE)
   purrr::walk(pages, print)

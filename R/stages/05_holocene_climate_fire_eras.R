@@ -14,11 +14,11 @@ source(here("R/helpers/holocene_climate_fire_era_functions.R"), local = TRUE)
 source(here("R/helpers/figure_style.R"), local = TRUE)
 render_figures = isTRUE(getOption("paleoaces.render_figures", TRUE))
 
-CLIMATE_INPUT = here("output/chelsa_paleo_ponds.csv")
-CLIMATE_SCALING = here("output/cca_tracking_climate_scaling.csv")
-FIRE_EVENTS = here("output/holocene_fire_source_events.csv")
-FIRE_SERIES = here("output/holocene_fire_source_series.csv")
-FIRE_SETTINGS = here("output/holocene_fire_source_settings.csv")
+CLIMATE_INPUT = out("chelsa_paleo_ponds.csv")
+CLIMATE_SCALING = out("cca_tracking_climate_scaling.csv")
+FIRE_EVENTS = out("holocene_fire_source_events.csv")
+FIRE_SERIES = out("holocene_fire_source_series.csv")
+FIRE_SETTINGS = out("holocene_fire_source_settings.csv")
 required = c(CLIMATE_INPUT, CLIMATE_SCALING, FIRE_EVENTS, FIRE_SERIES,
              FIRE_SETTINGS)
 if (!all(file.exists(required))) stop("Missing unified-era input(s): ",
@@ -28,13 +28,13 @@ if (!all(file.exists(required))) stop("Missing unified-era input(s): ",
 # The interpretive stage is read-only with respect to the fitted analysis,
 # climate caches, chronology products, and active paleo-fire assignments.
 protected_paths = c(
-  here("output/MORA_climate.csv"), here("output/NOCA_climate.csv"),
-  here("output/chelsa_paleo_ponds.csv"),
-  here("output/cca_tracking_climate_scaling.csv"),
-  here("output/bacon_run_manifest.csv"), here("output/fire_walsh.csv"),
-  here("output/paleo_fire.csv"))
-if (file.exists(here("output/bacon_run_manifest.csv"))) {
-  bacon_manifest = read_csv(here("output/bacon_run_manifest.csv"),
+  out("MORA_climate.csv"), out("NOCA_climate.csv"),
+  out("chelsa_paleo_ponds.csv"),
+  out("cca_tracking_climate_scaling.csv"),
+  out("bacon_run_manifest.csv"), out("fire_walsh.csv"),
+  out("paleo_fire.csv"))
+if (file.exists(out("bacon_run_manifest.csv"))) {
+  bacon_manifest = read_csv(out("bacon_run_manifest.csv"),
     show_col_types = FALSE)
   bacon_products = unique(c(bacon_manifest$control_file,
     bacon_manifest$posterior_file, bacon_manifest$ages_file))
@@ -132,36 +132,36 @@ if (nrow(fire_settings) != 4L || any(fire_settings$engine != "tapas"))
 # =============================================================================
 # AUDIT OUTPUTS
 # =============================================================================
-write_csv(climate_raw$lake, here("output/holocene_era_climate_lake_changes.csv"))
+write_csv(climate_raw$lake, out("holocene_era_climate_lake_changes.csv"))
 write_csv(climate$site_standardized,
-  here("output/holocene_era_climate_site_phase_changes.csv"))
+  out("holocene_era_climate_site_phase_changes.csv"))
 write_csv(climate$regional_phases,
-  here("output/holocene_era_climate_regional_phase_changes.csv"))
+  out("holocene_era_climate_regional_phase_changes.csv"))
 write_csv(climate$thresholds,
-  here("output/holocene_era_climate_variable_thresholds.csv"))
+  out("holocene_era_climate_variable_thresholds.csv"))
 write_csv(climate$variable_cells,
-  here("output/holocene_era_climate_directional_cells.csv"))
-write_csv(climate$era_grid, here("output/holocene_era_grid.csv"))
-write_csv(era_catalog, here("output/holocene_era_catalog.csv"))
-write_csv(direction_terms, here("output/holocene_era_driver_subintervals.csv"))
+  out("holocene_era_climate_directional_cells.csv"))
+write_csv(climate$era_grid, out("holocene_era_grid.csv"))
+write_csv(era_catalog, out("holocene_era_catalog.csv"))
+write_csv(direction_terms, out("holocene_era_driver_subintervals.csv"))
 write_csv(climate_subphases,
-  here("output/holocene_era_climate_change_subphases.csv"))
+  out("holocene_era_climate_change_subphases.csv"))
 write_csv(composite$site_phase,
-  here("output/holocene_era_climate_composite_site_phase.csv"))
+  out("holocene_era_climate_composite_site_phase.csv"))
 write_csv(composite$regional_phase,
-  here("output/holocene_era_climate_composite_regional_phase.csv"))
+  out("holocene_era_climate_composite_regional_phase.csv"))
 write_csv(composite$grid,
-  here("output/holocene_era_climate_composite_grid.csv"))
-write_csv(fire_settings, here("output/holocene_era_fire_source_settings.csv"))
-write_csv(fire$coverage, here("output/holocene_era_fire_core_coverage.csv"))
-write_csv(fire$core, here("output/holocene_era_fire_core_frequency.csv"))
-write_csv(fire$site_grid, here("output/holocene_era_fire_site_frequency.csv"))
-write_csv(fire$thresholds, here("output/holocene_era_fire_thresholds.csv"))
-write_csv(fire$periods, here("output/holocene_era_high_fire_periods.csv"))
+  out("holocene_era_climate_composite_grid.csv"))
+write_csv(fire_settings, out("holocene_era_fire_source_settings.csv"))
+write_csv(fire$coverage, out("holocene_era_fire_core_coverage.csv"))
+write_csv(fire$core, out("holocene_era_fire_core_frequency.csv"))
+write_csv(fire$site_grid, out("holocene_era_fire_site_frequency.csv"))
+write_csv(fire$thresholds, out("holocene_era_fire_thresholds.csv"))
+write_csv(fire$periods, out("holocene_era_high_fire_periods.csv"))
 write_csv(fire$corroboration_core,
-  here("output/holocene_era_fire_corroboration_core.csv"))
+  out("holocene_era_fire_corroboration_core.csv"))
 write_csv(fire$corroboration_site,
-  here("output/holocene_era_fire_corroboration_site.csv"))
+  out("holocene_era_fire_corroboration_site.csv"))
 write_csv(tribble(
   ~field, ~value,
   "climate_interval_years", "1000",
@@ -180,7 +180,7 @@ write_csv(tribble(
   "fire_gap_or_duration_filter", "none",
   "literature_used", "FALSE",
   "tracking_periods_assigned", "FALSE"),
-  here("output/holocene_era_settings.csv"))
+  out("holocene_era_settings.csv"))
 
 # =============================================================================
 # SINGLE-PAGE INTEGRATED FIGURE
@@ -325,7 +325,7 @@ worked = w1 / w2 / w3 / w4 / w5 / w6 +
   plot_layout(heights = c(1.1, 1.4, 1.1, .8, 1.0, 1.8)) +
   plot_annotation(title = "Worked example: unified Holocene climate eras and fire periods")
 if (render_figures) {
-  ggsave(here("plot/test_figures/worked_examples/fig_holocene_climate_period_method_worked_example.pdf"),
+  ggsave(fig("worked_examples", "fig_holocene_climate_period_method_worked_example.pdf"),
     worked, width = 15, height = 20)
 }
 
@@ -335,7 +335,7 @@ if (!identical(protected_before, protected_after))
 write_csv(tibble(file = normalizePath(protected_paths),
   md5_before = protected_before, md5_after = protected_after,
   unchanged = protected_before == protected_after),
-  here("output/holocene_era_protected_hash_audit.csv"))
+  out("holocene_era_protected_hash_audit.csv"))
 
 cat("Unified climate eras:\n")
 print(as.data.frame(era_catalog |>

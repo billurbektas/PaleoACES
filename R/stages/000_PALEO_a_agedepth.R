@@ -509,9 +509,9 @@ panels = na.omit(vapply(c("JayBath","LogWallow","ReflectionPond","PantherPothole
 # compose 2 x 2
 pp   = image_border(image_read(panels), color = "grey80", geometry = "6x6")
 rows = split(seq_along(panels), ceiling(seq_along(panels)/2))
-fig  = image_border(image_append(image_join(lapply(rows, function(i) image_append(pp[i]))),
+composite  = image_border(image_append(image_join(lapply(rows, function(i) image_append(pp[i]))),
                                  stack = TRUE), color = "white", geometry = "20x20")
-image_write(fig, here("plot/test_figures","fig_bacon_agedepth_slump.pdf"),
+image_write(composite, fig("supplementary", "fig_bacon_agedepth_slump.pdf"),
             format = "pdf")
 cat("\nWritten plot/test_figures/fig_bacon_agedepth_slump.pdf\n")
 
@@ -556,7 +556,7 @@ if (dir.exists(file.path(coredir, "PantherPotholes_pb210err"))) {
       labs(subtitle = sprintf("Top 40 cm: 95%% width %g -> %g yr. Bars = error given to each control",
                               round(w$w[w$run == lab_pub]), round(w$w[w$run == lab_var])))) +
     plot_layout(guides = "collect") & theme(legend.position = "top")
-  ggsave(here("plot/test_figures","fig_bacon_pb210_sensitivity.pdf"), sens, width = 9.5, height = 4.2, device = cairo_pdf)
+  ggsave(fig("supplementary", "fig_bacon_pb210_sensitivity.pdf"), sens, width = 9.5, height = 4.2, device = cairo_pdf)
   cat("Written plot/test_figures/fig_bacon_pb210_sensitivity.pdf\n")
 }
 }
@@ -614,5 +614,5 @@ bacon_manifest = map_dfr(manifest_models, function(core) {
     generated_at_utc = format(Sys.time(), tz = "UTC", usetz = TRUE)
   )
 })
-write_csv(bacon_manifest, here("output/bacon_run_manifest.csv"))
+write_csv(bacon_manifest, out("bacon_run_manifest.csv"))
 cat("Written output/bacon_run_manifest.csv for", nrow(bacon_manifest), "seeded runs.\n")
