@@ -724,7 +724,7 @@ the Holocene.** For each park, the difference between the Anthropocene
 and the Holocene climate-change periods (circles) and between the
 Anthropocene and the Holocene stability periods (triangles), with 95%
 confidence intervals, for (A) the standardized climate change rate, (B)
-the turnover rate and (C) the lag rate. The fold printed beside each
+the turnover rate and (C) the lag rate. The fold printed above each
 circle is the Anthropocene fitted mean divided by the Holocene
 climate-change fitted mean. Differences come from the model response ~
 period type × site, with an AR(1) correlation within each lake and

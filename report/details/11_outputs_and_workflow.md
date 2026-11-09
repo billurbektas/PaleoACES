@@ -58,7 +58,7 @@ for the report.
 | R/figures/supp_tracking_transitions.R | figure | Descriptive lake-level tracking displays: actual transition rates, ratios and | 177 |
 | R/figures/main_fig2_climate_eras_fire.R | figure | main_fig2_climate_eras_fire.R | 661 |
 | R/figures/main_fig3_cca_trajectories.R | figure | Figure 3: A, species and climate biplot; B, observed and predicted trajectories | 217 |
-| R/figures/main_fig4_era_contrasts.R | figure | Figure 4 (PLAN.md section 6): era contrasts for climate change rate, turnover | 40 |
+| R/figures/main_fig4_era_contrasts.R | figure | Figure 4 (PLAN.md section 6): era contrasts for climate change rate, turnover | 44 |
 | R/figures/main_fig5_lag_pace_direction.R | figure | Figure 5 (PLAN.md section 6): lag rate, pace effect and direction effect by | 55 |
 | R/figures/main_fig6_climate_fire_associations.R | figure | Figure 6: climate and fire associations as model slopes (Bills, 9 Nov 2026). | 58 |
 | R/figures/main_fig7_species.R | figure | Figure 7 (PLAN.md section 6): species contributions in both eras. Species as | 56 |

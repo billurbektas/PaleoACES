@@ -29,8 +29,12 @@ panel = function(r, tag) {
     guides(shape = guide_legend(override.aes = list(fill = 'grey60'), ncol = 1)) +
     theme_paleoaces(base_size = 20) + theme(legend.position = 'bottom', legend.text = element_text(size = 19), plot.tag = element_text(size = 24, face = 'bold'))
   if (r %in% c('climate_rate', 'turnover_rate')) p = p +
-    geom_text(data = filter(d, against == 'Holocene-C'), aes(label = sprintf('%.0f-fold', fold)),
-      position = position_nudge(x = -.2), hjust = 1, size = 6, color = 'grey20')
+    # The fold sits just above the circle's interval (the circle is dodged left
+    # by a quarter of the dodge width), clear of the points and the panel edge.
+    geom_text(data = filter(d, against == 'Holocene-C'),
+      aes(x = as.integer(site) - .45 / 4, y = conf_high, label = sprintf('%.0f-fold', fold)),
+      vjust = -.7, size = 6, fontface = 'bold', color = 'grey15') +
+    scale_y_continuous(expand = expansion(mult = c(.05, .14)))
   p
 }
 figure = (panel('climate_rate', 'A.') | panel('turnover_rate', 'B.') | panel('lag_rate', 'C.')) +
