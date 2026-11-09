@@ -539,7 +539,7 @@ R² is given below each panel. Holocene climate-change lake-periods span
 200 to 900 years and stability lake-periods 300 to 2600 years between
 their first and last sampled century. Anthropocene plot pairs span 27.5
 to 32.5 years between the midpoints of their climate windows (about 29
-years).
+years). Effects are in CCA distance per century per unit of the term.
 
 Stages and helpers:
 [`R/pipeline/14_predictor_models.R`](R/pipeline/14_predictor_models.R),
@@ -735,7 +735,9 @@ to 900 years and stability lake-periods 300 to 2600 years between their
 first and last sampled century. Anthropocene plot pairs span 27.5 to
 32.5 years between the midpoints of their climate windows (about 29
 years). Longer windows give lower rates, so the rates of the two eras
-are not on equal footing.
+are not on equal footing. Units: the climate change rate in calibration
+standard deviations per century, the turnover and lag rates in CCA
+distance per century.
 
 <img src="report/figures/png/fig_lag_pace_direction.png" alt="" width="100%" />
 
@@ -753,7 +755,8 @@ and 6 stability lake-periods at MORA. Holocene climate-change
 lake-periods span 200 to 900 years and stability lake-periods 300 to
 2600 years between their first and last sampled century. Anthropocene
 plot pairs span 27.5 to 32.5 years between the midpoints of their
-climate windows (about 29 years).
+climate windows (about 29 years). All three responses are in CCA
+distance per century.
 
 Stages and helpers:
 [`R/pipeline/13_era_models.R`](R/pipeline/13_era_models.R),
@@ -867,17 +870,19 @@ the CCA plane. The upper row projects these vectors on the direction in
 which the climate-predicted position moved, and the lower row on the gap
 from the observed to the predicted position at the start. Positive
 values mean the species moved the community with the climate (upper row)
-or closed the starting gap (lower row). Species are ordered by their
-score on rotated axis 1, the species of colder springs at the top.
-Symbols are means with 95% t-intervals: triangles, Holocene stability
-periods, circles, Holocene climate-change periods, diamonds,
-Anthropocene plot pairs (burned and unburned together). Symbols are
-faded where the interval includes zero. Species absent from a park’s
-Holocene record are marked so. Each park has its own x scale. Holocene
-climate-change lake-periods span 200 to 900 years and stability
-lake-periods 300 to 2600 years between their first and last sampled
-century. Anthropocene plot pairs span 27.5 to 32.5 years between the
-midpoints of their climate windows (about 29 years).
+or closed the starting gap (lower row). Species are ordered by the mean
+elevation of the plots where they occur (the 607 plot pairs, both
+surveys), the highest at the top. Symbols are means: triangles, Holocene
+stability periods, circles, Holocene climate-change periods, diamonds,
+Anthropocene plot pairs (burned and unburned together). Large symbols
+with bars are means whose 95% t-interval excludes zero, small faded
+symbols are means whose interval includes zero. A species with no
+Holocene symbols in a park is absent from that park’s Holocene record.
+Each park has its own x scale. Holocene climate-change lake-periods span
+200 to 900 years and stability lake-periods 300 to 2600 years between
+their first and last sampled century. Anthropocene plot pairs span 27.5
+to 32.5 years between the midpoints of their climate windows (about 29
+years). Contributions are in CCA distance per century.
 
 Stages and helpers:
 [`R/pipeline/15_contributions.R`](R/pipeline/15_contributions.R),

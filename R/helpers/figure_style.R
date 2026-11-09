@@ -5,12 +5,10 @@ PARK_COLORS = c(MORA_observed = "#294EFF", MORA_predicted = "#97A9FF",
 PAPER_SITE_COLORS = c(MORA = "#294EFF", NOCA = "#D94000")
 # Holocene-C circle, Holocene-S triangle, Anthropocene diamond (filled shapes).
 PERIOD_TYPE_SHAPES = c(`Holocene-C` = 21, `Holocene-S` = 24, Anthropocene = 23)
-RESPONSE_AXIS_LABELS = c(climate_rate = "Standardized climate change rate per century",
-  turnover_rate = "Turnover rate (CCA distance per century)",
-  lag_rate = "Lag rate (CCA distance per century)",
-  pace_effect = "Pace effect (CCA distance per century)",
-  direction_effect = "Direction effect (CCA distance per century)",
-  fire_activity = "Fire activity (events per century per covered core)")
+# Axis labels name the quantity only; units are given in the captions (Bills).
+RESPONSE_AXIS_LABELS = c(climate_rate = "Climate change rate", turnover_rate = "Turnover rate",
+  lag_rate = "Lag rate", pace_effect = "Pace effect", direction_effect = "Direction effect",
+  fire_activity = "Fire activity")
 
 # Shared publication styling for the four main PaleoACES figures.
 

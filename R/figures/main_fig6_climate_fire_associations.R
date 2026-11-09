@@ -38,7 +38,7 @@ panel = function(era_name, terms, tag) {
       guide = guide_legend(override.aes = list(alpha = 1, size = 4.5, linewidth = 1.3))) +
     scale_alpha_manual(values = c(`FALSE` = 1, `TRUE` = .35), guide = 'none') +
     coord_cartesian(xlim = x_limits) +
-    labs(tag = tag, title = era_name, x = 'Effect on response\n(CCA distance per century)', y = NULL,
+    labs(tag = tag, title = era_name, x = 'Effect on response', y = NULL,
       caption = paste0('Descriptive R²: ', paste(sprintf('%s %.3f', tolower(responses[r2$response]), r2$R2), collapse = ', '), '.')) +
     theme_paleoaces(base_size = 25) +
     theme(plot.title = element_text(size = 30, face = 'bold'), plot.tag = element_text(size = 32, face = 'bold'),

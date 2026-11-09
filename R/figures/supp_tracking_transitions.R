@@ -157,7 +157,7 @@ tracking_panels=function(display_metrics,rows,row_labels,title,subtitle,rate_leg
   combined_grob$grobs[[axis_group]]$grobs[[fire_axis]]=grid::nullGrob()
   combined_grob
 }
-rate_rows=c('Tracking responses\n(CCA distance per century)',
+rate_rows=c('Tracking responses',
  'Climate-change rate\n(standardized change per century)','Fire activity\n(events per century per core)')
 rate_map=setNames(c(rep(rate_rows[1],length(rates)),rate_rows[2:3]),c(rates,predictors))
 p_rates=tracking_panels(c(rates,predictors),rate_map,rate_rows,

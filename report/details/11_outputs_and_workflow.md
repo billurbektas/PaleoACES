@@ -61,7 +61,7 @@ for the report.
 | R/figures/main_fig4_era_contrasts.R | figure | Figure 4 (PLAN.md section 6): era contrasts for climate change rate, turnover | 44 |
 | R/figures/main_fig5_lag_pace_direction.R | figure | Figure 5 (PLAN.md section 6): lag rate, pace effect and direction effect by | 56 |
 | R/figures/main_fig6_climate_fire_associations.R | figure | Figure 6: climate and fire associations as model slopes (Bills, 9 Nov 2026). | 58 |
-| R/figures/main_fig7_species.R | figure | Figure 7 (PLAN.md section 6): species contributions in both eras. Species as | 56 |
+| R/figures/main_fig7_species.R | figure | Figure 7 (PLAN.md section 6): species contributions in both eras. Species as | 74 |
 | R/worked_examples.R | worked examples | Worked examples: step-by-step illustrations of four methods, drawn from the | 660 |
 | R/tests/test_bacon_provenance.R | test | The stored Bacon chronologies are exactly what the current age-model script and | 32 |
 | R/tests/test_cca_tracking_metrics.R | test | Independent geometry and integration checks for the canonical tracking data. | 38 |
@@ -239,7 +239,7 @@ the folder of the step that writes it.
 | figures | holocene_climate_level_rates.csv | Tables behind the figures (centroids, annotations) | 1 |
 | figures | holocene_era_fire_threshold_ratio.csv | era and high-fire classification tables | 21 |
 | figures | holocene_standardized_climate_levels.csv | Tables behind the figures (centroids, annotations) | 68 |
-| figures | species_order_rotated_axis_1.csv | Tables behind the figures (centroids, annotations) | 1 |
+| figures | species_order_elevation.csv | Tables behind the figures (centroids, annotations) | 1 |
 | report | sample_selection_choices.csv | Tables computed only for the report | 1 |
 | report | sample_selection_counts.csv | Tables computed only for the report | 3 |
 | report | sample_selection_plot_sizes.csv | Tables computed only for the report | 0 |

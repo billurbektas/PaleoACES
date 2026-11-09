@@ -145,7 +145,7 @@ figures,holocene_anthropocene_raw_climate_rate_comparison.csv,"Tables behind the
 figures,holocene_climate_level_rates.csv,"Tables behind the figures (centroids, annotations)",1
 figures,holocene_era_fire_threshold_ratio.csv,era and high-fire classification tables,21
 figures,holocene_standardized_climate_levels.csv,"Tables behind the figures (centroids, annotations)",68
-figures,species_order_rotated_axis_1.csv,"Tables behind the figures (centroids, annotations)",1
+figures,species_order_elevation.csv,"Tables behind the figures (centroids, annotations)",1
 report,sample_selection_choices.csv,Tables computed only for the report,1
 report,sample_selection_counts.csv,Tables computed only for the report,3
 report,sample_selection_plot_sizes.csv,Tables computed only for the report,0

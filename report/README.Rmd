@@ -415,7 +415,7 @@ for pace and direction. The climate slope is per standardized unit of climate ch
 the fire slope per accepted event per century per covered core. (B) Anthropocene plot pairs, model
 response ~ site + burned with park-specific variances: `r perf6$n[perf6$response == 'lag_rate' & perf6$era == 'Anthropocene']` plot pairs for the lag rate
 and `r perf6$n[perf6$response == 'pace_effect' & perf6$era == 'Anthropocene']` for pace and direction. Descriptive R² is given below each panel.
-`r both_spans`
+`r both_spans` Effects are in CCA distance per century per unit of the term.
 
 Stages and helpers: [`R/pipeline/14_predictor_models.R`](R/pipeline/14_predictor_models.R),
 [`R/helpers/reconstruction_models.R`](R/helpers/reconstruction_models.R),
@@ -513,7 +513,7 @@ AR(1) correlation within each lake and weights for the number of samples at each
 `r n_group('Holocene-C', 'MORA')` climate-change and `r n_group('Holocene-S', 'MORA')` stability lake-periods and
 `r n_group('Anthropocene', 'MORA')` plot pairs at MORA, and `r n_group('Holocene-C', 'NOCA')`, `r n_group('Holocene-S', 'NOCA')`
 and `r n_group('Anthropocene', 'NOCA')` at NOCA. `r both_spans` Longer windows give lower rates, so the rates of the
-two eras are not on equal footing.
+two eras are not on equal footing. Units: the climate change rate in calibration standard deviations per century, the turnover and lag rates in CCA distance per century.
 
 ```{r fig-5-main}
 show_figure('report/figures/main/fig_lag_pace_direction.pdf')
@@ -525,7 +525,7 @@ Holocene lake-periods of each park, climate-change periods (circles) beside stab
 intervals. (B) Anthropocene plot pairs (transparent violins) with the fitted mean and 95% confidence
 interval (diamond). A star marks a fitted mean that differs from zero (two-sided t test, p < 0.05). Fitted means come from the same models as Figure 4. Lake-periods and plots whose observed
 or predicted position did not move have no pace or direction effect: the pace and direction panels
-hold `r m5 = read_output('era_comparison/era_means.csv'); m5$n[m5$response == 'pace_effect' & m5$site == 'MORA' & m5$period_type == 'Holocene-C']` climate-change and `r m5$n[m5$response == 'pace_effect' & m5$site == 'MORA' & m5$period_type == 'Holocene-S']` stability lake-periods at MORA. `r both_spans`
+hold `r m5 = read_output('era_comparison/era_means.csv'); m5$n[m5$response == 'pace_effect' & m5$site == 'MORA' & m5$period_type == 'Holocene-C']` climate-change and `r m5$n[m5$response == 'pace_effect' & m5$site == 'MORA' & m5$period_type == 'Holocene-S']` stability lake-periods at MORA. `r both_spans` All three responses are in CCA distance per century.
 
 Stages and helpers: [`R/pipeline/13_era_models.R`](R/pipeline/13_era_models.R),
 [`R/helpers/tracking_model_reporting.R`](R/helpers/tracking_model_reporting.R) (period types, paired
@@ -601,11 +601,12 @@ legacy survey and the resurvey of a plot, times its fixed position in the CCA pl
 projects these vectors on the direction in which the climate-predicted position moved, and the lower
 row on the gap from the observed to the predicted position at the start. Positive values mean the
 species moved the community with the climate (upper row) or closed the starting gap (lower row).
-Species are ordered by their score on rotated axis 1, the species of colder springs at the top.
-Symbols are means with 95% t-intervals: triangles, Holocene stability periods, circles, Holocene
-climate-change periods, diamonds, Anthropocene plot pairs (burned and unburned together). Symbols are
-faded where the interval includes zero. Species absent from a park's Holocene record are marked so.
-Each park has its own x scale. `r both_spans`
+Species are ordered by the mean elevation of the plots where they occur (the 607 plot pairs, both surveys), the highest at the top.
+Symbols are means: triangles, Holocene stability periods, circles, Holocene climate-change periods,
+diamonds, Anthropocene plot pairs (burned and unburned together). Large symbols with bars are means whose
+95% t-interval excludes zero, small faded symbols are means whose interval includes zero. A species with no
+Holocene symbols in a park is absent from that park's Holocene record.
+Each park has its own x scale. `r both_spans` Contributions are in CCA distance per century.
 
 Stages and helpers: [`R/pipeline/15_contributions.R`](R/pipeline/15_contributions.R),
 [`R/helpers/cca_transition_contributions.R`](R/helpers/cca_transition_contributions.R),
