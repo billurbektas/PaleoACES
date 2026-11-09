@@ -390,11 +390,27 @@ Holocene climate change is classified into eras of climate change and relative s
 signed, calibration-standardized 1,000-year changes of the CCA climate variables; fire is
 classified independently (S2.3). Both feed Figure 2.
 
+```{r fig-climate-four}
+show_figure('report/figures/supplementary/fig_standardized_climate_change_four_variables.pdf')
+```
+
+**Fig. S9. Holocene climate change of the four seasonal variables, climate eras and high-fire
+periods.** (A) Equal-site regional median of the signed 1,000-year change of spring temperature
+(MSpT), winter temperature (MWT), summer precipitation (SP) and winter precipitation (WP),
+standardized by the legacy calibration standard deviation of each variable. Shading marks the
+climate-change (CC) and relative-stability (S) eras, which are classified from the two CCA
+constraints, MSpT and SP; filled points mark their qualifying cells (change beyond 50% of the
+variable's maximum, with at least 8 of 10 phases agreeing in direction). Winter temperature and
+winter precipitation are shown for context and do not define eras. Brackets at the left give each
+variable's stability range. (B) Fire-frequency ratio at each park; values above 1 are high-fire
+periods (Eq. 1).
+
 ```{r fig-2}
 show_figure('report/figures/main/fig_standardized_climate_change_eras_fire.pdf')
 ```
 
-**Figure 2. Climate eras, climate-change rates and high-fire periods** (manuscript Figure 2).
+**Figure 2. Climate eras, climate-change rates and high-fire periods** (manuscript Figure 2: the
+same panels with the two CCA constraints only).
 
 ```{r era-catalog}
 read_output('holocene_era_catalog.csv') |>
@@ -461,7 +477,7 @@ read_output('cca_tracking_holocene_lake_support.csv') |>
 show_figure('report/figures/supplementary/fig_holocene_sampling_fire_100yr.pdf')
 ```
 
-**Fig. S9. Holocene sampling support.** Macrofossil samples and accepted fire events on the native
+**Fig. S10. Holocene sampling support.** Macrofossil samples and accepted fire events on the native
 100-year climate intervals.
 
 `r details_link('07_tracking', 'Tracking details')` (output schema, transition displays,
@@ -523,7 +539,7 @@ show_figure('report/figures/main/fig_tracking_predictor_era_coefficients.pdf')
 show_figure('report/figures/models/fig_tracking_predictor_extended_coefficients.pdf', width = '70%')
 ```
 
-**Fig. S10. Extended Anthropocene predictor model** (site + elevation + climate-change rate +
+**Fig. S11. Extended Anthropocene predictor model** (site + elevation + climate-change rate +
 burned).
 
 # 9. Species and seasonal-climate contributions
@@ -535,13 +551,13 @@ contributions (`R/pipeline/15_contributions.R`).
 show_figure('report/figures/supplementary/fig_cca_transition_species_boxplots.pdf')
 ```
 
-**Fig. S11. Species contributions to community displacement, by era and park.**
+**Fig. S12. Species contributions to community displacement, by era and park.**
 
 ```{r fig-climate-contributions}
 show_figure('report/figures/supplementary/fig_cca_transition_climate_boxplots.pdf')
 ```
 
-**Fig. S12. Seasonal-climate contributions to predicted displacement, by era and park.**
+**Fig. S13. Seasonal-climate contributions to predicted displacement, by era and park.**
 
 `r details_link('07_tracking', 'Contribution details')`.
 

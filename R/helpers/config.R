@@ -13,6 +13,10 @@ CCA_VARIABLES = c("MSpT", "SP")
 # Figures show the CCA plane rotated (varimax, display only) so that the
 # temperature and precipitation arrows lie along the two axes.
 CCA_DISPLAY_ROTATION = TRUE
+# Seasonal variables shown in the appendix climate figures. Only CCA_VARIABLES
+# enter the CCA, the climate eras and every tracking metric; the others are
+# standardized with the same legacy calibration plots for display alone.
+CLIMATE_DISPLAY_VARIABLES = c("MSpT", "MWT", "SP", "WP")
 CLIMATE_VARIABLE_LABELS = c(
   MAT = "Annual temperature", MSpT = "Spring temperature",
   MST = "Summer temperature", MWT = "Winter temperature",

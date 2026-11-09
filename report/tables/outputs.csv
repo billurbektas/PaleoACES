@@ -59,7 +59,7 @@ Step,File,Description,Size (kB)
 10_cca,cca_anova_cache.rds,"Cached permutation tests, keyed on the fit",1
 10_cca,cca_anova.csv,"Permutation tests (model, axes, terms)",0
 10_cca,cca_axes.csv,Constrained axes: eigenvalues and variance explained,0
-10_cca,cca_calibration_reference.rds,The fitted CCA and its calibration inputs,1963
+10_cca,cca_calibration_reference.rds,The fitted CCA and its calibration inputs,1974
 10_cca,cca_climate_contributions.csv,Climate-variable contributions to the axes,0
 10_cca,cca_counts.csv,Plots and samples used to fit and projected,0
 10_cca,cca_eligibility_counts.csv,Eligibility counts (Fig. S2),0
@@ -78,6 +78,8 @@ Step,File,Description,Size (kB)
 11_climate_eras,holocene_era_climate_regional_phase_changes.csv,era and high-fire classification tables,202
 11_climate_eras,holocene_era_climate_site_phase_changes.csv,era and high-fire classification tables,354
 11_climate_eras,holocene_era_climate_variable_thresholds.csv,era and high-fire classification tables,0
+11_climate_eras,holocene_era_display_directional_cells.csv,era and high-fire classification tables,53
+11_climate_eras,holocene_era_display_variable_thresholds.csv,era and high-fire classification tables,0
 11_climate_eras,holocene_era_driver_subintervals.csv,era and high-fire classification tables,1
 11_climate_eras,holocene_era_fire_core_frequency.csv,era and high-fire classification tables,34
 11_climate_eras,holocene_era_fire_site_frequency.csv,era and high-fire classification tables,21
@@ -94,7 +96,7 @@ Step,File,Description,Size (kB)
 12_tracking,cca_tracking_holocene_lake_transitions.csv,Holocene and Anthropocene tracking calculations,55
 12_tracking,cca_tracking_holocene_sample_assignments.csv,Holocene and Anthropocene tracking calculations,99
 12_tracking,cca_tracking_schema.csv,Holocene and Anthropocene tracking calculations,20
-12_tracking,chronology_reconstruction/prepared.rds,Reconstruction bundle and primary reconstruction,8854
+12_tracking,chronology_reconstruction/prepared.rds,Reconstruction bundle and primary reconstruction,8865
 12_tracking,chronology_reconstruction/primary.rds,Reconstruction bundle and primary reconstruction,100
 13_era_models,era_comparison/direction_effect_on_lag_per_century/covariance_comparison.csv,"Era-comparison GLS fits, means and contrasts per response",1
 13_era_models,era_comparison/direction_effect_on_lag_per_century/model_coefficients.csv,"Era-comparison GLS fits, means and contrasts per response",1
@@ -159,7 +161,7 @@ Step,File,Description,Size (kB)
 13_era_models,lake_checks/direction_effect_on_lag_per_century/model_coefficients.csv,Individual-lake era comparisons per response,2
 13_era_models,lake_checks/direction_effect_on_lag_per_century/model_contrasts.csv,Individual-lake era comparisons per response,1
 13_era_models,lake_checks/direction_effect_on_lag_per_century/model_results.txt,Individual-lake era comparisons per response,5
-13_era_models,lake_checks/direction_effect_on_lag_per_century/primary_fits.rds,Individual-lake era comparisons per response,4693
+13_era_models,lake_checks/direction_effect_on_lag_per_century/primary_fits.rds,Individual-lake era comparisons per response,4669
 13_era_models,lake_checks/lag_rate_per_century/covariance_comparison.csv,Individual-lake era comparisons per response,1
 13_era_models,lake_checks/lag_rate_per_century/model_coefficients.csv,Individual-lake era comparisons per response,1
 13_era_models,lake_checks/lag_rate_per_century/model_contrasts.csv,Individual-lake era comparisons per response,1
@@ -174,12 +176,12 @@ Step,File,Description,Size (kB)
 13_era_models,lake_checks/pace_effect_on_lag_per_century/model_coefficients.csv,Individual-lake era comparisons per response,2
 13_era_models,lake_checks/pace_effect_on_lag_per_century/model_contrasts.csv,Individual-lake era comparisons per response,1
 13_era_models,lake_checks/pace_effect_on_lag_per_century/model_results.txt,Individual-lake era comparisons per response,5
-13_era_models,lake_checks/pace_effect_on_lag_per_century/primary_fits.rds,Individual-lake era comparisons per response,4274
+13_era_models,lake_checks/pace_effect_on_lag_per_century/primary_fits.rds,Individual-lake era comparisons per response,4255
 13_era_models,lake_checks/standardized_climate_change_rate/covariance_comparison.csv,Individual-lake era comparisons per response,1
 13_era_models,lake_checks/standardized_climate_change_rate/model_coefficients.csv,Individual-lake era comparisons per response,2
 13_era_models,lake_checks/standardized_climate_change_rate/model_contrasts.csv,Individual-lake era comparisons per response,1
 13_era_models,lake_checks/standardized_climate_change_rate/model_results.txt,Individual-lake era comparisons per response,4
-13_era_models,lake_checks/standardized_climate_change_rate/primary_fits.rds,Individual-lake era comparisons per response,4105
+13_era_models,lake_checks/standardized_climate_change_rate/primary_fits.rds,Individual-lake era comparisons per response,4108
 14_predictor_models,community_predictor_models/anthropocene_elevations.csv,Within-era predictor GLS fits,53
 14_predictor_models,community_predictor_models/covariance_comparison.csv,Within-era predictor GLS fits,4
 14_predictor_models,community_predictor_models/figure_appendix_coefficients.csv,Within-era predictor GLS fits,3

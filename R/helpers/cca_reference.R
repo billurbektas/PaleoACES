@@ -47,7 +47,17 @@ export_cca_reference = function(e) {
   stopifnot(nrow(reference$legacy_species)==607L, length(reference$retained_species)==14L,
     identical(rownames(reference$legacy_species),rownames(reference$legacy_climate)),
     nrow(modern)==607L, !anyDuplicated(modern$plot_id))
-  readr::write_csv(scaling,out('cca_tracking_climate_scaling.csv'))
+  # The CSV also carries the display-only seasonal variables, standardized on the
+  # same legacy calibration plots; the CCA constraints' rows equal `scaling`.
+  calibration_climate = e$climate_summary[e$climate_summary$period == 'past' &
+    e$climate_summary$plot_id %in% rownames(e$species_past_final), ]
+  stopifnot(nrow(calibration_climate) == nrow(e$species_past_final))
+  display_scaling = make_climate_scaling(calibration_climate,
+    union(CCA_CLIMATE_VARS, CLIMATE_DISPLAY_VARIABLES))
+  check = display_scaling[match(scaling$variable, display_scaling$variable), names(scaling)]
+  if (!isTRUE(all.equal(as.data.frame(check), as.data.frame(scaling), check.attributes = FALSE)))
+    stop('Display climate scaling disagrees with the CCA calibration scaling')
+  readr::write_csv(display_scaling,out('cca_tracking_climate_scaling.csv'))
   saveRDS(reference,out('cca_calibration_reference.rds'))
   invisible(reference)
 }

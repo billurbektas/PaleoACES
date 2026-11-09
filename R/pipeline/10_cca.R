@@ -364,7 +364,7 @@ climate_summary = climate_annual %>%
   group_by(unit, period) %>%
   # both statistics in ONE across(): a second across() referring to MWT would read
   # the mean the first one had just created, and every count would come out as 1.
-  summarize(across(all_of(CCA_VARIABLES),
+  summarize(across(all_of(union(CCA_VARIABLES, CLIMATE_DISPLAY_VARIABLES)),
                    list(v = ~ mean(.x, na.rm = TRUE), n = ~ sum(!is.na(.x))),
                    .names = "{.fn}|{.col}"),
             .groups = "drop") %>%

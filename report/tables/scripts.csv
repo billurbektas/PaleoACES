@@ -9,7 +9,7 @@ R/pipeline/07_paleo_climate.R,pipeline,"Paleo climate: CHELSA-TraCE21k monthly c
 R/pipeline/08_fire_records.R,pipeline,Fire records (Appendix S2): tapas event detection for the three MORA charcoal,406
 R/pipeline/09_species_occurrences.R,pipeline,09_species_occurrences.R,626
 R/pipeline/10_cca.R,pipeline,10_cca.R - the pooled CCA and everything derived from it. NO FIGURES.,628
-R/pipeline/11_climate_eras_high_fire.R,pipeline,11_climate_eras_high_fire.R,141
+R/pipeline/11_climate_eras_high_fire.R,pipeline,11_climate_eras_high_fire.R,152
 R/pipeline/12_tracking.R,pipeline,"Tracking: native-century Holocene reconstruction, tracking metrics for both",86
 R/pipeline/13_era_models.R,pipeline,"Era models: Holocene vs Anthropocene GLS for each response, residual",196
 R/pipeline/14_predictor_models.R,pipeline,Primary explanatory GLS.,35
@@ -21,7 +21,7 @@ R/figures/supp_climate_windows.R,figure,Compare the actual plot-specific survey 
 R/figures/supp_sample_selection.R,figure,"Show which plots and core samples reach CCA, starting with the supplied data.",333
 R/figures/supp_species_through_time.R,figure,"supp_species_through_time.R  -  STEP 4, the species half",199
 R/figures/supp_tracking_transitions.R,figure,"Descriptive lake-level tracking displays: actual transition rates, ratios and",177
-R/figures/main_fig2_climate_eras_fire.R,figure,main_fig2_climate_eras_fire.R,517
+R/figures/main_fig2_climate_eras_fire.R,figure,main_fig2_climate_eras_fire.R,548
 R/figures/main_fig3_cca_trajectories.R,figure,"Figure 3: A, species/climate biplot; B, observed and predicted trajectories.",379
 R/figures/main_fig4_era_contrasts.R,figure,Manuscript Figure 4 and separate corrected-lag contrasts at primary reconstruction.,188
 R/figures/main_fig5_predictor_effects.R,figure,"Figure 5: site, climate and fire effects on lag-change rates by era, plus the",71

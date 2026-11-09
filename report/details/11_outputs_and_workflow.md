@@ -44,7 +44,7 @@ for the report.
 | R/pipeline/08_fire_records.R | pipeline | Fire records (Appendix S2): tapas event detection for the three MORA charcoal | 406 |
 | R/pipeline/09_species_occurrences.R | pipeline | 09_species_occurrences.R | 626 |
 | R/pipeline/10_cca.R | pipeline | 10_cca.R - the pooled CCA and everything derived from it. NO FIGURES. | 628 |
-| R/pipeline/11_climate_eras_high_fire.R | pipeline | 11_climate_eras_high_fire.R | 141 |
+| R/pipeline/11_climate_eras_high_fire.R | pipeline | 11_climate_eras_high_fire.R | 152 |
 | R/pipeline/12_tracking.R | pipeline | Tracking: native-century Holocene reconstruction, tracking metrics for both | 86 |
 | R/pipeline/13_era_models.R | pipeline | Era models: Holocene vs Anthropocene GLS for each response, residual | 196 |
 | R/pipeline/14_predictor_models.R | pipeline | Primary explanatory GLS. | 35 |
@@ -56,7 +56,7 @@ for the report.
 | R/figures/supp_sample_selection.R | figure | Show which plots and core samples reach CCA, starting with the supplied data. | 333 |
 | R/figures/supp_species_through_time.R | figure | supp_species_through_time.R - STEP 4, the species half | 199 |
 | R/figures/supp_tracking_transitions.R | figure | Descriptive lake-level tracking displays: actual transition rates, ratios and | 177 |
-| R/figures/main_fig2_climate_eras_fire.R | figure | main_fig2_climate_eras_fire.R | 517 |
+| R/figures/main_fig2_climate_eras_fire.R | figure | main_fig2_climate_eras_fire.R | 548 |
 | R/figures/main_fig3_cca_trajectories.R | figure | Figure 3: A, species/climate biplot; B, observed and predicted trajectories. | 379 |
 | R/figures/main_fig4_era_contrasts.R | figure | Manuscript Figure 4 and separate corrected-lag contrasts at primary reconstruction. | 188 |
 | R/figures/main_fig5_predictor_effects.R | figure | Figure 5: site, climate and fire effects on lag-change rates by era, plus the | 71 |
@@ -86,7 +86,7 @@ Every file under `output/` is declared in `R/helpers/paths.R`; a script
 cannot write an undeclared output. Folders hold one file per table, in
 the folder of the step that writes it.
 
-**227 output files** (excluding the climate and age-draw cache).
+**229 output files** (excluding the climate and age-draw cache).
 
 | Step | File | Description | Size (kB) |
 |:---|:---|:---|---:|
@@ -150,7 +150,7 @@ the folder of the step that writes it.
 | 10_cca | cca_anova_cache.rds | Cached permutation tests, keyed on the fit | 1 |
 | 10_cca | cca_anova.csv | Permutation tests (model, axes, terms) | 0 |
 | 10_cca | cca_axes.csv | Constrained axes: eigenvalues and variance explained | 0 |
-| 10_cca | cca_calibration_reference.rds | The fitted CCA and its calibration inputs | 1963 |
+| 10_cca | cca_calibration_reference.rds | The fitted CCA and its calibration inputs | 1974 |
 | 10_cca | cca_climate_contributions.csv | Climate-variable contributions to the axes | 0 |
 | 10_cca | cca_counts.csv | Plots and samples used to fit and projected | 0 |
 | 10_cca | cca_eligibility_counts.csv | Eligibility counts (Fig. S2) | 0 |
@@ -169,6 +169,8 @@ the folder of the step that writes it.
 | 11_climate_eras | holocene_era_climate_regional_phase_changes.csv | era and high-fire classification tables | 202 |
 | 11_climate_eras | holocene_era_climate_site_phase_changes.csv | era and high-fire classification tables | 354 |
 | 11_climate_eras | holocene_era_climate_variable_thresholds.csv | era and high-fire classification tables | 0 |
+| 11_climate_eras | holocene_era_display_directional_cells.csv | era and high-fire classification tables | 53 |
+| 11_climate_eras | holocene_era_display_variable_thresholds.csv | era and high-fire classification tables | 0 |
 | 11_climate_eras | holocene_era_driver_subintervals.csv | era and high-fire classification tables | 1 |
 | 11_climate_eras | holocene_era_fire_core_frequency.csv | era and high-fire classification tables | 34 |
 | 11_climate_eras | holocene_era_fire_site_frequency.csv | era and high-fire classification tables | 21 |
@@ -185,7 +187,7 @@ the folder of the step that writes it.
 | 12_tracking | cca_tracking_holocene_lake_transitions.csv | Holocene and Anthropocene tracking calculations | 55 |
 | 12_tracking | cca_tracking_holocene_sample_assignments.csv | Holocene and Anthropocene tracking calculations | 99 |
 | 12_tracking | cca_tracking_schema.csv | Holocene and Anthropocene tracking calculations | 20 |
-| 12_tracking | chronology_reconstruction/prepared.rds | Reconstruction bundle and primary reconstruction | 8854 |
+| 12_tracking | chronology_reconstruction/prepared.rds | Reconstruction bundle and primary reconstruction | 8865 |
 | 12_tracking | chronology_reconstruction/primary.rds | Reconstruction bundle and primary reconstruction | 100 |
 | 13_era_models | era_comparison/direction_effect_on_lag_per_century/covariance_comparison.csv | Era-comparison GLS fits, means and contrasts per response | 1 |
 | 13_era_models | era_comparison/direction_effect_on_lag_per_century/model_coefficients.csv | Era-comparison GLS fits, means and contrasts per response | 1 |
@@ -250,7 +252,7 @@ the folder of the step that writes it.
 | 13_era_models | lake_checks/direction_effect_on_lag_per_century/model_coefficients.csv | Individual-lake era comparisons per response | 2 |
 | 13_era_models | lake_checks/direction_effect_on_lag_per_century/model_contrasts.csv | Individual-lake era comparisons per response | 1 |
 | 13_era_models | lake_checks/direction_effect_on_lag_per_century/model_results.txt | Individual-lake era comparisons per response | 5 |
-| 13_era_models | lake_checks/direction_effect_on_lag_per_century/primary_fits.rds | Individual-lake era comparisons per response | 4693 |
+| 13_era_models | lake_checks/direction_effect_on_lag_per_century/primary_fits.rds | Individual-lake era comparisons per response | 4669 |
 | 13_era_models | lake_checks/lag_rate_per_century/covariance_comparison.csv | Individual-lake era comparisons per response | 1 |
 | 13_era_models | lake_checks/lag_rate_per_century/model_coefficients.csv | Individual-lake era comparisons per response | 1 |
 | 13_era_models | lake_checks/lag_rate_per_century/model_contrasts.csv | Individual-lake era comparisons per response | 1 |
@@ -265,12 +267,12 @@ the folder of the step that writes it.
 | 13_era_models | lake_checks/pace_effect_on_lag_per_century/model_coefficients.csv | Individual-lake era comparisons per response | 2 |
 | 13_era_models | lake_checks/pace_effect_on_lag_per_century/model_contrasts.csv | Individual-lake era comparisons per response | 1 |
 | 13_era_models | lake_checks/pace_effect_on_lag_per_century/model_results.txt | Individual-lake era comparisons per response | 5 |
-| 13_era_models | lake_checks/pace_effect_on_lag_per_century/primary_fits.rds | Individual-lake era comparisons per response | 4274 |
+| 13_era_models | lake_checks/pace_effect_on_lag_per_century/primary_fits.rds | Individual-lake era comparisons per response | 4255 |
 | 13_era_models | lake_checks/standardized_climate_change_rate/covariance_comparison.csv | Individual-lake era comparisons per response | 1 |
 | 13_era_models | lake_checks/standardized_climate_change_rate/model_coefficients.csv | Individual-lake era comparisons per response | 2 |
 | 13_era_models | lake_checks/standardized_climate_change_rate/model_contrasts.csv | Individual-lake era comparisons per response | 1 |
 | 13_era_models | lake_checks/standardized_climate_change_rate/model_results.txt | Individual-lake era comparisons per response | 4 |
-| 13_era_models | lake_checks/standardized_climate_change_rate/primary_fits.rds | Individual-lake era comparisons per response | 4105 |
+| 13_era_models | lake_checks/standardized_climate_change_rate/primary_fits.rds | Individual-lake era comparisons per response | 4108 |
 | 14_predictor_models | community_predictor_models/anthropocene_elevations.csv | Within-era predictor GLS fits | 53 |
 | 14_predictor_models | community_predictor_models/covariance_comparison.csv | Within-era predictor GLS fits | 4 |
 | 14_predictor_models | community_predictor_models/figure_appendix_coefficients.csv | Within-era predictor GLS fits | 3 |
@@ -333,7 +335,7 @@ built for this report).
 |:----------------|------:|
 | main            |     7 |
 | models          |    15 |
-| supplementary   |    20 |
+| supplementary   |    21 |
 | worked_examples |     4 |
 
 <sub>Table file:

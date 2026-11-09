@@ -198,7 +198,7 @@ stopifnot(nrow(stability_callouts) == length(variables))
 # Annotation lanes are placed relative to the y range of the plotted series.
 climate_panel = function(text_scale = 1, show_stability = TRUE,
     panel_data = mutate(climate, value = regional_score),
-    background_data = NULL, show_qualifying = TRUE,
+    background_data = NULL, show_qualifying = TRUE, callouts = stability_callouts,
     title = "Holocene climate change",
     y_label = "Signed standardized change") {
   s = text_scale
@@ -218,18 +218,18 @@ climate_panel = function(text_scale = 1, show_stability = TRUE,
   qualifying_layer = if (show_qualifying) geom_point(
     data = filter(panel_data, qualifies), size = 2.8 * sqrt(s))
   stability_layers = if (show_stability) list(
-    geom_segment(data = stability_callouts,
+    geom_segment(data = callouts,
       aes(x = x, xend = x, y = ymin, yend = ymax, color = variable),
       inherit.aes = FALSE, linewidth = .85, show.legend = FALSE),
-    geom_segment(data = stability_callouts,
+    geom_segment(data = callouts,
       aes(x = cap_left, xend = cap_right, y = ymin, yend = ymin,
         color = variable), inherit.aes = FALSE, linewidth = .85,
       show.legend = FALSE),
-    geom_segment(data = stability_callouts,
+    geom_segment(data = callouts,
       aes(x = cap_left, xend = cap_right, y = ymax, yend = ymax,
         color = variable), inherit.aes = FALSE, linewidth = .85,
       show.legend = FALSE),
-    geom_text(data = stability_callouts,
+    geom_text(data = callouts,
       aes(x = x - 48, y = 0, label = label, color = variable),
       inherit.aes = FALSE, angle = 90, size = 3.2, fontface = "bold",
       show.legend = FALSE))
@@ -335,6 +335,37 @@ figure = p_climate / p_fire +
 if (render_figures) {
   ggsave(fig("main", "fig_standardized_climate_change_eras_fire.pdf"), figure,
     width = 12.5, height = 9.5)
+}
+
+# Appendix figure: the same panels with all four seasonal variables. Only the CCA
+# constraints define the eras and carry qualifying points; the other variables
+# are shown with the same calibration standardization for context.
+display_cells = read_csv(out("holocene_era_display_directional_cells.csv"), show_col_types = FALSE)
+display_thresholds = read_csv(out("holocene_era_display_variable_thresholds.csv"), show_col_types = FALSE)
+stopifnot(setequal(unique(display_cells$variable), CLIMATE_DISPLAY_VARIABLES))
+display_callouts = display_thresholds |>
+  filter(variable %in% CLIMATE_DISPLAY_VARIABLES) |>
+  arrange(match(variable, CLIMATE_DISPLAY_VARIABLES)) |>
+  mutate(x = c(10465, 10295, 10125, 9955)[seq_along(variable)],
+    ymin = -threshold_standardized_change, ymax = threshold_standardized_change,
+    cap_left = x - 27, cap_right = x + 27,
+    label = sprintf("%s  [%+.3f, %+.3f]", variable, ymin, ymax))
+p_climate_display = climate_panel(
+  panel_data = display_cells |> mutate(value = regional_score,
+    qualifies = qualifies & variable %in% CCA_VARIABLES),
+  callouts = display_callouts,
+  title = "Holocene climate change: the four seasonal variables") +
+  scale_color_manual(values = c(variable_colors, context = "grey25"),
+    breaks = CLIMATE_DISPLAY_VARIABLES,
+    labels = paste0(CLIMATE_VARIABLE_LABELS[CLIMATE_DISPLAY_VARIABLES],
+      if_else(CLIMATE_DISPLAY_VARIABLES %in% CCA_VARIABLES, " (CCA constraint)", "")),
+    name = NULL) +
+  guides(color = guide_legend(nrow = 1, override.aes = list(linewidth = 1.6))) +
+  theme(legend.position = "bottom", legend.text = element_text(size = 12))
+if (render_figures) {
+  ggsave(fig("supplementary", "fig_standardized_climate_change_four_variables.pdf"),
+    p_climate_display / p_fire + plot_layout(heights = c(4.5, 1.45)),
+    width = 12.5, height = 10)
 }
 
 # Companion figure: standardized climate LEVELS instead of 1,000-year changes.

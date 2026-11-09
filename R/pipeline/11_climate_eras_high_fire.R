@@ -42,7 +42,7 @@ levels = ponds |>
   derive_climate_vars(winter_shift = FALSE) |>
   rename(lake = unit, site = period, slice = time) |>
   mutate(cal_bp = 1950 - slice * 100) |>
-  select(site, lake, cal_bp, all_of(PRIMARY_VARS))
+  select(site, lake, cal_bp, all_of(union(PRIMARY_VARS, CLIMATE_DISPLAY_VARIABLES)))
 counts = levels |> count(site, lake, name = "n_slices")
 if (nrow(counts) != 4L || any(counts$n_slices != 111L) ||
     any(is.na(levels[PRIMARY_VARS])))
@@ -50,14 +50,25 @@ if (nrow(counts) != 4L || any(counts$n_slices != 111L) ||
 
 climate_raw = build_climate_changes_1000yr(levels, PRIMARY_VARS,
   VARIABLE_UNITS)
-scaling = read_csv(CLIMATE_SCALING, show_col_types = FALSE) |>
-  filter(variable %in% PRIMARY_VARS)
+all_scaling = read_csv(CLIMATE_SCALING, show_col_types = FALSE)
+scaling = all_scaling |> filter(variable %in% PRIMARY_VARS)
 if (nrow(scaling) != length(PRIMARY_VARS) || any(!is.finite(scaling$sd)) || any(scaling$sd <= 0))
   stop("Legacy CCA climate scaling is incomplete or invalid.")
 
 climate = classify_climate_era_union(climate_raw$site_cells, scaling,
   fraction = THRESHOLD_FRACTION, required_phases = REQUIRED_PHASES)
 composite = calculate_climate_composite(climate$site_standardized)
+
+# Display only (appendix figure): the same per-variable rule applied to every
+# seasonal variable in CLIMATE_DISPLAY_VARIABLES. These tables never define eras.
+display_vars = CLIMATE_DISPLAY_VARIABLES
+display_units = setNames(ifelse(CLIMATE_VARIABLE_UNITS[display_vars] == "mm", "mm", "deg C"), display_vars)
+climate_display = classify_climate_era_union(
+  build_climate_changes_1000yr(levels, display_vars, display_units)$site_cells,
+  all_scaling |> filter(variable %in% display_vars),
+  fraction = THRESHOLD_FRACTION, required_phases = REQUIRED_PHASES)
+write_csv(climate_display$variable_cells, out("holocene_era_display_directional_cells.csv"))
+write_csv(climate_display$thresholds, out("holocene_era_display_variable_thresholds.csv"))
 
 era_domain = range(climate$era_grid$t)
 if (!identical(era_domain, c(1300, 9500)))
