@@ -26,7 +26,11 @@ dir.create(coredir, showWarnings = FALSE, recursive = TRUE)
 
 
 manifest_path = out('bacon_run_manifest.csv')
-if (isTRUE(getOption('paleoaces.run_age_models', FALSE)) || !file.exists(manifest_path)) {
+# The stored Bacon runs in Cores/ are refitted only on request (--age-models).
+# A missing manifest alone never triggers a refit: it is rebuilt from the
+# stored runs below, so a clean rebuild of output/ leaves Cores/ untouched.
+refit_age_models = isTRUE(getOption('paleoaces.run_age_models', FALSE))
+if (refit_age_models) {
   # -----------------------------------------------------------------------------
   # CLEAN SLATE - run before every Bacon call
   # -----------------------------------------------------------------------------
@@ -453,8 +457,11 @@ if (isTRUE(getOption('paleoaces.run_age_models', FALSE)) || !file.exists(manifes
   }
 
 
+}
+
+if (refit_age_models || !file.exists(manifest_path)) {
   # =============================================================================
-  # 6) RUN MANIFEST - durable proof of exactly what the seeded rebuild produced
+  # 6) RUN MANIFEST - durable proof of exactly what the seeded runs produced
   # =============================================================================
   manifest_models = c("JayBath", "LogWallow", "ReflectionPond",
                       "PantherPotholes", "PantherPotholes_pb210err")

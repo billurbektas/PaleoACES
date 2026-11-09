@@ -43,5 +43,5 @@ per site and thresholded with Eq. 1 (Appendix S2.3).
 
 <img src="../figures/png/fig_method_worked_example.png" alt="" width="1540" />
 
-One Panther Potholes transition: observed and climate-predicted
+One Panther Potholes lake-period: observed and climate-predicted
 movement, the lag before and after, the tracking ratio and the angle.

@@ -257,7 +257,7 @@ The detailed evidence and publication links are in the
 - Binary presence retains CCA's chi-square row and taxon weighting; it does not
   make plots or taxa equally weighted. The CCA1–CCA2 plane represents only part
   of total community inertia. The current axis percentages are reported in the
-  [report](../../README.md#5-canonical-correspondence-analysis).
+  [report](../../README.md#4-canonical-correspondence-analysis).
 - Resurvey and paleo observations do not fit the ordination, but their species
   counts influence the cross-group retention rule. This is a descriptive
   calibration/projection design, not an independent predictive validation.
@@ -295,6 +295,8 @@ The detailed evidence and publication links are in the
 <a id="lake-tracking-metrics"></a>
 
 ## Lake-level tracking responses — revised 2026-10-12
+
+*Superseded on 2026-11-09 by the lake-period remodelling below. Kept as history.*
 
 The ecological analysis uses one primary series per lake on native 100-year CHELSA
 cells. Each original macrofossil sample receives its unrounded median age over all
@@ -556,6 +558,28 @@ lake/CC-S period, then available lakes are weighted equally within park/period. 
 come from the unchanged descriptive catalog. Missing lake/period observations are not filled.
 Modern paths retain the same 607 paired plots and original endpoints.
 
+## Lake-period remodelling, decided 2026-11-09
+
+The Holocene side of the analysis was remodelled on lake-periods (Bills, 9 November 2026). The
+reason is that consecutive sampled centuries differ mostly by sampling noise: one scoop of sediment
+against the next moves a position by about 0.3 CCA units, while the ecological drift is 0.01 to 0.04
+units per century. The decisions below replace the century-transition models of the sections
+"Lake-level tracking responses", "Community explanatory coefficient figure" and "Figure 3 era-centroid
+trajectories", which are kept as history.
+
+| Point | Decision |
+|---|---|
+| Unit of analysis | One lake within one climate period (a lake-period), compared from its oldest to its youngest sampled century. A lake needs samples in at least two centuries of a period. The centuries in between enter no model. |
+| Periods | The climate periods of `R/pipeline/11_climate_eras_high_fire.R`, drawn from MSpT and SP with unchanged rules, named C (climate change) and S (stability), never CC. Sub-periods count as periods where a C period is split. |
+| Endpoints and climate | One sampled century per end, the centroid of its samples' WA positions. Each lake's own climate cell for the predicted positions and the climate change rate. Park-average climate for the period boundaries and Figure 2. |
+| Responses | Lag rate, turnover rate, pace effect, direction effect and the standardized climate change rate, computed once per lake-period with the existing tracking geometry. Where the observed or the predicted position did not move, pace, direction and species contributions are undefined, in both eras. |
+| Fire | Accepted events between t1 and t2, per century, per covered charcoal core, one value per park, not rescaled within park. |
+| Holocene explanatory model | response ~ site + climate_rate + fire_activity, AR(1) on the lake-period order within lake fixed a priori, residual variance per park times the endpoint sampling variance (1/n_start + 1/n_end). No lake random intercept, no period label, no interactions. |
+| Era models | response ~ period_type * site with period types Holocene-S, Holocene-C and Anthropocene, the same AR(1) and endpoint weights, residual variance per period type and park. The Holocene is never pooled across C and S, and the parks are never pooled. Folds of climate change rate and turnover rate against each Holocene type. The joint pace and direction model uses the same AR(1) and weights. |
+| Species | Two measures per lake-period and plot pair: the projection of each species' vector on the predicted movement and on the gap at the start. Plain means with t-intervals per species, park and period type, no species model (Bills, during the run). |
+| Removed | The comparison of independent, MA(1) and CAR(1) residuals, the individual-lake era checks, the lake random-intercept sensitivity, the Anthropocene model with elevation and the species slope models. |
+| Display rotation | Every CCA-space figure is rotated by the closed-form varimax angle, axis 1 spring temperature to the right, axis 2 summer precipitation upward. All tables stay unrotated, and the pipeline asserts that no metric changes under the rotation. |
+
 ## Remaining scientific questions
 
 CCA sample eligibility, balanced observed/predicted exclusions and paired
@@ -576,6 +600,10 @@ notes; any future chronology revision is separate work.
 | Raw versus V2.1-anchored TraCE21k climate | The active Holocene analysis uses raw TraCE21k values; the V2.1 anchoring diagnostic is not authoritative. | Absolute Holocene climate levels and cross-product comparisons may retain product bias, although the active within-series change calculations are internally consistent. | A validated overlap-period comparison showing whether anchoring reduces bias without introducing a discontinuity or changing the intended anomaly interpretation. |
 | Legacy-calibration versus full-record climate SDs | Changes are divided by SDs from the 607 matched legacy CCA calibration plots. | The reference is tied to the fitted model. A full-record SD would change displayed standardized magnitudes, cross-variable weighting, the unthresholded composite, and standardized climate rates, but not CC/S boundaries under the current variable-specific 50%-of-own-maximum rule. | A prespecified full-record sensitivity with explicit temporal/site weighting and a scientific choice between calibration-relative and dataset-relative effect sizes. |
 | Anthropocene precipitation continuity | Historical climate remains 1979–1989; modern climate uses adult Y−5 through Y at both sites (2026-10-07 decision). The MORA precipitation contrast is flagged. | The apparent post-2010 MORA precipitation shift may partly reflect CHELSA inhomogeneity rather than climate. | Independent station/reanalysis validation and a documented decision on whether post-2010 MORA precipitation is usable. The agreed years are not a pending decision. |
+| MORA fire record location | The MORA fire values come from the Sunrise Ridge cores, while the vegetation lakes lie elsewhere in the park. | A MORA fire slope may reflect regional fire rather than fire at the lakes. | Charcoal from the vegetation lakes themselves. |
+| Fire scales of the two parks | One fire slope for both parks, in events per century per covered core. MORA values span 0.10 to 0.33 and NOCA 0.33 to 0.89, partly because Panther Potholes is read at 12 years and the Sunrise Ridge cores at 42 to 48 years. | The fire slope comes from the narrow range within each park. | Records at comparable resolution, or a resolution-corrected event rate. |
+| Rates over different time spans | Holocene rates span 200 to 2,600 years and Anthropocene rates about 29 years. | Longer windows give lower rates, so the folds overstate the speed difference by an unknown amount. | A rate measure that is independent of the window length, or Holocene windows of about 30 years, which the sampling does not allow. |
+| Choice of MSpT and SP | Argued on mechanism: spring temperature for snowmelt timing and the start of the growing season, summer precipitation for drying stress. | Winter temperature and winter precipitation still add explained inertia (permutation test in Step 0), through the seasonal contrasts that made the four-variable fit collinear. | The screening table of Step 0 is the evidence. A mechanism-based argument stays necessary. |
 | Own-origin versus common-origin taxon target geometry | Deferred: the target-alignment analysis is retired. Existing CCA scores and reference matrices are preserved; the parallel contribution decomposition does not implement that separate target-origin sensitivity. | The two cosines answer alignment relative to each trajectory's own starting community; part of their difference can arise because LC₁ and WA₁ differ. | A prespecified common-origin sensitivity and an ecological decision about whether the estimand should condition on each starting state or hold the target vector fixed across observed and predicted movement. |
 
 ## Inference limits

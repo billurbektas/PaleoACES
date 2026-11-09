@@ -1,0 +1,13 @@
+Measure,Park,Period type,Species,Interval above zero,Interval below zero,Largest absolute mean
+contrib_climate,MORA,Anthropocene,14,0,4,0.05015242818944406
+contrib_climate,MORA,Holocene-C,9,0,0,0.0136881934998162
+contrib_climate,MORA,Holocene-S,9,2,0,0.01074434821568065
+contrib_climate,NOCA,Anthropocene,13,2,0,0.257298120954898
+contrib_climate,NOCA,Holocene-C,8,0,0,0.015526990560086
+contrib_climate,NOCA,Holocene-S,9,0,0,0.04459387388200427
+contrib_gap,MORA,Anthropocene,14,6,0,0.09824534180317793
+contrib_gap,MORA,Holocene-C,9,0,0,0.04501465639133794
+contrib_gap,MORA,Holocene-S,9,0,2,0.00609497595890273
+contrib_gap,NOCA,Anthropocene,13,9,0,0.3619476602044267
+contrib_gap,NOCA,Holocene-C,8,0,0,0.03649855808740022
+contrib_gap,NOCA,Holocene-S,9,0,0,0.02159231717940533

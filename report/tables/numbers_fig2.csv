@@ -1,0 +1,14 @@
+Kind,Variable,Period,cal BP,Rate per century
+period,MSpT,C1,9100,-0.04369949494949506
+period,SP,C1,9100,-1.2409090909090903
+period,MSpT,C2,7700,0.05108585858585876
+period,SP,C2,7700,0.9454545454545468
+period,MSpT,C3,6500,-0.04446548821548839
+period,MSpT,C4,5150,0.03136363636363635
+period,MSpT,C5,1950,0.04378787878787849
+largest century step,MSpT,,4250,-1.247222222222224
+largest century step,SP,,10350,24
+Anthropocene plot median,MSpT,MORA,,1.2883218146376143
+Anthropocene plot median,MSpT,NOCA,,0.7690944533049834
+Anthropocene plot median,SP,MORA,,-142.63689526847418
+Anthropocene plot median,SP,NOCA,,103.61509835194047

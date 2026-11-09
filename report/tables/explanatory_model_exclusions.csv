@@ -1,0 +1,9 @@
+Response,Period type,Park,Reason,Rows
+direction_effect,Anthropocene,MORA,undefined_response,76
+direction_effect,Anthropocene,NOCA,undefined_response,66
+direction_effect,Holocene-C,MORA,undefined_response,1
+direction_effect,Holocene-S,MORA,undefined_response,1
+pace_effect,Anthropocene,MORA,undefined_response,76
+pace_effect,Anthropocene,NOCA,undefined_response,66
+pace_effect,Holocene-C,MORA,undefined_response,1
+pace_effect,Holocene-S,MORA,undefined_response,1

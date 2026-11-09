@@ -613,11 +613,18 @@ source(here::here('R/helpers/config.R'), local = TRUE)
 suppressPackageStartupMessages({library(here);library(tidyverse);library(patchwork)})
 source(here('R/helpers/tracking_data.R'),local=TRUE)
 render_figures = isTRUE(getOption('paleoaces.render_figures',TRUE))
-r=read_csv(out('cca_tracking_holocene_lake_calculations.csv'),show_col_types=FALSE)
-b=read_csv(out('cca_tracking_holocene_lake_transitions.csv'),show_col_types=FALSE)
-example=r |> filter(lake=='PantherPotholes',pace_counterfactual_valid,direction_counterfactual_valid) |>
-  mutate(distance=abs(interval_mid_cal_bp-3000)) |> arrange(distance) |> slice(1)
-if(nrow(example)!=1L) stop('No valid primary worked example')
+# The worked example is one lake-period (PLAN.md Steps 1 to 4), drawn on the
+# display-rotated axes like every CCA-space figure (PLAN.md Step 0.4).
+r=read_csv(out('cca_tracking_lake_period_calculations.csv'),show_col_types=FALSE)
+example=r |> filter(lake=='PantherPotholes',direction_defined) |>
+  mutate(distance=abs((age_start+age_end)/2-3000)) |> arrange(distance) |> slice(1)
+if(nrow(example)!=1L) stop('No valid lake-period worked example')
+source(here('R/helpers/cca_display_rotation.R'),local=TRUE)
+reference=readRDS(out('cca_calibration_reference.rds'))
+rotation=cca_display_rotation(vegan::scores(reference$model,display='bp',choices=1:2,scaling='sites',hill=FALSE))
+for(pair in list(c('o1','o2'),c('o1_2','o2_2'),c('p1','p2'),c('p1_2','p2_2'),
+  c('pace_corrected_CCA1','pace_corrected_CCA2'),c('direction_corrected_CCA1','direction_corrected_CCA2')))
+  example=rotate_columns(example,rotation,pair[1],pair[2])
 points = tibble(label=c('O1','O2','P1','P2','Pace corrected','Direction corrected'),
   CCA1=c(example$o1,example$o1_2,example$p1,example$p1_2,example$pace_corrected_CCA1,example$direction_corrected_CCA1),
   CCA2=c(example$o2,example$o2_2,example$p2,example$p2_2,example$pace_corrected_CCA2,example$direction_corrected_CCA2))
@@ -629,7 +636,8 @@ a = ggplot(points,aes(CCA1,CCA2)) + geom_segment(data=vectors,
   aes(x=x,y=y,xend=xend,yend=yend,color=type),inherit.aes=FALSE,
   arrow=grid::arrow(length=grid::unit(2,'mm'))) + geom_point() +
   geom_text(aes(label=label),vjust=-.7,size=3) + coord_equal() +
-  labs(title='A. Actual and corrected movement',color=NULL) + theme_minimal(base_size=14)
+  labs(title=sprintf('A. Actual and corrected movement (Panther Potholes %s, %g to %g cal BP)',example$period,example$age_start,example$age_end),
+    x='Spring temperature (rotated axis 1)',y='Summer precipitation (rotated axis 2)',color=NULL) + theme_minimal(base_size=14)
 lag = tibble(endpoint=c('Initial','Actual final','Pace corrected','Direction corrected'),
   lag=c(example$lag_t1,example$lag_t2,example$lag_t2_pace_corrected,example$lag_t2_direction_corrected))
 p = ggplot(lag,aes(endpoint,lag)) + geom_col(fill='#4477AA') +
@@ -640,13 +648,13 @@ metrics = tracking_response_names()
 values = example |> select(all_of(metrics)) |> pivot_longer(everything(),names_to='metric',values_to='value')
 q = ggplot(values,aes(x=1,y=value)) + geom_point(size=2) +
   geom_text(aes(label=sprintf('%.3f',value)),nudge_x=.2,size=3) +
-  facet_wrap(~metric,scales='free_y',ncol=2) + labs(title='C. Focused quantities for this transition',x=NULL,y=NULL) +
+  facet_wrap(~metric,scales='free_y',ncol=2) + labs(title='C. Focused quantities for this lake-period',x=NULL,y=NULL) +
   theme_minimal(base_size=9) + theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())
-support=tibble(endpoint=c('Older century','Younger century'),n_samples=c(example$n_samples_t1,example$n_samples_t2))
+support=tibble(endpoint=c('Oldest century (t1)','Youngest century (t2)'),n_samples=c(example$n_start,example$n_end))
 s=ggplot(support,aes(endpoint,n_samples))+geom_col(fill='grey70')+
   labs(title='D. Actual endpoint sampling',x=NULL,y='Original macrofossil samples')+theme_minimal(base_size=16)
-figure=(a+p)/(q+s)+plot_annotation(title=paste0('Panther Potholes: ',example$age_hi,' to ',example$age_lo,' cal BP'),
-  subtitle=paste('Primary median-age reconstruction; elapsed time:',example$vegetation_dt_years,'years'),
-  caption='Sample WA positions are averaged within native centuries. No vegetation interpolation. Corrections start at O1.')
+figure=(a+p)/(q+s)+plot_annotation(title=paste0('Panther Potholes lake-period ',example$period,': ',example$age_start,' to ',example$age_end,' cal BP'),
+  subtitle=paste('Elapsed time between the two sampled centuries:',example$duration_yr,'years'),
+  caption='Sample WA positions are averaged within each sampled century. Axes rotated for display; all quantities are rotation-invariant. Corrections start at O1.')
 if(render_figures) ggsave(fig('worked_examples', 'fig_method_worked_example.pdf'),figure,width=14,height=12)
 })

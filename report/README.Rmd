@@ -142,24 +142,24 @@ rot = read_output('cca_display_rotation.csv')
 pos3 = read_output('cca_tracking_holocene_century_positions.csv')
 ```
 
-**Figure 3. Climate and community positions in the CCA plane.** (A) Species (points, shaded from
-light to dark by their share of the constrained inertia) and the two climate constraints (arrows)
-of the CCA fitted on `r cca_value('calibration_plots')` legacy plots (grey dots). (B) Movement of
-the observed (dark colours) and climate-predicted (light colours) positions of each park. Holocene
-arrows run from the first to the last climate period with samples: at MORA from
-`r spans3$first_period[spans3$site == 'MORA']` to `r spans3$last_period[spans3$site == 'MORA']`
-(`r spans3$first_older[spans3$site == 'MORA']` to `r spans3$last_younger[spans3$site == 'MORA']` cal BP), and at NOCA from
-`r spans3$first_period[spans3$site == 'NOCA']` to `r spans3$last_period[spans3$site == 'NOCA']`
-(`r spans3$first_older[spans3$site == 'NOCA']` to `r spans3$last_younger[spans3$site == 'NOCA']` cal BP). The first MORA
-period rests on `r p3 = read_output('holocene_periods.csv'); f3 = p3[p3$period == spans3$first_period[spans3$site == 'MORA'], ]; in3 = pos3$site == 'MORA' & pos3$century_cal_bp < f3$older_cal_bp & pos3$century_cal_bp >= f3$younger_cal_bp; sum(pos3$n_samples[in3])` samples in `r sum(in3)` lake-centuries.
-Anthropocene arrows (diamonds at the start) run from the legacy survey to the resurvey, averaged over
-`r n_group('Anthropocene', 'MORA')` MORA and `r n_group('Anthropocene', 'NOCA')` NOCA plot pairs. Dotted boxes mark the
-zoom windows. (C, D) The full Holocene sequence of period centroids at MORA and NOCA, observed and
-predicted, with climate-change periods as circles and stability periods as triangles. Each centroid
-averages the sampled centuries of each lake within the period, with the lakes weighted equally.
-Axes orthogonally rotated (varimax, `r sprintf('%.1f', rot$angle_degrees)` degrees) for display, so that
-axis 1 follows spring temperature and axis 2 summer precipitation. All metrics are rotation-invariant.
-The unrotated biplot is in the appendix figures.
+**Figure 3. Climate and community positions in the CCA plane.** (A) Species (vectors from the
+centre, shaded from light to dark by their share of the constrained inertia, with the percentage of
+legacy plots in which each species occurs) and the two climate constraints (bold arrows) of the CCA
+fitted on `r cca_value('calibration_plots')` legacy plots. (B) Observed (dark colours) and
+climate-predicted (light colours) movement of each park: in the Holocene from the first to the last
+climate period with samples, in the Anthropocene from the legacy survey to the resurvey (averaged over
+`r n_group('Anthropocene', 'MORA')` MORA and `r n_group('Anthropocene', 'NOCA')` NOCA plot pairs). The MORA arrows run
+from `r spans3$first_period[spans3$site == 'MORA']` to `r spans3$last_period[spans3$site == 'MORA']`
+(`r spans3$first_older[spans3$site == 'MORA']` to `r spans3$last_younger[spans3$site == 'MORA']` cal BP), and the first MORA period rests on
+`r p3 = read_output('holocene_periods.csv'); f3 = p3[p3$period == spans3$first_period[spans3$site == 'MORA'], ]; in3 = pos3$site == 'MORA' & pos3$century_cal_bp < f3$older_cal_bp & pos3$century_cal_bp >= f3$younger_cal_bp; sum(pos3$n_samples[in3])` samples in `r sum(in3)` lake-centuries.
+The NOCA arrows run from `r spans3$first_period[spans3$site == 'NOCA']` to `r spans3$last_period[spans3$site == 'NOCA']`
+(`r spans3$first_older[spans3$site == 'NOCA']` to `r spans3$last_younger[spans3$site == 'NOCA']` cal BP). Grey dots are the legacy calibration
+plots. The dashed boxes C and D mark the extent of the zoomed panels. (C, D) The full Holocene sequence
+of period centroids at MORA and NOCA, observed and predicted, each period named at its observed
+centroid (C, climate-change period, S, stability period). Each centroid averages the sampled centuries
+of each lake within the period, with the lakes weighted equally. Axes orthogonally rotated (varimax,
+`r sprintf('%.1f', rot$angle_degrees)` degrees) for display, so that axis 1 follows spring temperature and axis 2
+summer precipitation. All metrics are rotation-invariant. The unrotated biplot is Fig. A3.
 
 Stages and helpers: [`R/pipeline/10_cca.R`](R/pipeline/10_cca.R),
 [`R/helpers/cca_report.R`](R/helpers/cca_report.R) (screening and add-back test),
@@ -399,21 +399,18 @@ perf6 = read_output('community_predictor_models/model_performance.csv')
 R2 = function(r, e) sprintf('%.2f', perf6$R2[perf6$response == r & perf6$era == e])
 ```
 
-**Figure 6. Climate and fire associations.** (A) Holocene lake-periods. Rows are the lag rate, the
-pace effect and the direction effect. Columns are the standardized climate change rate and fire
-activity. Lines are the fitted partial effects of the model response ~ site + climate change rate +
-fire activity, drawn per park over the park's own range of the predictor with the other predictor at
-the park's mean, with 95% confidence bands. Points are partial residuals of the lake-periods
-(circles, climate-change periods, triangles, stability periods), `r perf6$n_MORA[perf6$response == 'lag_rate' & perf6$era == 'Holocene']`
-at MORA and `r perf6$n_NOCA[perf6$response == 'lag_rate' & perf6$era == 'Holocene']` at NOCA for the lag rate and
+**Figure 6. Climate and fire associations.** Model slopes with conditional 95% confidence
+intervals, grouped by response: lag rate, pace effect and direction effect. Faded estimates have
+intervals that include zero. (A) Holocene lake-periods, model response ~ site + climate change rate +
+fire activity with an AR(1) correlation within each lake and weights for the number of samples at each
+end: `r perf6$n_MORA[perf6$response == 'lag_rate' & perf6$era == 'Holocene']` MORA and
+`r perf6$n_NOCA[perf6$response == 'lag_rate' & perf6$era == 'Holocene']` NOCA lake-periods for the lag rate, and
 `r perf6$n_MORA[perf6$response == 'pace_effect' & perf6$era == 'Holocene']` and `r perf6$n_NOCA[perf6$response == 'pace_effect' & perf6$era == 'Holocene']`
-for pace and direction. Descriptive R² is `r R2('lag_rate', 'Holocene')` for the lag rate,
-`r R2('pace_effect', 'Holocene')` for the pace effect and `r R2('direction_effect', 'Holocene')` for the direction effect.
-(B) Anthropocene plot pairs: MORA unburned, NOCA unburned and NOCA burned plots (points), with the
-fitted means and 95% confidence intervals of the model response ~ site + burned (diamonds, red for
-burned plots). The two burned MORA plots are in the model and not drawn. Descriptive R² is
-`r R2('lag_rate', 'Anthropocene')`, `r R2('pace_effect', 'Anthropocene')` and `r R2('direction_effect', 'Anthropocene')`.
-`r both_spans` The coefficients are in the table above.
+for pace and direction. The climate slope is per standardized unit of climate change per century and
+the fire slope per accepted event per century per covered core. (B) Anthropocene plot pairs, model
+response ~ site + burned with park-specific variances: `r perf6$n[perf6$response == 'lag_rate' & perf6$era == 'Anthropocene']` plot pairs for the lag rate
+and `r perf6$n[perf6$response == 'pace_effect' & perf6$era == 'Anthropocene']` for pace and direction. Descriptive R² is given below each panel.
+`r both_spans`
 
 Stages and helpers: [`R/pipeline/14_predictor_models.R`](R/pipeline/14_predictor_models.R),
 [`R/helpers/reconstruction_models.R`](R/helpers/reconstruction_models.R),
@@ -520,8 +517,8 @@ show_figure('report/figures/main/fig_lag_pace_direction.pdf')
 **Figure 5. Lag rate, pace effect and direction effect in the Holocene and the Anthropocene.** (A)
 Holocene lake-periods of each park, climate-change periods (circles) beside stability periods
 (triangles). Small symbols are single lake-periods, large symbols the fitted means with 95% confidence
-intervals. (B) Anthropocene plot pairs (points) with the fitted mean and 95% confidence interval
-(diamond). Fitted means come from the same models as Figure 4. Lake-periods and plots whose observed
+intervals. (B) Anthropocene plot pairs (transparent violins) with the fitted mean and 95% confidence
+interval (diamond). Fitted means come from the same models as Figure 4. Lake-periods and plots whose observed
 or predicted position did not move have no pace or direction effect: the pace and direction panels
 hold `r m5 = read_output('era_comparison/era_means.csv'); m5$n[m5$response == 'pace_effect' & m5$site == 'MORA' & m5$period_type == 'Holocene-C']` climate-change and `r m5$n[m5$response == 'pace_effect' & m5$site == 'MORA' & m5$period_type == 'Holocene-S']` stability lake-periods at MORA. `r both_spans`
 
@@ -608,6 +605,118 @@ Each park has its own x scale. `r both_spans`
 Stages and helpers: [`R/pipeline/15_contributions.R`](R/pipeline/15_contributions.R),
 [`R/helpers/cca_transition_contributions.R`](R/helpers/cca_transition_contributions.R),
 [`R/figures/main_fig7_species.R`](R/figures/main_fig7_species.R).
+
+# Numbers for the Results text
+
+Every number below is read from an output of the run. Rates are per century. Intervals are 95%
+conditional confidence intervals (models) or t-intervals (species). `r both_spans`
+
+```{r numbers-setup}
+f2 = function(x) sprintf('%+.3f', x)
+ci = function(lo, hi) sprintf('%.3f to %.3f', lo, hi)
+```
+
+**Step 0, climate variables.**
+
+```{r numbers-step0}
+screening |> group_by(Set = set) |> summarise(`Max VIF` = max(VIF), `Adjusted R²` = first(adjusted_R2),
+    `MORA lake-centuries outside (%)` = 100 * first(extrapolated_share_MORA),
+    `NOCA lake-centuries outside (%)` = 100 * first(extrapolated_share_NOCA)) |>
+  show_table('numbers_step0', caption = paste0('**Screening.** Adding MWT and WP to MSpT + SP: pseudo-F ',
+    sprintf('%.2f', addback$pseudo_F[1]), ', p = ', sprintf('%.4f', addback$p_value[addback$design == 'Unrestricted']),
+    ' unrestricted and ', sprintf('%.4f', addback$p_value[addback$design == 'Within parks']), ' within parks.'))
+```
+
+**Steps 1 to 4, periods and lake-periods.**
+
+```{r numbers-units}
+units |> group_by(Park = site, `Period type` = period_type) |>
+  summarise(`Lake-periods` = n(), `Years (min)` = min(duration_yr), `Years (max)` = max(duration_yr),
+    `Climate change rate (mean)` = mean(climate_rate), `Fire activity (min)` = min(fire_activity),
+    `Fire activity (max)` = max(fire_activity), `Fire activity (mean)` = mean(fire_activity), .groups = 'drop') |>
+  show_table('numbers_units', caption = sprintf(paste('**Lake-periods** (raw values, not model estimates). %d lake and',
+    'period combinations had a sampled century, and %d had two or more.'), nrow(candidates), nrow(units)))
+```
+
+**Step 5a, era models: fitted means, contrasts and folds per park.**
+
+```{r numbers-era}
+means |> transmute(Response = response_label[response], Park = site, `Period type` = period_type, n,
+    Mean = f2(estimate), `95% CI` = ci(conf_low, conf_high)) |>
+  show_table('numbers_era_means', caption = '**Fitted means.**')
+contrasts |> transmute(Response = response_label[response], Park = site, Contrast = contrast,
+    Estimate = f2(estimate), `95% CI` = ci(conf_low, conf_high), p = p_value) |>
+  show_table('numbers_era_contrasts', caption = '**Contrasts between period types.**')
+folds |> transmute(Response = response_label[response], Park = site, `Anthropocene over` = against, Fold = fold) |>
+  show_table('numbers_era_folds', caption = '**Folds.** The Holocene-C fold is the one quoted as a speed.')
+```
+
+**Step 5, Holocene explanatory models and their Anthropocene counterpart.**
+
+```{r numbers-step5}
+coefficients |> filter(term != '(Intercept)') |>
+  transmute(Response = label[metric], Era = era, Term = term, Estimate = f2(estimate),
+    `95% CI` = ci(conf_low, conf_high), p = p_value) |>
+  show_table('numbers_step5', caption = '**Slopes and contrasts.** Climate change rate: per standardized unit per century. Fire activity: per event per century per covered core.')
+```
+
+**Step 6, species.**
+
+```{r numbers-step6}
+species_means |> filter(interval_defined) |>
+  group_by(Measure = measure, Park = site, `Period type` = period_type) |>
+  summarise(Species = n(), `Interval above zero` = sum(conf_low > 0), `Interval below zero` = sum(conf_high < 0),
+    `Largest absolute mean` = max(abs(estimate)), .groups = 'drop') |>
+  show_table('numbers_step6', caption = '**Species means** per measure, park and period type (species with a defined interval).')
+```
+
+**Figure 2, climate rates.**
+
+```{r numbers-fig2}
+read_output('figures/holocene_climate_level_rates.csv') |>
+  transmute(Kind = kind, Variable = variable, Period = coalesce(period, ''), `cal BP` = t, `Rate per century` = rate) |>
+  bind_rows(rates2 |> transmute(Kind = 'Anthropocene plot median', Variable = variable, Period = site,
+    `Rate per century` = rate)) |>
+  show_table('numbers_fig2', caption = '**Real-unit climate rates per century** (°C for MSpT, mm for SP).')
+```
+
+**Doubts the paper must face (`PLAN.md` section 9), with the numbers that bear on them.**
+
+```{r numbers-doubts}
+fire_by = units |> group_by(site, period_type) |> summarise(mean = mean(fire_activity), .groups = 'drop')
+fire_slope = coefficients |> filter(era == 'Holocene', term == 'fire_activity')
+tibble(Doubt = c(
+  'MORA fire comes from Sunrise Ridge, the vegetation lakes lie elsewhere',
+  'Fire values of the two parks barely overlap',
+  'Within MORA the stability periods sat at the lowest fire values',
+  'Rates over about 29 years and over centuries are not on equal footing',
+  'MSpT + SP must be argued on mechanism'),
+  Numbers = c(
+    paste(sprintf('%s fire slope %s (%s)', label[fire_slope$metric], f2(fire_slope$estimate), ci(fire_slope$conf_low, fire_slope$conf_high)), collapse = '; '),
+    paste(sprintf('%s %.2f to %.2f', c('MORA', 'NOCA'), tapply(units$fire_activity, units$site, min),
+      tapply(units$fire_activity, units$site, max)), collapse = ', '),
+    paste(sprintf('%s %s mean %.3f', fire_by$site, fire_by$period_type, fire_by$mean), collapse = ', '),
+    both_spans,
+    sprintf('Adjusted R² %.3f with MSpT + SP against %.3f with all four. Adding MWT and WP: p = %.4f unrestricted, %.4f within parks.',
+      screening$adjusted_R2[screening$set == 'MSpT + SP'][1], screening$adjusted_R2[screening$set == 'All four'][1],
+      addback$p_value[addback$design == 'Unrestricted'], addback$p_value[addback$design == 'Within parks']))) |>
+  show_table('numbers_doubts', caption = '**Doubts and the numbers that bear on them.**')
+```
+
+**Supplement tables of `PLAN.md` section 7.**
+
+| Table | File |
+|---|---|
+| Screening | [`report/tables/step0_screening.csv`](report/tables/step0_screening.csv) |
+| Periods | [`report/tables/step1_periods.csv`](report/tables/step1_periods.csv) |
+| Unit table | [`report/tables/step24_lake_periods.csv`](report/tables/step24_lake_periods.csv) |
+| Era contrasts | [`report/tables/step5a_era_means.csv`](report/tables/step5a_era_means.csv), [`report/tables/step5a_era_contrasts.csv`](report/tables/step5a_era_contrasts.csv), [`report/tables/step5a_era_folds.csv`](report/tables/step5a_era_folds.csv) |
+| Explanatory models | [`report/tables/step5_explanatory_models.csv`](report/tables/step5_explanatory_models.csv) |
+| Species means | [`report/tables/step6_species_means.csv`](report/tables/step6_species_means.csv), [`report/tables/species_contrasts.csv`](report/tables/species_contrasts.csv) |
+| Species per lake-period | [`report/tables/species_lake_periods.csv`](report/tables/species_lake_periods.csv) |
+| NOCA species, burned and unburned | [`report/tables/noca_burned_species_means.csv`](report/tables/noca_burned_species_means.csv) |
+
+The last three are written by the model details page (`r details_link('08_models', 'Model details')`).
 
 # Appendix figures of the remodelled analysis
 

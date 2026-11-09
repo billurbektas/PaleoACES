@@ -1,0 +1,16 @@
+Response,Era,Term,Estimate,95% CI,p
+Lag rate,Holocene,siteNOCA,+0.043,-0.080 to 0.166,0.47226974615047423
+Lag rate,Holocene,climate_rate,+0.719,0.007 to 1.431,0.04808007841616076
+Lag rate,Holocene,fire_activity,-0.098,-0.353 to 0.157,0.4316924278589848
+Lag rate,Anthropocene,siteNOCA,-0.613,-0.922 to -0.303,1.1208580765659306e-4
+Lag rate,Anthropocene,burnedBurned,-0.152,-0.983 to 0.678,0.719086139955702
+Pace effect,Holocene,siteNOCA,+0.100,-0.001 to 0.201,0.0519354715962001
+Pace effect,Holocene,climate_rate,+0.685,0.139 to 1.232,0.01678775331982598
+Pace effect,Holocene,fire_activity,-0.188,-0.388 to 0.012,0.06330163116115572
+Pace effect,Anthropocene,siteNOCA,-0.372,-0.670 to -0.074,0.01445400948620217
+Pace effect,Anthropocene,burnedBurned,-0.923,-1.653 to -0.193,0.01332820373567665
+Direction effect,Holocene,siteNOCA,-0.122,-0.215 to -0.029,0.01272582749559316
+Direction effect,Holocene,climate_rate,+0.500,-0.275 to 1.275,0.1918730810004146
+Direction effect,Holocene,fire_activity,+0.268,0.076 to 0.460,0.00897414338453316
+Direction effect,Anthropocene,siteNOCA,-0.650,-1.010 to -0.290,4.239657192594013e-4
+Direction effect,Anthropocene,burnedBurned,+0.571,-0.406 to 1.547,0.2512851375861295

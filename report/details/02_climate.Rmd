@@ -53,7 +53,7 @@ read_output('report/test_climate_change_variables.csv') |>
 ```
 
 ```{r}
-show_figure('report/figures/supplementary/fig_standardized_climate_levels_eras_fire.pdf')
+show_figure('report/figures/supplementary/fig_standardized_climate_levels_four_variables.pdf')
 ```
 
 **Standardized climate levels** (rather than standardized change) with the climate eras and

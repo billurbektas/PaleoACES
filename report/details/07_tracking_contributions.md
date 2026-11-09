@@ -4,6 +4,14 @@
 > **Used by:** `R/pipeline/15_contributions.R`  
 > **Originally:** `docs/review/README_cca_transition_contributions.md` (moved into the report on 2026-11-09)
 
+**Update 2026-11-09 (lake-period remodelling).** Contributions are now computed once per
+lake-period, between its oldest and its youngest sampled century, and once per plot pair. Each
+species' vector is projected on two references: the direction in which the predicted position moved
+(`contrib_climate`) and the gap from the observed to the predicted position at the start
+(`contrib_gap`). Both are per century. The species explanatory GLS described below is no longer
+fitted. Species are summarized by plain means with t-intervals per species, park and period type.
+The identities in the sections below still hold, with "transition" read as "lake-period".
+
 [Stage 16](../../R/pipeline/15_contributions.R) calculates contributions before
 [stage 17](../../R/pipeline/15_contributions.R) fits species explanatory GLS.
 Both belong to the active workflow. The fixed CCA uses 607 legacy plots, 14 retained taxa,

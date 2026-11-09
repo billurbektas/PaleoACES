@@ -1,0 +1,31 @@
+Response,Park,Period type,n,Mean,95% CI
+Climate change rate,MORA,Holocene-S,7,+0.027,0.007 to 0.046
+Climate change rate,MORA,Holocene-C,7,+0.072,0.033 to 0.110
+Climate change rate,MORA,Anthropocene,330,+2.596,2.505 to 2.687
+Climate change rate,NOCA,Holocene-S,5,+0.041,0.022 to 0.061
+Climate change rate,NOCA,Holocene-C,5,+0.062,0.034 to 0.090
+Climate change rate,NOCA,Anthropocene,277,+2.715,2.488 to 2.941
+Turnover rate,MORA,Holocene-S,7,+0.040,0.010 to 0.070
+Turnover rate,MORA,Holocene-C,7,+0.077,0.035 to 0.119
+Turnover rate,MORA,Anthropocene,330,+0.932,0.843 to 1.021
+Turnover rate,NOCA,Holocene-S,5,+0.108,0.032 to 0.185
+Turnover rate,NOCA,Holocene-C,5,+0.080,0.014 to 0.145
+Turnover rate,NOCA,Anthropocene,277,+2.130,1.905 to 2.355
+Lag rate,MORA,Holocene-S,7,+0.008,-0.022 to 0.037
+Lag rate,MORA,Holocene-C,7,-0.000,-0.059 to 0.059
+Lag rate,MORA,Anthropocene,330,+0.543,0.424 to 0.663
+Lag rate,NOCA,Holocene-S,5,+0.021,-0.050 to 0.093
+Lag rate,NOCA,Holocene-C,5,-0.009,-0.041 to 0.023
+Lag rate,NOCA,Anthropocene,277,-0.082,-0.359 to 0.195
+Pace effect,MORA,Holocene-S,6,+0.010,-0.029 to 0.050
+Pace effect,MORA,Holocene-C,6,+0.000,-0.054 to 0.055
+Pace effect,MORA,Anthropocene,254,+0.167,0.075 to 0.260
+Pace effect,NOCA,Holocene-S,5,+0.025,-0.047 to 0.097
+Pace effect,NOCA,Holocene-C,5,+0.014,-0.007 to 0.035
+Pace effect,NOCA,Anthropocene,211,-0.272,-0.553 to 0.009
+Direction effect,MORA,Holocene-S,6,-0.022,-0.068 to 0.024
+Direction effect,MORA,Holocene-C,6,-0.019,-0.104 to 0.067
+Direction effect,MORA,Anthropocene,254,+0.344,0.179 to 0.510
+Direction effect,NOCA,Holocene-S,5,-0.011,-0.069 to 0.047
+Direction effect,NOCA,Holocene-C,5,-0.039,-0.091 to 0.012
+Direction effect,NOCA,Anthropocene,211,-0.264,-0.576 to 0.048

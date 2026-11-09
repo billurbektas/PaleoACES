@@ -1,0 +1,7 @@
+Response,Era,Model,n,MORA,NOCA,R²,AR(1),SD ratio NOCA/MORA
+lag_rate,Holocene,site + climate_rate + fire_activity,24,14,10,0.08810568184908052,-0.02353391364130861,3.503718349002184
+lag_rate,Anthropocene,site + burned,607,330,277,0.02909661372381533,,2.1310297428059535
+pace_effect,Holocene,site + climate_rate + fire_activity,22,12,10,0.1722368262541657,0.23598006318733267,3.715799230687878
+pace_effect,Anthropocene,site + burned,465,254,211,0.04118166469738227,,2.746636190258498
+direction_effect,Holocene,site + climate_rate + fire_activity,22,12,10,0.2187929002598794,-0.503631524521248,2.1123271066972475
+direction_effect,Anthropocene,site + burned,465,254,211,0.03169433426827717,,1.7122554229940914
