@@ -40,6 +40,21 @@ Rscript R/build_report.R        # rebuild this page and report/ from the outputs
 Software: R with rbacon 3.5.2, tapas 0.1.5 and CharAnalysis 2.0.3, plus
 `pdftoppm` (poppler) for the report.
 
+# The remodelled analysis at a glance
+
+The Holocene side of the analysis is being remodelled on lake-periods:
+one lake within one climate period, compared from its first to its last
+sampled century. Each row below is filled when its step is finished.
+
+| Step | What it does | Result |
+|----|----|----|
+| Step 0 | Climate variables and CCA refit | (pending) |
+| Step 1 | Climate periods and lake-periods | (pending) |
+| Steps 2 to 4 | Mismatch, lag, turnover, pace, direction, climate change rate and fire per lake-period | (pending) |
+| Step 5 | Holocene explanatory models | (pending) |
+| Step 5a | Holocene against Anthropocene (era models) | (pending) |
+| Step 6 | Species contributions | (pending) |
+
 # Figure 1. Conceptual framework
 
 *To be added (conceptual figure, not produced by the code).*

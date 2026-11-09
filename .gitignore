@@ -69,3 +69,8 @@ rsconnect/
 /.aws/
 __pycache__/
 *.pyc
+
+# Claude Code run instructions, plan and milestone record stay local
+/CLAUDE.md
+/PLAN.md
+/MILESTONES.md
