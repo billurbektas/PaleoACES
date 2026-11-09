@@ -89,6 +89,10 @@ OUTPUT_REGISTRY = tibble::tribble(
   "cca_species_contributions.csv", "10_cca", "Species contributions to the axes",
   "cca_model_output.txt", "10_cca", "Printed CCA model",
   "cca_anova_cache.rds", "10_cca", "Cached permutation tests, keyed on the fit",
+  "cca_screening.csv", "10_cca", "Step 0.1 screening: VIF, correlation, R2, adjusted R2, extrapolation per constraint set",
+  "cca_screening_correlations.csv", "10_cca", "Correlations of the four seasonal variables on the calibration plots",
+  "cca_screening_addback.csv", "10_cca", "Permutation test of adding MWT and WP back to MSpT + SP",
+  "cca_display_rotation.csv", "10_cca", "Display-only varimax angle, rotation matrix and axis orientation",
   # 11 climate eras and high-fire periods -----------------------------------
   "holocene_era", "11_climate_eras", "(prefix) era and high-fire classification tables",
   # 12 tracking -------------------------------------------------------------

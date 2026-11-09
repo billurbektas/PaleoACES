@@ -48,12 +48,83 @@ sampled century. Each row below is filled when its step is finished.
 
 | Step | What it does | Result |
 |----|----|----|
-| Step 0 | Climate variables and CCA refit | (pending) |
+| Step 0 | Climate variables and CCA refit | MSpT + SP: VIF 1.08, adjusted R² 0.126 (all four 0.148), no lake-century outside the calibration climate, display rotation -23.4° |
 | Step 1 | Climate periods and lake-periods | (pending) |
 | Steps 2 to 4 | Mismatch, lag, turnover, pace, direction, climate change rate and fire per lake-period | (pending) |
 | Step 5 | Holocene explanatory models | (pending) |
 | Step 5a | Holocene against Anthropocene (era models) | (pending) |
 | Step 6 | Species contributions | (pending) |
+
+# Step 0. Climate variables and the CCA
+
+**What and why.** The four seasonal variables come in two tightly linked
+pairs: spring and winter temperature, and summer and winter
+precipitation. Inside a pair the CCA cannot tell the two seasons apart,
+and Holocene lakes reach seasonal combinations the modern plots never
+show. The CCA is therefore constrained by one variable of each pair.
+Spring temperature (MSpT) stands for snowmelt timing and the start of
+the growing season. Summer precipitation (SP) stands for summer drying
+stress. Because each pair is strongly correlated, the two also carry
+temperature and precipitation change in general.
+
+**Decisions.**
+
+- 9 Nov 2026 (Bills, `PLAN.md` row 0): constrain the CCA by MSpT and SP,
+  first proposed as MWT and SP. Rerun everything downstream. Rotate the
+  figures only and keep every table unrotated.
+- 9 Nov 2026 (taken in the run): a Holocene lake-century counts as
+  extrapolated when its Mahalanobis distance from the calibration plots
+  exceeds the 99th percentile of the plots’ own distances, for the
+  variables of that set. All 111 century slices of each lake’s climate
+  series are screened.
+- 9 Nov 2026 (taken in the run): the adjusted R² of each set is vegan’s
+  permutation estimate (1,000 permutations, seeded). The add-back test
+  compares the nested fits with 9,999 permutations, unrestricted and
+  within parks.
+
+**Model code.**
+
+``` r
+# R/pipeline/10_cca.R
+cca_formula = reformulate(CCA_VARIABLES, response = "species_past_final")
+cca_model = cca(cca_formula, data = env_past_final)
+```
+
+**Result.**
+
+**Screening of the climate constraints** on the 607 legacy calibration
+plots. Holocene lake-centuries: 333 at MORA (three lakes) and 111 at
+NOCA.
+
+| Set | Variables | Largest abs. correlation | VIF | R² | Adjusted R² | MORA lake-centuries outside (%) | NOCA lake-centuries outside (%) |
+|:---|:---|---:|:---|---:|---:|---:|---:|
+| All four | MSpT, MWT, SP, WP | 0.956 | MSpT 29.5, MWT 26.4, SP 5.2, WP 6.7 | 0.153 | 0.148 | 88.288 | 14.414 |
+| MWT + SP | MWT, SP | 0.072 | MWT 1.0, SP 1.0 | 0.130 | 0.128 | 0.000 | 0.000 |
+| MSpT + SP | MSpT, SP | 0.286 | MSpT 1.1, SP 1.1 | 0.128 | 0.126 | 0.000 | 0.000 |
+
+<sub>Table file:
+[step0_screening.csv](report/tables/step0_screening.csv)</sub>
+
+With MSpT and SP the CCA explains 12.6% of the variation in composition
+(adjusted R²), against 14.8% with all four variables. Adding winter
+temperature and winter precipitation back improves the fit (pseudo-F
+8.89, p = 0.0001 unrestricted and p = 0.0129 within parks). That gain
+comes from the seasonal contrasts within each pair, the same contrasts
+that make the four-variable fit collinear (VIF up to 29.5) and that
+place 88% of the MORA lake-centuries outside the calibration climate.
+With MSpT and SP no lake-century in either park is outside it. The
+display rotation turns the plane by -23.4 degrees so that rotated axis 1
+is spring temperature increasing to the right and rotated axis 2 summer
+precipitation increasing upward. The pipeline asserts that mismatch,
+lag, turnover, pace and direction are identical before and after this
+rotation.
+
+Stages and helpers: [`R/pipeline/10_cca.R`](R/pipeline/10_cca.R),
+[`R/helpers/cca_report.R`](R/helpers/cca_report.R) (screening and
+add-back test),
+[`R/helpers/cca_display_rotation.R`](R/helpers/cca_display_rotation.R),
+[`R/pipeline/12_tracking.R`](R/pipeline/12_tracking.R) (rotation check).
+Figure 3 is drawn in M08.
 
 # Figure 1. Conceptual framework
 

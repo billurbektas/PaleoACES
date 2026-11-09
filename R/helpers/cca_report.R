@@ -99,3 +99,88 @@ cca_report_tables = function(e, permutations = 9999L, seed = 20261008L) {
   write(climate, 'cca_climate_contributions')
   invisible(NULL)
 }
+
+# Step 0.1 screening of the climate constraints (PLAN.md section 5, Step 0).
+# The same 607 calibration plots and retained taxa are refitted with three
+# constraint sets, so the sets differ only in their climate variables.
+# Extrapolation: a Holocene lake-century lies outside the calibration climate
+# cloud when its Mahalanobis distance from the calibration plots (their mean and
+# covariance for that set) exceeds the 99th percentile of the plots' own
+# distances. This measure sees combinations of seasons the calibration lacks,
+# such as a warm spring with a cold winter, which no single variable reveals.
+cca_screening_tables = function(e, permutations = 9999L, seed = 20261109L) {
+  sets = list(`All four` = c('MSpT', 'MWT', 'SP', 'WP'), `MWT + SP` = c('MWT', 'SP'),
+    `MSpT + SP` = c('MSpT', 'SP'))
+  ids = rownames(e$species_past_final)
+  climate = e$climate_summary |> dplyr::filter(period == 'past') |>
+    dplyr::distinct(plot_id, dplyr::across(dplyr::all_of(sets[[1]]))) |>
+    tibble::column_to_rownames('plot_id')
+  climate = climate[ids, sets[[1]], drop = FALSE]
+  # Rule: 607 legacy calibration plots, complete in all four seasonal variables.
+  stopifnot(nrow(climate) == 607L, !anyNA(climate))
+  source(here::here('R/helpers/climate_variables.R'), local = TRUE)
+  holocene = readr::read_csv(out('chelsa_paleo_ponds.csv'), show_col_types = FALSE) |>
+    dplyr::transmute(unit = lake, period = site, variable, time = slice, month,
+      value = if (PALEO_USE_BIAS_CORRECTED) value_corrected else value_raw) |>
+    derive_climate_vars(winter_shift = FALSE) |>
+    dplyr::transmute(site = period, lake = unit, cal_bp = 1950 - time * 100,
+      dplyr::across(dplyr::all_of(sets[[1]])))
+  stopifnot(!anyNA(holocene[sets[[1]]]))
+  fits = lapply(sets, function(v) vegan::cca(e$species_past_final ~ ., data = climate[, v, drop = FALSE]))
+  # The adjusted R2 of a CCA is estimated by permutation in vegan; seed it.
+  set.seed(seed)
+  rows = purrr::imap_dfr(sets, function(v, set) {
+    fit = fits[[set]]
+    X = as.matrix(climate[v]); centre = colMeans(X); covariance = stats::cov(X)
+    edge = stats::quantile(stats::mahalanobis(X, centre, covariance), 0.99)
+    outside = stats::mahalanobis(as.matrix(holocene[v]), centre, covariance) > edge
+    r = stats::cor(X); r = r[upper.tri(r)]
+    tibble::tibble(set, variables = paste(v, collapse = ';'), n_plots = nrow(X),
+      variable = v, VIF = unname(vegan::vif.cca(fit)[v]),
+      max_abs_correlation = if (length(r)) max(abs(r)) else NA_real_,
+      constrained_axes = length(fit$CCA$eig),
+      R2 = vegan::RsquareAdj(fit)$r.squared,
+      adjusted_R2 = vegan::RsquareAdj(fit, permutations = 1000L)$adj.r.squared,
+      holocene_lake_centuries_MORA = sum(holocene$site == 'MORA'),
+      extrapolated_share_MORA = mean(outside[holocene$site == 'MORA']),
+      holocene_lake_centuries_NOCA = sum(holocene$site == 'NOCA'),
+      extrapolated_share_NOCA = mean(outside[holocene$site == 'NOCA']))
+  })
+  readr::write_csv(rows, out('cca_screening.csv'))
+  r = stats::cor(as.matrix(climate))
+  readr::write_csv(tibble::as_tibble(r, rownames = 'variable'), out('cca_screening_correlations.csv'))
+  # Does adding winter temperature and winter precipitation back improve the fit?
+  sites = factor(e$cca_sample_eligibility$site[match(ids, e$cca_sample_eligibility$plot_id)])
+  stopifnot(!anyNA(sites))
+  set.seed(seed)
+  designs = list(Unrestricted = permute::how(nperm = permutations),
+    `Within parks` = permute::how(nperm = permutations, blocks = sites))
+  addback = purrr::imap_dfr(designs, function(control, design) {
+    a = stats::anova(fits[['MSpT + SP']], fits[['All four']], permutations = control)
+    tibble::tibble(design, reduced = 'MSpT + SP', full = 'All four (adds MWT and WP)',
+      residual_df_reduced = a$ResDf[1], residual_df_full = a$ResDf[2],
+      residual_inertia_reduced = a$ResChiSquare[1], residual_inertia_full = a$ResChiSquare[2],
+      added_inertia = a$ChiSquare[2], pseudo_F = a$F[2], p_value = a$`Pr(>F)`[2],
+      permutations, seed)
+  })
+  readr::write_csv(addback, out('cca_screening_addback.csv'))
+  invisible(list(screening = rows, addback = addback))
+}
+
+# The display rotation of the fitted model, for figures and the report. Tables
+# stay in unrotated coordinates.
+cca_rotation_table = function(e) {
+  source(here::here('R/helpers/cca_display_rotation.R'), local = TRUE)
+  bp = vegan::scores(e$cca_model, display = 'bp', choices = 1:2, scaling = e$cca_scaling, hill = e$cca_hill)
+  rotation = cca_display_rotation(bp)
+  rotated = bp %*% rotation$matrix
+  # Rule (PLAN.md Step 0.4): axis 1 is spring temperature increasing to the
+  # right, axis 2 summer precipitation increasing upward.
+  stopifnot(identical(rotation$axis_variables, c('MSpT', 'SP')), rotated['MSpT', 1] > 0, rotated['SP', 2] > 0)
+  readr::write_csv(tibble::tibble(angle_degrees = rotation$angle_degrees,
+    axis_1 = rotation$axis_variables[1], axis_2 = rotation$axis_variables[2],
+    m11 = rotation$matrix[1, 1], m21 = rotation$matrix[2, 1], m12 = rotation$matrix[1, 2], m22 = rotation$matrix[2, 2],
+    MSpT_axis1 = rotated['MSpT', 1], MSpT_axis2 = rotated['MSpT', 2],
+    SP_axis1 = rotated['SP', 1], SP_axis2 = rotated['SP', 2]), out('cca_display_rotation.csv'))
+  invisible(rotation)
+}

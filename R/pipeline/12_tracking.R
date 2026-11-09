@@ -28,6 +28,19 @@ ac=bundle$reference$modern_endpoints |> calculate_tracking_metrics() |>
     relationship='many-to-one') |> select(-fire_plot_key)
 if(anyNA(ac$burned)) stop('Missing modern plot fire assignment')
 a=ac |> select(all_of(anthropocene_model_columns()))
+# Rule (PLAN.md Step 0.5): the display rotation changes no metric. Rotate every
+# endpoint with the figure rotation, recompute, and compare.
+source(here('R/helpers/cca_display_rotation.R'),local=TRUE)
+rotation=cca_display_rotation(scores(bundle$reference$model,display='bp',choices=1:2,scaling='sites',hill=FALSE))
+rotation_check=function(x) {
+  r=x
+  for(p in list(c('o1','o2'),c('o1_2','o2_2'),c('p1','p2'),c('p1_2','p2_2'))) r=rotate_columns(r,rotation,p[1],p[2])
+  r=calculate_tracking_metrics(r)
+  m=c('lag_t1','lag_t2','change_in_lag','lag_rate_per_century','observed_turnover_rate',
+    'pace_effect_on_lag_per_century','direction_effect_on_lag_per_century','angle_degrees')
+  max(abs(as.matrix(r[m])-as.matrix(x[m])),na.rm=TRUE)
+}
+stopifnot(rotation_check(hc)<1e-9,rotation_check(ac)<1e-9)
 write_csv(ac,out('cca_tracking_anthropocene_plot_calculations.csv'))
 write_csv(a,out('cca_tracking_anthropocene_plot_model_input.csv'))
 stopifnot(nrow(a)==607L,!anyDuplicated(a[c('site','plot_id')]),nrow(ac)==607L,

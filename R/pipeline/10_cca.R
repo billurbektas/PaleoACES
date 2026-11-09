@@ -625,4 +625,9 @@ if (count.thr == CCA_COUNT_THRESHOLD && !length(extra_exclude) && !nzchar(cca_su
   # Summary, axes, permutation tests and contributions for the report.
   source(here('R/helpers/cca_report.R'), local = TRUE)
   cca_report_tables(environment())
+  # Step 0: screening of the constraint sets and the display rotation.
+  # Rule: a two-variable CCA has exactly two constrained axes.
+  stopifnot(nrow(species_past_final) == 607L, length(cca_model$CCA$eig) == 2L)
+  cca_screening_tables(environment())
+  cca_rotation_table(environment())
 }

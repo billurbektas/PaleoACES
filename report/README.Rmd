@@ -57,12 +57,78 @@ is finished.
 
 | Step | What it does | Result |
 |---|---|---|
-| Step 0 | Climate variables and CCA refit | (pending) |
+| Step 0 | Climate variables and CCA refit | `r sprintf('MSpT + SP: VIF %.2f, adjusted R² %.3f (all four %.3f), no lake-century outside the calibration climate, display rotation %.1f°', max(read_output("cca_screening.csv")$VIF[read_output("cca_screening.csv")$set == "MSpT + SP"]), read_output("cca_screening.csv")$adjusted_R2[read_output("cca_screening.csv")$set == "MSpT + SP"][1], read_output("cca_screening.csv")$adjusted_R2[1], read_output("cca_display_rotation.csv")$angle_degrees)` |
 | Step 1 | Climate periods and lake-periods | (pending) |
 | Steps 2 to 4 | Mismatch, lag, turnover, pace, direction, climate change rate and fire per lake-period | (pending) |
 | Step 5 | Holocene explanatory models | (pending) |
 | Step 5a | Holocene against Anthropocene (era models) | (pending) |
 | Step 6 | Species contributions | (pending) |
+
+# Step 0. Climate variables and the CCA
+
+**What and why.** The four seasonal variables come in two tightly linked pairs: spring and winter
+temperature, and summer and winter precipitation. Inside a pair the CCA cannot tell the two
+seasons apart, and Holocene lakes reach seasonal combinations the modern plots never show. The CCA
+is therefore constrained by one variable of each pair. Spring temperature (MSpT) stands for
+snowmelt timing and the start of the growing season. Summer precipitation (SP) stands for summer
+drying stress. Because each pair is strongly correlated, the two also carry temperature and
+precipitation change in general.
+
+**Decisions.**
+
+- 9 Nov 2026 (Bills, `PLAN.md` row 0): constrain the CCA by MSpT and SP, first proposed as MWT and
+  SP. Rerun everything downstream. Rotate the figures only and keep every table unrotated.
+- 9 Nov 2026 (taken in the run): a Holocene lake-century counts as extrapolated when its
+  Mahalanobis distance from the calibration plots exceeds the 99th percentile of the plots' own
+  distances, for the variables of that set. All 111 century slices of each lake's climate series
+  are screened.
+- 9 Nov 2026 (taken in the run): the adjusted R² of each set is vegan's permutation estimate
+  (1,000 permutations, seeded). The add-back test compares the nested fits with 9,999
+  permutations, unrestricted and within parks.
+
+**Model code.**
+
+```{r step0-code}
+code_snippet('R/pipeline/10_cca.R', 'cca-fit')
+```
+
+**Result.**
+
+```{r step0-screening}
+screening = read_output('cca_screening.csv')
+screening |> group_by(set) |> summarise(Variables = gsub(';', ', ', first(variables)),
+    `Largest abs. correlation` = first(max_abs_correlation),
+    `VIF` = paste(sprintf('%s %.1f', variable, VIF), collapse = ', '),
+    `R²` = first(R2), `Adjusted R²` = first(adjusted_R2),
+    `MORA lake-centuries outside (%)` = 100 * first(extrapolated_share_MORA),
+    `NOCA lake-centuries outside (%)` = 100 * first(extrapolated_share_NOCA), .groups = 'drop') |>
+  arrange(match(set, c('All four', 'MWT + SP', 'MSpT + SP'))) |> rename(Set = set) |>
+  show_table('step0_screening', caption = sprintf(paste('**Screening of the climate constraints** on the %d',
+    'legacy calibration plots. Holocene lake-centuries: %d at MORA (three lakes) and %d at NOCA.'),
+    screening$n_plots[1], screening$holocene_lake_centuries_MORA[1], screening$holocene_lake_centuries_NOCA[1]))
+addback = read_output('cca_screening_addback.csv')
+rotation = read_output('cca_display_rotation.csv')
+```
+
+With MSpT and SP the CCA explains `r sprintf('%.1f%%', 100 * screening$adjusted_R2[screening$set == 'MSpT + SP'][1])`
+of the variation in composition (adjusted R²), against
+`r sprintf('%.1f%%', 100 * screening$adjusted_R2[screening$set == 'All four'][1])` with all four
+variables. Adding winter temperature and winter precipitation back improves the fit
+(pseudo-F `r sprintf('%.2f', addback$pseudo_F[1])`, p = `r sprintf('%.4f', addback$p_value[addback$design == 'Unrestricted'])`
+unrestricted and p = `r sprintf('%.4f', addback$p_value[addback$design == 'Within parks'])` within parks).
+That gain comes from the seasonal contrasts within each pair, the same contrasts that make the
+four-variable fit collinear (VIF up to `r sprintf('%.1f', max(screening$VIF[screening$set == 'All four']))`)
+and that place `r sprintf('%.0f%%', 100 * screening$extrapolated_share_MORA[screening$set == 'All four'][1])`
+of the MORA lake-centuries outside the calibration climate. With MSpT and SP no lake-century in
+either park is outside it. The display rotation turns the plane by
+`r sprintf('%.1f', rotation$angle_degrees)` degrees so that rotated axis 1 is spring temperature
+increasing to the right and rotated axis 2 summer precipitation increasing upward. The pipeline
+asserts that mismatch, lag, turnover, pace and direction are identical before and after this rotation.
+
+Stages and helpers: [`R/pipeline/10_cca.R`](R/pipeline/10_cca.R),
+[`R/helpers/cca_report.R`](R/helpers/cca_report.R) (screening and add-back test),
+[`R/helpers/cca_display_rotation.R`](R/helpers/cca_display_rotation.R),
+[`R/pipeline/12_tracking.R`](R/pipeline/12_tracking.R) (rotation check). Figure 3 is drawn in M08.
 
 # Figure 1. Conceptual framework
 
