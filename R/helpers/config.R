@@ -2,10 +2,17 @@
 # Output and figure locations: out() and fig() from R/helpers/paths.R.
 source(here::here('R/helpers/paths.R'), local = TRUE)
 CCA_COUNT_THRESHOLD = 20L
-# Active CCA constraints, ordered by ecological interpretation. These are
-# seasonal climate correlates, not direct GDD, FDD, dryness, or snowpack:
-# warmer MWT implies less freezing exposure and greater SP implies less dryness.
-CCA_VARIABLES = c("MSpT", "MWT", "SP", "WP")
+# Active CCA constraints (decision 2026-11-09, report/details/10_decisions.md):
+# spring temperature and summer precipitation, one temperature and one
+# precipitation variable. The former four (MSpT, MWT, SP, WP) had variance
+# inflation factors near 30 for the two temperatures, whose separate
+# coefficients were not identifiable; MSpT is the temperature that changes most
+# through the Holocene. These are seasonal climate correlates, not direct
+# growing-degree or drought indices.
+CCA_VARIABLES = c("MSpT", "SP")
+# Figures show the CCA plane rotated (varimax, display only) so that the
+# temperature and precipitation arrows lie along the two axes.
+CCA_DISPLAY_ROTATION = TRUE
 CLIMATE_VARIABLE_LABELS = c(
   MAT = "Annual temperature", MSpT = "Spring temperature",
   MST = "Summer temperature", MWT = "Winter temperature",

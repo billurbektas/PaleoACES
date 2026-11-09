@@ -175,7 +175,7 @@ classify_climate_era_union = function(site_cells, calibration_scaling,
     dplyr::summarise(n_variables = dplyr::n_distinct(.data$variable),
                      all_complete = all(.data$complete_phase_coverage),
                      .groups = "drop") |>
-    dplyr::filter(.data$n_variables == 4L, .data$all_complete) |>
+    dplyr::filter(.data$n_variables == dplyr::n_distinct(variable_cells$variable), .data$all_complete) |>
     dplyr::pull(.data$t)
 
   era_grid = variable_cells |>
@@ -341,8 +341,8 @@ calculate_climate_composite = function(site_standardized) {
       n_variables = dplyr::n_distinct(.data$variable),
       composite_magnitude = sqrt(sum(.data$standardized_signed_change^2)),
       .groups = "drop")
-  if (any(site_phase$n_variables != 4L))
-    stop("Composite climate magnitude requires four variables.")
+  if (dplyr::n_distinct(site_phase$n_variables) != 1L)
+    stop("Composite climate magnitude requires every variable at every phase.")
   regional_phase = site_phase |>
     dplyr::select("site", "t", "offset", "composite_magnitude") |>
     tidyr::pivot_wider(names_from = "site",

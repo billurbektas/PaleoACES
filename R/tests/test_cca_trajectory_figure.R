@@ -25,7 +25,7 @@ for (site_name in c("MORA", "NOCA")) for (survey in c("legacy", "resurvey")) {
             max(abs(as.numeric(row[c("o1", "o2", "p1", "p2")]) -
                       vapply(x[fields], mean, numeric(1)))) < 1e-12)
 }
-eras = c("CC1", "S1", "CC2", "S2", "CC3", "S3", "CC4", "S4")
+eras = read_csv(out("holocene_era_catalog.csv"), show_col_types = FALSE)$era_id
 stopifnot(
   setequal(centroids$site, c("MORA", "NOCA")),
   all(centroids$era_id %in% eras),
@@ -52,7 +52,7 @@ for(i in seq_len(nrow(centroids))) {
 labels=read_csv(out("figures/cca_figure_biplot_annotations.csv"),show_col_types=FALSE)
 sp=read_csv(out("cca_species_contributions.csv"),show_col_types=FALSE)
 cl=read_csv(out("cca_climate_contributions.csv"),show_col_types=FALSE)
-stopifnot(nrow(labels)==18L,!anyDuplicated(labels$name),all(is.finite(labels$share_pct)),
+stopifnot(nrow(labels)==14L+length(CCA_VARIABLES),!anyDuplicated(labels$name),all(is.finite(labels$share_pct)),
   setequal(labels$name, c(sp$species,cl$variable)))
 ls=labels |> filter(component=='Species') |> arrange(name)
 sp=arrange(sp,species)

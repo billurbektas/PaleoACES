@@ -86,8 +86,8 @@ show_figure('report/figures/supplementary/test_survey_year_anomaly.pdf')
 panels show annual climate variation from CHELSA v2.1 (1979–2021), averaged across the paired
 vegetation plots at Mount Rainier (MORA, blue) and North Cascades (NOCA, orange) National Parks.
 Variables include mean annual temperature (MAT), annual precipitation (AP), and the four seasonal
-variables used in the CCA: mean spring temperature (MSpT), mean winter temperature (MWT), summer
-precipitation (SP), and winter precipitation (WP). Shaded areas indicate the common legacy climate
+seasonal variables mean spring temperature (MSpT), mean winter temperature (MWT), summer
+precipitation (SP), and winter precipitation (WP); MSpT and SP constrain the CCA. Shaded areas indicate the common legacy climate
 window (1979–1989). Lower panels show the six-year climate windows used for each resurvey year
 (Y−5 through Y), together with the number of paired plots (n) surveyed in that year. Winter
 calculations also included December of the preceding calendar year. Climate conditions were
@@ -107,9 +107,14 @@ summer (SP), and winter (WP) precipitation. Spring corresponds to March–May, s
 and winter to December–February.
 
 **Choice of CCA constraints.** Candidate variables are screened by their correlations (Fig. S4)
-and by their variance inflation in the fitted CCA. Collinear seasonal variables load on the same
-axis and their individual coefficients are not identifiable. The constraints of this build and
-their inflation factors:
+and by their variance inflation in the fitted CCA, keeping one temperature and one precipitation
+variable. With the four seasonal variables MSpT, MWT, SP and WP, the two temperatures had variance
+inflation factors near 30 and opposite-signed coefficients that are not identifiable. The CCA is
+therefore constrained by spring temperature, the temperature that changes most through the
+Holocene, and summer precipitation. Figures in the CCA plane are rotated rigidly by the varimax
+angle so that the two arrows lie along the axes; distances and angles, and therefore every
+tracking metric, are unchanged by the rotation (decision of 2026-11-09 in
+`r details_link('10_decisions', 'Decisions')`). The constraints of this build:
 
 ```{r cca-vif}
 read_output('cca_climate_contributions.csv') |>

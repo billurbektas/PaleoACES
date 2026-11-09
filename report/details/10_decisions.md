@@ -245,10 +245,9 @@ The detailed evidence and publication links are in the
 - Modern plots use CHELSA V2.1. Paleo samples use native CHELSA-TraCE21k pond
   climate matched to sample age. Raw TraCE21k is current; stationary V2.1-anchor
   correction remains an unresolved sensitivity.
-- The active constraints are spring temperature (`MSpT`), winter temperature
-  (`MWT`), summer precipitation (`SP`), and winter precipitation (`WP`). They are
-  seasonal correlates of growing energy, freezing exposure, summer dryness, and
-  snowpack—not direct GDD, FDD, fire, soil-moisture, or snowpack measurements.
+- The active constraints are spring temperature (`MSpT`) and summer
+  precipitation (`SP`), decided 2026-11-09 (below). They are seasonal climate
+  correlates, not direct growing-degree, drought, fire or snowpack measurements.
 - The pooled CCA is calibrated on 607 matched legacy plots and 14 retained species.
   Vegan site/scaling 1 is retained because downstream metrics use Euclidean
   sample-score distances. The model positions 1,514 of 1,599 modern and paleo
@@ -265,6 +264,33 @@ The detailed evidence and publication links are in the
 - Being inside each climate variable's legacy range does not establish support
   within the joint multivariate calibration domain. LC positions are
   climate-predicted ordination scores, not independently validated forecasts.
+
+### CCA constraints: spring temperature and summer precipitation — decided 2026-11-09
+
+- **Before:** four constraints, `MSpT`, `MWT`, `SP` and `WP`. The two temperatures
+  had variance inflation factors of 29.5 (`MSpT`) and 26.4 (`MWT`): they load on
+  the same direction and their separate coefficients (opposite-signed on CCA2)
+  were not identifiable. Precipitation showed the same pattern to a lesser degree.
+- **Rule for choosing constraints:** screen candidates by their correlations in
+  both eras (Fig. S4) and by their variance inflation in the fitted CCA; keep one
+  temperature and one precipitation variable.
+- **Choice:** `MSpT` + `SP`. Spring temperature is the temperature variable that
+  changes most through the Holocene; summer precipitation represents summer
+  dryness. With these two the VIF is 1.08, the constrained inertia 12.8% of the
+  total (13.3% with four), and both terms are significant in unrestricted and
+  within-park permutation tests. `MWT` + `SP` fitted almost identically (13.0%);
+  the median Holocene lag at MORA depends on which season's temperature is used,
+  which is reported as a limitation, not hidden.
+- **Climate eras** are classified from the CCA constraints, so they follow the
+  change: the former CC1 (9600–7200 cal BP), previously split by a one-driver
+  trough into CC1a–c, is now CC1, a stability era S1 (8600–8200) and CC2. All
+  later boundaries are unchanged; eras are renumbered CC1–CC5 and S1–S5.
+- **Display rotation:** figures in the CCA plane are rotated rigidly by the
+  varimax angle (Kaiser 1958; −23.4°) so that the temperature and precipitation
+  arrows lie along the two axes (`R/helpers/cca_display_rotation.R`). A rigid
+  rotation preserves every distance and angle, so no tracking metric, model or
+  table changes; the rotated axes are labelled as such because they are not
+  ordered by eigenvalue and are slightly correlated.
 
 <a id="lake-tracking-metrics"></a>
 
@@ -394,8 +420,8 @@ fit and coefficient table retain the original metre unit.
 ## Unified 1,000-year climate eras
 
 - `R/pipeline/11_climate_eras_high_fire.R` is the sole Holocene era authority. It
-  derives adjacent complete 1,000-year changes from the four native pond
-  trajectories and uses ten 100-year bin phases. Fixed climate windows contain
+  derives adjacent complete 1,000-year changes of the CCA constraints from the
+  four native pond trajectories and uses ten 100-year bin phases. Fixed climate windows contain
   no Bacon chronology draws; phase spread is placement sensitivity, not
   ecological replication or full paleoclimate uncertainty.
 - Signed changes in `MSpT`, `MWT`, `SP`, and `WP` are divided by the pooled

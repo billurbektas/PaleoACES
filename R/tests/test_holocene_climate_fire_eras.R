@@ -38,7 +38,7 @@ stopifnot(
       cells$phase_direction_support <= 10L),
   !any(c("site_divergent", "transition", "forward_extension") %in% names(cells)),
   identical(range(era_grid$t), c(1300, 9500)),
-  nrow(eras) == 8L)
+  nrow(eras) == 10L)
 
 # Recalculate the regional medians, phase support, and any-variable union.
 recalc = phase |>
@@ -59,40 +59,31 @@ stopifnot(identical(
   era_grid |> arrange(t) |> pull(era_class),
   union_check |> arrange(t) |> pull(class_check)))
 
+# Regression: the eras classified from the MSpT + SP constraints (2026-11-09).
 expected = tribble(
   ~era_id, ~era_class, ~older_cal_bp, ~younger_cal_bp,
-  "CC1", "climate change", 9600, 7200,
-  "S1", "relative stability", 7200, 6800,
-  "CC2", "climate change", 6800, 6200,
-  "S2", "relative stability", 6200, 5400,
-  "CC3", "climate change", 5400, 4900,
-  "S3", "relative stability", 4900, 2200,
-  "CC4", "climate change", 2200, 1700,
-  "S4", "relative stability", 1700, 1300)
+  "CC1", "climate change", 9600, 8600,
+  "S1", "relative stability", 8600, 8200,
+  "CC2", "climate change", 8200, 7200,
+  "S2", "relative stability", 7200, 6800,
+  "CC3", "climate change", 6800, 6200,
+  "S3", "relative stability", 6200, 5400,
+  "CC4", "climate change", 5400, 4900,
+  "S4", "relative stability", 4900, 2200,
+  "CC5", "climate change", 2200, 1700,
+  "S5", "relative stability", 1700, 1300)
 stopifnot(isTRUE(all.equal(
   eras |> select(era_id, era_class, older_cal_bp, younger_cal_bp) |>
     arrange(desc(older_cal_bp)), expected, check.attributes = FALSE)),
   all(drivers$direction %in% c("increasing", "decreasing")))
 
-# CC1 is split by the only sustained internal minimum-driver trough. Driver
-# labels require >=60% cell coverage, so short boundary overlaps do not rename
-# the early, transition, or late portions.
-expected_cc1_subphases = tribble(
-  ~subphase_id, ~phase_role, ~older_cal_bp, ~younger_cal_bp,
-  "CC1a", "early multi-driver", 9600, 8600,
-  "CC1b", "transition",         8600, 8200,
-  "CC1c", "late multi-driver",  8200, 7200)
+# No climate-change era contains a sustained internal driver trough, so none is
+# split; driver labels require >=60% cell coverage.
 stopifnot(
-  identical(subphases |> filter(parent_era_id == "CC1") |>
-      select(subphase_id, phase_role, older_cal_bp, younger_cal_bp),
-    expected_cc1_subphases),
-  identical(subphases$subphase_id,
-    c("CC1a", "CC1b", "CC1c", "CC2", "CC3", "CC4")),
-  identical(subphases$active_driver_labels[1:3], c(
-    "spring cooling;winter warming;summer drying",
-    "winter wetting",
-    "spring warming;winter warming;summer wetting")),
-  subphases$trough_n_active[subphases$subphase_id == "CC1b"] == 1L,
+  identical(subphases$subphase_id, c("CC1", "CC2", "CC3", "CC4", "CC5")),
+  all(subphases$phase_role == "unsplit"),
+  identical(subphases$active_driver_labels[1:2], c(
+    "spring cooling;summer drying", "spring warming;summer wetting")),
   all(subphases$driver_coverage_rule == 0.60))
 
 # Raw-rate table uses equal-site Holocene physical changes and the plot-level
@@ -104,17 +95,17 @@ rate_holo_check = phase |>
   group_by(variable) |>
   slice_max(abs(raw_rate), n = 1, with_ties = FALSE) |>
   ungroup() |>
-  arrange(match(variable, c("MSpT", "MWT", "SP", "WP")))
+  arrange(match(variable, CCA_VARIABLES))
 rate_anthro_check = anthropocene_climate |>
   select(plot_id, site,
-    all_of(paste0(c("MSpT", "MWT", "SP", "WP"), "_rate_per_century"))) |>
+    all_of(paste0(CCA_VARIABLES, "_rate_per_century"))) |>
   pivot_longer(ends_with("_rate_per_century"), names_to = "variable",
     values_to = "rate") |>
   mutate(variable = str_remove(variable, "_rate_per_century$")) |>
   group_by(variable, site) |>
   summarise(rate = median(rate), .groups = "drop") |>
   pivot_wider(names_from = site, values_from = rate) |>
-  arrange(match(variable, c("MSpT", "MWT", "SP", "WP")))
+  arrange(match(variable, CCA_VARIABLES))
 stopifnot(
   isTRUE(all.equal(rate_comparison$holocene_max_signed_rate_per_century,
     rate_holo_check$raw_rate)),

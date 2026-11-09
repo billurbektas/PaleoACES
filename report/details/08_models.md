@@ -28,21 +28,21 @@ for comparison.
 
 | Response | Covariance | n | AIC | Δ AIC | Correlation parameter | Status | Selected |
 |:---|:---|---:|---:|---:|---:|:---|:---|
-| direction_effect_on_lag_per_century | Independent | 817 | 2395.57 | 26.83 | — | positive_definite | FALSE |
-| direction_effect_on_lag_per_century | MA1 | 817 | 2368.74 | 0.00 | -0.40 | positive_definite | TRUE |
-| direction_effect_on_lag_per_century | CAR1 | 817 | 2397.57 | 28.83 | 0.00 | Non-positive definite approximate variance-covariance | FALSE |
-| lag_rate_per_century | Independent | 817 | 2393.15 | 63.31 | — | positive_definite | FALSE |
-| lag_rate_per_century | MA1 | 817 | 2329.84 | 0.00 | -0.77 | positive_definite | TRUE |
-| lag_rate_per_century | CAR1 | 817 | 2395.15 | 65.31 | 0.00 | Non-positive definite approximate variance-covariance | FALSE |
-| observed_turnover_rate | Independent | 817 | 1841.52 | 11.34 | — | positive_definite | FALSE |
-| observed_turnover_rate | MA1 | 817 | 1830.18 | 0.00 | 0.23 | positive_definite | TRUE |
-| observed_turnover_rate | CAR1 | 817 | 1830.20 | 0.02 | 0.28 | positive_definite | FALSE |
-| pace_effect_on_lag_per_century | Independent | 651 | 1383.61 | 6.55 | — | positive_definite | FALSE |
-| pace_effect_on_lag_per_century | MA1 | 651 | 1377.06 | 0.00 | -0.25 | positive_definite | TRUE |
-| pace_effect_on_lag_per_century | CAR1 | 651 | 1385.61 | 8.55 | 0.00 | Non-positive definite approximate variance-covariance | FALSE |
-| standardized_climate_change_rate | Independent | 817 | 1580.01 | 20.44 | — | positive_definite | FALSE |
-| standardized_climate_change_rate | MA1 | 817 | 1559.57 | 0.00 | 0.29 | positive_definite | TRUE |
-| standardized_climate_change_rate | CAR1 | 817 | 1562.90 | 3.33 | 0.37 | positive_definite | FALSE |
+| direction_effect_on_lag_per_century | Independent | 817 | 2285.18 | 23.22 | — | positive_definite | FALSE |
+| direction_effect_on_lag_per_century | MA1 | 817 | 2261.96 | 0.00 | -0.38 | positive_definite | TRUE |
+| direction_effect_on_lag_per_century | CAR1 | 817 | 2287.18 | 25.22 | 0.00 | positive_definite | FALSE |
+| lag_rate_per_century | Independent | 817 | 2177.33 | 59.08 | — | positive_definite | FALSE |
+| lag_rate_per_century | MA1 | 817 | 2118.25 | 0.00 | -0.71 | positive_definite | TRUE |
+| lag_rate_per_century | CAR1 | 817 | 2179.33 | 61.08 | 0.00 | Non-positive definite approximate variance-covariance | FALSE |
+| observed_turnover_rate | Independent | 817 | 1840.38 | 11.71 | — | positive_definite | FALSE |
+| observed_turnover_rate | MA1 | 817 | 1829.33 | 0.66 | 0.22 | positive_definite | TRUE |
+| observed_turnover_rate | CAR1 | 817 | 1828.68 | 0.00 | 0.28 | positive_definite | FALSE |
+| pace_effect_on_lag_per_century | Independent | 651 | 1311.52 | 24.02 | — | positive_definite | FALSE |
+| pace_effect_on_lag_per_century | MA1 | 651 | 1287.50 | 0.00 | -0.47 | positive_definite | TRUE |
+| pace_effect_on_lag_per_century | CAR1 | 651 | 1313.52 | 26.02 | 0.00 | Non-positive definite approximate variance-covariance | FALSE |
+| standardized_climate_change_rate | Independent | 817 | 1620.39 | 18.05 | — | positive_definite | FALSE |
+| standardized_climate_change_rate | MA1 | 817 | 1602.34 | 0.00 | 0.30 | positive_definite | TRUE |
+| standardized_climate_change_rate | CAR1 | 817 | 1609.62 | 7.27 | 0.29 | positive_definite | FALSE |
 
 <sub>Table file:
 [covariance_comparison.csv](../tables/covariance_comparison.csv)</sub>
@@ -54,26 +54,26 @@ for comparison.
 
 | Response | Site | Era | Estimate | SE | 95% CI low | 95% CI high | n |
 |:---|:---|:---|---:|---:|---:|---:|---:|
-| direction_effect_on_lag_per_century | MORA | Holocene | -0.018 | 0.016 | -0.050 | 0.015 | 103 |
-| direction_effect_on_lag_per_century | MORA | Anthropocene | 0.269 | 0.060 | 0.151 | 0.386 | 330 |
-| direction_effect_on_lag_per_century | NOCA | Holocene | -0.040 | 0.018 | -0.077 | -0.002 | 107 |
-| direction_effect_on_lag_per_century | NOCA | Anthropocene | -0.371 | 0.144 | -0.654 | -0.087 | 277 |
-| lag_rate_per_century | MORA | Holocene | -0.005 | 0.005 | -0.016 | 0.006 | 103 |
-| lag_rate_per_century | MORA | Anthropocene | 0.568 | 0.068 | 0.433 | 0.703 | 330 |
-| lag_rate_per_century | NOCA | Holocene | -0.003 | 0.006 | -0.018 | 0.011 | 107 |
-| lag_rate_per_century | NOCA | Anthropocene | -0.106 | 0.134 | -0.370 | 0.159 | 277 |
-| observed_turnover_rate | MORA | Holocene | 0.179 | 0.020 | 0.140 | 0.219 | 103 |
-| observed_turnover_rate | MORA | Anthropocene | 0.930 | 0.046 | 0.841 | 1.020 | 330 |
-| observed_turnover_rate | NOCA | Holocene | 0.287 | 0.020 | 0.247 | 0.326 | 107 |
-| observed_turnover_rate | NOCA | Anthropocene | 2.125 | 0.115 | 1.898 | 2.352 | 277 |
-| pace_effect_on_lag_per_century | MORA | Holocene | 0.001 | 0.011 | -0.021 | 0.024 | 79 |
-| pace_effect_on_lag_per_century | MORA | Anthropocene | 0.034 | 0.048 | -0.061 | 0.128 | 254 |
-| pace_effect_on_lag_per_century | NOCA | Holocene | -0.006 | 0.013 | -0.032 | 0.020 | 107 |
-| pace_effect_on_lag_per_century | NOCA | Anthropocene | -0.262 | 0.150 | -0.558 | 0.034 | 211 |
-| standardized_climate_change_rate | MORA | Holocene | 0.225 | 0.016 | 0.193 | 0.258 | 103 |
-| standardized_climate_change_rate | MORA | Anthropocene | 5.260 | 0.044 | 5.173 | 5.346 | 330 |
-| standardized_climate_change_rate | NOCA | Holocene | 0.273 | 0.013 | 0.247 | 0.300 | 107 |
-| standardized_climate_change_rate | NOCA | Anthropocene | 3.644 | 0.094 | 3.458 | 3.831 | 277 |
+| direction_effect_on_lag_per_century | MORA | Holocene | 0.016 | 0.012 | -0.009 | 0.041 | 103 |
+| direction_effect_on_lag_per_century | MORA | Anthropocene | 0.265 | 0.065 | 0.137 | 0.394 | 330 |
+| direction_effect_on_lag_per_century | NOCA | Holocene | -0.071 | 0.019 | -0.109 | -0.033 | 107 |
+| direction_effect_on_lag_per_century | NOCA | Anthropocene | -0.201 | 0.121 | -0.439 | 0.037 | 277 |
+| lag_rate_per_century | MORA | Holocene | 0.015 | 0.004 | 0.007 | 0.023 | 103 |
+| lag_rate_per_century | MORA | Anthropocene | 0.543 | 0.061 | 0.424 | 0.663 | 330 |
+| lag_rate_per_century | NOCA | Holocene | -0.007 | 0.005 | -0.020 | 0.005 | 107 |
+| lag_rate_per_century | NOCA | Anthropocene | -0.082 | 0.141 | -0.359 | 0.196 | 277 |
+| observed_turnover_rate | MORA | Holocene | 0.176 | 0.020 | 0.136 | 0.215 | 103 |
+| observed_turnover_rate | MORA | Anthropocene | 0.932 | 0.045 | 0.843 | 1.022 | 330 |
+| observed_turnover_rate | NOCA | Holocene | 0.291 | 0.020 | 0.251 | 0.331 | 107 |
+| observed_turnover_rate | NOCA | Anthropocene | 2.130 | 0.115 | 1.905 | 2.356 | 277 |
+| pace_effect_on_lag_per_century | MORA | Holocene | 0.014 | 0.007 | 0.000 | 0.028 | 79 |
+| pace_effect_on_lag_per_century | MORA | Anthropocene | 0.167 | 0.047 | 0.075 | 0.260 | 254 |
+| pace_effect_on_lag_per_century | NOCA | Holocene | 0.006 | 0.008 | -0.011 | 0.024 | 107 |
+| pace_effect_on_lag_per_century | NOCA | Anthropocene | -0.272 | 0.143 | -0.554 | 0.010 | 211 |
+| standardized_climate_change_rate | MORA | Holocene | 0.148 | 0.013 | 0.122 | 0.173 | 103 |
+| standardized_climate_change_rate | MORA | Anthropocene | 2.596 | 0.046 | 2.505 | 2.687 | 330 |
+| standardized_climate_change_rate | NOCA | Holocene | 0.171 | 0.011 | 0.149 | 0.193 | 107 |
+| standardized_climate_change_rate | NOCA | Anthropocene | 2.715 | 0.115 | 2.488 | 2.942 | 277 |
 
 <sub>Table file:
 [era_group_means.csv](../tables/era_group_means.csv)</sub>
@@ -82,26 +82,26 @@ for comparison.
 
 | Response | Term | Estimate | SE | p | 95% CI low | 95% CI high |
 |:---|:---|---:|---:|---:|---:|---:|
-| direction_effect_on_lag_per_century | (Intercept) | -0.018 | 0.016 | 0.257 | -0.049 | 0.013 |
-| direction_effect_on_lag_per_century | eraAnthropocene | 0.286 | 0.062 | 0.000 | 0.165 | 0.408 |
-| direction_effect_on_lag_per_century | siteNOCA | -0.022 | 0.024 | 0.362 | -0.070 | 0.025 |
-| direction_effect_on_lag_per_century | eraAnthropocene:siteNOCA | -0.617 | 0.158 | 0.000 | -0.927 | -0.308 |
-| lag_rate_per_century | (Intercept) | -0.005 | 0.005 | 0.328 | -0.014 | 0.005 |
-| lag_rate_per_century | eraAnthropocene | 0.573 | 0.069 | 0.000 | 0.438 | 0.708 |
-| lag_rate_per_century | siteNOCA | 0.001 | 0.008 | 0.855 | -0.014 | 0.017 |
-| lag_rate_per_century | eraAnthropocene:siteNOCA | -0.675 | 0.151 | 0.000 | -0.971 | -0.379 |
-| observed_turnover_rate | (Intercept) | 0.179 | 0.020 | 0.000 | 0.141 | 0.218 |
-| observed_turnover_rate | eraAnthropocene | 0.751 | 0.050 | 0.000 | 0.653 | 0.848 |
-| observed_turnover_rate | siteNOCA | 0.107 | 0.028 | 0.000 | 0.052 | 0.162 |
-| observed_turnover_rate | eraAnthropocene:siteNOCA | 1.088 | 0.127 | 0.000 | 0.838 | 1.337 |
-| pace_effect_on_lag_per_century | (Intercept) | 0.001 | 0.011 | 0.909 | -0.021 | 0.023 |
-| pace_effect_on_lag_per_century | eraAnthropocene | 0.032 | 0.049 | 0.514 | -0.065 | 0.129 |
-| pace_effect_on_lag_per_century | siteNOCA | -0.007 | 0.017 | 0.665 | -0.041 | 0.026 |
-| pace_effect_on_lag_per_century | eraAnthropocene:siteNOCA | -0.288 | 0.159 | 0.070 | -0.600 | 0.024 |
-| standardized_climate_change_rate | (Intercept) | 0.225 | 0.016 | 0.000 | 0.193 | 0.258 |
-| standardized_climate_change_rate | eraAnthropocene | 5.034 | 0.047 | 0.000 | 4.942 | 5.127 |
-| standardized_climate_change_rate | siteNOCA | 0.048 | 0.021 | 0.024 | 0.006 | 0.090 |
-| standardized_climate_change_rate | eraAnthropocene:siteNOCA | -1.663 | 0.106 | 0.000 | -1.872 | -1.454 |
+| direction_effect_on_lag_per_century | (Intercept) | 0.016 | 0.012 | 0.187 | -0.008 | 0.039 |
+| direction_effect_on_lag_per_century | eraAnthropocene | 0.249 | 0.066 | 0.000 | 0.119 | 0.380 |
+| direction_effect_on_lag_per_century | siteNOCA | -0.087 | 0.022 | 0.000 | -0.131 | -0.043 |
+| direction_effect_on_lag_per_century | eraAnthropocene:siteNOCA | -0.379 | 0.139 | 0.007 | -0.653 | -0.106 |
+| lag_rate_per_century | (Intercept) | 0.015 | 0.004 | 0.000 | 0.008 | 0.023 |
+| lag_rate_per_century | eraAnthropocene | 0.528 | 0.061 | 0.000 | 0.409 | 0.648 |
+| lag_rate_per_century | siteNOCA | -0.022 | 0.007 | 0.001 | -0.035 | -0.009 |
+| lag_rate_per_century | eraAnthropocene:siteNOCA | -0.603 | 0.154 | 0.000 | -0.905 | -0.301 |
+| observed_turnover_rate | (Intercept) | 0.176 | 0.020 | 0.000 | 0.137 | 0.214 |
+| observed_turnover_rate | eraAnthropocene | 0.757 | 0.049 | 0.000 | 0.659 | 0.854 |
+| observed_turnover_rate | siteNOCA | 0.115 | 0.028 | 0.000 | 0.060 | 0.170 |
+| observed_turnover_rate | eraAnthropocene:siteNOCA | 1.083 | 0.126 | 0.000 | 0.835 | 1.331 |
+| pace_effect_on_lag_per_century | (Intercept) | 0.014 | 0.007 | 0.042 | 0.001 | 0.027 |
+| pace_effect_on_lag_per_century | eraAnthropocene | 0.154 | 0.047 | 0.001 | 0.060 | 0.247 |
+| pace_effect_on_lag_per_century | siteNOCA | -0.007 | 0.011 | 0.492 | -0.028 | 0.014 |
+| pace_effect_on_lag_per_century | eraAnthropocene:siteNOCA | -0.432 | 0.151 | 0.004 | -0.728 | -0.135 |
+| standardized_climate_change_rate | (Intercept) | 0.148 | 0.013 | 0.000 | 0.123 | 0.173 |
+| standardized_climate_change_rate | eraAnthropocene | 2.448 | 0.048 | 0.000 | 2.354 | 2.542 |
+| standardized_climate_change_rate | siteNOCA | 0.024 | 0.017 | 0.158 | -0.009 | 0.057 |
+| standardized_climate_change_rate | eraAnthropocene:siteNOCA | 0.095 | 0.125 | 0.448 | -0.151 | 0.341 |
 
 <sub>Table file:
 [era_coefficients.csv](../tables/era_coefficients.csv)</sub>
@@ -130,10 +130,10 @@ park, with the covariance family selected for the combined model.
 
 | metric | model_type | converged | random_intercept_sd | random_intercept_variance | max_abs_coefficient_difference | covariance_status | variance_interval_error | variance_intervals_available | warnings | fit_error |
 |:---|:---|:---|---:|---:|---:|:---|:---|:---|:---|:---|
-| lag_rate_per_century | MA1 | TRUE | 0 | 0 | 0 | Non-positive definite approximate variance-covariance | cannot get confidence intervals on var-cov components: Non-positive definite approximate variance-covariance |  |  |  |
+| lag_rate_per_century | MA1 | TRUE | 0.004 | 0 | 0.001 | positive_definite | — | TRUE | — | — |
+| pace_effect_on_lag_per_century | MA1 | TRUE | 0.000 | 0 | 0.000 | Non-positive definite approximate variance-covariance | cannot get confidence intervals on var-cov components: Non-positive definite approximate variance-covariance |  |  |  |
 | Consider ‘which = “fixed”’ | FALSE | — | — |  |  |  |  |  |  |  |
-| pace_effect_on_lag_per_century | MA1 | TRUE | 0 | 0 | 0 | positive_definite | — | TRUE | — | — |
-| direction_effect_on_lag_per_century | MA1 | TRUE | 0 | 0 | 0 | positive_definite | — | TRUE | — | — |
+| direction_effect_on_lag_per_century | MA1 | TRUE | 0.000 | 0 | 0.000 | positive_definite | — | TRUE | — | — |
 
 <sub>Table file:
 [lake_random_intercept_sensitivity.csv](../tables/lake_random_intercept_sensitivity.csv)</sub>

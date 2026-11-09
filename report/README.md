@@ -37,7 +37,7 @@ in [`report/details/`](details), linked from each section.
 | Rebuild this report | `Rscript R/build_report.R` |
 | Pipeline, every output file | **Outputs and workflow →** [11_outputs_and_workflow](details/11_outputs_and_workflow.md) |
 | Every analytical decision | **Decisions →** [10_decisions](details/10_decisions.md) |
-| CCA constraints in this build | MSpT, MWT, SP, WP |
+| CCA constraints in this build | MSpT, SP |
 
 # Figure 1. Conceptual framework
 
@@ -100,15 +100,15 @@ the Anthropocene.** Upper panels show annual climate variation from
 CHELSA v2.1 (1979–2021), averaged across the paired vegetation plots at
 Mount Rainier (MORA, blue) and North Cascades (NOCA, orange) National
 Parks. Variables include mean annual temperature (MAT), annual
-precipitation (AP), and the four seasonal variables used in the CCA:
-mean spring temperature (MSpT), mean winter temperature (MWT), summer
-precipitation (SP), and winter precipitation (WP). Shaded areas indicate
-the common legacy climate window (1979–1989). Lower panels show the
-six-year climate windows used for each resurvey year (Y−5 through Y),
-together with the number of paired plots (n) surveyed in that year.
-Winter calculations also included December of the preceding calendar
-year. Climate conditions were therefore calculated separately for each
-plot according to its resurvey year.
+precipitation (AP), and the four seasonal seasonal variables mean spring
+temperature (MSpT), mean winter temperature (MWT), summer precipitation
+(SP), and winter precipitation (WP); MSpT and SP constrain the CCA.
+Shaded areas indicate the common legacy climate window (1979–1989).
+Lower panels show the six-year climate windows used for each resurvey
+year (Y−5 through Y), together with the number of paired plots (n)
+surveyed in that year. Winter calculations also included December of the
+preceding calendar year. Climate conditions were therefore calculated
+separately for each plot according to its resurvey year.
 
 <img src="figures/png/climate_holocene_timeseries-p2.png" alt="" width="100%" />
 
@@ -126,16 +126,21 @@ December–February.
 
 **Choice of CCA constraints.** Candidate variables are screened by their
 correlations (Fig. S4) and by their variance inflation in the fitted
-CCA. Collinear seasonal variables load on the same axis and their
-individual coefficients are not identifiable. The constraints of this
-build and their inflation factors:
+CCA, keeping one temperature and one precipitation variable. With the
+four seasonal variables MSpT, MWT, SP and WP, the two temperatures had
+variance inflation factors near 30 and opposite-signed coefficients that
+are not identifiable. The CCA is therefore constrained by spring
+temperature, the temperature that changes most through the Holocene, and
+summer precipitation. Figures in the CCA plane are rotated rigidly by
+the varimax angle so that the two arrows lie along the axes; distances
+and angles, and therefore every tracking metric, are unchanged by the
+rotation (decision of 2026-11-09 in **Decisions →**
+[10_decisions](details/10_decisions.md)). The constraints of this build:
 
-| Variable | Label                |   VIF | CCA1 score | CCA2 score |
-|:---------|:---------------------|------:|-----------:|-----------:|
-| MSpT     | Spring temperature   | 29.50 |      -0.52 |      -0.10 |
-| MWT      | Winter temperature   | 26.35 |      -0.47 |      -0.22 |
-| SP       | Summer precipitation |  5.20 |       0.27 |      -0.33 |
-| WP       | Winter precipitation |  6.70 |       0.32 |      -0.34 |
+| Variable | Label                |  VIF | CCA1 score | CCA2 score |
+|:---------|:---------------------|-----:|-----------:|-----------:|
+| MSpT     | Spring temperature   | 1.08 |       0.53 |      -0.09 |
+| SP       | Summer precipitation | 1.08 |      -0.26 |      -0.34 |
 
 <sub>Table file:
 [cca_constraint_vif.csv](tables/cca_constraint_vif.csv)</sub>
@@ -499,14 +504,16 @@ changes of the CCA climate variables; fire is classified independently
 
 | Era | Class | Older (cal BP) | Younger (cal BP) | Active variables |
 |:---|:---|---:|---:|:---|
-| CC1 | climate change | 9600 | 7200 | spring cooling;spring warming;winter warming;summer drying;summer wetting;winter wetting |
-| S1 | relative stability | 7200 | 6800 | — |
-| CC2 | climate change | 6800 | 6200 | spring cooling |
-| S2 | relative stability | 6200 | 5400 | — |
-| CC3 | climate change | 5400 | 4900 | spring warming |
-| S3 | relative stability | 4900 | 2200 | — |
-| CC4 | climate change | 2200 | 1700 | spring warming |
-| S4 | relative stability | 1700 | 1300 | — |
+| CC1 | climate change | 9600 | 8600 | spring cooling;summer drying |
+| S1 | relative stability | 8600 | 8200 | — |
+| CC2 | climate change | 8200 | 7200 | spring warming;summer wetting |
+| S2 | relative stability | 7200 | 6800 | — |
+| CC3 | climate change | 6800 | 6200 | spring cooling |
+| S3 | relative stability | 6200 | 5400 | — |
+| CC4 | climate change | 5400 | 4900 | spring warming |
+| S4 | relative stability | 4900 | 2200 | — |
+| CC5 | climate change | 2200 | 1700 | spring warming |
+| S5 | relative stability | 1700 | 1300 | — |
 
 <sub>Table file: [climate_eras.csv](tables/climate_eras.csv)</sub>
 
@@ -536,14 +543,12 @@ projected_paleo = predict(cca_model, newdata = species_paleo[, keep_species, dro
                           type = "wa", scaling = cca_scaling, hill = cca_hill)
 ```
 
-**CCA axes.** Constrained inertia: 15.3% of the total.
+**CCA axes.** Constrained inertia: 12.8% of the total.
 
 | Axis | Eigenvalue | % total inertia | % constrained inertia |
 |:-----|-----------:|----------------:|----------------------:|
-| CCA1 |      0.298 |           8.591 |                56.058 |
-| CCA2 |      0.196 |           5.649 |                36.863 |
-| CCA3 |      0.032 |           0.910 |                 5.937 |
-| CCA4 |      0.006 |           0.175 |                 1.142 |
+| CCA1 |      0.293 |           8.442 |                65.829 |
+| CCA2 |      0.152 |           4.382 |                34.171 |
 
 <sub>Table file: [cca_axes.csv](tables/cca_axes.csv)</sub>
 
@@ -552,11 +557,9 @@ within parks).
 
 | Test    | Component |  df | Pseudo-F | p (unrestricted) | p (within parks) |
 |:--------|:----------|----:|---------:|-----------------:|-----------------:|
-| Overall | Model     |   4 |   27.239 |            0.000 |            0.000 |
-| Axis    | CCA1      |   1 |   61.078 |            0.000 |            0.000 |
-| Axis    | CCA2      |   1 |   40.352 |            0.000 |            0.000 |
-| Axis    | CCA3      |   1 |    6.536 |            0.000 |            0.000 |
-| Axis    | CCA4      |   1 |    1.262 |            0.171 |            0.118 |
+| Overall | Model     |   2 |   44.427 |                0 |                0 |
+| Axis    | CCA1      |   1 |   58.492 |                0 |                0 |
+| Axis    | CCA2      |   1 |   30.499 |                0 |                0 |
 
 <sub>Table file:
 [cca_permutation_tests.csv](tables/cca_permutation_tests.csv)</sub>
@@ -691,16 +694,16 @@ reconstruction_correlation = function(type) switch(type,
 
 | Response | Site | Anthropocene − Holocene | SE | 95% CI low | 95% CI high | p | Covariance |
 |:---|:---|---:|---:|---:|---:|---:|:---|
-| direction_effect_on_lag_per_century | MORA | 0.286 | 0.062 | 0.165 | 0.408 | 0.000 | MA1 |
-| direction_effect_on_lag_per_century | NOCA | -0.331 | 0.145 | -0.616 | -0.045 | 0.023 | MA1 |
-| lag_rate_per_century | MORA | 0.573 | 0.069 | 0.438 | 0.708 | 0.000 | MA1 |
-| lag_rate_per_century | NOCA | -0.102 | 0.134 | -0.367 | 0.162 | 0.447 | MA1 |
-| observed_turnover_rate | MORA | 0.751 | 0.050 | 0.653 | 0.848 | 0.000 | MA1 |
-| observed_turnover_rate | NOCA | 1.839 | 0.117 | 1.608 | 2.069 | 0.000 | MA1 |
-| pace_effect_on_lag_per_century | MORA | 0.032 | 0.049 | -0.065 | 0.129 | 0.515 | MA1 |
-| pace_effect_on_lag_per_century | NOCA | -0.256 | 0.151 | -0.553 | 0.041 | 0.091 | MA1 |
-| standardized_climate_change_rate | MORA | 5.034 | 0.047 | 4.942 | 5.127 | 0.000 | MA1 |
-| standardized_climate_change_rate | NOCA | 3.371 | 0.095 | 3.183 | 3.559 | 0.000 | MA1 |
+| direction_effect_on_lag_per_century | MORA | 0.249 | 0.066 | 0.119 | 0.380 | 0.000 | MA1 |
+| direction_effect_on_lag_per_century | NOCA | -0.130 | 0.123 | -0.371 | 0.111 | 0.290 | MA1 |
+| lag_rate_per_century | MORA | 0.528 | 0.061 | 0.409 | 0.648 | 0.000 | MA1 |
+| lag_rate_per_century | NOCA | -0.074 | 0.141 | -0.352 | 0.204 | 0.599 | MA1 |
+| observed_turnover_rate | MORA | 0.757 | 0.049 | 0.659 | 0.854 | 0.000 | MA1 |
+| observed_turnover_rate | NOCA | 1.839 | 0.116 | 1.610 | 2.068 | 0.000 | MA1 |
+| pace_effect_on_lag_per_century | MORA | 0.154 | 0.047 | 0.060 | 0.247 | 0.001 | MA1 |
+| pace_effect_on_lag_per_century | NOCA | -0.278 | 0.143 | -0.560 | 0.004 | 0.054 | MA1 |
+| standardized_climate_change_rate | MORA | 2.448 | 0.048 | 2.354 | 2.543 | 0.000 | MA1 |
+| standardized_climate_change_rate | NOCA | 2.544 | 0.116 | 2.315 | 2.772 | 0.000 | MA1 |
 
 <sub>Table file: [era_contrasts.csv](tables/era_contrasts.csv)</sub>
 

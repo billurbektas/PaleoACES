@@ -118,9 +118,7 @@ regional climate eras, with the Anthropocene plots as boxplots.
 | cca_tracking_holocene_lake_calculations | n_samples_t1 | integer | count / index |
 | cca_tracking_holocene_lake_calculations | n_samples_t2 | integer | count / index |
 | cca_tracking_holocene_lake_calculations | MSpT_2 | numeric | — |
-| cca_tracking_holocene_lake_calculations | MWT_2 | numeric | — |
 | cca_tracking_holocene_lake_calculations | SP_2 | numeric | — |
-| cca_tracking_holocene_lake_calculations | WP_2 | numeric | — |
 | cca_tracking_holocene_lake_calculations | interval_mid_cal_bp | numeric | cal BP |
 | cca_tracking_holocene_lake_calculations | vegetation_dt_years | numeric | years |
 | cca_tracking_holocene_lake_calculations | climate_dt_years | numeric | years |
@@ -162,18 +160,10 @@ regional climate eras, with the Anthropocene plots as boxplots.
 | cca_tracking_holocene_lake_calculations | MSpT_rate_per_century | numeric | CCA distance per century |
 | cca_tracking_holocene_lake_calculations | MSpT_z_change | numeric | — |
 | cca_tracking_holocene_lake_calculations | MSpT_z_rate_per_century | numeric | CCA distance per century |
-| cca_tracking_holocene_lake_calculations | MWT_change | numeric | — |
-| cca_tracking_holocene_lake_calculations | MWT_rate_per_century | numeric | CCA distance per century |
-| cca_tracking_holocene_lake_calculations | MWT_z_change | numeric | — |
-| cca_tracking_holocene_lake_calculations | MWT_z_rate_per_century | numeric | CCA distance per century |
 | cca_tracking_holocene_lake_calculations | SP_change | numeric | — |
 | cca_tracking_holocene_lake_calculations | SP_rate_per_century | numeric | CCA distance per century |
 | cca_tracking_holocene_lake_calculations | SP_z_change | numeric | — |
 | cca_tracking_holocene_lake_calculations | SP_z_rate_per_century | numeric | CCA distance per century |
-| cca_tracking_holocene_lake_calculations | WP_change | numeric | — |
-| cca_tracking_holocene_lake_calculations | WP_rate_per_century | numeric | CCA distance per century |
-| cca_tracking_holocene_lake_calculations | WP_z_change | numeric | — |
-| cca_tracking_holocene_lake_calculations | WP_z_rate_per_century | numeric | CCA distance per century |
 | cca_tracking_holocene_lake_calculations | standardized_climate_displacement | numeric | CCA distance |
 | cca_tracking_holocene_lake_calculations | standardized_climate_change_rate | numeric | standardized climate distance per century |
 | cca_tracking_holocene_lake_calculations | pace_corrected_lag_rate_per_century | numeric | CCA distance per century |
@@ -228,17 +218,13 @@ regional climate eras, with the Anthropocene plots as boxplots.
 | cca_tracking_anthropocene_plot_calculations | p1 | numeric | CCA distance |
 | cca_tracking_anthropocene_plot_calculations | p2 | numeric | CCA distance |
 | cca_tracking_anthropocene_plot_calculations | MSpT | numeric | — |
-| cca_tracking_anthropocene_plot_calculations | MWT | numeric | — |
 | cca_tracking_anthropocene_plot_calculations | SP | numeric | — |
-| cca_tracking_anthropocene_plot_calculations | WP | numeric | — |
 | cca_tracking_anthropocene_plot_calculations | o1_2 | numeric | CCA distance |
 | cca_tracking_anthropocene_plot_calculations | o2_2 | numeric | CCA distance |
 | cca_tracking_anthropocene_plot_calculations | p1_2 | numeric | CCA distance |
 | cca_tracking_anthropocene_plot_calculations | p2_2 | numeric | CCA distance |
 | cca_tracking_anthropocene_plot_calculations | MSpT_2 | numeric | — |
-| cca_tracking_anthropocene_plot_calculations | MWT_2 | numeric | — |
 | cca_tracking_anthropocene_plot_calculations | SP_2 | numeric | — |
-| cca_tracking_anthropocene_plot_calculations | WP_2 | numeric | — |
 | cca_tracking_anthropocene_plot_calculations | site | character | — |
 | cca_tracking_anthropocene_plot_calculations | vegetation_t2_year | numeric | — |
 | cca_tracking_anthropocene_plot_calculations | climate_start | numeric | — |
@@ -285,18 +271,10 @@ regional climate eras, with the Anthropocene plots as boxplots.
 | cca_tracking_anthropocene_plot_calculations | MSpT_rate_per_century | numeric | CCA distance per century |
 | cca_tracking_anthropocene_plot_calculations | MSpT_z_change | numeric | — |
 | cca_tracking_anthropocene_plot_calculations | MSpT_z_rate_per_century | numeric | CCA distance per century |
-| cca_tracking_anthropocene_plot_calculations | MWT_change | numeric | — |
-| cca_tracking_anthropocene_plot_calculations | MWT_rate_per_century | numeric | CCA distance per century |
-| cca_tracking_anthropocene_plot_calculations | MWT_z_change | numeric | — |
-| cca_tracking_anthropocene_plot_calculations | MWT_z_rate_per_century | numeric | CCA distance per century |
 | cca_tracking_anthropocene_plot_calculations | SP_change | numeric | — |
 | cca_tracking_anthropocene_plot_calculations | SP_rate_per_century | numeric | CCA distance per century |
 | cca_tracking_anthropocene_plot_calculations | SP_z_change | numeric | — |
 | cca_tracking_anthropocene_plot_calculations | SP_z_rate_per_century | numeric | CCA distance per century |
-| cca_tracking_anthropocene_plot_calculations | WP_change | numeric | — |
-| cca_tracking_anthropocene_plot_calculations | WP_rate_per_century | numeric | CCA distance per century |
-| cca_tracking_anthropocene_plot_calculations | WP_z_change | numeric | — |
-| cca_tracking_anthropocene_plot_calculations | WP_z_rate_per_century | numeric | CCA distance per century |
 | cca_tracking_anthropocene_plot_calculations | standardized_climate_displacement | numeric | CCA distance |
 | cca_tracking_anthropocene_plot_calculations | standardized_climate_change_rate | numeric | standardized climate distance per century |
 | cca_tracking_anthropocene_plot_calculations | burned | logical | — |

@@ -23,7 +23,7 @@ key=function(x) ifelse(x$era=='Holocene',paste('H',x$site,x$lake,x$age_hi,x$age_
 endpoint=bind_rows(h |> mutate(era='Holocene',plot_id=NA_character_),
  a |> mutate(era='Anthropocene',lake=NA_character_))
 stopifnot(!anyDuplicated(key(endpoint)),nrow(a)==607L,
- nrow(species)==nrow(endpoint)*length(taxa),nrow(climate)==nrow(endpoint)*4L,
+ nrow(species)==nrow(endpoint)*length(taxa),nrow(climate)==nrow(endpoint)*length(CCA_VARIABLES),
  !anyDuplicated(paste(key(species),species$species)),
  !anyDuplicated(paste(key(climate),climate$variable)),
  !any(c('offset','perpendicular_contribution') %in% c(names(species),names(climate))),

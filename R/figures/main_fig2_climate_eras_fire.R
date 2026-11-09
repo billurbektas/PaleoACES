@@ -55,7 +55,7 @@ time_breaks = c(10000, 8000, 6000, 4000, 2000, 0)
 stopifnot(
   setequal(unique(climate$variable), variables),
   identical(range(climate$t), c(1300, 9500)),
-  identical(eras$era_id, c("CC1", "S1", "CC2", "S2", "CC3", "S3", "CC4", "S4")),
+  all(grepl("^(CC|S)[0-9]+$", eras$era_id)), !anyDuplicated(eras$era_id),
   all(c(paste0(variables, "_z_change")) %in% names(anthropocene)))
 
 era_rects = eras |>
@@ -130,7 +130,7 @@ rate_comparison = holocene_max |>
     rate_unit = if_else(raw_unit == "deg C", "deg C / century",
       "mm / century")) |>
   arrange(match(variable, variables))
-stopifnot(nrow(rate_comparison) == 4L,
+stopifnot(nrow(rate_comparison) == length(variables),
   all(rate_comparison$holocene_offsets == 10L))
 write_csv(rate_comparison,
   out("figures/holocene_anthropocene_raw_climate_rate_comparison.csv"))
@@ -183,13 +183,13 @@ stable_annotations = era_rects |>
 stability_callouts = thresholds |>
   filter(variable %in% variables) |>
   arrange(match(variable, variables)) |>
-  mutate(x = c(10465, 10295, 10125, 9955),
+  mutate(x = c(10465, 10295, 10125, 9955)[seq_along(variable)],
     ymin = -threshold_standardized_change,
     ymax = threshold_standardized_change,
     cap_left = x - 27, cap_right = x + 27,
     label = sprintf("%s  [%+.3f, %+.3f]",
       variable, ymin, ymax))
-stopifnot(nrow(stability_callouts) == 4L)
+stopifnot(nrow(stability_callouts) == length(variables))
 
 # text_scale enlarges every text element (and the phrase spacing) together;
 # show_stability toggles the stability-range brackets in the left margin.
@@ -267,7 +267,7 @@ climate_panel = function(text_scale = 1, show_stability = TRUE,
     scale_y_continuous(expand = expansion(mult = c(.07, .16))) +
     scale_fill_manual(values = era_colors, guide = "none") +
     scale_color_manual(values = c(variable_colors, context = "grey25"),
-      labels = variable_labels, name = NULL) +
+      labels = variable_labels[variables], name = NULL) +
     labs(tag = "A.", title = title, x = NULL, y = y_label) +
     theme_paleoaces(base_size = 14 * s) +
     theme(panel.grid.minor = element_blank(),
@@ -371,7 +371,7 @@ climate_levels = read_csv(required[["paleo_climate"]],
     regional_z_1000yr = as.numeric(stats::filter(regional_z, rep(1 / 11, 11),
       sides = 2))) |>
   ungroup()
-stopifnot(nrow(climate_levels) == 4L * 111L,
+stopifnot(nrow(climate_levels) == length(variables) * 111L,
   all(climate_levels$n_lakes_MORA == 3L), all(climate_levels$n_lakes_NOCA == 1L))
 write_csv(climate_levels, out("figures/holocene_standardized_climate_levels.csv"))
 levels_in_view = filter(climate_levels,
@@ -387,7 +387,7 @@ p_levels = climate_panel(
   y_label = "Standardized climate\n(calibration SD from modern mean)") +
   # Without the qualifying points the lines need a key of their own.
   scale_color_manual(values = c(variable_colors, context = "grey25"),
-    breaks = variables, labels = variable_labels, name = NULL) +
+    breaks = variables, labels = variable_labels[variables], name = NULL) +
   guides(color = guide_legend(nrow = 1,
     override.aes = list(linewidth = 1.6))) +
   theme(legend.position = "bottom", legend.text = element_text(size = 12.5),
