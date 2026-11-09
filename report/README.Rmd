@@ -60,7 +60,7 @@ is finished.
 | Step 0 | Climate variables and CCA refit | `r sprintf('MSpT + SP: VIF %.2f, adjusted R² %.3f (all four %.3f), no lake-century outside the calibration climate, display rotation %.1f°', max(read_output("cca_screening.csv")$VIF[read_output("cca_screening.csv")$set == "MSpT + SP"]), read_output("cca_screening.csv")$adjusted_R2[read_output("cca_screening.csv")$set == "MSpT + SP"][1], read_output("cca_screening.csv")$adjusted_R2[1], read_output("cca_display_rotation.csv")$angle_degrees)` |
 | Step 1 | Climate periods and lake-periods | `r p = read_output('holocene_periods.csv'); sprintf('%d periods from %d to %d cal BP (%d C, %d S), none split', nrow(p), max(p$older_cal_bp), min(p$younger_cal_bp), sum(p$period_type == "Holocene-C"), sum(p$period_type == "Holocene-S"))` |
 | Steps 2 to 4 | Mismatch, lag, turnover, pace, direction, climate change rate and fire per lake-period | `r u = read_output('cca_tracking_lake_periods.csv'); sprintf('%d lake-periods (MORA %d, NOCA %d, %d C, %d S), %d to %d years long', nrow(u), sum(u$site == "MORA"), sum(u$site == "NOCA"), sum(u$period_type == "Holocene-C"), sum(u$period_type == "Holocene-S"), min(u$duration_yr), max(u$duration_yr))` |
-| Step 5 | Holocene explanatory models | (pending) |
+| Step 5 | Holocene explanatory models | `r x = read_output('community_predictor_models/model_coefficients.csv') |> dplyr::filter(era == 'Holocene'); g = function(m, t) x[x$metric == m & x$term == t, ]; sprintf('Lag rate rises with climate change rate (%+.2f, %.2f to %.2f), fire goes with a larger direction effect (%+.2f, %.2f to %.2f)', g('lag_rate','climate_rate')$estimate, g('lag_rate','climate_rate')$conf_low, g('lag_rate','climate_rate')$conf_high, g('direction_effect','fire_activity')$estimate, g('direction_effect','fire_activity')$conf_low, g('direction_effect','fire_activity')$conf_high)` |
 | Step 5a | Holocene against Anthropocene (era models) | (pending) |
 | Step 6 | Species contributions | (pending) |
 
@@ -272,6 +272,69 @@ Stages and helpers: [`R/pipeline/12_tracking.R`](R/pipeline/12_tracking.R),
 [`R/helpers/tracking_metrics.R`](R/helpers/tracking_metrics.R),
 [`R/helpers/century_tracking.R`](R/helpers/century_tracking.R) (fire per interval),
 [`R/tests/test_lake_periods.R`](R/tests/test_lake_periods.R).
+
+# Step 5. What goes with lag rate, pace and direction in the Holocene
+
+**What and why.** Within the Holocene lake-periods, does a period with more climate change, or
+more fire, end with a larger lag, and with better or worse pace and direction? Each response is
+modelled on the park, the climate change rate and fire activity together. Consecutive
+lake-periods of a lake can share an end century, so their errors are related, and an AR(1) term
+on the order of the lake-periods within each lake carries that from the start. Ends that rest on
+a single sample are noisier, so each row is weighted by the sampling variance of its two ends,
+and the parks keep different residual spread. In the Anthropocene the same responses are
+compared between burned and unburned plots within each park.
+
+**Decisions.**
+
+- 9 Nov 2026 (Bills, `PLAN.md` rows 7 and 8): AR(1) on the lake-period order within lake, fixed
+  a priori. No lake random intercept, no period label, no interaction terms.
+- 9 Nov 2026 (Bills, `PLAN.md` row 24): one fire slope for both parks, in events per century per
+  covered core.
+- 9 Nov 2026 (taken in the run): the partial-effect lines of Figure 6A hold the other predictor
+  at the park's own mean, over the park's own range of the focal predictor. The Anthropocene
+  model with elevation and the lake random-intercept sensitivity of the old analysis are no
+  longer fitted.
+
+**Model code.**
+
+```{r step5-code}
+code_snippet('R/pipeline/14_predictor_models.R', 'holocene-explanatory-model')
+code_snippet('R/pipeline/14_predictor_models.R', 'anthropocene-explanatory-model')
+```
+
+**Result.**
+
+```{r step5-results}
+coefficients = read_output('community_predictor_models/model_coefficients.csv')
+performance = read_output('community_predictor_models/model_performance.csv')
+label = c(lag_rate = 'Lag rate', pace_effect = 'Pace effect', direction_effect = 'Direction effect')
+coefficients |> left_join(performance |> select(metric = response, era, n, R2, sd_ratio_NOCA_to_MORA, AR1_phi),
+    by = c('metric', 'era')) |>
+  transmute(Response = label[metric], Era = era, Term = term, Estimate = estimate,
+    `95% CI` = sprintf('%.3f to %.3f', conf_low, conf_high), p = p_value, n,
+    `R²` = R2, `SD ratio NOCA/MORA` = sd_ratio_NOCA_to_MORA, `AR(1)` = AR1_phi) |>
+  show_table('step5_explanatory_models', caption = paste('**Explanatory models.** Holocene:',
+    'response ~ site + climate_rate + fire_activity on the lake-periods, AR(1) within lake, endpoint',
+    'weights. Anthropocene: response ~ site + burned on the plot pairs. Estimates in CCA distance per',
+    'century per unit of the term. Conditional 95% confidence intervals. R² is descriptive (1 − SSE/SST).'))
+slope = function(m, t) coefficients |> filter(metric == m, era == 'Holocene', term == t)
+f = function(x) sprintf('%+.2f (%.2f to %.2f)', x$estimate, x$conf_low, x$conf_high)
+```
+
+In the Holocene, lake-periods with faster climate change ended with a larger lag
+(`r f(slope('lag_rate', 'climate_rate'))` CCA distance per century for one more standardized
+unit of climate change per century) and with a larger pace effect
+(`r f(slope('pace_effect', 'climate_rate'))`). Fire activity did not go with the lag rate
+(`r f(slope('lag_rate', 'fire_activity'))` per extra event per century per core), but it went with
+a larger direction effect (`r f(slope('direction_effect', 'fire_activity'))`): where fire was more
+frequent, the community's direction was further from the predicted one. The fire values of the two
+parks barely overlap. The site term absorbs the difference between the parks, so the fire slope
+comes from the narrow range within each park
+(`r u = read_output('cca_tracking_lake_periods.csv'); paste(sprintf('%s %.2f to %.2f', c('MORA', 'NOCA'), tapply(u$fire_activity, u$site, min), tapply(u$fire_activity, u$site, max)), collapse = ', ')`
+events per century per core).
+
+Stages and helpers: [`R/pipeline/14_predictor_models.R`](R/pipeline/14_predictor_models.R),
+[`R/helpers/reconstruction_models.R`](R/helpers/reconstruction_models.R). Figure 6 is drawn in M08.
 
 # Figure 1. Conceptual framework
 
