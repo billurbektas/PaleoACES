@@ -30,7 +30,7 @@ holocene_panel = function(r, tag) {
       labels = c('Holocene climate-change periods', 'Holocene stability periods')) +
     scale_fill_manual(values = PAPER_SITE_COLORS, guide = 'none') + scale_color_manual(values = PAPER_SITE_COLORS, guide = 'none') +
     guides(shape = guide_legend(override.aes = list(fill = 'grey60', alpha = 1, size = 5))) +
-    labs(tag = tag, x = NULL, y = str_wrap(RESPONSE_AXIS_LABELS[[r]], 24)) +
+    labs(tag = tag, x = NULL, y = two_line_title(RESPONSE_AXIS_LABELS[[r]])) +
     theme_paleoaces(base_size = 22) + theme(legend.text = element_text(size = 21), plot.tag = element_text(size = 26, face = 'bold'))
 }
 anthropocene_panel = function(r, tag) {
@@ -43,7 +43,7 @@ anthropocene_panel = function(r, tag) {
     geom_point(data = m, aes(y = estimate, fill = site), shape = PERIOD_TYPE_SHAPES[['Anthropocene']], size = 3.6, color = 'grey10') +
     geom_text(data = m, aes(y = estimate, label = stars), nudge_x = .1, hjust = 0, vjust = .75, size = 7, color = 'grey10') +
     scale_fill_manual(values = PAPER_SITE_COLORS, guide = 'none') + scale_color_manual(values = PAPER_SITE_COLORS, guide = 'none') +
-    labs(tag = tag, x = NULL, y = str_wrap(RESPONSE_AXIS_LABELS[[r]], 24)) +
+    labs(tag = tag, x = NULL, y = two_line_title(RESPONSE_AXIS_LABELS[[r]])) +
     theme_paleoaces(base_size = 22) + theme(legend.text = element_text(size = 21), plot.tag = element_text(size = 26, face = 'bold'))
 }
 top = wrap_plots(holocene_panel('lag_rate', 'A.'), holocene_panel('pace_effect', NULL), holocene_panel('direction_effect', NULL), nrow = 1)

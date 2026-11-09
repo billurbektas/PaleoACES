@@ -25,7 +25,7 @@ panel = function(r, tag) {
         `Holocene-S` = 'Anthropocene minus Holocene stability periods')) +
     scale_fill_manual(values = PAPER_SITE_COLORS, guide = 'none') +
     scale_color_manual(values = PAPER_SITE_COLORS, guide = 'none') +
-    labs(tag = tag, x = NULL, y = str_wrap(paste('Difference in', sub('^(.)', '\\L\\1', RESPONSE_AXIS_LABELS[[r]], perl = TRUE)), 30)) +
+    labs(tag = tag, x = NULL, y = two_line_title(paste('Difference in', sub('^(.)', '\\L\\1', RESPONSE_AXIS_LABELS[[r]], perl = TRUE)), 32)) +
     guides(shape = guide_legend(override.aes = list(fill = 'grey60'), ncol = 1)) +
     theme_paleoaces(base_size = 20) + theme(legend.position = 'bottom', legend.text = element_text(size = 19), plot.tag = element_text(size = 24, face = 'bold'))
   if (r %in% c('climate_rate', 'turnover_rate')) p = p +

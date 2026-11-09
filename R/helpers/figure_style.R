@@ -26,6 +26,9 @@ PAPER_SITE_SHAPES = c(MORA = 21, NOCA = 24)
 PAPER_SIGNED_COLORS = c(low = "#3B78A8", mid = "#F5F1E6",
                         high = "#C75B47")
 
+# Axis titles break before the unit in brackets, so the unit is never split.
+two_line_title = function(x, width = 34) ifelse(grepl(' [(]', x), sub(' [(]', '\n(', x), stringr::str_wrap(x, width))
+
 theme_paleoaces = function(base_size = PAPER_BASE_SIZE) {
   ggplot2::theme_bw(base_size = base_size, base_family = "sans") +
     ggplot2::theme(
