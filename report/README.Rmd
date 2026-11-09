@@ -58,7 +58,7 @@ is finished.
 | Step | What it does | Result |
 |---|---|---|
 | Step 0 | Climate variables and CCA refit | `r sprintf('MSpT + SP: VIF %.2f, adjusted R² %.3f (all four %.3f), no lake-century outside the calibration climate, display rotation %.1f°', max(read_output("cca_screening.csv")$VIF[read_output("cca_screening.csv")$set == "MSpT + SP"]), read_output("cca_screening.csv")$adjusted_R2[read_output("cca_screening.csv")$set == "MSpT + SP"][1], read_output("cca_screening.csv")$adjusted_R2[1], read_output("cca_display_rotation.csv")$angle_degrees)` |
-| Step 1 | Climate periods and lake-periods | (pending) |
+| Step 1 | Climate periods and lake-periods | `r p = read_output('holocene_periods.csv'); sprintf('%d periods from %d to %d cal BP (%d C, %d S), none split', nrow(p), max(p$older_cal_bp), min(p$younger_cal_bp), sum(p$period_type == "Holocene-C"), sum(p$period_type == "Holocene-S"))` |
 | Steps 2 to 4 | Mismatch, lag, turnover, pace, direction, climate change rate and fire per lake-period | (pending) |
 | Step 5 | Holocene explanatory models | (pending) |
 | Step 5a | Holocene against Anthropocene (era models) | (pending) |
@@ -129,6 +129,51 @@ Stages and helpers: [`R/pipeline/10_cca.R`](R/pipeline/10_cca.R),
 [`R/helpers/cca_report.R`](R/helpers/cca_report.R) (screening and add-back test),
 [`R/helpers/cca_display_rotation.R`](R/helpers/cca_display_rotation.R),
 [`R/pipeline/12_tracking.R`](R/pipeline/12_tracking.R) (rotation check). Figure 3 is drawn in M08.
+
+# Step 1. Climate periods
+
+**What and why.** The Holocene is cut into climate-change (C) periods, when the park-average
+climate of the lakes moved steadily in one direction, and stability (S) periods between them. The
+rules of the climate-era step are unchanged. Only their input changed: the periods are now drawn
+from the two CCA variables, MSpT and SP, so that the periods describe change along the same
+climate axes that the CCA uses. A climate-change period that contains a long internal trough of
+low change is split into sub-periods (a, b, c). Each period, or sub-period, is one unit for the
+lake-periods of the next step.
+
+**Decisions.**
+
+- 9 Nov 2026 (Bills, `PLAN.md` rows 4 and 12): the period rules and sub-periods stay as they are.
+  Periods are named C and S, never CC, after the Step 0 refit.
+- 9 Nov 2026 (Bills, `PLAN.md` rows 3 and 11): boundaries are regional, shared by both parks and
+  all lakes, from the park average of the lakes. Fire does not split periods.
+- 9 Nov 2026 (taken in the run): the units of the lake-periods are the sub-periods where a
+  climate-change period is split, and the periods otherwise (`holocene_periods.csv`). The
+  four-variable catalog for the comparison is recomputed by the same rules from all four seasonal
+  variables.
+
+**Result.**
+
+```{r step1-periods}
+comparison = read_output('holocene_period_comparison.csv')
+comparison |> transmute(Catalog = catalog, Period = period, Type = period_type,
+    `Older (cal BP)` = older_cal_bp, `Younger (cal BP)` = younger_cal_bp,
+    `Duration (years)` = duration_years, Drivers = gsub(';', ', ', coalesce(drivers, ''))) |>
+  show_table('step1_periods', caption = paste('**Climate periods** drawn from MSpT and SP (used from',
+    'Step 1 on) and, by the same rules, from all four seasonal variables (the periods before Step 0).'))
+periods = comparison |> filter(startsWith(catalog, 'MSpT'))
+```
+
+With MSpT and SP the Holocene from `r max(periods$older_cal_bp)` to `r min(periods$younger_cal_bp)`
+cal BP falls into `r sum(periods$period_type == 'Holocene-C')` climate-change periods and
+`r sum(periods$period_type == 'Holocene-S')` stability periods, and no climate-change period is
+split. The first four-variable climate-change period (C1a to C1c, 9600 to 7200 cal BP) becomes C1,
+S1 and C2: its middle part (8600 to 8200 cal BP) was driven by winter wetting alone, which is no
+longer a constraint. From 7200 cal BP onward every boundary is unchanged, and the periods are
+renumbered. The high-fire periods do not depend on the CCA and are unchanged.
+
+Stages and helpers: [`R/pipeline/11_climate_eras_high_fire.R`](R/pipeline/11_climate_eras_high_fire.R),
+[`R/helpers/holocene_climate_fire_era_functions.R`](R/helpers/holocene_climate_fire_era_functions.R).
+Figure 2 is drawn in M08.
 
 # Figure 1. Conceptual framework
 

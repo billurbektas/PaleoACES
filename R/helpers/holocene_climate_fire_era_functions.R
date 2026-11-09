@@ -207,7 +207,7 @@ classify_climate_era_union = function(site_cells, calibration_scaling,
     dplyr::arrange(dplyr::desc(.data$older_cal_bp)) |>
     dplyr::group_by(.data$era_class) |>
     dplyr::mutate(class_sequence = dplyr::row_number(),
-      era_id = paste0(ifelse(.data$era_class == "climate change", "CC", "S"),
+      era_id = paste0(ifelse(.data$era_class == "climate change", "C", "S"),
                       .data$class_sequence)) |>
     dplyr::ungroup()
   era_grid = era_grid |> dplyr::left_join(catalog |>

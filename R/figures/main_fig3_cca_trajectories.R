@@ -101,11 +101,11 @@ traj_long = bind_rows(
 # Initial direct-label positions; the joint repel layer also avoids time labels.
 series_label_positions = tribble(
   ~site,  ~era,            ~type,        ~anchor_lab, ~nx_frac, ~ny_frac,
-  "MORA", "holocene",     "observed",   "CC4",          0.000,   -0.070,
+  "MORA", "holocene",     "observed",   "C4",          0.000,   -0.070,
   "MORA", "holocene",     "predicted",  NA_character_,   0.100,   -0.080,
   "MORA", "anthropocene", "observed",   "legacy",       0.100,    0.080,
   "MORA", "anthropocene", "predicted",  NA_character_,  -0.100,   -0.170,
-  "NOCA", "holocene",     "observed",   "CC1",          0.000,    0.070,
+  "NOCA", "holocene",     "observed",   "C1",          0.000,    0.070,
   "NOCA", "holocene",     "predicted",  NA_character_,  -0.120,    0.120,
   "NOCA", "anthropocene", "observed",   "resurvey",     0.080,   -0.070,
   "NOCA", "anthropocene", "predicted",  "legacy",       0.100,    0.070)
@@ -374,6 +374,6 @@ if (render_presentation) {
 cat("Panel A: all 14 species and four climate constraints; colors encode % constrained inertia.\n",
   "Species annotations give occurrence percentages. Species shares partition 100%; climate values are unique effects.\n",
   "Shared climate fraction:",shared_pct,"%.\n",
-  "Panel B: primary equal-lake centroids connected separately from CC1 through S4; unchanged modern paths.\n",
+  "Panel B: primary equal-lake centroids connected separately from the first to the last period; unchanged modern paths.\n",
   "Observed and predicted paths are opaque; predicted paths use lighter colors.\n",
   "Trajectory zoom crops",n_out,"of",nrow(calib),"calibration points without removing them from the fit.\n")

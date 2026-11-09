@@ -1,0 +1,21 @@
+Catalog,Period,Type,Older (cal BP),Younger (cal BP),Duration (years),Drivers
+MSpT + SP (after Step 0),C1,Holocene-C,9600,8600,1000,"spring cooling, summer drying"
+MSpT + SP (after Step 0),S1,Holocene-S,8600,8200,400,
+MSpT + SP (after Step 0),C2,Holocene-C,8200,7200,1000,"spring warming, summer wetting"
+MSpT + SP (after Step 0),S2,Holocene-S,7200,6800,400,
+MSpT + SP (after Step 0),C3,Holocene-C,6800,6200,600,spring cooling
+MSpT + SP (after Step 0),S3,Holocene-S,6200,5400,800,
+MSpT + SP (after Step 0),C4,Holocene-C,5400,4900,500,spring warming
+MSpT + SP (after Step 0),S4,Holocene-S,4900,2200,2700,
+MSpT + SP (after Step 0),C5,Holocene-C,2200,1700,500,spring warming
+MSpT + SP (after Step 0),S5,Holocene-S,1700,1300,400,
+All four seasonal variables (before Step 0),C1a,Holocene-C,9600,8600,1000,"spring cooling, winter warming, summer drying"
+All four seasonal variables (before Step 0),C1b,Holocene-C,8600,8200,400,winter wetting
+All four seasonal variables (before Step 0),C1c,Holocene-C,8200,7200,1000,"spring warming, winter warming, summer wetting"
+All four seasonal variables (before Step 0),S1,Holocene-S,7200,6800,400,
+All four seasonal variables (before Step 0),C2,Holocene-C,6800,6200,600,spring cooling
+All four seasonal variables (before Step 0),S2,Holocene-S,6200,5400,800,
+All four seasonal variables (before Step 0),C3,Holocene-C,5400,4900,500,spring warming
+All four seasonal variables (before Step 0),S3,Holocene-S,4900,2200,2700,
+All four seasonal variables (before Step 0),C4,Holocene-C,2200,1700,500,spring warming
+All four seasonal variables (before Step 0),S4,Holocene-S,1700,1300,400,

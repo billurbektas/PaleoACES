@@ -49,7 +49,7 @@ sampled century. Each row below is filled when its step is finished.
 | Step | What it does | Result |
 |----|----|----|
 | Step 0 | Climate variables and CCA refit | MSpT + SP: VIF 1.08, adjusted R² 0.126 (all four 0.148), no lake-century outside the calibration climate, display rotation -23.4° |
-| Step 1 | Climate periods and lake-periods | (pending) |
+| Step 1 | Climate periods and lake-periods | 10 periods from 9600 to 1300 cal BP (5 C, 5 S), none split |
 | Steps 2 to 4 | Mismatch, lag, turnover, pace, direction, climate change rate and fire per lake-period | (pending) |
 | Step 5 | Holocene explanatory models | (pending) |
 | Step 5a | Holocene against Anthropocene (era models) | (pending) |
@@ -125,6 +125,78 @@ add-back test),
 [`R/helpers/cca_display_rotation.R`](R/helpers/cca_display_rotation.R),
 [`R/pipeline/12_tracking.R`](R/pipeline/12_tracking.R) (rotation check).
 Figure 3 is drawn in M08.
+
+# Step 1. Climate periods
+
+**What and why.** The Holocene is cut into climate-change (C) periods,
+when the park-average climate of the lakes moved steadily in one
+direction, and stability (S) periods between them. The rules of the
+climate-era step are unchanged. Only their input changed: the periods
+are now drawn from the two CCA variables, MSpT and SP, so that the
+periods describe change along the same climate axes that the CCA uses. A
+climate-change period that contains a long internal trough of low change
+is split into sub-periods (a, b, c). Each period, or sub-period, is one
+unit for the lake-periods of the next step.
+
+**Decisions.**
+
+- 9 Nov 2026 (Bills, `PLAN.md` rows 4 and 12): the period rules and
+  sub-periods stay as they are. Periods are named C and S, never CC,
+  after the Step 0 refit.
+- 9 Nov 2026 (Bills, `PLAN.md` rows 3 and 11): boundaries are regional,
+  shared by both parks and all lakes, from the park average of the
+  lakes. Fire does not split periods.
+- 9 Nov 2026 (taken in the run): the units of the lake-periods are the
+  sub-periods where a climate-change period is split, and the periods
+  otherwise (`holocene_periods.csv`). The four-variable catalog for the
+  comparison is recomputed by the same rules from all four seasonal
+  variables.
+
+**Result.**
+
+**Climate periods** drawn from MSpT and SP (used from Step 1 on) and, by
+the same rules, from all four seasonal variables (the periods before
+Step 0).
+
+| Catalog | Period | Type | Older (cal BP) | Younger (cal BP) | Duration (years) | Drivers |
+|:---|:---|:---|---:|---:|---:|:---|
+| MSpT + SP (after Step 0) | C1 | Holocene-C | 9600 | 8600 | 1000 | spring cooling, summer drying |
+| MSpT + SP (after Step 0) | S1 | Holocene-S | 8600 | 8200 | 400 |  |
+| MSpT + SP (after Step 0) | C2 | Holocene-C | 8200 | 7200 | 1000 | spring warming, summer wetting |
+| MSpT + SP (after Step 0) | S2 | Holocene-S | 7200 | 6800 | 400 |  |
+| MSpT + SP (after Step 0) | C3 | Holocene-C | 6800 | 6200 | 600 | spring cooling |
+| MSpT + SP (after Step 0) | S3 | Holocene-S | 6200 | 5400 | 800 |  |
+| MSpT + SP (after Step 0) | C4 | Holocene-C | 5400 | 4900 | 500 | spring warming |
+| MSpT + SP (after Step 0) | S4 | Holocene-S | 4900 | 2200 | 2700 |  |
+| MSpT + SP (after Step 0) | C5 | Holocene-C | 2200 | 1700 | 500 | spring warming |
+| MSpT + SP (after Step 0) | S5 | Holocene-S | 1700 | 1300 | 400 |  |
+| All four seasonal variables (before Step 0) | C1a | Holocene-C | 9600 | 8600 | 1000 | spring cooling, winter warming, summer drying |
+| All four seasonal variables (before Step 0) | C1b | Holocene-C | 8600 | 8200 | 400 | winter wetting |
+| All four seasonal variables (before Step 0) | C1c | Holocene-C | 8200 | 7200 | 1000 | spring warming, winter warming, summer wetting |
+| All four seasonal variables (before Step 0) | S1 | Holocene-S | 7200 | 6800 | 400 |  |
+| All four seasonal variables (before Step 0) | C2 | Holocene-C | 6800 | 6200 | 600 | spring cooling |
+| All four seasonal variables (before Step 0) | S2 | Holocene-S | 6200 | 5400 | 800 |  |
+| All four seasonal variables (before Step 0) | C3 | Holocene-C | 5400 | 4900 | 500 | spring warming |
+| All four seasonal variables (before Step 0) | S3 | Holocene-S | 4900 | 2200 | 2700 |  |
+| All four seasonal variables (before Step 0) | C4 | Holocene-C | 2200 | 1700 | 500 | spring warming |
+| All four seasonal variables (before Step 0) | S4 | Holocene-S | 1700 | 1300 | 400 |  |
+
+<sub>Table file:
+[step1_periods.csv](report/tables/step1_periods.csv)</sub>
+
+With MSpT and SP the Holocene from 9600 to 1300 cal BP falls into 5
+climate-change periods and 5 stability periods, and no climate-change
+period is split. The first four-variable climate-change period (C1a to
+C1c, 9600 to 7200 cal BP) becomes C1, S1 and C2: its middle part (8600
+to 8200 cal BP) was driven by winter wetting alone, which is no longer a
+constraint. From 7200 cal BP onward every boundary is unchanged, and the
+periods are renumbered. The high-fire periods do not depend on the CCA
+and are unchanged.
+
+Stages and helpers:
+[`R/pipeline/11_climate_eras_high_fire.R`](R/pipeline/11_climate_eras_high_fire.R),
+[`R/helpers/holocene_climate_fire_era_functions.R`](R/helpers/holocene_climate_fire_era_functions.R).
+Figure 2 is drawn in M08.
 
 # Figure 1. Conceptual framework
 
@@ -611,15 +683,15 @@ only).
 
 | Era | Class | Older (cal BP) | Younger (cal BP) | Active variables |
 |:---|:---|---:|---:|:---|
-| CC1 | climate change | 9600 | 8600 | spring cooling;summer drying |
+| C1 | climate change | 9600 | 8600 | spring cooling;summer drying |
 | S1 | relative stability | 8600 | 8200 | — |
-| CC2 | climate change | 8200 | 7200 | spring warming;summer wetting |
+| C2 | climate change | 8200 | 7200 | spring warming;summer wetting |
 | S2 | relative stability | 7200 | 6800 | — |
-| CC3 | climate change | 6800 | 6200 | spring cooling |
+| C3 | climate change | 6800 | 6200 | spring cooling |
 | S3 | relative stability | 6200 | 5400 | — |
-| CC4 | climate change | 5400 | 4900 | spring warming |
+| C4 | climate change | 5400 | 4900 | spring warming |
 | S4 | relative stability | 4900 | 2200 | — |
-| CC5 | climate change | 2200 | 1700 | spring warming |
+| C5 | climate change | 2200 | 1700 | spring warming |
 | S5 | relative stability | 1700 | 1300 | — |
 
 <sub>Table file:

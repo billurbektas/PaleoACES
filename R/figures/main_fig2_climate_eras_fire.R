@@ -55,7 +55,7 @@ time_breaks = c(10000, 8000, 6000, 4000, 2000, 0)
 stopifnot(
   setequal(unique(climate$variable), variables),
   identical(range(climate$t), c(1300, 9500)),
-  all(grepl("^(CC|S)[0-9]+$", eras$era_id)), !anyDuplicated(eras$era_id),
+  all(grepl("^(C|S)[0-9]+$", eras$era_id)), !anyDuplicated(eras$era_id),
   all(c(paste0(variables, "_z_change")) %in% names(anthropocene)))
 
 era_rects = eras |>
@@ -76,7 +76,7 @@ time_axis = function() scale_x_reverse(limits = time_limits,
 # both the 50%-of-maximum magnitude rule and the >=8/10 phase-direction rule.
 yrange = range(climate$regional_score, na.rm = TRUE)
 # Era identifiers, interval arrows, and driver descriptions occupy distinct
-# lanes. All CC/S identifiers share one baseline; the short CC1b description
+# lanes. All C/S identifiers share one baseline; the short C1b description
 # alone is lifted to prevent collision with the adjacent multi-line boxes.
 era_id_y = yrange[2] + diff(yrange) * .30
 arrow_y = yrange[2] + diff(yrange) * .18
@@ -135,7 +135,7 @@ stopifnot(nrow(rate_comparison) == length(variables),
 write_csv(rate_comparison,
   out("figures/holocene_anthropocene_raw_climate_rate_comparison.csv"))
 
-# Climate-change subphase arrows share a top annotation lane. CC1a--c are
+# Climate-change subphase arrows share a top annotation lane. C1a--c are
 # derived from the internal driver-count trough; the shorter CC eras remain
 # unsplit. Stable-era labels use the same lane between these arrows.
 phase_annotations = subphases |>

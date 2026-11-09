@@ -95,6 +95,8 @@ OUTPUT_REGISTRY = tibble::tribble(
   "cca_display_rotation.csv", "10_cca", "Display-only varimax angle, rotation matrix and axis orientation",
   # 11 climate eras and high-fire periods -----------------------------------
   "holocene_era", "11_climate_eras", "(prefix) era and high-fire classification tables",
+  "holocene_periods.csv", "11_climate_eras", "The analysis periods (C and S, sub-periods where split) that define the lake-periods",
+  "holocene_period_comparison.csv", "11_climate_eras", "Periods after Step 0 against the four-variable periods",
   # 12 tracking -------------------------------------------------------------
   "cca_tracking", "12_tracking", "(prefix) Holocene and Anthropocene tracking calculations",
   "chronology_reconstruction", "12_tracking", "Reconstruction bundle and primary reconstruction",

@@ -102,6 +102,39 @@ climate_subphases = subdivide_climate_change_eras(
   climate$variable_cells, era_catalog, min_trough_years = 300L,
   driver_coverage = 0.60)
 
+# The analysis periods (PLAN.md section 4.2): stability periods as drawn, and
+# climate-change periods replaced by their sub-periods where one is split at a
+# trough. These periods define the lake-periods downstream.
+period_table = function(catalog, subphases) {
+  c_periods = subphases |> transmute(period = subphase_id, parent_period = parent_era_id,
+    older_cal_bp, younger_cal_bp, drivers = active_driver_labels)
+  s_periods = catalog |> filter(era_class == "relative stability") |>
+    transmute(period = era_id, parent_period = era_id, older_cal_bp, younger_cal_bp, drivers = "")
+  bind_rows(c_periods, s_periods) |>
+    mutate(period_type = if_else(startsWith(period, "C"), "Holocene-C", "Holocene-S"),
+      duration_years = older_cal_bp - younger_cal_bp) |>
+    arrange(desc(older_cal_bp)) |>
+    select(period, period_type, parent_period, older_cal_bp, younger_cal_bp, duration_years, drivers)
+}
+periods = period_table(era_catalog, climate_subphases)
+# Rule (PLAN.md section 2): period names use C and S, never CC.
+stopifnot(!any(grepl("CC", periods$period)), all(grepl("^[CS][0-9]+[a-z]?$", periods$period)))
+# Rule (PLAN.md section 4.2): the periods tile the analysis span without gaps or overlaps.
+stopifnot(all(head(periods$younger_cal_bp, -1) == tail(periods$older_cal_bp, -1)),
+  max(periods$older_cal_bp) == max(era_catalog$older_cal_bp),
+  min(periods$younger_cal_bp) == min(era_catalog$younger_cal_bp))
+
+# The same unchanged rules applied to all four seasonal variables give the
+# catalog the analysis used before Step 0, for the period comparison table.
+four_catalog = climate_display$era_catalog
+four_periods = period_table(four_catalog,
+  subdivide_climate_change_eras(climate_display$variable_cells, four_catalog,
+    min_trough_years = 300L, driver_coverage = 0.60))
+period_comparison = bind_rows(
+  periods |> mutate(catalog = "MSpT + SP (after Step 0)"),
+  four_periods |> mutate(catalog = "All four seasonal variables (before Step 0)")) |>
+  select(catalog, everything())
+
 # =============================================================================
 # FIRE: source-specific accepted events, independent 1,000-year frequency rule
 # =============================================================================
@@ -133,6 +166,8 @@ write_csv(climate$variable_cells,
   out("holocene_era_climate_directional_cells.csv"))
 write_csv(climate$era_grid, out("holocene_era_grid.csv"))
 write_csv(era_catalog, out("holocene_era_catalog.csv"))
+write_csv(periods, out("holocene_periods.csv"))
+write_csv(period_comparison, out("holocene_period_comparison.csv"))
 write_csv(direction_terms, out("holocene_era_driver_subintervals.csv"))
 write_csv(climate_subphases,
   out("holocene_era_climate_change_subphases.csv"))

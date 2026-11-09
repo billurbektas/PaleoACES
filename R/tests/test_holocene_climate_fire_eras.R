@@ -62,15 +62,15 @@ stopifnot(identical(
 # Regression: the eras classified from the MSpT + SP constraints (2026-11-09).
 expected = tribble(
   ~era_id, ~era_class, ~older_cal_bp, ~younger_cal_bp,
-  "CC1", "climate change", 9600, 8600,
+  "C1", "climate change", 9600, 8600,
   "S1", "relative stability", 8600, 8200,
-  "CC2", "climate change", 8200, 7200,
+  "C2", "climate change", 8200, 7200,
   "S2", "relative stability", 7200, 6800,
-  "CC3", "climate change", 6800, 6200,
+  "C3", "climate change", 6800, 6200,
   "S3", "relative stability", 6200, 5400,
-  "CC4", "climate change", 5400, 4900,
+  "C4", "climate change", 5400, 4900,
   "S4", "relative stability", 4900, 2200,
-  "CC5", "climate change", 2200, 1700,
+  "C5", "climate change", 2200, 1700,
   "S5", "relative stability", 1700, 1300)
 stopifnot(isTRUE(all.equal(
   eras |> select(era_id, era_class, older_cal_bp, younger_cal_bp) |>
@@ -80,7 +80,7 @@ stopifnot(isTRUE(all.equal(
 # No climate-change era contains a sustained internal driver trough, so none is
 # split; driver labels require >=60% cell coverage.
 stopifnot(
-  identical(subphases$subphase_id, c("CC1", "CC2", "CC3", "CC4", "CC5")),
+  identical(subphases$subphase_id, c("C1", "C2", "C3", "C4", "C5")),
   all(subphases$phase_role == "unsplit"),
   identical(subphases$active_driver_labels[1:2], c(
     "spring cooling;summer drying", "spring warming;summer wetting")),
