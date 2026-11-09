@@ -1,8 +1,8 @@
-# Figure 3 (PLAN.md section 6): A, the CCA biplot; B, first-to-final Holocene
-# movement per park beside the Anthropocene legacy-to-resurvey movement; C and
-# D, the full Holocene sequence of period centroids per park (zoom windows).
-# Every coordinate is rotated for display only (R/helpers/cca_display_rotation.R).
-# The appendix figure is the unrotated biplot.
+# Figure 3: A, species and climate biplot; B, observed and predicted trajectories
+# of both parks through the Holocene climate periods and the Anthropocene.
+# Layout of the earlier figure (Bills, 9 Nov 2026), on the MSpT + SP CCA with
+# the display-only varimax rotation (R/helpers/cca_display_rotation.R). The
+# appendix figure is the unrotated biplot.
 source(here::here('R/helpers/config.R'), local = TRUE)
 suppressPackageStartupMessages({library(here); library(tidyverse); library(vegan); library(patchwork); library(ggrepel)})
 source(here('R/helpers/figure_style.R'), local = TRUE)
@@ -14,7 +14,8 @@ model = reference$model
 bp = scores(model, display = 'bp', choices = 1:2, scaling = 'sites', hill = FALSE)
 species_scores = scores(model, display = 'species', choices = 1:2, scaling = 'sites', hill = FALSE)
 rotation = cca_display_rotation(bp)
-rotate = function(m) { m = as.matrix(m) %*% rotation$matrix; colnames(m) = c('x', 'y'); m }
+as_xy = function(m) { m = as.matrix(m); colnames(m) = c('x', 'y'); m }
+rotate = function(m) as_xy(as.matrix(m) %*% rotation$matrix)
 contributions = read_csv(out('cca_species_contributions.csv'), show_col_types = FALSE)
 calibration = predict(model, newdata = reference$legacy_species, type = 'wa', scaling = 'sites', hill = FALSE)[, 1:2]
 
@@ -24,11 +25,10 @@ periods = read_csv(out('holocene_periods.csv'), show_col_types = FALSE)
 positions = read_csv(out('cca_tracking_holocene_century_positions.csv'), show_col_types = FALSE)
 k = vapply(positions$century_cal_bp, function(a) {
   i = which(a < periods$older_cal_bp & a >= periods$younger_cal_bp); if (length(i)) i else NA_integer_ }, integer(1))
-positions = positions |> mutate(period = periods$period[k], period_type = periods$period_type[k],
-  order = k) |> filter(!is.na(period))
-centroids = positions |> group_by(site, lake, period, period_type, order) |>
+positions = positions |> mutate(period = periods$period[k], order = k) |> filter(!is.na(period))
+centroids = positions |> group_by(site, lake, period, order) |>
   summarise(across(c(o1, o2, p1, p2), mean), .groups = 'drop') |>
-  group_by(site, period, period_type, order) |>
+  group_by(site, period, order) |>
   summarise(across(c(o1, o2, p1, p2), mean), n_lakes = n(), .groups = 'drop') |> arrange(site, order)
 write_csv(centroids, out('figures/cca_trajectory_period_centroids.csv'))
 plots = read_csv(out('cca_tracking_anthropocene_plot_calculations.csv'), show_col_types = FALSE)
@@ -36,116 +36,156 @@ anthropocene = plots |> group_by(site) |>
   summarise(o1 = mean(o1), o2 = mean(o2), p1 = mean(p1), p2 = mean(p2),
     o1_2 = mean(o1_2), o2_2 = mean(o2_2), p1_2 = mean(p1_2), p2_2 = mean(p2_2), n = n())
 write_csv(anthropocene, out('figures/cca_trajectory_anthropocene_centroids.csv'))
+spans = centroids |> group_by(site) |>
+  summarise(first_period = period[which.min(order)], last_period = period[which.max(order)]) |>
+  left_join(periods |> select(first_period = period, first_older = older_cal_bp), by = 'first_period') |>
+  left_join(periods |> select(last_period = period, last_younger = younger_cal_bp), by = 'last_period')
+write_csv(spans, out('figures/cca_trajectory_holocene_spans.csv'))
 
-long_points = function(d, x, y, kind) {
-  r = rotate(d[c(x, y)]); tibble(site = d$site, kind, x = r[, 1], y = r[, 2])
+# Long form: one point per series and step, in display coordinates.
+point_rows = function(d, x, y, type, era, order, lab) {
+  r = rotate(d[c(x, y)])
+  tibble(site = d$site, era, type, order = order, lab = lab, x = r[, 1], y = r[, 2])
 }
-holocene_points = bind_rows(
-  bind_cols(centroids |> select(site, period, period_type, order), long_points(centroids, 'o1', 'o2', 'observed') |> select(kind, x, y)),
-  bind_cols(centroids |> select(site, period, period_type, order), long_points(centroids, 'p1', 'p2', 'predicted') |> select(kind, x, y))) |>
-  mutate(series = paste(site, kind, sep = '_'))
-ends = holocene_points |> group_by(site, kind) |> filter(order %in% range(order)) |> arrange(order, .by_group = TRUE) |>
-  summarise(period_start = first(period), period_end = last(period), type_start = first(period_type),
-    type_end = last(period_type), xend = last(x), yend = last(y), x = first(x), y = first(y), .groups = 'drop') |>
-  mutate(era = 'Holocene', series = paste(site, kind, sep = '_'))
-anth_arrows = bind_rows(lapply(c('observed', 'predicted'), function(kind) {
-  s = if (kind == 'observed') c('o1', 'o2', 'o1_2', 'o2_2') else c('p1', 'p2', 'p1_2', 'p2_2')
-  a = rotate(anthropocene[s[1:2]]); b = rotate(anthropocene[s[3:4]])
-  tibble(site = anthropocene$site, kind, x = a[, 1], y = a[, 2], xend = b[, 1], yend = b[, 2])
-})) |> mutate(era = 'Anthropocene', series = paste(site, kind, sep = '_'))
+traj = bind_rows(
+  point_rows(centroids, 'o1', 'o2', 'observed', 'Holocene', centroids$order, centroids$period),
+  point_rows(centroids, 'p1', 'p2', 'predicted', 'Holocene', centroids$order, centroids$period),
+  point_rows(anthropocene, 'o1', 'o2', 'observed', 'Anthropocene', 1, 'legacy'),
+  point_rows(anthropocene, 'o1_2', 'o2_2', 'observed', 'Anthropocene', 2, 'resurvey'),
+  point_rows(anthropocene, 'p1', 'p2', 'predicted', 'Anthropocene', 1, 'legacy'),
+  point_rows(anthropocene, 'p1_2', 'p2_2', 'predicted', 'Anthropocene', 2, 'resurvey')) |>
+  mutate(series = paste(site, type, sep = '_'), group = paste(site, era, type)) |> arrange(group, order)
+steps = traj |> group_by(group) |> mutate(xend = lead(x), yend = lead(y)) |> ungroup() |> filter(!is.na(xend))
 
-# Side labels follow the rotated climate arrows: each arrow points to the warm
-# or wet side of its axis.
+TEXT = 5.4  # label size in mm, matched to the larger axis text
+theme_fig3 = theme_paleoaces(base_size = 19) +
+  theme(legend.position = 'bottom', aspect.ratio = 1, axis.title = element_text(size = 19),
+    legend.text = element_text(size = 17), legend.title = element_text(size = 17),
+    plot.tag = element_text(size = 26, face = 'bold'), plot.margin = margin(12, 16, 12, 12))
+# Side labels on the axis titles: each end of an axis names the climate it leads to.
 rbp = rotate(bp)
-sides = tibble(side = c('right', 'left', 'top', 'bottom'),
-  label = c(if (rbp['MSpT', 1] > 0) c('Warmer springs', 'Colder springs') else c('Colder springs', 'Warmer springs'),
-            if (rbp['SP', 2] > 0) c('Wetter summers', 'Drier summers') else c('Drier summers', 'Wetter summers')))
-side_labels = function(p, xlim, ylim) {
-  pad = .04
-  p + annotate('text', x = xlim[2], y = mean(ylim), label = sides$label[1], angle = -90, vjust = -.4, size = 4, color = 'grey30') +
-    annotate('text', x = xlim[1], y = mean(ylim), label = sides$label[2], angle = 90, vjust = -.4, size = 4, color = 'grey30') +
-    annotate('text', x = mean(xlim), y = ylim[2], label = sides$label[3], vjust = -.5, size = 4, color = 'grey30') +
-    annotate('text', x = mean(xlim), y = ylim[1], label = sides$label[4], vjust = 1.5, size = 4, color = 'grey30') +
-    coord_equal(xlim = xlim, ylim = ylim, clip = 'off')
+x_title = if (rbp['MSpT', 'x'] > 0) 'Colder springs  ←  Spring temperature (rotated axis 1)  →  Warmer springs' else
+  'Warmer springs  ←  Spring temperature (rotated axis 1)  →  Colder springs'
+y_title = if (rbp['SP', 'y'] > 0) 'Drier summers  ←  Summer precipitation (rotated axis 2)  →  Wetter summers' else
+  'Wetter summers  ←  Summer precipitation (rotated axis 2)  →  Drier summers'
+square = function(xr, yr, pad = .06) {
+  half = max(diff(xr), diff(yr)) / 2 * (1 + pad)
+  list(x = mean(xr) + c(-half, half), y = mean(yr) + c(-half, half))
 }
-axis_titles = labs(x = 'Spring temperature (rotated axis 1)', y = 'Summer precipitation (rotated axis 2)')
-theme_fig3 = theme_paleoaces(base_size = 13) + theme(legend.position = 'bottom', plot.margin = margin(18, 22, 18, 18))
 
+# Panel A: species as vectors from the centre, shaded by their share of the
+# constrained inertia; the two climate constraints as bold arrows.
 biplot = function(rotated = TRUE) {
-  tr = if (rotated) rotate else function(m) { m = as.matrix(m); colnames(m) = c('x', 'y'); m }
+  tr = if (rotated) rotate else as_xy
   sp = as_tibble(tr(species_scores)) |> mutate(species = rownames(species_scores)) |>
-    left_join(contributions |> select(species, percent_constrained_inertia), by = 'species')
-  cal = as_tibble(tr(calibration))
-  arrows = as_tibble(tr(bp)) |> mutate(variable = rownames(bp), label = CLIMATE_VARIABLE_LABELS[variable])
-  scale = .75 * max(abs(c(sp$x, sp$y))) / max(sqrt(arrows$x^2 + arrows$y^2))
-  arrows = mutate(arrows, x = x * scale, y = y * scale)
-  lim = range(c(sp$x, sp$y, cal$x, cal$y, arrows$x, arrows$y)) * 1.08
-  p = ggplot() +
-    geom_point(data = cal, aes(x, y), color = 'grey85', size = .7) +
-    geom_hline(yintercept = 0, color = 'grey70', linewidth = .3) + geom_vline(xintercept = 0, color = 'grey70', linewidth = .3) +
-    geom_segment(data = arrows, aes(0, 0, xend = x, yend = y), arrow = arrow(length = unit(.12, 'in')), linewidth = .9, color = 'grey10') +
-    geom_label(data = arrows, aes(x * 1.12, y * 1.12, label = label), size = 3.6, fontface = 'bold', color = 'grey10', label.size = 0, fill = alpha('white', .8)) +
-    geom_point(data = sp, aes(x, y, fill = percent_constrained_inertia), shape = 21, size = 3.2, color = 'grey20') +
-    geom_text_repel(data = sp, aes(x, y, label = species), size = 3.2, fontface = 'italic', color = 'grey15',
-      seed = 1, max.overlaps = Inf, box.padding = .3) +
-    scale_fill_gradient(low = 'grey95', high = 'grey10', name = 'Share of constrained inertia (%)') +
-    theme_fig3 + guides(fill = guide_colorbar(barwidth = unit(4, 'cm'), title.position = 'top'))
-  if (rotated) side_labels(p, lim, lim) + axis_titles + labs(tag = 'A.') else {
-    imp = 100 * model$CCA$eig[1:2] / model$tot.chi
-    p + coord_equal(xlim = lim, ylim = lim) + labs(x = sprintf('CCA1 (%.1f%% of total inertia)', imp[1]),
-      y = sprintf('CCA2 (%.1f%% of total inertia)', imp[2]))
-  }
+    left_join(contributions |> select(species, share = percent_constrained_inertia, prevalence_percent), by = 'species')
+  arrows = as_tibble(tr(bp)) |> mutate(variable = rownames(bp), label = unname(CLIMATE_VARIABLE_LABELS[variable]))
+  mult = .75 * max(sqrt(sp$x^2 + sp$y^2)) / max(sqrt(arrows$x^2 + arrows$y^2))
+  arrows = mutate(arrows, x = x * mult, y = y * mult)
+  labels = bind_rows(
+    sp |> transmute(x, y, label = sprintf('%s (%.1f%%)', species, prevalence_percent), fontface = 'italic', share),
+    arrows |> transmute(x = x * 1.05, y = y * 1.05, label, fontface = 'bold', share = NA_real_))
+  lim = square(range(c(sp$x, arrows$x)), range(c(sp$y, arrows$y)), pad = .25)
+  imp = 100 * model$CCA$eig[1:2] / model$tot.chi
+  ggplot() +
+    geom_hline(yintercept = 0, color = 'grey88', linewidth = .4) + geom_vline(xintercept = 0, color = 'grey88', linewidth = .4) +
+    geom_segment(data = sp, aes(0, 0, xend = x, yend = y, color = share), linewidth = .6) +
+    geom_point(data = sp, aes(x, y, color = share), size = 2.2) +
+    geom_segment(data = arrows, aes(0, 0, xend = x, yend = y), linewidth = 1.4, color = 'black',
+      arrow = arrow(length = unit(.3, 'cm'), type = 'closed')) +
+    # Labels as in the earlier figure: white boxes without a border, leaders to
+    # the exact scores, species text shaded like its vector.
+    geom_label_repel(data = labels, aes(x, y, label = label, fontface = fontface, color = share),
+      size = TEXT, fill = 'white', linewidth = 0, label.padding = unit(.10, 'lines'),
+      box.padding = .45, point.padding = .2, force = 3, force_pull = 2, segment.size = .3, segment.color = 'grey65',
+      min.segment.length = 0, max.overlaps = Inf, max.iter = 200000, max.time = 10, seed = 11,
+      xlim = lim$x, ylim = lim$y, show.legend = FALSE) +
+    scale_color_gradient(low = 'grey65', high = 'grey5', na.value = 'black', name = 'Share of constrained inertia (%)',
+      guide = guide_colorbar(title.position = 'top', title.hjust = .5, barwidth = unit(7, 'cm'), barheight = unit(.45, 'cm'))) +
+    coord_cartesian(xlim = lim$x, ylim = lim$y, expand = FALSE) +
+    labs(tag = if (rotated) 'A.' else NULL,
+      x = if (rotated) x_title else sprintf('CCA1 (%.1f%% of total inertia)', imp[1]),
+      y = if (rotated) y_title else sprintf('CCA2 (%.1f%% of total inertia)', imp[2])) +
+    theme_fig3
 }
 p_biplot = biplot(TRUE)
 
-colors = PARK_COLORS
-arrow_layer = function(d, linetype) geom_segment(data = d, aes(x, y, xend = xend, yend = yend, color = series),
-  linetype = linetype, linewidth = 1.1, arrow = arrow(length = unit(.11, 'in'), type = 'closed'))
-all_xy = c(ends$x, ends$xend, anth_arrows$x, anth_arrows$xend)
-all_yy = c(ends$y, ends$yend, anth_arrows$y, anth_arrows$yend)
-pad = .12 * max(diff(range(all_xy)), diff(range(all_yy)))
-xlim_b = range(all_xy) + c(-pad, pad); ylim_b = range(all_yy) + c(-pad, pad)
-zoom_box = holocene_points |> group_by(site) |>
-  summarise(xmin = min(x), xmax = max(x), ymin = min(y), ymax = max(y)) |>
-  mutate(px = .08 * pmax(xmax - xmin, ymax - ymin), xmin = xmin - px, xmax = xmax + px, ymin = ymin - px, ymax = ymax + px)
-p_moves = ggplot() +
-  geom_rect(data = zoom_box, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = NA, color = 'grey55',
-    linetype = 'dotted') +
-  geom_text(data = zoom_box, aes(xmin, ymax, label = paste(site, 'zoom')), hjust = 0, vjust = -.4, size = 3, color = 'grey40') +
-  arrow_layer(ends, 'solid') + arrow_layer(anth_arrows, 'solid') +
-  geom_point(data = ends, aes(x, y, shape = type_start, fill = series), size = 3, color = 'grey15') +
-  geom_point(data = anth_arrows, aes(x, y, fill = series), shape = 23, size = 3, color = 'grey15') +
-  scale_color_manual(values = colors, guide = 'none') +
-  scale_fill_manual(values = colors, breaks = names(colors), labels = sub('_', ' ', names(colors)), name = NULL) +
-  scale_shape_manual(values = PERIOD_TYPE_SHAPES, guide = 'none') +
-  guides(fill = guide_legend(override.aes = list(shape = 22, size = 4), nrow = 2)) +
-  axis_titles + labs(tag = 'B.') + theme_fig3
-p_moves = side_labels(p_moves, xlim_b, ylim_b)
+# Panel B: the reduced Holocene trajectory of each park (first to last period
+# with samples) beside the Anthropocene legacy-to-resurvey movement. Panels C
+# and D: the full Holocene sequence of each park, framed and lettered like the
+# dashed box that marks its extent in B.
+cal = as_tibble(rotate(calibration))
+holocene = traj |> filter(era == 'Holocene')
+reduced = holocene |> group_by(site, type) |> filter(order %in% range(order)) |> ungroup()
+modern = traj |> filter(era == 'Anthropocene')
+shown = bind_rows(reduced, modern) |> mutate(group = paste(site, era, type))
+steps_b = shown |> group_by(group) |> arrange(order, .by_group = TRUE) |>
+  mutate(xend = lead(x), yend = lead(y)) |> ungroup() |> filter(!is.na(xend))
+boxes = holocene |> group_by(site) |> summarise(xmin = min(x), xmax = max(x), ymin = min(y), ymax = max(y)) |>
+  mutate(pad = .06 * pmax(xmax - xmin, ymax - ymin), xmin = xmin - pad, xmax = xmax + pad,
+    ymin = ymin - pad, ymax = ymax + pad, letter = c(MORA = 'C', NOCA = 'D')[site],
+    color = PAPER_SITE_COLORS[site])
+# Panel B is cropped tightly around the trajectories and the zoom boxes, with
+# equal scaling on both axes so that directions are not distorted; its frame is
+# a little taller than wide (width 0.84 of the height).
+B_ASPECT = 1 / .84
+xr = range(c(shown$x, boxes$xmin, boxes$xmax)); yr = range(c(shown$y, boxes$ymin, boxes$ymax))
+yr = yr + c(-1, 1) * .04 * diff(yr)
+half_x = max(diff(xr) * 1.08, diff(yr) / B_ASPECT) / 2
+lim_b = list(x = mean(xr) + c(-half_x, half_x), y = mean(yr) + c(-1, 1) * max(diff(yr), 2 * half_x * B_ASPECT) / 2)
+series_labels = shown |> group_by(site, era, type, series) |> summarise(x = mean(x), y = mean(y), .groups = 'drop') |>
+  mutate(label = paste0(site, ' ', era, '\n', str_to_title(type)))
+end_labels = shown |> filter(type == 'observed')
+labels_b = bind_rows(end_labels |> transmute(x, y, label = lab, series, fontface = 'plain', size = TEXT - .6),
+  series_labels |> transmute(x, y, label, series, fontface = 'bold', size = TEXT),
+  shown |> filter(type == 'predicted') |> transmute(x, y, label = '', series, fontface = 'plain', size = TEXT))
+trajectory_layers = function(points, steps, labels, xl, yl) list(
+  geom_segment(data = steps, aes(x, y, xend = xend, yend = yend, color = series, linetype = type),
+    linewidth = 1.1, arrow = arrow(length = unit(.24, 'cm'), type = 'closed')),
+  geom_point(data = points, aes(x, y, color = series), shape = 21, fill = 'white', size = 2.8, stroke = 1),
+  geom_label_repel(data = labels, aes(x, y, label = label, color = series, fontface = fontface, size = size),
+    fill = 'white', linewidth = 0, label.padding = unit(.08, 'lines'), box.padding = .45, point.padding = .25,
+    force = 3, force_pull = 1.5, segment.size = .3, segment.color = 'grey60', min.segment.length = 0,
+    max.overlaps = Inf, max.iter = 200000, max.time = 10, seed = 3, lineheight = .9, xlim = xl, ylim = yl,
+    show.legend = FALSE),
+  scale_color_manual(values = PARK_COLORS, guide = 'none'),
+  scale_linetype_manual(values = c(observed = 'solid', predicted = 'solid'), labels = c('Observed', 'Predicted'), name = NULL,
+    guide = guide_legend(override.aes = list(color = c('grey20', 'grey70'), linewidth = 1.4))),
+  scale_size_identity())
+p_trajectories = ggplot() +
+  geom_hline(yintercept = 0, color = 'grey90') + geom_vline(xintercept = 0, color = 'grey90') +
+  geom_point(data = cal, aes(x, y), color = 'grey80', size = .7, alpha = .4) +
+  geom_rect(data = boxes, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), color = boxes$color,
+    fill = NA, linetype = 'dashed', linewidth = .8) +
+  geom_label(data = boxes, aes(xmax, ymax, label = letter), color = boxes$color, fill = 'white', fontface = 'bold',
+    size = TEXT + .6, linewidth = 0, hjust = .5, vjust = .5) +
+  trajectory_layers(shown, steps_b, labels_b, lim_b$x, lim_b$y) +
+  coord_cartesian(xlim = lim_b$x, ylim = lim_b$y, expand = FALSE) +
+  labs(tag = 'B.', x = x_title, y = y_title) + theme_fig3 +
+  theme(legend.key.width = unit(2.2, 'cm'), aspect.ratio = diff(lim_b$y) / diff(lim_b$x))
 
-zoom = function(park, tag) {
-  d = holocene_points |> filter(site == park) |> arrange(kind, order)
-  first_last = d |> group_by(kind) |> filter(order %in% range(order))
-  ggplot(d, aes(x, y, color = series, group = series)) +
-    geom_path(linewidth = .8, arrow = arrow(length = unit(.08, 'in'), type = 'closed')) +
-    geom_point(aes(shape = period_type, fill = series), size = 3, color = 'grey15') +
-    geom_text_repel(data = first_last, aes(label = period), size = 3.2, color = 'grey15', seed = 2, show.legend = FALSE) +
-    scale_color_manual(values = colors, guide = 'none') + scale_fill_manual(values = colors, guide = 'none') +
-    scale_shape_manual(values = PERIOD_TYPE_SHAPES, name = NULL, breaks = c('Holocene-C', 'Holocene-S'),
-      labels = c('Climate-change period (C)', 'Stability period (S)')) +
-    guides(shape = guide_legend(override.aes = list(fill = 'grey60'))) +
-    coord_equal() + labs(tag = tag, title = paste(park, 'Holocene periods'),
-      x = 'Spring temperature (rotated axis 1)', y = 'Summer precipitation (rotated axis 2)') +
-    theme_fig3 + theme(plot.title = element_text(size = 12, face = 'bold'))
+zoom = function(park) {
+  d = holocene |> filter(site == park) |> mutate(group = paste(site, era, type))
+  st = d |> group_by(group) |> arrange(order, .by_group = TRUE) |> mutate(xend = lead(x), yend = lead(y)) |>
+    ungroup() |> filter(!is.na(xend))
+  box = boxes[boxes$site == park, ]
+  lab = bind_rows(d |> filter(type == 'observed') |> transmute(x, y, label = lab, series, fontface = 'plain', size = TEXT - .6),
+    d |> filter(type == 'predicted') |> transmute(x, y, label = '', series, fontface = 'plain', size = TEXT))
+  ggplot() + trajectory_layers(d, st, lab, c(box$xmin, box$xmax), c(box$ymin, box$ymax)) +
+    coord_cartesian(xlim = c(box$xmin, box$xmax), ylim = c(box$ymin, box$ymax), expand = FALSE) +
+    labs(tag = paste0(box$letter, '.'), title = paste(park, 'Holocene periods'), x = NULL, y = NULL) +
+    theme_fig3 + theme(legend.position = 'none', aspect.ratio = (box$ymax - box$ymin) / (box$xmax - box$xmin),
+      panel.border = element_rect(color = box$color, linetype = 'dashed', linewidth = 1.2, fill = NA),
+      plot.title = element_text(size = 22, face = 'bold', color = box$color), axis.text = element_text(size = 17))
 }
-figure = (p_biplot | p_moves) / (zoom('MORA', 'C.') + theme(legend.position = 'none') | zoom('NOCA', 'D.')) +
-  plot_layout(heights = c(1.25, 1))
+# A and B on top; the zooms C (MORA) and D (NOCA) below, as large as the top
+# panels allow, linked to B by their coloured dashed frames and letters.
+figure = (p_biplot | p_trajectories) / (zoom('MORA') | zoom('NOCA')) + plot_layout(heights = c(1, .9))
 if (render_figures) {
-  for (ext in c('pdf', 'png')) ggsave(fig('main', paste0('fig_cca_trajectories.', ext)), figure, width = 15, height = 15, dpi = 300)
-  ggsave(fig('supplementary', 'fig_cca_biplot_unrotated.pdf'), biplot(FALSE) + labs(tag = NULL), width = 8, height = 8.5)
+  # cairo_pdf draws the arrows of the axis titles, which the default pdf device cannot.
+  ggsave(fig('main', 'fig_cca_trajectories.pdf'), figure, width = 24, height = 24, device = cairo_pdf, bg = 'white')
+  ggsave(fig('main', 'fig_cca_trajectories.png'), figure, width = 24, height = 24, dpi = 300, bg = 'white')
+  ggsave(fig('supplementary', 'fig_cca_biplot_unrotated.pdf'), biplot(FALSE), width = 12, height = 12.5,
+    device = cairo_pdf, bg = 'white')
 }
-spans = holocene_points |> filter(kind == 'observed') |> group_by(site) |>
-  summarise(first_period = period[which.min(order)], last_period = period[which.max(order)])
-write_csv(spans |> left_join(periods |> select(first_period = period, first_older = older_cal_bp), by = 'first_period') |>
-  left_join(periods |> select(last_period = period, last_younger = younger_cal_bp), by = 'last_period'),
-  out('figures/cca_trajectory_holocene_spans.csv'))
-cat(sprintf('Figure 3: display rotation %.1f degrees; Holocene spans written.\n', rotation$angle_degrees))
+cat(sprintf('Figure 3: display rotation %.1f degrees; %d period centroids.\n', rotation$angle_degrees, nrow(centroids)))
