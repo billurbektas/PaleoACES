@@ -273,6 +273,82 @@ if(render_figures) {
     device=cairo_pdf,bg="white")
   ggsave(here("plot",paste0(cca_figure_stem,".png")),fig,width=18.5,height=8.5,dpi=300,bg="white")
 }
+# Presentation versions of panel B alone. Every version keeps the full figure's
+# axis limits (zx, zy), calibration background and page size, so the slides
+# overlay exactly: (1) Anthropocene trajectories only; (2) Anthropocene plus a
+# single Holocene step per series from its first to its final era centroid.
+trajectory_subset_panel = function(sub_long) {
+  sub_steps = sub_long %>% group_by(grp, type) %>% arrange(order, .by_group = TRUE) %>%
+    mutate(xend = lead(x), yend = lead(y)) %>% ungroup() %>% filter(!is.na(xend))
+  sub_lab_pts = sub_long %>% filter(type == "observed", !is.na(lab))
+  # Series labels reuse the main figure's anchors and offsets; an anchor point
+  # that is not displayed falls back to the series centre.
+  sub_centers = sub_long %>% group_by(site, era, type) %>%
+    summarize(center_x = mean(x), center_y = mean(y), .groups = "drop")
+  sub_anchors = sub_long %>% filter(!is.na(lab)) %>%
+    select(site, era, type, anchor_lab = lab, anchor_x = x, anchor_y = y)
+  sub_series = series_label_positions %>%
+    mutate(type = factor(type, levels = levels(sub_long$type))) %>%
+    semi_join(sub_centers, by = c("site", "era", "type")) %>%
+    left_join(sub_centers, by = c("site", "era", "type")) %>%
+    left_join(sub_anchors, by = c("site", "era", "type", "anchor_lab")) %>%
+    mutate(x = coalesce(anchor_x, center_x), y = coalesce(anchor_y, center_y),
+      lab = paste0(site, " ",
+        if_else(era == "holocene", "Holocene", "Anthropocene"), "\n",
+        str_to_title(as.character(type))),
+      nx = nx_frac * diff(range(traj_long$x)),
+      ny = ny_frac * diff(range(traj_long$y)))
+  sub_labels = bind_rows(
+    sub_lab_pts %>% transmute(x, y, label = lab, path_color,
+      nudge_x = 0, nudge_y = 0, fontface = "plain", label_size = 4),
+    add_path_color(sub_series) %>% transmute(x, y, label = lab, path_color,
+      nudge_x = nx, nudge_y = ny, fontface = "bold", label_size = 4.6))
+  ggplot() +
+    geom_hline(yintercept = 0, color = "grey90") + geom_vline(xintercept = 0, color = "grey90") +
+    geom_point(data = calib, aes(o1, o2), color = "grey80", size = .6, alpha = .3) +
+    geom_point(data = sub_long, aes(x, y, color = path_color), shape = 21, fill = "white",
+      size = 2.3, stroke = .8, show.legend = FALSE) +
+    geom_segment(data = sub_steps, aes(x, y, xend = xend, yend = yend, color = path_color,
+        linetype = type), arrow = arrow(length = unit(.19, "cm"), type = "closed"),
+      linewidth = .8, lineend = "round", show.legend = TRUE) +
+    geom_text_repel(data = sub_labels, aes(x, y, label = label, color = path_color,
+        fontface = fontface, size = label_size),
+      nudge_x = sub_labels$nudge_x, nudge_y = sub_labels$nudge_y,
+      box.padding = .4, point.padding = .2, force = 2.5, force_pull = 1.5,
+      segment.size = .3, segment.color = "grey60", min.segment.length = 0,
+      max.overlaps = Inf, max.iter = 200000, max.time = 8, seed = 3, lineheight = .95,
+      xlim = zx, ylim = zy, show.legend = FALSE) +
+    scale_color_manual(values = path_colors, guide = "none") +
+    scale_linetype_manual(values = c(observed = "solid", predicted = "solid"),
+      labels = c(observed = "Observed", predicted = "Predicted"), drop = FALSE,
+      guide = guide_legend(override.aes = list(color = c("grey25", "grey70"), linewidth = 1.1))) +
+    scale_size_identity() + scale_discrete_identity(aesthetics = "fontface") +
+    coord_cartesian(xlim = zx, ylim = zy, expand = FALSE) +
+    labs(x = ax_lab[1], y = ax_lab[2]) + base_theme +
+    theme(legend.text = element_text(size = 15), legend.key.width = unit(2.2, "cm"),
+      legend.key.height = unit(.65, "cm"), plot.margin = margin(10, 12, 10, 12))
+}
+anthropocene_long = traj_long %>% filter(era == "anthropocene")
+holocene_endpoints_long = traj_long %>% filter(era == "holocene") %>%
+  group_by(grp, type) %>% filter(order %in% range(order)) %>% ungroup()
+stopifnot(nrow(holocene_endpoints_long) == 8L)
+presentation_trajectories = list(
+  fig_cca_trajectories_anthropocene_observed =
+    anthropocene_long %>% filter(type == "observed"),
+  fig_cca_trajectories_anthropocene = anthropocene_long,
+  fig_cca_trajectories_anthropocene_holocene_endpoints =
+    bind_rows(anthropocene_long, holocene_endpoints_long))
+if (render_figures) {
+  dir.create(here("plot/presentation_figures"), showWarnings = FALSE)
+  for (stem in names(presentation_trajectories)) {
+    p = trajectory_subset_panel(presentation_trajectories[[stem]])
+    ggsave(here("plot/presentation_figures", paste0(stem, ".pdf")), p,
+      width = 10, height = 8.5, device = cairo_pdf, bg = "white")
+    ggsave(here("plot/presentation_figures", paste0(stem, ".png")), p,
+      width = 10, height = 8.5, dpi = 300, bg = "white")
+  }
+}
+
 cat("Panel A: all 14 species and four climate constraints; colors encode % constrained inertia.\n",
   "Species annotations give occurrence percentages. Species shares partition 100%; climate values are unique effects.\n",
   "Shared climate fraction:",shared_pct,"%.\n",

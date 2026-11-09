@@ -262,8 +262,10 @@ figure_text = paste(readLines(here("R/stages/10_climate_change_figure.R"),
   warn = FALSE), collapse = "\n")
 stopifnot(!grepl("holocene_period_candidates", source_text, fixed = TRUE),
   !grepl("forward_state", paste(source_text, helper_text), fixed = TRUE),
-  grepl("Maximum\\nregional median", figure_text, fixed = TRUE),
-  !grepl('label = c("Max", "MORA", "NOCA")', figure_text, fixed = TRUE))
+  grepl('"Holocene max", "Anthropocene MORA", "Anthropocene NOCA"',
+    figure_text, fixed = TRUE),
+  grepl("`Holocene max` = holocene_max_signed_rate_per_century",
+    figure_text, fixed = TRUE))
 
 retired_scripts = here(c("R/10_holocene_period_diagnostics.R",
   "R/11_holocene_climate_periods_1000yr.R",
