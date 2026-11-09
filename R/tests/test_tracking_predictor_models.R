@@ -1,169 +1,67 @@
-# Independent GLS algebra, selection, predictions and chronology-result audit.
+# Independent GLS algebra for the lake-period models (PLAN.md Steps 5 and 5a):
+# rebuild each residual covariance from the fitted parameters (AR(1) on the
+# unit order within series, park or period-type variances, endpoint weights)
+# and check the coefficients and their covariance against generalized least
+# squares computed by hand. Also checks the paired AR(1) correlation matrix.
 source(here::here('R/helpers/config.R'), local = TRUE)
-suppressPackageStartupMessages({library(here);library(tidyverse);library(nlme)})
-source(here('R/helpers/reconstruction_models.R'),local=TRUE)
-close=function(x,y,tol=1e-8) stopifnot(length(x)==length(y),
-  all(abs(as.numeric(x)-as.numeric(y))<=tol*pmax(1,abs(as.numeric(y)))))
-paths=c(tracking_primary_results('community'),tracking_primary_results('species'))
-for(results_dir in paths) {
-  entries=readRDS(file.path(results_dir,'primary_fits.rds'))
-  if(basename(results_dir)=='species_contribution_models') {
-    stopifnot(length(entries)==56L)
-    for(e in entries) stopifnot(all(as.character(e$data$site)==e$site),
-      !'site' %in% all.vars(e$fixed),is.null(e$variance))
-    # Presence in just one park must no longer block that park's model.
-    for(key in c('Abies amabilis:Holocene:MORA','Abies procera:Holocene:MORA',
-                 'Thuja plicata:Holocene:NOCA','Abies procera:Anthropocene:MORA'))
-      stopifnot(!is.null(entries[[key]]$fit))
-    stopifnot(is.null(entries[['Abies procera:Anthropocene:NOCA']]$fit))
-  }
-  for(e in entries) {
-    a=e$audit
-    stopifnot(length(unique(a$row_signature))==1L,all(a$method=='REML'))
-    eligible=a[a$converged & is.finite(a$delta_AIC)&a$delta_AIC<=2,]
-    recommendation=if(nrow(eligible)) eligible$model_type[order(eligible$n_covariance_parameters,eligible$AIC)][1] else NA_character_
-    stopifnot(identical(a$aic_recommended,!is.na(recommendation)&a$model_type==recommendation))
-    primary=if('MA1' %in% a$model_type) 'MA1' else 'Independent'
-    if(!any(a$converged&a$model_type==primary)) {stopifnot(is.null(e$fit),all(!a$selected));next}
-    stopifnot(e$selected==primary,sum(a$selected)==1L,all(a$primary_family==primary))
-    d=e$data;fit=e$fit
-    if(basename(results_dir)=='species_contribution_models' && e$era=='Anthropocene' && e$site=='MORA') {
-      stopifnot(identical(names(coef(fit)),'(Intercept)'),fit$dims$p==1L)
-      close(coef(fit),mean(d$estimate))
-      close(sqrt(vcov(fit)[1,1]),sd(d$estimate)/sqrt(nrow(d)))
-    }
-    if(basename(results_dir)=='species_contribution_models' && e$era=='Anthropocene' && e$site=='NOCA') {
-      stopifnot(identical(names(coef(fit)),c('(Intercept)','burnedBurned')),
-        identical(levels(d$burned),c('Unburned','Burned')))
-      unburned_mean=mean(d$estimate[d$burned=='Unburned'])
-      close(coef(fit)[1],unburned_mean)
-      close(coef(fit)[2],mean(d$estimate[d$burned=='Burned'])-unburned_mean)
-    }
-    X=model.matrix(formula(fit),d);X=X[,names(coef(fit)),drop=FALSE]
-    # Independently construct residual covariance blocks from fitted parameters.
-    if(is.null(fit$modelStruct$varStruct)) {
-      sd=rep(fit$sigma,nrow(d))
-      stopifnot(length(unique(d$site))==1L,!any(grepl('^site',names(coef(fit)))))
-    } else {
-      ratios=coef(fit$modelStruct$varStruct,unconstrained=FALSE,allCoef=TRUE)
-      variance_group=all.vars(formula(fit$modelStruct$varStruct))[1]
-      sd=fit$sigma*unname(ratios[as.character(d[[variance_group]])])
-    }
-    V=diag(sd^2)
-    phi=if(is.null(fit$modelStruct$corStruct)) NA_real_ else
-      as.numeric(coef(fit$modelStruct$corStruct,unconstrained=FALSE))
-    for(indices in split(seq_len(nrow(d)),d$series)) {
-      if(e$selected=='Independent') R=diag(length(indices)) else if(e$selected=='MA1') {
-        lag=abs(outer(d$time_index[indices],d$time_index[indices],'-'))
-        R=ifelse(lag==0,1,ifelse(lag==1,phi/(1+phi^2),0))
-      } else R=phi^abs(outer(d$time_centuries[indices],d$time_centuries[indices],'-'))
-      V[indices,indices]=R*outer(sd[indices],sd[indices])
-    }
-    ViX=solve(V,X)
-    cov=solve(crossprod(X,ViX));beta=cov%*%crossprod(X,solve(V,d$estimate))
-    close(coef(fit),beta,1e-6);close(vcov(fit),cov,1e-6)
-    pred=reconstruction_predictions(fit,d)
-    close(pred$predicted,X%*%coef(fit))
-    close(pred$prediction_se,sqrt(rowSums((X%*%cov)*X)),1e-6)
-    close(reconstruction_r2(d$estimate,pred$predicted),
-      1-sum((d$estimate-pred$predicted)^2)/sum((d$estimate-mean(d$estimate))^2))
-    if(e$era=='Holocene') stopifnot(all(d$time_index==d$transition_index),
-      all(d$time_centuries==-d$interval_mid_cal_bp/100))
-  }
-}
-# Filtering must preserve original transition-neighbor gaps.
-d=tibble(estimate=c(1,NA,2,3),site=factor(c('MORA','MORA','NOCA','NOCA'),levels=c('MORA','NOCA')),
-  standardized_climate_change_rate=c(1,2,3,4),fire_activity=c(2,4,1,3),lake=c('A','A','B','B'),
-  transition_index=c(1,2,1,2),interval_mid_cal_bp=c(300,200,500,350))
-selected=reconstruction_explanatory_input(d,'estimate')
-stopifnot(identical(selected$data$time_index,c(1,1,2)),nrow(selected$excluded)==1L)
-cat('Independent GLS covariance algebra, model selection, prediction/R2 and enabled chronology checks passed.\n')
+suppressPackageStartupMessages({library(here); library(tidyverse); library(nlme)})
+source(here('R/helpers/reconstruction_models.R'), local = TRUE)
+close = function(x, y, tol = 1e-6) stopifnot(length(x) == length(y),
+  all(abs(as.numeric(x) - as.numeric(y)) <= tol * pmax(1, abs(as.numeric(y)))))
+both = read_csv(out('cca_tracking_both_eras.csv'), show_col_types = FALSE)
 
-# Independently verify the additional paired-correction GLS. Neither outcome
-# may act as an independent replicate of the other on the same transition.
-joint_out=out('era_comparison/joint_correction_effects')
-joint=readRDS(file.path(joint_out,'primary_fits.rds'))$joint
-fit=joint$fit;d=joint$data
-input=read_csv(out('cca_tracking_era_model_input.csv'),show_col_types=FALSE)
-reselected=tracking_joint_correction_input(input)
-stopifnot(nrow(d)==nrow(reselected$data),all(d$paired),
-  !anyDuplicated(d[c('era','site','transition_id','correction')]),
-  all(table(interaction(d$era,d$site,d$transition_id,drop=TRUE))==2L),
-  all(is.finite(d$estimate)),joint$audit$converged,
-  joint$audit$covariance_status=='positive_definite',joint$audit$warnings=='')
-close(d$estimate,reselected$data$estimate)
-stopifnot(identical(d$time_index,reselected$data$time_index))
-stopifnot(all(d$time_index[d$era=='Holocene']==d$transition_index[d$era=='Holocene']))
-X=model.matrix(formula(fit),d)[,names(coef(fit)),drop=FALSE]
-pars=coef(fit$modelStruct$corStruct,unconstrained=FALSE)
-ratios=coef(fit$modelStruct$varStruct,unconstrained=FALSE,allCoef=TRUE)
-sd=fit$sigma*unname(ratios[as.character(d$era_site_correction)])
-V=matrix(0,nrow(d),nrow(d))
-ViX=matrix(0,nrow(d),ncol(X));Viy=numeric(nrow(d))
-blocks=split(seq_len(nrow(d)),d$series)
-for(ii in blocks) {
-  lag=abs(outer(d$time_index[ii],d$time_index[ii],'-'))
-  temporal=ifelse(lag==0,1,ifelse(lag==1,pars[['MA1']]/(1+pars[['MA1']]^2),0))
-  same=outer(as.character(d$correction[ii]),as.character(d$correction[ii]),'==')
-  pair_rho=pars[[as.character(d$era_site[ii[1]])]]
-  R=temporal*ifelse(same,1,pair_rho)
-  stopifnot(min(eigen(R,symmetric=TRUE,only.values=TRUE)$values)>0)
-  vb=R*outer(sd[ii],sd[ii]);V[ii,ii]=vb
-  ViX[ii,]=solve(vb,X[ii,,drop=FALSE]);Viy[ii]=solve(vb,d$estimate[ii])
-}
-cov=solve(crossprod(X,ViX));beta=cov%*%crossprod(X,Viy)
-close(coef(fit),beta,1e-6);close(vcov(fit),cov,1e-6)
-mt=read_csv(file.path(joint_out,'model_group_means.csv'),show_col_types=FALSE)
-ct=read_csv(file.path(joint_out,'correction_contrasts.csv'),show_col_types=FALSE)
-grid=mt |> mutate(era=factor(era,levels=levels(d$era)),site=factor(site,levels=levels(d$site)),
-  correction=factor(correction,levels=levels(d$correction)))
-Xm=model.matrix(~era*site*correction,grid)[,names(coef(fit)),drop=FALSE]
-close(mt$estimate,Xm%*%beta,1e-6)
-close(mt$std_error,sqrt(rowSums((Xm%*%cov)*Xm)),1e-6)
-for(i in seq_len(nrow(ct))) {
-  ii=which(mt$era==ct$era[i] & mt$site==ct$site[i])
-  L=Xm[ii[mt$correction[ii]=='Direction'],]-Xm[ii[mt$correction[ii]=='Pace'],]
-  close(ct$estimate[i],sum(L*beta),1e-6)
-  close(ct$std_error[i],sqrt(as.numeric(L%*%cov%*%L)),1e-6)
-  close(c(ct$conf_low[i],ct$conf_high[i]),ct$estimate[i]+c(-1,1)*qt(.975,ct$df[i])*ct$std_error[i])
-}
-close(ct$p_adjusted,p.adjust(ct$p_value,method='holm'))
-close(mt$conf_low,mt$estimate-qt(.975,mt$df)*mt$std_error)
-close(mt$conf_high,mt$estimate+qt(.975,mt$df)*mt$std_error)
-zero=read_csv(file.path(joint_out,'displayed_mean_zero_tests.csv'),show_col_types=FALSE)
-stopifnot(nrow(zero)==12L,!anyDuplicated(zero[c('era','site','correction')]),
-  identical(zero$zero_significant,zero$p_zero<.05),
-  identical(zero$zero_significant,zero$conf_low>0 | zero$conf_high<0))
-close(zero$p_zero,2*pt(-abs(zero$estimate/zero$std_error),zero$df))
-# Independently reconstruct both correction effects from endpoints. Effects
-# compare final observed and counterfactual lag, not change from initial lag.
-for(era_name in c('Holocene','Anthropocene')) {
-  path=if(era_name=='Holocene') out('cca_tracking_holocene_lake_calculations.csv') else
-    out('cca_tracking_anthropocene_plot_calculations.csv')
-  x=read_csv(here(path),show_col_types=FALSE)
-  a=sqrt((x$o1_2-x$o1)^2+(x$o2_2-x$o2)^2)
-  b=sqrt((x$p1_2-x$p1)^2+(x$p2_2-x$p2)^2)
-  final=sqrt((x$o1_2-x$p1_2)^2+(x$o2_2-x$p2_2)^2)
-  for(kind in c('pace','direction')) {
-    valid=x[[paste0(kind,'_counterfactual_valid')]]
-    cx=if(kind=='pace') x$o1+b*(x$o1_2-x$o1)/a else x$o1+a*(x$p1_2-x$p1)/b
-    cy=if(kind=='pace') x$o2+b*(x$o2_2-x$o2)/a else x$o2+a*(x$p2_2-x$p2)/b
-    independent=(final-sqrt((cx-x$p1_2)^2+(cy-x$p2_2)^2))*100/x$climate_dt_years
-    metric=paste0(kind,'_effect_on_lag_per_century')
-    close(independent[valid],x[[metric]][valid],1e-12)
-    modeled=input |> filter(era==era_name,metric==.env$metric)
-    ids=if(era_name=='Holocene') x$transition_id else paste(x$site,x$plot_id,sep=':')
-    close(modeled$estimate[match(ids[valid],modeled$transition_id)],independent[valid],1e-12)
+check_gls = function(fit, d, group, series, pair = NULL) {
+  X = model.matrix(formula(fit), d)[, names(coef(fit)), drop = FALSE]
+  ident = fit$modelStruct$varStruct[[1]]
+  ratios = coef(ident, unconstrained = FALSE, allCoef = TRUE)
+  sd = fit$sigma * unname(ratios[as.character(d[[group]])]) * sqrt(d$endpoint_var)
+  pars = coef(fit$modelStruct$corStruct, unconstrained = FALSE)
+  V = matrix(0, nrow(d), nrow(d))
+  for (i in split(seq_len(nrow(d)), d[[series]])) {
+    R = pars[1]^abs(outer(d$unit_index[i], d$unit_index[i], '-'))
+    if (!is.null(pair)) R = R * ifelse(outer(d$correction[i], d$correction[i], '=='), 1, pars[[pair[i[1]]]])
+    V[i, i] = R * outer(sd[i], sd[i])
   }
+  ViX = solve(V, X); covariance = solve(crossprod(X, ViX))
+  close(coef(fit), covariance %*% crossprod(X, solve(V, d$estimate)))
+  close(vcov(fit), covariance)
 }
-# Non-neighboring transitions are uncorrelated even if exclusions leave a gap.
-toy=data.frame(time_index=c(1L,1L,3L,3L),series='lake',
-  era=factor('Holocene',levels=c('Holocene','Anthropocene')),
-  site=factor('MORA',levels=c('MORA','NOCA')),
-  correction=factor(c('Pace','Direction','Pace','Direction'),levels=c('Pace','Direction')))
-R=nlme::corMatrix(nlme::Initialize(corPairedMA1(c(.3,.4,.2,.1,-.2)),toy))[[1]]
-close(R[1:2,3:4],rep(0,4));close(R[1,2],.4)
-toy$time_index[3:4]=2L
-R=nlme::corMatrix(nlme::Initialize(corPairedMA1(c(.3,.4,.2,.1,-.2)),toy))[[1]]
-close(R[1,3],.3/(1+.3^2));close(R[1,4],.4*.3/(1+.3^2))
-cat('Paired GLS covariance, matched rows, fitted means, correction contrasts and preserved time gaps passed.\n')
+
+# Step 5: Holocene explanatory models.
+fits = readRDS(out('community_predictor_models/primary_fits.rds'))
+for (response in c('lag_rate', 'pace_effect', 'direction_effect')) {
+  d = both |> filter(period_type != 'Anthropocene', is.finite(.data[[response]])) |>
+    mutate(estimate = .data[[response]], site = factor(site, levels = c('MORA', 'NOCA')))
+  fit = fits[[paste(response, 'Holocene')]]
+  stopifnot(identical(all.vars(formula(fit))[-1], c('site', 'climate_rate', 'fire_activity')),
+    # nlme stores an AR(1) with gaps in the unit order as the equivalent ARMA(1, 0).
+    inherits(fit$modelStruct$corStruct, c('corAR1', 'corARMA')),
+    length(coef(fit$modelStruct$corStruct)) == 1L, fit$dims$N == nrow(d))
+  check_gls(fit, d, 'site', 'lake')
+}
+
+# Step 5a: era models, all six period type x park groups.
+fits = readRDS(out('era_comparison/primary_fits.rds'))
+for (response in names(ERA_RESPONSES)) {
+  d = both |> filter(is.finite(.data[[response]])) |>
+    mutate(estimate = .data[[response]], period_type = factor(period_type, levels = ERA_PERIOD_TYPES),
+      site = factor(site, levels = c('MORA', 'NOCA')),
+      period_type_site = interaction(period_type, site, drop = TRUE, sep = ' '))
+  fit = fits[[response]]
+  stopifnot(fit$dims$N == nrow(d), nlevels(d$period_type_site) == 6L)
+  check_gls(fit, d, 'period_type_site', 'series')
+}
+
+# Joint pace and direction model: paired AR(1).
+fit = readRDS(out('era_comparison/joint_correction_effects/primary_fit.rds'))
+d = tracking_joint_correction_input(both)
+stopifnot(fit$dims$N == nrow(d), all(table(d$series, d$unit_index)[table(d$series, d$unit_index) > 0] == 2L))
+check_gls(fit, d, 'period_type_site_correction', 'series',
+  pair = paste(ifelse(d$period_type == 'Anthropocene', 'Anthropocene', 'Holocene'), d$site))
+
+# The paired AR(1) correlation of a toy series, by hand.
+toy = tibble(series = 'A', unit_index = c(1, 1, 3, 3), correction = factor(c('Pace', 'Direction', 'Pace', 'Direction'),
+  levels = c('Pace', 'Direction')), period_type = 'Holocene-C', site = 'MORA')
+R = nlme::corMatrix(nlme::Initialize(corPairedAR1(c('Holocene MORA', 'Anthropocene MORA'), c(.5, .3, .1)), toy))[[1]]
+close(R, matrix(c(1, .3, .25, .075, .3, 1, .075, .25, .25, .075, 1, .3, .075, .25, .3, 1), 4), 1e-12)
+cat('Lake-period GLS algebra (Step 5, Step 5a, joint pace and direction) and the paired AR(1) checks passed.\n')

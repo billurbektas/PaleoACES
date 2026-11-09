@@ -1,14 +1,16 @@
-# Independent primary contribution gate: original sample weights, CCA scaling,
-# every endpoint/vector/projection, rate conversion and stationary directions.
+# Independent contribution gate (PLAN.md Step 6): original sample weights, CCA
+# scaling, every endpoint, vector and projection on the lake-periods and plot
+# pairs, both measures, rate conversion and undefined directions.
 suppressPackageStartupMessages({library(here);library(tidyverse);library(vegan)})
 source(here('R/helpers/cca_transition_contributions.R'),local=TRUE)
 source(here('R/helpers/config.R'),local=TRUE)
 read_output=function(name) read_csv(out(paste0(name,'.csv')),show_col_types=FALSE)
 reference=readRDS(out('cca_calibration_reference.rds'))
-h=read_output('cca_tracking_holocene_lake_calculations')
-a=read_output('cca_tracking_anthropocene_plot_calculations')
-species=read_output('cca_transition_contributions/species_primary')
-climate=read_output('cca_transition_contributions/climate_primary')
+h=read_output('cca_tracking_lake_period_calculations')
+source(here('R/helpers/lake_periods.R'),local=TRUE)
+a=read_output('cca_tracking_anthropocene_plot_calculations') |> lake_period_responses()
+species=read_output('cca_transition_contributions/species_contributions')
+climate=read_output('cca_transition_contributions/climate_contributions')
 assigned=read_output('cca_tracking_holocene_sample_assignments')
 occ=read_output('occ_consolidated');taxa=reference$retained_species
 close=function(x,y,tol=1e-10) {
@@ -18,7 +20,7 @@ close=function(x,y,tol=1e-10) {
  stopifnot(all(is.finite(x[finite])),all(is.finite(y[finite])),
    all(abs(x[finite]-y[finite])<=tol*pmax(1,abs(y[finite]))))
 }
-key=function(x) ifelse(x$era=='Holocene',paste('H',x$site,x$lake,x$age_hi,x$age_lo,sep='|'),
+key=function(x) ifelse(x$era=='Holocene',paste('H',x$site,x$lake,x$age_start,x$age_end,sep='|'),
  paste('A',x$site,x$plot_id,sep='|'))
 endpoint=bind_rows(h |> mutate(era='Holocene',plot_id=NA_character_),
  a |> mutate(era='Anthropocene',lake=NA_character_))
@@ -27,7 +29,7 @@ stopifnot(!anyDuplicated(key(endpoint)),nrow(a)==607L,
  !anyDuplicated(paste(key(species),species$species)),
  !anyDuplicated(paste(key(climate),climate$variable)),
  !any(c('offset','perpendicular_contribution') %in% c(names(species),names(climate))),
- !'contribution_rate' %in% names(climate),all(is.na(h$draw)))
+ !'contrib_climate' %in% names(climate))
 # Build binary occurrence matrices independently of the contribution producer.
 manual=function(ids,period) {
  rows=occ[occ$period==period & occ$plot_id %in% ids & occ$species %in% taxa,]
@@ -45,8 +47,8 @@ endpoint_weights=function(lake,age) {
  sample_ids=assigned$sample_id[assigned$lake==lake & assigned$century_cal_bp==age]
  stopifnot(length(sample_ids)>0);colMeans(q[sample_ids,,drop=FALSE])
 }
-first=t(vapply(seq_len(nrow(h)),function(i) endpoint_weights(h$lake[i],h$age_hi[i]),numeric(length(taxa))))
-last=t(vapply(seq_len(nrow(h)),function(i) endpoint_weights(h$lake[i],h$age_lo[i]),numeric(length(taxa))))
+first=t(vapply(seq_len(nrow(h)),function(i) endpoint_weights(h$lake[i],h$age_start[i]),numeric(length(taxa))))
+last=t(vapply(seq_len(nrow(h)),function(i) endpoint_weights(h$lake[i],h$age_end[i]),numeric(length(taxa))))
 legacy=manual(a$plot_id,'past');modern=manual(a$plot_id,'present')
 close(legacy,as.matrix(reference$legacy_species[a$plot_id,taxa,drop=FALSE]))
 first=rbind(first,legacy/rowSums(legacy));last=rbind(last,modern/rowSums(modern))
@@ -81,7 +83,15 @@ for(type in c('species','climate')) {
  projected[!valid]=NA_real_
  stopifnot(identical(x$reference_direction_valid,valid))
  close(x$parallel_contribution,projected)
- if(type=='species') close(x$contribution_rate,projected*100/endpoint$vegetation_dt_years[index])
+ if(type=='species') {
+  defined=endpoint$direction_defined[index]
+  close(x$contrib_climate,ifelse(defined,projected*100/endpoint$vegetation_dt_years[index],NA_real_))
+  # The gap measure: projection on LC_t1 - WA_t1.
+  gx=(endpoint$p1-endpoint$o1)[index];gy=(endpoint$p2-endpoint$o2)[index]
+  gap=x$contribution_CCA1*cos(atan2(gy,gx))+x$contribution_CCA2*sin(atan2(gy,gx))
+  gap[sqrt(gx^2+gy^2)<=CCA_CONTRIBUTION_EPSILON]=NA_real_
+  close(x$contrib_gap,ifelse(defined,gap*100/endpoint$vegetation_dt_years[index],NA_real_))
+ }
 }
 # Zero components remain zero; undefined reference directions remain NA.
 p=contribution_project(c(2,0,-2,0,1,1),c(0,3,0,0,1,1),c(1,1,1,1,0,1e-9),rep(0,6))

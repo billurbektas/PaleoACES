@@ -104,7 +104,7 @@ OUTPUT_REGISTRY = tibble::tribble(
   "era_comparison", "13_era_models", "Era-comparison GLS fits, means and contrasts per response",
   "community_predictor_models", "14_predictor_models", "Within-era predictor GLS fits",
   "cca_transition_contributions", "15_contributions", "Species and climate contributions to displacement",
-  "species_contribution_models", "15_contributions", "Species-contribution GLS fits",
+  "species_contribution_models", "15_contributions", "Species contribution means, contrasts and NOCA burned means",
   # tables written by figure scripts, worked examples and report-only figures
   "figures", "figures", "Tables behind the figures (centroids, annotations)",
   "worked_examples", "worked_examples", "Tables behind the worked examples",

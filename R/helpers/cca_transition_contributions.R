@@ -155,3 +155,38 @@ century_climate_contributions = function(context,x,reference) {
     'Every transition seasonal-climate vector conservation')
   result
 }
+
+# Mean relative species weights of each lake and sampled century: each sample's
+# weights are normalized first, then averaged, as the WA centroid is.
+century_species_weights = function(reconstruction, bundle) {
+  use = bundle$samples$eligible
+  sample_weights = contribution_weights(bundle$species_matrix[use, , drop = FALSE])
+  a = reconstruction$assignments |> dplyr::filter(is.finite(century_cal_bp))
+  keys = paste(a$lake, a$century_cal_bp)
+  groups = unique(keys)
+  means = rowsum(sample_weights[match(a$sample_id, rownames(sample_weights)), , drop = FALSE],
+    keys, reorder = FALSE) / as.numeric(table(factor(keys, levels = groups)))
+  rownames(means) = groups
+  means
+}
+
+# Step 6 (PLAN.md): each species' vector is its change in share between t1 and
+# t2 times its fixed CCA position. The vectors add up to the observed movement.
+# Two measures, per century: the projection on the direction the prediction
+# moved (contrib_climate) and on the gap at the start, LC_t1 - WA_t1
+# (contrib_gap). Undefined where the reference vector has no length, and, by
+# the epsilon rule, where the observed or predicted position did not move.
+step6_species_contributions = function(context, first, last, positions, endpoints, dt) {
+  rows = contribution_species(context, first, last, positions, endpoints)
+  contribution_close((last - first) %*% positions,
+    as.matrix(endpoints[c('delta_observed_CCA1', 'delta_observed_CCA2')]), 'Species vectors sum to dWA')
+  index = rep(seq_len(nrow(context)), each = ncol(first))
+  gap = contribution_project(rows$contribution_CCA1, rows$contribution_CCA2,
+    (endpoints$p1 - endpoints$o1)[index], (endpoints$p2 - endpoints$o2)[index])
+  defined = endpoints$direction_defined[index]
+  rows$gap_contribution = gap$parallel
+  rows$gap_direction_valid = gap$valid
+  rows$contrib_climate = ifelse(defined, rows$parallel_contribution * 100 / dt[index], NA_real_)
+  rows$contrib_gap = ifelse(defined, rows$gap_contribution * 100 / dt[index], NA_real_)
+  rows
+}

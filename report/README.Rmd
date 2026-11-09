@@ -62,7 +62,7 @@ is finished.
 | Steps 2 to 4 | Mismatch, lag, turnover, pace, direction, climate change rate and fire per lake-period | `r u = read_output('cca_tracking_lake_periods.csv'); sprintf('%d lake-periods (MORA %d, NOCA %d, %d C, %d S), %d to %d years long', nrow(u), sum(u$site == "MORA"), sum(u$site == "NOCA"), sum(u$period_type == "Holocene-C"), sum(u$period_type == "Holocene-S"), min(u$duration_yr), max(u$duration_yr))` |
 | Step 5 | Holocene explanatory models | `r x = read_output('community_predictor_models/model_coefficients.csv') |> dplyr::filter(era == 'Holocene'); g = function(m, t) x[x$metric == m & x$term == t, ]; sprintf('Lag rate rises with climate change rate (%+.2f, %.2f to %.2f), fire goes with a larger direction effect (%+.2f, %.2f to %.2f)', g('lag_rate','climate_rate')$estimate, g('lag_rate','climate_rate')$conf_low, g('lag_rate','climate_rate')$conf_high, g('direction_effect','fire_activity')$estimate, g('direction_effect','fire_activity')$conf_low, g('direction_effect','fire_activity')$conf_high)` |
 | Step 5a | Holocene against Anthropocene (era models) | `r f = read_output('era_comparison/era_folds.csv'); g = function(r, p) f$fold[f$response == r & f$site == p & f$against == 'Holocene-C']; sprintf('Anthropocene climate change %.0f (MORA) and %.0f (NOCA) times faster than in Holocene-C periods, turnover %.0f and %.0f times faster', g('climate_rate','MORA'), g('climate_rate','NOCA'), g('turnover_rate','MORA'), g('turnover_rate','NOCA'))` |
-| Step 6 | Species contributions | (pending) |
+| Step 6 | Species contributions | `r m = read_output('species_contribution_models/species_means.csv'); h = m[m$period_type != 'Anthropocene' & m$interval_defined, ]; a = m[m$period_type == 'Anthropocene' & m$interval_defined & m$measure == 'contrib_gap', ]; sprintf('Holocene species means near zero (%d of %d intervals span zero), %d of %d Anthropocene gap means above zero', sum(h$conf_low <= 0 & h$conf_high >= 0), nrow(h), sum(a$conf_low > 0), nrow(a))` |
 
 # Step 0. Climate variables and the CCA
 
@@ -418,6 +418,68 @@ Stages and helpers: [`R/pipeline/13_era_models.R`](R/pipeline/13_era_models.R),
 [`R/helpers/tracking_model_reporting.R`](R/helpers/tracking_model_reporting.R) (period types, paired
 AR(1) correlation), [`R/helpers/reconstruction_models.R`](R/helpers/reconstruction_models.R).
 Figures 4 and 5 are drawn in M08.
+
+# Step 6. Species
+
+**What and why.** The observed movement of a community between t1 and t2 is the sum of one
+vector per species: the change in the species' share times the species' fixed position in the
+CCA plane. Projecting each species' vector on a reference direction says how much that species
+moved the community along it. Two references are used. Along the direction the prediction moved
+(`contrib_climate`), a positive value means the species carried the community with the climate.
+Along the gap at the start, from the observed to the predicted position (`contrib_gap`), a
+positive value means the species closed that gap. Both are per century.
+
+**Decisions.**
+
+- 9 Nov 2026 (Bills, `PLAN.md` row 9): no species models with slopes. Group means per species,
+  park and period type, two measures.
+- 9 Nov 2026 (Bills, during the run): no species model of any kind. The group means are plain
+  means with t-intervals, and the contrasts are Welch differences of means.
+- 9 Nov 2026 (taken in the run): plot contributions are per century of the vegetation interval,
+  like turnover. Lake-period contributions are per century of `duration_yr`. Rows without a
+  defined direction (epsilon rule) leave both measures.
+
+**Code.**
+
+```{r step6-code}
+code_snippet('R/pipeline/15_contributions.R', 'species-means')
+```
+
+**Result.**
+
+```{r step6-results}
+species_means = read_output('species_contribution_models/species_means.csv')
+species_means |> mutate(value = ifelse(interval_defined, sprintf('%+.3f (%.3f to %.3f)', estimate, conf_low, conf_high),
+    ifelse(present, sprintf('%+.3f', estimate), 'absent'))) |>
+  select(measure, species, site, period_type, value) |>
+  pivot_wider(names_from = c(measure, period_type), values_from = value) |>
+  rename(Species = species, Park = site) |>
+  show_table('step6_species_means', caption = paste('**Species contributions**, mean and 95% t-interval in CCA',
+    'distance per century, per species, park and period type. Columns: measure (contrib_climate along the',
+    'predicted movement, contrib_gap along the starting gap) and period type. "absent": the species does',
+    'not occur in that park and period type.'))
+```
+
+The species vectors add up to the observed movement for every lake-period and plot pair (asserted).
+```{r step6-numbers}
+hol = species_means |> filter(period_type != 'Anthropocene')
+hol_away = hol |> filter(interval_defined, conf_low > 0 | conf_high < 0)
+gap = species_means |> filter(period_type == 'Anthropocene', measure == 'contrib_gap', interval_defined)
+```
+
+In the Holocene every species mean is close to zero in both parks (largest absolute value
+`r sprintf('%.3f', max(abs(hol$estimate)))` CCA distance per century).
+`r nrow(hol_away)` of `r sum(hol$interval_defined)` Holocene intervals exclude zero
+(`r paste(sprintf('%s, %s, %s, %s', hol_away$species, hol_away$site, hol_away$period_type, hol_away$measure), collapse = '; ')`),
+all smaller than `r sprintf('%.3f', max(abs(hol_away$estimate)))` in absolute value. The Anthropocene
+means are larger. Along the starting gap `r sum(gap$conf_low > 0)` of `r nrow(gap)` species-park
+means are positive with intervals above zero: the resurvey shifts of these species reduced the gap
+that existed at the legacy survey.
+The two measures do not agree species by species, so both stay in Figure 7.
+
+Stages and helpers: [`R/pipeline/15_contributions.R`](R/pipeline/15_contributions.R),
+[`R/helpers/cca_transition_contributions.R`](R/helpers/cca_transition_contributions.R).
+Figure 7 is drawn in M08.
 
 # Figure 1. Conceptual framework
 
