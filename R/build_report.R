@@ -1,20 +1,25 @@
-# Build the report from the finished outputs: the repository README.md (the appendix),
+# Build the report from the finished outputs: the repository README.md (the appendix,
+# from report/README.Rmd),
 # report/details/*.md, the PNG previews in report/figures/png/ and the tables in
 # report/tables/. Run after R/run_all.R:
 #   Rscript R/build_report.R
 suppressPackageStartupMessages(library(here))
 if (!nzchar(Sys.which('pdftoppm'))) stop('pdftoppm (poppler) is required to preview figures.')
 unlink(here('report/tables'), recursive = TRUE)
-render = function(rmd, toc = TRUE) {
+render = function(rmd, toc = TRUE, output_dir = dirname(rmd)) {
   cat('Rendering', sub(paste0(here(), '/'), '', rmd), '\n')
+  options(paleoaces.report_output_dir = output_dir)
+  on.exit(options(paleoaces.report_output_dir = NULL), add = TRUE)
   rmarkdown::render(rmd, output_format = rmarkdown::github_document(html_preview = FALSE,
-      toc = toc, toc_depth = 2), output_dir = dirname(rmd), quiet = TRUE,
+      toc = toc, toc_depth = 2), output_dir = output_dir, quiet = TRUE,
     knit_root_dir = here(), envir = new.env(parent = globalenv()))
 }
 for (rmd in sort(list.files(here('report/details'), pattern = '[.]Rmd$', full.names = TRUE))) render(rmd)
-render(here('README.Rmd'), toc = FALSE)  # GitHub shows its own outline
+# The appendix source lives in report/; its output is the repository README.md.
+render(here('report/README.Rmd'), toc = FALSE, output_dir = here())  # GitHub shows its own outline
 # A self-contained HTML copy of the appendix for sharing outside GitHub.
-rmarkdown::render(here('README.Rmd'), output_format = rmarkdown::html_document(toc = TRUE,
+options(paleoaces.report_output_dir = here('report'))
+rmarkdown::render(here('report/README.Rmd'), output_format = rmarkdown::html_document(toc = TRUE,
     toc_float = TRUE, self_contained = TRUE, theme = 'flatly'), output_file = 'PaleoACES_report.html',
   output_dir = here('report'), quiet = TRUE, knit_root_dir = here(), envir = new.env(parent = globalenv()))
 # Previews of figures no longer shown anywhere are stale.

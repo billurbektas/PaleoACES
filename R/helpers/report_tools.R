@@ -1,4 +1,4 @@
-# Helpers for the report (README.Rmd and report/details/*.Rmd).
+# Helpers for the report (report/README.Rmd and report/details/*.Rmd).
 # Figures are shown from report/figures/; tables are read from output/ and
 # also saved under report/tables/; code is quoted verbatim from the scripts.
 source(here::here('R/helpers/config.R'), local = TRUE)
@@ -30,7 +30,8 @@ pdf_pages = function(pdf) {
 
 # Path of a report file relative to the document being knitted.
 relative_to_document = function(path) {
-  doc_dir = normalizePath(knitr::opts_knit$get('output.dir') %||% getwd())
+  # R/build_report.R sets the folder the document is finally written to.
+  doc_dir = normalizePath(getOption('paleoaces.report_output_dir') %||% knitr::opts_knit$get('output.dir') %||% getwd())
   path = normalizePath(path)
   up = 0L; d = doc_dir
   while (!startsWith(path, paste0(d, '/'))) { d = dirname(d); up = up + 1L }
