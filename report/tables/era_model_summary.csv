@@ -7,3 +7,5 @@ lag_rate,631,-0.13614325111791073,"A.Anthropocene NOCA=2.127, A.Holocene-C MORA=
 lag,631,-0.04872223842036661,"A.Anthropocene NOCA=2.054, A.Holocene-C MORA=0.609, A.Holocene-S MORA=0.589, A.Holocene-C NOCA=1.578, A.Holocene-S NOCA=2.452",0.03205186263529969,
 pace_effect,487,0.4325357935373305,"A.Anthropocene NOCA=2.772, A.Holocene-C MORA=0.086, A.Holocene-S MORA=0.061, A.Holocene-C NOCA=0.076, A.Holocene-S NOCA=0.257",0.02078482865829356,
 direction_effect,487,-0.04091087235533295,"A.Anthropocene NOCA=1.719, A.Holocene-C MORA=0.080, A.Holocene-S MORA=0.043, A.Holocene-C NOCA=0.115, A.Holocene-S NOCA=0.131",0.02651095913414358,
+pace_effect_total,487,0.3656824763852451,"A.Anthropocene NOCA=2.698, A.Holocene-C MORA=0.732, A.Holocene-S MORA=1.134, A.Holocene-C NOCA=1.089, A.Holocene-S NOCA=3.011",0.02177002330553212,
+direction_effect_total,487,0.04424063251921361,"A.Anthropocene NOCA=1.676, A.Holocene-C MORA=0.744, A.Holocene-S MORA=0.669, A.Holocene-C NOCA=1.981, A.Holocene-S NOCA=1.439",0.02903891341357822,

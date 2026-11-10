@@ -404,6 +404,7 @@ contrasts = read_output(file.path(era_dir, 'era_contrasts.csv'))
 folds = read_output(file.path(era_dir, 'era_folds.csv'))
 durations = read_output(file.path(era_dir, 'era_durations.csv'))
 response_label = c(climate_rate = 'Climate change rate', climate_change = 'Climate change (not divided by time)',
+  pace_effect_total = 'Pace effect (not divided by time)', direction_effect_total = 'Direction effect (not divided by time)',
   turnover_rate = 'Turnover rate',
   displacement = 'Displacement (turnover, not divided by time)', lag_rate = 'Lag rate', lag = 'Lag',
   pace_effect = 'Pace effect', direction_effect = 'Direction effect')
@@ -413,8 +414,8 @@ spans = sprintf(paste('Holocene-C lake-periods span %s years, Holocene-S lake-pe
 means |> transmute(Response = response_label[response], Park = site, `Period type` = period_type, n,
     `Fitted mean` = estimate, `95% CI` = sprintf('%.3f to %.3f', conf_low, conf_high)) |>
   show_table('step5a_era_means', caption = paste('**Fitted means by period type and park.** Climate change',
-    'rate in calibration SD per century, the climate change in calibration SD, the displacement and the lag in CCA',
-    'distance, the other responses in CCA distance per century.', spans))
+    'rate in calibration SD per century, the climate change in calibration SD, the displacement, the lag and the',
+    'effect totals in CCA distance, the other responses in CCA distance per century.', spans))
 contrasts |> transmute(Response = response_label[response], Park = site, Contrast = contrast,
     Estimate = estimate, `95% CI` = sprintf('%.3f to %.3f', conf_low, conf_high), p = p_value) |>
   show_table('step5a_era_contrasts', caption = paste('**Contrasts between period types within each park**,',
@@ -451,6 +452,14 @@ climate-change periods did in centuries (Anthropocene minus Holocene-C
 stability periods (`r ct('displacement', 'MORA', 'Anthropocene - Holocene-S')`). At NOCA the plots moved
 more than in either Holocene type (`r ct('displacement', 'NOCA', 'Anthropocene - Holocene-C')` against
 Holocene-C, `r ct('displacement', 'NOCA', 'Anthropocene - Holocene-S')` against Holocene-S).
+The pace and direction effects lose most of their era differences when they are not divided by
+time. At MORA, the per-century pace effect of the Anthropocene exceeds that of both Holocene types
+(`r ct('pace_effect', 'MORA', 'Anthropocene - Holocene-C')` against Holocene-C), but its total does not
+(`r ct('pace_effect_total', 'MORA', 'Anthropocene - Holocene-C')`), and the total direction effect
+differs only from the stability periods (`r ct('direction_effect_total', 'MORA', 'Anthropocene - Holocene-S')`).
+At NOCA the total pace effect still lies below that of the climate-change periods
+(`r ct('pace_effect_total', 'NOCA', 'Anthropocene - Holocene-C')`). The Anthropocene effects are large per
+century mainly because they build up over a few decades.
 
 ```{r fig-4-main}
 show_figure('report/figures/main/fig_era_contrasts.pdf')
@@ -483,15 +492,17 @@ show_figure('report/figures/main/fig_lag_pace_direction.pdf')
 
 **Figure 5. Pace effect and direction effect in the Holocene and the Anthropocene.** For each park, the fitted
 mean and 95% confidence interval of the Holocene stability periods (triangles), the Holocene climate-change periods
-(circles) and the Anthropocene (diamonds), for (A) the pace effect and (B) the direction effect, with the fitted mean
-printed beside each point, on one y scale for both panels. Each effect is the lag at the end of the period minus the lag
-the community would have had at the climate-predicted pace (A, keeping its own direction) or in the climate-predicted
-direction (B, keeping its own distance). A positive effect means that the community's own pace or direction widened
-the lag. A negative effect means that it narrowed the lag. Connectors link the Anthropocene to the Holocene climate-change periods (lower) and to the
-Holocene stability periods (upper) within each park, and a star marks a contrast that differs from zero (two-sided t
-test, p < 0.05). Fitted means and contrasts come from the same models as Figure 4, whose panel F shows the lag rate.
-Lake-periods and plots whose observed or predicted position did not move have no pace or direction effect: the panels
-hold `r m5 = read_output('era_comparison/era_means.csv'); m5$n[m5$response == 'pace_effect' & m5$site == 'MORA' & m5$period_type == 'Holocene-C']` climate-change and `r m5$n[m5$response == 'pace_effect' & m5$site == 'MORA' & m5$period_type == 'Holocene-S']` stability lake-periods at MORA. `r both_spans` Both responses are in CCA distance per century.
+(circles) and the Anthropocene (diamonds), with the fitted mean printed beside each point. Each row shows an effect
+over the whole lake-period or plot pair (left, not divided by time) and per century (right): (A) the pace effect
+and (B) its rate, (C) the direction effect and (D) its rate. The two totals share one y scale and the two rates
+another. Each effect is the lag at the end of the period minus the lag the community would have had at the
+climate-predicted pace (A, B, keeping its own direction) or in the climate-predicted direction (C, D, keeping its
+own distance). A positive effect means that the community's own pace or direction widened the lag. A negative
+effect means that it narrowed the lag. Connectors link the Anthropocene to the Holocene climate-change periods
+(lower) and to the Holocene stability periods (upper) within each park, and a star marks a contrast that differs
+from zero (two-sided t test, p < 0.05). Fitted means and contrasts come from the same models as Figure 4, whose
+panel F shows the lag rate. Lake-periods and plots whose observed or predicted position did not move have no pace or direction effect: the panels
+hold `r m5 = read_output('era_comparison/era_means.csv'); m5$n[m5$response == 'pace_effect' & m5$site == 'MORA' & m5$period_type == 'Holocene-C']` climate-change and `r m5$n[m5$response == 'pace_effect' & m5$site == 'MORA' & m5$period_type == 'Holocene-S']` stability lake-periods at MORA. `r both_spans` The totals are in CCA distance, the rates in CCA distance per century.
 
 **Check: displacement and lag by lake-period duration.** Displacement and lag are totals, so a
 longer lake-period could show more of both only because it is longer. The table gives their plain

@@ -47,3 +47,15 @@ Direction effect,MORA,Anthropocene,254,+0.344,0.179 to 0.510
 Direction effect,NOCA,Holocene-S,5,-0.011,-0.069 to 0.047
 Direction effect,NOCA,Holocene-C,5,-0.039,-0.091 to 0.012
 Direction effect,NOCA,Anthropocene,211,-0.264,-0.576 to 0.048
+Pace effect (not divided by time),MORA,Holocene-S,6,+0.141,-0.068 to 0.350
+Pace effect (not divided by time),MORA,Holocene-C,6,-0.014,-0.147 to 0.119
+Pace effect (not divided by time),MORA,Anthropocene,254,+0.047,0.020 to 0.074
+Pace effect (not divided by time),NOCA,Holocene-S,5,+0.053,-0.184 to 0.291
+Pace effect (not divided by time),NOCA,Holocene-C,5,+0.048,-0.039 to 0.135
+Pace effect (not divided by time),NOCA,Anthropocene,211,-0.078,-0.157 to 0.002
+Direction effect (not divided by time),MORA,Holocene-S,6,-0.127,-0.336 to 0.083
+Direction effect (not divided by time),MORA,Holocene-C,6,-0.082,-0.315 to 0.151
+Direction effect (not divided by time),MORA,Anthropocene,254,+0.101,0.053 to 0.149
+Direction effect (not divided by time),NOCA,Holocene-S,5,-0.073,-0.259 to 0.112
+Direction effect (not divided by time),NOCA,Holocene-C,5,-0.141,-0.401 to 0.118
+Direction effect (not divided by time),NOCA,Anthropocene,211,-0.074,-0.163 to 0.014

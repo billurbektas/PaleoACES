@@ -1,9 +1,9 @@
 # 13 Era models (PLAN.md section 5, Step 5a): Holocene stability periods,
 # Holocene climate-change periods and the Anthropocene compared within each
 # park, for climate change rate, climate change, turnover rate, displacement,
-# lag rate, lag, pace effect and direction effect, and the joint pace and
-# direction model. Climate change, displacement and lag are not divided by
-# time (Bills, 10 Nov 2026). The Holocene is
+# lag rate, lag, pace effect and direction effect, each per century and as a
+# total, and the joint pace and direction model. Climate change, displacement,
+# lag and the effect totals are not divided by time (Bills, 10 Nov 2026). The Holocene is
 # never pooled into one value and the parks are never pooled (standing rule).
 source(here::here('R/helpers/config.R'), local = TRUE)
 suppressPackageStartupMessages({library(here); library(tidyverse); library(nlme); library(patchwork)})
@@ -40,8 +40,9 @@ for (response in names(ERA_RESPONSES)) {
   stopifnot(nlevels(droplevels(d$period_type_site)) == 6L)
 # report-snippet: era-model
   # One model per response (climate change rate, climate change, turnover rate,
-  # displacement, lag rate, lag, pace effect, direction effect). Climate change,
-  # displacement and lag are totals between the two ends, the others per century.
+  # displacement, lag rate, lag, pace effect, direction effect and their totals).
+  # Climate change, displacement, lag and the effect totals are totals between
+  # the two ends, the others per century.
   # Each row is a Holocene lake-period or an
   # Anthropocene plot pair; `estimate` is its value of the response.
   # Mean part, period_type * site: one mean for each period type (Holocene-S,
