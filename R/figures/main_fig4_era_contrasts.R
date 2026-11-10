@@ -37,10 +37,10 @@ panel = function(r, tag) {
     scale_y_continuous(expand = expansion(mult = c(.05, .14)))
   p
 }
-# Two rows: climate and turnover on top; the signed lag rate and the absolute
-# lag rate (with its fold) below (Bills, 10 Nov 2026).
+# Two rows: climate and turnover on top; the absolute lag rate (with its fold)
+# and then the signed lag rate below (Bills, 10 Nov 2026).
 figure = (panel('climate_rate', 'A.') | panel('turnover_rate', 'B.')) /
-  (panel('lag_rate', 'C.') | panel('abs_lag_rate', 'D.')) +
+  (panel('abs_lag_rate', 'C.') | panel('lag_rate', 'D.')) +
   plot_layout(guides = 'collect') & theme(legend.position = 'bottom')
 if (render_figures) for (ext in c('pdf', 'png'))
   ggsave(fig('main', paste0('fig_era_contrasts.', ext)), figure, width = 13, height = 13, dpi = 300)
