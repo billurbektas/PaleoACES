@@ -740,27 +740,29 @@ Holocene and the Anthropocene.** For each park, the fitted mean and 95%
 confidence interval of the Holocene stability periods (triangles), the
 Holocene climate-change periods (circles) and the Anthropocene plot
 pairs (diamonds), for (A) the standardized climate change rate, (B) the
-turnover rate, (C) the community-climate lag, the change in mismatch
-between the two ends (M at t2 minus M at t1, not divided by time), and
-(D) the community-climate lag rate. The fitted mean is printed above
-each interval. A and B are on log axes, where equal distances are equal
-folds, and the arrow gives the fold between the Anthropocene and the
-Holocene climate-change means. C and D are on linear axes without folds,
-and a star marks a mean that differs from zero (two-sided t test, p \<
-0.05). The lag (C) is a total, not a rate: Holocene lags accumulate over
-a whole lake-period and Anthropocene lags over about 29 years. Means
-come from the model response ~ period type × site, with an AR(1)
-correlation within each lake and weights for the number of samples at
-each end, fitted on 7 climate-change and 7 stability lake-periods and
-330 plot pairs at MORA, and 5, 5 and 277 at NOCA. Holocene
-climate-change lake-periods span 200 to 900 years and stability
-lake-periods 300 to 2600 years between their first and last sampled
-century. Anthropocene plot pairs span 27.5 to 32.5 years between the
-midpoints of their climate windows (about 29 years). Longer windows give
-lower rates, so the rates of the two eras are not on equal footing.
-Units: the climate change rate in calibration standard deviations per
-century, the turnover and lag rates in CCA distance per century, the lag
-in CCA distance.
+observed community turnover rate, (C) the community-climate lag, the
+change in mismatch between the two ends (M at t2 minus M at t1, not
+divided by time), and (D) the community-climate lag rate. The fitted
+mean is printed beside each point. A and B are on log axes, where equal
+distances are equal folds, and the arrow gives the fold between the
+Anthropocene and the Holocene climate-change means. C and D are on
+linear axes without folds. Their connectors link the Anthropocene to the
+Holocene climate-change periods (lower) and to the Holocene stability
+periods (upper) within each park, and a star marks a contrast that
+differs from zero (two-sided t test, p \< 0.05). The lag (C) is a total,
+not a rate: Holocene lags accumulate over a whole lake-period and
+Anthropocene lags over about 29 years. Means come from the model
+response ~ period type × site, with an AR(1) correlation within each
+lake and weights for the number of samples at each end, fitted on 7
+climate-change and 7 stability lake-periods and 330 plot pairs at MORA,
+and 5, 5 and 277 at NOCA. Holocene climate-change lake-periods span 200
+to 900 years and stability lake-periods 300 to 2600 years between their
+first and last sampled century. Anthropocene plot pairs span 27.5 to
+32.5 years between the midpoints of their climate windows (about 29
+years). Longer windows give lower rates, so the rates of the two eras
+are not on equal footing. Units: the climate change rate in calibration
+standard deviations per century, the turnover and lag rates in CCA
+distance per century, the lag in CCA distance.
 
 <img src="report/figures/png/fig_lag_pace_direction.png" alt="" width="100%" />
 
