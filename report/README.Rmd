@@ -542,8 +542,8 @@ vector per species: the change in the species' share times the species' fixed po
 CCA plane. Projecting each species' vector on a reference direction says how much that species
 moved the community along it. Two references are used. Along the direction the prediction moved
 (`contrib_climate`), a positive value means the species carried the community with the climate.
-Along the gap at the start, from the observed to the predicted position (`contrib_gap`), a
-positive value means the species closed that gap. Both are per century.
+Along the initial mismatch, from the observed to the predicted position at t1 (`contrib_gap`), a
+positive value means the species closed that mismatch. Both are per century.
 
 **Decisions.**
 
@@ -572,7 +572,7 @@ species_means |> mutate(value = ifelse(interval_defined, sprintf('%+.3f (%.3f to
   rename(Species = species, Park = site) |>
   show_table('step6_species_means', caption = paste('**Species contributions**, mean and 95% t-interval in CCA',
     'distance per century, per species, park and period type. Columns: measure (contrib_climate along the',
-    'predicted movement, contrib_gap along the starting gap) and period type. "absent": the species does',
+    'predicted movement, contrib_gap along the initial mismatch) and period type. "absent": the species does',
     'not occur in that park and period type.'))
 ```
 
@@ -588,7 +588,7 @@ In the Holocene every species mean is close to zero in both parks (largest absol
 `r nrow(hol_away)` of `r sum(hol$interval_defined)` Holocene intervals exclude zero
 (`r paste(sprintf('%s, %s, %s, %s', hol_away$species, hol_away$site, hol_away$period_type, hol_away$measure), collapse = '; ')`),
 all smaller than `r sprintf('%.3f', max(abs(hol_away$estimate)))` in absolute value. The Anthropocene
-means are larger. Along the starting gap `r sum(gap$conf_low > 0)` of `r nrow(gap)` species-park
+means are larger. Along the initial mismatch `r sum(gap$conf_low > 0)` of `r nrow(gap)` species-park
 means are positive with intervals above zero: the resurvey shifts of these species reduced the gap
 that existed at the legacy survey.
 The two measures do not agree species by species, so both stay in Figure 7.
@@ -599,11 +599,11 @@ show_figure('report/figures/main/fig_species_contributions.pdf')
 
 **Figure 7. Species contributions in the Holocene and the Anthropocene.** Each species' vector is its
 change in share between the first and the last sampled century of a lake-period, or between the
-legacy survey and the resurvey of a plot, times its fixed position in the CCA plane. The upper row
+legacy survey and the resurvey of a plot, times its fixed position in the CCA plane. The upper row (following the climate shift)
 projects these vectors on the direction in which the climate-predicted position moved, and the lower
-row on the gap from the observed to the predicted position at the start. Labels at the top of each panel say what each side of zero means: in the upper row whether a species
+row (closing the initial mismatch) on the initial mismatch, from the observed to the predicted position at the start. Labels at the top of each panel say what each side of zero means: in the upper row whether a species
 moved the community with or against the shift of the predicted position over the same interval, in the
-lower row whether it caught up with the lag carried in at the start or fell further behind.
+lower row whether it closed the initial mismatch, the lag carried in at the start, or fell further behind.
 Species are ordered by the mean elevation of the plots where they occur (the 607 plot pairs, both surveys), the highest at the top.
 Symbols are means: triangles, Holocene stability periods, circles, Holocene climate-change periods,
 diamonds, Anthropocene plot pairs (burned and unburned together). Large symbols with bars are means whose

@@ -798,10 +798,10 @@ times the species’ fixed position in the CCA plane. Projecting each
 species’ vector on a reference direction says how much that species
 moved the community along it. Two references are used. Along the
 direction the prediction moved (`contrib_climate`), a positive value
-means the species carried the community with the climate. Along the gap
-at the start, from the observed to the predicted position
-(`contrib_gap`), a positive value means the species closed that gap.
-Both are per century.
+means the species carried the community with the climate. Along the
+initial mismatch, from the observed to the predicted position at t1
+(`contrib_gap`), a positive value means the species closed that
+mismatch. Both are per century.
 
 **Decisions.**
 
@@ -832,8 +832,8 @@ group_mean = function(x) {
 **Species contributions**, mean and 95% t-interval in CCA distance per
 century, per species, park and period type. Columns: measure
 (contrib_climate along the predicted movement, contrib_gap along the
-starting gap) and period type. “absent”: the species does not occur in
-that park and period type.
+initial mismatch) and period type. “absent”: the species does not occur
+in that park and period type.
 
 | Species | Park | contrib_climate_Holocene-S | contrib_climate_Holocene-C | contrib_climate_Anthropocene | contrib_gap_Holocene-S | contrib_gap_Holocene-C | contrib_gap_Anthropocene |
 |:---|:---|:---|:---|:---|:---|:---|:---|
@@ -878,7 +878,7 @@ Holocene intervals exclude zero (Abies amabilis, MORA, Holocene-S,
 contrib_climate; Tsuga mertensiana, MORA, Holocene-S, contrib_climate;
 Abies amabilis, MORA, Holocene-S, contrib_gap; Tsuga mertensiana, MORA,
 Holocene-S, contrib_gap), all smaller than 0.004 in absolute value. The
-Anthropocene means are larger. Along the starting gap 15 of 27
+Anthropocene means are larger. Along the initial mismatch 15 of 27
 species-park means are positive with intervals above zero: the resurvey
 shifts of these species reduced the gap that existed at the legacy
 survey. The two measures do not agree species by species, so both stay
@@ -890,21 +890,22 @@ in Figure 7.
 Anthropocene.** Each species’ vector is its change in share between the
 first and the last sampled century of a lake-period, or between the
 legacy survey and the resurvey of a plot, times its fixed position in
-the CCA plane. The upper row projects these vectors on the direction in
-which the climate-predicted position moved, and the lower row on the gap
-from the observed to the predicted position at the start. Labels at the
-top of each panel say what each side of zero means: in the upper row
-whether a species moved the community with or against the shift of the
-predicted position over the same interval, in the lower row whether it
-caught up with the lag carried in at the start or fell further behind.
-Species are ordered by the mean elevation of the plots where they occur
-(the 607 plot pairs, both surveys), the highest at the top. Symbols are
-means: triangles, Holocene stability periods, circles, Holocene
-climate-change periods, diamonds, Anthropocene plot pairs (burned and
-unburned together). Large symbols with bars are means whose 95%
-t-interval excludes zero, small faded symbols are means whose interval
-includes zero. A species with no Holocene symbols in a park is absent
-from that park’s Holocene record. Each park has its own x scale.
+the CCA plane. The upper row (following the climate shift) projects
+these vectors on the direction in which the climate-predicted position
+moved, and the lower row (closing the initial mismatch) on the initial
+mismatch, from the observed to the predicted position at the start.
+Labels at the top of each panel say what each side of zero means: in the
+upper row whether a species moved the community with or against the
+shift of the predicted position over the same interval, in the lower row
+whether it closed the initial mismatch, the lag carried in at the start,
+or fell further behind. Species are ordered by the mean elevation of the
+plots where they occur (the 607 plot pairs, both surveys), the highest
+at the top. Symbols are means: triangles, Holocene stability periods,
+circles, Holocene climate-change periods, diamonds, Anthropocene plot
+pairs (burned and unburned together). Large symbols with bars are means
+whose 95% t-interval excludes zero, small faded symbols are means whose
+interval includes zero. A species with no Holocene symbols in a park is
+absent from that park’s Holocene record. Each park has its own x scale.
 Holocene climate-change lake-periods span 200 to 900 years and stability
 lake-periods 300 to 2600 years between their first and last sampled
 century. Anthropocene plot pairs span 27.5 to 32.5 years between the

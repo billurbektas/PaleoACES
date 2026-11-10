@@ -173,7 +173,7 @@ century_species_weights = function(reconstruction, bundle) {
 # Step 6 (PLAN.md): each species' vector is its change in share between t1 and
 # t2 times its fixed CCA position. The vectors add up to the observed movement.
 # Two measures, per century: the projection on the direction the prediction
-# moved (contrib_climate) and on the gap at the start, LC_t1 - WA_t1
+# moved (contrib_climate) and on the initial mismatch, LC_t1 - WA_t1
 # (contrib_gap). Undefined where the reference vector has no length, and, by
 # the epsilon rule, where the observed or predicted position did not move.
 step6_species_contributions = function(context, first, last, positions, endpoints, dt) {

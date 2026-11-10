@@ -30,10 +30,10 @@ means = read_csv(out('species_contribution_models/species_means.csv'), show_col_
   mutate(species = factor(species, levels = order_species),
     period_type = factor(period_type, levels = c('Holocene-S', 'Holocene-C', 'Anthropocene')),
     spans_zero = !interval_defined | (conf_low <= 0 & conf_high >= 0),
-    measure_label = factor(c(contrib_climate = 'Along the predicted movement',
-      contrib_gap = 'Along the starting gap')[measure],
-      levels = c('Along the predicted movement',
-        'Along the starting gap')))
+    measure_label = factor(c(contrib_climate = 'Following the climate shift',
+      contrib_gap = 'Closing the initial mismatch')[measure],
+      levels = c('Following the climate shift',
+        'Closing the initial mismatch')))
 # Species absent from a park's Holocene record (no share at either end of any
 # lake-period) are marked instead of drawn as Holocene symbols.
 absent = means |> filter(period_type != 'Anthropocene') |> group_by(measure_label, species, site) |>
