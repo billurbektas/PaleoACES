@@ -540,6 +540,16 @@ if (count.thr == CCA_COUNT_THRESHOLD && !length(extra_exclude) && !nzchar(cca_su
 # Fit the pooled CCA ONLY after resolving and reporting eligibility
 # -----------------------------------------------------------------------------
 # report-snippet: cca-fit
+# The CCA is fitted once, on the legacy survey only.
+#   species_past_final: one row per calibration plot (607), one column per tree
+#     species (14), the counts of each species in the plot.
+#   env_past_final: the same 607 plots, two columns, MSpT (mean spring
+#     temperature) and SP (summer precipitation) of the plot's legacy climate
+#     window.
+# The formula reads "species ~ MSpT + SP". vegan::cca finds the two axes,
+# each a weighted sum of MSpT and SP, along which species composition changes
+# most. With two climate variables there are exactly two axes. All later
+# positions (plots at both surveys, lake samples) live in this 2-D space.
 cca_formula = reformulate(CCA_VARIABLES, response = "species_past_final")
 cca_model = cca(cca_formula, data = env_past_final)
 # end-snippet: cca-fit
@@ -560,6 +570,12 @@ project_period = function(sp, en, era_label) {
 
 # All projection inputs are already eligible: never filter WA and LC separately.
 # report-snippet: cca-projection
+# Two positions for every community, both on the fitted axes:
+#   type = "lc" (linear combination): where its CLIMATE alone puts it, the
+#     predicted position. It uses only MSpT and SP.
+#   type = "wa" (weighted average): where its SPECIES put it, the observed
+#     position, the average of the species' scores weighted by their counts.
+# The lag M of a community is the distance between the two.
 predicted_present = predict(cca_model, newdata = env_present_final, type = "lc", scaling = cca_scaling, hill = cca_hill)
 projected_present = predict(cca_model, newdata = species_present_final,
                             type = "wa", scaling = cca_scaling, hill = cca_hill)

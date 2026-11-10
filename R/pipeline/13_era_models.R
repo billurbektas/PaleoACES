@@ -37,8 +37,20 @@ for (response in names(ERA_RESPONSES)) {
   # Rule (standing rule, PLAN.md section 4): all six period type x park groups are present.
   stopifnot(nlevels(droplevels(d$period_type_site)) == 6L)
 # report-snippet: era-model
-  # AR(1) on the unit order within each series, fixed a priori (PLAN.md row 7):
-  # a lake for Holocene rows, a plot (one unit) for Anthropocene rows.
+  # One model per response (climate change rate, turnover rate, lag, lag rate,
+  # pace effect, direction effect). Each row is a Holocene lake-period or an
+  # Anthropocene plot pair; `estimate` is its value of the response.
+  # Mean part, period_type * site: one mean for each period type (Holocene-S,
+  # Holocene-C, Anthropocene) in each park. The era means, the contrasts
+  # (Anthropocene minus each Holocene type) and the folds come from these.
+  # gls (generalized least squares, nlme) is a regression whose errors may be
+  # correlated and unequal:
+  #   correlation: consecutive lake-periods of one lake are correlated, AR(1)
+  #     along the unit order within each series (a lake; each Anthropocene plot
+  #     is a series of one unit);
+  #   weights: each period type in each park has its own spread (varIdent), and
+  #     ends that rest on few samples are noisier, in proportion to
+  #     endpoint_var = 1/n_start + 1/n_end (varFixed).
   captured = reconstruction_capture(function() gls(estimate ~ period_type * site,
     correlation = corAR1(form = ~ unit_index | series),
     weights = varComb(varIdent(form = ~ 1 | period_type_site), varFixed(~ endpoint_var)),
@@ -97,6 +109,10 @@ joint_out = out('era_comparison/joint_correction_effects')
 dir.create(joint_out, recursive = TRUE, showWarnings = FALSE)
 captured = reconstruction_capture(function() {
 # report-snippet: joint-correction-model
+  # Pace and direction effects in one model, two rows per unit (correction =
+  # pace or direction), so that the two effects of the same unit can be
+  # compared with their correlation taken into account (corPairedAR1: the AR(1)
+  # above plus a correlation between the two rows of a unit). Same weights.
   gls(estimate ~ period_type * site * correction, data = d,
     correlation = corPairedAR1(sort(unique(d$pair_group))),
     weights = varComb(varIdent(form = ~ 1 | period_type_site_correction), varFixed(~ endpoint_var)),

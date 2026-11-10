@@ -84,22 +84,11 @@ snowmelt timing and the start of the growing season. Summer precipitation (SP) s
 drying stress. Because each pair is strongly correlated, the two also carry temperature and
 precipitation change in general.
 
-**Decisions.**
-
-- 9 Nov 2026 (Bills, `PLAN.md` row 0): constrain the CCA by MSpT and SP, first proposed as MWT and
-  SP. Rerun everything downstream. Rotate the figures only and keep every table unrotated.
-- 9 Nov 2026 (taken in the run): a Holocene lake-century counts as extrapolated when its
-  Mahalanobis distance from the calibration plots exceeds the 99th percentile of the plots' own
-  distances, for the variables of that set. All 111 century slices of each lake's climate series
-  are screened.
-- 9 Nov 2026 (taken in the run): the adjusted R² of each set is vegan's permutation estimate
-  (1,000 permutations, seeded). The add-back test compares the nested fits with 9,999
-  permutations, unrestricted and within parks.
-
-**Model code.**
+**How it is calculated.**
 
 ```{r step0-code}
 code_snippet('R/pipeline/10_cca.R', 'cca-fit')
+code_snippet('R/pipeline/10_cca.R', 'cca-projection')
 ```
 
 **Result.**
@@ -179,17 +168,6 @@ from the two CCA variables, MSpT and SP, so that the periods describe change alo
 climate axes that the CCA uses. A climate-change period that contains a long internal trough of
 low change is split into sub-periods (a, b, c). Each period, or sub-period, is one unit for the
 lake-periods of the next step.
-
-**Decisions.**
-
-- 9 Nov 2026 (Bills, `PLAN.md` rows 4 and 12): the period rules and sub-periods stay as they are.
-  Periods are named C and S, never CC, after the Step 0 refit.
-- 9 Nov 2026 (Bills, `PLAN.md` rows 3 and 11): boundaries are regional, shared by both parks and
-  all lakes, from the park average of the lakes. Fire does not split periods.
-- 9 Nov 2026 (taken in the run): the units of the lake-periods are the sub-periods where a
-  climate-change period is split, and the periods otherwise (`holocene_periods.csv`). The
-  four-variable catalog for the comparison is recomputed by the same rules from all four seasonal
-  variables.
 
 **Result.**
 
@@ -285,21 +263,8 @@ standardized end-to-end change of MSpT and SP in the lake's own climate cell, pe
 activity is the number of accepted fire events between t1 and t2, per century and per charcoal
 core, averaged over the cores of the park that cover the whole lake-period.
 
-**Decisions.**
-
-- 9 Nov 2026 (Bills, `PLAN.md` rows 1, 2, 5 and 10): one lake in one climate period, from the
-  first to the last sampled century, the two-century rule, one century per end, the end-to-end
-  climate change of the lake's own climate.
-- 9 Nov 2026 (Bills, `PLAN.md` rows 6 and 24): all responses for C and S lake-periods alike, fire
-  per park in events per century per covered core, not rescaled within park.
-- 9 Nov 2026 (taken in the run): the epsilon rule removes pace and direction where either the
-  observed or the predicted position did not move, in both eras.
-- 9 Nov 2026 (taken in the run): an Anthropocene plot is a series of one unit with
-  `endpoint_var = 2` and `duration_yr` equal to the time between the midpoints of its two climate
-  windows.
-
-**Model code.** The geometry is the existing one of the tracking step, applied once per
-lake-period.
+**How it is calculated.** The code below computes every quantity from the two ends of a unit, a
+Holocene lake-period or an Anthropocene plot pair. The comments say what each step means.
 
 ```{r step24-code}
 code_snippet('R/helpers/tracking_metrics.R', 'tracking-geometry')
@@ -347,18 +312,7 @@ a single sample are noisier, so each row is weighted by the sampling variance of
 and the parks keep different residual spread. In the Anthropocene the same responses are
 compared between burned and unburned plots within each park.
 
-**Decisions.**
-
-- 9 Nov 2026 (Bills, `PLAN.md` rows 7 and 8): AR(1) on the lake-period order within lake, fixed
-  a priori. No lake random intercept, no period label, no interaction terms.
-- 9 Nov 2026 (Bills, `PLAN.md` row 24): one fire slope for both parks, in events per century per
-  covered core.
-- 9 Nov 2026 (taken in the run): the partial-effect lines of Figure 6A hold the other predictor
-  at the park's own mean, over the park's own range of the focal predictor. The Anthropocene
-  model with elevation and the lake random-intercept sensitivity of the old analysis are no
-  longer fitted.
-
-**Model code.**
+**How it is calculated.**
 
 ```{r step5-code}
 code_snippet('R/pipeline/14_predictor_models.R', 'holocene-explanatory-model')
@@ -433,24 +387,7 @@ out of these models, because it is measured differently in the two eras. Rates o
 and over centuries are not on equal footing, since longer windows give lower rates, and every
 comparison states both time spans.
 
-**Decisions.**
-
-- 9 Nov 2026 (Bills, standing rule and `PLAN.md` rows 2, 8 and 23): Holocene-C and Holocene-S are
-  separate levels of `period_type`, compared with the Anthropocene in each park. Folds for
-  climate change rate and turnover rate against each Holocene type, with the Holocene-C fold the
-  one quoted as a speed.
-- 9 Nov 2026 (Bills, `PLAN.md` row 7): AR(1) fixed a priori. The old comparison of independent,
-  MA(1) and CAR(1) residuals is removed.
-- 9 Nov 2026 (taken in the run): the individual-lake era comparisons of the old analysis are no
-  longer run. A MORA lake has four to six lake-periods split between C and S, too few to compare
-  each type of a single lake with the Anthropocene, and NOCA has one lake, which the park model
-  already is.
-- 9 Nov 2026 (taken in the run): in the joint pace and direction model the AR(1) replaces the
-  old MA(1), the endpoint weights are added, and the correlation between the two corrections of a
-  unit is estimated per era and park (Holocene or Anthropocene), because a lake's series contains
-  both C and S lake-periods.
-
-**Model code.**
+**How it is calculated.**
 
 ```{r step5a-code}
 code_snippet('R/pipeline/13_era_models.R', 'era-model')
@@ -552,17 +489,7 @@ moved the community along it. Two references are used. Along the direction the p
 Along the initial mismatch, from the observed to the predicted position at t1 (`contrib_gap`), a
 positive value means the species closed that mismatch. Both are per century.
 
-**Decisions.**
-
-- 9 Nov 2026 (Bills, `PLAN.md` row 9): no species models with slopes. Group means per species,
-  park and period type, two measures.
-- 9 Nov 2026 (Bills, during the run): no species model of any kind. The group means are plain
-  means with t-intervals, and the contrasts are Welch differences of means.
-- 9 Nov 2026 (taken in the run): plot contributions are per century of the vegetation interval,
-  like turnover. Lake-period contributions are per century of `duration_yr`. Rows without a
-  defined direction (epsilon rule) leave both measures.
-
-**Code.**
+**How it is calculated.**
 
 ```{r step6-code}
 code_snippet('R/pipeline/15_contributions.R', 'species-means')

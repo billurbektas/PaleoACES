@@ -86,9 +86,17 @@ calculate_tracking_metrics = function(x, epsilon = TRACKING_EPSILON) {
       any(!is.finite(x$climate_dt_years) | x$climate_dt_years <= 0))
     stop("Elapsed times must be finite and positive")
 # report-snippet: tracking-geometry
+  # One row per unit (a Holocene lake-period or an Anthropocene plot pair),
+  # with two ends, t1 (older) and t2 (younger). At each end the community has
+  # an observed position (o1, o2: from its species) and a predicted position
+  # (p1, p2: from its climate) on the two CCA axes. The suffix _2 marks t2.
+  # Movement from t1 to t2: observed (ox, oy), predicted (px, py), and their
+  # lengths a (observed distance) and b (predicted distance).
   ox = x$o1_2-x$o1; oy = x$o2_2-x$o2
   px = x$p1_2-x$p1; py = x$p2_2-x$p2
   a = sqrt(ox^2+oy^2); b = sqrt(px^2+py^2)
+  # A movement shorter than epsilon has no direction, so the angle, the pace
+  # and direction effects and the tracking ratio are left undefined there.
   x$finite_endpoints = rowSums(!is.finite(as.matrix(x[coords]))) == 0L
   x$small_observed_movement = is.finite(a) & a <= epsilon
   x$small_predicted_movement = is.finite(b) & b <= epsilon
@@ -102,12 +110,19 @@ calculate_tracking_metrics = function(x, epsilon = TRACKING_EPSILON) {
   x$delta_predicted_CCA1 = px; x$delta_predicted_CCA2 = py
   x$observed_vegetation_displacement = a
   x$predicted_vegetation_displacement = b
+  # Turnover rate: observed distance moved, per century. Tracking ratio:
+  # observed over predicted distance (1 = moved as far as climate asked).
+  # Angle: between the observed and the predicted movement (0 = same way).
   x$observed_turnover_rate = a/x$vegetation_dt_years*100
   x$predicted_vegetation_change_rate = b/x$climate_dt_years*100
   x$magnitude_tracking_ratio = ifelse(predicted_direction, a/b, NA_real_)
   x$rate_tracking_ratio = ifelse(predicted_direction,
     x$observed_turnover_rate/x$predicted_vegetation_change_rate, NA_real_)
   x$angle_degrees = acos(safe_cosine_2d(ox, oy, px, py, epsilon))*180/pi
+  # Lag M at each end: the distance between observed and predicted position,
+  # how far the community is from where its climate would put it. The lag is
+  # M at t2 minus M at t1 (positive: the gap grew), the lag rate the same per
+  # century.
   x$lag_t1 = sqrt((x$o1-x$p1)^2+(x$o2-x$p2)^2)
   x$lag_t2 = sqrt((x$o1_2-x$p1_2)^2+(x$o2_2-x$p2_2)^2)
   x$change_in_lag = x$lag_t2-x$lag_t1
@@ -116,6 +131,14 @@ calculate_tracking_metrics = function(x, epsilon = TRACKING_EPSILON) {
 
   # Only divide by a direction's magnitude when that direction is defined.
 # report-snippet: tracking-corrections
+  # Two "what if" end points at t2, both starting from the observed t1 position:
+  #   pace-corrected: the community's own direction, but the predicted
+  #     distance b (as if it had moved at the climate's pace);
+  #   direction-corrected: the predicted direction, but its own distance a
+  #     (as if it had moved the climate's way).
+  # Each effect is the observed lag at t2 minus the lag at that "what if" end
+  # point, per century. Positive: the community's own pace (or direction)
+  # widened the lag. Negative: it narrowed the lag.
   x$pace_corrected_CCA1 = x$pace_corrected_CCA2 = rep(NA_real_, nrow(x))
   x$direction_corrected_CCA1 = x$direction_corrected_CCA2 = rep(NA_real_, nrow(x))
   i = observed_direction

@@ -30,9 +30,14 @@ fits = coefficients = performance = exclusions = lines = residuals = list()
 for (response in responses) {
   h = holocene_rows(response); d = h$data
 # report-snippet: holocene-explanatory-model
-  # AR(1) on the lake-period order within lake, fixed a priori (PLAN.md row 7).
-  # varFixed gives single-scoop ends less weight; varIdent lets the parks keep
-  # different residual spread.
+  # Holocene lake-periods only. Does the response (lag rate, pace effect,
+  # direction effect) go with faster climate change or more fire?
+  #   site: a separate level for each park;
+  #   climate_rate: the slope per unit of climate change rate;
+  #   fire_activity: the slope per accepted fire event per century per core.
+  # Consecutive lake-periods of a lake are correlated (AR(1) within lake).
+  # varIdent lets the parks keep a different spread, and varFixed gives ends
+  # resting on single samples less weight (endpoint_var = 1/n_start + 1/n_end).
   captured = reconstruction_capture(function() gls(estimate ~ site + climate_rate + fire_activity,
     correlation = corAR1(form = ~ unit_index | lake),
     weights = varComb(varIdent(form = ~ 1 | site), varFixed(~ endpoint_var)),
@@ -74,6 +79,9 @@ for (response in responses) {
 
   a = anthropocene_rows(response); da = a$data
 # report-snippet: anthropocene-explanatory-model
+  # Anthropocene plot pairs only: the same responses against site and burned
+  # (whether the plot burned between the two surveys). Plots are independent,
+  # each park keeps its own spread.
   captured = reconstruction_capture(function() gls(estimate ~ site + burned,
     weights = varIdent(form = ~ 1 | site), data = da, method = 'REML'))
 # end-snippet: anthropocene-explanatory-model

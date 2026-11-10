@@ -63,6 +63,10 @@ presence = species |> group_by(species, site, period_type) |>
 long = species |> pivot_longer(c(contrib_climate, contrib_gap), names_to = 'measure', values_to = 'contribution') |>
   filter(is.finite(contribution))
 # report-snippet: species-means
+# For one species in one park and period type, x holds its contribution in
+# every lake-period (or plot pair). The result is the plain mean with a 95%
+# t-interval: mean plus or minus t(0.975, n - 1) times the standard error
+# sd / sqrt(n). With a single value the interval is undefined.
 group_mean = function(x) {
   n = length(x); m = mean(x); se = if (n > 1) sd(x) / sqrt(n) else NA_real_
   q = if (n > 1) qt(.975, n - 1) else NA_real_

@@ -1652,25 +1652,35 @@ pair. Spring temperature (MSpT) stands for snowmelt timing and the start
 of the growing season. Summer precipitation (SP) stands for summer
 drying stress. Because each pair is strongly correlated, the two also
 carry temperature and precipitation change in general.</p>
-<p><strong>Decisions.</strong></p>
-<ul>
-<li>9 Nov 2026 (Bills, <code>PLAN.md</code> row 0): constrain the CCA by
-MSpT and SP, first proposed as MWT and SP. Rerun everything downstream.
-Rotate the figures only and keep every table unrotated.</li>
-<li>9 Nov 2026 (taken in the run): a Holocene lake-century counts as
-extrapolated when its Mahalanobis distance from the calibration plots
-exceeds the 99th percentile of the plots’ own distances, for the
-variables of that set. All 111 century slices of each lake’s climate
-series are screened.</li>
-<li>9 Nov 2026 (taken in the run): the adjusted R² of each set is
-vegan’s permutation estimate (1,000 permutations, seeded). The add-back
-test compares the nested fits with 9,999 permutations, unrestricted and
-within parks.</li>
-</ul>
-<p><strong>Model code.</strong></p>
+<p><strong>How it is calculated.</strong></p>
 <pre class="r"><code># R/pipeline/10_cca.R
+# The CCA is fitted once, on the legacy survey only.
+#   species_past_final: one row per calibration plot (607), one column per tree
+#     species (14), the counts of each species in the plot.
+#   env_past_final: the same 607 plots, two columns, MSpT (mean spring
+#     temperature) and SP (summer precipitation) of the plot&#39;s legacy climate
+#     window.
+# The formula reads &quot;species ~ MSpT + SP&quot;. vegan::cca finds the two axes,
+# each a weighted sum of MSpT and SP, along which species composition changes
+# most. With two climate variables there are exactly two axes. All later
+# positions (plots at both surveys, lake samples) live in this 2-D space.
 cca_formula = reformulate(CCA_VARIABLES, response = &quot;species_past_final&quot;)
 cca_model = cca(cca_formula, data = env_past_final)</code></pre>
+<pre class="r"><code># R/pipeline/10_cca.R
+# Two positions for every community, both on the fitted axes:
+#   type = &quot;lc&quot; (linear combination): where its CLIMATE alone puts it, the
+#     predicted position. It uses only MSpT and SP.
+#   type = &quot;wa&quot; (weighted average): where its SPECIES put it, the observed
+#     position, the average of the species&#39; scores weighted by their counts.
+# The lag M of a community is the distance between the two.
+predicted_present = predict(cca_model, newdata = env_present_final, type = &quot;lc&quot;, scaling = cca_scaling, hill = cca_hill)
+projected_present = predict(cca_model, newdata = species_present_final,
+                            type = &quot;wa&quot;, scaling = cca_scaling, hill = cca_hill)
+
+predicted_paleo = predict(cca_model, newdata = env_paleo[, CCA_VARIABLES, drop = FALSE],
+                          type = &quot;lc&quot;, scaling = cca_scaling, hill = cca_hill)
+projected_paleo = predict(cca_model, newdata = species_paleo[, keep_species, drop = FALSE],
+                          type = &quot;wa&quot;, scaling = cca_scaling, hill = cca_hill)</code></pre>
 <p><strong>Result.</strong></p>
 <p><strong>Screening of the climate constraints</strong> on the 607
 legacy calibration plots. Holocene lake-centuries: 333 at MORA (three
@@ -1785,20 +1795,6 @@ SP, so that the periods describe change along the same climate axes that
 the CCA uses. A climate-change period that contains a long internal
 trough of low change is split into sub-periods (a, b, c). Each period,
 or sub-period, is one unit for the lake-periods of the next step.</p>
-<p><strong>Decisions.</strong></p>
-<ul>
-<li>9 Nov 2026 (Bills, <code>PLAN.md</code> rows 4 and 12): the period
-rules and sub-periods stay as they are. Periods are named C and S, never
-CC, after the Step 0 refit.</li>
-<li>9 Nov 2026 (Bills, <code>PLAN.md</code> rows 3 and 11): boundaries
-are regional, shared by both parks and all lakes, from the park average
-of the lakes. Fire does not split periods.</li>
-<li>9 Nov 2026 (taken in the run): the units of the lake-periods are the
-sub-periods where a climate-change period is split, and the periods
-otherwise (<code>holocene_periods.csv</code>). The four-variable catalog
-for the comparison is recomputed by the same rules from all four
-seasonal variables.</li>
-</ul>
 <p><strong>Result.</strong></p>
 <p><strong>Climate periods</strong> drawn from MSpT and SP (used from
 Step 1 on) and, by the same rules, from all four seasonal variables (the
@@ -2146,28 +2142,21 @@ standardized end-to-end change of MSpT and SP in the lake’s own climate
 cell, per century. Fire activity is the number of accepted fire events
 between t1 and t2, per century and per charcoal core, averaged over the
 cores of the park that cover the whole lake-period.</p>
-<p><strong>Decisions.</strong></p>
-<ul>
-<li>9 Nov 2026 (Bills, <code>PLAN.md</code> rows 1, 2, 5 and 10): one
-lake in one climate period, from the first to the last sampled century,
-the two-century rule, one century per end, the end-to-end climate change
-of the lake’s own climate.</li>
-<li>9 Nov 2026 (Bills, <code>PLAN.md</code> rows 6 and 24): all
-responses for C and S lake-periods alike, fire per park in events per
-century per covered core, not rescaled within park.</li>
-<li>9 Nov 2026 (taken in the run): the epsilon rule removes pace and
-direction where either the observed or the predicted position did not
-move, in both eras.</li>
-<li>9 Nov 2026 (taken in the run): an Anthropocene plot is a series of
-one unit with <code>endpoint_var = 2</code> and <code>duration_yr</code>
-equal to the time between the midpoints of its two climate windows.</li>
-</ul>
-<p><strong>Model code.</strong> The geometry is the existing one of the
-tracking step, applied once per lake-period.</p>
+<p><strong>How it is calculated.</strong> The code below computes every
+quantity from the two ends of a unit, a Holocene lake-period or an
+Anthropocene plot pair. The comments say what each step means.</p>
 <pre class="r"><code># R/helpers/tracking_metrics.R
+  # One row per unit (a Holocene lake-period or an Anthropocene plot pair),
+  # with two ends, t1 (older) and t2 (younger). At each end the community has
+  # an observed position (o1, o2: from its species) and a predicted position
+  # (p1, p2: from its climate) on the two CCA axes. The suffix _2 marks t2.
+  # Movement from t1 to t2: observed (ox, oy), predicted (px, py), and their
+  # lengths a (observed distance) and b (predicted distance).
   ox = x$o1_2-x$o1; oy = x$o2_2-x$o2
   px = x$p1_2-x$p1; py = x$p2_2-x$p2
   a = sqrt(ox^2+oy^2); b = sqrt(px^2+py^2)
+  # A movement shorter than epsilon has no direction, so the angle, the pace
+  # and direction effects and the tracking ratio are left undefined there.
   x$finite_endpoints = rowSums(!is.finite(as.matrix(x[coords]))) == 0L
   x$small_observed_movement = is.finite(a) &amp; a &lt;= epsilon
   x$small_predicted_movement = is.finite(b) &amp; b &lt;= epsilon
@@ -2181,17 +2170,32 @@ tracking step, applied once per lake-period.</p>
   x$delta_predicted_CCA1 = px; x$delta_predicted_CCA2 = py
   x$observed_vegetation_displacement = a
   x$predicted_vegetation_displacement = b
+  # Turnover rate: observed distance moved, per century. Tracking ratio:
+  # observed over predicted distance (1 = moved as far as climate asked).
+  # Angle: between the observed and the predicted movement (0 = same way).
   x$observed_turnover_rate = a/x$vegetation_dt_years*100
   x$predicted_vegetation_change_rate = b/x$climate_dt_years*100
   x$magnitude_tracking_ratio = ifelse(predicted_direction, a/b, NA_real_)
   x$rate_tracking_ratio = ifelse(predicted_direction,
     x$observed_turnover_rate/x$predicted_vegetation_change_rate, NA_real_)
   x$angle_degrees = acos(safe_cosine_2d(ox, oy, px, py, epsilon))*180/pi
+  # Lag M at each end: the distance between observed and predicted position,
+  # how far the community is from where its climate would put it. The lag is
+  # M at t2 minus M at t1 (positive: the gap grew), the lag rate the same per
+  # century.
   x$lag_t1 = sqrt((x$o1-x$p1)^2+(x$o2-x$p2)^2)
   x$lag_t2 = sqrt((x$o1_2-x$p1_2)^2+(x$o2_2-x$p2_2)^2)
   x$change_in_lag = x$lag_t2-x$lag_t1
   x$lag_rate_per_century = x$change_in_lag/x$climate_dt_years*100</code></pre>
 <pre class="r"><code># R/helpers/tracking_metrics.R
+  # Two &quot;what if&quot; end points at t2, both starting from the observed t1 position:
+  #   pace-corrected: the community&#39;s own direction, but the predicted
+  #     distance b (as if it had moved at the climate&#39;s pace);
+  #   direction-corrected: the predicted direction, but its own distance a
+  #     (as if it had moved the climate&#39;s way).
+  # Each effect is the observed lag at t2 minus the lag at that &quot;what if&quot; end
+  # point, per century. Positive: the community&#39;s own pace (or direction)
+  # widened the lag. Negative: it narrowed the lag.
   x$pace_corrected_CCA1 = x$pace_corrected_CCA2 = rep(NA_real_, nrow(x))
   x$direction_corrected_CCA1 = x$direction_corrected_CCA2 = rep(NA_real_, nrow(x))
   i = observed_direction
@@ -2768,29 +2772,24 @@ sample are noisier, so each row is weighted by the sampling variance of
 its two ends, and the parks keep different residual spread. In the
 Anthropocene the same responses are compared between burned and unburned
 plots within each park.</p>
-<p><strong>Decisions.</strong></p>
-<ul>
-<li>9 Nov 2026 (Bills, <code>PLAN.md</code> rows 7 and 8): AR(1) on the
-lake-period order within lake, fixed a priori. No lake random intercept,
-no period label, no interaction terms.</li>
-<li>9 Nov 2026 (Bills, <code>PLAN.md</code> row 24): one fire slope for
-both parks, in events per century per covered core.</li>
-<li>9 Nov 2026 (taken in the run): the partial-effect lines of Figure 6A
-hold the other predictor at the park’s own mean, over the park’s own
-range of the focal predictor. The Anthropocene model with elevation and
-the lake random-intercept sensitivity of the old analysis are no longer
-fitted.</li>
-</ul>
-<p><strong>Model code.</strong></p>
+<p><strong>How it is calculated.</strong></p>
 <pre class="r"><code># R/pipeline/14_predictor_models.R
-  # AR(1) on the lake-period order within lake, fixed a priori (PLAN.md row 7).
-  # varFixed gives single-scoop ends less weight; varIdent lets the parks keep
-  # different residual spread.
+  # Holocene lake-periods only. Does the response (lag rate, pace effect,
+  # direction effect) go with faster climate change or more fire?
+  #   site: a separate level for each park;
+  #   climate_rate: the slope per unit of climate change rate;
+  #   fire_activity: the slope per accepted fire event per century per core.
+  # Consecutive lake-periods of a lake are correlated (AR(1) within lake).
+  # varIdent lets the parks keep a different spread, and varFixed gives ends
+  # resting on single samples less weight (endpoint_var = 1/n_start + 1/n_end).
   captured = reconstruction_capture(function() gls(estimate ~ site + climate_rate + fire_activity,
     correlation = corAR1(form = ~ unit_index | lake),
     weights = varComb(varIdent(form = ~ 1 | site), varFixed(~ endpoint_var)),
     data = d, method = &#39;REML&#39;, control = glsControl(msMaxIter = 500)))</code></pre>
 <pre class="r"><code># R/pipeline/14_predictor_models.R
+  # Anthropocene plot pairs only: the same responses against site and burned
+  # (whether the plot burned between the two surveys). Plots are independent,
+  # each park keeps its own spread.
   captured = reconstruction_capture(function() gls(estimate ~ site + burned,
     weights = varIdent(form = ~ 1 | site), data = da, method = &#39;REML&#39;))</code></pre>
 <p><strong>Result.</strong></p>
@@ -3134,36 +3133,31 @@ within each lake. Fire stays out of these models, because it is measured
 differently in the two eras. Rates over a few decades and over centuries
 are not on equal footing, since longer windows give lower rates, and
 every comparison states both time spans.</p>
-<p><strong>Decisions.</strong></p>
-<ul>
-<li>9 Nov 2026 (Bills, standing rule and <code>PLAN.md</code> rows 2, 8
-and 23): Holocene-C and Holocene-S are separate levels of
-<code>period_type</code>, compared with the Anthropocene in each park.
-Folds for climate change rate and turnover rate against each Holocene
-type, with the Holocene-C fold the one quoted as a speed.</li>
-<li>9 Nov 2026 (Bills, <code>PLAN.md</code> row 7): AR(1) fixed a
-priori. The old comparison of independent, MA(1) and CAR(1) residuals is
-removed.</li>
-<li>9 Nov 2026 (taken in the run): the individual-lake era comparisons
-of the old analysis are no longer run. A MORA lake has four to six
-lake-periods split between C and S, too few to compare each type of a
-single lake with the Anthropocene, and NOCA has one lake, which the park
-model already is.</li>
-<li>9 Nov 2026 (taken in the run): in the joint pace and direction model
-the AR(1) replaces the old MA(1), the endpoint weights are added, and
-the correlation between the two corrections of a unit is estimated per
-era and park (Holocene or Anthropocene), because a lake’s series
-contains both C and S lake-periods.</li>
-</ul>
-<p><strong>Model code.</strong></p>
+<p><strong>How it is calculated.</strong></p>
 <pre class="r"><code># R/pipeline/13_era_models.R
-  # AR(1) on the unit order within each series, fixed a priori (PLAN.md row 7):
-  # a lake for Holocene rows, a plot (one unit) for Anthropocene rows.
+  # One model per response (climate change rate, turnover rate, lag, lag rate,
+  # pace effect, direction effect). Each row is a Holocene lake-period or an
+  # Anthropocene plot pair; `estimate` is its value of the response.
+  # Mean part, period_type * site: one mean for each period type (Holocene-S,
+  # Holocene-C, Anthropocene) in each park. The era means, the contrasts
+  # (Anthropocene minus each Holocene type) and the folds come from these.
+  # gls (generalized least squares, nlme) is a regression whose errors may be
+  # correlated and unequal:
+  #   correlation: consecutive lake-periods of one lake are correlated, AR(1)
+  #     along the unit order within each series (a lake; each Anthropocene plot
+  #     is a series of one unit);
+  #   weights: each period type in each park has its own spread (varIdent), and
+  #     ends that rest on few samples are noisier, in proportion to
+  #     endpoint_var = 1/n_start + 1/n_end (varFixed).
   captured = reconstruction_capture(function() gls(estimate ~ period_type * site,
     correlation = corAR1(form = ~ unit_index | series),
     weights = varComb(varIdent(form = ~ 1 | period_type_site), varFixed(~ endpoint_var)),
     data = d, method = &#39;REML&#39;, control = glsControl(msMaxIter = 500)))</code></pre>
 <pre class="r"><code># R/pipeline/13_era_models.R
+  # Pace and direction effects in one model, two rows per unit (correction =
+  # pace or direction), so that the two effects of the same unit can be
+  # compared with their correlation taken into account (corPairedAR1: the AR(1)
+  # above plus a correlation between the two rows of a unit). Same weights.
   gls(estimate ~ period_type * site * correction, data = d,
     correlation = corPairedAR1(sort(unique(d$pair_group))),
     weights = varComb(varIdent(form = ~ 1 | period_type_site_correction), varFixed(~ endpoint_var)),
@@ -3991,21 +3985,12 @@ a positive value means the species carried the community with the
 climate. Along the initial mismatch, from the observed to the predicted
 position at t1 (<code>contrib_gap</code>), a positive value means the
 species closed that mismatch. Both are per century.</p>
-<p><strong>Decisions.</strong></p>
-<ul>
-<li>9 Nov 2026 (Bills, <code>PLAN.md</code> row 9): no species models
-with slopes. Group means per species, park and period type, two
-measures.</li>
-<li>9 Nov 2026 (Bills, during the run): no species model of any kind.
-The group means are plain means with t-intervals, and the contrasts are
-Welch differences of means.</li>
-<li>9 Nov 2026 (taken in the run): plot contributions are per century of
-the vegetation interval, like turnover. Lake-period contributions are
-per century of <code>duration_yr</code>. Rows without a defined
-direction (epsilon rule) leave both measures.</li>
-</ul>
-<p><strong>Code.</strong></p>
+<p><strong>How it is calculated.</strong></p>
 <pre class="r"><code># R/pipeline/15_contributions.R
+# For one species in one park and period type, x holds its contribution in
+# every lake-period (or plot pair). The result is the plain mean with a 95%
+# t-interval: mean plus or minus t(0.975, n - 1) times the standard error
+# sd / sqrt(n). With a single value the interval is undefined.
 group_mean = function(x) {
   n = length(x); m = mean(x); se = if (n &gt; 1) sd(x) / sqrt(n) else NA_real_
   q = if (n &gt; 1) qt(.975, n - 1) else NA_real_
@@ -6908,9 +6893,25 @@ in the CCA.</p>
 projected into it: their climate gives a predicted (LC) position and
 their composition an observed (WA) position.</p>
 <pre class="r"><code># R/pipeline/10_cca.R
+# The CCA is fitted once, on the legacy survey only.
+#   species_past_final: one row per calibration plot (607), one column per tree
+#     species (14), the counts of each species in the plot.
+#   env_past_final: the same 607 plots, two columns, MSpT (mean spring
+#     temperature) and SP (summer precipitation) of the plot&#39;s legacy climate
+#     window.
+# The formula reads &quot;species ~ MSpT + SP&quot;. vegan::cca finds the two axes,
+# each a weighted sum of MSpT and SP, along which species composition changes
+# most. With two climate variables there are exactly two axes. All later
+# positions (plots at both surveys, lake samples) live in this 2-D space.
 cca_formula = reformulate(CCA_VARIABLES, response = &quot;species_past_final&quot;)
 cca_model = cca(cca_formula, data = env_past_final)</code></pre>
 <pre class="r"><code># R/pipeline/10_cca.R
+# Two positions for every community, both on the fitted axes:
+#   type = &quot;lc&quot; (linear combination): where its CLIMATE alone puts it, the
+#     predicted position. It uses only MSpT and SP.
+#   type = &quot;wa&quot; (weighted average): where its SPECIES put it, the observed
+#     position, the average of the species&#39; scores weighted by their counts.
+# The lag M of a community is the distance between the two.
 predicted_present = predict(cca_model, newdata = env_present_final, type = &quot;lc&quot;, scaling = cca_scaling, hill = cca_hill)
 projected_present = predict(cca_model, newdata = species_present_final,
                             type = &quot;wa&quot;, scaling = cca_scaling, hill = cca_hill)
