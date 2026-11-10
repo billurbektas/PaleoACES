@@ -342,20 +342,26 @@ display_callouts = display_thresholds |>
   mutate(x = c(10465, 10295, 10125, 9955)[seq_along(variable)],
     ymin = -threshold_standardized_change, ymax = threshold_standardized_change,
     cap_left = x - 27, cap_right = x + 27,
-    label = sprintf("%s  [%+.3f, %+.3f]", variable, ymin, ymax))
-four_variable_key = function(p) p +
-  scale_color_manual(values = c(variable_colors, context = "grey25"),
-    breaks = CLIMATE_DISPLAY_VARIABLES,
-    labels = paste0(CLIMATE_VARIABLE_LABELS[CLIMATE_DISPLAY_VARIABLES],
-      if_else(CLIMATE_DISPLAY_VARIABLES %in% CCA_VARIABLES, " (CCA constraint)", "")),
-    name = NULL) +
-  guides(color = guide_legend(nrow = 1, override.aes = list(linewidth = 1.6))) +
-  theme(legend.position = "bottom", legend.text = element_text(size = 12 * FIG2_TEXT))
+    # The bars stand 170 years apart, too close for readable text: each
+    # threshold is written in the legend instead (Bills, 10 Nov 2026).
+    label = "")
+# All four variable names in full, in two legend rows (Bills, 10 Nov 2026).
+# With `thresholds`, each entry also gives the variable's threshold.
+four_variable_key = function(p, thresholds = NULL) {
+  labels = paste0(CLIMATE_VARIABLE_LABELS[CLIMATE_DISPLAY_VARIABLES],
+    if_else(CLIMATE_DISPLAY_VARIABLES %in% CCA_VARIABLES, " (CCA constraint)", ""))
+  if (!is.null(thresholds)) labels = paste0(labels, sprintf(", threshold \u00b1%.3f",
+    thresholds$threshold_standardized_change[match(CLIMATE_DISPLAY_VARIABLES, thresholds$variable)]))
+  p + scale_color_manual(values = c(variable_colors, context = "grey25"),
+      breaks = CLIMATE_DISPLAY_VARIABLES, labels = labels, name = NULL) +
+    guides(color = guide_legend(nrow = 2, byrow = TRUE, override.aes = list(linewidth = 1.6))) +
+    theme(legend.position = "bottom", legend.text = element_text(size = 12 * FIG2_TEXT))
+}
 p_climate_display = four_variable_key(climate_panel(text_scale = FIG2_TEXT,
   panel_data = display_cells |> mutate(value = regional_score,
     qualifies = qualifies & variable %in% CCA_VARIABLES),
   callouts = display_callouts, title = NULL,
-  y_label = "Standardized 1,000-year change\n(calibration SD)"))
+  y_label = "Standardized 1,000-year change\n(calibration SD)"), thresholds = display_callouts)
 if (render_figures) {
   ggsave(fig("supplementary", "fig_standardized_climate_change_four_variables.pdf"),
     p_climate_display / p_fire + plot_layout(heights = c(4.5, 1.45)),

@@ -18,18 +18,25 @@ Back to the [report](../../README.md#steps-1-to-4-lake-periods-and-their-respons
 geometry in `R/helpers/tracking_metrics.R`. How each displacement is split into species and
 climate contributions: `r repo_link('report/details/07_tracking_contributions.md', 'Contributions')`.
 
-## Century steps through time
+## Lake-periods through time
 
-The models no longer use century steps (see the lake-periods in the report). These figures show the
-steps between consecutive sampled centuries for description only.
+The values that enter the models, one per lake-period, placed in time. Before the remodelling these
+figures showed the steps between consecutive sampled centuries, which are mostly sampling noise.
 
 ```{r}
 show_figure('report/figures/supplementary/fig_tracking_transition_rates.pdf')
 show_figure('report/figures/supplementary/fig_tracking_transition_ratios_angles.pdf')
 ```
 
-**Lake-level transition rates, tracking ratios and angles** under the regional climate eras, with
-the Anthropocene plots as boxplots.
+**Lake-period values over time.** One column per lake. Each lake-period is a bar from its oldest
+to its youngest sampled century at its value, with its symbol at the middle (circles climate-change
+periods, triangles stability periods), under the C (darker) and S (lighter) period bands. The last
+column holds the Anthropocene plot pairs of each park as boxplots, on their own scale, because their
+values are much larger. First figure: climate change rate (calibration SD per century), turnover,
+lag rate, pace and direction effects (CCA distance per century) and fire activity (events per century
+per core). Second figure: the magnitude tracking ratio (unitless, 1 = observed and predicted moved
+equally far), the movement angle (degrees, 90 = perpendicular to the predicted direction), the climate
+change rate and fire activity. Ratios and angles are left out where a position did not move.
 
 ## Output columns
 
