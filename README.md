@@ -1207,28 +1207,6 @@ Fire-frequency ratio as in Figure 2B.
 **Fig. A3. Unrotated CCA biplot.** As Figure 3A on the unrotated axes,
 labelled with their share of the total inertia, with all taxa.
 
-<img src="report/figures/png/fig_lag_pace_direction_scatter.png" alt="" width="100%" />
-
-**Fig. A4. Pace and direction effects against the lag rate.** Each point
-is a Holocene lake-period (top row, circles climate-change periods,
-triangles stability periods) or an Anthropocene plot pair (bottom row,
-diamonds), coloured by park, with only the units whose observed and
-predicted positions both moved. Black lines are least-squares fits per
-period type with the two parks pooled (solid, climate-change periods,
-dashed, stability periods, one line for the Anthropocene). The thin
-diagonal marks a correction equal to the whole lag. Pearson r with the
-parks pooled: Holocene pace effect 0.86 (C) and 0.95 (S), Holocene
-direction effect 0.87 (C) and 0.44 (S), Anthropocene pace effect 0.83,
-Anthropocene direction effect 0.73. Per-park values are in
-`output/figures/lag_pace_direction_correlations.csv`. Holocene
-correlations rest on 11 or 12 lake-periods each. All values are in CCA
-distance per century. The two rows have their own scales, because
-Anthropocene values are about 50 times larger. Holocene climate-change
-lake-periods span 200 to 900 years and stability lake-periods 300 to
-2600 years between their first and last sampled century. Anthropocene
-plot pairs span 27.5 to 32.5 years between the midpoints of their
-climate windows (about 29 years).
-
 **Figure 1. Conceptual framework (caption revisions).** The drawing is
 unchanged. In panel B, the lag is the difference between the mismatches
 at t2 and t1, the first and last sampled century of a lake-period (one

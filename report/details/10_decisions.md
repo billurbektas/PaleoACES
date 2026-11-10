@@ -579,6 +579,10 @@ trajectories", which are kept as history.
 | Species | Two measures per lake-period and plot pair: the projection of each species' vector on the predicted movement and on the gap at the start. Plain means with t-intervals per species, park and period type, no species model (Bills, during the run). |
 | Removed | The comparison of independent, MA(1) and CAR(1) residuals, the individual-lake era checks, the lake random-intercept sensitivity, the Anthropocene model with elevation and the species slope models. |
 | Display rotation | Every CCA-space figure is rotated by the closed-form varimax angle, axis 1 spring temperature to the right, axis 2 summer precipitation upward. All tables stay unrotated, and the pipeline asserts that no metric changes under the rotation. |
+| Lag (10 Nov) | A sixth era-model response, the lag M at t2 minus M at t1, not divided by time (Bills). |
+| Figures 4 and 5 (10 Nov) | Fitted means and 95% intervals of the three period types per park, each mean printed beside its point. Climate change rate and turnover on log axes with an arrow for the fold against Holocene-C. Lag, lag rate, pace and direction on linear axes with connectors from the Anthropocene to each Holocene type, a star only where that contrast is significant, never on a single mean. Figure 5 holds pace and direction only, on one y scale, with "narrows the lag" and "widens the lag" along the axis (a positive effect means the community's own pace or direction widened the lag). The lag rate is Figure 4D (Bills). |
+| Figure 2 (10 Nov) | Raw units, period rates on the running mean with leader lines, the largest century step marked with a cross and its rate, driver words as directions only, Anthropocene rates with park names in park colours (Bills). |
+| Appendix (10 Nov) | Figure A4 (pace and direction against the lag rate) removed. The four-variable figures list all four variables in a two-row legend. The tracking values over time are shown per lake-period, not per century step (Bills). |
 
 ## Remaining scientific questions
 
