@@ -569,32 +569,6 @@ is the net movement from the first to the last century, so movement back and for
 does not add to it, and it does not grow in proportion to time. The rates of the long lake-periods are
 low partly for that reason.
 
-**Check: NOCA legacy plot area.** Every resurvey plot is 500 m², but the NOCA legacy plots range
-from 25 to 400 m². A small legacy plot can miss species that the resurvey then records, which would
-show up as turnover. The table gives the NOCA plot pairs by legacy plot area. It is descriptive
-only, and no model changes.
-
-```{r step5a-noca-plot-area}
-pa = read_output('report/noca_plot_area_responses.csv')
-pci = function(m, lo, hi) ifelse(is.na(lo), sprintf('%.3f', m), sprintf('%.3f (%.3f to %.3f)', m, lo, hi))
-pa |> transmute(`Legacy area (m²)` = legacy_area, Plots = plots,
-    `Richness, legacy` = sprintf('%.2f', richness_legacy_mean), `Richness, resurvey` = sprintf('%.2f', richness_resurvey_mean),
-    `Turnover rate` = pci(turnover_rate_mean, turnover_rate_low, turnover_rate_high),
-    Lag = pci(lag_mean, lag_low, lag_high), `Lag rate` = pci(lag_rate_mean, lag_rate_low, lag_rate_high)) |>
-  show_table('noca_plot_area_responses', caption = paste('**NOCA plot pairs by legacy plot area.** Richness is',
-    'the mean number of the retained CCA taxa present in a plot. Turnover rate, lag and lag rate are plain means',
-    'with 95% t-intervals (no model): the turnover and lag rates in CCA distance per century, the lag in CCA',
-    'distance. The single 36 m² plot has no interval.'))
-pa_row = function(a) pa[pa$legacy_area == a, ]
-```
-
-The smallest legacy plots did not record fewer of the CCA taxa: `r sprintf('%.2f', pa_row('25')$richness_legacy_mean)`
-taxa per 25 m² plot against `r sprintf('%.2f', pa_row('100')$richness_legacy_mean)` per 100 m² plot. Their
-turnover rate was not higher (`r sprintf('%.2f', pa_row('25')$turnover_rate_mean)` against
-`r sprintf('%.2f', pa_row('100')$turnover_rate_mean)` CCA distance per century), and the intervals of the
-three common areas overlap for every response. The NOCA Anthropocene results do not rest on the small
-legacy plots.
-
 **Check: sensitivity to the paleoclimate bias correction.** The primary run uses the raw
 CHELSA-TraCE21k paleoclimate. Its modern slice differs from the CHELSA V2.1 climate the CCA is
 calibrated on, by a fixed offset per lake and month for temperature and a fixed ratio for
@@ -937,6 +911,32 @@ calibrate the CCA using legacy community composition and to assess contemporary 
 change, whereas Holocene samples were projected into the fitted ordination. Plots without any
 retained tree species at either survey date were excluded because they could not be assigned an
 observed CCA position. Sample sizes and reasons for exclusion are indicated at each step.
+
+**Legacy plot area at NOCA.** Every resurvey plot is 500 m², but the NOCA legacy plots range
+from 25 to 400 m². A small legacy plot can miss species that the resurvey then records, which would
+show up as turnover. The table gives the NOCA plot pairs used in the analysis by legacy plot area, with their
+richness and the Anthropocene responses of Step 5a. It is descriptive only.
+
+```{r vegetation-noca-plot-area}
+pa = read_output('report/noca_plot_area_responses.csv')
+pci = function(m, lo, hi) ifelse(is.na(lo), sprintf('%.3f', m), sprintf('%.3f (%.3f to %.3f)', m, lo, hi))
+pa |> transmute(`Legacy area (m²)` = legacy_area, Plots = plots,
+    `Richness, legacy` = sprintf('%.2f', richness_legacy_mean), `Richness, resurvey` = sprintf('%.2f', richness_resurvey_mean),
+    `Turnover rate` = pci(turnover_rate_mean, turnover_rate_low, turnover_rate_high),
+    Lag = pci(lag_mean, lag_low, lag_high), `Lag rate` = pci(lag_rate_mean, lag_rate_low, lag_rate_high)) |>
+  show_table('noca_plot_area_responses', caption = paste('**NOCA plot pairs by legacy plot area.** Richness is',
+    'the mean number of the retained CCA taxa present in a plot. Turnover rate, lag and lag rate are plain means',
+    'with 95% t-intervals (no model): the turnover and lag rates in CCA distance per century, the lag in CCA',
+    'distance. The single 36 m² plot has no interval.'))
+pa_row = function(a) pa[pa$legacy_area == a, ]
+```
+
+The smallest legacy plots did not record fewer of the CCA taxa: `r sprintf('%.2f', pa_row('25')$richness_legacy_mean)`
+taxa per 25 m² plot against `r sprintf('%.2f', pa_row('100')$richness_legacy_mean)` per 100 m² plot. Their
+turnover rate was not higher (`r sprintf('%.2f', pa_row('25')$turnover_rate_mean)` against
+`r sprintf('%.2f', pa_row('100')$turnover_rate_mean)` CCA distance per century), and the intervals of the
+three common areas overlap for every response. The NOCA Anthropocene results do not rest on the small
+legacy plots.
 
 `r details_link('01_vegetation_cleaning', 'Cleaning details')` (plot-by-plot decisions, NOCA tree
 corrections, survey dates, raw-data provenance).

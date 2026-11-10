@@ -968,37 +968,6 @@ forth within a lake-period does not add to it, and it does not grow in
 proportion to time. The rates of the long lake-periods are low partly
 for that reason.
 
-**Check: NOCA legacy plot area.** Every resurvey plot is 500 m², but the
-NOCA legacy plots range from 25 to 400 m². A small legacy plot can miss
-species that the resurvey then records, which would show up as turnover.
-The table gives the NOCA plot pairs by legacy plot area. It is
-descriptive only, and no model changes.
-
-**NOCA plot pairs by legacy plot area.** Richness is the mean number of
-the retained CCA taxa present in a plot. Turnover rate, lag and lag rate
-are plain means with 95% t-intervals (no model): the turnover and lag
-rates in CCA distance per century, the lag in CCA distance. The single
-36 m² plot has no interval.
-
-| Legacy area (m²) | Plots | Richness, legacy | Richness, resurvey | Turnover rate | Lag | Lag rate |
-|:---|---:|:---|:---|:---|:---|:---|
-| 25 | 37 | 2.89 | 3.05 | 1.890 (1.213 to 2.567) | -0.114 (-0.358 to 0.130) | -0.399 (-1.256 to 0.459) |
-| 36 | 1 | 2.00 | 3.00 | 1.725 | -0.502 | -1.826 |
-| 100 | 213 | 2.81 | 2.91 | 2.128 (1.895 to 2.362) | -0.027 (-0.109 to 0.055) | -0.093 (-0.383 to 0.196) |
-| 200 | 2 | 4.00 | 1.50 | 2.538 (-29.705 to 34.780) | 0.960 (-9.107 to 11.026) | 3.367 (-31.954 to 38.689) |
-| 400 | 20 | 2.10 | 2.15 | 2.555 (1.157 to 3.953) | 0.083 (-0.410 to 0.577) | 0.294 (-1.438 to 2.026) |
-| not recorded | 4 | 1.50 | 2.00 | 2.221 (-2.829 to 7.270) | 0.085 (-0.127 to 0.297) | 0.311 (-0.460 to 1.081) |
-| all NOCA plot pairs | 277 | 2.76 | 2.85 | 2.130 (1.905 to 2.356) | -0.024 (-0.102 to 0.055) | -0.082 (-0.359 to 0.196) |
-
-<sub>Table file:
-[noca_plot_area_responses.csv](report/tables/noca_plot_area_responses.csv)</sub>
-
-The smallest legacy plots did not record fewer of the CCA taxa: 2.89
-taxa per 25 m² plot against 2.81 per 100 m² plot. Their turnover rate
-was not higher (1.89 against 2.13 CCA distance per century), and the
-intervals of the three common areas overlap for every response. The NOCA
-Anthropocene results do not rest on the small legacy plots.
-
 **Check: sensitivity to the paleoclimate bias correction.** The primary
 run uses the raw CHELSA-TraCE21k paleoclimate. Its modern slice differs
 from the CHELSA V2.1 climate the CCA is calibrated on, by a fixed offset
@@ -1599,6 +1568,38 @@ Holocene samples were projected into the fitted ordination. Plots
 without any retained tree species at either survey date were excluded
 because they could not be assigned an observed CCA position. Sample
 sizes and reasons for exclusion are indicated at each step.
+
+**Legacy plot area at NOCA.** Every resurvey plot is 500 m², but the
+NOCA legacy plots range from 25 to 400 m². A small legacy plot can miss
+species that the resurvey then records, which would show up as turnover.
+The table gives the NOCA plot pairs used in the analysis by legacy plot
+area, with their richness and the Anthropocene responses of Step 5a. It
+is descriptive only.
+
+**NOCA plot pairs by legacy plot area.** Richness is the mean number of
+the retained CCA taxa present in a plot. Turnover rate, lag and lag rate
+are plain means with 95% t-intervals (no model): the turnover and lag
+rates in CCA distance per century, the lag in CCA distance. The single
+36 m² plot has no interval.
+
+| Legacy area (m²) | Plots | Richness, legacy | Richness, resurvey | Turnover rate | Lag | Lag rate |
+|:---|---:|:---|:---|:---|:---|:---|
+| 25 | 37 | 2.89 | 3.05 | 1.890 (1.213 to 2.567) | -0.114 (-0.358 to 0.130) | -0.399 (-1.256 to 0.459) |
+| 36 | 1 | 2.00 | 3.00 | 1.725 | -0.502 | -1.826 |
+| 100 | 213 | 2.81 | 2.91 | 2.128 (1.895 to 2.362) | -0.027 (-0.109 to 0.055) | -0.093 (-0.383 to 0.196) |
+| 200 | 2 | 4.00 | 1.50 | 2.538 (-29.705 to 34.780) | 0.960 (-9.107 to 11.026) | 3.367 (-31.954 to 38.689) |
+| 400 | 20 | 2.10 | 2.15 | 2.555 (1.157 to 3.953) | 0.083 (-0.410 to 0.577) | 0.294 (-1.438 to 2.026) |
+| not recorded | 4 | 1.50 | 2.00 | 2.221 (-2.829 to 7.270) | 0.085 (-0.127 to 0.297) | 0.311 (-0.460 to 1.081) |
+| all NOCA plot pairs | 277 | 2.76 | 2.85 | 2.130 (1.905 to 2.356) | -0.024 (-0.102 to 0.055) | -0.082 (-0.359 to 0.196) |
+
+<sub>Table file:
+[noca_plot_area_responses.csv](report/tables/noca_plot_area_responses.csv)</sub>
+
+The smallest legacy plots did not record fewer of the CCA taxa: 2.89
+taxa per 25 m² plot against 2.81 per 100 m² plot. Their turnover rate
+was not higher (1.89 against 2.13 CCA distance per century), and the
+intervals of the three common areas overlap for every response. The NOCA
+Anthropocene results do not rest on the small legacy plots.
 
 **Cleaning details →**
 [01_vegetation_cleaning](report/details/01_vegetation_cleaning.md)
