@@ -21,9 +21,11 @@ data = era_means_data(c(pace_effect = paste0(RESPONSE_AXIS_LABELS[['pace_effect'
 # 10 Nov 2026): from the lowest interval end to the highest connector star.
 shared_y = range(data$means$conf_low, data$means$conf_high, data$connectors$y)
 shared_y[2] = shared_y[2] + .04 * diff(shared_y)
-figure = (era_means_panel('pace_effect', 'A.', data) | era_means_panel('direction_effect', 'B.', data)) +
+# Larger internals than Figure 4 (Bills, 10 Nov 2026).
+figure = (era_means_panel('pace_effect', 'A.', data, k = 1.3, kl = 1.12) |
+  era_means_panel('direction_effect', 'B.', data, k = 1.3, kl = 1.12)) +
   plot_layout(guides = 'collect') & coord_cartesian(ylim = shared_y) & theme(legend.position = 'bottom')
 if (render_figures) for (ext in c('pdf', 'png'))
-  ggsave(fig('main', paste0('fig_lag_pace_direction.', ext)), figure, width = 18, height = 7.5, dpi = 300,
+  ggsave(fig('main', paste0('fig_lag_pace_direction.', ext)), figure, width = 21, height = 9, dpi = 300,
     device = if (ext == 'pdf') cairo_pdf else NULL)
 cat('Figure 5: pace and direction by era drawn.\n')

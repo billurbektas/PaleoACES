@@ -50,17 +50,19 @@ era_means_data = function(titles, log_responses = character()) {
   list(means = means, arrows = arrows, connectors = connectors, titles = titles, log_responses = log_responses)
 }
 
-era_means_panel = function(r, tag, data) {
+# `k` scales the internals (points, intervals, connectors, stars), `kl` the
+# value labels, which must still fit between neighbouring symbols.
+era_means_panel = function(r, tag, data, k = 1, kl = k) {
   d = data$means |> dplyr::filter(response == r)
   log_axis = r %in% data$log_responses
   p = ggplot(d, aes(x, estimate)) +
     (if (!log_axis) geom_hline(yintercept = 0, color = 'grey60', linetype = 'dashed')) +
     # The fitted mean beside its point, in the park colour, on a white backing
     # that hides the zero line but sits under the intervals.
-    geom_label(aes(x = x + .055, label = label, color = site), hjust = 0, size = 5.2, fontface = 'bold',
+    geom_label(aes(x = x + .045 + .01 * k, label = label, color = site), hjust = 0, size = 5.2 * kl, fontface = 'bold',
       fill = 'white', label.size = 0, label.padding = unit(.06, 'lines')) +
-    geom_errorbar(aes(ymin = conf_low, ymax = conf_high, color = site), width = .08, linewidth = 1.1) +
-    geom_point(aes(shape = period_type, fill = site), size = 5, color = 'grey10', stroke = .6) +
+    geom_errorbar(aes(ymin = conf_low, ymax = conf_high, color = site), width = .08, linewidth = 1.1 * k) +
+    geom_point(aes(shape = period_type, fill = site), size = 5 * k, color = 'grey10', stroke = .6 * k) +
     scale_x_continuous(breaks = 1:2, labels = ERA_SITES, limits = c(.5, 2.72), expand = c(0, 0)) +
     scale_shape_manual(values = PERIOD_TYPE_SHAPES, name = NULL, breaks = ERA_TYPES, drop = FALSE,
       labels = c(`Holocene-S` = 'Holocene stability periods', `Holocene-C` = 'Holocene climate-change periods',
@@ -76,21 +78,21 @@ era_means_panel = function(r, tag, data) {
   if (log_axis) {
     a = data$arrows |> dplyr::filter(response == r)
     p = p +
-      geom_segment(data = a, aes(x = x, xend = x, y = y, yend = yend), color = 'grey35', linewidth = .8,
+      geom_segment(data = a, aes(x = x, xend = x, y = y, yend = yend), color = 'grey35', linewidth = .8 * k,
         arrow = arrow(length = unit(.18, 'cm'), ends = 'both', type = 'closed')) +
-      geom_text(data = a, aes(x = x + .03, y = y_text, label = text), hjust = 0, size = 5.6, color = 'grey15',
+      geom_text(data = a, aes(x = x + .03, y = y_text, label = text), hjust = 0, size = 5.6 * k, color = 'grey15',
         fontface = 'bold') +
       # Log axis, tick labels as plain decimals in real values.
       scale_y_log10(breaks = c(.005, .01, .02, .05, .1, .2, .5, 1, 2, 5),
         labels = function(b) format(b, scientific = FALSE, drop0trailing = TRUE, trim = TRUE),
         expand = expansion(mult = c(.05, .08)))
   } else {
-    k = data$connectors |> dplyr::filter(response == r)
+    cn = data$connectors |> dplyr::filter(response == r)
     p = p +
-      geom_segment(data = k, aes(x = x, xend = xend, y = y, yend = y), color = 'grey25', linewidth = .7) +
-      geom_segment(data = k, aes(x = x, xend = x, y = y, yend = y - drop), color = 'grey25', linewidth = .7) +
-      geom_segment(data = k, aes(x = xend, xend = xend, y = y, yend = y - drop), color = 'grey25', linewidth = .7) +
-      geom_text(data = k, aes(x = (x + xend) / 2, y = y, label = star), vjust = .25, size = 9, color = 'grey10') +
+      geom_segment(data = cn, aes(x = x, xend = xend, y = y, yend = y), color = 'grey25', linewidth = .7 * k) +
+      geom_segment(data = cn, aes(x = x, xend = x, y = y, yend = y - drop), color = 'grey25', linewidth = .7 * k) +
+      geom_segment(data = cn, aes(x = xend, xend = xend, y = y, yend = y - drop), color = 'grey25', linewidth = .7 * k) +
+      geom_text(data = cn, aes(x = (x + xend) / 2, y = y, label = star), vjust = .25, size = 9 * k, color = 'grey10') +
       scale_y_continuous(labels = function(b) era_minus(format(b, drop0trailing = TRUE, trim = TRUE)),
         expand = expansion(mult = c(.05, .06)))
   }
