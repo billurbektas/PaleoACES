@@ -756,6 +756,23 @@ show_figure('report/figures/supplementary/fig_cca_biplot_unrotated.pdf', width =
 **Fig. A3. Unrotated CCA biplot.** As Figure 3A on the unrotated axes, labelled with their share of
 the total inertia, with all taxa.
 
+```{r fig-app-scatter}
+show_figure('report/figures/supplementary/fig_lag_pace_direction_scatter.pdf')
+cor4 = read_output('figures/lag_pace_direction_correlations.csv')
+rr = function(e, ef, p) sprintf('%.2f', cor4$r[cor4$era == e & cor4$effect == ef & cor4$site == p])
+```
+
+**Fig. A4. Lag rate against the pace and direction effects.** Each point is a Holocene lake-period
+(top row, circles climate-change periods, triangles stability periods) or an Anthropocene plot pair
+(bottom row, diamonds), coloured by park, with only the units whose observed and predicted positions
+both moved. The diagonal marks a correction equal to the whole lag. Pearson r per park is given in each
+panel: Holocene pace `r rr('Holocene', 'pace_effect', 'MORA')` (MORA) and `r rr('Holocene', 'pace_effect', 'NOCA')` (NOCA),
+Holocene direction `r rr('Holocene', 'direction_effect', 'MORA')` and `r rr('Holocene', 'direction_effect', 'NOCA')`,
+Anthropocene pace `r rr('Anthropocene', 'pace_effect', 'MORA')` and `r rr('Anthropocene', 'pace_effect', 'NOCA')`,
+Anthropocene direction `r rr('Anthropocene', 'direction_effect', 'MORA')` and `r rr('Anthropocene', 'direction_effect', 'NOCA')`.
+All values are in CCA distance per century. The two rows have their own scales, because Anthropocene
+values are about 50 times larger. `r both_spans`
+
 **Figure 1. Conceptual framework (caption revisions).** The drawing is unchanged. In panel B, the lag
 is the difference between the mismatches at t2 and t1, the first and last sampled century of a
 lake-period (one lake within one climate period), and the lag rate is that difference per century.

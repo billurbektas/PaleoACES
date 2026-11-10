@@ -53,6 +53,7 @@ for the report.
 | R/figures/supp_cca_scaling.R | figure | supp_cca_scaling.R - one CCA drawn at scaling 1 and scaling 2 | 108 |
 | R/figures/supp_climate_correlations.R | figure | supp_climate_correlations.R | 626 |
 | R/figures/supp_climate_windows.R | figure | Compare the actual plot-specific survey windows with V2.1 1979-2021. | 174 |
+| R/figures/supp_lag_pace_direction_scatter.R | figure | Appendix figure A4 (Bills, 10 Nov 2026): lag rate against the pace effect | 52 |
 | R/figures/supp_sample_selection.R | figure | Show which plots and core samples reach CCA, starting with the supplied data. | 333 |
 | R/figures/supp_species_through_time.R | figure | supp_species_through_time.R - STEP 4, the species half | 199 |
 | R/figures/supp_tracking_transitions.R | figure | Descriptive lake-level tracking displays: actual transition rates, ratios and | 177 |
@@ -89,7 +90,7 @@ Every file under `output/` is declared in `R/helpers/paths.R`; a script
 cannot write an undeclared output. Folders hold one file per table, in
 the folder of the step that writes it.
 
-**159 output files** (excluding the climate and age-draw cache).
+**160 output files** (excluding the climate and age-draw cache).
 
 | Step | File | Description | Size (kB) |
 |:---|:---|:---|---:|
@@ -239,6 +240,7 @@ the folder of the step that writes it.
 | figures | holocene_climate_level_rates.csv | Tables behind the figures (centroids, annotations) | 1 |
 | figures | holocene_era_fire_threshold_ratio.csv | era and high-fire classification tables | 21 |
 | figures | holocene_standardized_climate_levels.csv | Tables behind the figures (centroids, annotations) | 68 |
+| figures | lag_pace_direction_correlations.csv | Tables behind the figures (centroids, annotations) | 0 |
 | figures | species_order_elevation.csv | Tables behind the figures (centroids, annotations) | 1 |
 | report | sample_selection_choices.csv | Tables computed only for the report | 1 |
 | report | sample_selection_counts.csv | Tables computed only for the report | 3 |
@@ -268,7 +270,7 @@ built for this report).
 |:----------------|------:|
 | main            |    12 |
 | models          |     1 |
-| supplementary   |    20 |
+| supplementary   |    22 |
 | worked_examples |     4 |
 
 <sub>Table file:
