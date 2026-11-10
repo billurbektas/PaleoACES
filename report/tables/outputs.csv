@@ -107,13 +107,13 @@ Step,File,Description,Size (kB)
 12_tracking,cca_tracking_schema.csv,Holocene and Anthropocene tracking calculations,19
 12_tracking,chronology_reconstruction/prepared.rds,Reconstruction bundle and primary reconstruction,8865
 12_tracking,chronology_reconstruction/primary.rds,Reconstruction bundle and primary reconstruction,100
-13_era_models,era_comparison/era_coefficients.csv,"Era-comparison GLS fits, means and contrasts per response",6
+13_era_models,era_comparison/era_coefficients.csv,"Era-comparison GLS fits, means and contrasts per response",5
 13_era_models,era_comparison/era_contrasts.csv,"Era-comparison GLS fits, means and contrasts per response",5
 13_era_models,era_comparison/era_durations.csv,"Era-comparison GLS fits, means and contrasts per response",0
 13_era_models,era_comparison/era_folds.csv,"Era-comparison GLS fits, means and contrasts per response",1
 13_era_models,era_comparison/era_means.csv,"Era-comparison GLS fits, means and contrasts per response",5
 13_era_models,era_comparison/era_model_summary.csv,"Era-comparison GLS fits, means and contrasts per response",1
-13_era_models,era_comparison/era_predictions.csv,"Era-comparison GLS fits, means and contrasts per response",361
+13_era_models,era_comparison/era_predictions.csv,"Era-comparison GLS fits, means and contrasts per response",359
 13_era_models,era_comparison/joint_correction_effects/correction_contrasts.csv,"Era-comparison GLS fits, means and contrasts per response",1
 13_era_models,era_comparison/joint_correction_effects/correlation_parameters.csv,"Era-comparison GLS fits, means and contrasts per response",0
 13_era_models,era_comparison/joint_correction_effects/model_group_means.csv,"Era-comparison GLS fits, means and contrasts per response",2

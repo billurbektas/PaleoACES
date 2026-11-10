@@ -86,19 +86,18 @@ lake_period_table_columns = function() c('site', 'lake', 'period', 'period_type'
   'M_start', 'M_end', 'lag_rate', 'turnover_rate', 'pace_effect', 'direction_effect', 'direction_defined')
 
 # Holocene lake-periods and Anthropocene plot pairs in one table for the era
-# models. A plot is a series of one unit, measured once at each end. The
-# absolute lag (Bills, 10 Nov 2026) is the size of the change in mismatch from
-# t1 to t2, not divided by time; being positive, it allows folds, which the
-# signed lag rate with its near-zero Holocene means does not.
+# models. A plot is a series of one unit, measured once at each end. The lag
+# (Bills, 10 Nov 2026) is the change in mismatch from t1 to t2, M_end - M_start,
+# not divided by time.
 build_both_eras = function(units, plots) {
   holocene = units |> dplyr::transmute(period_type, site, lake, plot_id = NA_character_, period,
     series = paste('H', site, lake, sep = '_'), unit_index, age_start, age_end, duration_yr,
-    n_start, n_end, endpoint_var, climate_rate, turnover_rate, lag_rate, abs_lag = abs(M_end - M_start), pace_effect,
+    n_start, n_end, endpoint_var, climate_rate, turnover_rate, lag_rate, lag = M_end - M_start, pace_effect,
     direction_effect, M_start, M_end, direction_defined, fire_activity, fire_coverage_valid, burned = NA)
   anthropocene = lake_period_responses(plots) |> dplyr::transmute(period_type = 'Anthropocene', site,
     lake = NA_character_, plot_id, period = 'Anthropocene', series = paste('A', site, plot_id, sep = '_'),
     unit_index = 1L, age_start = NA_real_, age_end = NA_real_, duration_yr = climate_dt_years,
-    n_start = 1L, n_end = 1L, endpoint_var = 2, climate_rate, turnover_rate, lag_rate, abs_lag = abs(M_end - M_start),
+    n_start = 1L, n_end = 1L, endpoint_var = 2, climate_rate, turnover_rate, lag_rate, lag = M_end - M_start,
     pace_effect, direction_effect, M_start, M_end, direction_defined, fire_activity = NA_real_,
     fire_coverage_valid = NA, burned)
   x = dplyr::bind_rows(holocene, anthropocene)
