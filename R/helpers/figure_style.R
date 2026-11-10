@@ -7,7 +7,7 @@ PAPER_SITE_COLORS = c(MORA = "#294EFF", NOCA = "#D94000")
 PERIOD_TYPE_SHAPES = c(`Holocene-C` = 21, `Holocene-S` = 24, Anthropocene = 23)
 # Axis labels name the quantity only; units are given in the captions (Bills).
 RESPONSE_AXIS_LABELS = c(climate_rate = "Climate change rate", turnover_rate = "Turnover rate",
-  lag_rate = "Lag rate", pace_effect = "Pace effect", direction_effect = "Direction effect",
+  lag_rate = "Lag rate", abs_lag_rate = "Absolute lag rate", pace_effect = "Pace effect", direction_effect = "Direction effect",
   fire_activity = "Fire activity")
 
 # Shared publication styling for the four main PaleoACES figures.

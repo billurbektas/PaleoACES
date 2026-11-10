@@ -1,7 +1,7 @@
 # Labels shared by primary model figures.
 source(here::here('R/helpers/tracking_result_paths.R'),local=TRUE)
 # Labels for model diagnostics, keyed by the PLAN.md response names.
-tracking_model_response_label=function(metric) unname(c(lag_rate='Lag rate',turnover_rate='Turnover rate',
+tracking_model_response_label=function(metric) unname(c(lag_rate='Lag rate',abs_lag_rate='Absolute lag rate',turnover_rate='Turnover rate',
   climate_rate='Climate change rate',pace_effect='Pace effect',direction_effect='Direction effect',
   Pace='Pace effect',Direction='Direction effect')[metric])
 # Period types of the era models (PLAN.md section 2), in model order.
@@ -9,6 +9,7 @@ ERA_PERIOD_TYPES=c('Holocene-S','Holocene-C','Anthropocene')
 # The era-model responses (PLAN.md Step 5a), with their axis labels and units.
 ERA_RESPONSES=c(climate_rate='Standardized climate change rate per century',
   turnover_rate='Turnover rate (CCA distance per century)',lag_rate='Lag rate (CCA distance per century)',
+  abs_lag_rate='Absolute lag rate (CCA distance per century)',
   pace_effect='Pace effect (CCA distance per century)',direction_effect='Direction effect (CCA distance per century)')
 tracking_model_response_label=function(metric) unname(c(lag_rate_per_century='Observed lag change',
   observed_turnover_rate='Community turnover rate',standardized_climate_change_rate='Standardized climate change per century',

@@ -56,7 +56,8 @@ for (response in names(ERA_RESPONSES)) {
     contrasts[[paste(response, park)]] = tibble(response, site = park,
       contrast = vapply(CONTRASTS, paste, character(1), collapse = ' - ')) |>
       bind_cols(linear(fit, contrast_rows(Xp, labels, CONTRASTS)))
-    if (response %in% c('climate_rate', 'turnover_rate')) {
+    # Folds only for positive responses (PLAN.md Step 5a; absolute lag added by Bills).
+    if (response %in% c('climate_rate', 'turnover_rate', 'abs_lag_rate')) {
       mp = m[m$site == park, ]
       folds[[paste(response, park)]] = tibble(response, site = park,
         against = c('Holocene-C', 'Holocene-S'),

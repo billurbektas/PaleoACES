@@ -11,7 +11,7 @@ R/pipeline/09_species_occurrences.R,pipeline,09_species_occurrences.R,626
 R/pipeline/10_cca.R,pipeline,10_cca.R - the pooled CCA and everything derived from it. NO FIGURES.,633
 R/pipeline/11_climate_eras_high_fire.R,pipeline,11_climate_eras_high_fire.R,187
 R/pipeline/12_tracking.R,pipeline,"Tracking: native-century Holocene positions, tracking metrics for both eras,",85
-R/pipeline/13_era_models.R,pipeline,"Era models (PLAN.md section 5, Step 5a): Holocene stability periods,",141
+R/pipeline/13_era_models.R,pipeline,"Era models (PLAN.md section 5, Step 5a): Holocene stability periods,",142
 R/pipeline/14_predictor_models.R,pipeline,"Explanatory models (PLAN.md section 5, Step 5).",110
 R/pipeline/15_contributions.R,pipeline,"Species contributions (PLAN.md section 5, Step 6): which species led the",96
 R/figures/supp_age_depth_models.R,figure,Figures S5 (four Bacon age-depth models) and S6 (Panther Potholes 210Pb,109
@@ -23,7 +23,7 @@ R/figures/supp_species_through_time.R,figure,"supp_species_through_time.R  -  ST
 R/figures/supp_tracking_transitions.R,figure,"Descriptive lake-level tracking displays: actual transition rates, ratios and",177
 R/figures/main_fig2_climate_eras_fire.R,figure,main_fig2_climate_eras_fire.R,661
 R/figures/main_fig3_cca_trajectories.R,figure,"Figure 3: A, species and climate biplot; B, observed and predicted trajectories",217
-R/figures/main_fig4_era_contrasts.R,figure,"Figure 4 (PLAN.md section 6): era contrasts for climate change rate, turnover",44
+R/figures/main_fig4_era_contrasts.R,figure,"Figure 4 (PLAN.md section 6): era contrasts for climate change rate, turnover",47
 R/figures/main_fig5_lag_pace_direction.R,figure,"Figure 5 (PLAN.md section 6): lag rate, pace effect and direction effect by",56
 R/figures/main_fig6_climate_fire_associations.R,figure,"Figure 6: climate and fire associations as model slopes (Bills, 9 Nov 2026).",58
 R/figures/main_fig7_species.R,figure,Figure 7 (PLAN.md section 6): species contributions in both eras. Species as,74

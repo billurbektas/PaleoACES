@@ -31,6 +31,7 @@ descriptive.
 | climate_rate | 631 | 0.025 | A.Anthropocene NOCA=2.287, A.Holocene-C MORA=0.062, A.Holocene-S MORA=0.032, A.Holocene-C NOCA=0.100, A.Holocene-S NOCA=0.072 | 0.113 |  |
 | turnover_rate | 631 | -0.357 | A.Anthropocene NOCA=2.311, A.Holocene-C MORA=0.065, A.Holocene-S MORA=0.046, A.Holocene-C NOCA=0.218, A.Holocene-S NOCA=0.257 | 0.176 |  |
 | lag_rate | 631 | -0.136 | A.Anthropocene NOCA=2.127, A.Holocene-C MORA=0.071, A.Holocene-S MORA=0.035, A.Holocene-C NOCA=0.086, A.Holocene-S NOCA=0.194 | 0.030 |  |
+| abs_lag_rate | 631 | -0.525 | A.Anthropocene NOCA=2.237, A.Holocene-C MORA=0.064, A.Holocene-S MORA=0.034, A.Holocene-C NOCA=0.144, A.Holocene-S NOCA=0.201 | 0.101 |  |
 | pace_effect | 487 | 0.433 | A.Anthropocene NOCA=2.772, A.Holocene-C MORA=0.086, A.Holocene-S MORA=0.061, A.Holocene-C NOCA=0.076, A.Holocene-S NOCA=0.257 | 0.021 |  |
 | direction_effect | 487 | -0.041 | A.Anthropocene NOCA=1.719, A.Holocene-C MORA=0.080, A.Holocene-S MORA=0.043, A.Holocene-C NOCA=0.115, A.Holocene-S NOCA=0.131 | 0.027 |  |
 
@@ -60,6 +61,12 @@ MORA).
 | lag_rate         | siteNOCA                         |    0.014 | 0.039 | 0.731 |
 | lag_rate         | period_typeHolocene-C:siteNOCA   |   -0.022 | 0.056 | 0.695 |
 | lag_rate         | period_typeAnthropocene:siteNOCA |   -0.639 | 0.159 | 0.000 |
+| abs_lag_rate     | (Intercept)                      |    0.026 | 0.011 | 0.015 |
+| abs_lag_rate     | period_typeHolocene-C            |    0.032 | 0.029 | 0.262 |
+| abs_lag_rate     | period_typeAnthropocene          |    0.956 | 0.042 | 0.000 |
+| abs_lag_rate     | siteNOCA                         |    0.042 | 0.032 | 0.192 |
+| abs_lag_rate     | period_typeHolocene-C:siteNOCA   |   -0.086 | 0.057 | 0.129 |
+| abs_lag_rate     | period_typeAnthropocene:siteNOCA |    0.639 | 0.112 | 0.000 |
 | pace_effect      | (Intercept)                      |    0.010 | 0.020 | 0.603 |
 | pace_effect      | period_typeHolocene-C            |   -0.010 | 0.023 | 0.671 |
 | pace_effect      | period_typeAnthropocene          |    0.157 | 0.051 | 0.002 |

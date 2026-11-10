@@ -466,6 +466,7 @@ contrasts = read_output(file.path(era_dir, 'era_contrasts.csv'))
 folds = read_output(file.path(era_dir, 'era_folds.csv'))
 durations = read_output(file.path(era_dir, 'era_durations.csv'))
 response_label = c(climate_rate = 'Climate change rate', turnover_rate = 'Turnover rate', lag_rate = 'Lag rate',
+  abs_lag_rate = 'Absolute lag rate',
   pace_effect = 'Pace effect', direction_effect = 'Direction effect')
 span = function(type) { d = durations[durations$period_type == type, ]; sprintf('%g to %g', min(d$duration_min), max(d$duration_max)) }
 spans = sprintf(paste('Holocene-C lake-periods span %s years, Holocene-S lake-periods %s years, and the',
@@ -506,9 +507,10 @@ show_figure('report/figures/main/fig_era_contrasts.pdf')
 **Figure 4. Climate change, turnover and lag in the Anthropocene against the Holocene.** For each
 park, the difference between the Anthropocene and the Holocene climate-change periods (circles) and
 between the Anthropocene and the Holocene stability periods (triangles), with 95% confidence
-intervals, for (A) the standardized climate change rate, (B) the turnover rate and (C) the lag rate.
+intervals, for (A) the standardized climate change rate, (B) the turnover rate, (C) the lag rate and (D) the
+absolute lag rate, the speed at which mismatch changes in either direction.
 The fold printed above each circle is the Anthropocene fitted mean divided by the Holocene
-climate-change fitted mean. Differences come from the model response ~ period type × site, with an
+climate-change fitted mean. The signed lag rate has no fold, because its Holocene means are close to zero. Differences come from the model response ~ period type × site, with an
 AR(1) correlation within each lake and weights for the number of samples at each end, fitted on
 `r n_group('Holocene-C', 'MORA')` climate-change and `r n_group('Holocene-S', 'MORA')` stability lake-periods and
 `r n_group('Anthropocene', 'MORA')` plot pairs at MORA, and `r n_group('Holocene-C', 'NOCA')`, `r n_group('Holocene-S', 'NOCA')`
