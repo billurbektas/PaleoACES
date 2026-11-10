@@ -30,16 +30,26 @@ reconstruction_r2 = function(y,p) {
 reconstruction_model_theme = function() ggplot2::theme_minimal(base_size=17)+
   ggplot2::theme(panel.grid.minor=ggplot2::element_blank(),
     strip.text=ggplot2::element_text(size=17,face='bold'),legend.position='bottom')
-reconstruction_residual_plot = function(x) {
+reconstruction_residual_plot = function(x, ncol = 3) {
+  # One facet per response with a one-line title, so the panels keep their
+  # height. The era models have no continuous predictor, so the fitted values
+  # take one value per period type and park: the residuals are shown by group
+  # instead of against fitted values, which shows the same and reads better.
+  x$metric = factor(reconstruction_metric_label(x$metric), levels = unique(reconstruction_metric_label(x$metric)))
+  x$era = factor(x$era, levels = c('Holocene-S', 'Holocene-C', 'Anthropocene'))
   qq=ggplot2::ggplot(x,ggplot2::aes(sample=normalized_residual))+
-    ggplot2::stat_qq(alpha=.45,size=1.1)+ggplot2::stat_qq_line(color='grey35')+
-    ggplot2::facet_wrap(~metric+era,scales='free',labeller=ggplot2::labeller(metric=reconstruction_metric_label))+
-    ggplot2::labs(x='Normal quantile',y='Normalized residual')+
+    ggplot2::stat_qq(alpha=.4,size=1.3)+ggplot2::stat_qq_line(color='grey35')+
+    ggplot2::facet_wrap(~metric,scales='free',ncol=ncol)+
+    ggplot2::labs(title='Normal quantile plots',x='Normal quantile',y='Normalized residual')+
     reconstruction_model_theme()
-  rv=ggplot2::ggplot(x,ggplot2::aes(predicted,normalized_residual,color=site))+
-    ggplot2::geom_hline(yintercept=0,color='grey60')+ggplot2::geom_point(alpha=.45,size=1.1)+
-    ggplot2::facet_wrap(~metric+era,scales='free',labeller=ggplot2::labeller(metric=reconstruction_metric_label))+
-    ggplot2::labs(x='Fitted value',y='Normalized residual')+
-    ggplot2::scale_color_manual(values=c(MORA='#648FFF',NOCA='#FE6100'))+reconstruction_model_theme()
-  patchwork::wrap_plots(qq,rv,ncol=1)
+  park_colors=c(MORA='#294EFF',NOCA='#D94000')
+  by_group=ggplot2::ggplot(x,ggplot2::aes(era,normalized_residual,color=site))+
+    ggplot2::geom_hline(yintercept=0,color='grey60')+
+    ggplot2::geom_point(alpha=.3,size=1,position=ggplot2::position_jitterdodge(jitter.width=.18,dodge.width=.7,seed=1))+
+    ggplot2::geom_boxplot(fill=NA,outlier.shape=NA,width=.5,linewidth=.6,position=ggplot2::position_dodge(width=.7))+
+    ggplot2::facet_wrap(~metric,scales='free_y',ncol=ncol)+
+    ggplot2::scale_color_manual(values=park_colors,name=NULL)+
+    ggplot2::labs(title='Normalized residuals by period type and park',x=NULL,y='Normalized residual')+
+    reconstruction_model_theme()+ggplot2::theme(legend.position='bottom')
+  patchwork::wrap_plots(qq,by_group,ncol=1)
 }

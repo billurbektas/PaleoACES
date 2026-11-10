@@ -11,11 +11,6 @@ ERA_RESPONSES=c(climate_rate='Standardized climate change rate per century',
   turnover_rate='Turnover rate (CCA distance per century)',lag_rate='Lag rate (CCA distance per century)',
   lag='Lag (CCA distance)',
   pace_effect='Pace effect (CCA distance per century)',direction_effect='Direction effect (CCA distance per century)')
-tracking_model_response_label=function(metric) unname(c(lag_rate_per_century='Observed lag change',
-  observed_turnover_rate='Community turnover rate',standardized_climate_change_rate='Standardized climate change per century',
-  pace_effect_on_lag_per_century='Pace correction effect',direction_effect_on_lag_per_century='Direction correction effect')[metric])
-tracking_model_response_unit=function(metric) if(metric=='standardized_climate_change_rate')
-  'Standardized climate change per century' else 'CCA distance per century'
 
 # Paired outcomes on each unit need their own covariance: stacking the two
 # corrections as independent observations would give incorrect contrasts. The

@@ -85,9 +85,16 @@ MORA).
 
 <img src="../figures/png/fig_tracking_model_residuals.png" alt="" width="1540" /><img src="../figures/png/fig_tracking_model_residuals-p2.png" alt="" width="1540" />
 
-**Residual checks** of the five era models (page 1) and of the joint
-pace and direction model (page 2): normal quantile plots and normalized
-residuals against fitted values.
+**Residual checks** of the six era models (page 1) and of the joint pace
+and direction model (page 2). Top: normal quantile plots of the
+normalized residuals, one per response. Bottom: normalized residuals by
+period type and park (points, with boxes for the quartiles). The models
+have no continuous predictor, so the fitted values take one value per
+period type and park, and residuals by group show what a plot against
+fitted values would. The climate change and turnover rates are positive
+by construction and their residuals are right-skewed. The lag, lag rate,
+pace and direction residuals have heavy tails from a few Anthropocene
+plots.
 
 ## Joint pace and direction model
 
