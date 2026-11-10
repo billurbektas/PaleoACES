@@ -1,7 +1,8 @@
 # 13 Era models (PLAN.md section 5, Step 5a): Holocene stability periods,
 # Holocene climate-change periods and the Anthropocene compared within each
-# park, for climate change rate, turnover rate, lag rate, pace effect and
-# direction effect, and the joint pace and direction model. The Holocene is
+# park, for climate change rate, turnover rate, displacement, lag rate, lag,
+# pace effect and direction effect, and the joint pace and direction model.
+# Displacement and lag are not divided by time (Bills, 10 Nov 2026). The Holocene is
 # never pooled into one value and the parks are never pooled (standing rule).
 source(here::here('R/helpers/config.R'), local = TRUE)
 suppressPackageStartupMessages({library(here); library(tidyverse); library(nlme); library(patchwork)})
@@ -37,8 +38,8 @@ for (response in names(ERA_RESPONSES)) {
   # Rule (standing rule, PLAN.md section 4): all six period type x park groups are present.
   stopifnot(nlevels(droplevels(d$period_type_site)) == 6L)
 # report-snippet: era-model
-  # One model per response (climate change rate, turnover rate, lag, lag rate,
-  # pace effect, direction effect). Each row is a Holocene lake-period or an
+  # One model per response (climate change rate, turnover rate, displacement,
+  # lag rate, lag, pace effect, direction effect). Each row is a Holocene lake-period or an
   # Anthropocene plot pair; `estimate` is its value of the response.
   # Mean part, period_type * site: one mean for each period type (Holocene-S,
   # Holocene-C, Anthropocene) in each park. The era means, the contrasts
@@ -91,9 +92,21 @@ for (response in names(ERA_RESPONSES)) {
 }
 durations = both |> group_by(period_type, site) |>
   summarise(n = n(), duration_min = min(duration_yr), duration_max = max(duration_yr), .groups = 'drop')
+# Displacement and lag are totals over a lake-period, so they grow with its
+# duration. This table (Bills, 10 Nov 2026) shows by how much, per park, in the
+# three duration classes the lake-periods fall into. Plain means, no model.
+duration_classes = both |> filter(period_type != 'Anthropocene') |>
+  mutate(duration_class = case_when(duration_yr >= 200 & duration_yr <= 400 ~ '200 to 400 years',
+    duration_yr >= 500 & duration_yr <= 900 ~ '500 to 900 years', duration_yr > 2000 ~ 'over 2,000 years',
+    TRUE ~ 'other durations')) |>
+  group_by(site, duration_class) |>
+  summarise(lake_periods = n(), stability = sum(period_type == 'Holocene-S'),
+    climate_change = sum(period_type == 'Holocene-C'), duration_min = min(duration_yr),
+    duration_max = max(duration_yr), mean_displacement = mean(displacement),
+    mean_absolute_lag = mean(abs(lag)), mean_lag = mean(lag), .groups = 'drop')
 tables = list(era_means = bind_rows(means), era_contrasts = bind_rows(contrasts), era_folds = bind_rows(folds),
   era_model_summary = bind_rows(summary_rows), era_coefficients = bind_rows(coefficient_rows),
-  era_predictions = bind_rows(predictions), era_durations = durations)
+  era_predictions = bind_rows(predictions), era_durations = durations, era_duration_classes = duration_classes)
 for (name in names(tables)) write_csv(tables[[name]], file.path(results_dir, paste0(name, '.csv')))
 saveRDS(fits, file.path(results_dir, 'primary_fits.rds'))
 writeLines(c('Step 5a era models: estimate ~ period_type * site, AR(1) within series, endpoint weights.',

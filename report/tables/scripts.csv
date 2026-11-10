@@ -11,19 +11,19 @@ R/pipeline/09_species_occurrences.R,pipeline,09_species_occurrences.R,626
 R/pipeline/10_cca.R,pipeline,10_cca.R - the pooled CCA and everything derived from it. NO FIGURES.,649
 R/pipeline/11_climate_eras_high_fire.R,pipeline,11_climate_eras_high_fire.R,187
 R/pipeline/12_tracking.R,pipeline,"Tracking: native-century Holocene positions, tracking metrics for both eras,",85
-R/pipeline/13_era_models.R,pipeline,"Era models (PLAN.md section 5, Step 5a): Holocene stability periods,",160
+R/pipeline/13_era_models.R,pipeline,"Era models (PLAN.md section 5, Step 5a): Holocene stability periods,",173
 R/pipeline/14_predictor_models.R,pipeline,"Explanatory models (PLAN.md section 5, Step 5).",118
 R/pipeline/15_contributions.R,pipeline,"Species contributions (PLAN.md section 5, Step 6): which species led the",100
 R/figures/supp_age_depth_models.R,figure,Figures S5 (four Bacon age-depth models) and S6 (Panther Potholes 210Pb,109
 R/figures/supp_cca_scaling.R,figure,supp_cca_scaling.R - one CCA drawn at scaling 1 and scaling 2,108
 R/figures/supp_climate_correlations.R,figure,supp_climate_correlations.R,626
 R/figures/supp_climate_windows.R,figure,Compare the actual plot-specific survey windows with V2.1 1979-2021.,174
-R/figures/supp_sample_selection.R,figure,"Show which plots and core samples reach CCA, starting with the supplied data.",333
+R/figures/supp_sample_selection.R,figure,"Show which plots and core samples reach CCA, starting with the supplied data.",367
 R/figures/supp_species_through_time.R,figure,"supp_species_through_time.R  -  STEP 4, the species half",199
 R/figures/supp_tracking_transitions.R,figure,Appendix figures of the lake-period values over time (redrawn on lake-periods,86
 R/figures/main_fig2_climate_eras_fire.R,figure,main_fig2_climate_eras_fire.R,696
 R/figures/main_fig3_cca_trajectories.R,figure,"Figure 3: A, species and climate biplot; B, observed and predicted trajectories",220
-R/figures/main_fig4_era_contrasts.R,figure,"Figure 4 (PLAN.md section 6; redrawn by Bills, 10 Nov 2026): fitted means",23
+R/figures/main_fig4_era_contrasts.R,figure,"Figure 4 (PLAN.md section 6; redrawn by Bills, 10 Nov 2026): fitted means",35
 R/figures/main_fig5_lag_pace_direction.R,figure,"Figure 5 (PLAN.md section 6; redrawn by Bills, 10 Nov 2026): the pace effect",31
 R/figures/main_fig6_climate_fire_associations.R,figure,"Figure 6: climate and fire associations as model slopes (Bills, 9 Nov 2026).",58
 R/figures/main_fig7_species.R,figure,Figure 7 (PLAN.md section 6): species contributions in both eras. Species as,97

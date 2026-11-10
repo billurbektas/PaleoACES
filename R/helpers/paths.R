@@ -135,7 +135,9 @@ out = function(name) {
   step = output_step(name)
   first = sub('/.*$', '', name)
   # A folder named after its own step ("figures/x.csv") is not nested twice.
-  path = ifelse(first == step, here::here('output', name), here::here('output', step, name))
+  # A sensitivity run writes into its own root so the primary output/ is never touched.
+  root = getOption('paleoaces.output_root', here::here('output'))
+  path = ifelse(first == step, file.path(root, name), file.path(root, step, name))
   for (d in unique(dirname(path))) dir.create(d, recursive = TRUE, showWarnings = FALSE)
   path
 }

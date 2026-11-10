@@ -29,7 +29,9 @@ CLIMATE_VARIABLE_UNITS = c(
 )
 NOCA_FIRE_START = 1983L
 NOCA_FIRE_END = 2015L
-PALEO_USE_BIAS_CORRECTED = FALSE
+# Raw TraCE21k in the primary run. The bias-corrected sensitivity run
+# (R/sensitivity_bias_corrected.R) sets the option to TRUE.
+PALEO_USE_BIAS_CORRECTED = isTRUE(getOption('paleoaces.bias_corrected', FALSE))
 
 object_fingerprint = function(x) {
   f = tempfile(pattern = "paleoaces-fingerprint-", fileext = ".rds")

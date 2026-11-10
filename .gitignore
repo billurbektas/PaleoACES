@@ -53,6 +53,7 @@ rsconnect/
 !/data/MORA/resurvey_year_source_discrepancies.csv
 /Cores/
 /output/
+/output_bias_corrected/
 /archive/
 /related_publications/
 /notes_from_Rachel/

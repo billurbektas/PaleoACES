@@ -18,6 +18,7 @@ Rscript R/run_all.R                # same, downloading any missing CHELSA chunks
 Rscript R/run_all.R --age-models   # also refit the four Bacon chronologies (about 5 minutes)
 Rscript R/run_all.R --presentation # also draw the presentation figures
 Rscript R/build_report.R           # rebuild this report from the outputs
+Rscript R/sensitivity_bias_corrected.R  # stages 07-15 with bias-corrected paleoclimate, into output_bias_corrected/
 ```
 
 `R/run_all.R` runs the pipeline steps in order, then every figure
@@ -46,19 +47,19 @@ for the report.
 | R/pipeline/10_cca.R | pipeline | 10_cca.R - the pooled CCA and everything derived from it. NO FIGURES. | 649 |
 | R/pipeline/11_climate_eras_high_fire.R | pipeline | 11_climate_eras_high_fire.R | 187 |
 | R/pipeline/12_tracking.R | pipeline | Tracking: native-century Holocene positions, tracking metrics for both eras, | 85 |
-| R/pipeline/13_era_models.R | pipeline | Era models (PLAN.md section 5, Step 5a): Holocene stability periods, | 160 |
+| R/pipeline/13_era_models.R | pipeline | Era models (PLAN.md section 5, Step 5a): Holocene stability periods, | 173 |
 | R/pipeline/14_predictor_models.R | pipeline | Explanatory models (PLAN.md section 5, Step 5). | 118 |
 | R/pipeline/15_contributions.R | pipeline | Species contributions (PLAN.md section 5, Step 6): which species led the | 100 |
 | R/figures/supp_age_depth_models.R | figure | Figures S5 (four Bacon age-depth models) and S6 (Panther Potholes 210Pb | 109 |
 | R/figures/supp_cca_scaling.R | figure | supp_cca_scaling.R - one CCA drawn at scaling 1 and scaling 2 | 108 |
 | R/figures/supp_climate_correlations.R | figure | supp_climate_correlations.R | 626 |
 | R/figures/supp_climate_windows.R | figure | Compare the actual plot-specific survey windows with V2.1 1979-2021. | 174 |
-| R/figures/supp_sample_selection.R | figure | Show which plots and core samples reach CCA, starting with the supplied data. | 333 |
+| R/figures/supp_sample_selection.R | figure | Show which plots and core samples reach CCA, starting with the supplied data. | 367 |
 | R/figures/supp_species_through_time.R | figure | supp_species_through_time.R - STEP 4, the species half | 199 |
 | R/figures/supp_tracking_transitions.R | figure | Appendix figures of the lake-period values over time (redrawn on lake-periods | 86 |
 | R/figures/main_fig2_climate_eras_fire.R | figure | main_fig2_climate_eras_fire.R | 696 |
 | R/figures/main_fig3_cca_trajectories.R | figure | Figure 3: A, species and climate biplot; B, observed and predicted trajectories | 220 |
-| R/figures/main_fig4_era_contrasts.R | figure | Figure 4 (PLAN.md section 6; redrawn by Bills, 10 Nov 2026): fitted means | 23 |
+| R/figures/main_fig4_era_contrasts.R | figure | Figure 4 (PLAN.md section 6; redrawn by Bills, 10 Nov 2026): fitted means | 35 |
 | R/figures/main_fig5_lag_pace_direction.R | figure | Figure 5 (PLAN.md section 6; redrawn by Bills, 10 Nov 2026): the pace effect | 31 |
 | R/figures/main_fig6_climate_fire_associations.R | figure | Figure 6: climate and fire associations as model slopes (Bills, 9 Nov 2026). | 58 |
 | R/figures/main_fig7_species.R | figure | Figure 7 (PLAN.md section 6): species contributions in both eras. Species as | 97 |
@@ -89,7 +90,7 @@ Every file under `output/` is declared in `R/helpers/paths.R`; a script
 cannot write an undeclared output. Folders hold one file per table, in
 the folder of the step that writes it.
 
-**159 output files** (excluding the climate and age-draw cache).
+**161 output files** (excluding the climate and age-draw cache).
 
 | Step | File | Description | Size (kB) |
 |:---|:---|:---|---:|
@@ -189,7 +190,7 @@ the folder of the step that writes it.
 | 11_climate_eras | holocene_periods.csv | The analysis periods (C and S, sub-periods where split) that define the lake-periods | 0 |
 | 12_tracking | cca_tracking_anthropocene_plot_calculations.csv | Holocene and Anthropocene tracking calculations | 583 |
 | 12_tracking | cca_tracking_anthropocene_plot_model_input.csv | Holocene and Anthropocene tracking calculations | 119 |
-| 12_tracking | cca_tracking_both_eras.csv | Holocene and Anthropocene tracking calculations | 147 |
+| 12_tracking | cca_tracking_both_eras.csv | Holocene and Anthropocene tracking calculations | 156 |
 | 12_tracking | cca_tracking_holocene_century_positions.csv | Holocene and Anthropocene tracking calculations | 92 |
 | 12_tracking | cca_tracking_holocene_lake_calculations.csv | Holocene and Anthropocene tracking calculations | 276 |
 | 12_tracking | cca_tracking_holocene_lake_support.csv | Holocene and Anthropocene tracking calculations | 0 |
@@ -201,22 +202,23 @@ the folder of the step that writes it.
 | 12_tracking | cca_tracking_schema.csv | Holocene and Anthropocene tracking calculations | 19 |
 | 12_tracking | chronology_reconstruction/prepared.rds | Reconstruction bundle and primary reconstruction | 8862 |
 | 12_tracking | chronology_reconstruction/primary.rds | Reconstruction bundle and primary reconstruction | 100 |
-| 13_era_models | era_comparison/era_coefficients.csv | Era-comparison GLS fits, means and contrasts per response | 5 |
-| 13_era_models | era_comparison/era_contrasts.csv | Era-comparison GLS fits, means and contrasts per response | 5 |
+| 13_era_models | era_comparison/era_coefficients.csv | Era-comparison GLS fits, means and contrasts per response | 6 |
+| 13_era_models | era_comparison/era_contrasts.csv | Era-comparison GLS fits, means and contrasts per response | 6 |
+| 13_era_models | era_comparison/era_duration_classes.csv | Era-comparison GLS fits, means and contrasts per response | 1 |
 | 13_era_models | era_comparison/era_durations.csv | Era-comparison GLS fits, means and contrasts per response | 0 |
 | 13_era_models | era_comparison/era_folds.csv | Era-comparison GLS fits, means and contrasts per response | 1 |
-| 13_era_models | era_comparison/era_means.csv | Era-comparison GLS fits, means and contrasts per response | 5 |
+| 13_era_models | era_comparison/era_means.csv | Era-comparison GLS fits, means and contrasts per response | 6 |
 | 13_era_models | era_comparison/era_model_summary.csv | Era-comparison GLS fits, means and contrasts per response | 1 |
-| 13_era_models | era_comparison/era_predictions.csv | Era-comparison GLS fits, means and contrasts per response | 359 |
+| 13_era_models | era_comparison/era_predictions.csv | Era-comparison GLS fits, means and contrasts per response | 422 |
 | 13_era_models | era_comparison/joint_correction_effects/correction_contrasts.csv | Era-comparison GLS fits, means and contrasts per response | 1 |
 | 13_era_models | era_comparison/joint_correction_effects/correlation_parameters.csv | Era-comparison GLS fits, means and contrasts per response | 0 |
 | 13_era_models | era_comparison/joint_correction_effects/model_group_means.csv | Era-comparison GLS fits, means and contrasts per response | 2 |
-| 13_era_models | era_comparison/joint_correction_effects/model_input.csv | Era-comparison GLS fits, means and contrasts per response | 297 |
+| 13_era_models | era_comparison/joint_correction_effects/model_input.csv | Era-comparison GLS fits, means and contrasts per response | 315 |
 | 13_era_models | era_comparison/joint_correction_effects/model_results.txt | Era-comparison GLS fits, means and contrasts per response | 7 |
 | 13_era_models | era_comparison/joint_correction_effects/period_type_contrasts.csv | Era-comparison GLS fits, means and contrasts per response | 3 |
-| 13_era_models | era_comparison/joint_correction_effects/primary_fit.rds | Era-comparison GLS fits, means and contrasts per response | 414 |
-| 13_era_models | era_comparison/model_results.txt | Era-comparison GLS fits, means and contrasts per response | 11 |
-| 13_era_models | era_comparison/primary_fits.rds | Era-comparison GLS fits, means and contrasts per response | 457 |
+| 13_era_models | era_comparison/joint_correction_effects/primary_fit.rds | Era-comparison GLS fits, means and contrasts per response | 456 |
+| 13_era_models | era_comparison/model_results.txt | Era-comparison GLS fits, means and contrasts per response | 13 |
+| 13_era_models | era_comparison/primary_fits.rds | Era-comparison GLS fits, means and contrasts per response | 515 |
 | 14_predictor_models | community_predictor_models/model_coefficients.csv | Within-era predictor GLS fits | 3 |
 | 14_predictor_models | community_predictor_models/model_exclusions.csv | Within-era predictor GLS fits | 21 |
 | 14_predictor_models | community_predictor_models/model_performance.csv | Within-era predictor GLS fits | 1 |
@@ -240,6 +242,7 @@ the folder of the step that writes it.
 | figures | holocene_era_fire_threshold_ratio.csv | era and high-fire classification tables | 21 |
 | figures | holocene_standardized_climate_levels.csv | Tables behind the figures (centroids, annotations) | 68 |
 | figures | species_order_elevation.csv | Tables behind the figures (centroids, annotations) | 1 |
+| report | noca_plot_area_responses.csv | Tables computed only for the report | 1 |
 | report | sample_selection_choices.csv | Tables computed only for the report | 1 |
 | report | sample_selection_counts.csv | Tables computed only for the report | 3 |
 | report | sample_selection_plot_sizes.csv | Tables computed only for the report | 0 |

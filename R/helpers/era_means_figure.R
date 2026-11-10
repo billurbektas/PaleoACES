@@ -4,12 +4,16 @@
 # colour. Rates on log axes carry an arrow with the Holocene-C fold. Signed
 # responses on linear axes carry connectors from the Anthropocene to each
 # Holocene period type, with a star where that contrast is significant.
+# Linear-axis responses that are positive (the displacement) carry connectors
+# the same way.
 # Used by R/figures/main_fig4_era_contrasts.R and R/figures/main_fig5_lag_pace_direction.R.
 ERA_TYPES = c('Holocene-S', 'Holocene-C', 'Anthropocene')
 ERA_SITES = c('MORA', 'NOCA')
 # Period types side by side within each park, stability on the left.
 ERA_OFFSET = c(`Holocene-S` = -.32, `Holocene-C` = 0, Anthropocene = .32)
 era_minus = function(x) gsub('-', '\u2212', x)
+# Responses that are positive by construction, printed without a sign.
+ERA_POSITIVE = c('climate_rate', 'turnover_rate', 'displacement')
 
 # Means, fold arrows and contrast connectors for the responses in `titles`.
 era_means_data = function(titles, log_responses = character()) {
@@ -17,12 +21,12 @@ era_means_data = function(titles, log_responses = character()) {
     dplyr::filter(response %in% names(titles)) |>
     dplyr::mutate(period_type = factor(period_type, levels = ERA_TYPES), site = factor(site, levels = ERA_SITES),
       x = as.integer(site) + ERA_OFFSET[as.character(period_type)],
-      # Rates are positive by construction and printed without sign. Signed
-      # responses carry their sign. No stars on means: stars belong to the
-      # contrasts (Bills).
+      # Rates and the displacement are positive by construction and printed
+      # without sign. Signed responses carry their sign. No stars on means:
+      # stars belong to the contrasts (Bills).
       label = dplyr::case_when(
-        response %in% log_responses & estimate >= 1 ~ sprintf('%.2f', estimate),
-        response %in% log_responses ~ sprintf('%.3f', estimate),
+        response %in% c(log_responses, ERA_POSITIVE) & estimate >= 1 ~ sprintf('%.2f', estimate),
+        response %in% c(log_responses, ERA_POSITIVE) ~ sprintf('%.3f', estimate),
         abs(estimate) < 5e-4 ~ '0.000',
         TRUE ~ era_minus(sprintf('%+.3f', estimate))))
   folds = readr::read_csv(out('era_comparison/era_folds.csv'), show_col_types = FALSE) |>
@@ -51,43 +55,51 @@ era_means_data = function(titles, log_responses = character()) {
 }
 
 # `k` scales the internals (points, intervals, connectors, stars), `kl` the
-# value labels, which must still fit between neighbouring symbols.
-era_means_panel = function(r, tag, data, k = 1, kl = k) {
-  d = data$means |> dplyr::filter(response == r)
+# value and fold labels, which must still fit between neighbouring symbols,
+# and `kt` the axis, tag and legend text. A figure with larger labels can make
+# room for them: `spread` widens the spacing of the period types within a
+# park, `park_gap` moves the second park further right, `gap` sets the label's
+# distance from its point and `cap` the width of the interval caps, all in x
+# units, and `xmin` and `xmax` bound the axis.
+era_means_panel = function(r, tag, data, k = 1, kl = k, kt = 1, gap = .045 + .01 * k, cap = .08,
+  spread = 1, park_gap = 1, xmin = .5, xmax = 1.72 + park_gap) {
+  # Park p (1 or 2) sits at 1 + (p - 1) * park_gap, each symbol at its offset times spread.
+  xs = function(x) { p = round(x); 1 + (p - 1) * park_gap + (x - p) * spread }
+  d = data$means |> dplyr::filter(response == r) |> dplyr::mutate(x = xs(x))
   log_axis = r %in% data$log_responses
   p = ggplot(d, aes(x, estimate)) +
     (if (!log_axis) geom_hline(yintercept = 0, color = 'grey60', linetype = 'dashed')) +
     # The fitted mean beside its point, in the park colour, on a white backing
     # that hides the zero line but sits under the intervals.
-    geom_label(aes(x = x + .045 + .01 * k, label = label, color = site), hjust = 0, size = 5.2 * kl, fontface = 'bold',
+    geom_label(aes(x = x + gap, label = label, color = site), hjust = 0, size = 5.2 * kl, fontface = 'bold',
       fill = 'white', label.size = 0, label.padding = unit(.06, 'lines')) +
-    geom_errorbar(aes(ymin = conf_low, ymax = conf_high, color = site), width = .08, linewidth = 1.1 * k) +
+    geom_errorbar(aes(ymin = conf_low, ymax = conf_high, color = site), width = cap, linewidth = 1.1 * k) +
     geom_point(aes(shape = period_type, fill = site), size = 5 * k, color = 'grey10', stroke = .6 * k) +
-    scale_x_continuous(breaks = 1:2, labels = ERA_SITES, limits = c(.5, 2.72), expand = c(0, 0)) +
+    scale_x_continuous(breaks = c(1, 1 + park_gap), labels = ERA_SITES, limits = c(xmin, xmax), expand = c(0, 0)) +
     scale_shape_manual(values = PERIOD_TYPE_SHAPES, name = NULL, breaks = ERA_TYPES, drop = FALSE,
       labels = c(`Holocene-S` = 'Holocene stability periods', `Holocene-C` = 'Holocene climate-change periods',
         Anthropocene = 'Anthropocene')) +
     scale_fill_manual(values = PAPER_SITE_COLORS, guide = 'none') +
     scale_color_manual(values = PAPER_SITE_COLORS, guide = 'none') +
-    guides(shape = guide_legend(override.aes = list(fill = 'grey60', size = 7))) +
+    guides(shape = guide_legend(override.aes = list(fill = 'grey60', size = 7 * kt))) +
     labs(tag = tag, x = NULL, y = data$titles[[r]]) +
-    theme_paleoaces(base_size = 20) +
+    theme_paleoaces(base_size = 20 * kt) +
     theme(panel.grid.major.x = element_blank(), panel.grid.minor = element_blank(),
-      legend.text = element_text(size = 24), plot.tag = element_text(size = 24, face = 'bold'),
-      axis.title.y = element_text(size = 24, lineheight = .95))
+      legend.text = element_text(size = 24 * kt), plot.tag = element_text(size = 24 * kt, face = 'bold'),
+      axis.title.y = element_text(size = 24 * kt, lineheight = .95))
   if (log_axis) {
-    a = data$arrows |> dplyr::filter(response == r)
+    a = data$arrows |> dplyr::filter(response == r) |> dplyr::mutate(x = xs(x))
     p = p +
       geom_segment(data = a, aes(x = x, xend = x, y = y, yend = yend), color = 'grey35', linewidth = .8 * k,
         arrow = arrow(length = unit(.18, 'cm'), ends = 'both', type = 'closed')) +
-      geom_text(data = a, aes(x = x + .03, y = y_text, label = text), hjust = 0, size = 5.6 * k, color = 'grey15',
+      geom_text(data = a, aes(x = x + .03, y = y_text, label = text), hjust = 0, size = 5.6 * kl, color = 'grey15',
         fontface = 'bold') +
       # Log axis, tick labels as plain decimals in real values.
       scale_y_log10(breaks = c(.005, .01, .02, .05, .1, .2, .5, 1, 2, 5),
         labels = function(b) format(b, scientific = FALSE, drop0trailing = TRUE, trim = TRUE),
         expand = expansion(mult = c(.05, .08)))
   } else {
-    cn = data$connectors |> dplyr::filter(response == r)
+    cn = data$connectors |> dplyr::filter(response == r) |> dplyr::mutate(x = xs(x), xend = xs(xend))
     p = p +
       geom_segment(data = cn, aes(x = x, xend = xend, y = y, yend = y), color = 'grey25', linewidth = .7 * k) +
       geom_segment(data = cn, aes(x = x, xend = x, y = y, yend = y - drop), color = 'grey25', linewidth = .7 * k) +

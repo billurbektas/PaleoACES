@@ -209,6 +209,40 @@ write_csv(bind_rows(counts), out("report/sample_selection_counts.csv"))
 write_csv(bind_rows(choices), out("report/sample_selection_choices.csv"))
 write_csv(plot_sizes, out("report/sample_selection_plot_sizes.csv"))
 
+# NOCA legacy plots range from 25 to 400 m2 while every resurvey plot is 500 m2,
+# so a small legacy plot may miss species that the resurvey then records as
+# arrivals. This table (Bills, 10 Nov 2026) shows the NOCA plot pairs by legacy
+# plot area. Plain means with t intervals, no model. Richness counts the
+# retained CCA taxa present in a plot, the species the CCA positions rest on.
+reference = readRDS(out("cca_calibration_reference.rds"))
+richness = read_table(out("occ_consolidated.csv")) |>
+  filter(period %in% c("past", "present"), occurrence > 0, species %in% reference$retained_species) |>
+  distinct(plot_id, period, species) |> count(plot_id, period, name = "richness") |>
+  tidyr::pivot_wider(names_from = period, values_from = richness, names_prefix = "richness_", values_fill = 0)
+noca_pairs = read_table(out("cca_tracking_both_eras.csv")) |>
+  filter(period_type == "Anthropocene", site == "NOCA") |>
+  select(plot_id, turnover_rate, lag, lag_rate) |>
+  left_join(retained_areas |> filter(site == "NOCA") |> select(plot_id, legacy_area_m2), by = "plot_id",
+    relationship = "one-to-one") |>
+  left_join(richness, by = "plot_id", relationship = "one-to-one") |>
+  mutate(across(c(richness_past, richness_present), \(x) tidyr::replace_na(x, 0L)))
+legacy_richness = rowSums(reference$legacy_species[noca_pairs$plot_id, , drop = FALSE] > 0)
+# Rule: 277 NOCA plot pairs, and the legacy richness equals that of the CCA calibration matrix.
+stopifnot(nrow(noca_pairs) == 277L, all(noca_pairs$richness_past == legacy_richness))
+mean_ci = function(x, name) {
+  n = length(x); half = if (n > 1) qt(.975, n - 1) * sd(x) / sqrt(n) else NA_real_
+  as_tibble(setNames(list(mean(x), mean(x) - half, mean(x) + half), paste0(name, c("_mean", "_low", "_high"))))
+}
+area_rows = function(x) bind_cols(tibble(plots = nrow(x), richness_legacy_mean = mean(x$richness_past),
+  richness_resurvey_mean = mean(x$richness_present)),
+  mean_ci(x$turnover_rate, "turnover_rate"), mean_ci(x$lag, "lag"), mean_ci(x$lag_rate, "lag_rate"))
+noca_area_table = bind_rows(
+  noca_pairs |> mutate(legacy_area = if_else(is.na(legacy_area_m2), "not recorded", as.character(legacy_area_m2))) |>
+    group_by(legacy_area_m2, legacy_area) |> group_modify(\(x, key) area_rows(x)) |> ungroup() |>
+    arrange(is.na(legacy_area_m2), legacy_area_m2) |> select(-legacy_area_m2),
+  area_rows(noca_pairs) |> mutate(legacy_area = "all NOCA plot pairs", .before = 1))
+write_csv(noca_area_table, out("report/noca_plot_area_responses.csv"))
+
 # The display follows the count branches. Its labels use everyday descriptions.
 draw_flow = function(site_name, title, nodes, arrows, notes, ymax) {
   col = PAPER_SITE_COLORS[[site_name]]

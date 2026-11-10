@@ -1,6 +1,7 @@
 Response,n,AR(1),Variance parameters,R²,Warnings
 climate_rate,631,0.0252734475408455,"A.Anthropocene NOCA=2.287, A.Holocene-C MORA=0.062, A.Holocene-S MORA=0.032, A.Holocene-C NOCA=0.100, A.Holocene-S NOCA=0.072",0.11251259945100112,
 turnover_rate,631,-0.35661713096791475,"A.Anthropocene NOCA=2.311, A.Holocene-C MORA=0.065, A.Holocene-S MORA=0.046, A.Holocene-C NOCA=0.218, A.Holocene-S NOCA=0.257",0.17581703861359688,
+displacement,631,0.06353470973940636,"A.Anthropocene NOCA=1.947, A.Holocene-C MORA=0.382, A.Holocene-S MORA=0.859, A.Holocene-C NOCA=1.867, A.Holocene-S NOCA=1.720",0.10932217208112494,
 lag_rate,631,-0.13614325111791073,"A.Anthropocene NOCA=2.127, A.Holocene-C MORA=0.071, A.Holocene-S MORA=0.035, A.Holocene-C NOCA=0.086, A.Holocene-S NOCA=0.194",0.03041225931344615,
 lag,631,-0.04872223842036661,"A.Anthropocene NOCA=2.054, A.Holocene-C MORA=0.609, A.Holocene-S MORA=0.589, A.Holocene-C NOCA=1.578, A.Holocene-S NOCA=2.452",0.03205186263529969,
 pace_effect,487,0.4325357935373305,"A.Anthropocene NOCA=2.772, A.Holocene-C MORA=0.086, A.Holocene-S MORA=0.061, A.Holocene-C NOCA=0.076, A.Holocene-S NOCA=0.257",0.02078482865829356,
