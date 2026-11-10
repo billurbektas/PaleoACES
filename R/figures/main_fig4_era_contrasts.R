@@ -67,7 +67,7 @@ panel = function(r, tag) {
     scale_x_continuous(breaks = 1:2, labels = sites, limits = c(.5, 2.72), expand = c(0, 0)) +
     scale_shape_manual(values = PERIOD_TYPE_SHAPES, name = NULL, breaks = types, drop = FALSE,
       labels = c(`Holocene-S` = 'Holocene stability periods', `Holocene-C` = 'Holocene climate-change periods',
-        Anthropocene = 'Anthropocene plot pairs')) +
+        Anthropocene = 'Anthropocene')) +
     scale_fill_manual(values = PAPER_SITE_COLORS, guide = 'none') +
     scale_color_manual(values = PAPER_SITE_COLORS, guide = 'none') +
     guides(shape = guide_legend(override.aes = list(fill = 'grey60', size = 5.5))) +
