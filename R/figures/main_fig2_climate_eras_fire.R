@@ -327,7 +327,7 @@ fire_panel = function(text_scale = 1, sites = c("MORA", "NOCA")) {
         size = PAPER_PANEL_TAG_SIZE * s))
 }
 # Larger text throughout the manuscript and appendix versions (Bills, 9 Nov 2026).
-FIG2_TEXT = 1.4
+FIG2_TEXT = 1.7
 p_fire = fire_panel(FIG2_TEXT)
 
 # Appendix record of how the periods were drawn: the signed standardized
@@ -518,23 +518,34 @@ anthropocene_column = function(v, panel, first) {
   end = climate_levels |> filter(in_view, variable == v, is.finite(regional_raw_1000yr)) |> slice_min(t, n = 1)
   d = anthropocene_rates |> filter(variable == v) |> arrange(site) |>
     mutate(y = end$regional_raw_1000yr + (row_number() - 1.5) * diff(y_range) * .2,
-      label = paste0(site, " ", rate_text(v, rate), "/century"))
-  p = ggplot(d, aes(0, y, label = label)) + geom_text(hjust = 0, size = 4.6 * FIG2_TEXT, color = "grey10") +
-    coord_cartesian(xlim = c(0, 1), ylim = y_range, expand = FALSE, clip = "off") + theme_void()
-  if (first) p = p + annotate("text", x = 0, y = y_range[2], label = "Anthropocene", hjust = 0, vjust = 1,
+      label = paste0(rate_text(v, rate), "/century"))
+  # The park name in its colour, the rate after it (Bills, 10 Nov 2026).
+  p = ggplot(d, aes(0, y)) +
+    # Shifted left over the width taken by the fire panel's park strips, so the
+    # text starts right after the end of the time axis.
+    geom_text(aes(x = -.05, label = site, color = site), hjust = 0, size = 4.6 * FIG2_TEXT, fontface = "bold") +
+    geom_text(aes(x = .2, label = label), hjust = 0, size = 4.6 * FIG2_TEXT, color = "grey10") +
+    scale_color_manual(values = PAPER_SITE_COLORS, guide = "none") +
+    coord_cartesian(xlim = c(0, 1), ylim = y_range, expand = FALSE, clip = "off") + theme_void() +
+    theme(plot.margin = margin(0, 0, 0, 0))
+  if (first) p = p + annotate("text", x = -.05, y = y_range[2], label = "Anthropocene", hjust = 0, vjust = 1,
     size = 4.8 * FIG2_TEXT, fontface = "bold", color = "grey20")
   p
 }
 p_spring = raw_panel("MSpT", "A.", TRUE)
 p_summer = raw_panel("SP", "B.", FALSE)
 # One grid, so that the time axes of A, B and C line up.
-figure = wrap_plots(p_spring, anthropocene_column("MSpT", p_spring, TRUE),
-  p_summer, anthropocene_column("SP", p_summer, FALSE),
-  p_fire + labs(tag = "C."), plot_spacer(), ncol = 2, widths = c(5.2, 1.45), heights = c(3.4, 2.2, 1.6))
+# The Anthropocene column sits right against the end of the time axis.
+tight = theme(plot.margin = margin(5.5, 2, 5.5, 5.5))
+figure = wrap_plots(p_spring + tight, anthropocene_column("MSpT", p_spring, TRUE),
+  p_summer + tight, anthropocene_column("SP", p_summer, FALSE),
+  # Three lines for the fire title, so it stays within its panel at the larger text.
+  p_fire + labs(tag = "C.", y = "Fire-frequency\nratio\n(high fire > 1)") + tight, plot_spacer(),
+  ncol = 2, widths = c(5.2, 1.75), heights = c(3.4, 2.2, 2))
 if (render_figures) {
   # cairo_pdf draws the degree signs and arrows.
-  ggsave(fig("main", "fig_climate_levels_eras_fire.pdf"), figure, width = 17.5, height = 13, device = cairo_pdf)
-  ggsave(fig("main", "fig_climate_levels_eras_fire.png"), figure, width = 17.5, height = 13, dpi = 300)
+  ggsave(fig("main", "fig_climate_levels_eras_fire.pdf"), figure, width = 19, height = 14, device = cairo_pdf)
+  ggsave(fig("main", "fig_climate_levels_eras_fire.png"), figure, width = 19, height = 14, dpi = 300)
 }
 
 # Appendix: the same levels for all four seasonal variables, without rates.
