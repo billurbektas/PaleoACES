@@ -70,11 +70,11 @@ panel = function(r, tag) {
         Anthropocene = 'Anthropocene')) +
     scale_fill_manual(values = PAPER_SITE_COLORS, guide = 'none') +
     scale_color_manual(values = PAPER_SITE_COLORS, guide = 'none') +
-    guides(shape = guide_legend(override.aes = list(fill = 'grey60', size = 5.5))) +
+    guides(shape = guide_legend(override.aes = list(fill = 'grey60', size = 7))) +
     labs(tag = tag, x = NULL, y = TITLES[[r]]) +
     theme_paleoaces(base_size = 20) +
     theme(panel.grid.major.x = element_blank(), panel.grid.minor = element_blank(),
-      legend.text = element_text(size = 19), plot.tag = element_text(size = 24, face = 'bold'),
+      legend.text = element_text(size = 24), plot.tag = element_text(size = 24, face = 'bold'),
       axis.title.y = element_text(size = 24, lineheight = .95))
   if (r %in% LOG_RESPONSES) {
     a = arrows |> filter(response == r)
