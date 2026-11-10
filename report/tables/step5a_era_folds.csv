@@ -7,6 +7,10 @@ Turnover rate,MORA,Holocene-C,12.162113959896638,yes
 Turnover rate,MORA,Holocene-S,23.24318540717402,no
 Turnover rate,NOCA,Holocene-C,26.74156802723873,yes
 Turnover rate,NOCA,Holocene-S,19.65530612175496,no
+Lag rate,MORA,Holocene-C,-3004.436132957798,no
+Lag rate,MORA,Holocene-S,69.81975276863037,no
+Lag rate,NOCA,Holocene-C,9.30474623396389,no
+Lag rate,NOCA,Holocene-S,-3.8267999323474537,no
 Absolute lag rate,MORA,Holocene-C,16.80822803820754,yes
 Absolute lag rate,MORA,Holocene-S,37.67513868570702,no
 Absolute lag rate,NOCA,Holocene-C,117.87194966449876,yes

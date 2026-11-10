@@ -56,13 +56,15 @@ for (response in names(ERA_RESPONSES)) {
     contrasts[[paste(response, park)]] = tibble(response, site = park,
       contrast = vapply(CONTRASTS, paste, character(1), collapse = ' - ')) |>
       bind_cols(linear(fit, contrast_rows(Xp, labels, CONTRASTS)))
-    # Folds only for positive responses (PLAN.md Step 5a; absolute lag added by Bills).
-    if (response %in% c('climate_rate', 'turnover_rate', 'abs_lag_rate')) {
+    # Folds for the positive responses (PLAN.md Step 5a; absolute lag added by
+    # Bills) and, at Bills's request, for the signed lag rate, whose near-zero
+    # Holocene means make that fold unstable (said in the caption).
+    if (response %in% c('climate_rate', 'turnover_rate', 'abs_lag_rate', 'lag_rate')) {
       mp = m[m$site == park, ]
       folds[[paste(response, park)]] = tibble(response, site = park,
         against = c('Holocene-C', 'Holocene-S'),
         fold = mp$estimate[mp$period_type == 'Anthropocene'] / mp$estimate[match(c('Holocene-C', 'Holocene-S'), mp$period_type)],
-        quoted_as_speed = against == 'Holocene-C')
+        quoted_as_speed = against == 'Holocene-C' & response != 'lag_rate')
     }
   }
   variance = coef(fit$modelStruct$varStruct, unconstrained = FALSE)

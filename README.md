@@ -703,20 +703,24 @@ mean of each type. Holocene-C lake-periods span 200 to 900 years,
 Holocene-S lake-periods 300 to 2600 years, and the Anthropocene plot
 pairs 27.5 to 32.5 years.
 
-| Response            | Park | Anthropocene over |    Fold | Quoted as speed |
-|:--------------------|:-----|:------------------|--------:|:----------------|
-| Climate change rate | MORA | Holocene-C        |  36.204 | yes             |
-| Climate change rate | MORA | Holocene-S        |  97.728 | no              |
-| Climate change rate | NOCA | Holocene-C        |  43.715 | yes             |
-| Climate change rate | NOCA | Holocene-S        |  65.474 | no              |
-| Turnover rate       | MORA | Holocene-C        |  12.162 | yes             |
-| Turnover rate       | MORA | Holocene-S        |  23.243 | no              |
-| Turnover rate       | NOCA | Holocene-C        |  26.742 | yes             |
-| Turnover rate       | NOCA | Holocene-S        |  19.655 | no              |
-| Absolute lag rate   | MORA | Holocene-C        |  16.808 | yes             |
-| Absolute lag rate   | MORA | Holocene-S        |  37.675 | no              |
-| Absolute lag rate   | NOCA | Holocene-C        | 117.872 | yes             |
-| Absolute lag rate   | NOCA | Holocene-S        |  24.585 | no              |
+| Response            | Park | Anthropocene over |      Fold | Quoted as speed |
+|:--------------------|:-----|:------------------|----------:|:----------------|
+| Climate change rate | MORA | Holocene-C        |    36.204 | yes             |
+| Climate change rate | MORA | Holocene-S        |    97.728 | no              |
+| Climate change rate | NOCA | Holocene-C        |    43.715 | yes             |
+| Climate change rate | NOCA | Holocene-S        |    65.474 | no              |
+| Turnover rate       | MORA | Holocene-C        |    12.162 | yes             |
+| Turnover rate       | MORA | Holocene-S        |    23.243 | no              |
+| Turnover rate       | NOCA | Holocene-C        |    26.742 | yes             |
+| Turnover rate       | NOCA | Holocene-S        |    19.655 | no              |
+| Lag rate            | MORA | Holocene-C        | -3004.436 | no              |
+| Lag rate            | MORA | Holocene-S        |    69.820 | no              |
+| Lag rate            | NOCA | Holocene-C        |     9.305 | no              |
+| Lag rate            | NOCA | Holocene-S        |    -3.827 | no              |
+| Absolute lag rate   | MORA | Holocene-C        |    16.808 | yes             |
+| Absolute lag rate   | MORA | Holocene-S        |    37.675 | no              |
+| Absolute lag rate   | NOCA | Holocene-C        |   117.872 | yes             |
+| Absolute lag rate   | NOCA | Holocene-S        |    24.585 | no              |
 
 <sub>Table file:
 [step5a_era_folds.csv](report/tables/step5a_era_folds.csv)</sub>
@@ -743,19 +747,21 @@ confidence intervals, for (A) the standardized climate change rate, (B)
 the turnover rate, (C) the absolute lag rate, the speed at which
 mismatch changes in either direction, and (D) the lag rate. The fold
 printed above each circle is the Anthropocene fitted mean divided by the
-Holocene climate-change fitted mean. The signed lag rate has no fold,
-because its Holocene means are close to zero. Differences come from the
-model response ~ period type × site, with an AR(1) correlation within
-each lake and weights for the number of samples at each end, fitted on 7
-climate-change and 7 stability lake-periods and 330 plot pairs at MORA,
-and 5, 5 and 277 at NOCA. Holocene climate-change lake-periods span 200
-to 900 years and stability lake-periods 300 to 2600 years between their
-first and last sampled century. Anthropocene plot pairs span 27.5 to
-32.5 years between the midpoints of their climate windows (about 29
-years). Longer windows give lower rates, so the rates of the two eras
-are not on equal footing. Units: the climate change rate in calibration
-standard deviations per century, the turnover and lag rates in CCA
-distance per century.
+Holocene climate-change fitted mean. For the signed lag rate (D) the
+fold divides by Holocene means close to zero, one of them negative, so
+it shows the sign and closeness to zero of the Holocene mean rather than
+a speed. The absolute lag rate (C) gives the speed comparison.
+Differences come from the model response ~ period type × site, with an
+AR(1) correlation within each lake and weights for the number of samples
+at each end, fitted on 7 climate-change and 7 stability lake-periods and
+330 plot pairs at MORA, and 5, 5 and 277 at NOCA. Holocene
+climate-change lake-periods span 200 to 900 years and stability
+lake-periods 300 to 2600 years between their first and last sampled
+century. Anthropocene plot pairs span 27.5 to 32.5 years between the
+midpoints of their climate windows (about 29 years). Longer windows give
+lower rates, so the rates of the two eras are not on equal footing.
+Units: the climate change rate in calibration standard deviations per
+century, the turnover and lag rates in CCA distance per century.
 
 <img src="report/figures/png/fig_lag_pace_direction.png" alt="" width="100%" />
 
@@ -1038,20 +1044,24 @@ combinations had a sampled century, and 24 had two or more.
 
 **Folds.** The Holocene-C fold is the one quoted as a speed.
 
-| Response            | Park | Anthropocene over |    Fold |
-|:--------------------|:-----|:------------------|--------:|
-| Climate change rate | MORA | Holocene-C        |  36.204 |
-| Climate change rate | MORA | Holocene-S        |  97.728 |
-| Climate change rate | NOCA | Holocene-C        |  43.715 |
-| Climate change rate | NOCA | Holocene-S        |  65.474 |
-| Turnover rate       | MORA | Holocene-C        |  12.162 |
-| Turnover rate       | MORA | Holocene-S        |  23.243 |
-| Turnover rate       | NOCA | Holocene-C        |  26.742 |
-| Turnover rate       | NOCA | Holocene-S        |  19.655 |
-| Absolute lag rate   | MORA | Holocene-C        |  16.808 |
-| Absolute lag rate   | MORA | Holocene-S        |  37.675 |
-| Absolute lag rate   | NOCA | Holocene-C        | 117.872 |
-| Absolute lag rate   | NOCA | Holocene-S        |  24.585 |
+| Response            | Park | Anthropocene over |      Fold |
+|:--------------------|:-----|:------------------|----------:|
+| Climate change rate | MORA | Holocene-C        |    36.204 |
+| Climate change rate | MORA | Holocene-S        |    97.728 |
+| Climate change rate | NOCA | Holocene-C        |    43.715 |
+| Climate change rate | NOCA | Holocene-S        |    65.474 |
+| Turnover rate       | MORA | Holocene-C        |    12.162 |
+| Turnover rate       | MORA | Holocene-S        |    23.243 |
+| Turnover rate       | NOCA | Holocene-C        |    26.742 |
+| Turnover rate       | NOCA | Holocene-S        |    19.655 |
+| Lag rate            | MORA | Holocene-C        | -3004.436 |
+| Lag rate            | MORA | Holocene-S        |    69.820 |
+| Lag rate            | NOCA | Holocene-C        |     9.305 |
+| Lag rate            | NOCA | Holocene-S        |    -3.827 |
+| Absolute lag rate   | MORA | Holocene-C        |    16.808 |
+| Absolute lag rate   | MORA | Holocene-S        |    37.675 |
+| Absolute lag rate   | NOCA | Holocene-C        |   117.872 |
+| Absolute lag rate   | NOCA | Holocene-S        |    24.585 |
 
 <sub>Table file:
 [numbers_era_folds.csv](report/tables/numbers_era_folds.csv)</sub>

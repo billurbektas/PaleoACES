@@ -510,7 +510,7 @@ between the Anthropocene and the Holocene stability periods (triangles), with 95
 intervals, for (A) the standardized climate change rate, (B) the turnover rate, (C) the absolute lag rate,
 the speed at which mismatch changes in either direction, and (D) the lag rate.
 The fold printed above each circle is the Anthropocene fitted mean divided by the Holocene
-climate-change fitted mean. The signed lag rate has no fold, because its Holocene means are close to zero. Differences come from the model response ~ period type × site, with an
+climate-change fitted mean. For the signed lag rate (D) the fold divides by Holocene means close to zero, one of them negative, so it shows the sign and closeness to zero of the Holocene mean rather than a speed. The absolute lag rate (C) gives the speed comparison. Differences come from the model response ~ period type × site, with an
 AR(1) correlation within each lake and weights for the number of samples at each end, fitted on
 `r n_group('Holocene-C', 'MORA')` climate-change and `r n_group('Holocene-S', 'MORA')` stability lake-periods and
 `r n_group('Anthropocene', 'MORA')` plot pairs at MORA, and `r n_group('Holocene-C', 'NOCA')`, `r n_group('Holocene-S', 'NOCA')`

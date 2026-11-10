@@ -46,7 +46,7 @@ for the report.
 | R/pipeline/10_cca.R | pipeline | 10_cca.R - the pooled CCA and everything derived from it. NO FIGURES. | 633 |
 | R/pipeline/11_climate_eras_high_fire.R | pipeline | 11_climate_eras_high_fire.R | 187 |
 | R/pipeline/12_tracking.R | pipeline | Tracking: native-century Holocene positions, tracking metrics for both eras, | 85 |
-| R/pipeline/13_era_models.R | pipeline | Era models (PLAN.md section 5, Step 5a): Holocene stability periods, | 142 |
+| R/pipeline/13_era_models.R | pipeline | Era models (PLAN.md section 5, Step 5a): Holocene stability periods, | 144 |
 | R/pipeline/14_predictor_models.R | pipeline | Explanatory models (PLAN.md section 5, Step 5). | 110 |
 | R/pipeline/15_contributions.R | pipeline | Species contributions (PLAN.md section 5, Step 6): which species led the | 96 |
 | R/figures/supp_age_depth_models.R | figure | Figures S5 (four Bacon age-depth models) and S6 (Panther Potholes 210Pb | 109 |
@@ -214,9 +214,9 @@ the folder of the step that writes it.
 | 13_era_models | era_comparison/joint_correction_effects/model_input.csv | Era-comparison GLS fits, means and contrasts per response | 297 |
 | 13_era_models | era_comparison/joint_correction_effects/model_results.txt | Era-comparison GLS fits, means and contrasts per response | 7 |
 | 13_era_models | era_comparison/joint_correction_effects/period_type_contrasts.csv | Era-comparison GLS fits, means and contrasts per response | 3 |
-| 13_era_models | era_comparison/joint_correction_effects/primary_fit.rds | Era-comparison GLS fits, means and contrasts per response | 403 |
+| 13_era_models | era_comparison/joint_correction_effects/primary_fit.rds | Era-comparison GLS fits, means and contrasts per response | 405 |
 | 13_era_models | era_comparison/model_results.txt | Era-comparison GLS fits, means and contrasts per response | 11 |
-| 13_era_models | era_comparison/primary_fits.rds | Era-comparison GLS fits, means and contrasts per response | 446 |
+| 13_era_models | era_comparison/primary_fits.rds | Era-comparison GLS fits, means and contrasts per response | 447 |
 | 14_predictor_models | community_predictor_models/model_coefficients.csv | Within-era predictor GLS fits | 3 |
 | 14_predictor_models | community_predictor_models/model_exclusions.csv | Within-era predictor GLS fits | 21 |
 | 14_predictor_models | community_predictor_models/model_performance.csv | Within-era predictor GLS fits | 1 |

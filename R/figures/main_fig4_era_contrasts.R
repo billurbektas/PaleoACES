@@ -28,7 +28,7 @@ panel = function(r, tag) {
     labs(tag = tag, x = NULL, y = two_line_title(paste('Difference in', sub('^(.)', '\\L\\1', RESPONSE_AXIS_LABELS[[r]], perl = TRUE)), 40)) +
     guides(shape = guide_legend(override.aes = list(fill = 'grey60'), ncol = 1)) +
     theme_paleoaces(base_size = 20) + theme(legend.position = 'bottom', legend.text = element_text(size = 19), plot.tag = element_text(size = 24, face = 'bold'))
-  if (r %in% c('climate_rate', 'turnover_rate', 'abs_lag_rate')) p = p +
+  if (r %in% c('climate_rate', 'turnover_rate', 'abs_lag_rate', 'lag_rate')) p = p +
     # The fold sits just above the circle's interval (the circle is dodged left
     # by a quarter of the dodge width), clear of the points and the panel edge.
     geom_text(data = filter(d, against == 'Holocene-C'),
