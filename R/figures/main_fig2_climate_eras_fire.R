@@ -475,8 +475,7 @@ raw_panel = function(v, tag, show_periods) {
     mutate(y = approx(line$t, line$regional_raw_1000yr, t)$y, label = paste0(rate_text(v, rate), "/century"),
       # Neighbouring periods alternate above and below the line, so labels never touch.
       vjust = if_else(row_number() %% 2 == 1, -.45, 1.45))
-  step = largest_steps |> filter(variable == v) |>
-    mutate(y = d$regional_raw[match(t, d$t)], label = paste0("largest step ", rate_text(v, step), "/century"))
+  # No "largest step" marker (Bills, 10 Nov 2026).
   p = ggplot(d, aes(t, regional_raw)) +
     era_background() +
     geom_line(linewidth = .35 * sqrt(FIG2_TEXT), color = "grey55", alpha = .7) +
@@ -484,10 +483,6 @@ raw_panel = function(v, tag, show_periods) {
     geom_point(data = rates, aes(t, y), size = 2.2, color = "grey10") +
     geom_label(data = rates, aes(t, y, label = label, vjust = vjust), size = 3 * FIG2_TEXT, color = "grey10",
       label.size = 0, fill = alpha("white", .85), label.padding = unit(.08, "lines")) +
-    geom_point(data = step, aes(t, y), shape = 4, size = 3.2, stroke = 1.2, color = "grey10") +
-    geom_label(data = step, aes(t, y, label = label, hjust = if_else(t > 9500, 0, .5)), vjust = 1.5,
-      size = 2.8 * FIG2_TEXT, color = "grey25", label.size = 0, fill = alpha("white", .85),
-      label.padding = unit(.08, "lines")) +
     time_axis() +
     scale_y_continuous(expand = expansion(mult = 0)) +
     scale_fill_manual(values = era_colors, guide = "none") +
@@ -502,7 +497,9 @@ raw_panel = function(v, tag, show_periods) {
     p = p +
       geom_segment(data = ann, aes(x = older_cal_bp, xend = younger_cal_bp, y = arrow_y, yend = arrow_y),
         inherit.aes = FALSE, color = "grey25", linewidth = 1, arrow = arrow(type = "closed", length = unit(.08, "in"))) +
-      geom_text(data = ann, aes(midpoint, description_y, label = gsub(";", "\n", active_driver_labels)), inherit.aes = FALSE,
+      geom_text(data = ann, aes(midpoint, description_y,
+        # Only the direction: the panels already name the season (Bills, 10 Nov 2026).
+        label = gsub(";", "\n", gsub("(spring|summer) ", "", active_driver_labels))), inherit.aes = FALSE,
         size = 3 * FIG2_TEXT, lineheight = .9, color = "grey30") +
       geom_text(data = ann, aes(midpoint, id_y, label = subphase_id), inherit.aes = FALSE, fontface = "bold",
         size = 4 * FIG2_TEXT, color = "grey10") +
@@ -541,11 +538,11 @@ figure = wrap_plots(p_spring + tight, anthropocene_column("MSpT", p_spring, TRUE
   p_summer + tight, anthropocene_column("SP", p_summer, FALSE),
   # Three lines for the fire title, so it stays within its panel at the larger text.
   p_fire + labs(tag = "C.", y = "Fire-frequency\nratio\n(high fire > 1)") + tight, plot_spacer(),
-  ncol = 2, widths = c(5.2, 1.75), heights = c(3.4, 2.2, 2))
+  ncol = 2, widths = c(5.2, 1.75), heights = c(3.6, 2.8, 2.5))
 if (render_figures) {
   # cairo_pdf draws the degree signs and arrows.
-  ggsave(fig("main", "fig_climate_levels_eras_fire.pdf"), figure, width = 19, height = 14, device = cairo_pdf)
-  ggsave(fig("main", "fig_climate_levels_eras_fire.png"), figure, width = 19, height = 14, dpi = 300)
+  ggsave(fig("main", "fig_climate_levels_eras_fire.pdf"), figure, width = 19, height = 18, device = cairo_pdf)
+  ggsave(fig("main", "fig_climate_levels_eras_fire.png"), figure, width = 19, height = 18, dpi = 300)
 }
 
 # Appendix: the same levels for all four seasonal variables, without rates.

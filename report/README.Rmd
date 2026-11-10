@@ -221,10 +221,10 @@ r2 = function(v, park) { x = rates2[rates2$variable == v & rates2$site == park, 
 **Figure 2. Holocene climate and fire.** (A) Spring temperature (°C) and (B) summer
 precipitation (mm), the two CCA constraints, averaged over the lakes of each park with the two parks
 weighted equally (CHELSA-TraCE21k). Bold lines are 1,000-year running means and thin lines the
-centennial series. Shading marks the climate-change (C) and stability (S) periods, with the variables
-that drove each climate-change period written below its name. Labels on the bold lines give the
-change per century over a period for each variable that drove it. A cross marks the largest step
-between two consecutive centuries. To the right of each panel, the Anthropocene change per century from
+centennial series. Shading marks the climate-change (C) and stability (S) periods, with the change
+that drove each climate-change period written below its name (cooling or warming of spring temperature, drying or
+wetting of summer precipitation). Labels on the bold lines give the change per century over a period for each
+variable that drove it. To the right of each panel, the Anthropocene change per century from
 the legacy to the resurvey climate window, the median over plots in each park: spring temperature
 `r sprintf('%+.2f', rates2$rate[rates2$variable == 'MSpT' & rates2$site == 'MORA'])` °C at MORA and
 `r sprintf('%+.2f', rates2$rate[rates2$variable == 'MSpT' & rates2$site == 'NOCA'])` °C at NOCA, summer precipitation
