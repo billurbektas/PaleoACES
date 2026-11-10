@@ -47,6 +47,14 @@ drawn = drawn |> mutate(y = as.integer(species) + nudge[as.character(period_type
 # as small faded symbols; light bands alternate between species rows; species
 # absent from a park's Holocene record simply have no Holocene symbols.
 bands = tibble(species_index = seq(1, length(order_species), by = 2))
+side_labels = expand_grid(measure_label = factor(levels(means$measure_label), levels = levels(means$measure_label)),
+  site = c('MORA', 'NOCA'), side = c('negative', 'positive')) |>
+  mutate(x = if_else(side == 'negative', -Inf, Inf), hjust = if_else(side == 'negative', -.03, 1.03),
+    label = case_when(
+      as.integer(measure_label) == 1 & side == 'negative' ~ '\u2190 against the climate shift',
+      as.integer(measure_label) == 1 ~ 'with the climate shift \u2192',
+      side == 'negative' ~ '\u2190 falls further behind',
+      TRUE ~ 'catches up with the lag \u2192'))
 figure = ggplot(drawn, aes(estimate, y)) +
   geom_rect(data = bands, aes(xmin = -Inf, xmax = Inf, ymin = species_index - .5, ymax = species_index + .5),
     inherit.aes = FALSE, fill = 'grey95') +
@@ -55,8 +63,13 @@ figure = ggplot(drawn, aes(estimate, y)) +
     orientation = 'y', width = .2, linewidth = 1, na.rm = TRUE) +
   geom_point(data = filter(drawn, spans_zero), aes(shape = period_type, fill = site), size = 3, color = 'grey45', alpha = .35) +
   geom_point(data = filter(drawn, !spans_zero), aes(shape = period_type, fill = site), size = 4.6, color = 'grey10') +
+  # What each side of zero means, written at the top of every panel (Bills).
+  geom_label(data = side_labels, aes(x = x, y = -.2, label = label, hjust = hjust), size = 6.2,
+    fontface = 'italic', color = 'grey25', fill = 'white', linewidth = 0, label.padding = unit(.1, 'lines'),
+    inherit.aes = FALSE) +
   facet_grid(measure_label ~ site, scales = 'free_x', switch = 'y') +
-  scale_y_reverse(breaks = seq_along(order_species), labels = order_species, expand = expansion(add = .6)) +
+  # Extra room above the first species for the side labels.
+  scale_y_reverse(breaks = seq_along(order_species), labels = order_species, expand = expansion(add = c(1.3, .6))) +
   scale_shape_manual(values = PERIOD_TYPE_SHAPES[c('Holocene-S', 'Holocene-C', 'Anthropocene')], name = NULL,
     labels = c('Holocene stability periods', 'Holocene climate-change periods', 'Anthropocene')) +
   scale_fill_manual(values = PAPER_SITE_COLORS, guide = 'none') + scale_color_manual(values = PAPER_SITE_COLORS, guide = 'none') +
@@ -67,8 +80,11 @@ figure = ggplot(drawn, aes(estimate, y)) +
     strip.placement = 'outside', legend.position = 'bottom', legend.text = element_text(size = 22),
     panel.grid.major.y = element_blank(), panel.grid.minor = element_blank(),
     strip.text.x = element_text(size = 26, face = 'bold'), strip.text.y.left = element_text(angle = 90, size = 22, face = 'bold'))
-if (render_figures) for (ext in c('pdf', 'png'))
-  ggsave(fig('main', paste0('fig_species_contributions.', ext)), figure, width = 18, height = 20, dpi = 300)
+if (render_figures) {
+  # cairo_pdf draws the arrows of the side labels.
+  ggsave(fig('main', 'fig_species_contributions.pdf'), figure, width = 18, height = 20, device = cairo_pdf)
+  ggsave(fig('main', 'fig_species_contributions.png'), figure, width = 18, height = 20, dpi = 300)
+}
 write_csv(species_elevation |> arrange(desc(mean_elevation)) |> mutate(rank = row_number(), .before = 1),
   out('figures/species_order_elevation.csv'))
 cat('Figure 7: species contributions drawn.\n')

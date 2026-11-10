@@ -601,8 +601,9 @@ show_figure('report/figures/main/fig_species_contributions.pdf')
 change in share between the first and the last sampled century of a lake-period, or between the
 legacy survey and the resurvey of a plot, times its fixed position in the CCA plane. The upper row
 projects these vectors on the direction in which the climate-predicted position moved, and the lower
-row on the gap from the observed to the predicted position at the start. Positive values mean the
-species moved the community with the climate (upper row) or closed the starting gap (lower row).
+row on the gap from the observed to the predicted position at the start. Labels at the top of each panel say what each side of zero means: in the upper row whether a species
+moved the community with or against the shift of the predicted position over the same interval, in the
+lower row whether it caught up with the lag carried in at the start or fell further behind.
 Species are ordered by the mean elevation of the plots where they occur (the 607 plot pairs, both surveys), the highest at the top.
 Symbols are means: triangles, Holocene stability periods, circles, Holocene climate-change periods,
 diamonds, Anthropocene plot pairs (burned and unburned together). Large symbols with bars are means whose
