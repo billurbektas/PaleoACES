@@ -71,12 +71,12 @@ figure = ggplot(drawn, aes(estimate, y)) +
   # What each side of zero means, written at the top of every panel (Bills).
   # Symmetric x range per park, so both sides have room for their label.
   geom_blank(data = x_extent, aes(x = x, y = 1), inherit.aes = FALSE) +
-  geom_label(data = side_labels, aes(x = x, y = -.2, label = label, hjust = hjust), size = 6.6,
+  geom_label(data = side_labels, aes(x = x, y = -.25, label = label, hjust = hjust), size = 8.6,
     fontface = 'italic', color = 'grey25', fill = 'white', linewidth = 0, label.padding = unit(.1, 'lines'),
     inherit.aes = FALSE) +
   facet_grid(measure_label ~ site, scales = 'free_x', switch = 'y') +
   # Extra room above the first species for the side labels.
-  scale_y_reverse(breaks = seq_along(order_species), labels = order_species, expand = expansion(add = c(1.3, .6))) +
+  scale_y_reverse(breaks = seq_along(order_species), labels = order_species, expand = expansion(add = c(1.5, .6))) +
   scale_shape_manual(values = PERIOD_TYPE_SHAPES[c('Holocene-S', 'Holocene-C', 'Anthropocene')], name = NULL,
     labels = c('Holocene stability periods', 'Holocene climate-change periods', 'Anthropocene')) +
   scale_fill_manual(values = PAPER_SITE_COLORS, guide = 'none') + scale_color_manual(values = PAPER_SITE_COLORS, guide = 'none') +
