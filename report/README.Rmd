@@ -601,9 +601,7 @@ show_figure('report/figures/main/fig_species_contributions.pdf')
 change in share between the first and the last sampled century of a lake-period, or between the
 legacy survey and the resurvey of a plot, times its fixed position in the CCA plane. The upper row (following climate-predicted direction)
 projects these vectors on the direction in which the climate-predicted position moved, and the lower
-row (shrinking the initial mismatch) on the initial mismatch, from the observed to the predicted position at the start. Labels at the top of each panel say what each side of zero means: in the upper row whether a species
-moved the community with or against the shift of the predicted position over the same interval, in the
-lower row whether it closed the initial mismatch, the lag carried in at the start, or fell further behind.
+row (shrinking the initial mismatch) on the initial mismatch, from the observed to the predicted position at the start. Labels at the top of each panel read with the row title: a species moved the community following or against the climate-predicted direction (upper row), and shrinking or enlarging the initial mismatch (lower row).
 Species are ordered by the mean elevation of the plots where they occur (the 607 plot pairs, both surveys), the highest at the top.
 Symbols are means: triangles, Holocene stability periods, circles, Holocene climate-change periods,
 diamonds, Anthropocene plot pairs (burned and unburned together). Large symbols with bars are means whose

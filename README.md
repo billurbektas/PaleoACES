@@ -894,24 +894,22 @@ the CCA plane. The upper row (following climate-predicted direction)
 projects these vectors on the direction in which the climate-predicted
 position moved, and the lower row (shrinking the initial mismatch) on
 the initial mismatch, from the observed to the predicted position at the
-start. Labels at the top of each panel say what each side of zero means:
-in the upper row whether a species moved the community with or against
-the shift of the predicted position over the same interval, in the lower
-row whether it closed the initial mismatch, the lag carried in at the
-start, or fell further behind. Species are ordered by the mean elevation
-of the plots where they occur (the 607 plot pairs, both surveys), the
-highest at the top. Symbols are means: triangles, Holocene stability
-periods, circles, Holocene climate-change periods, diamonds,
-Anthropocene plot pairs (burned and unburned together). Large symbols
-with bars are means whose 95% t-interval excludes zero, small faded
-symbols are means whose interval includes zero. A species with no
-Holocene symbols in a park is absent from that park’s Holocene record.
-Each park has its own x scale, symmetric around zero. Holocene
-climate-change lake-periods span 200 to 900 years and stability
-lake-periods 300 to 2600 years between their first and last sampled
-century. Anthropocene plot pairs span 27.5 to 32.5 years between the
-midpoints of their climate windows (about 29 years). Contributions are
-in CCA distance per century.
+start. Labels at the top of each panel read with the row title: a
+species moved the community following or against the climate-predicted
+direction (upper row), and shrinking or enlarging the initial mismatch
+(lower row). Species are ordered by the mean elevation of the plots
+where they occur (the 607 plot pairs, both surveys), the highest at the
+top. Symbols are means: triangles, Holocene stability periods, circles,
+Holocene climate-change periods, diamonds, Anthropocene plot pairs
+(burned and unburned together). Large symbols with bars are means whose
+95% t-interval excludes zero, small faded symbols are means whose
+interval includes zero. A species with no Holocene symbols in a park is
+absent from that park’s Holocene record. Each park has its own x scale,
+symmetric around zero. Holocene climate-change lake-periods span 200 to
+900 years and stability lake-periods 300 to 2600 years between their
+first and last sampled century. Anthropocene plot pairs span 27.5 to
+32.5 years between the midpoints of their climate windows (about 29
+years). Contributions are in CCA distance per century.
 
 Stages and helpers:
 [`R/pipeline/15_contributions.R`](R/pipeline/15_contributions.R),
