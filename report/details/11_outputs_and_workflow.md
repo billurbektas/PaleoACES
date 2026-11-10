@@ -47,9 +47,9 @@ for the report.
 | R/pipeline/10_cca.R | pipeline | 10_cca.R - the pooled CCA and everything derived from it. NO FIGURES. | 649 |
 | R/pipeline/11_climate_eras_high_fire.R | pipeline | 11_climate_eras_high_fire.R | 187 |
 | R/pipeline/12_tracking.R | pipeline | Tracking: native-century Holocene positions, tracking metrics for both eras, | 85 |
-| R/pipeline/13_era_models.R | pipeline | Era models (PLAN.md section 5, Step 5a): Holocene stability periods, | 177 |
+| R/pipeline/13_era_models.R | pipeline | Era models (PLAN.md section 5, Step 5a): Holocene stability periods, | 183 |
 | R/pipeline/14_predictor_models.R | pipeline | Explanatory models (PLAN.md section 5, Step 5). | 131 |
-| R/pipeline/15_contributions.R | pipeline | Species contributions (PLAN.md section 5, Step 6): which species led the | 100 |
+| R/pipeline/15_contributions.R | pipeline | Species contributions (PLAN.md section 5, Step 6): which species led the | 107 |
 | R/figures/supp_age_depth_models.R | figure | Figures S5 (four Bacon age-depth models) and S6 (Panther Potholes 210Pb | 109 |
 | R/figures/supp_cca_scaling.R | figure | supp_cca_scaling.R - one CCA drawn at scaling 1 and scaling 2 | 108 |
 | R/figures/supp_climate_correlations.R | figure | supp_climate_correlations.R | 626 |
@@ -203,7 +203,7 @@ the folder of the step that writes it.
 | 12_tracking | chronology_reconstruction/prepared.rds | Reconstruction bundle and primary reconstruction | 8862 |
 | 12_tracking | chronology_reconstruction/primary.rds | Reconstruction bundle and primary reconstruction | 100 |
 | 13_era_models | era_comparison/era_coefficients.csv | Era-comparison GLS fits, means and contrasts per response | 9 |
-| 13_era_models | era_comparison/era_contrasts.csv | Era-comparison GLS fits, means and contrasts per response | 9 |
+| 13_era_models | era_comparison/era_contrasts.csv | Era-comparison GLS fits, means and contrasts per response | 13 |
 | 13_era_models | era_comparison/era_duration_classes.csv | Era-comparison GLS fits, means and contrasts per response | 1 |
 | 13_era_models | era_comparison/era_durations.csv | Era-comparison GLS fits, means and contrasts per response | 0 |
 | 13_era_models | era_comparison/era_folds.csv | Era-comparison GLS fits, means and contrasts per response | 1 |
@@ -216,9 +216,9 @@ the folder of the step that writes it.
 | 13_era_models | era_comparison/joint_correction_effects/model_input.csv | Era-comparison GLS fits, means and contrasts per response | 372 |
 | 13_era_models | era_comparison/joint_correction_effects/model_results.txt | Era-comparison GLS fits, means and contrasts per response | 7 |
 | 13_era_models | era_comparison/joint_correction_effects/period_type_contrasts.csv | Era-comparison GLS fits, means and contrasts per response | 3 |
-| 13_era_models | era_comparison/joint_correction_effects/primary_fit.rds | Era-comparison GLS fits, means and contrasts per response | 578 |
+| 13_era_models | era_comparison/joint_correction_effects/primary_fit.rds | Era-comparison GLS fits, means and contrasts per response | 583 |
 | 13_era_models | era_comparison/model_results.txt | Era-comparison GLS fits, means and contrasts per response | 19 |
-| 13_era_models | era_comparison/primary_fits.rds | Era-comparison GLS fits, means and contrasts per response | 676 |
+| 13_era_models | era_comparison/primary_fits.rds | Era-comparison GLS fits, means and contrasts per response | 680 |
 | 14_predictor_models | community_predictor_models/model_coefficients.csv | Within-era predictor GLS fits | 6 |
 | 14_predictor_models | community_predictor_models/model_exclusions.csv | Within-era predictor GLS fits | 45 |
 | 14_predictor_models | community_predictor_models/model_performance.csv | Within-era predictor GLS fits | 1 |
@@ -230,7 +230,7 @@ the folder of the step that writes it.
 | 15_contributions | cca_transition_contributions/species_contributions.csv | Species and climate contributions to displacement | 1479 |
 | 15_contributions | cca_transition_contributions/species_lake_periods.csv | Species and climate contributions to displacement | 31 |
 | 15_contributions | species_contribution_models/noca_burned_species_means.csv | Species contribution means, contrasts and NOCA burned means | 6 |
-| 15_contributions | species_contribution_models/species_contrasts.csv | Species contribution means, contrasts and NOCA burned means | 24 |
+| 15_contributions | species_contribution_models/species_contrasts.csv | Species contribution means, contrasts and NOCA burned means | 35 |
 | 15_contributions | species_contribution_models/species_mean_status.csv | Species contribution means, contrasts and NOCA burned means | 3 |
 | 15_contributions | species_contribution_models/species_means.csv | Species contribution means, contrasts and NOCA burned means | 21 |
 | figures | anthropocene_climate_rates.csv | Tables behind the figures (centroids, annotations) | 0 |

@@ -82,8 +82,10 @@ read_output('community_predictor_models/model_exclusions.csv') |> count(response
 ```{r}
 read_output('species_contribution_models/species_contrasts.csv') |>
   transmute(Measure = measure, Species = species, Park = site, Contrast = contrast, Estimate = estimate,
-    `95% CI` = ifelse(is.na(conf_low), 'not defined', sprintf('%.3f to %.3f', conf_low, conf_high)), p = p_value) |>
-  show_table('species_contrasts', caption = '**Species contrasts between period types** (Welch differences of means).')
+    `95% CI` = ifelse(is.na(conf_low), 'not defined', sprintf('%.3f to %.3f', conf_low, conf_high)), p = p_value,
+    `p (Holm)` = p_adjusted) |>
+  show_table('species_contrasts', caption = paste('**Species contrasts between period types** (Welch differences of',
+    'means). p (Holm) is adjusted within each measure and park across all species and contrasts.'))
 read_output('species_contribution_models/noca_burned_species_means.csv') |>
   transmute(Measure = measure, Species = species, Burned = burned, n, Mean = estimate,
     `95% CI` = ifelse(interval_defined, sprintf('%.3f to %.3f', conf_low, conf_high), 'not defined')) |>

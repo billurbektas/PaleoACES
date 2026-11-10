@@ -32,6 +32,9 @@ contrast_rows = function(X, labels, pairs) {
   colnames(L) = colnames(X); L
 }
 CONTRASTS = list(c('Anthropocene', 'Holocene-C'), c('Anthropocene', 'Holocene-S'), c('Holocene-C', 'Holocene-S'))
+# Multiple comparisons (Bills, 10 Nov 2026): Holm-adjusted p-values within each
+# family of group contrasts. The intervals stay unadjusted 95% intervals.
+holm = function(x, family) x |> mutate(p_adjusted = p.adjust(p_value, 'holm'), adjustment = paste('Holm across', n(), family))
 
 means = contrasts = folds = summary_rows = coefficient_rows = predictions = list(); fits = list()
 for (response in names(ERA_RESPONSES)) {
@@ -108,7 +111,11 @@ duration_classes = both |> filter(period_type != 'Anthropocene') |>
     climate_change = sum(period_type == 'Holocene-C'), duration_min = min(duration_yr),
     duration_max = max(duration_yr), mean_displacement = mean(displacement),
     mean_absolute_lag = mean(abs(lag)), mean_lag = mean(lag), .groups = 'drop')
-tables = list(era_means = bind_rows(means), era_contrasts = bind_rows(contrasts), era_folds = bind_rows(folds),
+# One family per response: its three period-type contrasts in each park.
+era_contrasts = bind_rows(contrasts) |> group_by(response) |>
+  group_modify(\(x, key) holm(x, 'period-type contrasts of the response (3 per park)')) |> ungroup() |>
+  relocate(response)
+tables = list(era_means = bind_rows(means), era_contrasts = era_contrasts, era_folds = bind_rows(folds),
   era_model_summary = bind_rows(summary_rows), era_coefficients = bind_rows(coefficient_rows),
   era_predictions = bind_rows(predictions), era_durations = durations, era_duration_classes = duration_classes)
 for (name in names(tables)) write_csv(tables[[name]], file.path(results_dir, paste0(name, '.csv')))
@@ -144,7 +151,6 @@ grid = expand_grid(site = factor(c('MORA', 'NOCA'), levels = c('MORA', 'NOCA')),
 X = model.matrix(~ period_type * site * correction, grid)
 joint_means = bind_cols(grid, linear(fit, X)) |> mutate(n = pmap_int(list(as.character(site),
   as.character(period_type), as.character(correction)), function(s, p, k) sum(d$site == s & d$period_type == p & d$correction == k)))
-holm = function(x, family) x |> mutate(p_adjusted = p.adjust(p_value, 'holm'), adjustment = paste('Holm across', n(), family))
 key = paste(grid$site, grid$period_type, grid$correction)
 correction_contrasts = holm(bind_rows(lapply(seq_len(nrow(groups)), function(i) {
   g = paste(groups$site[i], groups$period_type[i])

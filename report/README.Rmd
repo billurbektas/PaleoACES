@@ -407,7 +407,10 @@ lake-periods and the Anthropocene rows are the plot pairs, in one model per resp
 group-specific residual spread, the endpoint weights and the AR(1) within each lake. Fire stays
 out of these models, because it is measured differently in the two eras. Rates over a few decades
 and over centuries are not on equal footing, since longer windows give lower rates, and every
-comparison states both time spans.
+comparison states both time spans. The three contrasts between period types in each park are tested
+together for both parks, so each response has six contrasts, and their p-values are Holm-adjusted
+within that family. Significance is read from the adjusted p-values. The intervals are the unadjusted
+95% intervals.
 
 **How it is calculated.**
 
@@ -438,16 +441,19 @@ means |> transmute(Response = response_label[response], Park = site, `Period typ
     'rate in calibration SD per century, the climate change in calibration SD, the displacement, the lag and the',
     'effect totals in CCA distance, the other responses in CCA distance per century.', spans))
 contrasts |> transmute(Response = response_label[response], Park = site, Contrast = contrast,
-    Estimate = estimate, `95% CI` = sprintf('%.3f to %.3f', conf_low, conf_high), p = p_value) |>
+    Estimate = estimate, `95% CI` = sprintf('%.3f to %.3f', conf_low, conf_high), p = p_value,
+    `p (Holm)` = p_adjusted) |>
   show_table('step5a_era_contrasts', caption = paste('**Contrasts between period types within each park**,',
-    'with conditional 95% confidence intervals.', spans))
+    'with conditional 95% confidence intervals (unadjusted). p (Holm) is adjusted across the six contrasts of',
+    'each response, three per park.', spans))
 folds |> transmute(Response = response_label[response], Park = site, `Anthropocene over` = against,
     Fold = fold, `Quoted as speed` = ifelse(quoted_as_speed, 'yes', 'no')) |>
   show_table('step5a_era_folds', caption = paste('**Folds**: the Anthropocene fitted mean divided by the',
     'Holocene fitted mean of each type.', spans))
 fold = function(r, p, a) folds$fold[folds$response == r & folds$site == p & folds$against == a]
+holm_p = function(p) ifelse(p < .001, 'Holm p < 0.001', sprintf('Holm p = %.3f', p))
 ct = function(r, p, k) { x = contrasts[contrasts$response == r & contrasts$site == p & contrasts$contrast == k, ]
-  sprintf('%+.2f (%.2f to %.2f)', x$estimate, x$conf_low, x$conf_high) }
+  sprintf('%+.2f (%.2f to %.2f, %s)', x$estimate, x$conf_low, x$conf_high, holm_p(x$p_adjusted)) }
 ```
 
 Climate changed `r sprintf('%.0f', fold('climate_rate', 'MORA', 'Holocene-C'))` times faster at MORA
@@ -471,15 +477,19 @@ from its rate. At MORA the plots moved more in a few decades than the communitie
 climate-change periods did in centuries (Anthropocene minus Holocene-C
 `r ct('displacement', 'MORA', 'Anthropocene - Holocene-C')` CCA distance), and as much as those of the
 stability periods (`r ct('displacement', 'MORA', 'Anthropocene - Holocene-S')`). At NOCA the plots moved
-more than in either Holocene type (`r ct('displacement', 'NOCA', 'Anthropocene - Holocene-C')` against
-Holocene-C, `r ct('displacement', 'NOCA', 'Anthropocene - Holocene-S')` against Holocene-S).
-The pace and direction effects lose most of their era differences when they are not divided by
-time. At MORA, the per-century pace effect of the Anthropocene exceeds that of both Holocene types
-(`r ct('pace_effect', 'MORA', 'Anthropocene - Holocene-C')` against Holocene-C), but its total does not
-(`r ct('pace_effect_total', 'MORA', 'Anthropocene - Holocene-C')`), and the total direction effect
-differs only from the stability periods (`r ct('direction_effect_total', 'MORA', 'Anthropocene - Holocene-S')`).
-At NOCA the total pace effect still lies below that of the climate-change periods
-(`r ct('pace_effect_total', 'NOCA', 'Anthropocene - Holocene-C')`). The Anthropocene effects are large per
+more than in the stability periods (`r ct('displacement', 'NOCA', 'Anthropocene - Holocene-S')`), while
+their difference from the climate-change periods is not significant after the adjustment
+(`r ct('displacement', 'NOCA', 'Anthropocene - Holocene-C')`).
+The pace and direction effects lose their era differences when they are not divided by time. At
+MORA, the per-century pace effect of the Anthropocene exceeds that of both Holocene types
+(`r ct('pace_effect', 'MORA', 'Anthropocene - Holocene-C')` against Holocene-C), and so does the
+per-century direction effect (`r ct('direction_effect', 'MORA', 'Anthropocene - Holocene-C')`). As
+totals, no contrast between the Anthropocene and a Holocene period type is significant after the
+adjustment in either park (for example MORA direction against Holocene-S
+`r ct('direction_effect_total', 'MORA', 'Anthropocene - Holocene-S')`, NOCA pace against Holocene-C
+`r ct('pace_effect_total', 'NOCA', 'Anthropocene - Holocene-C')`). At NOCA the per-century pace and
+direction effects do not differ between the eras either (pace against Holocene-C
+`r ct('pace_effect', 'NOCA', 'Anthropocene - Holocene-C')`). The Anthropocene effects are large per
 century mainly because they build up over a few decades.
 
 ```{r fig-4-main}
@@ -496,7 +506,8 @@ mismatch between the two ends (M at t2 minus M at t1), and (F) its rate. The fit
 point. B and D are on log axes, where equal distances are equal folds, and the arrow gives the fold between the
 Anthropocene and the Holocene climate-change means. A, C, E and F are on linear axes without folds. Their connectors
 link the Anthropocene to the Holocene climate-change periods (lower) and to the Holocene stability periods (upper)
-within each park, and a star marks a contrast that differs from zero (two-sided t test, p < 0.05). The totals in A,
+within each park, and a star marks a contrast that differs from zero (two-sided t test, Holm-adjusted p < 0.05
+across the six period-type contrasts of each response, three per park). The intervals are unadjusted. The totals in A,
 C and E build up over a whole lake-period in the Holocene and over the few decades between the two surveys in the
 Anthropocene. Means come from the model response ~ period type × site, with an
 AR(1) correlation within each lake and weights for the number of samples at each end, fitted on
@@ -521,7 +532,7 @@ climate-predicted pace (A, B, keeping its own direction) or in the climate-predi
 own distance). A positive effect means that the community's own pace or direction widened the lag. A negative
 effect means that it narrowed the lag. Connectors link the Anthropocene to the Holocene climate-change periods
 (lower) and to the Holocene stability periods (upper) within each park, and a star marks a contrast that differs
-from zero (two-sided t test, p < 0.05). Fitted means and contrasts come from the same models as Figure 4, whose
+from zero (two-sided t test, Holm-adjusted p < 0.05 across the six period-type contrasts of each response). Fitted means and contrasts come from the same models as Figure 4, whose
 panel F shows the lag rate. Lake-periods and plots whose observed or predicted position did not move have no pace or direction effect: the panels
 hold `r m5 = read_output('era_comparison/era_means.csv'); m5$n[m5$response == 'pace_effect' & m5$site == 'MORA' & m5$period_type == 'Holocene-C']` climate-change and `r m5$n[m5$response == 'pace_effect' & m5$site == 'MORA' & m5$period_type == 'Holocene-S']` stability lake-periods at MORA. `r both_spans` The totals are in CCA distance, the rates in CCA distance per century.
 
@@ -612,11 +623,12 @@ if (file.exists(file.path(bias_dir, 'sign_counts.csv'))) {
   bc_era = inner_join(era_runs(here::here('output')), era_runs(here::here('output_bias_corrected')),
     by = c('response', 'site', 'contrast'), suffix = c('_raw', '_corrected'))
   bc_era |> transmute(Response = response_label[response], Park = site, Contrast = contrast,
-      `Raw` = sprintf('%+.3f (%.3f to %.3f), p = %.3f', estimate_raw, conf_low_raw, conf_high_raw, p_value_raw),
-      `Bias-corrected` = sprintf('%+.3f (%.3f to %.3f), p = %.3f', estimate_corrected, conf_low_corrected,
-        conf_high_corrected, p_value_corrected)) |>
+      `Raw` = sprintf('%+.3f (%.3f to %.3f), %s', estimate_raw, conf_low_raw, conf_high_raw, holm_p(p_adjusted_raw)),
+      `Bias-corrected` = sprintf('%+.3f (%.3f to %.3f), %s', estimate_corrected, conf_low_corrected,
+        conf_high_corrected, holm_p(p_adjusted_corrected))) |>
     show_table('bias_correction_era_contrasts', caption = paste('**Era contrasts with the raw and the',
-      'bias-corrected paleoclimate**, from the same era models. The Anthropocene values are the same in both runs.'))
+      'bias-corrected paleoclimate**, from the same era models, with Holm-adjusted p (six contrasts per response).',
+      'The Anthropocene values are the same in both runs.'))
 } else cat('Run Rscript R/sensitivity_bias_corrected.R to fill this check.\n')
 ```
 
@@ -625,8 +637,7 @@ if (exists('bc')) {
   k = function(r, p) bc[bc$response == r & bc$site == p, ]
   kk = function(r, p) sprintf('%d of %d', k(r, p)$keep_sign, k(r, p)$defined_in_both)
   e = function(r, p, c, run) { x = bc_era[bc_era$response == r & bc_era$site == p & bc_era$contrast == c, ]
-    pv = x[[paste0('p_value_', run)]]
-    sprintf('%+.3f (%s)', x[[paste0('estimate_', run)]], if (pv < .001) 'p < 0.001' else sprintf('p = %.3f', pv)) }
+    sprintf('%+.3f (%s)', x[[paste0('estimate_', run)]], holm_p(x[[paste0('p_adjusted_', run)]])) }
   cat(paste0('The result is poor at MORA. There the lag kept its sign in ', kk('lag', 'MORA'),
     ' lake-periods and the pace effect in ', kk('pace_effect', 'MORA'), ', while the direction effect kept it in ',
     kk('direction_effect', 'MORA'), '. At NOCA the lag kept its sign in ', kk('lag', 'NOCA'), ', the pace effect in ',
@@ -638,11 +649,14 @@ if (exists('bc')) {
     'therefore not robust at MORA. The era comparisons are more robust, because the Anthropocene values are far ',
     'from the Holocene ones: the MORA lag rate, Anthropocene minus Holocene-C, is ', e('lag_rate', 'MORA',
     'Anthropocene - Holocene-C', 'raw'), ' raw and ', e('lag_rate', 'MORA', 'Anthropocene - Holocene-C', 'corrected'),
-    ' corrected. One comparison changes its meaning: the MORA lag, Anthropocene minus Holocene-S, goes from ',
-    e('lag', 'MORA', 'Anthropocene - Holocene-S', 'raw'), ' to ', e('lag', 'MORA', 'Anthropocene - Holocene-S',
-    'corrected'), ', because the long MORA S4 lake-periods turn from positive to negative lags. The NOCA pace contrast against ',
-    'Holocene-C moves across p = 0.05 (', e('pace_effect', 'NOCA', 'Anthropocene - Holocene-C', 'raw'), ' raw, ',
-    e('pace_effect', 'NOCA', 'Anthropocene - Holocene-C', 'corrected'), ' corrected) and stays fragile.\n'))
+    ' corrected. The MORA lag contrasts change their meaning: against Holocene-C the lag goes from ',
+    e('lag', 'MORA', 'Anthropocene - Holocene-C', 'raw'), ' to ', e('lag', 'MORA', 'Anthropocene - Holocene-C',
+    'corrected'), ', and against Holocene-S from ', e('lag', 'MORA', 'Anthropocene - Holocene-S', 'raw'), ' to ',
+    e('lag', 'MORA', 'Anthropocene - Holocene-S', 'corrected'), ', the latter because the long MORA S4 lake-periods ',
+    'turn from positive to negative lags. Whether the MORA Anthropocene lag, not divided by time, exceeds the ',
+    'Holocene one therefore depends on the paleoclimate correction. The NOCA pace contrast against ',
+    'Holocene-C is ', e('pace_effect', 'NOCA', 'Anthropocene - Holocene-C', 'raw'), ' raw and ',
+    e('pace_effect', 'NOCA', 'Anthropocene - Holocene-C', 'corrected'), ' corrected.\n'))
 }
 ```
 
@@ -699,6 +713,18 @@ means are larger. Along the initial mismatch `r sum(gap$conf_low > 0)` of `r nro
 means are positive with intervals above zero: the resurvey shifts of these species reduced the gap
 that existed at the legacy survey.
 The two measures do not agree species by species, so both stay in Figure 7.
+
+```{r step6-contrasts}
+sc = read_output('species_contribution_models/species_contrasts.csv')
+sc_sig = sc |> filter(p_adjusted < .05)
+```
+
+The period types of a species are compared with Welch tests, three contrasts per species, measure and
+park, and the p-values are Holm-adjusted within each measure and park across all species and
+contrasts. Of `r sum(!is.na(sc$p_value))` testable contrasts, `r sum(sc$p_value < .05, na.rm = TRUE)` have
+p < 0.05 before the adjustment and `r nrow(sc_sig)` after it
+(`r paste(sprintf('%s %s, %s, %s', sc_sig$species, sc_sig$site, sc_sig$contrast, sc_sig$measure), collapse = '; ')`).
+`r if (nrow(sc_sig) && all(startsWith(sc_sig$contrast, 'Anthropocene'))) 'All of them set the Anthropocene against a Holocene period type.' else ''`
 
 ```{r fig-7-main}
 show_figure('report/figures/main/fig_species_contributions.pdf')
@@ -759,8 +785,9 @@ means |> transmute(Response = response_label[response], Park = site, `Period typ
     Mean = f2(estimate), `95% CI` = ci(conf_low, conf_high)) |>
   show_table('numbers_era_means', caption = '**Fitted means.**')
 contrasts |> transmute(Response = response_label[response], Park = site, Contrast = contrast,
-    Estimate = f2(estimate), `95% CI` = ci(conf_low, conf_high), p = p_value) |>
-  show_table('numbers_era_contrasts', caption = '**Contrasts between period types.**')
+    Estimate = f2(estimate), `95% CI` = ci(conf_low, conf_high), p = p_value, `p (Holm)` = p_adjusted) |>
+  show_table('numbers_era_contrasts', caption = paste('**Contrasts between period types.** p (Holm) is adjusted',
+    'across the six contrasts of each response (three per park). Quote the adjusted p.'))
 folds |> transmute(Response = response_label[response], Park = site, `Anthropocene over` = against, Fold = fold) |>
   show_table('numbers_era_folds', caption = '**Folds.** The Holocene-C fold is the one quoted as a speed.')
 ```
@@ -771,7 +798,9 @@ folds |> transmute(Response = response_label[response], Park = site, `Anthropoce
 coefficients |> filter(term != '(Intercept)') |>
   transmute(Response = label[metric], Era = era, Term = term, Estimate = f2(estimate),
     `95% CI` = ci(conf_low, conf_high), p = p_value) |>
-  show_table('numbers_step5', caption = '**Slopes and contrasts.** Climate change rate: per standardized unit per century. Fire activity: per event per century per covered core.')
+  show_table('numbers_step5', caption = paste('**Slopes and contrasts.** Climate change rate: per standardized unit per',
+    'century. Fire activity: per event per century per covered core. Each model has one group contrast (site, and',
+    'burned minus unburned in the Anthropocene), so these p-values need no adjustment for multiple contrasts.'))
 ```
 
 **Step 6, species.**

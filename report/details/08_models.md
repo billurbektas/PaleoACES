@@ -224,177 +224,179 @@ between the pace and direction of one unit per era and park.
 ## Species means (Step 6)
 
 **Species contrasts between period types** (Welch differences of means).
+p (Holm) is adjusted within each measure and park across all species and
+contrasts.
 
-| Measure | Species | Park | Contrast | Estimate | 95% CI | p |
-|:---|:---|:---|:---|---:|:---|---:|
-| contrib_climate | Abies amabilis | MORA | Anthropocene - Holocene-C | -0.042 | -0.074 to -0.011 | 0.008 |
-| contrib_climate | Abies amabilis | MORA | Anthropocene - Holocene-S | -0.044 | -0.075 to -0.013 | 0.006 |
-| contrib_climate | Abies amabilis | MORA | Holocene-C - Holocene-S | -0.001 | -0.007 to 0.004 | 0.565 |
-| contrib_climate | Abies amabilis | NOCA | Anthropocene - Holocene-C | 0.021 | -0.016 to 0.059 | 0.266 |
-| contrib_climate | Abies amabilis | NOCA | Anthropocene - Holocene-S | 0.021 | -0.016 to 0.059 | 0.266 |
-| contrib_climate | Abies amabilis | NOCA | Holocene-C - Holocene-S | 0.000 | not defined | — |
-| contrib_climate | Abies grandis | MORA | Anthropocene - Holocene-C | -0.018 | -0.057 to 0.021 | 0.374 |
-| contrib_climate | Abies grandis | MORA | Anthropocene - Holocene-S | -0.018 | -0.057 to 0.021 | 0.374 |
-| contrib_climate | Abies grandis | MORA | Holocene-C - Holocene-S | 0.000 | not defined | — |
-| contrib_climate | Abies grandis | NOCA | Anthropocene - Holocene-C | -0.056 | -0.142 to 0.031 | 0.206 |
-| contrib_climate | Abies grandis | NOCA | Anthropocene - Holocene-S | -0.056 | -0.142 to 0.031 | 0.206 |
-| contrib_climate | Abies grandis | NOCA | Holocene-C - Holocene-S | 0.000 | not defined | — |
-| contrib_climate | Abies lasiocarpa | MORA | Anthropocene - Holocene-C | 0.005 | -0.038 to 0.047 | 0.825 |
-| contrib_climate | Abies lasiocarpa | MORA | Anthropocene - Holocene-S | -0.009 | -0.042 to 0.024 | 0.605 |
-| contrib_climate | Abies lasiocarpa | MORA | Holocene-C - Holocene-S | -0.013 | -0.047 to 0.021 | 0.376 |
-| contrib_climate | Abies lasiocarpa | NOCA | Anthropocene - Holocene-C | -0.062 | -0.214 to 0.090 | 0.423 |
-| contrib_climate | Abies lasiocarpa | NOCA | Anthropocene - Holocene-S | -0.106 | -0.258 to 0.046 | 0.170 |
-| contrib_climate | Abies lasiocarpa | NOCA | Holocene-C - Holocene-S | -0.044 | -0.124 to 0.035 | 0.234 |
-| contrib_climate | Abies procera | MORA | Anthropocene - Holocene-C | 0.030 | -0.000 to 0.060 | 0.051 |
-| contrib_climate | Abies procera | MORA | Anthropocene - Holocene-S | 0.026 | -0.004 to 0.056 | 0.094 |
-| contrib_climate | Abies procera | MORA | Holocene-C - Holocene-S | -0.004 | -0.010 to 0.002 | 0.134 |
-| contrib_climate | Abies procera | NOCA | Anthropocene - Holocene-C | 0.000 | not defined | — |
-| contrib_climate | Abies procera | NOCA | Anthropocene - Holocene-S | 0.000 | not defined | — |
-| contrib_climate | Abies procera | NOCA | Holocene-C - Holocene-S | 0.000 | not defined | — |
-| contrib_climate | Callitropsis nootkatensis | MORA | Anthropocene - Holocene-C | 0.013 | -0.060 to 0.085 | 0.728 |
-| contrib_climate | Callitropsis nootkatensis | MORA | Anthropocene - Holocene-S | -0.002 | -0.070 to 0.065 | 0.948 |
-| contrib_climate | Callitropsis nootkatensis | MORA | Holocene-C - Holocene-S | -0.015 | -0.049 to 0.019 | 0.312 |
-| contrib_climate | Callitropsis nootkatensis | NOCA | Anthropocene - Holocene-C | 0.039 | -0.014 to 0.091 | 0.142 |
-| contrib_climate | Callitropsis nootkatensis | NOCA | Anthropocene - Holocene-S | 0.028 | -0.013 to 0.069 | 0.181 |
-| contrib_climate | Callitropsis nootkatensis | NOCA | Holocene-C - Holocene-S | -0.011 | -0.053 to 0.032 | 0.545 |
-| contrib_climate | Picea engelmannii | MORA | Anthropocene - Holocene-C | -0.004 | -0.017 to 0.009 | 0.540 |
-| contrib_climate | Picea engelmannii | MORA | Anthropocene - Holocene-S | -0.004 | -0.017 to 0.009 | 0.540 |
-| contrib_climate | Picea engelmannii | MORA | Holocene-C - Holocene-S | 0.000 | not defined | — |
-| contrib_climate | Picea engelmannii | NOCA | Anthropocene - Holocene-C | -0.013 | -0.088 to 0.063 | 0.741 |
-| contrib_climate | Picea engelmannii | NOCA | Anthropocene - Holocene-S | -0.006 | -0.083 to 0.070 | 0.868 |
-| contrib_climate | Picea engelmannii | NOCA | Holocene-C - Holocene-S | 0.006 | -0.011 to 0.023 | 0.374 |
-| contrib_climate | Pinus albicaulis | MORA | Anthropocene - Holocene-C | 0.003 | -0.001 to 0.008 | 0.159 |
-| contrib_climate | Pinus albicaulis | MORA | Anthropocene - Holocene-S | 0.003 | -0.001 to 0.008 | 0.159 |
-| contrib_climate | Pinus albicaulis | MORA | Holocene-C - Holocene-S | 0.000 | not defined | — |
-| contrib_climate | Pinus albicaulis | NOCA | Anthropocene - Holocene-C | 0.257 | 0.079 to 0.435 | 0.005 |
-| contrib_climate | Pinus albicaulis | NOCA | Anthropocene - Holocene-S | 0.257 | 0.079 to 0.435 | 0.005 |
-| contrib_climate | Pinus albicaulis | NOCA | Holocene-C - Holocene-S | 0.000 | not defined | — |
-| contrib_climate | Pinus contorta | MORA | Anthropocene - Holocene-C | -0.005 | -0.018 to 0.009 | 0.497 |
-| contrib_climate | Pinus contorta | MORA | Anthropocene - Holocene-S | -0.013 | -0.048 to 0.022 | 0.400 |
-| contrib_climate | Pinus contorta | MORA | Holocene-C - Holocene-S | -0.009 | -0.044 to 0.026 | 0.570 |
-| contrib_climate | Pinus contorta | NOCA | Anthropocene - Holocene-C | 0.038 | -0.067 to 0.143 | 0.478 |
-| contrib_climate | Pinus contorta | NOCA | Anthropocene - Holocene-S | 0.034 | -0.070 to 0.137 | 0.520 |
-| contrib_climate | Pinus contorta | NOCA | Holocene-C - Holocene-S | -0.004 | -0.033 to 0.025 | 0.731 |
-| contrib_climate | Pinus monticola | MORA | Anthropocene - Holocene-C | -0.053 | -0.084 to -0.022 | 0.003 |
-| contrib_climate | Pinus monticola | MORA | Anthropocene - Holocene-S | -0.039 | -0.055 to -0.023 | 0.000 |
-| contrib_climate | Pinus monticola | MORA | Holocene-C - Holocene-S | 0.014 | -0.016 to 0.044 | 0.291 |
-| contrib_climate | Pinus monticola | NOCA | Anthropocene - Holocene-C | 0.010 | -0.028 to 0.048 | 0.612 |
-| contrib_climate | Pinus monticola | NOCA | Anthropocene - Holocene-S | 0.003 | -0.048 to 0.054 | 0.905 |
-| contrib_climate | Pinus monticola | NOCA | Holocene-C - Holocene-S | -0.007 | -0.050 to 0.036 | 0.689 |
-| contrib_climate | Pinus ponderosa | MORA | Anthropocene - Holocene-C | 0.009 | -0.009 to 0.026 | 0.318 |
-| contrib_climate | Pinus ponderosa | MORA | Anthropocene - Holocene-S | 0.009 | -0.009 to 0.026 | 0.318 |
-| contrib_climate | Pinus ponderosa | MORA | Holocene-C - Holocene-S | 0.000 | not defined | — |
-| contrib_climate | Pinus ponderosa | NOCA | Anthropocene - Holocene-C | 0.216 | -0.036 to 0.468 | 0.093 |
-| contrib_climate | Pinus ponderosa | NOCA | Anthropocene - Holocene-S | 0.216 | -0.036 to 0.468 | 0.093 |
-| contrib_climate | Pinus ponderosa | NOCA | Holocene-C - Holocene-S | 0.000 | not defined | — |
-| contrib_climate | Pseudotsuga menziesii | MORA | Anthropocene - Holocene-C | -0.047 | -0.096 to 0.003 | 0.063 |
-| contrib_climate | Pseudotsuga menziesii | MORA | Anthropocene - Holocene-S | -0.051 | -0.100 to -0.002 | 0.042 |
-| contrib_climate | Pseudotsuga menziesii | MORA | Holocene-C - Holocene-S | -0.004 | -0.011 to 0.002 | 0.150 |
-| contrib_climate | Pseudotsuga menziesii | NOCA | Anthropocene - Holocene-C | -0.003 | -0.077 to 0.070 | 0.926 |
-| contrib_climate | Pseudotsuga menziesii | NOCA | Anthropocene - Holocene-S | 0.007 | -0.071 to 0.086 | 0.851 |
-| contrib_climate | Pseudotsuga menziesii | NOCA | Holocene-C - Holocene-S | 0.011 | -0.035 to 0.057 | 0.590 |
-| contrib_climate | Thuja plicata | MORA | Anthropocene - Holocene-C | 0.005 | -0.024 to 0.034 | 0.719 |
-| contrib_climate | Thuja plicata | MORA | Anthropocene - Holocene-S | 0.005 | -0.024 to 0.034 | 0.719 |
-| contrib_climate | Thuja plicata | MORA | Holocene-C - Holocene-S | 0.000 | not defined | — |
-| contrib_climate | Thuja plicata | NOCA | Anthropocene - Holocene-C | 0.037 | -0.009 to 0.083 | 0.110 |
-| contrib_climate | Thuja plicata | NOCA | Anthropocene - Holocene-S | 0.032 | -0.014 to 0.077 | 0.171 |
-| contrib_climate | Thuja plicata | NOCA | Holocene-C - Holocene-S | -0.006 | -0.017 to 0.005 | 0.264 |
-| contrib_climate | Tsuga heterophylla | MORA | Anthropocene - Holocene-C | -0.055 | -0.081 to -0.030 | 0.000 |
-| contrib_climate | Tsuga heterophylla | MORA | Anthropocene - Holocene-S | -0.038 | -0.062 to -0.014 | 0.002 |
-| contrib_climate | Tsuga heterophylla | MORA | Holocene-C - Holocene-S | 0.017 | -0.005 to 0.039 | 0.109 |
-| contrib_climate | Tsuga heterophylla | NOCA | Anthropocene - Holocene-C | 0.106 | 0.060 to 0.153 | 0.000 |
-| contrib_climate | Tsuga heterophylla | NOCA | Anthropocene - Holocene-S | 0.108 | 0.061 to 0.154 | 0.000 |
-| contrib_climate | Tsuga heterophylla | NOCA | Holocene-C - Holocene-S | 0.001 | -0.004 to 0.007 | 0.619 |
-| contrib_climate | Tsuga mertensiana | MORA | Anthropocene - Holocene-C | 0.001 | -0.044 to 0.046 | 0.968 |
-| contrib_climate | Tsuga mertensiana | MORA | Anthropocene - Holocene-S | 0.010 | -0.020 to 0.040 | 0.512 |
-| contrib_climate | Tsuga mertensiana | MORA | Holocene-C - Holocene-S | 0.009 | -0.031 to 0.049 | 0.583 |
-| contrib_climate | Tsuga mertensiana | NOCA | Anthropocene - Holocene-C | 0.012 | -0.025 to 0.050 | 0.514 |
-| contrib_climate | Tsuga mertensiana | NOCA | Anthropocene - Holocene-S | 0.009 | -0.029 to 0.046 | 0.654 |
-| contrib_climate | Tsuga mertensiana | NOCA | Holocene-C - Holocene-S | -0.004 | -0.010 to 0.003 | 0.198 |
-| contrib_gap | Abies amabilis | MORA | Anthropocene - Holocene-C | -0.001 | -0.030 to 0.028 | 0.955 |
-| contrib_gap | Abies amabilis | MORA | Anthropocene - Holocene-S | 0.012 | -0.011 to 0.035 | 0.314 |
-| contrib_gap | Abies amabilis | MORA | Holocene-C - Holocene-S | 0.013 | -0.009 to 0.034 | 0.185 |
-| contrib_gap | Abies amabilis | NOCA | Anthropocene - Holocene-C | 0.036 | 0.005 to 0.067 | 0.025 |
-| contrib_gap | Abies amabilis | NOCA | Anthropocene - Holocene-S | 0.036 | 0.005 to 0.067 | 0.025 |
-| contrib_gap | Abies amabilis | NOCA | Holocene-C - Holocene-S | 0.000 | not defined | — |
-| contrib_gap | Abies grandis | MORA | Anthropocene - Holocene-C | 0.055 | 0.012 to 0.098 | 0.012 |
-| contrib_gap | Abies grandis | MORA | Anthropocene - Holocene-S | 0.055 | 0.012 to 0.098 | 0.012 |
-| contrib_gap | Abies grandis | MORA | Holocene-C - Holocene-S | 0.000 | not defined | — |
-| contrib_gap | Abies grandis | NOCA | Anthropocene - Holocene-C | 0.148 | 0.055 to 0.240 | 0.002 |
-| contrib_gap | Abies grandis | NOCA | Anthropocene - Holocene-S | 0.148 | 0.055 to 0.240 | 0.002 |
-| contrib_gap | Abies grandis | NOCA | Holocene-C - Holocene-S | 0.000 | not defined | — |
-| contrib_gap | Abies lasiocarpa | MORA | Anthropocene - Holocene-C | 0.065 | -0.005 to 0.134 | 0.069 |
-| contrib_gap | Abies lasiocarpa | MORA | Anthropocene - Holocene-S | 0.075 | 0.008 to 0.141 | 0.027 |
-| contrib_gap | Abies lasiocarpa | MORA | Holocene-C - Holocene-S | 0.010 | -0.021 to 0.041 | 0.467 |
-| contrib_gap | Abies lasiocarpa | NOCA | Anthropocene - Holocene-C | 0.290 | 0.116 to 0.463 | 0.001 |
-| contrib_gap | Abies lasiocarpa | NOCA | Anthropocene - Holocene-S | 0.267 | 0.094 to 0.440 | 0.003 |
-| contrib_gap | Abies lasiocarpa | NOCA | Holocene-C - Holocene-S | -0.023 | -0.114 to 0.069 | 0.586 |
-| contrib_gap | Abies procera | MORA | Anthropocene - Holocene-C | 0.007 | -0.017 to 0.031 | 0.566 |
-| contrib_gap | Abies procera | MORA | Anthropocene - Holocene-S | 0.011 | -0.013 to 0.035 | 0.359 |
-| contrib_gap | Abies procera | MORA | Holocene-C - Holocene-S | 0.004 | -0.004 to 0.012 | 0.301 |
-| contrib_gap | Abies procera | NOCA | Anthropocene - Holocene-C | 0.000 | not defined | — |
-| contrib_gap | Abies procera | NOCA | Anthropocene - Holocene-S | 0.000 | not defined | — |
-| contrib_gap | Abies procera | NOCA | Holocene-C - Holocene-S | 0.000 | not defined | — |
-| contrib_gap | Callitropsis nootkatensis | MORA | Anthropocene - Holocene-C | 0.143 | 0.020 to 0.267 | 0.028 |
-| contrib_gap | Callitropsis nootkatensis | MORA | Anthropocene - Holocene-S | 0.101 | 0.046 to 0.157 | 0.000 |
-| contrib_gap | Callitropsis nootkatensis | MORA | Holocene-C - Holocene-S | -0.042 | -0.163 to 0.079 | 0.411 |
-| contrib_gap | Callitropsis nootkatensis | NOCA | Anthropocene - Holocene-C | 0.056 | -0.021 to 0.132 | 0.152 |
-| contrib_gap | Callitropsis nootkatensis | NOCA | Anthropocene - Holocene-S | 0.067 | -0.002 to 0.136 | 0.057 |
-| contrib_gap | Callitropsis nootkatensis | NOCA | Holocene-C - Holocene-S | 0.011 | -0.035 to 0.057 | 0.556 |
-| contrib_gap | Picea engelmannii | MORA | Anthropocene - Holocene-C | 0.026 | 0.001 to 0.052 | 0.044 |
-| contrib_gap | Picea engelmannii | MORA | Anthropocene - Holocene-S | 0.026 | 0.001 to 0.052 | 0.044 |
-| contrib_gap | Picea engelmannii | MORA | Holocene-C - Holocene-S | 0.000 | not defined | — |
-| contrib_gap | Picea engelmannii | NOCA | Anthropocene - Holocene-C | 0.037 | -0.041 to 0.115 | 0.352 |
-| contrib_gap | Picea engelmannii | NOCA | Anthropocene - Holocene-S | 0.045 | -0.035 to 0.124 | 0.267 |
-| contrib_gap | Picea engelmannii | NOCA | Holocene-C - Holocene-S | 0.008 | -0.014 to 0.030 | 0.374 |
-| contrib_gap | Pinus albicaulis | MORA | Anthropocene - Holocene-C | -0.007 | -0.016 to 0.003 | 0.158 |
-| contrib_gap | Pinus albicaulis | MORA | Anthropocene - Holocene-S | -0.007 | -0.016 to 0.003 | 0.158 |
-| contrib_gap | Pinus albicaulis | MORA | Holocene-C - Holocene-S | 0.000 | not defined | — |
-| contrib_gap | Pinus albicaulis | NOCA | Anthropocene - Holocene-C | 0.362 | 0.122 to 0.601 | 0.003 |
-| contrib_gap | Pinus albicaulis | NOCA | Anthropocene - Holocene-S | 0.362 | 0.122 to 0.601 | 0.003 |
-| contrib_gap | Pinus albicaulis | NOCA | Holocene-C - Holocene-S | 0.000 | not defined | — |
-| contrib_gap | Pinus contorta | MORA | Anthropocene - Holocene-C | 0.006 | -0.009 to 0.021 | 0.408 |
-| contrib_gap | Pinus contorta | MORA | Anthropocene - Holocene-S | 0.007 | -0.013 to 0.028 | 0.446 |
-| contrib_gap | Pinus contorta | MORA | Holocene-C - Holocene-S | 0.001 | -0.018 to 0.020 | 0.895 |
-| contrib_gap | Pinus contorta | NOCA | Anthropocene - Holocene-C | 0.065 | -0.042 to 0.171 | 0.232 |
-| contrib_gap | Pinus contorta | NOCA | Anthropocene - Holocene-S | 0.093 | -0.014 to 0.200 | 0.088 |
-| contrib_gap | Pinus contorta | NOCA | Holocene-C - Holocene-S | 0.028 | -0.047 to 0.103 | 0.408 |
-| contrib_gap | Pinus monticola | MORA | Anthropocene - Holocene-C | 0.008 | -0.007 to 0.023 | 0.297 |
-| contrib_gap | Pinus monticola | MORA | Anthropocene - Holocene-S | 0.003 | -0.011 to 0.018 | 0.664 |
-| contrib_gap | Pinus monticola | MORA | Holocene-C - Holocene-S | -0.005 | -0.012 to 0.002 | 0.129 |
-| contrib_gap | Pinus monticola | NOCA | Anthropocene - Holocene-C | -0.027 | -0.058 to 0.004 | 0.087 |
-| contrib_gap | Pinus monticola | NOCA | Anthropocene - Holocene-S | -0.005 | -0.057 to 0.047 | 0.842 |
-| contrib_gap | Pinus monticola | NOCA | Holocene-C - Holocene-S | 0.022 | -0.028 to 0.073 | 0.304 |
-| contrib_gap | Pinus ponderosa | MORA | Anthropocene - Holocene-C | -0.009 | -0.026 to 0.008 | 0.318 |
-| contrib_gap | Pinus ponderosa | MORA | Anthropocene - Holocene-S | -0.009 | -0.026 to 0.008 | 0.318 |
-| contrib_gap | Pinus ponderosa | MORA | Holocene-C - Holocene-S | 0.000 | not defined | — |
-| contrib_gap | Pinus ponderosa | NOCA | Anthropocene - Holocene-C | 0.306 | 0.059 to 0.554 | 0.016 |
-| contrib_gap | Pinus ponderosa | NOCA | Anthropocene - Holocene-S | 0.306 | 0.059 to 0.554 | 0.016 |
-| contrib_gap | Pinus ponderosa | NOCA | Holocene-C - Holocene-S | 0.000 | not defined | — |
-| contrib_gap | Pseudotsuga menziesii | MORA | Anthropocene - Holocene-C | 0.062 | 0.018 to 0.107 | 0.006 |
-| contrib_gap | Pseudotsuga menziesii | MORA | Anthropocene - Holocene-S | 0.065 | 0.021 to 0.109 | 0.004 |
-| contrib_gap | Pseudotsuga menziesii | MORA | Holocene-C - Holocene-S | 0.003 | -0.006 to 0.011 | 0.443 |
-| contrib_gap | Pseudotsuga menziesii | NOCA | Anthropocene - Holocene-C | 0.043 | -0.037 to 0.123 | 0.289 |
-| contrib_gap | Pseudotsuga menziesii | NOCA | Anthropocene - Holocene-S | 0.026 | -0.063 to 0.114 | 0.563 |
-| contrib_gap | Pseudotsuga menziesii | NOCA | Holocene-C - Holocene-S | -0.017 | -0.071 to 0.036 | 0.448 |
-| contrib_gap | Thuja plicata | MORA | Anthropocene - Holocene-C | 0.030 | -0.014 to 0.074 | 0.182 |
-| contrib_gap | Thuja plicata | MORA | Anthropocene - Holocene-S | 0.030 | -0.014 to 0.074 | 0.182 |
-| contrib_gap | Thuja plicata | MORA | Holocene-C - Holocene-S | 0.000 | not defined | — |
-| contrib_gap | Thuja plicata | NOCA | Anthropocene - Holocene-C | 0.079 | 0.017 to 0.141 | 0.012 |
-| contrib_gap | Thuja plicata | NOCA | Anthropocene - Holocene-S | 0.079 | 0.017 to 0.140 | 0.013 |
-| contrib_gap | Thuja plicata | NOCA | Holocene-C - Holocene-S | -0.001 | -0.004 to 0.002 | 0.625 |
-| contrib_gap | Tsuga heterophylla | MORA | Anthropocene - Holocene-C | 0.027 | -0.002 to 0.056 | 0.071 |
-| contrib_gap | Tsuga heterophylla | MORA | Anthropocene - Holocene-S | 0.011 | -0.017 to 0.039 | 0.431 |
-| contrib_gap | Tsuga heterophylla | MORA | Holocene-C - Holocene-S | -0.016 | -0.035 to 0.004 | 0.102 |
-| contrib_gap | Tsuga heterophylla | NOCA | Anthropocene - Holocene-C | 0.020 | -0.022 to 0.062 | 0.350 |
-| contrib_gap | Tsuga heterophylla | NOCA | Anthropocene - Holocene-S | 0.025 | -0.016 to 0.066 | 0.231 |
-| contrib_gap | Tsuga heterophylla | NOCA | Holocene-C - Holocene-S | 0.005 | -0.008 to 0.018 | 0.357 |
-| contrib_gap | Tsuga mertensiana | MORA | Anthropocene - Holocene-C | 0.037 | -0.006 to 0.080 | 0.087 |
-| contrib_gap | Tsuga mertensiana | MORA | Anthropocene - Holocene-S | 0.062 | 0.028 to 0.096 | 0.000 |
-| contrib_gap | Tsuga mertensiana | MORA | Holocene-C - Holocene-S | 0.025 | -0.007 to 0.057 | 0.098 |
-| contrib_gap | Tsuga mertensiana | NOCA | Anthropocene - Holocene-C | 0.114 | 0.042 to 0.187 | 0.002 |
-| contrib_gap | Tsuga mertensiana | NOCA | Anthropocene - Holocene-S | 0.118 | 0.045 to 0.191 | 0.002 |
-| contrib_gap | Tsuga mertensiana | NOCA | Holocene-C - Holocene-S | 0.004 | -0.006 to 0.013 | 0.361 |
+| Measure | Species | Park | Contrast | Estimate | 95% CI | p | p (Holm) |
+|:---|:---|:---|:---|---:|:---|---:|---:|
+| contrib_climate | Abies amabilis | MORA | Anthropocene - Holocene-C | -0.042 | -0.074 to -0.011 | 0.008 | 0.256 |
+| contrib_climate | Abies amabilis | MORA | Anthropocene - Holocene-S | -0.044 | -0.075 to -0.013 | 0.006 | 0.191 |
+| contrib_climate | Abies amabilis | MORA | Holocene-C - Holocene-S | -0.001 | -0.007 to 0.004 | 0.565 | 1.000 |
+| contrib_climate | Abies amabilis | NOCA | Anthropocene - Holocene-C | 0.021 | -0.016 to 0.059 | 0.266 | 1.000 |
+| contrib_climate | Abies amabilis | NOCA | Anthropocene - Holocene-S | 0.021 | -0.016 to 0.059 | 0.266 | 1.000 |
+| contrib_climate | Abies amabilis | NOCA | Holocene-C - Holocene-S | 0.000 | not defined | — | — |
+| contrib_climate | Abies grandis | MORA | Anthropocene - Holocene-C | -0.018 | -0.057 to 0.021 | 0.374 | 1.000 |
+| contrib_climate | Abies grandis | MORA | Anthropocene - Holocene-S | -0.018 | -0.057 to 0.021 | 0.374 | 1.000 |
+| contrib_climate | Abies grandis | MORA | Holocene-C - Holocene-S | 0.000 | not defined | — | — |
+| contrib_climate | Abies grandis | NOCA | Anthropocene - Holocene-C | -0.056 | -0.142 to 0.031 | 0.206 | 1.000 |
+| contrib_climate | Abies grandis | NOCA | Anthropocene - Holocene-S | -0.056 | -0.142 to 0.031 | 0.206 | 1.000 |
+| contrib_climate | Abies grandis | NOCA | Holocene-C - Holocene-S | 0.000 | not defined | — | — |
+| contrib_climate | Abies lasiocarpa | MORA | Anthropocene - Holocene-C | 0.005 | -0.038 to 0.047 | 0.825 | 1.000 |
+| contrib_climate | Abies lasiocarpa | MORA | Anthropocene - Holocene-S | -0.009 | -0.042 to 0.024 | 0.605 | 1.000 |
+| contrib_climate | Abies lasiocarpa | MORA | Holocene-C - Holocene-S | -0.013 | -0.047 to 0.021 | 0.376 | 1.000 |
+| contrib_climate | Abies lasiocarpa | NOCA | Anthropocene - Holocene-C | -0.062 | -0.214 to 0.090 | 0.423 | 1.000 |
+| contrib_climate | Abies lasiocarpa | NOCA | Anthropocene - Holocene-S | -0.106 | -0.258 to 0.046 | 0.170 | 1.000 |
+| contrib_climate | Abies lasiocarpa | NOCA | Holocene-C - Holocene-S | -0.044 | -0.124 to 0.035 | 0.234 | 1.000 |
+| contrib_climate | Abies procera | MORA | Anthropocene - Holocene-C | 0.030 | -0.000 to 0.060 | 0.051 | 1.000 |
+| contrib_climate | Abies procera | MORA | Anthropocene - Holocene-S | 0.026 | -0.004 to 0.056 | 0.094 | 1.000 |
+| contrib_climate | Abies procera | MORA | Holocene-C - Holocene-S | -0.004 | -0.010 to 0.002 | 0.134 | 1.000 |
+| contrib_climate | Abies procera | NOCA | Anthropocene - Holocene-C | 0.000 | not defined | — | — |
+| contrib_climate | Abies procera | NOCA | Anthropocene - Holocene-S | 0.000 | not defined | — | — |
+| contrib_climate | Abies procera | NOCA | Holocene-C - Holocene-S | 0.000 | not defined | — | — |
+| contrib_climate | Callitropsis nootkatensis | MORA | Anthropocene - Holocene-C | 0.013 | -0.060 to 0.085 | 0.728 | 1.000 |
+| contrib_climate | Callitropsis nootkatensis | MORA | Anthropocene - Holocene-S | -0.002 | -0.070 to 0.065 | 0.948 | 1.000 |
+| contrib_climate | Callitropsis nootkatensis | MORA | Holocene-C - Holocene-S | -0.015 | -0.049 to 0.019 | 0.312 | 1.000 |
+| contrib_climate | Callitropsis nootkatensis | NOCA | Anthropocene - Holocene-C | 0.039 | -0.014 to 0.091 | 0.142 | 1.000 |
+| contrib_climate | Callitropsis nootkatensis | NOCA | Anthropocene - Holocene-S | 0.028 | -0.013 to 0.069 | 0.181 | 1.000 |
+| contrib_climate | Callitropsis nootkatensis | NOCA | Holocene-C - Holocene-S | -0.011 | -0.053 to 0.032 | 0.545 | 1.000 |
+| contrib_climate | Picea engelmannii | MORA | Anthropocene - Holocene-C | -0.004 | -0.017 to 0.009 | 0.540 | 1.000 |
+| contrib_climate | Picea engelmannii | MORA | Anthropocene - Holocene-S | -0.004 | -0.017 to 0.009 | 0.540 | 1.000 |
+| contrib_climate | Picea engelmannii | MORA | Holocene-C - Holocene-S | 0.000 | not defined | — | — |
+| contrib_climate | Picea engelmannii | NOCA | Anthropocene - Holocene-C | -0.013 | -0.088 to 0.063 | 0.741 | 1.000 |
+| contrib_climate | Picea engelmannii | NOCA | Anthropocene - Holocene-S | -0.006 | -0.083 to 0.070 | 0.868 | 1.000 |
+| contrib_climate | Picea engelmannii | NOCA | Holocene-C - Holocene-S | 0.006 | -0.011 to 0.023 | 0.374 | 1.000 |
+| contrib_climate | Pinus albicaulis | MORA | Anthropocene - Holocene-C | 0.003 | -0.001 to 0.008 | 0.159 | 1.000 |
+| contrib_climate | Pinus albicaulis | MORA | Anthropocene - Holocene-S | 0.003 | -0.001 to 0.008 | 0.159 | 1.000 |
+| contrib_climate | Pinus albicaulis | MORA | Holocene-C - Holocene-S | 0.000 | not defined | — | — |
+| contrib_climate | Pinus albicaulis | NOCA | Anthropocene - Holocene-C | 0.257 | 0.079 to 0.435 | 0.005 | 0.160 |
+| contrib_climate | Pinus albicaulis | NOCA | Anthropocene - Holocene-S | 0.257 | 0.079 to 0.435 | 0.005 | 0.160 |
+| contrib_climate | Pinus albicaulis | NOCA | Holocene-C - Holocene-S | 0.000 | not defined | — | — |
+| contrib_climate | Pinus contorta | MORA | Anthropocene - Holocene-C | -0.005 | -0.018 to 0.009 | 0.497 | 1.000 |
+| contrib_climate | Pinus contorta | MORA | Anthropocene - Holocene-S | -0.013 | -0.048 to 0.022 | 0.400 | 1.000 |
+| contrib_climate | Pinus contorta | MORA | Holocene-C - Holocene-S | -0.009 | -0.044 to 0.026 | 0.570 | 1.000 |
+| contrib_climate | Pinus contorta | NOCA | Anthropocene - Holocene-C | 0.038 | -0.067 to 0.143 | 0.478 | 1.000 |
+| contrib_climate | Pinus contorta | NOCA | Anthropocene - Holocene-S | 0.034 | -0.070 to 0.137 | 0.520 | 1.000 |
+| contrib_climate | Pinus contorta | NOCA | Holocene-C - Holocene-S | -0.004 | -0.033 to 0.025 | 0.731 | 1.000 |
+| contrib_climate | Pinus monticola | MORA | Anthropocene - Holocene-C | -0.053 | -0.084 to -0.022 | 0.003 | 0.112 |
+| contrib_climate | Pinus monticola | MORA | Anthropocene - Holocene-S | -0.039 | -0.055 to -0.023 | 0.000 | 0.000 |
+| contrib_climate | Pinus monticola | MORA | Holocene-C - Holocene-S | 0.014 | -0.016 to 0.044 | 0.291 | 1.000 |
+| contrib_climate | Pinus monticola | NOCA | Anthropocene - Holocene-C | 0.010 | -0.028 to 0.048 | 0.612 | 1.000 |
+| contrib_climate | Pinus monticola | NOCA | Anthropocene - Holocene-S | 0.003 | -0.048 to 0.054 | 0.905 | 1.000 |
+| contrib_climate | Pinus monticola | NOCA | Holocene-C - Holocene-S | -0.007 | -0.050 to 0.036 | 0.689 | 1.000 |
+| contrib_climate | Pinus ponderosa | MORA | Anthropocene - Holocene-C | 0.009 | -0.009 to 0.026 | 0.318 | 1.000 |
+| contrib_climate | Pinus ponderosa | MORA | Anthropocene - Holocene-S | 0.009 | -0.009 to 0.026 | 0.318 | 1.000 |
+| contrib_climate | Pinus ponderosa | MORA | Holocene-C - Holocene-S | 0.000 | not defined | — | — |
+| contrib_climate | Pinus ponderosa | NOCA | Anthropocene - Holocene-C | 0.216 | -0.036 to 0.468 | 0.093 | 1.000 |
+| contrib_climate | Pinus ponderosa | NOCA | Anthropocene - Holocene-S | 0.216 | -0.036 to 0.468 | 0.093 | 1.000 |
+| contrib_climate | Pinus ponderosa | NOCA | Holocene-C - Holocene-S | 0.000 | not defined | — | — |
+| contrib_climate | Pseudotsuga menziesii | MORA | Anthropocene - Holocene-C | -0.047 | -0.096 to 0.003 | 0.063 | 1.000 |
+| contrib_climate | Pseudotsuga menziesii | MORA | Anthropocene - Holocene-S | -0.051 | -0.100 to -0.002 | 0.042 | 1.000 |
+| contrib_climate | Pseudotsuga menziesii | MORA | Holocene-C - Holocene-S | -0.004 | -0.011 to 0.002 | 0.150 | 1.000 |
+| contrib_climate | Pseudotsuga menziesii | NOCA | Anthropocene - Holocene-C | -0.003 | -0.077 to 0.070 | 0.926 | 1.000 |
+| contrib_climate | Pseudotsuga menziesii | NOCA | Anthropocene - Holocene-S | 0.007 | -0.071 to 0.086 | 0.851 | 1.000 |
+| contrib_climate | Pseudotsuga menziesii | NOCA | Holocene-C - Holocene-S | 0.011 | -0.035 to 0.057 | 0.590 | 1.000 |
+| contrib_climate | Thuja plicata | MORA | Anthropocene - Holocene-C | 0.005 | -0.024 to 0.034 | 0.719 | 1.000 |
+| contrib_climate | Thuja plicata | MORA | Anthropocene - Holocene-S | 0.005 | -0.024 to 0.034 | 0.719 | 1.000 |
+| contrib_climate | Thuja plicata | MORA | Holocene-C - Holocene-S | 0.000 | not defined | — | — |
+| contrib_climate | Thuja plicata | NOCA | Anthropocene - Holocene-C | 0.037 | -0.009 to 0.083 | 0.110 | 1.000 |
+| contrib_climate | Thuja plicata | NOCA | Anthropocene - Holocene-S | 0.032 | -0.014 to 0.077 | 0.171 | 1.000 |
+| contrib_climate | Thuja plicata | NOCA | Holocene-C - Holocene-S | -0.006 | -0.017 to 0.005 | 0.264 | 1.000 |
+| contrib_climate | Tsuga heterophylla | MORA | Anthropocene - Holocene-C | -0.055 | -0.081 to -0.030 | 0.000 | 0.003 |
+| contrib_climate | Tsuga heterophylla | MORA | Anthropocene - Holocene-S | -0.038 | -0.062 to -0.014 | 0.002 | 0.080 |
+| contrib_climate | Tsuga heterophylla | MORA | Holocene-C - Holocene-S | 0.017 | -0.005 to 0.039 | 0.109 | 1.000 |
+| contrib_climate | Tsuga heterophylla | NOCA | Anthropocene - Holocene-C | 0.106 | 0.060 to 0.153 | 0.000 | 0.000 |
+| contrib_climate | Tsuga heterophylla | NOCA | Anthropocene - Holocene-S | 0.108 | 0.061 to 0.154 | 0.000 | 0.000 |
+| contrib_climate | Tsuga heterophylla | NOCA | Holocene-C - Holocene-S | 0.001 | -0.004 to 0.007 | 0.619 | 1.000 |
+| contrib_climate | Tsuga mertensiana | MORA | Anthropocene - Holocene-C | 0.001 | -0.044 to 0.046 | 0.968 | 1.000 |
+| contrib_climate | Tsuga mertensiana | MORA | Anthropocene - Holocene-S | 0.010 | -0.020 to 0.040 | 0.512 | 1.000 |
+| contrib_climate | Tsuga mertensiana | MORA | Holocene-C - Holocene-S | 0.009 | -0.031 to 0.049 | 0.583 | 1.000 |
+| contrib_climate | Tsuga mertensiana | NOCA | Anthropocene - Holocene-C | 0.012 | -0.025 to 0.050 | 0.514 | 1.000 |
+| contrib_climate | Tsuga mertensiana | NOCA | Anthropocene - Holocene-S | 0.009 | -0.029 to 0.046 | 0.654 | 1.000 |
+| contrib_climate | Tsuga mertensiana | NOCA | Holocene-C - Holocene-S | -0.004 | -0.010 to 0.003 | 0.198 | 1.000 |
+| contrib_gap | Abies amabilis | MORA | Anthropocene - Holocene-C | -0.001 | -0.030 to 0.028 | 0.955 | 1.000 |
+| contrib_gap | Abies amabilis | MORA | Anthropocene - Holocene-S | 0.012 | -0.011 to 0.035 | 0.314 | 1.000 |
+| contrib_gap | Abies amabilis | MORA | Holocene-C - Holocene-S | 0.013 | -0.009 to 0.034 | 0.185 | 1.000 |
+| contrib_gap | Abies amabilis | NOCA | Anthropocene - Holocene-C | 0.036 | 0.005 to 0.067 | 0.025 | 0.578 |
+| contrib_gap | Abies amabilis | NOCA | Anthropocene - Holocene-S | 0.036 | 0.005 to 0.067 | 0.025 | 0.578 |
+| contrib_gap | Abies amabilis | NOCA | Holocene-C - Holocene-S | 0.000 | not defined | — | — |
+| contrib_gap | Abies grandis | MORA | Anthropocene - Holocene-C | 0.055 | 0.012 to 0.098 | 0.012 | 0.383 |
+| contrib_gap | Abies grandis | MORA | Anthropocene - Holocene-S | 0.055 | 0.012 to 0.098 | 0.012 | 0.383 |
+| contrib_gap | Abies grandis | MORA | Holocene-C - Holocene-S | 0.000 | not defined | — | — |
+| contrib_gap | Abies grandis | NOCA | Anthropocene - Holocene-C | 0.148 | 0.055 to 0.240 | 0.002 | 0.064 |
+| contrib_gap | Abies grandis | NOCA | Anthropocene - Holocene-S | 0.148 | 0.055 to 0.240 | 0.002 | 0.064 |
+| contrib_gap | Abies grandis | NOCA | Holocene-C - Holocene-S | 0.000 | not defined | — | — |
+| contrib_gap | Abies lasiocarpa | MORA | Anthropocene - Holocene-C | 0.065 | -0.005 to 0.134 | 0.069 | 1.000 |
+| contrib_gap | Abies lasiocarpa | MORA | Anthropocene - Holocene-S | 0.075 | 0.008 to 0.141 | 0.027 | 0.843 |
+| contrib_gap | Abies lasiocarpa | MORA | Holocene-C - Holocene-S | 0.010 | -0.021 to 0.041 | 0.467 | 1.000 |
+| contrib_gap | Abies lasiocarpa | NOCA | Anthropocene - Holocene-C | 0.290 | 0.116 to 0.463 | 0.001 | 0.042 |
+| contrib_gap | Abies lasiocarpa | NOCA | Anthropocene - Holocene-S | 0.267 | 0.094 to 0.440 | 0.003 | 0.081 |
+| contrib_gap | Abies lasiocarpa | NOCA | Holocene-C - Holocene-S | -0.023 | -0.114 to 0.069 | 0.586 | 1.000 |
+| contrib_gap | Abies procera | MORA | Anthropocene - Holocene-C | 0.007 | -0.017 to 0.031 | 0.566 | 1.000 |
+| contrib_gap | Abies procera | MORA | Anthropocene - Holocene-S | 0.011 | -0.013 to 0.035 | 0.359 | 1.000 |
+| contrib_gap | Abies procera | MORA | Holocene-C - Holocene-S | 0.004 | -0.004 to 0.012 | 0.301 | 1.000 |
+| contrib_gap | Abies procera | NOCA | Anthropocene - Holocene-C | 0.000 | not defined | — | — |
+| contrib_gap | Abies procera | NOCA | Anthropocene - Holocene-S | 0.000 | not defined | — | — |
+| contrib_gap | Abies procera | NOCA | Holocene-C - Holocene-S | 0.000 | not defined | — | — |
+| contrib_gap | Callitropsis nootkatensis | MORA | Anthropocene - Holocene-C | 0.143 | 0.020 to 0.267 | 0.028 | 0.843 |
+| contrib_gap | Callitropsis nootkatensis | MORA | Anthropocene - Holocene-S | 0.101 | 0.046 to 0.157 | 0.000 | 0.014 |
+| contrib_gap | Callitropsis nootkatensis | MORA | Holocene-C - Holocene-S | -0.042 | -0.163 to 0.079 | 0.411 | 1.000 |
+| contrib_gap | Callitropsis nootkatensis | NOCA | Anthropocene - Holocene-C | 0.056 | -0.021 to 0.132 | 0.152 | 1.000 |
+| contrib_gap | Callitropsis nootkatensis | NOCA | Anthropocene - Holocene-S | 0.067 | -0.002 to 0.136 | 0.057 | 1.000 |
+| contrib_gap | Callitropsis nootkatensis | NOCA | Holocene-C - Holocene-S | 0.011 | -0.035 to 0.057 | 0.556 | 1.000 |
+| contrib_gap | Picea engelmannii | MORA | Anthropocene - Holocene-C | 0.026 | 0.001 to 0.052 | 0.044 | 1.000 |
+| contrib_gap | Picea engelmannii | MORA | Anthropocene - Holocene-S | 0.026 | 0.001 to 0.052 | 0.044 | 1.000 |
+| contrib_gap | Picea engelmannii | MORA | Holocene-C - Holocene-S | 0.000 | not defined | — | — |
+| contrib_gap | Picea engelmannii | NOCA | Anthropocene - Holocene-C | 0.037 | -0.041 to 0.115 | 0.352 | 1.000 |
+| contrib_gap | Picea engelmannii | NOCA | Anthropocene - Holocene-S | 0.045 | -0.035 to 0.124 | 0.267 | 1.000 |
+| contrib_gap | Picea engelmannii | NOCA | Holocene-C - Holocene-S | 0.008 | -0.014 to 0.030 | 0.374 | 1.000 |
+| contrib_gap | Pinus albicaulis | MORA | Anthropocene - Holocene-C | -0.007 | -0.016 to 0.003 | 0.158 | 1.000 |
+| contrib_gap | Pinus albicaulis | MORA | Anthropocene - Holocene-S | -0.007 | -0.016 to 0.003 | 0.158 | 1.000 |
+| contrib_gap | Pinus albicaulis | MORA | Holocene-C - Holocene-S | 0.000 | not defined | — | — |
+| contrib_gap | Pinus albicaulis | NOCA | Anthropocene - Holocene-C | 0.362 | 0.122 to 0.601 | 0.003 | 0.094 |
+| contrib_gap | Pinus albicaulis | NOCA | Anthropocene - Holocene-S | 0.362 | 0.122 to 0.601 | 0.003 | 0.094 |
+| contrib_gap | Pinus albicaulis | NOCA | Holocene-C - Holocene-S | 0.000 | not defined | — | — |
+| contrib_gap | Pinus contorta | MORA | Anthropocene - Holocene-C | 0.006 | -0.009 to 0.021 | 0.408 | 1.000 |
+| contrib_gap | Pinus contorta | MORA | Anthropocene - Holocene-S | 0.007 | -0.013 to 0.028 | 0.446 | 1.000 |
+| contrib_gap | Pinus contorta | MORA | Holocene-C - Holocene-S | 0.001 | -0.018 to 0.020 | 0.895 | 1.000 |
+| contrib_gap | Pinus contorta | NOCA | Anthropocene - Holocene-C | 0.065 | -0.042 to 0.171 | 0.232 | 1.000 |
+| contrib_gap | Pinus contorta | NOCA | Anthropocene - Holocene-S | 0.093 | -0.014 to 0.200 | 0.088 | 1.000 |
+| contrib_gap | Pinus contorta | NOCA | Holocene-C - Holocene-S | 0.028 | -0.047 to 0.103 | 0.408 | 1.000 |
+| contrib_gap | Pinus monticola | MORA | Anthropocene - Holocene-C | 0.008 | -0.007 to 0.023 | 0.297 | 1.000 |
+| contrib_gap | Pinus monticola | MORA | Anthropocene - Holocene-S | 0.003 | -0.011 to 0.018 | 0.664 | 1.000 |
+| contrib_gap | Pinus monticola | MORA | Holocene-C - Holocene-S | -0.005 | -0.012 to 0.002 | 0.129 | 1.000 |
+| contrib_gap | Pinus monticola | NOCA | Anthropocene - Holocene-C | -0.027 | -0.058 to 0.004 | 0.087 | 1.000 |
+| contrib_gap | Pinus monticola | NOCA | Anthropocene - Holocene-S | -0.005 | -0.057 to 0.047 | 0.842 | 1.000 |
+| contrib_gap | Pinus monticola | NOCA | Holocene-C - Holocene-S | 0.022 | -0.028 to 0.073 | 0.304 | 1.000 |
+| contrib_gap | Pinus ponderosa | MORA | Anthropocene - Holocene-C | -0.009 | -0.026 to 0.008 | 0.318 | 1.000 |
+| contrib_gap | Pinus ponderosa | MORA | Anthropocene - Holocene-S | -0.009 | -0.026 to 0.008 | 0.318 | 1.000 |
+| contrib_gap | Pinus ponderosa | MORA | Holocene-C - Holocene-S | 0.000 | not defined | — | — |
+| contrib_gap | Pinus ponderosa | NOCA | Anthropocene - Holocene-C | 0.306 | 0.059 to 0.554 | 0.016 | 0.389 |
+| contrib_gap | Pinus ponderosa | NOCA | Anthropocene - Holocene-S | 0.306 | 0.059 to 0.554 | 0.016 | 0.389 |
+| contrib_gap | Pinus ponderosa | NOCA | Holocene-C - Holocene-S | 0.000 | not defined | — | — |
+| contrib_gap | Pseudotsuga menziesii | MORA | Anthropocene - Holocene-C | 0.062 | 0.018 to 0.107 | 0.006 | 0.211 |
+| contrib_gap | Pseudotsuga menziesii | MORA | Anthropocene - Holocene-S | 0.065 | 0.021 to 0.109 | 0.004 | 0.136 |
+| contrib_gap | Pseudotsuga menziesii | MORA | Holocene-C - Holocene-S | 0.003 | -0.006 to 0.011 | 0.443 | 1.000 |
+| contrib_gap | Pseudotsuga menziesii | NOCA | Anthropocene - Holocene-C | 0.043 | -0.037 to 0.123 | 0.289 | 1.000 |
+| contrib_gap | Pseudotsuga menziesii | NOCA | Anthropocene - Holocene-S | 0.026 | -0.063 to 0.114 | 0.563 | 1.000 |
+| contrib_gap | Pseudotsuga menziesii | NOCA | Holocene-C - Holocene-S | -0.017 | -0.071 to 0.036 | 0.448 | 1.000 |
+| contrib_gap | Thuja plicata | MORA | Anthropocene - Holocene-C | 0.030 | -0.014 to 0.074 | 0.182 | 1.000 |
+| contrib_gap | Thuja plicata | MORA | Anthropocene - Holocene-S | 0.030 | -0.014 to 0.074 | 0.182 | 1.000 |
+| contrib_gap | Thuja plicata | MORA | Holocene-C - Holocene-S | 0.000 | not defined | — | — |
+| contrib_gap | Thuja plicata | NOCA | Anthropocene - Holocene-C | 0.079 | 0.017 to 0.141 | 0.012 | 0.329 |
+| contrib_gap | Thuja plicata | NOCA | Anthropocene - Holocene-S | 0.079 | 0.017 to 0.140 | 0.013 | 0.337 |
+| contrib_gap | Thuja plicata | NOCA | Holocene-C - Holocene-S | -0.001 | -0.004 to 0.002 | 0.625 | 1.000 |
+| contrib_gap | Tsuga heterophylla | MORA | Anthropocene - Holocene-C | 0.027 | -0.002 to 0.056 | 0.071 | 1.000 |
+| contrib_gap | Tsuga heterophylla | MORA | Anthropocene - Holocene-S | 0.011 | -0.017 to 0.039 | 0.431 | 1.000 |
+| contrib_gap | Tsuga heterophylla | MORA | Holocene-C - Holocene-S | -0.016 | -0.035 to 0.004 | 0.102 | 1.000 |
+| contrib_gap | Tsuga heterophylla | NOCA | Anthropocene - Holocene-C | 0.020 | -0.022 to 0.062 | 0.350 | 1.000 |
+| contrib_gap | Tsuga heterophylla | NOCA | Anthropocene - Holocene-S | 0.025 | -0.016 to 0.066 | 0.231 | 1.000 |
+| contrib_gap | Tsuga heterophylla | NOCA | Holocene-C - Holocene-S | 0.005 | -0.008 to 0.018 | 0.357 | 1.000 |
+| contrib_gap | Tsuga mertensiana | MORA | Anthropocene - Holocene-C | 0.037 | -0.006 to 0.080 | 0.087 | 1.000 |
+| contrib_gap | Tsuga mertensiana | MORA | Anthropocene - Holocene-S | 0.062 | 0.028 to 0.096 | 0.000 | 0.015 |
+| contrib_gap | Tsuga mertensiana | MORA | Holocene-C - Holocene-S | 0.025 | -0.007 to 0.057 | 0.098 | 1.000 |
+| contrib_gap | Tsuga mertensiana | NOCA | Anthropocene - Holocene-C | 0.114 | 0.042 to 0.187 | 0.002 | 0.067 |
+| contrib_gap | Tsuga mertensiana | NOCA | Anthropocene - Holocene-S | 0.118 | 0.045 to 0.191 | 0.002 | 0.056 |
+| contrib_gap | Tsuga mertensiana | NOCA | Holocene-C - Holocene-S | 0.004 | -0.006 to 0.013 | 0.361 | 1.000 |
 
 <sub>Table file:
 [species_contrasts.csv](../tables/species_contrasts.csv)</sub>

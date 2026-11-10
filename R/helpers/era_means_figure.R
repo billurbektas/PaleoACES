@@ -3,7 +3,8 @@
 # from the Step 5a models, each mean printed beside its point in the park
 # colour. Rates on log axes carry an arrow with the Holocene-C fold. Signed
 # responses on linear axes carry connectors from the Anthropocene to each
-# Holocene period type, with a star where that contrast is significant.
+# Holocene period type, with a star where that contrast is significant after
+# the Holm adjustment.
 # Linear-axis responses that are positive (the displacement) carry connectors
 # the same way.
 # Used by R/figures/main_fig4_era_contrasts.R and R/figures/main_fig5_lag_pace_direction.R.
@@ -50,7 +51,8 @@ era_means_data = function(titles, log_responses = character()) {
       by = c('response', 'site')) |>
     dplyr::mutate(level = dplyr::if_else(against == 'Holocene-C', 1, 2), y = top + (.03 + .085 * level) * span, drop = .03 * span,
       x = as.integer(site) + ERA_OFFSET[against], xend = as.integer(site) + ERA_OFFSET[['Anthropocene']],
-      star = dplyr::if_else(p_value < .05, '*', ''))
+      # Stars use the Holm-adjusted p of the response's six contrasts (Bills, 10 Nov 2026).
+      star = dplyr::if_else(p_adjusted < .05, '*', ''))
   list(means = means, arrows = arrows, connectors = connectors, titles = titles, log_responses = log_responses)
 }
 

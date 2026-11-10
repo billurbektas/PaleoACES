@@ -85,7 +85,14 @@ contrasts = long |> group_by(measure, species, site) |> group_modify(function(d,
   tibble(contrast = paste(p, collapse = ' - '), estimate = mean(x) - mean(y),
     conf_low = if (is.null(test)) NA_real_ else test$conf.int[1], conf_high = if (is.null(test)) NA_real_ else test$conf.int[2],
     df = if (is.null(test)) NA_real_ else unname(test$parameter), p_value = if (is.null(test)) NA_real_ else test$p.value)
-}))) |> ungroup()
+}))) |> ungroup() |>
+  # Multiple comparisons (Bills, 10 Nov 2026): Holm-adjusted p-values within one
+  # family per measure and park, all species and their three period-type
+  # contrasts together. Contrasts without a test (constant groups) are not counted.
+  group_by(measure, site) |>
+  mutate(p_adjusted = p.adjust(p_value, 'holm'),
+    adjustment = paste('Holm across', sum(!is.na(p_value)), 'species contrasts of the measure in the park')) |>
+  ungroup()
 status = means |> group_by(measure, species, site) |>
   summarise(n = sum(n), all_intervals_defined = all(interval_defined),
     constant_groups = paste(period_type[!interval_defined], collapse = ';'), .groups = 'drop')

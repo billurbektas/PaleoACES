@@ -108,7 +108,7 @@ Step,File,Description,Size (kB)
 12_tracking,chronology_reconstruction/prepared.rds,Reconstruction bundle and primary reconstruction,8862
 12_tracking,chronology_reconstruction/primary.rds,Reconstruction bundle and primary reconstruction,100
 13_era_models,era_comparison/era_coefficients.csv,"Era-comparison GLS fits, means and contrasts per response",9
-13_era_models,era_comparison/era_contrasts.csv,"Era-comparison GLS fits, means and contrasts per response",9
+13_era_models,era_comparison/era_contrasts.csv,"Era-comparison GLS fits, means and contrasts per response",13
 13_era_models,era_comparison/era_duration_classes.csv,"Era-comparison GLS fits, means and contrasts per response",1
 13_era_models,era_comparison/era_durations.csv,"Era-comparison GLS fits, means and contrasts per response",0
 13_era_models,era_comparison/era_folds.csv,"Era-comparison GLS fits, means and contrasts per response",1
@@ -121,9 +121,9 @@ Step,File,Description,Size (kB)
 13_era_models,era_comparison/joint_correction_effects/model_input.csv,"Era-comparison GLS fits, means and contrasts per response",372
 13_era_models,era_comparison/joint_correction_effects/model_results.txt,"Era-comparison GLS fits, means and contrasts per response",7
 13_era_models,era_comparison/joint_correction_effects/period_type_contrasts.csv,"Era-comparison GLS fits, means and contrasts per response",3
-13_era_models,era_comparison/joint_correction_effects/primary_fit.rds,"Era-comparison GLS fits, means and contrasts per response",578
+13_era_models,era_comparison/joint_correction_effects/primary_fit.rds,"Era-comparison GLS fits, means and contrasts per response",583
 13_era_models,era_comparison/model_results.txt,"Era-comparison GLS fits, means and contrasts per response",19
-13_era_models,era_comparison/primary_fits.rds,"Era-comparison GLS fits, means and contrasts per response",676
+13_era_models,era_comparison/primary_fits.rds,"Era-comparison GLS fits, means and contrasts per response",680
 14_predictor_models,community_predictor_models/model_coefficients.csv,Within-era predictor GLS fits,6
 14_predictor_models,community_predictor_models/model_exclusions.csv,Within-era predictor GLS fits,45
 14_predictor_models,community_predictor_models/model_performance.csv,Within-era predictor GLS fits,1
@@ -135,7 +135,7 @@ Step,File,Description,Size (kB)
 15_contributions,cca_transition_contributions/species_contributions.csv,Species and climate contributions to displacement,1479
 15_contributions,cca_transition_contributions/species_lake_periods.csv,Species and climate contributions to displacement,31
 15_contributions,species_contribution_models/noca_burned_species_means.csv,"Species contribution means, contrasts and NOCA burned means",6
-15_contributions,species_contribution_models/species_contrasts.csv,"Species contribution means, contrasts and NOCA burned means",24
+15_contributions,species_contribution_models/species_contrasts.csv,"Species contribution means, contrasts and NOCA burned means",35
 15_contributions,species_contribution_models/species_mean_status.csv,"Species contribution means, contrasts and NOCA burned means",3
 15_contributions,species_contribution_models/species_means.csv,"Species contribution means, contrasts and NOCA burned means",21
 figures,anthropocene_climate_rates.csv,"Tables behind the figures (centroids, annotations)",0

@@ -1,169 +1,169 @@
-Measure,Species,Park,Contrast,Estimate,95% CI,p
-contrib_climate,Abies amabilis,MORA,Anthropocene - Holocene-C,-0.04236407658288504,-0.074 to -0.011,0.0079859847431741
-contrib_climate,Abies amabilis,MORA,Anthropocene - Holocene-S,-0.04374987377648167,-0.075 to -0.013,0.00578007323020802
-contrib_climate,Abies amabilis,MORA,Holocene-C - Holocene-S,-0.00138579719359662,-0.007 to 0.004,0.5647990625874112
-contrib_climate,Abies amabilis,NOCA,Anthropocene - Holocene-C,0.02116844115609783,-0.016 to 0.059,0.26580568509771707
-contrib_climate,Abies amabilis,NOCA,Anthropocene - Holocene-S,0.02116844115609783,-0.016 to 0.059,0.26580568509771707
-contrib_climate,Abies amabilis,NOCA,Holocene-C - Holocene-S,0,not defined,
-contrib_climate,Abies grandis,MORA,Anthropocene - Holocene-C,-0.01766706324066423,-0.057 to 0.021,0.3738168471408767
-contrib_climate,Abies grandis,MORA,Anthropocene - Holocene-S,-0.01766706324066423,-0.057 to 0.021,0.3738168471408767
-contrib_climate,Abies grandis,MORA,Holocene-C - Holocene-S,0,not defined,
-contrib_climate,Abies grandis,NOCA,Anthropocene - Holocene-C,-0.05571530342595626,-0.142 to 0.031,0.2063428733552963
-contrib_climate,Abies grandis,NOCA,Anthropocene - Holocene-S,-0.05571530342595626,-0.142 to 0.031,0.2063428733552963
-contrib_climate,Abies grandis,NOCA,Holocene-C - Holocene-S,0,not defined,
-contrib_climate,Abies lasiocarpa,MORA,Anthropocene - Holocene-C,0.00464877550070773,-0.038 to 0.047,0.8247598391427636
-contrib_climate,Abies lasiocarpa,MORA,Anthropocene - Holocene-S,-0.00868723910304131,-0.042 to 0.024,0.6049219784320797
-contrib_climate,Abies lasiocarpa,MORA,Holocene-C - Holocene-S,-0.01333601460374904,-0.047 to 0.021,0.37606901920555175
-contrib_climate,Abies lasiocarpa,NOCA,Anthropocene - Holocene-C,-0.06179275012883956,-0.214 to 0.090,0.4226063128777472
-contrib_climate,Abies lasiocarpa,NOCA,Anthropocene - Holocene-S,-0.1061914644420154,-0.258 to 0.046,0.16956866059184483
-contrib_climate,Abies lasiocarpa,NOCA,Holocene-C - Holocene-S,-0.04439871431317585,-0.124 to 0.035,0.2339316831463492
-contrib_climate,Abies procera,MORA,Anthropocene - Holocene-C,0.0299491209506583,-0.000 to 0.060,0.05092335209830482
-contrib_climate,Abies procera,MORA,Anthropocene - Holocene-S,0.0257952785972922,-0.004 to 0.056,0.09422450990133578
-contrib_climate,Abies procera,MORA,Holocene-C - Holocene-S,-0.0041538423533661,-0.010 to 0.002,0.13367383859847906
-contrib_climate,Abies procera,NOCA,Anthropocene - Holocene-C,0,not defined,
-contrib_climate,Abies procera,NOCA,Anthropocene - Holocene-S,0,not defined,
-contrib_climate,Abies procera,NOCA,Holocene-C - Holocene-S,0,not defined,
-contrib_climate,Callitropsis nootkatensis,MORA,Anthropocene - Holocene-C,0.01276551635794791,-0.060 to 0.085,0.7281903927868083
-contrib_climate,Callitropsis nootkatensis,MORA,Anthropocene - Holocene-S,-0.00222764799070889,-0.070 to 0.065,0.948166535031496
-contrib_climate,Callitropsis nootkatensis,MORA,Holocene-C - Holocene-S,-0.01499316434865681,-0.049 to 0.019,0.3118777095556525
-contrib_climate,Callitropsis nootkatensis,NOCA,Anthropocene - Holocene-C,0.03857570614228822,-0.014 to 0.091,0.1416539284743756
-contrib_climate,Callitropsis nootkatensis,NOCA,Anthropocene - Holocene-S,0.02796764326479238,-0.013 to 0.069,0.18053661853075453
-contrib_climate,Callitropsis nootkatensis,NOCA,Holocene-C - Holocene-S,-0.01060806287749584,-0.053 to 0.032,0.5447686853945712
-contrib_climate,Picea engelmannii,MORA,Anthropocene - Holocene-C,-0.00406648601392928,-0.017 to 0.009,0.5397275303595632
-contrib_climate,Picea engelmannii,MORA,Anthropocene - Holocene-S,-0.00406648601392928,-0.017 to 0.009,0.5397275303595632
-contrib_climate,Picea engelmannii,MORA,Holocene-C - Holocene-S,0,not defined,
-contrib_climate,Picea engelmannii,NOCA,Anthropocene - Holocene-C,-0.01268728550953884,-0.088 to 0.063,0.7407379810736854
-contrib_climate,Picea engelmannii,NOCA,Anthropocene - Holocene-S,-0.00647986906880738,-0.083 to 0.070,0.8675014943839453
-contrib_climate,Picea engelmannii,NOCA,Holocene-C - Holocene-S,0.00620741644073145,-0.011 to 0.023,0.373900966300059
-contrib_climate,Pinus albicaulis,MORA,Anthropocene - Holocene-C,0.00348688323741849,-0.001 to 0.008,0.15896773020934285
-contrib_climate,Pinus albicaulis,MORA,Anthropocene - Holocene-S,0.00348688323741849,-0.001 to 0.008,0.15896773020934285
-contrib_climate,Pinus albicaulis,MORA,Holocene-C - Holocene-S,0,not defined,
-contrib_climate,Pinus albicaulis,NOCA,Anthropocene - Holocene-C,0.257298120954898,0.079 to 0.435,0.0048527797852424
-contrib_climate,Pinus albicaulis,NOCA,Anthropocene - Holocene-S,0.257298120954898,0.079 to 0.435,0.0048527797852424
-contrib_climate,Pinus albicaulis,NOCA,Holocene-C - Holocene-S,0,not defined,
-contrib_climate,Pinus contorta,MORA,Anthropocene - Holocene-C,-0.00457795964176594,-0.018 to 0.009,0.4971322741771983
-contrib_climate,Pinus contorta,MORA,Anthropocene - Holocene-S,-0.01314158745844359,-0.048 to 0.022,0.4001255759654339
-contrib_climate,Pinus contorta,MORA,Holocene-C - Holocene-S,-0.00856362781667764,-0.044 to 0.026,0.5700437224019548
-contrib_climate,Pinus contorta,NOCA,Anthropocene - Holocene-C,0.03798070921445544,-0.067 to 0.143,0.4779389645894884
-contrib_climate,Pinus contorta,NOCA,Anthropocene - Holocene-S,0.03389719062169232,-0.070 to 0.137,0.5195376864652794
-contrib_climate,Pinus contorta,NOCA,Holocene-C - Holocene-S,-0.00408351859276311,-0.033 to 0.025,0.7313885316778524
-contrib_climate,Pinus monticola,MORA,Anthropocene - Holocene-C,-0.05280033851078092,-0.084 to -0.022,0.00330317032038964
-contrib_climate,Pinus monticola,MORA,Anthropocene - Holocene-S,-0.03907575416932828,-0.055 to -0.023,3.2288910523704984e-6
-contrib_climate,Pinus monticola,MORA,Holocene-C - Holocene-S,0.01372458434145263,-0.016 to 0.044,0.2911248317685416
-contrib_climate,Pinus monticola,NOCA,Anthropocene - Holocene-C,0.00979718270143298,-0.028 to 0.048,0.6122948144468869
-contrib_climate,Pinus monticola,NOCA,Anthropocene - Holocene-S,0.0029836941232356,-0.048 to 0.054,0.9050807454911882
-contrib_climate,Pinus monticola,NOCA,Holocene-C - Holocene-S,-0.00681348857819737,-0.050 to 0.036,0.6886182928966968
-contrib_climate,Pinus ponderosa,MORA,Anthropocene - Holocene-C,0.00884336387497404,-0.009 to 0.026,0.3182659682014544
-contrib_climate,Pinus ponderosa,MORA,Anthropocene - Holocene-S,0.00884336387497404,-0.009 to 0.026,0.3182659682014544
-contrib_climate,Pinus ponderosa,MORA,Holocene-C - Holocene-S,0,not defined,
-contrib_climate,Pinus ponderosa,NOCA,Anthropocene - Holocene-C,0.21610155832289313,-0.036 to 0.468,0.0928824171211114
-contrib_climate,Pinus ponderosa,NOCA,Anthropocene - Holocene-S,0.21610155832289313,-0.036 to 0.468,0.0928824171211114
-contrib_climate,Pinus ponderosa,NOCA,Holocene-C - Holocene-S,0,not defined,
-contrib_climate,Pseudotsuga menziesii,MORA,Anthropocene - Holocene-C,-0.0469221256283194,-0.096 to 0.003,0.06275474916626318
-contrib_climate,Pseudotsuga menziesii,MORA,Anthropocene - Holocene-S,-0.05116808877952468,-0.100 to -0.002,0.04169453722219592
-contrib_climate,Pseudotsuga menziesii,MORA,Holocene-C - Holocene-S,-0.00424596315120528,-0.011 to 0.002,0.15037259845267018
-contrib_climate,Pseudotsuga menziesii,NOCA,Anthropocene - Holocene-C,-0.00349736789534435,-0.077 to 0.070,0.9255782217021922
-contrib_climate,Pseudotsuga menziesii,NOCA,Anthropocene - Holocene-S,0.00744451705519468,-0.071 to 0.086,0.850938601299204
-contrib_climate,Pseudotsuga menziesii,NOCA,Holocene-C - Holocene-S,0.01094188495053903,-0.035 to 0.057,0.5903317704158504
-contrib_climate,Thuja plicata,MORA,Anthropocene - Holocene-C,0.00531456528065512,-0.024 to 0.034,0.7190802903980722
-contrib_climate,Thuja plicata,MORA,Anthropocene - Holocene-S,0.00531456528065512,-0.024 to 0.034,0.7190802903980722
-contrib_climate,Thuja plicata,MORA,Holocene-C - Holocene-S,0,not defined,
-contrib_climate,Thuja plicata,NOCA,Anthropocene - Holocene-C,0.03734695088540828,-0.009 to 0.083,0.10994557266129593
-contrib_climate,Thuja plicata,NOCA,Anthropocene - Holocene-S,0.03167393991200859,-0.014 to 0.077,0.1711332113116842
-contrib_climate,Thuja plicata,NOCA,Holocene-C - Holocene-S,-0.00567301097339968,-0.017 to 0.005,0.2636796991570856
-contrib_climate,Tsuga heterophylla,MORA,Anthropocene - Holocene-C,-0.05548327726267534,-0.081 to -0.030,7.623316961655951e-5
-contrib_climate,Tsuga heterophylla,MORA,Anthropocene - Holocene-S,-0.03822855666558966,-0.062 to -0.014,0.00227664798660319
-contrib_climate,Tsuga heterophylla,MORA,Holocene-C - Holocene-S,0.01725472059708568,-0.005 to 0.039,0.10947699303894744
-contrib_climate,Tsuga heterophylla,NOCA,Anthropocene - Holocene-C,0.10639973705004224,0.060 to 0.153,1.13690016504781e-5
-contrib_climate,Tsuga heterophylla,NOCA,Anthropocene - Holocene-S,0.10766517517453866,0.061 to 0.154,8.822326884884334e-6
-contrib_climate,Tsuga heterophylla,NOCA,Holocene-C - Holocene-S,0.00126543812449641,-0.004 to 0.007,0.6194745827864361
-contrib_climate,Tsuga mertensiana,MORA,Anthropocene - Holocene-C,8.737898607684633e-4,-0.044 to 0.046,0.9682376039584102
-contrib_climate,Tsuga mertensiana,MORA,Anthropocene - Holocene-S,0.00996509534779394,-0.020 to 0.040,0.5124391278413591
-contrib_climate,Tsuga mertensiana,MORA,Holocene-C - Holocene-S,0.00909130548702548,-0.031 to 0.049,0.5832579149268096
-contrib_climate,Tsuga mertensiana,NOCA,Anthropocene - Holocene-C,0.0124429407462911,-0.025 to 0.050,0.5144265687527477
-contrib_climate,Tsuga mertensiana,NOCA,Anthropocene - Holocene-S,0.00855917422845266,-0.029 to 0.046,0.6543688774649843
-contrib_climate,Tsuga mertensiana,NOCA,Holocene-C - Holocene-S,-0.00388376651783844,-0.010 to 0.003,0.198133543986899
-contrib_gap,Abies amabilis,MORA,Anthropocene - Holocene-C,-8.19402033385078e-4,-0.030 to 0.028,0.9552289133628168
-contrib_gap,Abies amabilis,MORA,Anthropocene - Holocene-S,0.0120037610507973,-0.011 to 0.035,0.3139639367011584
-contrib_gap,Abies amabilis,MORA,Holocene-C - Holocene-S,0.01282316308418238,-0.009 to 0.034,0.18457265541365597
-contrib_gap,Abies amabilis,NOCA,Anthropocene - Holocene-C,0.03580101405295666,0.005 to 0.067,0.02512918657728684
-contrib_gap,Abies amabilis,NOCA,Anthropocene - Holocene-S,0.03580101405295666,0.005 to 0.067,0.02512918657728684
-contrib_gap,Abies amabilis,NOCA,Holocene-C - Holocene-S,0,not defined,
-contrib_gap,Abies grandis,MORA,Anthropocene - Holocene-C,0.05548449154711453,0.012 to 0.098,0.01161762187567125
-contrib_gap,Abies grandis,MORA,Anthropocene - Holocene-S,0.05548449154711453,0.012 to 0.098,0.01161762187567125
-contrib_gap,Abies grandis,MORA,Holocene-C - Holocene-S,0,not defined,
-contrib_gap,Abies grandis,NOCA,Anthropocene - Holocene-C,0.147531690223547,0.055 to 0.240,0.00194374158797314
-contrib_gap,Abies grandis,NOCA,Anthropocene - Holocene-S,0.147531690223547,0.055 to 0.240,0.00194374158797314
-contrib_gap,Abies grandis,NOCA,Holocene-C - Holocene-S,0,not defined,
-contrib_gap,Abies lasiocarpa,MORA,Anthropocene - Holocene-C,0.06470862737543423,-0.005 to 0.134,0.06866832520073068
-contrib_gap,Abies lasiocarpa,MORA,Anthropocene - Holocene-S,0.0746897398618569,0.008 to 0.141,0.02719477969001812
-contrib_gap,Abies lasiocarpa,MORA,Holocene-C - Holocene-S,0.00998111248642267,-0.021 to 0.041,0.46676232397055306
-contrib_gap,Abies lasiocarpa,NOCA,Anthropocene - Holocene-C,0.2895921376907027,0.116 to 0.463,0.00120562257690565
-contrib_gap,Abies lasiocarpa,NOCA,Anthropocene - Holocene-S,0.2670110516812397,0.094 to 0.440,0.00269033831347024
-contrib_gap,Abies lasiocarpa,NOCA,Holocene-C - Holocene-S,-0.02258108600946301,-0.114 to 0.069,0.5863154608112469
-contrib_gap,Abies procera,MORA,Anthropocene - Holocene-C,0.00706091984889769,-0.017 to 0.031,0.5659554576630184
-contrib_gap,Abies procera,MORA,Anthropocene - Holocene-S,0.01114249856457263,-0.013 to 0.035,0.3589154665747678
-contrib_gap,Abies procera,MORA,Holocene-C - Holocene-S,0.00408157871567493,-0.004 to 0.012,0.30129301165997513
-contrib_gap,Abies procera,NOCA,Anthropocene - Holocene-C,0,not defined,
-contrib_gap,Abies procera,NOCA,Anthropocene - Holocene-S,0,not defined,
-contrib_gap,Abies procera,NOCA,Holocene-C - Holocene-S,0,not defined,
-contrib_gap,Callitropsis nootkatensis,MORA,Anthropocene - Holocene-C,0.14325999819451588,0.020 to 0.267,0.02759748017584117
-contrib_gap,Callitropsis nootkatensis,MORA,Anthropocene - Holocene-S,0.10111372163991925,0.046 to 0.157,3.906520305545664e-4
-contrib_gap,Callitropsis nootkatensis,MORA,Holocene-C - Holocene-S,-0.04214627655459661,-0.163 to 0.079,0.4114124483472679
-contrib_gap,Callitropsis nootkatensis,NOCA,Anthropocene - Holocene-C,0.05566889125461684,-0.021 to 0.132,0.1518706444217989
-contrib_gap,Callitropsis nootkatensis,NOCA,Anthropocene - Holocene-S,0.06692679535098887,-0.002 to 0.136,0.05734289458597894
-contrib_gap,Callitropsis nootkatensis,NOCA,Holocene-C - Holocene-S,0.01125790409637203,-0.035 to 0.057,0.5563674974122479
-contrib_gap,Picea engelmannii,MORA,Anthropocene - Holocene-C,0.02630618495489588,0.001 to 0.052,0.04385076690854816
-contrib_gap,Picea engelmannii,MORA,Anthropocene - Holocene-S,0.02630618495489588,0.001 to 0.052,0.04385076690854816
-contrib_gap,Picea engelmannii,MORA,Holocene-C - Holocene-S,0,not defined,
-contrib_gap,Picea engelmannii,NOCA,Anthropocene - Holocene-C,0.03681426141938662,-0.041 to 0.115,0.35233837939382906
-contrib_gap,Picea engelmannii,NOCA,Anthropocene - Holocene-S,0.04482569880051416,-0.035 to 0.124,0.2672749536362951
-contrib_gap,Picea engelmannii,NOCA,Holocene-C - Holocene-S,0.00801143738112755,-0.014 to 0.030,0.37390096630005887
-contrib_gap,Pinus albicaulis,MORA,Anthropocene - Holocene-C,-0.00656090709111644,-0.016 to 0.003,0.1577240670121405
-contrib_gap,Pinus albicaulis,MORA,Anthropocene - Holocene-S,-0.00656090709111644,-0.016 to 0.003,0.1577240670121405
-contrib_gap,Pinus albicaulis,MORA,Holocene-C - Holocene-S,0,not defined,
-contrib_gap,Pinus albicaulis,NOCA,Anthropocene - Holocene-C,0.3619476602044267,0.122 to 0.601,0.00323594420901692
-contrib_gap,Pinus albicaulis,NOCA,Anthropocene - Holocene-S,0.3619476602044267,0.122 to 0.601,0.00323594420901692
-contrib_gap,Pinus albicaulis,NOCA,Holocene-C - Holocene-S,0,not defined,
-contrib_gap,Pinus contorta,MORA,Anthropocene - Holocene-C,0.00627922297600781,-0.009 to 0.021,0.40794657075164387
-contrib_gap,Pinus contorta,MORA,Anthropocene - Holocene-S,0.00741557937345099,-0.013 to 0.028,0.4458622281045238
-contrib_gap,Pinus contorta,MORA,Holocene-C - Holocene-S,0.00113635639744317,-0.018 to 0.020,0.89543395242598
-contrib_gap,Pinus contorta,NOCA,Anthropocene - Holocene-C,0.06467567064408672,-0.042 to 0.171,0.23199015258080224
-contrib_gap,Pinus contorta,NOCA,Anthropocene - Holocene-S,0.0930182670148268,-0.014 to 0.200,0.08820074357181758
-contrib_gap,Pinus contorta,NOCA,Holocene-C - Holocene-S,0.028342596370740068,-0.047 to 0.103,0.4083296023520294
-contrib_gap,Pinus monticola,MORA,Anthropocene - Holocene-C,0.00814165290906495,-0.007 to 0.023,0.29693286362811216
-contrib_gap,Pinus monticola,MORA,Anthropocene - Holocene-S,0.00323428945579951,-0.011 to 0.018,0.6641327095033669
-contrib_gap,Pinus monticola,MORA,Holocene-C - Holocene-S,-0.00490736345326543,-0.012 to 0.002,0.12859371014126997
-contrib_gap,Pinus monticola,NOCA,Anthropocene - Holocene-C,-0.02722038663316972,-0.058 to 0.004,0.08664158006670991
-contrib_gap,Pinus monticola,NOCA,Anthropocene - Holocene-S,-0.00481730399095902,-0.057 to 0.047,0.8420967219361173
-contrib_gap,Pinus monticola,NOCA,Holocene-C - Holocene-S,0.02240308264221069,-0.028 to 0.073,0.3040271889089497
-contrib_gap,Pinus ponderosa,MORA,Anthropocene - Holocene-C,-0.00871176012285311,-0.026 to 0.008,0.3182659682014552
-contrib_gap,Pinus ponderosa,MORA,Anthropocene - Holocene-S,-0.00871176012285311,-0.026 to 0.008,0.3182659682014552
-contrib_gap,Pinus ponderosa,MORA,Holocene-C - Holocene-S,0,not defined,
-contrib_gap,Pinus ponderosa,NOCA,Anthropocene - Holocene-C,0.3063828930695163,0.059 to 0.554,0.01557128013185628
-contrib_gap,Pinus ponderosa,NOCA,Anthropocene - Holocene-S,0.3063828930695163,0.059 to 0.554,0.01557128013185628
-contrib_gap,Pinus ponderosa,NOCA,Holocene-C - Holocene-S,0,not defined,
-contrib_gap,Pseudotsuga menziesii,MORA,Anthropocene - Holocene-C,0.06233986579181459,0.018 to 0.107,0.00621195832119395
-contrib_gap,Pseudotsuga menziesii,MORA,Anthropocene - Holocene-S,0.06520319690598024,0.021 to 0.109,0.00387625713296663
-contrib_gap,Pseudotsuga menziesii,MORA,Holocene-C - Holocene-S,0.00286333111416565,-0.006 to 0.011,0.4429868248673407
-contrib_gap,Pseudotsuga menziesii,NOCA,Anthropocene - Holocene-C,0.04303748149982356,-0.037 to 0.123,0.2893628192840678
-contrib_gap,Pseudotsuga menziesii,NOCA,Anthropocene - Holocene-S,0.02580759865630361,-0.063 to 0.114,0.5626787818717418
-contrib_gap,Pseudotsuga menziesii,NOCA,Holocene-C - Holocene-S,-0.01722988284351995,-0.071 to 0.036,0.4475553169629295
-contrib_gap,Thuja plicata,MORA,Anthropocene - Holocene-C,0.02983400522828513,-0.014 to 0.074,0.1822060131687944
-contrib_gap,Thuja plicata,MORA,Anthropocene - Holocene-S,0.02983400522828513,-0.014 to 0.074,0.1822060131687944
-contrib_gap,Thuja plicata,MORA,Holocene-C - Holocene-S,0,not defined,
-contrib_gap,Thuja plicata,NOCA,Anthropocene - Holocene-C,0.07924257065880788,0.017 to 0.141,0.01217028704680592
-contrib_gap,Thuja plicata,NOCA,Anthropocene - Holocene-S,0.07854583718643396,0.017 to 0.140,0.01295365295759774
-contrib_gap,Thuja plicata,NOCA,Holocene-C - Holocene-S,-6.967334723739279e-4,-0.004 to 0.002,0.6251155222452613
-contrib_gap,Tsuga heterophylla,MORA,Anthropocene - Holocene-C,0.0268857917373281,-0.002 to 0.056,0.07074758359306631
-contrib_gap,Tsuga heterophylla,MORA,Anthropocene - Holocene-S,0.01105998946026859,-0.017 to 0.039,0.4314861583253128
-contrib_gap,Tsuga heterophylla,MORA,Holocene-C - Holocene-S,-0.0158258022770595,-0.035 to 0.004,0.10244379309974364
-contrib_gap,Tsuga heterophylla,NOCA,Anthropocene - Holocene-C,0.01986783862000388,-0.022 to 0.062,0.35042957297240973
-contrib_gap,Tsuga heterophylla,NOCA,Anthropocene - Holocene-S,0.02485609432877961,-0.016 to 0.066,0.2314341467441106
-contrib_gap,Tsuga heterophylla,NOCA,Holocene-C - Holocene-S,0.00498825570877573,-0.008 to 0.018,0.3566439861992615
-contrib_gap,Tsuga mertensiana,MORA,Anthropocene - Holocene-C,0.03717759905457225,-0.006 to 0.080,0.08741711048210832
-contrib_gap,Tsuga mertensiana,MORA,Anthropocene - Holocene-S,0.06221429724611635,0.028 to 0.096,4.103451643210641e-4
-contrib_gap,Tsuga mertensiana,MORA,Holocene-C - Holocene-S,0.0250366981915441,-0.007 to 0.057,0.0980179453247208
-contrib_gap,Tsuga mertensiana,NOCA,Anthropocene - Holocene-C,0.11417558076592582,0.042 to 0.187,0.00216745873186946
-contrib_gap,Tsuga mertensiana,NOCA,Anthropocene - Holocene-S,0.11772598025286889,0.045 to 0.191,0.00165232391499674
-contrib_gap,Tsuga mertensiana,NOCA,Holocene-C - Holocene-S,0.00355039948694306,-0.006 to 0.013,0.36119253843096144
+Measure,Species,Park,Contrast,Estimate,95% CI,p,p (Holm)
+contrib_climate,Abies amabilis,MORA,Anthropocene - Holocene-C,-0.04236407658288504,-0.074 to -0.011,0.0079859847431741,0.25555151178157126
+contrib_climate,Abies amabilis,MORA,Anthropocene - Holocene-S,-0.04374987377648167,-0.075 to -0.013,0.00578007323020802,0.1907424165968649
+contrib_climate,Abies amabilis,MORA,Holocene-C - Holocene-S,-0.00138579719359662,-0.007 to 0.004,0.5647990625874112,1
+contrib_climate,Abies amabilis,NOCA,Anthropocene - Holocene-C,0.02116844115609783,-0.016 to 0.059,0.26580568509771707,1
+contrib_climate,Abies amabilis,NOCA,Anthropocene - Holocene-S,0.02116844115609783,-0.016 to 0.059,0.26580568509771707,1
+contrib_climate,Abies amabilis,NOCA,Holocene-C - Holocene-S,0,not defined,,
+contrib_climate,Abies grandis,MORA,Anthropocene - Holocene-C,-0.01766706324066423,-0.057 to 0.021,0.3738168471408767,1
+contrib_climate,Abies grandis,MORA,Anthropocene - Holocene-S,-0.01766706324066423,-0.057 to 0.021,0.3738168471408767,1
+contrib_climate,Abies grandis,MORA,Holocene-C - Holocene-S,0,not defined,,
+contrib_climate,Abies grandis,NOCA,Anthropocene - Holocene-C,-0.05571530342595626,-0.142 to 0.031,0.2063428733552963,1
+contrib_climate,Abies grandis,NOCA,Anthropocene - Holocene-S,-0.05571530342595626,-0.142 to 0.031,0.2063428733552963,1
+contrib_climate,Abies grandis,NOCA,Holocene-C - Holocene-S,0,not defined,,
+contrib_climate,Abies lasiocarpa,MORA,Anthropocene - Holocene-C,0.00464877550070773,-0.038 to 0.047,0.8247598391427636,1
+contrib_climate,Abies lasiocarpa,MORA,Anthropocene - Holocene-S,-0.00868723910304131,-0.042 to 0.024,0.6049219784320797,1
+contrib_climate,Abies lasiocarpa,MORA,Holocene-C - Holocene-S,-0.01333601460374904,-0.047 to 0.021,0.37606901920555175,1
+contrib_climate,Abies lasiocarpa,NOCA,Anthropocene - Holocene-C,-0.06179275012883956,-0.214 to 0.090,0.4226063128777472,1
+contrib_climate,Abies lasiocarpa,NOCA,Anthropocene - Holocene-S,-0.1061914644420154,-0.258 to 0.046,0.16956866059184483,1
+contrib_climate,Abies lasiocarpa,NOCA,Holocene-C - Holocene-S,-0.04439871431317585,-0.124 to 0.035,0.2339316831463492,1
+contrib_climate,Abies procera,MORA,Anthropocene - Holocene-C,0.0299491209506583,-0.000 to 0.060,0.05092335209830482,1
+contrib_climate,Abies procera,MORA,Anthropocene - Holocene-S,0.0257952785972922,-0.004 to 0.056,0.09422450990133578,1
+contrib_climate,Abies procera,MORA,Holocene-C - Holocene-S,-0.0041538423533661,-0.010 to 0.002,0.13367383859847906,1
+contrib_climate,Abies procera,NOCA,Anthropocene - Holocene-C,0,not defined,,
+contrib_climate,Abies procera,NOCA,Anthropocene - Holocene-S,0,not defined,,
+contrib_climate,Abies procera,NOCA,Holocene-C - Holocene-S,0,not defined,,
+contrib_climate,Callitropsis nootkatensis,MORA,Anthropocene - Holocene-C,0.01276551635794791,-0.060 to 0.085,0.7281903927868083,1
+contrib_climate,Callitropsis nootkatensis,MORA,Anthropocene - Holocene-S,-0.00222764799070889,-0.070 to 0.065,0.948166535031496,1
+contrib_climate,Callitropsis nootkatensis,MORA,Holocene-C - Holocene-S,-0.01499316434865681,-0.049 to 0.019,0.3118777095556525,1
+contrib_climate,Callitropsis nootkatensis,NOCA,Anthropocene - Holocene-C,0.03857570614228822,-0.014 to 0.091,0.1416539284743756,1
+contrib_climate,Callitropsis nootkatensis,NOCA,Anthropocene - Holocene-S,0.02796764326479238,-0.013 to 0.069,0.18053661853075453,1
+contrib_climate,Callitropsis nootkatensis,NOCA,Holocene-C - Holocene-S,-0.01060806287749584,-0.053 to 0.032,0.5447686853945712,1
+contrib_climate,Picea engelmannii,MORA,Anthropocene - Holocene-C,-0.00406648601392928,-0.017 to 0.009,0.5397275303595632,1
+contrib_climate,Picea engelmannii,MORA,Anthropocene - Holocene-S,-0.00406648601392928,-0.017 to 0.009,0.5397275303595632,1
+contrib_climate,Picea engelmannii,MORA,Holocene-C - Holocene-S,0,not defined,,
+contrib_climate,Picea engelmannii,NOCA,Anthropocene - Holocene-C,-0.01268728550953884,-0.088 to 0.063,0.7407379810736854,1
+contrib_climate,Picea engelmannii,NOCA,Anthropocene - Holocene-S,-0.00647986906880738,-0.083 to 0.070,0.8675014943839453,1
+contrib_climate,Picea engelmannii,NOCA,Holocene-C - Holocene-S,0.00620741644073145,-0.011 to 0.023,0.373900966300059,1
+contrib_climate,Pinus albicaulis,MORA,Anthropocene - Holocene-C,0.00348688323741849,-0.001 to 0.008,0.15896773020934285,1
+contrib_climate,Pinus albicaulis,MORA,Anthropocene - Holocene-S,0.00348688323741849,-0.001 to 0.008,0.15896773020934285,1
+contrib_climate,Pinus albicaulis,MORA,Holocene-C - Holocene-S,0,not defined,,
+contrib_climate,Pinus albicaulis,NOCA,Anthropocene - Holocene-C,0.257298120954898,0.079 to 0.435,0.0048527797852424,0.1601417329129992
+contrib_climate,Pinus albicaulis,NOCA,Anthropocene - Holocene-S,0.257298120954898,0.079 to 0.435,0.0048527797852424,0.1601417329129992
+contrib_climate,Pinus albicaulis,NOCA,Holocene-C - Holocene-S,0,not defined,,
+contrib_climate,Pinus contorta,MORA,Anthropocene - Holocene-C,-0.00457795964176594,-0.018 to 0.009,0.4971322741771983,1
+contrib_climate,Pinus contorta,MORA,Anthropocene - Holocene-S,-0.01314158745844359,-0.048 to 0.022,0.4001255759654339,1
+contrib_climate,Pinus contorta,MORA,Holocene-C - Holocene-S,-0.00856362781667764,-0.044 to 0.026,0.5700437224019548,1
+contrib_climate,Pinus contorta,NOCA,Anthropocene - Holocene-C,0.03798070921445544,-0.067 to 0.143,0.4779389645894884,1
+contrib_climate,Pinus contorta,NOCA,Anthropocene - Holocene-S,0.03389719062169232,-0.070 to 0.137,0.5195376864652794,1
+contrib_climate,Pinus contorta,NOCA,Holocene-C - Holocene-S,-0.00408351859276311,-0.033 to 0.025,0.7313885316778524,1
+contrib_climate,Pinus monticola,MORA,Anthropocene - Holocene-C,-0.05280033851078092,-0.084 to -0.022,0.00330317032038964,0.11230779089324776
+contrib_climate,Pinus monticola,MORA,Anthropocene - Holocene-S,-0.03907575416932828,-0.055 to -0.023,3.2288910523704984e-6,1.1946896893770844e-4
+contrib_climate,Pinus monticola,MORA,Holocene-C - Holocene-S,0.01372458434145263,-0.016 to 0.044,0.2911248317685416,1
+contrib_climate,Pinus monticola,NOCA,Anthropocene - Holocene-C,0.00979718270143298,-0.028 to 0.048,0.6122948144468869,1
+contrib_climate,Pinus monticola,NOCA,Anthropocene - Holocene-S,0.0029836941232356,-0.048 to 0.054,0.9050807454911882,1
+contrib_climate,Pinus monticola,NOCA,Holocene-C - Holocene-S,-0.00681348857819737,-0.050 to 0.036,0.6886182928966968,1
+contrib_climate,Pinus ponderosa,MORA,Anthropocene - Holocene-C,0.00884336387497404,-0.009 to 0.026,0.3182659682014544,1
+contrib_climate,Pinus ponderosa,MORA,Anthropocene - Holocene-S,0.00884336387497404,-0.009 to 0.026,0.3182659682014544,1
+contrib_climate,Pinus ponderosa,MORA,Holocene-C - Holocene-S,0,not defined,,
+contrib_climate,Pinus ponderosa,NOCA,Anthropocene - Holocene-C,0.21610155832289313,-0.036 to 0.468,0.0928824171211114,1
+contrib_climate,Pinus ponderosa,NOCA,Anthropocene - Holocene-S,0.21610155832289313,-0.036 to 0.468,0.0928824171211114,1
+contrib_climate,Pinus ponderosa,NOCA,Holocene-C - Holocene-S,0,not defined,,
+contrib_climate,Pseudotsuga menziesii,MORA,Anthropocene - Holocene-C,-0.0469221256283194,-0.096 to 0.003,0.06275474916626318,1
+contrib_climate,Pseudotsuga menziesii,MORA,Anthropocene - Holocene-S,-0.05116808877952468,-0.100 to -0.002,0.04169453722219592,1
+contrib_climate,Pseudotsuga menziesii,MORA,Holocene-C - Holocene-S,-0.00424596315120528,-0.011 to 0.002,0.15037259845267018,1
+contrib_climate,Pseudotsuga menziesii,NOCA,Anthropocene - Holocene-C,-0.00349736789534435,-0.077 to 0.070,0.9255782217021922,1
+contrib_climate,Pseudotsuga menziesii,NOCA,Anthropocene - Holocene-S,0.00744451705519468,-0.071 to 0.086,0.850938601299204,1
+contrib_climate,Pseudotsuga menziesii,NOCA,Holocene-C - Holocene-S,0.01094188495053903,-0.035 to 0.057,0.5903317704158504,1
+contrib_climate,Thuja plicata,MORA,Anthropocene - Holocene-C,0.00531456528065512,-0.024 to 0.034,0.7190802903980722,1
+contrib_climate,Thuja plicata,MORA,Anthropocene - Holocene-S,0.00531456528065512,-0.024 to 0.034,0.7190802903980722,1
+contrib_climate,Thuja plicata,MORA,Holocene-C - Holocene-S,0,not defined,,
+contrib_climate,Thuja plicata,NOCA,Anthropocene - Holocene-C,0.03734695088540828,-0.009 to 0.083,0.10994557266129593,1
+contrib_climate,Thuja plicata,NOCA,Anthropocene - Holocene-S,0.03167393991200859,-0.014 to 0.077,0.1711332113116842,1
+contrib_climate,Thuja plicata,NOCA,Holocene-C - Holocene-S,-0.00567301097339968,-0.017 to 0.005,0.2636796991570856,1
+contrib_climate,Tsuga heterophylla,MORA,Anthropocene - Holocene-C,-0.05548327726267534,-0.081 to -0.030,7.623316961655951e-5,0.00274439410619614
+contrib_climate,Tsuga heterophylla,MORA,Anthropocene - Holocene-S,-0.03822855666558966,-0.062 to -0.014,0.00227664798660319,0.07968267953111174
+contrib_climate,Tsuga heterophylla,MORA,Holocene-C - Holocene-S,0.01725472059708568,-0.005 to 0.039,0.10947699303894744,1
+contrib_climate,Tsuga heterophylla,NOCA,Anthropocene - Holocene-C,0.10639973705004224,0.060 to 0.153,1.13690016504781e-5,3.865460561162554e-4
+contrib_climate,Tsuga heterophylla,NOCA,Anthropocene - Holocene-S,0.10766517517453866,0.061 to 0.154,8.822326884884334e-6,3.087814409709517e-4
+contrib_climate,Tsuga heterophylla,NOCA,Holocene-C - Holocene-S,0.00126543812449641,-0.004 to 0.007,0.6194745827864361,1
+contrib_climate,Tsuga mertensiana,MORA,Anthropocene - Holocene-C,8.737898607684633e-4,-0.044 to 0.046,0.9682376039584102,1
+contrib_climate,Tsuga mertensiana,MORA,Anthropocene - Holocene-S,0.00996509534779394,-0.020 to 0.040,0.5124391278413591,1
+contrib_climate,Tsuga mertensiana,MORA,Holocene-C - Holocene-S,0.00909130548702548,-0.031 to 0.049,0.5832579149268096,1
+contrib_climate,Tsuga mertensiana,NOCA,Anthropocene - Holocene-C,0.0124429407462911,-0.025 to 0.050,0.5144265687527477,1
+contrib_climate,Tsuga mertensiana,NOCA,Anthropocene - Holocene-S,0.00855917422845266,-0.029 to 0.046,0.6543688774649843,1
+contrib_climate,Tsuga mertensiana,NOCA,Holocene-C - Holocene-S,-0.00388376651783844,-0.010 to 0.003,0.198133543986899,1
+contrib_gap,Abies amabilis,MORA,Anthropocene - Holocene-C,-8.19402033385078e-4,-0.030 to 0.028,0.9552289133628168,1
+contrib_gap,Abies amabilis,MORA,Anthropocene - Holocene-S,0.0120037610507973,-0.011 to 0.035,0.3139639367011584,1
+contrib_gap,Abies amabilis,MORA,Holocene-C - Holocene-S,0.01282316308418238,-0.009 to 0.034,0.18457265541365597,1
+contrib_gap,Abies amabilis,NOCA,Anthropocene - Holocene-C,0.03580101405295666,0.005 to 0.067,0.02512918657728684,0.5779712912775974
+contrib_gap,Abies amabilis,NOCA,Anthropocene - Holocene-S,0.03580101405295666,0.005 to 0.067,0.02512918657728684,0.5779712912775974
+contrib_gap,Abies amabilis,NOCA,Holocene-C - Holocene-S,0,not defined,,
+contrib_gap,Abies grandis,MORA,Anthropocene - Holocene-C,0.05548449154711453,0.012 to 0.098,0.01161762187567125,0.3833815218971514
+contrib_gap,Abies grandis,MORA,Anthropocene - Holocene-S,0.05548449154711453,0.012 to 0.098,0.01161762187567125,0.3833815218971514
+contrib_gap,Abies grandis,MORA,Holocene-C - Holocene-S,0,not defined,,
+contrib_gap,Abies grandis,NOCA,Anthropocene - Holocene-C,0.147531690223547,0.055 to 0.240,0.00194374158797314,0.06414347240311366
+contrib_gap,Abies grandis,NOCA,Anthropocene - Holocene-S,0.147531690223547,0.055 to 0.240,0.00194374158797314,0.06414347240311366
+contrib_gap,Abies grandis,NOCA,Holocene-C - Holocene-S,0,not defined,,
+contrib_gap,Abies lasiocarpa,MORA,Anthropocene - Holocene-C,0.06470862737543423,-0.005 to 0.134,0.06866832520073068,1
+contrib_gap,Abies lasiocarpa,MORA,Anthropocene - Holocene-S,0.0746897398618569,0.008 to 0.141,0.02719477969001812,0.8430381703905618
+contrib_gap,Abies lasiocarpa,MORA,Holocene-C - Holocene-S,0.00998111248642267,-0.021 to 0.041,0.46676232397055306,1
+contrib_gap,Abies lasiocarpa,NOCA,Anthropocene - Holocene-C,0.2895921376907027,0.116 to 0.463,0.00120562257690565,0.04219679019169779
+contrib_gap,Abies lasiocarpa,NOCA,Anthropocene - Holocene-S,0.2670110516812397,0.094 to 0.440,0.00269033831347024,0.0807101494041072
+contrib_gap,Abies lasiocarpa,NOCA,Holocene-C - Holocene-S,-0.02258108600946301,-0.114 to 0.069,0.5863154608112469,1
+contrib_gap,Abies procera,MORA,Anthropocene - Holocene-C,0.00706091984889769,-0.017 to 0.031,0.5659554576630184,1
+contrib_gap,Abies procera,MORA,Anthropocene - Holocene-S,0.01114249856457263,-0.013 to 0.035,0.3589154665747678,1
+contrib_gap,Abies procera,MORA,Holocene-C - Holocene-S,0.00408157871567493,-0.004 to 0.012,0.30129301165997513,1
+contrib_gap,Abies procera,NOCA,Anthropocene - Holocene-C,0,not defined,,
+contrib_gap,Abies procera,NOCA,Anthropocene - Holocene-S,0,not defined,,
+contrib_gap,Abies procera,NOCA,Holocene-C - Holocene-S,0,not defined,,
+contrib_gap,Callitropsis nootkatensis,MORA,Anthropocene - Holocene-C,0.14325999819451588,0.020 to 0.267,0.02759748017584117,0.8430381703905618
+contrib_gap,Callitropsis nootkatensis,MORA,Anthropocene - Holocene-S,0.10111372163991925,0.046 to 0.157,3.906520305545664e-4,0.01445412513051895
+contrib_gap,Callitropsis nootkatensis,MORA,Holocene-C - Holocene-S,-0.04214627655459661,-0.163 to 0.079,0.4114124483472679,1
+contrib_gap,Callitropsis nootkatensis,NOCA,Anthropocene - Holocene-C,0.05566889125461684,-0.021 to 0.132,0.1518706444217989,1
+contrib_gap,Callitropsis nootkatensis,NOCA,Anthropocene - Holocene-S,0.06692679535098887,-0.002 to 0.136,0.05734289458597894,1
+contrib_gap,Callitropsis nootkatensis,NOCA,Holocene-C - Holocene-S,0.01125790409637203,-0.035 to 0.057,0.5563674974122479,1
+contrib_gap,Picea engelmannii,MORA,Anthropocene - Holocene-C,0.02630618495489588,0.001 to 0.052,0.04385076690854816,1
+contrib_gap,Picea engelmannii,MORA,Anthropocene - Holocene-S,0.02630618495489588,0.001 to 0.052,0.04385076690854816,1
+contrib_gap,Picea engelmannii,MORA,Holocene-C - Holocene-S,0,not defined,,
+contrib_gap,Picea engelmannii,NOCA,Anthropocene - Holocene-C,0.03681426141938662,-0.041 to 0.115,0.35233837939382906,1
+contrib_gap,Picea engelmannii,NOCA,Anthropocene - Holocene-S,0.04482569880051416,-0.035 to 0.124,0.2672749536362951,1
+contrib_gap,Picea engelmannii,NOCA,Holocene-C - Holocene-S,0.00801143738112755,-0.014 to 0.030,0.37390096630005887,1
+contrib_gap,Pinus albicaulis,MORA,Anthropocene - Holocene-C,-0.00656090709111644,-0.016 to 0.003,0.1577240670121405,1
+contrib_gap,Pinus albicaulis,MORA,Anthropocene - Holocene-S,-0.00656090709111644,-0.016 to 0.003,0.1577240670121405,1
+contrib_gap,Pinus albicaulis,MORA,Holocene-C - Holocene-S,0,not defined,,
+contrib_gap,Pinus albicaulis,NOCA,Anthropocene - Holocene-C,0.3619476602044267,0.122 to 0.601,0.00323594420901692,0.0938423820614908
+contrib_gap,Pinus albicaulis,NOCA,Anthropocene - Holocene-S,0.3619476602044267,0.122 to 0.601,0.00323594420901692,0.0938423820614908
+contrib_gap,Pinus albicaulis,NOCA,Holocene-C - Holocene-S,0,not defined,,
+contrib_gap,Pinus contorta,MORA,Anthropocene - Holocene-C,0.00627922297600781,-0.009 to 0.021,0.40794657075164387,1
+contrib_gap,Pinus contorta,MORA,Anthropocene - Holocene-S,0.00741557937345099,-0.013 to 0.028,0.4458622281045238,1
+contrib_gap,Pinus contorta,MORA,Holocene-C - Holocene-S,0.00113635639744317,-0.018 to 0.020,0.89543395242598,1
+contrib_gap,Pinus contorta,NOCA,Anthropocene - Holocene-C,0.06467567064408672,-0.042 to 0.171,0.23199015258080224,1
+contrib_gap,Pinus contorta,NOCA,Anthropocene - Holocene-S,0.0930182670148268,-0.014 to 0.200,0.08820074357181758,1
+contrib_gap,Pinus contorta,NOCA,Holocene-C - Holocene-S,0.028342596370740068,-0.047 to 0.103,0.4083296023520294,1
+contrib_gap,Pinus monticola,MORA,Anthropocene - Holocene-C,0.00814165290906495,-0.007 to 0.023,0.29693286362811216,1
+contrib_gap,Pinus monticola,MORA,Anthropocene - Holocene-S,0.00323428945579951,-0.011 to 0.018,0.6641327095033669,1
+contrib_gap,Pinus monticola,MORA,Holocene-C - Holocene-S,-0.00490736345326543,-0.012 to 0.002,0.12859371014126997,1
+contrib_gap,Pinus monticola,NOCA,Anthropocene - Holocene-C,-0.02722038663316972,-0.058 to 0.004,0.08664158006670991,1
+contrib_gap,Pinus monticola,NOCA,Anthropocene - Holocene-S,-0.00481730399095902,-0.057 to 0.047,0.8420967219361173,1
+contrib_gap,Pinus monticola,NOCA,Holocene-C - Holocene-S,0.02240308264221069,-0.028 to 0.073,0.3040271889089497,1
+contrib_gap,Pinus ponderosa,MORA,Anthropocene - Holocene-C,-0.00871176012285311,-0.026 to 0.008,0.3182659682014552,1
+contrib_gap,Pinus ponderosa,MORA,Anthropocene - Holocene-S,-0.00871176012285311,-0.026 to 0.008,0.3182659682014552,1
+contrib_gap,Pinus ponderosa,MORA,Holocene-C - Holocene-S,0,not defined,,
+contrib_gap,Pinus ponderosa,NOCA,Anthropocene - Holocene-C,0.3063828930695163,0.059 to 0.554,0.01557128013185628,0.3892820032964071
+contrib_gap,Pinus ponderosa,NOCA,Anthropocene - Holocene-S,0.3063828930695163,0.059 to 0.554,0.01557128013185628,0.3892820032964071
+contrib_gap,Pinus ponderosa,NOCA,Holocene-C - Holocene-S,0,not defined,,
+contrib_gap,Pseudotsuga menziesii,MORA,Anthropocene - Holocene-C,0.06233986579181459,0.018 to 0.107,0.00621195832119395,0.2112065829205946
+contrib_gap,Pseudotsuga menziesii,MORA,Anthropocene - Holocene-S,0.06520319690598024,0.021 to 0.109,0.00387625713296663,0.13566899965383217
+contrib_gap,Pseudotsuga menziesii,MORA,Holocene-C - Holocene-S,0.00286333111416565,-0.006 to 0.011,0.4429868248673407,1
+contrib_gap,Pseudotsuga menziesii,NOCA,Anthropocene - Holocene-C,0.04303748149982356,-0.037 to 0.123,0.2893628192840678,1
+contrib_gap,Pseudotsuga menziesii,NOCA,Anthropocene - Holocene-S,0.02580759865630361,-0.063 to 0.114,0.5626787818717418,1
+contrib_gap,Pseudotsuga menziesii,NOCA,Holocene-C - Holocene-S,-0.01722988284351995,-0.071 to 0.036,0.4475553169629295,1
+contrib_gap,Thuja plicata,MORA,Anthropocene - Holocene-C,0.02983400522828513,-0.014 to 0.074,0.1822060131687944,1
+contrib_gap,Thuja plicata,MORA,Anthropocene - Holocene-S,0.02983400522828513,-0.014 to 0.074,0.1822060131687944,1
+contrib_gap,Thuja plicata,MORA,Holocene-C - Holocene-S,0,not defined,,
+contrib_gap,Thuja plicata,NOCA,Anthropocene - Holocene-C,0.07924257065880788,0.017 to 0.141,0.01217028704680592,0.32859775026376004
+contrib_gap,Thuja plicata,NOCA,Anthropocene - Holocene-S,0.07854583718643396,0.017 to 0.140,0.01295365295759774,0.33679497689754134
+contrib_gap,Thuja plicata,NOCA,Holocene-C - Holocene-S,-6.967334723739279e-4,-0.004 to 0.002,0.6251155222452613,1
+contrib_gap,Tsuga heterophylla,MORA,Anthropocene - Holocene-C,0.0268857917373281,-0.002 to 0.056,0.07074758359306631,1
+contrib_gap,Tsuga heterophylla,MORA,Anthropocene - Holocene-S,0.01105998946026859,-0.017 to 0.039,0.4314861583253128,1
+contrib_gap,Tsuga heterophylla,MORA,Holocene-C - Holocene-S,-0.0158258022770595,-0.035 to 0.004,0.10244379309974364,1
+contrib_gap,Tsuga heterophylla,NOCA,Anthropocene - Holocene-C,0.01986783862000388,-0.022 to 0.062,0.35042957297240973,1
+contrib_gap,Tsuga heterophylla,NOCA,Anthropocene - Holocene-S,0.02485609432877961,-0.016 to 0.066,0.2314341467441106,1
+contrib_gap,Tsuga heterophylla,NOCA,Holocene-C - Holocene-S,0.00498825570877573,-0.008 to 0.018,0.3566439861992615,1
+contrib_gap,Tsuga mertensiana,MORA,Anthropocene - Holocene-C,0.03717759905457225,-0.006 to 0.080,0.08741711048210832,1
+contrib_gap,Tsuga mertensiana,MORA,Anthropocene - Holocene-S,0.06221429724611635,0.028 to 0.096,4.103451643210641e-4,0.0147724259155583
+contrib_gap,Tsuga mertensiana,MORA,Holocene-C - Holocene-S,0.0250366981915441,-0.007 to 0.057,0.0980179453247208,1
+contrib_gap,Tsuga mertensiana,NOCA,Anthropocene - Holocene-C,0.11417558076592582,0.042 to 0.187,0.00216745873186946,0.06719122068795352
+contrib_gap,Tsuga mertensiana,NOCA,Anthropocene - Holocene-S,0.11772598025286889,0.045 to 0.191,0.00165232391499674,0.05617901310988922
+contrib_gap,Tsuga mertensiana,NOCA,Holocene-C - Holocene-S,0.00355039948694306,-0.006 to 0.013,0.36119253843096144,1
