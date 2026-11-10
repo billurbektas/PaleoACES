@@ -768,22 +768,24 @@ distance per century, the lag in CCA distance.
 
 <img src="report/figures/png/fig_lag_pace_direction.png" alt="" width="100%" />
 
-**Figure 5. Lag rate, pace effect and direction effect in the Holocene
-and the Anthropocene.** (A) Holocene lake-periods of each park,
-climate-change periods (circles) beside stability periods (triangles).
-Small symbols are single lake-periods, large symbols the fitted means
-with 95% confidence intervals. (B) Anthropocene plot pairs (transparent
-violins) with the fitted mean and 95% confidence interval (diamond). A
-star marks a fitted mean that differs from zero (two-sided t test, p \<
-0.05). Fitted means come from the same models as Figure 4. Lake-periods
-and plots whose observed or predicted position did not move have no pace
-or direction effect: the pace and direction panels hold 6 climate-change
-and 6 stability lake-periods at MORA. Holocene climate-change
-lake-periods span 200 to 900 years and stability lake-periods 300 to
-2600 years between their first and last sampled century. Anthropocene
-plot pairs span 27.5 to 32.5 years between the midpoints of their
-climate windows (about 29 years). All three responses are in CCA
-distance per century.
+**Figure 5. Pace effect and direction effect in the Holocene and the
+Anthropocene.** For each park, the fitted mean and 95% confidence
+interval of the Holocene stability periods (triangles), the Holocene
+climate-change periods (circles) and the Anthropocene (diamonds), for
+(A) the pace effect and (B) the direction effect, with the fitted mean
+printed beside each point. Connectors link the Anthropocene to the
+Holocene climate-change periods (lower) and to the Holocene stability
+periods (upper) within each park, and a star marks a contrast that
+differs from zero (two-sided t test, p \< 0.05). Fitted means and
+contrasts come from the same models as Figure 4, whose panel D shows the
+lag rate. Lake-periods and plots whose observed or predicted position
+did not move have no pace or direction effect: the panels hold 6
+climate-change and 6 stability lake-periods at MORA. Holocene
+climate-change lake-periods span 200 to 900 years and stability
+lake-periods 300 to 2600 years between their first and last sampled
+century. Anthropocene plot pairs span 27.5 to 32.5 years between the
+midpoints of their climate windows (about 29 years). Both responses are
+in CCA distance per century.
 
 Stages and helpers:
 [`R/pipeline/13_era_models.R`](R/pipeline/13_era_models.R),
