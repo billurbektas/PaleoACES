@@ -5,3 +5,9 @@ pace_effect,Holocene,site + climate_rate + fire_activity,22,12,10,0.172236826254
 pace_effect,Anthropocene,site + burned,465,254,211,0.04118166469738227,,2.746636190258498
 direction_effect,Holocene,site + climate_rate + fire_activity,22,12,10,0.2187929002598794,-0.503631524521248,2.1123271066972475
 direction_effect,Anthropocene,site + burned,465,254,211,0.03169433426827717,,1.7122554229940914
+lag,Holocene,site + climate_change + fire_activity,24,14,10,0.03197626089813177,-0.0694609925067164,3.248625439993569
+lag,Anthropocene,site + burned,607,330,277,0.03061699597838085,,2.0583963686985425
+pace_effect_total,Holocene,site + climate_change + fire_activity,22,12,10,-0.00115680983436616,0.2251714565077512,2.629195328448373
+pace_effect_total,Anthropocene,site + burned,465,254,211,0.04099589802787995,,2.672508300242529
+direction_effect_total,Holocene,site + climate_change + fire_activity,22,12,10,0.2678462248665129,-0.4543608071731112,3.2504627964052824
+direction_effect_total,Anthropocene,site + burned,465,254,211,0.03193807629598699,,1.6696268155042735

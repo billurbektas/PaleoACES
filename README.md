@@ -453,15 +453,19 @@ each park.
 
 ``` r
 # R/pipeline/14_predictor_models.R
-  # Holocene lake-periods only. Does the response (lag rate, pace effect,
-  # direction effect) go with faster climate change or more fire?
+  # Holocene lake-periods only. Does the response go with more climate change
+  # or more fire? Fitted twice: per century (lag rate, pace effect, direction
+  # effect) with climate = climate_rate, the climate change rate, and as totals
+  # not divided by time (lag, pace and direction effect totals) with
+  # climate = climate_change, the climate change between the two ends.
   #   site: a separate level for each park;
-  #   climate_rate: the slope per unit of climate change rate;
+  #   climate: the slope per unit of climate change (rate or total);
   #   fire_activity: the slope per accepted fire event per century per core.
   # Consecutive lake-periods of a lake are correlated (AR(1) within lake).
   # varIdent lets the parks keep a different spread, and varFixed gives ends
   # resting on single samples less weight (endpoint_var = 1/n_start + 1/n_end).
-  captured = reconstruction_capture(function() gls(estimate ~ site + climate_rate + fire_activity,
+  model = reformulate(c('site', climate, 'fire_activity'), response = 'estimate')
+  captured = reconstruction_capture(function() gls(model,
     correlation = corAR1(form = ~ unit_index | lake),
     weights = varComb(varIdent(form = ~ 1 | site), varFixed(~ endpoint_var)),
     data = d, method = 'REML', control = glsControl(msMaxIter = 500)))
@@ -479,10 +483,12 @@ each park.
 **Result.**
 
 **Explanatory models.** Holocene: response ~ site + climate_rate +
-fire_activity on the lake-periods, AR(1) within lake, endpoint weights.
-Anthropocene: response ~ site + burned on the plot pairs. Estimates in
-CCA distance per century per unit of the term. Conditional 95%
-confidence intervals. R² is descriptive (1 − SSE/SST).
+fire_activity for the per-century responses and response ~ site +
+climate_change + fire_activity for the responses not divided by time, on
+the lake-periods, AR(1) within lake, endpoint weights. Anthropocene:
+response ~ site + burned on the plot pairs. Estimates in CCA distance
+(per century for the per-century responses) per unit of the term.
+Conditional 95% confidence intervals. R² is descriptive (1 − SSE/SST).
 
 | Response | Era | Term | Estimate | 95% CI | p | n | R² | SD ratio NOCA/MORA | AR(1) |
 |:---|:---|:---|---:|:---|---:|---:|---:|---:|---:|
@@ -507,6 +513,27 @@ confidence intervals. R² is descriptive (1 − SSE/SST).
 | Direction effect | Anthropocene | (Intercept) | 0.340 | 0.174 to 0.506 | 0.000 | 465 | 0.032 | 1.712 | — |
 | Direction effect | Anthropocene | siteNOCA | -0.650 | -1.010 to -0.290 | 0.000 | 465 | 0.032 | 1.712 | — |
 | Direction effect | Anthropocene | burnedBurned | 0.571 | -0.406 to 1.547 | 0.251 | 465 | 0.032 | 1.712 | — |
+| Lag (not divided by time) | Holocene | (Intercept) | 0.030 | -0.162 to 0.222 | 0.749 | 24 | 0.032 | 3.249 | -0.069 |
+| Lag (not divided by time) | Holocene | siteNOCA | -0.088 | -0.526 to 0.350 | 0.680 | 24 | 0.032 | 3.249 | -0.069 |
+| Lag (not divided by time) | Holocene | climate_change | 0.058 | -0.663 to 0.778 | 0.869 | 24 | 0.032 | 3.249 | -0.069 |
+| Lag (not divided by time) | Holocene | fire_activity | 0.051 | -0.890 to 0.992 | 0.911 | 24 | 0.032 | 3.249 | -0.069 |
+| Lag (not divided by time) | Anthropocene | (Intercept) | 0.160 | 0.125 to 0.195 | 0.000 | 607 | 0.031 | 2.058 | — |
+| Lag (not divided by time) | Anthropocene | siteNOCA | -0.180 | -0.268 to -0.092 | 0.000 | 607 | 0.031 | 2.058 | — |
+| Lag (not divided by time) | Anthropocene | burnedBurned | -0.040 | -0.278 to 0.199 | 0.744 | 607 | 0.031 | 2.058 | — |
+| Pace effect (not divided by time) | Holocene | (Intercept) | 0.095 | -0.102 to 0.293 | 0.325 | 22 | -0.001 | 2.629 | 0.225 |
+| Pace effect (not divided by time) | Holocene | siteNOCA | 0.175 | -0.204 to 0.553 | 0.345 | 22 | -0.001 | 2.629 | 0.225 |
+| Pace effect (not divided by time) | Holocene | climate_change | 0.174 | -0.470 to 0.817 | 0.577 | 22 | -0.001 | 2.629 | 0.225 |
+| Pace effect (not divided by time) | Holocene | fire_activity | -0.431 | -1.202 to 0.340 | 0.255 | 22 | -0.001 | 2.629 | 0.225 |
+| Pace effect (not divided by time) | Anthropocene | (Intercept) | 0.049 | 0.022 to 0.076 | 0.000 | 465 | 0.041 | 2.673 | — |
+| Pace effect (not divided by time) | Anthropocene | siteNOCA | -0.105 | -0.190 to -0.021 | 0.015 | 465 | 0.041 | 2.673 | — |
+| Pace effect (not divided by time) | Anthropocene | burnedBurned | -0.265 | -0.475 to -0.055 | 0.014 | 465 | 0.041 | 2.673 | — |
+| Direction effect (not divided by time) | Holocene | (Intercept) | -0.441 | -0.617 to -0.266 | 0.000 | 22 | 0.268 | 3.250 | -0.454 |
+| Direction effect (not divided by time) | Holocene | siteNOCA | -0.445 | -0.796 to -0.094 | 0.016 | 22 | 0.268 | 3.250 | -0.454 |
+| Direction effect (not divided by time) | Holocene | climate_change | 0.778 | 0.164 to 1.393 | 0.016 | 22 | 0.268 | 3.250 | -0.454 |
+| Direction effect (not divided by time) | Holocene | fire_activity | 0.899 | 0.133 to 1.665 | 0.024 | 22 | 0.268 | 3.250 | -0.454 |
+| Direction effect (not divided by time) | Anthropocene | (Intercept) | 0.099 | 0.051 to 0.148 | 0.000 | 465 | 0.032 | 1.670 | — |
+| Direction effect (not divided by time) | Anthropocene | siteNOCA | -0.187 | -0.289 to -0.084 | 0.000 | 465 | 0.032 | 1.670 | — |
+| Direction effect (not divided by time) | Anthropocene | burnedBurned | 0.164 | -0.115 to 0.442 | 0.249 | 465 | 0.032 | 1.670 | — |
 
 <sub>Table file:
 [step5_explanatory_models.csv](report/tables/step5_explanatory_models.csv)</sub>
@@ -523,28 +550,47 @@ term absorbs the difference between the parks, so the fire slope comes
 from the narrow range within each park (MORA 0.10 to 0.33, NOCA 0.33 to
 0.89 events per century per core).
 
+The same models on the responses not divided by time, with the climate
+change between the two ends in place of its rate, give a different
+picture. The lag of a lake-period went with neither climate change
+(+0.06 (-0.66 to 0.78) CCA distance per standardized unit of climate
+change) nor fire (+0.05 (-0.89 to 0.99)), and neither did the pace
+effect. The direction effect went with both: lake-periods with more
+climate change (+0.78 (0.16 to 1.39)) and more fire (+0.90 (0.13 to
+1.66)) ended with directions further from the predicted one. The
+lag-rate and pace associations with the climate change rate therefore
+rest on the division by time, while the direction association with fire
+holds in both forms. In the Anthropocene, burned plots had a smaller
+total pace effect than unburned ones (-0.26 (-0.47 to -0.05)). Fire
+activity stays a frequency in both forms, because a count of events
+would grow with the length of the lake-period.
+
 <img src="report/figures/png/fig_climate_fire_associations.png" alt="" width="100%" />
 
 **Figure 6. Climate and fire associations.** Model slopes with
-conditional 95% confidence intervals for the lag rate (black), the pace
+conditional 95% confidence intervals for the lag (black), the pace
 effect (pink) and the direction effect (blue), side by side for each
-term, in the colours of Figure 1. Both panels share one x scale. Faded
-estimates have intervals that include zero. All three responses are per
-century: the change in mismatch, or the reduction in final mismatch
-under the pace or direction correction, divided by the elapsed time. (A)
-Holocene lake-periods, model response ~ site + climate change rate +
-fire activity with an AR(1) correlation within each lake and weights for
-the number of samples at each end: 14 MORA and 10 NOCA lake-periods for
-the lag rate, and 12 and 10 for pace and direction. The climate slope is
-per standardized unit of climate change per century and the fire slope
-per accepted event per century per covered core. (B) Anthropocene plot
+term, in the colours of Figure 1. Faded estimates have intervals that
+include zero. Top row (A, B): the responses per century, the change in
+mismatch or the reduction in final mismatch under the pace or direction
+correction divided by the elapsed time. Bottom row (C, D): the same
+responses not divided by time. The panels of a row share one x scale.
+(A, C) Holocene lake-periods, model response ~ site + climate + fire
+activity with an AR(1) correlation within each lake and weights for the
+number of samples at each end, where climate is the climate change rate
+in A and the climate change between the two ends in C: 14 MORA and 10
+NOCA lake-periods for the lag, and 12 and 10 for pace and direction. The
+climate slope is per standardized unit of climate change per century (A)
+or per standardized unit of climate change (C), and the fire slope per
+accepted event per century per covered core. (B, D) Anthropocene plot
 pairs, model response ~ site + burned with park-specific variances: 607
-plot pairs for the lag rate and 465 for pace and direction. Descriptive
-R² is given below each panel. Holocene climate-change lake-periods span
-200 to 900 years and stability lake-periods 300 to 2600 years between
-their first and last sampled century. Anthropocene plot pairs span 27.5
-to 32.5 years between the midpoints of their climate windows (about 29
-years). Effects are in CCA distance per century per unit of the term.
+plot pairs for the lag and 465 for pace and direction. Descriptive R² is
+given below each panel. Holocene climate-change lake-periods span 200 to
+900 years and stability lake-periods 300 to 2600 years between their
+first and last sampled century. Anthropocene plot pairs span 27.5 to
+32.5 years between the midpoints of their climate windows (about 29
+years). Effects are in CCA distance per century (A, B) or CCA distance
+(C, D) per unit of the term.
 
 Stages and helpers:
 [`R/pipeline/14_predictor_models.R`](R/pipeline/14_predictor_models.R),
@@ -1323,23 +1369,38 @@ counterpart.**
 **Slopes and contrasts.** Climate change rate: per standardized unit per
 century. Fire activity: per event per century per covered core.
 
-| Response         | Era          | Term          | Estimate | 95% CI           |     p |
-|:-----------------|:-------------|:--------------|:---------|:-----------------|------:|
-| Lag rate         | Holocene     | siteNOCA      | +0.043   | -0.080 to 0.166  | 0.472 |
-| Lag rate         | Holocene     | climate_rate  | +0.719   | 0.007 to 1.431   | 0.048 |
-| Lag rate         | Holocene     | fire_activity | -0.098   | -0.353 to 0.157  | 0.432 |
-| Lag rate         | Anthropocene | siteNOCA      | -0.613   | -0.922 to -0.303 | 0.000 |
-| Lag rate         | Anthropocene | burnedBurned  | -0.152   | -0.983 to 0.678  | 0.719 |
-| Pace effect      | Holocene     | siteNOCA      | +0.100   | -0.001 to 0.201  | 0.052 |
-| Pace effect      | Holocene     | climate_rate  | +0.685   | 0.139 to 1.232   | 0.017 |
-| Pace effect      | Holocene     | fire_activity | -0.188   | -0.388 to 0.012  | 0.063 |
-| Pace effect      | Anthropocene | siteNOCA      | -0.372   | -0.670 to -0.074 | 0.014 |
-| Pace effect      | Anthropocene | burnedBurned  | -0.923   | -1.653 to -0.193 | 0.013 |
-| Direction effect | Holocene     | siteNOCA      | -0.122   | -0.215 to -0.029 | 0.013 |
-| Direction effect | Holocene     | climate_rate  | +0.500   | -0.275 to 1.275  | 0.192 |
-| Direction effect | Holocene     | fire_activity | +0.268   | 0.076 to 0.460   | 0.009 |
-| Direction effect | Anthropocene | siteNOCA      | -0.650   | -1.010 to -0.290 | 0.000 |
-| Direction effect | Anthropocene | burnedBurned  | +0.571   | -0.406 to 1.547  | 0.251 |
+| Response | Era | Term | Estimate | 95% CI | p |
+|:---|:---|:---|:---|:---|---:|
+| Lag rate | Holocene | siteNOCA | +0.043 | -0.080 to 0.166 | 0.472 |
+| Lag rate | Holocene | climate_rate | +0.719 | 0.007 to 1.431 | 0.048 |
+| Lag rate | Holocene | fire_activity | -0.098 | -0.353 to 0.157 | 0.432 |
+| Lag rate | Anthropocene | siteNOCA | -0.613 | -0.922 to -0.303 | 0.000 |
+| Lag rate | Anthropocene | burnedBurned | -0.152 | -0.983 to 0.678 | 0.719 |
+| Pace effect | Holocene | siteNOCA | +0.100 | -0.001 to 0.201 | 0.052 |
+| Pace effect | Holocene | climate_rate | +0.685 | 0.139 to 1.232 | 0.017 |
+| Pace effect | Holocene | fire_activity | -0.188 | -0.388 to 0.012 | 0.063 |
+| Pace effect | Anthropocene | siteNOCA | -0.372 | -0.670 to -0.074 | 0.014 |
+| Pace effect | Anthropocene | burnedBurned | -0.923 | -1.653 to -0.193 | 0.013 |
+| Direction effect | Holocene | siteNOCA | -0.122 | -0.215 to -0.029 | 0.013 |
+| Direction effect | Holocene | climate_rate | +0.500 | -0.275 to 1.275 | 0.192 |
+| Direction effect | Holocene | fire_activity | +0.268 | 0.076 to 0.460 | 0.009 |
+| Direction effect | Anthropocene | siteNOCA | -0.650 | -1.010 to -0.290 | 0.000 |
+| Direction effect | Anthropocene | burnedBurned | +0.571 | -0.406 to 1.547 | 0.251 |
+| Lag (not divided by time) | Holocene | siteNOCA | -0.088 | -0.526 to 0.350 | 0.680 |
+| Lag (not divided by time) | Holocene | climate_change | +0.058 | -0.663 to 0.778 | 0.869 |
+| Lag (not divided by time) | Holocene | fire_activity | +0.051 | -0.890 to 0.992 | 0.911 |
+| Lag (not divided by time) | Anthropocene | siteNOCA | -0.180 | -0.268 to -0.092 | 0.000 |
+| Lag (not divided by time) | Anthropocene | burnedBurned | -0.040 | -0.278 to 0.199 | 0.744 |
+| Pace effect (not divided by time) | Holocene | siteNOCA | +0.175 | -0.204 to 0.553 | 0.345 |
+| Pace effect (not divided by time) | Holocene | climate_change | +0.174 | -0.470 to 0.817 | 0.577 |
+| Pace effect (not divided by time) | Holocene | fire_activity | -0.431 | -1.202 to 0.340 | 0.255 |
+| Pace effect (not divided by time) | Anthropocene | siteNOCA | -0.105 | -0.190 to -0.021 | 0.015 |
+| Pace effect (not divided by time) | Anthropocene | burnedBurned | -0.265 | -0.475 to -0.055 | 0.014 |
+| Direction effect (not divided by time) | Holocene | siteNOCA | -0.445 | -0.796 to -0.094 | 0.016 |
+| Direction effect (not divided by time) | Holocene | climate_change | +0.778 | 0.164 to 1.393 | 0.016 |
+| Direction effect (not divided by time) | Holocene | fire_activity | +0.899 | 0.133 to 1.665 | 0.024 |
+| Direction effect (not divided by time) | Anthropocene | siteNOCA | -0.187 | -0.289 to -0.084 | 0.000 |
+| Direction effect (not divided by time) | Anthropocene | burnedBurned | +0.164 | -0.115 to 0.442 | 0.249 |
 
 <sub>Table file:
 [numbers_step5.csv](report/tables/numbers_step5.csv)</sub>
@@ -1397,7 +1458,7 @@ that bear on them.**
 
 | Doubt | Numbers |
 |:---|:---|
-| MORA fire comes from Sunrise Ridge, the vegetation lakes lie elsewhere | Lag rate fire slope -0.098 (-0.353 to 0.157); Pace effect fire slope -0.188 (-0.388 to 0.012); Direction effect fire slope +0.268 (0.076 to 0.460) |
+| MORA fire comes from Sunrise Ridge, the vegetation lakes lie elsewhere | Lag rate fire slope -0.098 (-0.353 to 0.157); Pace effect fire slope -0.188 (-0.388 to 0.012); Direction effect fire slope +0.268 (0.076 to 0.460); Lag (not divided by time) fire slope +0.051 (-0.890 to 0.992); Pace effect (not divided by time) fire slope -0.431 (-1.202 to 0.340); Direction effect (not divided by time) fire slope +0.899 (0.133 to 1.665) |
 | Fire values of the two parks barely overlap | MORA 0.10 to 0.33, NOCA 0.33 to 0.89 |
 | Within MORA the stability periods sat at the lowest fire values | MORA Holocene-C mean 0.219, MORA Holocene-S mean 0.116, NOCA Holocene-C mean 0.703, NOCA Holocene-S mean 0.519 |
 | Rates over about 29 years and over centuries are not on equal footing | Holocene climate-change lake-periods span 200 to 900 years and stability lake-periods 300 to 2600 years between their first and last sampled century. Anthropocene plot pairs span 27.5 to 32.5 years between the midpoints of their climate windows (about 29 years). |

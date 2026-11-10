@@ -187,22 +187,36 @@ between the pace and direction of one unit per era and park.
 | pace_effect | Anthropocene | site + burned | 465 | 254 | 211 | 0.041 | — | 2.747 |
 | direction_effect | Holocene | site + climate_rate + fire_activity | 22 | 12 | 10 | 0.219 | -0.504 | 2.112 |
 | direction_effect | Anthropocene | site + burned | 465 | 254 | 211 | 0.032 | — | 1.712 |
+| lag | Holocene | site + climate_change + fire_activity | 24 | 14 | 10 | 0.032 | -0.069 | 3.249 |
+| lag | Anthropocene | site + burned | 607 | 330 | 277 | 0.031 | — | 2.058 |
+| pace_effect_total | Holocene | site + climate_change + fire_activity | 22 | 12 | 10 | -0.001 | 0.225 | 2.629 |
+| pace_effect_total | Anthropocene | site + burned | 465 | 254 | 211 | 0.041 | — | 2.673 |
+| direction_effect_total | Holocene | site + climate_change + fire_activity | 22 | 12 | 10 | 0.268 | -0.454 | 3.250 |
+| direction_effect_total | Anthropocene | site + burned | 465 | 254 | 211 | 0.032 | — | 1.670 |
 
 <sub>Table file:
 [explanatory_model_performance.csv](../tables/explanatory_model_performance.csv)</sub>
 
 **Rows left out of the explanatory models.**
 
-| Response         | Period type  | Park | Reason             | Rows |
-|:-----------------|:-------------|:-----|:-------------------|-----:|
-| direction_effect | Anthropocene | MORA | undefined_response |   76 |
-| direction_effect | Anthropocene | NOCA | undefined_response |   66 |
-| direction_effect | Holocene-C   | MORA | undefined_response |    1 |
-| direction_effect | Holocene-S   | MORA | undefined_response |    1 |
-| pace_effect      | Anthropocene | MORA | undefined_response |   76 |
-| pace_effect      | Anthropocene | NOCA | undefined_response |   66 |
-| pace_effect      | Holocene-C   | MORA | undefined_response |    1 |
-| pace_effect      | Holocene-S   | MORA | undefined_response |    1 |
+| Response               | Period type  | Park | Reason             | Rows |
+|:-----------------------|:-------------|:-----|:-------------------|-----:|
+| direction_effect       | Anthropocene | MORA | undefined_response |   76 |
+| direction_effect       | Anthropocene | NOCA | undefined_response |   66 |
+| direction_effect       | Holocene-C   | MORA | undefined_response |    1 |
+| direction_effect       | Holocene-S   | MORA | undefined_response |    1 |
+| direction_effect_total | Anthropocene | MORA | undefined_response |   76 |
+| direction_effect_total | Anthropocene | NOCA | undefined_response |   66 |
+| direction_effect_total | Holocene-C   | MORA | undefined_response |    1 |
+| direction_effect_total | Holocene-S   | MORA | undefined_response |    1 |
+| pace_effect            | Anthropocene | MORA | undefined_response |   76 |
+| pace_effect            | Anthropocene | NOCA | undefined_response |   66 |
+| pace_effect            | Holocene-C   | MORA | undefined_response |    1 |
+| pace_effect            | Holocene-S   | MORA | undefined_response |    1 |
+| pace_effect_total      | Anthropocene | MORA | undefined_response |   76 |
+| pace_effect_total      | Anthropocene | NOCA | undefined_response |   66 |
+| pace_effect_total      | Holocene-C   | MORA | undefined_response |    1 |
+| pace_effect_total      | Holocene-S   | MORA | undefined_response |    1 |
 
 <sub>Table file:
 [explanatory_model_exclusions.csv](../tables/explanatory_model_exclusions.csv)</sub>

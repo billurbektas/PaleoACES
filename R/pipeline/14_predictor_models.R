@@ -2,12 +2,20 @@
 # Holocene: within the lake-periods, does more climate change or more fire go
 # with a larger lag, and with better or worse pace and direction?
 # Anthropocene counterpart: burned against unburned plots, by park.
+# Each response is modelled per century and as a total not divided by time
+# (Bills, 10 Nov 2026).
 source(here::here('R/helpers/config.R'), local = TRUE)
 suppressPackageStartupMessages({library(here); library(tidyverse); library(nlme)})
 source(here('R/helpers/reconstruction_models.R'), local = TRUE)
 
 both = read_csv(out('cca_tracking_both_eras.csv'), show_col_types = FALSE)
-responses = c('lag_rate', 'pace_effect', 'direction_effect')
+# The per-century responses go with the climate change rate, the totals with
+# the climate change between the two ends. Fire activity is a frequency
+# (accepted events per century per core) for both: a total count would grow
+# with the length of the lake-period.
+climate_term = c(lag_rate = 'climate_rate', pace_effect = 'climate_rate', direction_effect = 'climate_rate',
+  lag = 'climate_change', pace_effect_total = 'climate_change', direction_effect_total = 'climate_change')
+responses = names(climate_term)
 results_dir = out('community_predictor_models')
 dir.create(results_dir, recursive = TRUE, showWarnings = FALSE)
 
@@ -28,17 +36,21 @@ anthropocene_rows = function(response) {
 
 fits = coefficients = performance = exclusions = lines = residuals = list()
 for (response in responses) {
-  h = holocene_rows(response); d = h$data
+  h = holocene_rows(response); d = h$data; climate = climate_term[[response]]
 # report-snippet: holocene-explanatory-model
-  # Holocene lake-periods only. Does the response (lag rate, pace effect,
-  # direction effect) go with faster climate change or more fire?
+  # Holocene lake-periods only. Does the response go with more climate change
+  # or more fire? Fitted twice: per century (lag rate, pace effect, direction
+  # effect) with climate = climate_rate, the climate change rate, and as totals
+  # not divided by time (lag, pace and direction effect totals) with
+  # climate = climate_change, the climate change between the two ends.
   #   site: a separate level for each park;
-  #   climate_rate: the slope per unit of climate change rate;
+  #   climate: the slope per unit of climate change (rate or total);
   #   fire_activity: the slope per accepted fire event per century per core.
   # Consecutive lake-periods of a lake are correlated (AR(1) within lake).
   # varIdent lets the parks keep a different spread, and varFixed gives ends
   # resting on single samples less weight (endpoint_var = 1/n_start + 1/n_end).
-  captured = reconstruction_capture(function() gls(estimate ~ site + climate_rate + fire_activity,
+  model = reformulate(c('site', climate, 'fire_activity'), response = 'estimate')
+  captured = reconstruction_capture(function() gls(model,
     correlation = corAR1(form = ~ unit_index | lake),
     weights = varComb(varIdent(form = ~ 1 | site), varFixed(~ endpoint_var)),
     data = d, method = 'REML', control = glsControl(msMaxIter = 500)))
@@ -47,7 +59,8 @@ for (response in responses) {
   fit = captured$fit
   variance = coef(fit$modelStruct$varStruct, unconstrained = FALSE)
   coefficients[[paste(response, 'Holocene')]] = reconstruction_coefficients(fit, response, 'Holocene', 'AR1')
-  performance[[paste(response, 'Holocene')]] = tibble(response, era = 'Holocene', model = 'site + climate_rate + fire_activity',
+  performance[[paste(response, 'Holocene')]] = tibble(response, era = 'Holocene',
+    model = paste('site +', climate, '+ fire_activity'),
     n = nrow(d), n_MORA = sum(d$site == 'MORA'), n_NOCA = sum(d$site == 'NOCA'),
     R2 = reconstruction_r2(d$estimate, fitted(fit)),
     AR1_phi = as.numeric(coef(fit$modelStruct$corStruct, unconstrained = FALSE)),
@@ -59,17 +72,17 @@ for (response in responses) {
   # focal predictor, the other predictor at the park's mean.
   beta = coef(fit); V = vcov(fit); tq = qt(.975, fit$dims$N - fit$dims$p)
   design = function(site, climate, fire) cbind(1, site == 'NOCA', climate, fire)
-  for (focal in c('climate_rate', 'fire_activity')) {
-    other = setdiff(c('climate_rate', 'fire_activity'), focal)
+  for (focal in c(climate, 'fire_activity')) {
+    other = setdiff(c(climate, 'fire_activity'), focal)
     for (park in c('MORA', 'NOCA')) {
       dp = d[d$site == park, ]
       grid = seq(min(dp[[focal]]), max(dp[[focal]]), length.out = 50)
       held = mean(dp[[other]])
-      X = if (focal == 'climate_rate') design(park, grid, held) else design(park, held, grid)
+      X = if (focal == climate) design(park, grid, held) else design(park, held, grid)
       fitv = as.numeric(X %*% beta); se = sqrt(rowSums((X %*% V) * X))
       lines[[paste(response, focal, park)]] = tibble(response, predictor = focal, site = park,
         x = grid, held_at = held, fit = fitv, conf_low = fitv - tq * se, conf_high = fitv + tq * se)
-      Xi = if (focal == 'climate_rate') design(park, dp$climate_rate, held) else design(park, held, dp$fire_activity)
+      Xi = if (focal == climate) design(park, dp[[climate]], held) else design(park, held, dp$fire_activity)
       residuals[[paste(response, focal, park)]] = dp |> transmute(response, predictor = focal, site = park,
         lake, period, period_type, unit_index, x = .data[[focal]],
         partial_residual = as.numeric(Xi %*% beta) + (estimate - as.numeric(fitted(fit))[d$site == park]))

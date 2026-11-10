@@ -325,16 +325,20 @@ code_snippet('R/pipeline/14_predictor_models.R', 'anthropocene-explanatory-model
 ```{r step5-results}
 coefficients = read_output('community_predictor_models/model_coefficients.csv')
 performance = read_output('community_predictor_models/model_performance.csv')
-label = c(lag_rate = 'Lag rate', pace_effect = 'Pace effect', direction_effect = 'Direction effect')
+label = c(lag_rate = 'Lag rate', pace_effect = 'Pace effect', direction_effect = 'Direction effect',
+  lag = 'Lag (not divided by time)', pace_effect_total = 'Pace effect (not divided by time)',
+  direction_effect_total = 'Direction effect (not divided by time)')
 coefficients |> left_join(performance |> select(metric = response, era, n, R2, sd_ratio_NOCA_to_MORA, AR1_phi),
     by = c('metric', 'era')) |>
   transmute(Response = label[metric], Era = era, Term = term, Estimate = estimate,
     `95% CI` = sprintf('%.3f to %.3f', conf_low, conf_high), p = p_value, n,
     `R²` = R2, `SD ratio NOCA/MORA` = sd_ratio_NOCA_to_MORA, `AR(1)` = AR1_phi) |>
   show_table('step5_explanatory_models', caption = paste('**Explanatory models.** Holocene:',
-    'response ~ site + climate_rate + fire_activity on the lake-periods, AR(1) within lake, endpoint',
-    'weights. Anthropocene: response ~ site + burned on the plot pairs. Estimates in CCA distance per',
-    'century per unit of the term. Conditional 95% confidence intervals. R² is descriptive (1 − SSE/SST).'))
+    'response ~ site + climate_rate + fire_activity for the per-century responses and',
+    'response ~ site + climate_change + fire_activity for the responses not divided by time, on the',
+    'lake-periods, AR(1) within lake, endpoint weights. Anthropocene: response ~ site + burned on the plot',
+    'pairs. Estimates in CCA distance (per century for the per-century responses) per unit of the term.',
+    'Conditional 95% confidence intervals. R² is descriptive (1 − SSE/SST).'))
 slope = function(m, t) coefficients |> filter(metric == m, era == 'Holocene', term == t)
 f = function(x) sprintf('%+.2f (%.2f to %.2f)', x$estimate, x$conf_low, x$conf_high)
 ```
@@ -351,6 +355,19 @@ comes from the narrow range within each park
 (`r u = read_output('cca_tracking_lake_periods.csv'); paste(sprintf('%s %.2f to %.2f', c('MORA', 'NOCA'), tapply(u$fire_activity, u$site, min), tapply(u$fire_activity, u$site, max)), collapse = ', ')`
 events per century per core).
 
+The same models on the responses not divided by time, with the climate change between the two ends
+in place of its rate, give a different picture. The lag of a lake-period went with neither climate
+change (`r f(slope('lag', 'climate_change'))` CCA distance per standardized unit of climate change)
+nor fire (`r f(slope('lag', 'fire_activity'))`), and neither did the pace effect. The direction effect
+went with both: lake-periods with more climate change (`r f(slope('direction_effect_total', 'climate_change'))`)
+and more fire (`r f(slope('direction_effect_total', 'fire_activity'))`) ended with directions further
+from the predicted one. The lag-rate and pace associations with the climate change rate therefore
+rest on the division by time, while the direction association with fire holds in both forms. In the
+Anthropocene, burned plots had a smaller total pace effect than unburned ones
+(`r x = coefficients |> filter(metric == 'pace_effect_total', era == 'Anthropocene', term == 'burnedBurned'); f(x)`).
+Fire activity stays a frequency in both forms, because a count of events would grow with the length
+of the lake-period.
+
 ```{r fig-6-main}
 show_figure('report/figures/main/fig_climate_fire_associations.pdf')
 perf6 = read_output('community_predictor_models/model_performance.csv')
@@ -358,19 +375,23 @@ R2 = function(r, e) sprintf('%.2f', perf6$R2[perf6$response == r & perf6$era == 
 ```
 
 **Figure 6. Climate and fire associations.** Model slopes with conditional 95% confidence
-intervals for the lag rate (black), the pace effect (pink) and the direction effect (blue), side by
-side for each term, in the colours of Figure 1. Both panels share one x scale. Faded estimates have
-intervals that include zero. All three responses are per century: the change in mismatch, or the
-reduction in final mismatch under the pace or direction correction, divided by the elapsed time. (A) Holocene lake-periods, model response ~ site + climate change rate +
-fire activity with an AR(1) correlation within each lake and weights for the number of samples at each
-end: `r perf6$n_MORA[perf6$response == 'lag_rate' & perf6$era == 'Holocene']` MORA and
-`r perf6$n_NOCA[perf6$response == 'lag_rate' & perf6$era == 'Holocene']` NOCA lake-periods for the lag rate, and
+intervals for the lag (black), the pace effect (pink) and the direction effect (blue), side by side
+for each term, in the colours of Figure 1. Faded estimates have intervals that include zero. Top row
+(A, B): the responses per century, the change in mismatch or the reduction in final mismatch under the
+pace or direction correction divided by the elapsed time. Bottom row (C, D): the same responses not
+divided by time. The panels of a row share one x scale. (A, C) Holocene lake-periods, model response
+~ site + climate + fire activity with an AR(1) correlation within each lake and weights for the
+number of samples at each end, where climate is the climate change rate in A and the climate change
+between the two ends in C: `r perf6$n_MORA[perf6$response == 'lag_rate' & perf6$era == 'Holocene']` MORA and
+`r perf6$n_NOCA[perf6$response == 'lag_rate' & perf6$era == 'Holocene']` NOCA lake-periods for the lag, and
 `r perf6$n_MORA[perf6$response == 'pace_effect' & perf6$era == 'Holocene']` and `r perf6$n_NOCA[perf6$response == 'pace_effect' & perf6$era == 'Holocene']`
-for pace and direction. The climate slope is per standardized unit of climate change per century and
-the fire slope per accepted event per century per covered core. (B) Anthropocene plot pairs, model
-response ~ site + burned with park-specific variances: `r perf6$n[perf6$response == 'lag_rate' & perf6$era == 'Anthropocene']` plot pairs for the lag rate
-and `r perf6$n[perf6$response == 'pace_effect' & perf6$era == 'Anthropocene']` for pace and direction. Descriptive R² is given below each panel.
-`r both_spans` Effects are in CCA distance per century per unit of the term.
+for pace and direction. The climate slope is per standardized unit of climate change per century (A)
+or per standardized unit of climate change (C), and the fire slope per accepted event per century per
+covered core. (B, D) Anthropocene plot pairs, model response ~ site + burned with park-specific
+variances: `r perf6$n[perf6$response == 'lag_rate' & perf6$era == 'Anthropocene']` plot pairs for the lag
+and `r perf6$n[perf6$response == 'pace_effect' & perf6$era == 'Anthropocene']` for pace and direction.
+Descriptive R² is given below each panel. `r both_spans` Effects are in CCA distance per century (A, B)
+or CCA distance (C, D) per unit of the term.
 
 Stages and helpers: [`R/pipeline/14_predictor_models.R`](R/pipeline/14_predictor_models.R),
 [`R/helpers/reconstruction_models.R`](R/helpers/reconstruction_models.R),

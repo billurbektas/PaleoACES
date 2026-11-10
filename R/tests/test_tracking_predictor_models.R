@@ -29,11 +29,15 @@ check_gls = function(fit, d, group, series, pair = NULL) {
 
 # Step 5: Holocene explanatory models.
 fits = readRDS(out('community_predictor_models/primary_fits.rds'))
-for (response in c('lag_rate', 'pace_effect', 'direction_effect')) {
+# Per-century responses against the climate change rate, totals (Bills, 10 Nov
+# 2026) against the climate change between the two ends.
+climate_term = c(lag_rate = 'climate_rate', pace_effect = 'climate_rate', direction_effect = 'climate_rate',
+  lag = 'climate_change', pace_effect_total = 'climate_change', direction_effect_total = 'climate_change')
+for (response in names(climate_term)) {
   d = both |> filter(period_type != 'Anthropocene', is.finite(.data[[response]])) |>
     mutate(estimate = .data[[response]], site = factor(site, levels = c('MORA', 'NOCA')))
   fit = fits[[paste(response, 'Holocene')]]
-  stopifnot(identical(all.vars(formula(fit))[-1], c('site', 'climate_rate', 'fire_activity')),
+  stopifnot(identical(all.vars(formula(fit))[-1], c('site', climate_term[[response]], 'fire_activity')),
     # nlme stores an AR(1) with gaps in the unit order as the equivalent ARMA(1, 0).
     inherits(fit$modelStruct$corStruct, c('corAR1', 'corARMA')),
     length(coef(fit$modelStruct$corStruct)) == 1L, fit$dims$N == nrow(d))

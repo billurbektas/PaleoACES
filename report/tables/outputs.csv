@@ -124,13 +124,13 @@ Step,File,Description,Size (kB)
 13_era_models,era_comparison/joint_correction_effects/primary_fit.rds,"Era-comparison GLS fits, means and contrasts per response",578
 13_era_models,era_comparison/model_results.txt,"Era-comparison GLS fits, means and contrasts per response",19
 13_era_models,era_comparison/primary_fits.rds,"Era-comparison GLS fits, means and contrasts per response",676
-14_predictor_models,community_predictor_models/model_coefficients.csv,Within-era predictor GLS fits,3
-14_predictor_models,community_predictor_models/model_exclusions.csv,Within-era predictor GLS fits,21
+14_predictor_models,community_predictor_models/model_coefficients.csv,Within-era predictor GLS fits,6
+14_predictor_models,community_predictor_models/model_exclusions.csv,Within-era predictor GLS fits,45
 14_predictor_models,community_predictor_models/model_performance.csv,Within-era predictor GLS fits,1
-14_predictor_models,community_predictor_models/model_results.txt,Within-era predictor GLS fits,6
-14_predictor_models,community_predictor_models/partial_effects.csv,Within-era predictor GLS fits,83
-14_predictor_models,community_predictor_models/partial_residuals.csv,Within-era predictor GLS fits,13
-14_predictor_models,community_predictor_models/primary_fits.rds,Within-era predictor GLS fits,257
+14_predictor_models,community_predictor_models/model_results.txt,Within-era predictor GLS fits,12
+14_predictor_models,community_predictor_models/partial_effects.csv,Within-era predictor GLS fits,166
+14_predictor_models,community_predictor_models/partial_residuals.csv,Within-era predictor GLS fits,26
+14_predictor_models,community_predictor_models/primary_fits.rds,Within-era predictor GLS fits,404
 15_contributions,cca_transition_contributions/climate_contributions.csv,Species and climate contributions to displacement,223
 15_contributions,cca_transition_contributions/species_contributions.csv,Species and climate contributions to displacement,1479
 15_contributions,cca_transition_contributions/species_lake_periods.csv,Species and climate contributions to displacement,31
