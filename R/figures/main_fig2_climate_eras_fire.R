@@ -473,16 +473,38 @@ raw_panel = function(v, tag, show_periods) {
   top = if (show_periods) yr[2] + span * 1.05 else yr[2] + span * .08
   rates = period_rates |> filter(variable == v) |>
     mutate(y = approx(line$t, line$regional_raw_1000yr, t)$y, label = paste0(rate_text(v, rate), "/century"),
-      # Neighbouring periods alternate above and below the line, so labels never touch.
-      vjust = if_else(row_number() %% 2 == 1, -.45, 1.45))
-  # No "largest step" marker (Bills, 10 Nov 2026).
+      # Neighbouring periods alternate above and below the line, and each label
+      # sits a little away from the line, not on it (Bills, 10 Nov 2026).
+      # Each label clears the bold line across its own width (about 850 years
+      # each side of the period midpoint), on the side where that keeps it
+      # closest to its point (Bills, 10 Nov 2026).
+      above = map_dbl(t, function(tt) max(line$regional_raw_1000yr[abs(line$t - tt) <= 850]) + span * .04),
+      below = map_dbl(t, function(tt) min(line$regional_raw_1000yr[abs(line$t - tt) <= 850]) - span * .04),
+      side = if_else(above - y <= y - below, 1, -1)) |> arrange(desc(t))
+  # Two neighbouring labels closer than a label's width never share a side.
+  for (i in seq_len(nrow(rates))[-1]) if (rates$t[i - 1] - rates$t[i] < 1800 && rates$side[i] == rates$side[i - 1])
+    rates$side[i] = -rates$side[i]
+  # A label within reach of the largest-step cross moves sideways, away from it.
+  step_t = largest_steps$t[largest_steps$variable == v]
+  rates = rates |> mutate(y_label = if_else(side > 0, above, below), vjust = if_else(side > 0, 0, 1),
+    x_label = if_else(abs(t - step_t) < 1000, step_t + sign(t - step_t) * 1000, t))
+  # The largest step is marked with a cross and labelled with its rate only
+  # (Bills, 10 Nov 2026).
+  step = largest_steps |> filter(variable == v) |>
+    mutate(y = d$regional_raw[match(t, d$t)], label = paste0(rate_text(v, step), "/century"))
   p = ggplot(d, aes(t, regional_raw)) +
     era_background() +
     geom_line(linewidth = .35 * sqrt(FIG2_TEXT), color = "grey55", alpha = .7) +
     geom_line(data = line, aes(y = regional_raw_1000yr), linewidth = 1.1 * sqrt(FIG2_TEXT), color = "grey10") +
     geom_point(data = rates, aes(t, y), size = 2.2, color = "grey10") +
-    geom_label(data = rates, aes(t, y, label = label, vjust = vjust), size = 3 * FIG2_TEXT, color = "grey10",
+    # A short leader line from each period's dot to its label.
+    geom_segment(data = rates, aes(x = t, xend = x_label, y = y, yend = y_label), color = "grey25", linewidth = .5) +
+    geom_label(data = rates, aes(x_label, y_label, label = label, vjust = vjust), size = 3.7 * FIG2_TEXT, color = "grey10",
       label.size = 0, fill = alpha("white", .85), label.padding = unit(.08, "lines")) +
+    geom_point(data = step, aes(t, y), shape = 4, size = 3.6, stroke = 1.4, color = "grey10") +
+    geom_label(data = step, aes(t - 60, y - span * .03, label = label), hjust = 0, vjust = 1,
+      size = 3.5 * FIG2_TEXT, color = "grey25", label.size = 0, fill = alpha("white", .85),
+      label.padding = unit(.08, "lines")) +
     time_axis() +
     scale_y_continuous(expand = expansion(mult = 0)) +
     scale_fill_manual(values = era_colors, guide = "none") +
@@ -500,7 +522,7 @@ raw_panel = function(v, tag, show_periods) {
       geom_text(data = ann, aes(midpoint, description_y,
         # Only the direction: the panels already name the season (Bills, 10 Nov 2026).
         label = gsub(";", "\n", gsub("(spring|summer) ", "", active_driver_labels))), inherit.aes = FALSE,
-        size = 3 * FIG2_TEXT, lineheight = .9, color = "grey30") +
+        size = 4.2 * FIG2_TEXT, lineheight = .9, color = "grey25") +
       geom_text(data = ann, aes(midpoint, id_y, label = subphase_id), inherit.aes = FALSE, fontface = "bold",
         size = 4 * FIG2_TEXT, color = "grey10") +
       geom_text(data = stable_annotations |> mutate(id_y = yr[2] + span * .95), aes(midpoint, id_y, label = era_id),
@@ -536,8 +558,7 @@ p_summer = raw_panel("SP", "B.", FALSE)
 tight = theme(plot.margin = margin(5.5, 2, 5.5, 5.5))
 figure = wrap_plots(p_spring + tight, anthropocene_column("MSpT", p_spring, TRUE),
   p_summer + tight, anthropocene_column("SP", p_summer, FALSE),
-  # Three lines for the fire title, so it stays within its panel at the larger text.
-  p_fire + labs(tag = "C.", y = "Fire-frequency\nratio\n(high fire > 1)") + tight, plot_spacer(),
+  p_fire + labs(tag = "C.", y = "Fire-frequency ratio\n(high fire > 1)") + tight, plot_spacer(),
   ncol = 2, widths = c(5.2, 1.75), heights = c(3.6, 2.8, 2.5))
 if (render_figures) {
   # cairo_pdf draws the degree signs and arrows.

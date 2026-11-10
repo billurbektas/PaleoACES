@@ -57,7 +57,7 @@ for the report.
 | R/figures/supp_sample_selection.R | figure | Show which plots and core samples reach CCA, starting with the supplied data. | 333 |
 | R/figures/supp_species_through_time.R | figure | supp_species_through_time.R - STEP 4, the species half | 199 |
 | R/figures/supp_tracking_transitions.R | figure | Descriptive lake-level tracking displays: actual transition rates, ratios and | 177 |
-| R/figures/main_fig2_climate_eras_fire.R | figure | main_fig2_climate_eras_fire.R | 669 |
+| R/figures/main_fig2_climate_eras_fire.R | figure | main_fig2_climate_eras_fire.R | 690 |
 | R/figures/main_fig3_cca_trajectories.R | figure | Figure 3: A, species and climate biplot; B, observed and predicted trajectories | 217 |
 | R/figures/main_fig4_era_contrasts.R | figure | Figure 4 (PLAN.md section 6; redrawn by Bills, 10 Nov 2026): fitted means | 109 |
 | R/figures/main_fig5_lag_pace_direction.R | figure | Figure 5 (PLAN.md section 6): lag rate, pace effect and direction effect by | 56 |
