@@ -507,11 +507,12 @@ show_figure('report/figures/main/fig_era_contrasts.pdf')
 **Figure 4. Climate change, turnover and community-climate lag in the Holocene and the Anthropocene.** For each
 park, the fitted mean and 95% confidence interval of the Holocene stability periods (triangles), the Holocene
 climate-change periods (circles) and the Anthropocene plot pairs (diamonds), for (A) the standardized climate change
-rate, (B) the turnover rate, (C) the community-climate lag, the change in mismatch between the two ends (M at t2 minus
-M at t1, not divided by time), and (D) the community-climate lag rate. The fitted mean is printed above each interval.
+rate, (B) the observed community turnover rate, (C) the community-climate lag, the change in mismatch between the two ends (M at t2 minus
+M at t1, not divided by time), and (D) the community-climate lag rate. The fitted mean is printed beside each point.
 A and B are on log axes, where equal distances are equal folds, and the arrow gives the fold between the Anthropocene
-and the Holocene climate-change means. C and D are on linear axes without folds, and a star marks a mean that differs
-from zero (two-sided t test, p < 0.05). The lag (C) is a total, not a rate: Holocene lags accumulate over a whole
+and the Holocene climate-change means. C and D are on linear axes without folds. Their connectors link the Anthropocene
+to the Holocene climate-change periods (lower) and to the Holocene stability periods (upper) within each park, and a
+star marks a contrast that differs from zero (two-sided t test, p < 0.05). The lag (C) is a total, not a rate: Holocene lags accumulate over a whole
 lake-period and Anthropocene lags over about 29 years. Means come from the model response ~ period type × site, with an
 AR(1) correlation within each lake and weights for the number of samples at each end, fitted on
 `r n_group('Holocene-C', 'MORA')` climate-change and `r n_group('Holocene-S', 'MORA')` stability lake-periods and
