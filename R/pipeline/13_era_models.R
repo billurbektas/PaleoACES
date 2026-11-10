@@ -59,7 +59,7 @@ for (response in names(ERA_RESPONSES)) {
     # Folds for the positive responses (PLAN.md Step 5a; absolute lag added by
     # Bills) and, at Bills's request, for the signed lag rate, whose near-zero
     # Holocene means make that fold unstable (said in the caption).
-    if (response %in% c('climate_rate', 'turnover_rate', 'abs_lag_rate', 'lag_rate')) {
+    if (response %in% c('climate_rate', 'turnover_rate', 'abs_lag', 'lag_rate')) {
       mp = m[m$site == park, ]
       folds[[paste(response, park)]] = tibble(response, site = park,
         against = c('Holocene-C', 'Holocene-S'),

@@ -1,5 +1,5 @@
 # Figure 4 (PLAN.md section 6): era contrasts for climate change rate, turnover
-# rate, lag rate and absolute lag rate. Per park, Anthropocene minus Holocene-C (circle) and
+# rate, absolute lag and lag rate. Per park, Anthropocene minus Holocene-C (circle) and
 # Anthropocene minus Holocene-S (triangle) with 95% intervals from the Step 5a
 # models. The fold is printed beside the Holocene-C point for climate and turnover.
 source(here::here('R/helpers/config.R'), local = TRUE)
@@ -28,19 +28,19 @@ panel = function(r, tag) {
     labs(tag = tag, x = NULL, y = two_line_title(paste('Difference in', sub('^(.)', '\\L\\1', RESPONSE_AXIS_LABELS[[r]], perl = TRUE)), 40)) +
     guides(shape = guide_legend(override.aes = list(fill = 'grey60'), ncol = 1)) +
     theme_paleoaces(base_size = 20) + theme(legend.position = 'bottom', legend.text = element_text(size = 19), plot.tag = element_text(size = 24, face = 'bold'))
-  if (r %in% c('climate_rate', 'turnover_rate', 'abs_lag_rate', 'lag_rate')) p = p +
+  if (r %in% c('climate_rate', 'turnover_rate', 'abs_lag', 'lag_rate')) p = p +
     # The fold sits just above the circle's interval (the circle is dodged left
     # by a quarter of the dodge width), clear of the points and the panel edge.
     geom_text(data = filter(d, against == 'Holocene-C'),
-      aes(x = as.integer(site) - .45 / 4, y = conf_high, label = sprintf('%.0f-fold', fold)),
+      aes(x = as.integer(site) - .45 / 4, y = conf_high, label = if_else(abs(fold) < 10, sprintf('%.1f-fold', fold), sprintf('%.0f-fold', fold))),
       vjust = -.7, size = 6, fontface = 'bold', color = 'grey15') +
     scale_y_continuous(expand = expansion(mult = c(.05, .14)))
   p
 }
-# Two rows: climate and turnover on top; the absolute lag rate (with its fold)
-# and then the signed lag rate below (Bills, 10 Nov 2026).
+# Two rows: climate and turnover on top; the absolute lag (not per century,
+# with its fold) and then the signed lag rate below (Bills, 10 Nov 2026).
 figure = (panel('climate_rate', 'A.') | panel('turnover_rate', 'B.')) /
-  (panel('abs_lag_rate', 'C.') | panel('lag_rate', 'D.')) +
+  (panel('abs_lag', 'C.') | panel('lag_rate', 'D.')) +
   plot_layout(guides = 'collect') & theme(legend.position = 'bottom')
 if (render_figures) for (ext in c('pdf', 'png'))
   ggsave(fig('main', paste0('fig_era_contrasts.', ext)), figure, width = 13, height = 13, dpi = 300)

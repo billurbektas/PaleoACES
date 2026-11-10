@@ -17,12 +17,12 @@ Lag rate,MORA,Holocene-C - Holocene-S,-0.008,-0.079 to 0.063,0.8255592832574898
 Lag rate,NOCA,Anthropocene - Holocene-C,-0.073,-0.352 to 0.206,0.608298420658894
 Lag rate,NOCA,Anthropocene - Holocene-S,-0.103,-0.389 to 0.183,0.4802815248411776
 Lag rate,NOCA,Holocene-C - Holocene-S,-0.030,-0.115 to 0.055,0.487950197071934
-Absolute lag rate,MORA,Anthropocene - Holocene-C,+0.923,0.834 to 1.013,1.1929031282146752e-70
-Absolute lag rate,MORA,Anthropocene - Holocene-S,+0.956,0.873 to 1.038,1.7101892567362606e-83
-Absolute lag rate,MORA,Holocene-C - Holocene-S,+0.032,-0.024 to 0.089,0.2621338077557421
-Absolute lag rate,NOCA,Anthropocene - Holocene-C,+1.648,1.448 to 1.848,2.017519718777199e-49
-Absolute lag rate,NOCA,Anthropocene - Holocene-S,+1.595,1.391 to 1.799,2.7073057510773198e-45
-Absolute lag rate,NOCA,Holocene-C - Holocene-S,-0.054,-0.149 to 0.042,0.2714221656738123
+Absolute lag,MORA,Anthropocene - Holocene-C,+0.112,0.026 to 0.198,0.01071360351931142
+Absolute lag,MORA,Anthropocene - Holocene-S,+0.120,0.018 to 0.221,0.02067175895227836
+Absolute lag,MORA,Holocene-C - Holocene-S,+0.008,-0.166 to 0.181,0.930489475824591
+Absolute lag,NOCA,Anthropocene - Holocene-C,+0.378,0.078 to 0.679,0.01365817316544369
+Absolute lag,NOCA,Anthropocene - Holocene-S,+0.213,0.022 to 0.404,0.02861495767353769
+Absolute lag,NOCA,Holocene-C - Holocene-S,-0.165,-0.629 to 0.298,0.4833818631672
 Pace effect,MORA,Anthropocene - Holocene-C,+0.167,0.060 to 0.274,0.0022997003372174
 Pace effect,MORA,Anthropocene - Holocene-S,+0.157,0.057 to 0.257,0.00224648634453098
 Pace effect,MORA,Holocene-C - Holocene-S,-0.010,-0.056 to 0.036,0.6705269096058006
