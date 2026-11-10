@@ -30,10 +30,10 @@ means = read_csv(out('species_contribution_models/species_means.csv'), show_col_
   mutate(species = factor(species, levels = order_species),
     period_type = factor(period_type, levels = c('Holocene-S', 'Holocene-C', 'Anthropocene')),
     spans_zero = !interval_defined | (conf_low <= 0 & conf_high >= 0),
-    measure_label = factor(c(contrib_climate = 'Following the climate shift',
-      contrib_gap = 'Closing the initial mismatch')[measure],
-      levels = c('Following the climate shift',
-        'Closing the initial mismatch')))
+    measure_label = factor(c(contrib_climate = 'Following climate-predicted direction',
+      contrib_gap = 'Shrinking the initial mismatch')[measure],
+      levels = c('Following climate-predicted direction',
+        'Shrinking the initial mismatch')))
 # Species absent from a park's Holocene record (no share at either end of any
 # lake-period) are marked instead of drawn as Holocene symbols.
 absent = means |> filter(period_type != 'Anthropocene') |> group_by(measure_label, species, site) |>
@@ -47,9 +47,13 @@ drawn = drawn |> mutate(y = as.integer(species) + nudge[as.character(period_type
 # as small faded symbols; light bands alternate between species rows; species
 # absent from a park's Holocene record simply have no Holocene symbols.
 bands = tibble(species_index = seq(1, length(order_species), by = 2))
+x_extent = drawn |> group_by(site) |> summarise(m = max(abs(c(estimate, conf_low, conf_high)), na.rm = TRUE)) |>
+  reframe(site = rep(site, 2), x = c(-m, m)) |>
+  expand_grid(measure_label = factor(levels(means$measure_label), levels = levels(means$measure_label)))
 side_labels = expand_grid(measure_label = factor(levels(means$measure_label), levels = levels(means$measure_label)),
   site = c('MORA', 'NOCA'), side = c('negative', 'positive')) |>
-  mutate(x = if_else(side == 'negative', -Inf, Inf), hjust = if_else(side == 'negative', -.03, 1.03),
+  # Each label starts at the zero line and runs away from it, so it never crosses it.
+  mutate(x = 0, hjust = if_else(side == 'negative', 1.04, -.04),
     label = case_when(
       as.integer(measure_label) == 1 & side == 'negative' ~ '\u2190 against the climate shift',
       as.integer(measure_label) == 1 ~ 'with the climate shift \u2192',
@@ -64,7 +68,9 @@ figure = ggplot(drawn, aes(estimate, y)) +
   geom_point(data = filter(drawn, spans_zero), aes(shape = period_type, fill = site), size = 3, color = 'grey45', alpha = .35) +
   geom_point(data = filter(drawn, !spans_zero), aes(shape = period_type, fill = site), size = 4.6, color = 'grey10') +
   # What each side of zero means, written at the top of every panel (Bills).
-  geom_label(data = side_labels, aes(x = x, y = -.2, label = label, hjust = hjust), size = 6.2,
+  # Symmetric x range per park, so both sides have room for their label.
+  geom_blank(data = x_extent, aes(x = x, y = 1), inherit.aes = FALSE) +
+  geom_label(data = side_labels, aes(x = x, y = -.2, label = label, hjust = hjust), size = 6,
     fontface = 'italic', color = 'grey25', fill = 'white', linewidth = 0, label.padding = unit(.1, 'lines'),
     inherit.aes = FALSE) +
   facet_grid(measure_label ~ site, scales = 'free_x', switch = 'y') +
