@@ -201,12 +201,15 @@ zoom = function(park) {
   ggplot() + trajectory_layers(d, st, lab, c(box$xmin, box$xmax), c(box$ymin, box$ymax)) +
     coord_cartesian(xlim = c(box$xmin, box$xmax), ylim = c(box$ymin, box$ymax), expand = FALSE) +
     labs(tag = paste0(box$letter, '.'), title = paste(park, 'Holocene periods'), x = NULL, y = NULL) +
-    theme_fig3 + theme(legend.position = 'none', aspect.ratio = (box$ymax - box$ymin) / (box$xmax - box$xmin),
+    # Only the observed and predicted key under the zooms: the park is in the title (Bills, 10 Nov 2026).
+    guides(fill = 'none') +
+    theme_fig3 + theme(legend.position = 'bottom', aspect.ratio = (box$ymax - box$ymin) / (box$xmax - box$xmin),
       plot.title = element_text(size = 30, face = 'bold', color = box$color), axis.text = element_text(size = 22))
 }
 # A and B on top; the zooms C (MORA) and D (NOCA) below, as large as the top
 # panels allow, titled in the park's colour.
-figure = (p_biplot | p_trajectories) / (zoom('MORA') | zoom('NOCA')) + plot_layout(heights = c(1, .9))
+figure = (p_biplot | p_trajectories) / ((zoom('MORA') | zoom('NOCA')) + plot_layout(guides = 'collect') &
+  theme(legend.position = 'bottom')) + plot_layout(heights = c(1, .9))
 if (render_figures) {
   # cairo_pdf draws the arrows of the axis titles, which the default pdf device cannot.
   ggsave(fig('main', 'fig_cca_trajectories.pdf'), figure, width = 24, height = 24, device = cairo_pdf, bg = 'white')
