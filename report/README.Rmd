@@ -403,7 +403,8 @@ means = read_output(file.path(era_dir, 'era_means.csv'))
 contrasts = read_output(file.path(era_dir, 'era_contrasts.csv'))
 folds = read_output(file.path(era_dir, 'era_folds.csv'))
 durations = read_output(file.path(era_dir, 'era_durations.csv'))
-response_label = c(climate_rate = 'Climate change rate', turnover_rate = 'Turnover rate',
+response_label = c(climate_rate = 'Climate change rate', climate_change = 'Climate change (not divided by time)',
+  turnover_rate = 'Turnover rate',
   displacement = 'Displacement (turnover, not divided by time)', lag_rate = 'Lag rate', lag = 'Lag',
   pace_effect = 'Pace effect', direction_effect = 'Direction effect')
 span = function(type) { d = durations[durations$period_type == type, ]; sprintf('%g to %g', min(d$duration_min), max(d$duration_max)) }
@@ -412,8 +413,8 @@ spans = sprintf(paste('Holocene-C lake-periods span %s years, Holocene-S lake-pe
 means |> transmute(Response = response_label[response], Park = site, `Period type` = period_type, n,
     `Fitted mean` = estimate, `95% CI` = sprintf('%.3f to %.3f', conf_low, conf_high)) |>
   show_table('step5a_era_means', caption = paste('**Fitted means by period type and park.** Climate change',
-    'rate in calibration SD per century, the displacement and the lag in CCA distance, the other responses in CCA',
-    'distance per century.', spans))
+    'rate in calibration SD per century, the climate change in calibration SD, the displacement and the lag in CCA',
+    'distance, the other responses in CCA distance per century.', spans))
 contrasts |> transmute(Response = response_label[response], Park = site, Contrast = contrast,
     Estimate = estimate, `95% CI` = sprintf('%.3f to %.3f', conf_low, conf_high), p = p_value) |>
   show_table('step5a_era_contrasts', caption = paste('**Contrasts between period types within each park**,',
@@ -439,7 +440,11 @@ rate did not differ between the period types (`r ct('lag_rate', 'NOCA', 'Anthrop
 against Holocene-C). Within the Holocene, the C and S lake-periods did not differ in lag, pace or
 direction in either park. `r spans`
 
-Not divided by time, the distance the community moved (the displacement) tells a different story
+Not divided by time, the climate still shifted further in the few decades of the Anthropocene than
+over a whole Holocene lake-period (Anthropocene minus Holocene-C
+`r ct('climate_change', 'MORA', 'Anthropocene - Holocene-C')` calibration SD at MORA,
+`r ct('climate_change', 'NOCA', 'Anthropocene - Holocene-C')` at NOCA). The distance the community moved
+(the displacement) tells a different story
 from its rate. At MORA the plots moved more in a few decades than the communities of the Holocene
 climate-change periods did in centuries (Anthropocene minus Holocene-C
 `r ct('displacement', 'MORA', 'Anthropocene - Holocene-C')` CCA distance), and as much as those of the
@@ -453,22 +458,24 @@ show_figure('report/figures/main/fig_era_contrasts.pdf')
 
 **Figure 4. Climate change, community turnover and community-climate lag in the Holocene and the Anthropocene.**
 For each park, the fitted mean and 95% confidence interval of the Holocene stability periods (triangles), the
-Holocene climate-change periods (circles) and the Anthropocene plot pairs (diamonds), for (A) the standardized
-climate change rate, (B) the observed community turnover, the distance the community moved in CCA space between the
-two ends, (C) the observed community turnover rate, (D) the community-climate lag, the change in mismatch between the
-two ends (M at t2 minus M at t1), and (E) the community-climate lag rate. B and D are not divided by time, C and E
-are per century. The fitted mean is printed beside each point. A and C are on log axes, where equal distances are
-equal folds, and the arrow gives the fold between the Anthropocene and the Holocene climate-change means. B, D and E
-are on linear axes without folds. Their connectors link the Anthropocene to the Holocene climate-change periods
-(lower) and to the Holocene stability periods (upper) within each park, and a star marks a contrast that differs
-from zero (two-sided t test, p < 0.05). B and D are totals: Holocene totals build up over a whole lake-period and
-Anthropocene totals over the few decades between the two surveys. Means come from the model response ~ period type × site, with an
+Holocene climate-change periods (circles) and the Anthropocene plot pairs (diamonds). Each row shows a total between
+the two ends of a lake-period or plot pair (left) and its rate per century (right): (A) the standardized climate
+change, the distance between the climates at the two ends, and (B) its rate; (C) the observed community turnover,
+the distance the community moved in CCA space, and (D) its rate; (E) the community-climate lag, the change in
+mismatch between the two ends (M at t2 minus M at t1), and (F) its rate. The fitted mean is printed beside each
+point. B and D are on log axes, where equal distances are equal folds, and the arrow gives the fold between the
+Anthropocene and the Holocene climate-change means. A, C, E and F are on linear axes without folds. Their connectors
+link the Anthropocene to the Holocene climate-change periods (lower) and to the Holocene stability periods (upper)
+within each park, and a star marks a contrast that differs from zero (two-sided t test, p < 0.05). The totals in A,
+C and E build up over a whole lake-period in the Holocene and over the few decades between the two surveys in the
+Anthropocene. Means come from the model response ~ period type × site, with an
 AR(1) correlation within each lake and weights for the number of samples at each end, fitted on
 `r n_group('Holocene-C', 'MORA')` climate-change and `r n_group('Holocene-S', 'MORA')` stability lake-periods and
 `r n_group('Anthropocene', 'MORA')` plot pairs at MORA, and `r n_group('Holocene-C', 'NOCA')`, `r n_group('Holocene-S', 'NOCA')`
 and `r n_group('Anthropocene', 'NOCA')` at NOCA. `r both_spans` Longer windows give lower rates, so the rates of the
 two eras are not on equal footing. Units: the climate change rate in calibration standard deviations per century,
-the turnover and lag rates in CCA distance per century, the turnover and the lag in CCA distance.
+the climate change in calibration standard deviations, the turnover and lag rates in CCA distance per century,
+the turnover and the lag in CCA distance.
 
 ```{r fig-5-main}
 show_figure('report/figures/main/fig_lag_pace_direction.pdf')
@@ -482,7 +489,7 @@ the community would have had at the climate-predicted pace (A, keeping its own d
 direction (B, keeping its own distance). A positive effect means that the community's own pace or direction widened
 the lag. A negative effect means that it narrowed the lag. Connectors link the Anthropocene to the Holocene climate-change periods (lower) and to the
 Holocene stability periods (upper) within each park, and a star marks a contrast that differs from zero (two-sided t
-test, p < 0.05). Fitted means and contrasts come from the same models as Figure 4, whose panel E shows the lag rate.
+test, p < 0.05). Fitted means and contrasts come from the same models as Figure 4, whose panel F shows the lag rate.
 Lake-periods and plots whose observed or predicted position did not move have no pace or direction effect: the panels
 hold `r m5 = read_output('era_comparison/era_means.csv'); m5$n[m5$response == 'pace_effect' & m5$site == 'MORA' & m5$period_type == 'Holocene-C']` climate-change and `r m5$n[m5$response == 'pace_effect' & m5$site == 'MORA' & m5$period_type == 'Holocene-S']` stability lake-periods at MORA. `r both_spans` Both responses are in CCA distance per century.
 

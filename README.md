@@ -570,8 +570,10 @@ every comparison states both time spans.
 
 ``` r
 # R/pipeline/13_era_models.R
-  # One model per response (climate change rate, turnover rate, displacement,
-  # lag rate, lag, pace effect, direction effect). Each row is a Holocene lake-period or an
+  # One model per response (climate change rate, climate change, turnover rate,
+  # displacement, lag rate, lag, pace effect, direction effect). Climate change,
+  # displacement and lag are totals between the two ends, the others per century.
+  # Each row is a Holocene lake-period or an
   # Anthropocene plot pair; `estimate` is its value of the response.
   # Mean part, period_type * site: one mean for each period type (Holocene-S,
   # Holocene-C, Anthropocene) in each park. The era means, the contrasts
@@ -605,10 +607,11 @@ every comparison states both time spans.
 **Result.**
 
 **Fitted means by period type and park.** Climate change rate in
-calibration SD per century, the displacement and the lag in CCA
-distance, the other responses in CCA distance per century. Holocene-C
-lake-periods span 200 to 900 years, Holocene-S lake-periods 300 to 2600
-years, and the Anthropocene plot pairs 27.5 to 32.5 years.
+calibration SD per century, the climate change in calibration SD, the
+displacement and the lag in CCA distance, the other responses in CCA
+distance per century. Holocene-C lake-periods span 200 to 900 years,
+Holocene-S lake-periods 300 to 2600 years, and the Anthropocene plot
+pairs 27.5 to 32.5 years.
 
 | Response | Park | Period type | n | Fitted mean | 95% CI |
 |:---|:---|:---|---:|---:|:---|
@@ -618,6 +621,12 @@ years, and the Anthropocene plot pairs 27.5 to 32.5 years.
 | Climate change rate | NOCA | Holocene-S | 5 | 0.041 | 0.022 to 0.061 |
 | Climate change rate | NOCA | Holocene-C | 5 | 0.062 | 0.034 to 0.090 |
 | Climate change rate | NOCA | Anthropocene | 277 | 2.715 | 2.488 to 2.941 |
+| Climate change (not divided by time) | MORA | Holocene-S | 7 | 0.173 | 0.070 to 0.275 |
+| Climate change (not divided by time) | MORA | Holocene-C | 7 | 0.242 | 0.094 to 0.390 |
+| Climate change (not divided by time) | MORA | Anthropocene | 330 | 0.764 | 0.734 to 0.795 |
+| Climate change (not divided by time) | NOCA | Holocene-S | 5 | 0.210 | 0.127 to 0.293 |
+| Climate change (not divided by time) | NOCA | Holocene-C | 5 | 0.370 | 0.230 to 0.511 |
+| Climate change (not divided by time) | NOCA | Anthropocene | 277 | 0.771 | 0.706 to 0.835 |
 | Turnover rate | MORA | Holocene-S | 7 | 0.040 | 0.010 to 0.070 |
 | Turnover rate | MORA | Holocene-C | 7 | 0.077 | 0.035 to 0.119 |
 | Turnover rate | MORA | Anthropocene | 330 | 0.932 | 0.843 to 1.021 |
@@ -671,6 +680,12 @@ pairs 27.5 to 32.5 years.
 | Climate change rate | NOCA | Anthropocene - Holocene-C | 2.653 | 2.425 to 2.881 | 0.000 |
 | Climate change rate | NOCA | Anthropocene - Holocene-S | 2.673 | 2.446 to 2.901 | 0.000 |
 | Climate change rate | NOCA | Holocene-C - Holocene-S | 0.021 | -0.013 to 0.054 | 0.230 |
+| Climate change (not divided by time) | MORA | Anthropocene - Holocene-C | 0.522 | 0.371 to 0.673 | 0.000 |
+| Climate change (not divided by time) | MORA | Anthropocene - Holocene-S | 0.591 | 0.485 to 0.698 | 0.000 |
+| Climate change (not divided by time) | MORA | Holocene-C - Holocene-S | 0.069 | -0.129 to 0.268 | 0.493 |
+| Climate change (not divided by time) | NOCA | Anthropocene - Holocene-C | 0.401 | 0.246 to 0.555 | 0.000 |
+| Climate change (not divided by time) | NOCA | Anthropocene - Holocene-S | 0.561 | 0.456 to 0.666 | 0.000 |
+| Climate change (not divided by time) | NOCA | Holocene-C - Holocene-S | 0.160 | -0.021 to 0.341 | 0.082 |
 | Turnover rate | MORA | Anthropocene - Holocene-C | 0.856 | 0.757 to 0.954 | 0.000 |
 | Turnover rate | MORA | Anthropocene - Holocene-S | 0.892 | 0.798 to 0.986 | 0.000 |
 | Turnover rate | MORA | Holocene-C - Holocene-S | 0.037 | -0.026 to 0.100 | 0.255 |
@@ -746,14 +761,17 @@ not differ in lag, pace or direction in either park. Holocene-C
 lake-periods span 200 to 900 years, Holocene-S lake-periods 300 to 2600
 years, and the Anthropocene plot pairs 27.5 to 32.5 years.
 
-Not divided by time, the distance the community moved (the displacement)
-tells a different story from its rate. At MORA the plots moved more in a
-few decades than the communities of the Holocene climate-change periods
-did in centuries (Anthropocene minus Holocene-C +0.13 (0.04 to 0.23) CCA
-distance), and as much as those of the stability periods (-0.01 (-0.21
-to 0.19)). At NOCA the plots moved more than in either Holocene type
-(+0.23 (0.02 to 0.44) against Holocene-C, +0.33 (0.14 to 0.52) against
-Holocene-S).
+Not divided by time, the climate still shifted further in the few
+decades of the Anthropocene than over a whole Holocene lake-period
+(Anthropocene minus Holocene-C +0.52 (0.37 to 0.67) calibration SD at
+MORA, +0.40 (0.25 to 0.56) at NOCA). The distance the community moved
+(the displacement) tells a different story from its rate. At MORA the
+plots moved more in a few decades than the communities of the Holocene
+climate-change periods did in centuries (Anthropocene minus Holocene-C
++0.13 (0.04 to 0.23) CCA distance), and as much as those of the
+stability periods (-0.01 (-0.21 to 0.19)). At NOCA the plots moved more
+than in either Holocene type (+0.23 (0.02 to 0.44) against Holocene-C,
++0.33 (0.14 to 0.52) against Holocene-S).
 
 <img src="report/figures/png/fig_era_contrasts.png" alt="" width="100%" />
 
@@ -761,33 +779,34 @@ Holocene-S).
 in the Holocene and the Anthropocene.** For each park, the fitted mean
 and 95% confidence interval of the Holocene stability periods
 (triangles), the Holocene climate-change periods (circles) and the
-Anthropocene plot pairs (diamonds), for (A) the standardized climate
-change rate, (B) the observed community turnover, the distance the
-community moved in CCA space between the two ends, (C) the observed
-community turnover rate, (D) the community-climate lag, the change in
-mismatch between the two ends (M at t2 minus M at t1), and (E) the
-community-climate lag rate. B and D are not divided by time, C and E are
-per century. The fitted mean is printed beside each point. A and C are
-on log axes, where equal distances are equal folds, and the arrow gives
-the fold between the Anthropocene and the Holocene climate-change means.
-B, D and E are on linear axes without folds. Their connectors link the
-Anthropocene to the Holocene climate-change periods (lower) and to the
-Holocene stability periods (upper) within each park, and a star marks a
-contrast that differs from zero (two-sided t test, p \< 0.05). B and D
-are totals: Holocene totals build up over a whole lake-period and
-Anthropocene totals over the few decades between the two surveys. Means
-come from the model response ~ period type × site, with an AR(1)
-correlation within each lake and weights for the number of samples at
-each end, fitted on 7 climate-change and 7 stability lake-periods and
-330 plot pairs at MORA, and 5, 5 and 277 at NOCA. Holocene
-climate-change lake-periods span 200 to 900 years and stability
-lake-periods 300 to 2600 years between their first and last sampled
-century. Anthropocene plot pairs span 27.5 to 32.5 years between the
-midpoints of their climate windows (about 29 years). Longer windows give
-lower rates, so the rates of the two eras are not on equal footing.
-Units: the climate change rate in calibration standard deviations per
-century, the turnover and lag rates in CCA distance per century, the
-turnover and the lag in CCA distance.
+Anthropocene plot pairs (diamonds). Each row shows a total between the
+two ends of a lake-period or plot pair (left) and its rate per century
+(right): (A) the standardized climate change, the distance between the
+climates at the two ends, and (B) its rate; (C) the observed community
+turnover, the distance the community moved in CCA space, and (D) its
+rate; (E) the community-climate lag, the change in mismatch between the
+two ends (M at t2 minus M at t1), and (F) its rate. The fitted mean is
+printed beside each point. B and D are on log axes, where equal
+distances are equal folds, and the arrow gives the fold between the
+Anthropocene and the Holocene climate-change means. A, C, E and F are on
+linear axes without folds. Their connectors link the Anthropocene to the
+Holocene climate-change periods (lower) and to the Holocene stability
+periods (upper) within each park, and a star marks a contrast that
+differs from zero (two-sided t test, p \< 0.05). The totals in A, C and
+E build up over a whole lake-period in the Holocene and over the few
+decades between the two surveys in the Anthropocene. Means come from the
+model response ~ period type × site, with an AR(1) correlation within
+each lake and weights for the number of samples at each end, fitted on 7
+climate-change and 7 stability lake-periods and 330 plot pairs at MORA,
+and 5, 5 and 277 at NOCA. Holocene climate-change lake-periods span 200
+to 900 years and stability lake-periods 300 to 2600 years between their
+first and last sampled century. Anthropocene plot pairs span 27.5 to
+32.5 years between the midpoints of their climate windows (about 29
+years). Longer windows give lower rates, so the rates of the two eras
+are not on equal footing. Units: the climate change rate in calibration
+standard deviations per century, the climate change in calibration
+standard deviations, the turnover and lag rates in CCA distance per
+century, the turnover and the lag in CCA distance.
 
 <img src="report/figures/png/fig_lag_pace_direction.png" alt="" width="100%" />
 
@@ -806,7 +825,7 @@ link the Anthropocene to the Holocene climate-change periods (lower) and
 to the Holocene stability periods (upper) within each park, and a star
 marks a contrast that differs from zero (two-sided t test, p \< 0.05).
 Fitted means and contrasts come from the same models as Figure 4, whose
-panel E shows the lag rate. Lake-periods and plots whose observed or
+panel F shows the lag rate. Lake-periods and plots whose observed or
 predicted position did not move have no pace or direction effect: the
 panels hold 6 climate-change and 6 stability lake-periods at MORA.
 Holocene climate-change lake-periods span 200 to 900 years and stability
@@ -1116,6 +1135,12 @@ combinations had a sampled century, and 24 had two or more.
 | Climate change rate | NOCA | Holocene-S | 5 | +0.041 | 0.022 to 0.061 |
 | Climate change rate | NOCA | Holocene-C | 5 | +0.062 | 0.034 to 0.090 |
 | Climate change rate | NOCA | Anthropocene | 277 | +2.715 | 2.488 to 2.941 |
+| Climate change (not divided by time) | MORA | Holocene-S | 7 | +0.173 | 0.070 to 0.275 |
+| Climate change (not divided by time) | MORA | Holocene-C | 7 | +0.242 | 0.094 to 0.390 |
+| Climate change (not divided by time) | MORA | Anthropocene | 330 | +0.764 | 0.734 to 0.795 |
+| Climate change (not divided by time) | NOCA | Holocene-S | 5 | +0.210 | 0.127 to 0.293 |
+| Climate change (not divided by time) | NOCA | Holocene-C | 5 | +0.370 | 0.230 to 0.511 |
+| Climate change (not divided by time) | NOCA | Anthropocene | 277 | +0.771 | 0.706 to 0.835 |
 | Turnover rate | MORA | Holocene-S | 7 | +0.040 | 0.010 to 0.070 |
 | Turnover rate | MORA | Holocene-C | 7 | +0.077 | 0.035 to 0.119 |
 | Turnover rate | MORA | Anthropocene | 330 | +0.932 | 0.843 to 1.021 |
@@ -1166,6 +1191,12 @@ combinations had a sampled century, and 24 had two or more.
 | Climate change rate | NOCA | Anthropocene - Holocene-C | +2.653 | 2.425 to 2.881 | 0.000 |
 | Climate change rate | NOCA | Anthropocene - Holocene-S | +2.673 | 2.446 to 2.901 | 0.000 |
 | Climate change rate | NOCA | Holocene-C - Holocene-S | +0.021 | -0.013 to 0.054 | 0.230 |
+| Climate change (not divided by time) | MORA | Anthropocene - Holocene-C | +0.522 | 0.371 to 0.673 | 0.000 |
+| Climate change (not divided by time) | MORA | Anthropocene - Holocene-S | +0.591 | 0.485 to 0.698 | 0.000 |
+| Climate change (not divided by time) | MORA | Holocene-C - Holocene-S | +0.069 | -0.129 to 0.268 | 0.493 |
+| Climate change (not divided by time) | NOCA | Anthropocene - Holocene-C | +0.401 | 0.246 to 0.555 | 0.000 |
+| Climate change (not divided by time) | NOCA | Anthropocene - Holocene-S | +0.561 | 0.456 to 0.666 | 0.000 |
+| Climate change (not divided by time) | NOCA | Holocene-C - Holocene-S | +0.160 | -0.021 to 0.341 | 0.082 |
 | Turnover rate | MORA | Anthropocene - Holocene-C | +0.856 | 0.757 to 0.954 | 0.000 |
 | Turnover rate | MORA | Anthropocene - Holocene-S | +0.892 | 0.798 to 0.986 | 0.000 |
 | Turnover rate | MORA | Holocene-C - Holocene-S | +0.037 | -0.026 to 0.100 | 0.255 |

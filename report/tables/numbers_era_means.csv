@@ -5,6 +5,12 @@ Climate change rate,MORA,Anthropocene,330,+2.596,2.505 to 2.687
 Climate change rate,NOCA,Holocene-S,5,+0.041,0.022 to 0.061
 Climate change rate,NOCA,Holocene-C,5,+0.062,0.034 to 0.090
 Climate change rate,NOCA,Anthropocene,277,+2.715,2.488 to 2.941
+Climate change (not divided by time),MORA,Holocene-S,7,+0.173,0.070 to 0.275
+Climate change (not divided by time),MORA,Holocene-C,7,+0.242,0.094 to 0.390
+Climate change (not divided by time),MORA,Anthropocene,330,+0.764,0.734 to 0.795
+Climate change (not divided by time),NOCA,Holocene-S,5,+0.210,0.127 to 0.293
+Climate change (not divided by time),NOCA,Holocene-C,5,+0.370,0.230 to 0.511
+Climate change (not divided by time),NOCA,Anthropocene,277,+0.771,0.706 to 0.835
 Turnover rate,MORA,Holocene-S,7,+0.040,0.010 to 0.070
 Turnover rate,MORA,Holocene-C,7,+0.077,0.035 to 0.119
 Turnover rate,MORA,Anthropocene,330,+0.932,0.843 to 1.021

@@ -29,6 +29,7 @@ descriptive.
 | Response | n | AR(1) | Variance parameters | R² | Warnings |
 |:---|---:|---:|:---|---:|:---|
 | climate_rate | 631 | 0.025 | A.Anthropocene NOCA=2.287, A.Holocene-C MORA=0.062, A.Holocene-S MORA=0.032, A.Holocene-C NOCA=0.100, A.Holocene-S NOCA=0.072 | 0.113 |  |
+| climate_change | 631 | -0.152 | A.Anthropocene NOCA=1.937, A.Holocene-C MORA=0.697, A.Holocene-S MORA=0.483, A.Holocene-C NOCA=1.463, A.Holocene-S NOCA=0.872 | 0.056 |  |
 | turnover_rate | 631 | -0.357 | A.Anthropocene NOCA=2.311, A.Holocene-C MORA=0.065, A.Holocene-S MORA=0.046, A.Holocene-C NOCA=0.218, A.Holocene-S NOCA=0.257 | 0.176 |  |
 | displacement | 631 | 0.064 | A.Anthropocene NOCA=1.947, A.Holocene-C MORA=0.382, A.Holocene-S MORA=0.859, A.Holocene-C NOCA=1.867, A.Holocene-S NOCA=1.720 | 0.109 |  |
 | lag_rate | 631 | -0.136 | A.Anthropocene NOCA=2.127, A.Holocene-C MORA=0.071, A.Holocene-S MORA=0.035, A.Holocene-C NOCA=0.086, A.Holocene-S NOCA=0.194 | 0.030 |  |
@@ -50,6 +51,12 @@ MORA).
 | climate_rate     | siteNOCA                         |    0.015 | 0.014 | 0.299 |
 | climate_rate     | period_typeHolocene-C:siteNOCA   |   -0.025 | 0.028 | 0.377 |
 | climate_rate     | period_typeAnthropocene:siteNOCA |    0.104 | 0.125 | 0.406 |
+| climate_change   | (Intercept)                      |    0.173 | 0.052 | 0.001 |
+| climate_change   | period_typeHolocene-C            |    0.069 | 0.101 | 0.493 |
+| climate_change   | period_typeAnthropocene          |    0.591 | 0.054 | 0.000 |
+| climate_change   | siteNOCA                         |    0.037 | 0.067 | 0.578 |
+| climate_change   | period_typeHolocene-C:siteNOCA   |    0.091 | 0.137 | 0.506 |
+| climate_change   | period_typeAnthropocene:siteNOCA |   -0.031 | 0.076 | 0.688 |
 | turnover_rate    | (Intercept)                      |    0.040 | 0.015 | 0.009 |
 | turnover_rate    | period_typeHolocene-C            |    0.037 | 0.032 | 0.255 |
 | turnover_rate    | period_typeAnthropocene          |    0.892 | 0.048 | 0.000 |
@@ -92,16 +99,16 @@ MORA).
 
 <img src="../figures/png/fig_tracking_model_residuals.png" alt="" width="1540" /><img src="../figures/png/fig_tracking_model_residuals-p2.png" alt="" width="1540" />
 
-**Residual checks** of the seven era models (page 1) and of the joint
+**Residual checks** of the eight era models (page 1) and of the joint
 pace and direction model (page 2). Top: normal quantile plots of the
 normalized residuals, one per response. Bottom: normalized residuals by
 period type and park (points, with boxes for the quartiles). The models
 have no continuous predictor, so the fitted values take one value per
 period type and park, and residuals by group show what a plot against
-fitted values would. The climate change rate, the turnover rate and the
-displacement are positive by construction and their residuals are
-right-skewed. The lag, lag rate, pace and direction residuals have heavy
-tails from a few Anthropocene plots.
+fitted values would. The climate change rate, the climate change, the
+turnover rate and the displacement are positive by construction and
+their residuals are right-skewed. The lag, lag rate, pace and direction
+residuals have heavy tails from a few Anthropocene plots.
 
 ## Joint pace and direction model
 

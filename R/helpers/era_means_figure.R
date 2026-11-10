@@ -13,7 +13,7 @@ ERA_SITES = c('MORA', 'NOCA')
 ERA_OFFSET = c(`Holocene-S` = -.32, `Holocene-C` = 0, Anthropocene = .32)
 era_minus = function(x) gsub('-', '\u2212', x)
 # Responses that are positive by construction, printed without a sign.
-ERA_POSITIVE = c('climate_rate', 'turnover_rate', 'displacement')
+ERA_POSITIVE = c('climate_rate', 'climate_change', 'turnover_rate', 'displacement')
 
 # Means, fold arrows and contrast connectors for the responses in `titles`.
 era_means_data = function(titles, log_responses = character()) {
@@ -21,7 +21,7 @@ era_means_data = function(titles, log_responses = character()) {
     dplyr::filter(response %in% names(titles)) |>
     dplyr::mutate(period_type = factor(period_type, levels = ERA_TYPES), site = factor(site, levels = ERA_SITES),
       x = as.integer(site) + ERA_OFFSET[as.character(period_type)],
-      # Rates and the displacement are positive by construction and printed
+      # Rates, the climate change and the displacement are positive by construction and printed
       # without sign. Signed responses carry their sign. No stars on means:
       # stars belong to the contrasts (Bills).
       label = dplyr::case_when(
