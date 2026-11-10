@@ -773,15 +773,20 @@ Anthropocene.** For each park, the fitted mean and 95% confidence
 interval of the Holocene stability periods (triangles), the Holocene
 climate-change periods (circles) and the Anthropocene (diamonds), for
 (A) the pace effect and (B) the direction effect, with the fitted mean
-printed beside each point. Connectors link the Anthropocene to the
-Holocene climate-change periods (lower) and to the Holocene stability
-periods (upper) within each park, and a star marks a contrast that
-differs from zero (two-sided t test, p \< 0.05). Fitted means and
-contrasts come from the same models as Figure 4, whose panel D shows the
-lag rate. Lake-periods and plots whose observed or predicted position
-did not move have no pace or direction effect: the panels hold 6
-climate-change and 6 stability lake-periods at MORA. Holocene
-climate-change lake-periods span 200 to 900 years and stability
+printed beside each point, on one y scale for both panels. Each effect
+is the lag at the end of the period minus the lag the community would
+have had at the climate-predicted pace (A, keeping its own direction) or
+in the climate-predicted direction (B, keeping its own distance). A
+positive effect means that the community’s own pace or direction widened
+the lag. A negative effect means that it narrowed the lag. Connectors
+link the Anthropocene to the Holocene climate-change periods (lower) and
+to the Holocene stability periods (upper) within each park, and a star
+marks a contrast that differs from zero (two-sided t test, p \< 0.05).
+Fitted means and contrasts come from the same models as Figure 4, whose
+panel D shows the lag rate. Lake-periods and plots whose observed or
+predicted position did not move have no pace or direction effect: the
+panels hold 6 climate-change and 6 stability lake-periods at MORA.
+Holocene climate-change lake-periods span 200 to 900 years and stability
 lake-periods 300 to 2600 years between their first and last sampled
 century. Anthropocene plot pairs span 27.5 to 32.5 years between the
 midpoints of their climate windows (about 29 years). Both responses are
