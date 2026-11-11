@@ -23,7 +23,7 @@ R/figures/supp_climate_windows.R,figure,Compare the actual plot-specific survey 
 R/figures/supp_sample_selection.R,figure,"Show which plots and core samples reach CCA, starting with the supplied data.",368
 R/figures/supp_species_through_time.R,figure,"supp_species_through_time.R  -  STEP 4, the species half",199
 R/figures/supp_tracking_transitions.R,figure,Appendix figures of the lake-period values over time (redrawn on lake-periods,86
-R/figures/main_fig2_study_area.R,figure,"Figure 2 (Bills, 11 Nov 2026; Fig. S1 until then): the study area. (A) Mount",215
+R/figures/main_fig2_study_area.R,figure,"Figure 2 (Bills, 11 Nov 2026; Fig. S1 until then): the study area. (A)",214
 R/figures/main_fig3_climate_eras_fire.R,figure,main_fig3_climate_eras_fire.R,711
 R/figures/main_fig4_cca_trajectories.R,figure,"Figure 4: A, species and climate biplot; B, observed and predicted trajectories",220
 R/figures/main_fig5_era_contrasts.R,figure,"Figure 5 (PLAN.md section 6; redrawn by Bills, 10 Nov 2026): fitted means",34

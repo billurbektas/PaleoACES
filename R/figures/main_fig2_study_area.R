@@ -1,11 +1,12 @@
-# Figure 2 (Bills, 11 Nov 2026; Fig. S1 until then): the study area. (A) Mount
-# Rainier National Park (MORA) and (B) the North Cascades National Park Service
-# Complex (NOCA): the legacy-resurvey plot pairs that enter the CCA, burned and
-# unburned between the surveys, and the lakes whose cores give the Holocene
-# records, by what each record contributes (vegetation from macrofossils, fire
-# from charcoal). The two park maps have the same size, grid lines at about the
-# same spacing, the same 10 km scale bar and the same north arrow. A map of Washington
-# State, USA, and the legend sit side by side above them (Bills, 11 Nov 2026).
+# Figure 2 (Bills, 11 Nov 2026; Fig. S1 until then): the study area. (A)
+# Washington State, USA, with the two parks. (B) Mount Rainier National Park
+# (MORA) and (C) the North Cascades National Park Service Complex (NOCA): the
+# legacy-resurvey plot pairs that enter the CCA, burned and unburned between the
+# surveys, and the lakes whose cores give the Holocene records, by what each
+# record contributes (vegetation from macrofossils, fire from charcoal). The two
+# park maps have the same size, grid lines at about the same spacing, the same
+# 10 km scale bar and the same north arrow. The Washington map and the legend sit
+# side by side above them (Bills, 11 Nov 2026).
 # Sources are cited in the caption, not on the figure.
 source(here::here('R/helpers/config.R'), local = TRUE)
 suppressPackageStartupMessages({library(here); library(tidyverse); library(sf); library(patchwork); library(ggrepel)})
@@ -123,14 +124,11 @@ ext = lapply(ext, function(e) { d = (RATIO * (e[3] - e[1]) - (e[4] - e[2])) / 2;
 PARK_WIDTH = 8.1
 panel_size = theme(panel.widths = unit(PARK_WIDTH, 'in'), panel.heights = unit(PARK_WIDTH * RATIO, 'in'))
 
-# The locator map: Washington State, with the two map extents.
-boxes = bind_rows(lapply(names(ext), function(p) {
-  e = ext[[p]]
-  st_as_sf(st_as_sfc(st_bbox(c(xmin = e[1], ymin = e[2], xmax = e[3], ymax = e[4]), crs = UTM))) |>
-    st_transform(WA_CRS) |> mutate(site = p)
-}))
-box_sides = bind_rows(lapply(seq_len(nrow(boxes)), function(i) {
-  b = st_bbox(boxes[i, ]); tibble(site = boxes$site[i], x = b[['xmax']], y = (b[['ymin']] + b[['ymax']]) / 2)
+# The locator map: Washington State with the two parks, each named to its right
+# (no boxes around the parks, Bills, 11 Nov 2026).
+parks_wa = parks |> st_transform(WA_CRS)
+park_labels = bind_rows(lapply(unique(parks_wa$site), function(p) {
+  b = st_bbox(parks_wa[parks_wa$site == p, ]); tibble(site = p, x = b[['xmax']], y = (b[['ymin']] + b[['ymax']]) / 2)
 }))
 place = function(lon, lat, label, ...) {
   xy = st_coordinates(st_transform(st_sfc(st_point(c(lon, lat)), crs = 4326), WA_CRS))
@@ -141,20 +139,21 @@ wa_extent = st_bbox(st_transform(st_as_sfc(st_bbox(c(xmin = -125.1, ymin = 45.45
 overview = ggplot() +
   geom_sf(data = neighbours, fill = 'grey87', color = 'grey65', linewidth = .25) +
   geom_sf(data = washington, fill = 'white', color = 'grey25', linewidth = .5) +
-  geom_sf(data = parks |> st_transform(WA_CRS), aes(fill = site), color = NA, alpha = .8) +
-  geom_sf(data = boxes, aes(color = site), fill = NA, linewidth = .8) +
-  geom_text(data = box_sides, aes(x = x + 12000, y = y, label = site, color = site), hjust = 0,
+  geom_sf(data = parks_wa, aes(fill = site), color = NA, alpha = .8) +
+  geom_text(data = park_labels, aes(x = x + 12000, y = y, label = site, color = site), hjust = 0,
     fontface = 'bold', size = 7) +
   place(-120.3, 45.62, 'OREGON', size = 4.8, color = 'grey40', fontface = 'italic') +
   place(-119.0, 49.13, 'CANADA', size = 4.8, color = 'grey40', fontface = 'italic') +
   scale_fill_manual(values = PAPER_SITE_COLORS, guide = 'none') +
   scale_color_manual(values = PAPER_SITE_COLORS, guide = 'none') +
-  scale_bar(wa_extent[['xmax']] - 205000, wa_extent[['ymin']] + 32000, km = 100, n = 1, height = 9000, text_size = 5.2) +
+  # Low enough that the bar and its labels stay clear of the Oregon border (Bills).
+  scale_bar(wa_extent[['xmax']] - 180000, wa_extent[['ymin']] + 6000, km = 100, n = 1, height = 9000, text_size = 5.2) +
   coord_sf(crs = WA_CRS, xlim = wa_extent[c('xmin', 'xmax')], ylim = wa_extent[c('ymin', 'ymax')], expand = FALSE,
     datum = NA) +
-  labs(title = 'Washington State, USA') +
+  labs(tag = 'A.', title = 'Washington State, USA') +
   theme_void(base_size = PAPER) +
   theme(panel.background = element_rect(fill = OCEAN, color = NA),
+    plot.tag = element_text(size = PAPER + 6, face = 'bold'),
     plot.title = element_text(size = PAPER + 2, face = 'bold', hjust = .5, margin = margin(b = 8)),
     plot.margin = margin(6, 6, 16, 6),
     # Larger than before (Bills): 6.4 inches wide.
@@ -197,8 +196,8 @@ park_panel = function(park, tag, title, grid) {
     coord_sf(crs = UTM, xlim = e[c(1, 3)], ylim = e[c(2, 4)], expand = FALSE) +
     labs(tag = tag, title = title) + theme_map + panel_size
 }
-p_mora = park_panel('MORA', 'A.', 'Mount Rainier National\nPark (MORA)', grid = .1)
-p_noca = park_panel('NOCA', 'B.', 'North Cascades National Park\nService Complex (NOCA)', grid = .2)
+p_mora = park_panel('MORA', 'B.', 'Mount Rainier National\nPark (MORA)', grid = .1)
+p_noca = park_panel('NOCA', 'C.', 'North Cascades National Park\nService Complex (NOCA)', grid = .2)
 
 # On top, the Washington map and the legend side by side. Below, the two park maps.
 figure = overview + guide_area() + p_mora + p_noca +

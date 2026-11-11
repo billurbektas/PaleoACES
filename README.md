@@ -94,23 +94,22 @@ Panther Potholes (Prichard et al. 2009).
 
 <img src="report/figures/png/fig_study_area.png" alt="" width="100%" />
 
-**Figure 2. Study area.** (A) Mount Rainier National Park (MORA) and (B)
-the North Cascades National Park Service Complex (NOCA), which joins the
-national park with the Ross Lake and Lake Chelan National Recreation
-Areas. The points are the legacy–resurvey plot pairs that enter the CCA,
-328 at MORA and 277 at NOCA. They are grey when unburned and red when
-burned between the two surveys (0 at MORA and 24 at NOCA). The two MORA
-plots that burned are left out of the analysis. The large symbols are
-the cored lakes: vegetation records (green circles, macrofossils,
-Dunwiddie 1986), fire records (orange triangles, charcoal, Walsh et
-al. 2017) and Panther Potholes, whose core gives both (green diamond,
-Prichard et al. 2009). The map above the park maps locates both parks in
-Washington State, USA. The two park maps have the same size and
-therefore different scales, shown by the same 10 km scale bar on each.
-Park maps in UTM zone 10N, the Washington map in an equal-area
-projection. Park boundaries from the National Park Service
-administrative boundaries, Sunrise Ridge lake coordinates from Walsh et
-al. (2017, Table 1). Script:
+**Figure 2. Study area.** (A) The two parks in Washington State, USA.
+(B) Mount Rainier National Park (MORA) and (C) the North Cascades
+National Park Service Complex (NOCA), which joins the national park with
+the Ross Lake and Lake Chelan National Recreation Areas. The points are
+the legacy–resurvey plot pairs that enter the CCA, 328 at MORA and 277
+at NOCA. They are grey when unburned and red when burned between the two
+surveys (0 at MORA and 24 at NOCA). The two MORA plots that burned are
+left out of the analysis. The large symbols are the cored lakes:
+vegetation records (green circles, macrofossils, Dunwiddie 1986), fire
+records (orange triangles, charcoal, Walsh et al. 2017) and Panther
+Potholes, whose core gives both (green diamond, Prichard et al. 2009).
+The two park maps have the same size and therefore different scales,
+shown by the same 10 km scale bar on each. Park maps in UTM zone 10N,
+the Washington map in an equal-area projection. Park boundaries from the
+National Park Service administrative boundaries, Sunrise Ridge lake
+coordinates from Walsh et al. (2017, Table 1). Script:
 [`R/figures/main_fig2_study_area.R`](R/figures/main_fig2_study_area.R).
 
 # Forest tree communities
