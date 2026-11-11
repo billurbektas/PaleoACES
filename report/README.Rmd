@@ -751,7 +751,7 @@ legacy survey and the resurvey of a plot, times its fixed position in the CCA pl
 projects these vectors on the direction in which the climate-predicted position moved, and the lower
 row (changing the climate-community lag) on the average direction of the mismatch at the two ends, so
 that the species' values plus the climate's part add up to the lag rate. Labels at the top of each panel read with the row title: a species moved the community following or against the climate-predicted direction (upper row), and narrowed or widened the climate-community lag (lower row). The lower row includes the lake-periods and plot pairs whose composition did not change (all species values zero) and is per century of the same interval as the lag rate.
-Species are ordered by the maximum elevation of the plots where they occur (the 607 plot pairs, both surveys, both parks), the highest at the top. Their names are shaded from grey (low) to black (high) by that maximum, which follows each name in metres. Names in bold are species absent from the Holocene record of both parks.
+Species are ordered by the maximum elevation of the plots where they occur (the 607 plot pairs, both surveys, both parks), the highest at the top. Their names are shaded by that maximum in four grey steps, lightest below 1,500 m and black above 1,900 m, and the maximum follows each name in metres. Names in bold are species absent from the Holocene record of both parks.
 Symbols are means: triangles, Holocene stability periods, circles, Holocene climate-change periods,
 diamonds, Anthropocene plot pairs (burned and unburned together). Large symbols with bars are means whose
 95% t-interval excludes zero, small faded symbols are means whose interval includes zero. A species with no

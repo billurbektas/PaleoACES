@@ -123,10 +123,12 @@ name_column = ggplot(names, aes(x = 1, y = y)) +
   facet_grid(measure_label ~ column, switch = 'y') +
   scale_y_reverse(limits = y_limits, expand = c(0, 0)) +
   scale_x_continuous(limits = c(0, 1.02), expand = c(0, 0)) +
-  # Greyscale (Bills, 11 Nov 2026): mid grey at the lowest maximum, black at the highest.
-  scale_color_gradient(low = 'grey62', high = 'black', labels = scales::comma,
-    name = 'Maximum elevation (m)', guide = guide_colorbar(barwidth = unit(9, 'cm'), barheight = unit(.6, 'cm'),
-      title.position = 'top')) +
+  # Greyscale in four clear steps (Bills, 11 Nov 2026): a continuous ramp made
+  # neighbouring species hard to tell apart. Lightest below 1,500 m, black above 1,900 m.
+  scale_color_steps(low = 'grey68', high = 'black', breaks = c(1500, 1700, 1900), limits = c(1300, 2100),
+    labels = scales::comma, name = 'Maximum elevation (m)',
+    guide = guide_coloursteps(even.steps = TRUE, show.limits = TRUE, barwidth = unit(11, 'cm'),
+      barheight = unit(.7, 'cm'), title.position = 'top')) +
   theme_paleoaces(base_size = 24) +
   theme(axis.text = element_blank(), axis.ticks = element_blank(), axis.title = element_blank(),
     panel.border = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
