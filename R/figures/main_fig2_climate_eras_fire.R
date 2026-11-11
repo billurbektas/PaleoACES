@@ -531,7 +531,11 @@ raw_panel = function(v, tag, show_periods) {
   p
 }
 # Anthropocene change per century, plot median per park, as text beside each
-# panel at the height where its running-mean line ends.
+# panel at the height where its running-mean line ends. Positions in the
+# column's own 0 to 1 x range: the park name starts clear of the panel frame,
+# the value after it.
+ANTHRO_NAME_X = .05
+ANTHRO_VALUE_X = .3
 anthropocene_column = function(v, panel, first) {
   y_range = ggplot_build(panel)$layout$panel_params[[1]]$y.range
   end = climate_levels |> filter(in_view, variable == v, is.finite(regional_raw_1000yr)) |> slice_min(t, n = 1)
@@ -540,13 +544,13 @@ anthropocene_column = function(v, panel, first) {
       label = paste0(rate_text(v, rate), "/century"))
   # The park name in its colour, the rate after it (Bills, 10 Nov 2026).
   p = ggplot(d, aes(0, y)) +
-    # Starts just right of the end of the time axis.
-    geom_text(aes(x = -.05, label = site, color = site), hjust = 0, size = 4.6 * FIG2_TEXT, fontface = "bold") +
-    geom_text(aes(x = .2, label = label), hjust = 0, size = 4.6 * FIG2_TEXT, color = "grey10") +
+    # Starts just right of the panel frame, clear of it (Bills, 11 Nov 2026).
+    geom_text(aes(x = ANTHRO_NAME_X, label = site, color = site), hjust = 0, size = 4.6 * FIG2_TEXT, fontface = "bold") +
+    geom_text(aes(x = ANTHRO_VALUE_X, label = label), hjust = 0, size = 4.6 * FIG2_TEXT, color = "grey10") +
     scale_color_manual(values = PAPER_SITE_COLORS, guide = "none") +
     coord_cartesian(xlim = c(0, 1), ylim = y_range, expand = FALSE, clip = "off") + theme_void() +
     theme(plot.margin = margin(0, 0, 0, 0))
-  if (first) p = p + annotate("text", x = -.05, y = y_range[2], label = "Anthropocene", hjust = 0, vjust = 1,
+  if (first) p = p + annotate("text", x = ANTHRO_NAME_X, y = y_range[2], label = "Anthropocene", hjust = 0, vjust = 1,
     size = 4.8 * FIG2_TEXT, fontface = "bold", color = "grey20")
   p
 }
@@ -561,8 +565,8 @@ burned_plots = read_csv(out("cca_tracking_both_eras.csv"), show_col_types = FALS
 stopifnot(nrow(burned_plots) == 2L, sum(burned_plots$plots) == sum(ANTHROPOCENE_PAIRS))
 fire_burned_column = function() {
   ggplot(burned_plots, aes(0, .5)) +
-    geom_text(aes(x = -.05, label = site, color = site), hjust = 0, size = 4.6 * FIG2_TEXT, fontface = "bold") +
-    geom_text(aes(x = .2, label = label), hjust = 0, size = 4.6 * FIG2_TEXT, color = "grey10", lineheight = .9) +
+    geom_text(aes(x = ANTHRO_NAME_X, label = site, color = site), hjust = 0, size = 4.6 * FIG2_TEXT, fontface = "bold") +
+    geom_text(aes(x = ANTHRO_VALUE_X, label = label), hjust = 0, size = 4.6 * FIG2_TEXT, color = "grey10", lineheight = .9) +
     facet_grid(rows = vars(site)) +
     scale_color_manual(values = PAPER_SITE_COLORS, guide = "none") +
     coord_cartesian(xlim = c(0, 1), ylim = c(0, 1), expand = FALSE, clip = "off") + theme_void() +
