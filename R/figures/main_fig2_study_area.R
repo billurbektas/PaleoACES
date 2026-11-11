@@ -161,10 +161,8 @@ overview = ggplot() +
     panel.widths = unit(6.4, 'in'),
     panel.heights = unit(6.4 * (wa_extent[['ymax']] - wa_extent[['ymin']]) / (wa_extent[['xmax']] - wa_extent[['xmin']]), 'in'))
 
-park_panel = function(park, tag, title, bar_corner, arrow_corner, grid) {
+park_panel = function(park, tag, title, grid) {
   e = ext[[park]]; w = e[3] - e[1]; h = e[4] - e[2]
-  at = function(corner, fx, fy) c(e[1] + corner[1] * w + fx, e[2] + corner[2] * h + fy)
-  bar = at(bar_corner, 0, 0); arrow = at(arrow_corner, 0, 0)
   L = filter(lakes, site == park)
   ggplot() +
     geom_sf(data = filter(parks, site == park), fill = PAPER_SITE_COLORS[[park]], alpha = .1,
@@ -187,10 +185,11 @@ park_panel = function(park, tag, title, bar_corner, arrow_corner, grid) {
     scale_fill_manual(values = c(`Vegetation record` = '#1B7837', `Fire record` = '#E8A33D',
       `Vegetation and fire record` = '#1B7837'), name = 'Holocene cored lakes', limits = roles, drop = FALSE,
       guide = guide_legend(order = 2, ncol = 1, override.aes = list(size = 9))) +
-    # The same 10 km bar and the same arrow in both maps (sized on the panel, which
-    # is the same in both).
-    scale_bar(bar[1], bar[2], km = 10, n = 2, height = h * .012, text_size = 6) +
-    north_arrow(arrow[1], arrow[2], h * .08) +
+    # The same north arrow and 10 km bar in both maps, side by side in the
+    # bottom-left corner (Bills, 11 Nov 2026). Sized and placed on the panel, which
+    # is the same in both, so they sit at the same spot.
+    north_arrow(e[1] + .05 * w, e[2] + .035 * h, h * .075) +
+    scale_bar(e[1] + .11 * w, e[2] + .035 * h, km = 10, n = 2, height = h * .012, text_size = 6) +
     # Grid lines every `grid` degrees in both directions. NOCA covers about twice the
     # distance of MORA, so a step twice as large spaces its ticks like those of MORA
     # on the page (Bills, 11 Nov 2026).
@@ -198,10 +197,8 @@ park_panel = function(park, tag, title, bar_corner, arrow_corner, grid) {
     coord_sf(crs = UTM, xlim = e[c(1, 3)], ylim = e[c(2, 4)], expand = FALSE) +
     labs(tag = tag, title = title) + theme_map + panel_size
 }
-p_mora = park_panel('MORA', 'A.', 'Mount Rainier National\nPark (MORA)',
-  bar_corner = c(.67, .035), arrow_corner = c(.935, .8), grid = .1)
-p_noca = park_panel('NOCA', 'B.', 'North Cascades National Park\nService Complex (NOCA)',
-  bar_corner = c(.77, .935), arrow_corner = c(.935, .78), grid = .2)
+p_mora = park_panel('MORA', 'A.', 'Mount Rainier National\nPark (MORA)', grid = .1)
+p_noca = park_panel('NOCA', 'B.', 'North Cascades National Park\nService Complex (NOCA)', grid = .2)
 
 # On top, the Washington map and the legend side by side. Below, the two park maps.
 figure = overview + guide_area() + p_mora + p_noca +
