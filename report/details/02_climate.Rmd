@@ -56,8 +56,8 @@ read_output('report/test_climate_change_variables.csv') |>
 show_figure('report/figures/supplementary/fig_standardized_climate_levels_four_variables.pdf')
 ```
 
-**Standardized climate levels** (rather than standardized change) with the climate eras and
-high-fire periods of Figure 2.
+**Standardized climate levels** (rather than standardized change) with the climate eras and the
+fire frequency of Figure 2.
 
 ## CHELSA-TraCE21k against CHELSA V2.1
 

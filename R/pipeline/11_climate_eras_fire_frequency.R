@@ -1,9 +1,13 @@
 # =============================================================================
-# 11_climate_eras_high_fire.R
+# 11_climate_eras_fire_frequency.R
 # =============================================================================
-# Literature-blind unified Holocene climate-era and high-fire-period analysis.
-# Climate and fire are classified independently. This stage freezes the era
-# grid; lake-level vegetation tracking joins it later without moving boundaries.
+# Literature-blind unified Holocene climate eras, and the Holocene fire
+# frequency of each park (accepted events per 1,000 years). Climate and fire are
+# treated independently. This stage freezes the era grid; lake-level vegetation
+# tracking joins it later without moving boundaries. Until 11 Nov 2026 it also
+# classified high-fire periods (median + 1 robust SD); that classification was
+# dropped (Bills) because no model used it, and Figure 2C now shows the
+# frequency itself.
 
 suppressPackageStartupMessages({
   library(here); library(tidyverse); library(patchwork)
@@ -136,7 +140,7 @@ period_comparison = bind_rows(
   select(catalog, everything())
 
 # =============================================================================
-# FIRE: source-specific accepted events, independent 1,000-year frequency rule
+# FIRE: source-specific accepted events, counted in centred 1,000-year windows
 # =============================================================================
 events = read_csv(FIRE_EVENTS, show_col_types = FALSE)
 continuous = read_csv(FIRE_SERIES, show_col_types = FALSE)
@@ -151,7 +155,7 @@ fire_settings = read_csv(FIRE_SETTINGS, show_col_types = FALSE) |>
       "regional MORA evidence; Walsh settings implemented in tapas",
       "local Panther Potholes evidence; Prichard-style settings implemented in tapas"))
 if (nrow(fire_settings) != 4L || any(fire_settings$engine != "tapas"))
-  stop("High-fire periods require four all-tapas source settings.")
+  stop("The fire frequency requires four all-tapas source settings.")
 
 # =============================================================================
 # AUDIT OUTPUTS
@@ -176,12 +180,12 @@ write_csv(composite$site_phase,
 write_csv(fire_settings, out("holocene_era_fire_source_settings.csv"))
 write_csv(fire$core, out("holocene_era_fire_core_frequency.csv"))
 write_csv(fire$site_grid, out("holocene_era_fire_site_frequency.csv"))
-write_csv(fire$thresholds, out("holocene_era_fire_thresholds.csv"))
-write_csv(fire$periods, out("holocene_era_high_fire_periods.csv"))
+# The dropped classification's tables are removed, so no stale copy remains.
+unlink(out(c("holocene_era_fire_thresholds.csv", "holocene_era_high_fire_periods.csv")))
 
 
 cat("Unified climate eras:\n")
 print(as.data.frame(era_catalog |>
   select(era_id, era_class, older_cal_bp, younger_cal_bp,
          active_variable_directions)))
-cat("High-fire periods: ", nrow(fire$periods), "\n", sep = "")
+cat("Fire frequency: ", nrow(fire$site_grid), " park-date rows\n", sep = "")

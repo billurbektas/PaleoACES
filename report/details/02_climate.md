@@ -139,7 +139,7 @@ Fig. S4.
 <img src="../figures/png/fig_standardized_climate_levels_four_variables.png" alt="" width="1650" />
 
 **Standardized climate levels** (rather than standardized change) with
-the climate eras and high-fire periods of Figure 2.
+the climate eras and the fire frequency of Figure 2.
 
 ## CHELSA-TraCE21k against CHELSA V2.1
 

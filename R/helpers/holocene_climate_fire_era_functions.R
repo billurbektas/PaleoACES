@@ -402,71 +402,19 @@ calculate_fire_frequency = function(events, continuous, window_years = 1000L,
     })
   })
 
-  core = rows |>
-    dplyr::group_by(.data$site, .data$lake) |>
-    dplyr::mutate(
-      core_max_frequency = max(.data$peak_frequency_per_1000yr, na.rm = TRUE),
-      normalized_frequency = dplyr::if_else(.data$core_max_frequency > 0,
-        .data$peak_frequency_per_1000yr / .data$core_max_frequency, NA_real_)) |>
-    dplyr::ungroup()
-
+  # Each core: accepted events per 1,000 years in the centred window.
+  core = rows
+  # Each park: the mean over the cores covering a date. MORA needs at least two
+  # of its three cores; NOCA has the one Panther Potholes core. The frequency
+  # itself is the result (Bills, 11 Nov 2026): no normalization to each core's
+  # maximum and no high-fire threshold, which no model used.
   site_grid = core |>
     dplyr::group_by(.data$site, .data$cal_bp) |>
     dplyr::summarise(
-      covered_cores = sum(is.finite(.data$normalized_frequency)),
-      normalized_frequency = if (dplyr::first(.data$site) == "MORA" &
+      covered_cores = sum(is.finite(.data$peak_frequency_per_1000yr)),
+      events_per_1000yr = if (dplyr::first(.data$site) == "MORA" &
         .data$covered_cores < 2L) NA_real_ else
-        mean(.data$normalized_frequency, na.rm = TRUE), .groups = "drop") |>
-    dplyr::group_by(.data$site) |>
-    dplyr::mutate(
-      threshold_median = stats::median(.data$normalized_frequency, na.rm = TRUE),
-      threshold_robust_sd = robust_sd(.data$normalized_frequency),
-      high_fire_threshold = .data$threshold_median + .data$threshold_robust_sd,
-      high_fire = is.finite(.data$normalized_frequency) &
-        .data$normalized_frequency > .data$high_fire_threshold) |>
-    dplyr::ungroup()
+        mean(.data$peak_frequency_per_1000yr, na.rm = TRUE), .groups = "drop")
 
-  fire_periods = site_grid |>
-    dplyr::filter(is.finite(.data$normalized_frequency)) |>
-    dplyr::arrange(.data$site, .data$cal_bp) |>
-    dplyr::group_by(.data$site) |>
-    dplyr::mutate(run_id = cumsum(.data$high_fire != dplyr::lag(
-      .data$high_fire, default = dplyr::first(.data$high_fire)) |
-      .data$cal_bp - dplyr::lag(.data$cal_bp,
-        default = dplyr::first(.data$cal_bp) - grid_step) != grid_step) + 1L) |>
-    dplyr::filter(.data$high_fire) |>
-    dplyr::group_by(.data$site, .data$run_id) |>
-    dplyr::summarise(
-      older_cal_bp = if (length(.data$cal_bp)) max(.data$cal_bp) + grid_step / 2 else NA_real_,
-      younger_cal_bp = if (length(.data$cal_bp)) min(.data$cal_bp) - grid_step / 2 else NA_real_,
-      duration_years = .data$older_cal_bp - .data$younger_cal_bp,
-      maximum_normalized_frequency = if (length(.data$normalized_frequency)) max(.data$normalized_frequency) else NA_real_,
-      threshold = dplyr::first(.data$high_fire_threshold), .groups = "drop")
-
-  corroboration_core = core |>
-    tidyr::pivot_longer(c("peak_strength_percentile_sum",
-      "background_char_z"), names_to = "stream", values_to = "value") |>
-    dplyr::group_by(.data$site, .data$lake, .data$stream) |>
-    dplyr::mutate(threshold_median = stats::median(.data$value, na.rm = TRUE),
-      threshold_robust_sd = robust_sd(.data$value),
-      threshold = .data$threshold_median + .data$threshold_robust_sd,
-      elevated = is.finite(.data$value) & .data$value > .data$threshold) |>
-    dplyr::ungroup()
-  corroboration_site = corroboration_core |>
-    dplyr::group_by(.data$site, .data$cal_bp, .data$stream) |>
-    dplyr::summarise(
-      covered_cores = sum(is.finite(.data$value)),
-      elevated_cores = sum(.data$elevated, na.rm = TRUE),
-      corroborates = if (dplyr::first(.data$site) == "MORA")
-        .data$covered_cores >= 2L & .data$elevated_cores >= 2L else
-        .data$covered_cores >= 1L & .data$elevated_cores >= 1L,
-      .groups = "drop")
-
-  list(coverage = coverage, core = core, site_grid = site_grid,
-       thresholds = site_grid |>
-         dplyr::select("site", "threshold_median", "threshold_robust_sd",
-                       "high_fire_threshold") |>
-         dplyr::distinct(),
-       periods = fire_periods, corroboration_core = corroboration_core,
-       corroboration_site = corroboration_site)
+  list(coverage = coverage, core = core, site_grid = site_grid)
 }

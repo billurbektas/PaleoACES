@@ -37,15 +37,6 @@ Signed 1,000-year changes are computed in ten phase offsets, each variable is th
 its maximum with at least eight of ten phases agreeing in direction, qualifying cells of any
 variable are joined, and adjacent cells are merged into numbered climate-change and stability eras.
 
-## High-fire periods
-
-```{r}
-show_figure('report/figures/worked_examples/fig_holocene_fire_method_worked_example.pdf')
-```
-
-Centered 1,000-year event frequencies, normalized per record, averaged per site and thresholded
-with Eq. 1 (Appendix S2.3).
-
 ## Tracking geometry
 
 ```{r}

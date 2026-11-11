@@ -125,24 +125,17 @@ stopifnot(isTRUE(all.equal(
   composite |> arrange(site, t, offset) |> pull(composite_magnitude),
   composite_check |> arrange(site, t, offset) |> pull(check))))
 
-# Fire settings, normalization, equal-core aggregation, robust thresholds, and
-# every contiguous above-threshold run are independently checked.
+# Fire settings and the fire frequency (Bills, 11 Nov 2026: the high-fire
+# classification was dropped; Figure 2C shows events per 1,000 years). Every
+# window count is recounted from the accepted events, and the park series is
+# checked as the mean over the covered cores.
 fire_settings = read_csv(out("holocene_era_fire_source_settings.csv"),
   show_col_types = FALSE)
 core = read_csv(out("holocene_era_fire_core_frequency.csv"),
   show_col_types = FALSE)
 site = read_csv(out("holocene_era_fire_site_frequency.csv"),
   show_col_types = FALSE)
-fire_thresholds = read_csv(out("holocene_era_fire_thresholds.csv"),
-  show_col_types = FALSE)
-periods = read_csv(out("holocene_era_high_fire_periods.csv"),
-  show_col_types = FALSE)
 events = read_csv(out("holocene_fire_source_events.csv"),
-  show_col_types = FALSE)
-fire_ratio = read_csv(out("figures/holocene_era_fire_threshold_ratio.csv"),
-  show_col_types = FALSE)
-fire_example = read_csv(
-  out("worked_examples/holocene_fire_method_worked_example.csv"),
   show_col_types = FALSE)
 stopifnot(
   nrow(fire_settings) == 4L,
@@ -150,103 +143,31 @@ stopifnot(
   identical(fire_settings$interpolation_years, c(48, 47, 42, 12)),
   identical(fire_settings$background_years, c(800, 1000, 500, 500)),
   identical(fire_settings$peak_probability, c(.95, .95, .95, .99)),
-  fire_settings$interpolation_years[fire_settings$lake == "PantherPotholes"] == 12,
-  fire_settings$background_years[fire_settings$lake == "PantherPotholes"] == 500,
-  fire_settings$peak_probability[fire_settings$lake == "PantherPotholes"] == .99,
   sum(events$lake == "PantherPotholes") == 66L,
-  all(abs((core$peak_frequency_per_1000yr / core$core_max_frequency) -
-    core$normalized_frequency) < 1e-12),
-  all(core |> group_by(site, lake) |>
-    summarise(mx = max(normalized_frequency), .groups = "drop") |> pull(mx) == 1))
-
-mora_check = core |> filter(site == "MORA") |>
-  group_by(cal_bp) |>
-  summarise(covered = sum(is.finite(normalized_frequency)),
-    check = ifelse(covered >= 2, mean(normalized_frequency), NA_real_),
+  all(core$window_years == 1000),
+  all(abs(core$peak_frequency_per_1000yr - core$accepted_event_count) < 1e-12),
+  # The dropped classification leaves no columns or tables behind.
+  !any(c("normalized_frequency", "high_fire", "high_fire_threshold") %in% c(names(core), names(site))),
+  !file.exists(out("holocene_era_high_fire_periods.csv")),
+  !file.exists(out("holocene_era_fire_thresholds.csv")))
+# Independent recount of every window: events in [t - 500, t + 500).
+recount = vapply(seq_len(nrow(core)), function(i) {
+  e = events$age_cal_yr_BP[events$lake == core$lake[i]]
+  sum(e >= core$cal_bp[i] - 500 & e < core$cal_bp[i] + 500)
+}, numeric(1))
+stopifnot(all(recount == core$accepted_event_count))
+site_check = core |> group_by(site, cal_bp) |>
+  summarise(covered = sum(is.finite(peak_frequency_per_1000yr)),
+    check = ifelse(first(site) == "MORA" & covered < 2, NA_real_, mean(peak_frequency_per_1000yr)),
     .groups = "drop") |>
-  inner_join(site |> filter(site == "MORA"), by = "cal_bp") |>
-  filter(covered >= 2)
-stopifnot(isTRUE(all.equal(mora_check$check, mora_check$normalized_frequency)))
-threshold_check = site |> group_by(site) |>
-  summarise(med = median(normalized_frequency, na.rm = TRUE),
-    rsd = robust_sd(normalized_frequency), threshold = med + rsd,
-    .groups = "drop") |>
-  arrange(site)
-stopifnot(isTRUE(all.equal(threshold_check$threshold,
-  fire_thresholds |> arrange(site) |> pull(high_fire_threshold))))
-
-period_check = site |> filter(is.finite(normalized_frequency)) |>
-  arrange(site, cal_bp) |> group_by(site) |>
-  mutate(run_id = cumsum(high_fire != lag(high_fire,
-    default = first(high_fire))) + 1L) |>
-  filter(high_fire) |> group_by(site, run_id) |>
-  summarise(older_cal_bp = max(cal_bp) + 50,
-    younger_cal_bp = min(cal_bp) - 50, .groups = "drop")
-stopifnot(isTRUE(all.equal(
-  periods |> select(site, run_id, older_cal_bp, younger_cal_bp), period_check,
-  check.attributes = FALSE)),
-  sum(periods$site == "MORA") == 5L,
-  sum(periods$site == "NOCA") == 6L)
-
-# The display ratio is exactly normalized frequency / the already-frozen
-# site-specific robust threshold. It visualizes, but does not redefine, fire.
-fire_ratio_check = site |>
-  filter(between(cal_bp, 0, 10500), is.finite(normalized_frequency),
-    is.finite(high_fire_threshold), high_fire_threshold > 0) |>
-  transmute(site, cal_bp,
-    check_ratio = normalized_frequency / high_fire_threshold,
-    check_high_fire = high_fire) |>
-  inner_join(fire_ratio |>
-      select(site, cal_bp, high_fire_ratio, high_fire),
-    by = c("site", "cal_bp"))
-stopifnot(
-  nrow(fire_ratio_check) == nrow(fire_ratio),
-  max(abs(fire_ratio_check$check_ratio -
-          fire_ratio_check$high_fire_ratio)) < 1e-12,
-  all(fire_ratio_check$check_high_fire == fire_ratio_check$high_fire),
-  all(fire_ratio$high_fire == (fire_ratio$high_fire_ratio > 1))
-)
-
-# The worked example is an auditable slice of the same frozen method. Event
-# counts are independently recovered from the half-open [1,800, 2,800) window.
-example_counts = events |>
-  filter(age_cal_yr_BP >= 1800, age_cal_yr_BP < 2800) |>
-  count(site, lake, name = "count_check")
-example_check = fire_example |>
-  left_join(example_counts, by = c("site", "lake")) |>
-  mutate(count_check = coalesce(count_check, 0L))
-stopifnot(
-  nrow(fire_example) == 4L,
-  all(fire_example$example_cal_bp == 2300),
-  all(fire_example$window_younger_cal_bp == 1800),
-  all(fire_example$window_older_cal_bp == 2800),
-  identical(fire_example$accepted_event_count, c(3, 2, 3, 7)),
-  all(example_check$accepted_event_count == example_check$count_check),
-  max(abs(fire_example$normalized_core_frequency -
-      fire_example$frequency_per_1000_years /
-        fire_example$core_max_frequency)) < 1e-12,
-  abs(unique(fire_example$normalized_site_frequency[
-      fire_example$site == "MORA"]) -
-    mean(fire_example$normalized_core_frequency[
-      fire_example$site == "MORA"])) < 1e-12,
-  abs(unique(fire_example$normalized_site_frequency[
-      fire_example$site == "NOCA"]) -
-    fire_example$normalized_core_frequency[fire_example$site == "NOCA"]) <
-      1e-12,
-  max(abs(fire_example$high_fire_threshold -
-      (fire_example$threshold_median +
-       fire_example$threshold_robust_sd))) < 1e-12,
-  max(abs(fire_example$fire_frequency_ratio -
-      fire_example$normalized_site_frequency /
-        fire_example$high_fire_threshold)) < 1e-12,
-  all(fire_example$high_fire ==
-      (fire_example$fire_frequency_ratio > 1)),
-  all(fire_example$high_fire[fire_example$site == "MORA"]),
-  !any(fire_example$high_fire[fire_example$site == "NOCA"])
-)
+  inner_join(site, by = c("site", "cal_bp"))
+stopifnot(nrow(site_check) == nrow(site), all(site_check$covered == site_check$covered_cores),
+  identical(is.na(site_check$check), is.na(site_check$events_per_1000yr)),
+  isTRUE(all.equal(site_check$check[!is.na(site_check$check)],
+    site_check$events_per_1000yr[!is.na(site_check$events_per_1000yr)])))
 
 # No literature input or retired state machine may influence the stage.
-source_text = paste(readLines(here("R/pipeline/11_climate_eras_high_fire.R"),
+source_text = paste(readLines(here("R/pipeline/11_climate_eras_fire_frequency.R"),
   warn = FALSE), collapse = "\n")
 helper_text = paste(readLines(here("R/helpers/holocene_climate_fire_era_functions.R"),
   warn = FALSE), collapse = "\n")
@@ -261,10 +182,9 @@ stopifnot(!grepl("holocene_period_candidates", source_text, fixed = TRUE),
 
 
 required_figures = c(fig("main", "fig_climate_levels_eras_fire.pdf"),
-  fig("worked_examples", "fig_holocene_climate_period_method_worked_example.pdf"),
-  fig("worked_examples", "fig_holocene_fire_method_worked_example.pdf"))
+  fig("worked_examples", "fig_holocene_climate_period_method_worked_example.pdf"))
 if (render_figures)
   stopifnot(all(file.exists(required_figures)),
             all(file.info(required_figures)$size > 10000))
-cat("PASS: unified climate eras and independent fire periods",
+cat("PASS: unified climate eras and the fire frequency of each park",
     if (render_figures) ", including figures.\n" else ".\n", sep = "")

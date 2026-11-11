@@ -85,12 +85,10 @@ Step,File,Description,Size (kB)
 11_climate_eras,holocene_era_display_directional_cells.csv,era and high-fire classification tables,53
 11_climate_eras,holocene_era_display_variable_thresholds.csv,era and high-fire classification tables,0
 11_climate_eras,holocene_era_driver_subintervals.csv,era and high-fire classification tables,1
-11_climate_eras,holocene_era_fire_core_frequency.csv,era and high-fire classification tables,34
-11_climate_eras,holocene_era_fire_site_frequency.csv,era and high-fire classification tables,21
+11_climate_eras,holocene_era_fire_core_frequency.csv,era and high-fire classification tables,27
+11_climate_eras,holocene_era_fire_site_frequency.csv,era and high-fire classification tables,4
 11_climate_eras,holocene_era_fire_source_settings.csv,era and high-fire classification tables,1
-11_climate_eras,holocene_era_fire_thresholds.csv,era and high-fire classification tables,0
 11_climate_eras,holocene_era_grid.csv,era and high-fire classification tables,3
-11_climate_eras,holocene_era_high_fire_periods.csv,era and high-fire classification tables,1
 11_climate_eras,holocene_period_comparison.csv,Periods after Step 0 against the four-variable periods,2
 11_climate_eras,holocene_periods.csv,"The analysis periods (C and S, sub-periods where split) that define the lake-periods",0
 12_tracking,cca_tracking_anthropocene_plot_calculations.csv,Holocene and Anthropocene tracking calculations,580
@@ -147,7 +145,6 @@ figures,charcoal_dunwiddie_walsh_correlations.csv,"Tables behind the figures (ce
 figures,charcoal_dunwiddie_walsh_event_matching.csv,"Tables behind the figures (centroids, annotations)",0
 figures,holocene_anthropocene_raw_climate_rate_comparison.csv,"Tables behind the figures (centroids, annotations)",1
 figures,holocene_climate_level_rates.csv,"Tables behind the figures (centroids, annotations)",1
-figures,holocene_era_fire_threshold_ratio.csv,era and high-fire classification tables,21
 figures,holocene_standardized_climate_levels.csv,"Tables behind the figures (centroids, annotations)",67
 figures,species_order_elevation.csv,"Tables behind the figures (centroids, annotations)",1
 report,noca_plot_area_responses.csv,Tables computed only for the report,1
@@ -162,4 +159,3 @@ report,test_species_occupancy.csv,Tables computed only for the report,1
 report,test_survey_year_anomaly_plot.csv,Tables computed only for the report,812
 report,test_survey_year_anomaly.csv,Tables computed only for the report,9
 worked_examples,fire_event_detection_lake_audit.csv,Tables behind the worked examples,2
-worked_examples,holocene_fire_method_worked_example.csv,Tables behind the worked examples,1

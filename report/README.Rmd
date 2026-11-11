@@ -188,7 +188,7 @@ cal BP falls into `r sum(periods$period_type == 'Holocene-C')` climate-change pe
 split. The first four-variable climate-change period (C1a to C1c, 9600 to 7200 cal BP) becomes C1,
 S1 and C2: its middle part (8600 to 8200 cal BP) was driven by winter wetting alone, which is no
 longer a constraint. From 7200 cal BP onward every boundary is unchanged, and the periods are
-renumbered. The high-fire periods do not depend on the CCA and are unchanged.
+renumbered.
 
 ```{r fig-2-main}
 show_figure('report/figures/main/fig_climate_levels_eras_fire.pdf')
@@ -209,11 +209,15 @@ the legacy to the resurvey climate window, the median over plots in each park: s
 `r sprintf('%+.2f', rates2$rate[rates2$variable == 'MSpT' & rates2$site == 'NOCA'])` °C at NOCA, summer precipitation
 `r sprintf('%+.1f', rates2$rate[rates2$variable == 'SP' & rates2$site == 'MORA'])` mm at MORA and
 `r sprintf('%+.1f', rates2$rate[rates2$variable == 'SP' & rates2$site == 'NOCA'])` mm at NOCA. These come from a change
-over about 29 years, while each Holocene rate spans a whole period of 400 to 2,700 years. (C) Fire-frequency
-ratio of each park, the frequency of accepted fire events relative to the park's high-fire threshold.
-Values above 1 (red) are high-fire periods.
+over about 29 years, while each Holocene rate spans a whole period of 400 to 2,700 years. (C) Fire
+frequency of each park: accepted fire events per 1,000 years, counted in a 1,000-year window centred
+every 100 years. At MORA it is the mean of the three Sunrise Ridge cores of Walsh et al. (2017) wherever
+at least two cover the date, at NOCA the Panther Potholes core (Prichard et al. 2009). The two parks are
+on different y axes because their frequencies are not comparable: Panther Potholes is resampled every 12
+years and the Sunrise Ridge cores every 42 to 48 years, and a finer record resolves more events. The
+MORA cores lie on Sunrise Ridge, away from the vegetation lakes (Fig. A4).
 
-Stages and helpers: [`R/pipeline/11_climate_eras_high_fire.R`](R/pipeline/11_climate_eras_high_fire.R),
+Stages and helpers: [`R/pipeline/11_climate_eras_fire_frequency.R`](R/pipeline/11_climate_eras_fire_frequency.R),
 [`R/helpers/holocene_climate_fire_era_functions.R`](R/helpers/holocene_climate_fire_era_functions.R),
 [`R/figures/main_fig2_climate_eras_fire.R`](R/figures/main_fig2_climate_eras_fire.R).
 
@@ -889,7 +893,7 @@ show_figure('report/figures/supplementary/fig_standardized_climate_levels_four_v
 **Fig. A1. Holocene climate levels of the four seasonal variables.** As Figure 2A for spring
 temperature, winter temperature, summer precipitation and winter precipitation, without the rate
 labels. Only spring temperature and summer precipitation constrain the CCA and define the periods.
-(B) Fire-frequency ratio as in Figure 2B.
+(B) Fire frequency as in Figure 2C.
 
 ```{r fig-app-change}
 show_figure('report/figures/supplementary/fig_standardized_climate_change_four_variables.pdf')
@@ -900,8 +904,8 @@ show_figure('report/figures/supplementary/fig_standardized_climate_change_four_v
 deviation. Filled points mark the cells of the two CCA constraints that qualify as directional change
 (beyond 50% of the variable's maximum, with at least 8 of 10 phases agreeing in direction). The
 periods are classified from these points. Winter temperature and winter precipitation are shown for
-context. Brackets at the left give each variable's stability range. (B) Fire-frequency ratio as in
-Figure 2B.
+context. Brackets at the left give each variable's stability range. (B) Fire frequency as in
+Figure 2C.
 
 ```{r fig-app-unrotated}
 show_figure('report/figures/supplementary/fig_cca_biplot_unrotated.pdf', width = '70%')
@@ -1195,7 +1199,7 @@ deeper Holocene chronology used in our analyses.
 
 `r details_link('03_chronology', 'Chronology details')` (every control and its source).
 
-# Appendix S2. Reconstruction and classification of fire histories
+# Appendix S2. Reconstruction of fire histories
 
 ### S2.1 Holocene charcoal records
 
@@ -1243,26 +1247,15 @@ noise threshold (dashed line) and are then screened with a 75-year minimum-count
 (p ≤ 0.05): filled circles are accepted events, red crosses rejected candidates. The manuscript
 example is Little Sunrise Lake (lower left; 500-year background, 95th percentile).
 
-### S2.3 Identification of high-fire periods
+### S2.3 Fire frequency
 
-We calculated fire-event frequency within centered 1,000-year windows evaluated every 100 years,
-normalized each record by its own maximum, averaged the normalized MORA records wherever at least
-two were available, and identified high-fire periods separately for each site with
-
-**High-fire threshold = median + 1.4826 × MAD (Eq. 1)**
-
-where MAD is the median absolute deviation of the normalized site-level fire-frequency series.
-Consecutive above-threshold dates form one high-fire period; gaps are not bridged and no minimum
-duration is imposed (`R/pipeline/11_climate_eras_high_fire.R`; worked example in
-`r details_link('09_worked_examples', 'Worked examples')`).
-
-```{r high-fire-periods}
-read_output('holocene_era_high_fire_periods.csv') |>
-  transmute(Site = site, `Older (cal BP)` = older_cal_bp, `Younger (cal BP)` = younger_cal_bp,
-    `Duration (years)` = duration_years, `Maximum normalized frequency` = maximum_normalized_frequency,
-    Threshold = threshold) |>
-  show_table('high_fire_periods', digits = 2, caption = '**High-fire periods identified by Eq. 1.**')
-```
+We counted the accepted events of each record within centred 1,000-year windows evaluated every 100
+years and expressed them as events per 1,000 years. The MORA series is the mean of the three Sunrise
+Ridge records wherever at least two cover the date, the NOCA series is the Panther Potholes record
+(`R/pipeline/11_climate_eras_fire_frequency.R`). Figure 2C shows both, each park on its own axis,
+because the records' different resolutions make their frequencies incomparable between the parks. No
+high-fire periods are classified: an earlier version marked periods above the park's median plus one
+robust standard deviation, but no model used them, and the frequency itself is shown instead.
 
 ### S2.4 Reproducibility against the original studies
 

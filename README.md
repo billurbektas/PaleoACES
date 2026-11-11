@@ -216,8 +216,7 @@ period is split. The first four-variable climate-change period (C1a to
 C1c, 9600 to 7200 cal BP) becomes C1, S1 and C2: its middle part (8600
 to 8200 cal BP) was driven by winter wetting alone, which is no longer a
 constraint. From 7200 cal BP onward every boundary is unchanged, and the
-periods are renumbered. The high-fire periods do not depend on the CCA
-and are unchanged.
+periods are renumbered.
 
 <img src="report/figures/png/fig_climate_levels_eras_fire.png" alt="" width="100%" />
 
@@ -236,13 +235,19 @@ Anthropocene change per century from the legacy to the resurvey climate
 window, the median over plots in each park: spring temperature +1.30 °C
 at MORA and +0.77 °C at NOCA, summer precipitation -143.6 mm at MORA and
 +103.6 mm at NOCA. These come from a change over about 29 years, while
-each Holocene rate spans a whole period of 400 to 2,700 years. (C)
-Fire-frequency ratio of each park, the frequency of accepted fire events
-relative to the park’s high-fire threshold. Values above 1 (red) are
-high-fire periods.
+each Holocene rate spans a whole period of 400 to 2,700 years. (C) Fire
+frequency of each park: accepted fire events per 1,000 years, counted in
+a 1,000-year window centred every 100 years. At MORA it is the mean of
+the three Sunrise Ridge cores of Walsh et al. (2017) wherever at least
+two cover the date, at NOCA the Panther Potholes core (Prichard et
+al. 2009). The two parks are on different y axes because their
+frequencies are not comparable: Panther Potholes is resampled every 12
+years and the Sunrise Ridge cores every 42 to 48 years, and a finer
+record resolves more events. The MORA cores lie on Sunrise Ridge, away
+from the vegetation lakes (Fig. A4).
 
 Stages and helpers:
-[`R/pipeline/11_climate_eras_high_fire.R`](R/pipeline/11_climate_eras_high_fire.R),
+[`R/pipeline/11_climate_eras_fire_frequency.R`](R/pipeline/11_climate_eras_fire_frequency.R),
 [`R/helpers/holocene_climate_fire_era_functions.R`](R/helpers/holocene_climate_fire_era_functions.R),
 [`R/figures/main_fig2_climate_eras_fire.R`](R/figures/main_fig2_climate_eras_fire.R).
 
@@ -1579,7 +1584,7 @@ The last three are written by the model details page (**Model details
 Figure 2A for spring temperature, winter temperature, summer
 precipitation and winter precipitation, without the rate labels. Only
 spring temperature and summer precipitation constrain the CCA and define
-the periods. (B) Fire-frequency ratio as in Figure 2B.
+the periods. (B) Fire frequency as in Figure 2C.
 
 <img src="report/figures/png/fig_standardized_climate_change_four_variables.png" alt="" width="100%" />
 
@@ -1591,7 +1596,7 @@ change (beyond 50% of the variable’s maximum, with at least 8 of 10
 phases agreeing in direction). The periods are classified from these
 points. Winter temperature and winter precipitation are shown for
 context. Brackets at the left give each variable’s stability range. (B)
-Fire-frequency ratio as in Figure 2B.
+Fire frequency as in Figure 2C.
 
 <img src="report/figures/png/fig_cca_biplot_unrotated.png" alt="" width="100%" />
 
@@ -1984,7 +1989,7 @@ Holocene chronology used in our analyses.
 [03_chronology](report/details/03_chronology.md) (every control and its
 source).
 
-# Appendix S2. Reconstruction and classification of fire histories
+# Appendix S2. Reconstruction of fire histories
 
 ### S2.1 Holocene charcoal records
 
@@ -2038,41 +2043,18 @@ minimum-count test (p ≤ 0.05): filled circles are accepted events, red
 crosses rejected candidates. The manuscript example is Little Sunrise
 Lake (lower left; 500-year background, 95th percentile).
 
-### S2.3 Identification of high-fire periods
+### S2.3 Fire frequency
 
-We calculated fire-event frequency within centered 1,000-year windows
-evaluated every 100 years, normalized each record by its own maximum,
-averaged the normalized MORA records wherever at least two were
-available, and identified high-fire periods separately for each site
-with
-
-**High-fire threshold = median + 1.4826 × MAD (Eq. 1)**
-
-where MAD is the median absolute deviation of the normalized site-level
-fire-frequency series. Consecutive above-threshold dates form one
-high-fire period; gaps are not bridged and no minimum duration is
-imposed (`R/pipeline/11_climate_eras_high_fire.R`; worked example in
-**Worked examples →**
-[09_worked_examples](report/details/09_worked_examples.md)).
-
-**High-fire periods identified by Eq. 1.**
-
-| Site | Older (cal BP) | Younger (cal BP) | Duration (years) | Maximum normalized frequency | Threshold |
-|:---|---:|---:|---:|---:|---:|
-| MORA | 750 | 650 | 100 | 0.67 | 0.61 |
-| MORA | 2650 | 1550 | 1100 | 0.89 | 0.61 |
-| MORA | 2950 | 2750 | 200 | 0.67 | 0.61 |
-| MORA | 6850 | 6350 | 500 | 0.78 | 0.61 |
-| MORA | 7150 | 7050 | 100 | 0.67 | 0.61 |
-| NOCA | 950 | 650 | 300 | 0.73 | 0.68 |
-| NOCA | 2250 | 2150 | 100 | 0.73 | 0.68 |
-| NOCA | 2450 | 2350 | 100 | 0.73 | 0.68 |
-| NOCA | 8650 | 7550 | 1100 | 1.00 | 0.68 |
-| NOCA | 9150 | 9050 | 100 | 0.73 | 0.68 |
-| NOCA | 9850 | 9650 | 200 | 0.73 | 0.68 |
-
-<sub>Table file:
-[high_fire_periods.csv](report/tables/high_fire_periods.csv)</sub>
+We counted the accepted events of each record within centred 1,000-year
+windows evaluated every 100 years and expressed them as events per 1,000
+years. The MORA series is the mean of the three Sunrise Ridge records
+wherever at least two cover the date, the NOCA series is the Panther
+Potholes record (`R/pipeline/11_climate_eras_fire_frequency.R`). Figure
+2C shows both, each park on its own axis, because the records’ different
+resolutions make their frequencies incomparable between the parks. No
+high-fire periods are classified: an earlier version marked periods
+above the park’s median plus one robust standard deviation, but no model
+used them, and the frequency itself is shown instead.
 
 ### S2.4 Reproducibility against the original studies
 

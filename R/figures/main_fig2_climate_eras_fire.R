@@ -17,7 +17,6 @@ required = c(
   climate = out("holocene_era_climate_directional_cells.csv"),
   eras = out("holocene_era_catalog.csv"),
   subphases = out("holocene_era_climate_change_subphases.csv"),
-  fire = out("holocene_era_high_fire_periods.csv"),
   fire_frequency = out("holocene_era_fire_site_frequency.csv"),
   thresholds = out("holocene_era_climate_variable_thresholds.csv"),
   anthropocene = out("cca_tracking_anthropocene_plot_calculations.csv"),
@@ -25,12 +24,11 @@ required = c(
   paleo_climate = out("chelsa_paleo_ponds.csv"),
   scaling = out("cca_tracking_climate_scaling.csv"))
 if (!all(file.exists(required))) stop(
-  "Run R/pipeline/12_tracking.R and R/pipeline/11_climate_eras_high_fire.R first.")
+  "Run R/pipeline/12_tracking.R and R/pipeline/11_climate_eras_fire_frequency.R first.")
 
 climate = read_csv(required[["climate"]], show_col_types = FALSE)
 eras = read_csv(required[["eras"]], show_col_types = FALSE)
 subphases = read_csv(required[["subphases"]], show_col_types = FALSE)
-fire = read_csv(required[["fire"]], show_col_types = FALSE)
 fire_frequency = read_csv(required[["fire_frequency"]], show_col_types = FALSE)
 anthropocene = read_csv(required[["anthropocene"]], show_col_types = FALSE)
 regional_phases = read_csv(required[["regional_phases"]], show_col_types = FALSE)
@@ -281,41 +279,29 @@ climate_panel = function(text_scale = 1, show_stability = TRUE,
 }
 p_climate = climate_panel()
 
-# A2. The fire-frequency ratio exposes the actual classification rule. A value
-# of 1 is the site-specific robust threshold; values above 1 are high fire.
-# This threshold normalization is dimensionless and avoids comparing raw
-# charcoal magnitudes between the regional MORA and local NOCA records.
-fire_ratio = fire_frequency |>
-  filter(between(cal_bp, time_limits[2], time_limits[1]),
-    is.finite(normalized_frequency), is.finite(high_fire_threshold),
-    high_fire_threshold > 0) |>
-  mutate(site = factor(site, levels = c("MORA", "NOCA")),
-    high_fire_ratio = normalized_frequency / high_fire_threshold)
-stopifnot(nrow(fire_ratio) > 0,
-  all(fire_ratio$high_fire == (fire_ratio$high_fire_ratio > 1)))
-write_csv(fire_ratio,
-  out("figures/holocene_era_fire_threshold_ratio.csv"))
+# Fire: accepted fire events per 1,000 years in a centred window, the mean over
+# the covered cores of each park (Bills, 11 Nov 2026, in place of the high-fire
+# ratio). The two parks' frequencies are not comparable: Panther Potholes is
+# resampled every 12 years, the Sunrise Ridge cores every 42 to 48, and a finer
+# record resolves more events. Each park therefore has its own y axis.
+fire_display = fire_frequency |>
+  filter(between(cal_bp, time_limits[2], time_limits[1]), is.finite(events_per_1000yr)) |>
+  mutate(site = factor(site, levels = c("MORA", "NOCA")))
+stopifnot(nrow(fire_display) > 0, all(c("MORA", "NOCA") %in% fire_display$site))
 
 # sites selects which fire lanes are drawn (both by default).
 fire_panel = function(text_scale = 1, sites = c("MORA", "NOCA")) {
   s = text_scale
-  fire_data = filter(fire_ratio, site %in% sites)
-  ggplot(fire_data, aes(cal_bp, high_fire_ratio, group = site)) +
+  fire_data = filter(fire_display, site %in% sites)
+  ggplot(fire_data, aes(cal_bp, events_per_1000yr, group = site)) +
     era_background(.28) +
-    geom_hline(yintercept = 1, color = "grey45", linetype = "dashed",
-      linewidth = .55) +
-    geom_line(color = "grey20", linewidth = .8) +
-    geom_segment(data = filter(fire_data, high_fire),
-      aes(xend = cal_bp, y = 1, yend = high_fire_ratio),
-      color = PAPER_FIRE_RED, linewidth = 2.2, alpha = .55) +
-    geom_point(data = filter(fire_data, high_fire), color = PAPER_FIRE_RED,
-      size = 1.35 * sqrt(s)) +
-    facet_grid(rows = vars(site), scales = "fixed") +
+    geom_area(fill = "grey70", alpha = .55) +
+    geom_line(color = "grey15", linewidth = .8) +
+    facet_grid(rows = vars(site), scales = "free_y") +
     time_axis() +
     scale_fill_manual(values = era_colors, guide = "none") +
-    scale_y_continuous(expand = expansion(mult = c(.05, .10))) +
-    labs(tag = "B.", x = "cal BP",
-      y = "Fire-frequency ratio\n(high fire > 1)") +
+    scale_y_continuous(expand = expansion(mult = c(0, .10)), limits = c(0, NA)) +
+    labs(tag = "B.", x = "cal BP", y = "Fire frequency") +
     theme_paleoaces(base_size = 13 * s) +
     theme(panel.grid.minor = element_blank(),
       strip.background = element_rect(fill = "grey94", color = "grey65"),
@@ -564,7 +550,7 @@ p_summer = raw_panel("SP", "B.", FALSE)
 tight = theme(plot.margin = margin(5.5, 2, 5.5, 5.5))
 figure = wrap_plots(p_spring + tight, anthropocene_column("MSpT", p_spring, TRUE),
   p_summer + tight, anthropocene_column("SP", p_summer, FALSE),
-  p_fire + labs(tag = "C.", y = "Fire-frequency ratio\n(high fire > 1)") + tight, plot_spacer(),
+  p_fire + labs(tag = "C.", y = "Fire frequency") + tight, plot_spacer(),
   ncol = 2, widths = c(5.2, 1.75), heights = c(3.6, 2.8, 2.5))
 if (render_figures) {
   # cairo_pdf draws the degree signs and arrows.
@@ -691,6 +677,6 @@ if (render_presentation) {
         paste0("fig_raw_climate_rate_lollipops.", ext)), p_rates,
       width = 20, height = 11.25, dpi = 300)
 }
-cat("Written fire-threshold ratio and raw-rate comparison CSV",
+cat("Written raw-rate comparison CSV",
     if (render_figures) ", plus the climate/fire and rate figures.\n" else ".\n",
     sep = "")

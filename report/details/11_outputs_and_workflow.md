@@ -45,7 +45,7 @@ for the report.
 | R/pipeline/08_fire_records.R | pipeline | Fire records (Appendix S2): tapas event detection for the three MORA charcoal | 406 |
 | R/pipeline/09_species_occurrences.R | pipeline | 09_species_occurrences.R | 626 |
 | R/pipeline/10_cca.R | pipeline | 10_cca.R - the pooled CCA and everything derived from it. NO FIGURES. | 665 |
-| R/pipeline/11_climate_eras_high_fire.R | pipeline | 11_climate_eras_high_fire.R | 187 |
+| R/pipeline/11_climate_eras_fire_frequency.R | pipeline | 11_climate_eras_fire_frequency.R | 191 |
 | R/pipeline/12_tracking.R | pipeline | Tracking: native-century Holocene positions, tracking metrics for both eras, | 85 |
 | R/pipeline/13_era_models.R | pipeline | Era models (PLAN.md section 5, Step 5a): Holocene stability periods, | 183 |
 | R/pipeline/14_predictor_models.R | pipeline | Explanatory models (PLAN.md section 5, Step 5). | 131 |
@@ -58,13 +58,13 @@ for the report.
 | R/figures/supp_sample_selection.R | figure | Show which plots and core samples reach CCA, starting with the supplied data. | 368 |
 | R/figures/supp_species_through_time.R | figure | supp_species_through_time.R - STEP 4, the species half | 199 |
 | R/figures/supp_tracking_transitions.R | figure | Appendix figures of the lake-period values over time (redrawn on lake-periods | 86 |
-| R/figures/main_fig2_climate_eras_fire.R | figure | main_fig2_climate_eras_fire.R | 696 |
+| R/figures/main_fig2_climate_eras_fire.R | figure | main_fig2_climate_eras_fire.R | 682 |
 | R/figures/main_fig3_cca_trajectories.R | figure | Figure 3: A, species and climate biplot; B, observed and predicted trajectories | 220 |
 | R/figures/main_fig4_era_contrasts.R | figure | Figure 4 (PLAN.md section 6; redrawn by Bills, 10 Nov 2026): fitted means | 34 |
 | R/figures/main_fig5_lag_pace_direction.R | figure | Figure 5 (PLAN.md section 6; redrawn by Bills, 10 Nov 2026): the pace and | 43 |
 | R/figures/main_fig6_climate_fire_associations.R | figure | Figure 6: climate and fire associations as model slopes (Bills, 9 Nov 2026). | 74 |
 | R/figures/main_fig7_species.R | figure | Figure 7 (PLAN.md section 6): species contributions in both eras. Species as | 151 |
-| R/worked_examples.R | worked examples | Worked examples: step-by-step illustrations of four methods, drawn from the | 660 |
+| R/worked_examples.R | worked examples | Worked examples: step-by-step illustrations of four methods, drawn from the | 408 |
 | R/tests/test_bacon_provenance.R | test | The stored Bacon chronologies are exactly what the current age-model script and | 32 |
 | R/tests/test_cca_tracking_metrics.R | test | Independent geometry and integration checks for the canonical tracking data. | 38 |
 | R/tests/test_cca_trajectory_figure.R | test | Figure 3 inputs (PLAN.md section 6): the Anthropocene arrows are the means of | 37 |
@@ -72,7 +72,7 @@ for the report.
 | R/tests/test_century_tracking.R | test | Independent native-century reconstruction, geometry and contribution checks. | 92 |
 | R/tests/test_check_vegetation.R | test | Standalone integrity checks for cleaned MORA and NOCA vegetation outputs. | 31 |
 | R/tests/test_chronology_tables.R | test | Supplementary Tables S1.1 and S1.2 must match what Bacon actually ran with. | 49 |
-| R/tests/test_holocene_climate_fire_eras.R | test | Offline gate for the unified, literature-blind climate-era/fire analysis. | 270 |
+| R/tests/test_holocene_climate_fire_eras.R | test | Offline gate for the unified, literature-blind climate-era/fire analysis. | 190 |
 | R/tests/test_known_examples.R | test | Independent known examples and regressions from the 2026-10-06 audit. | 254 |
 | R/tests/test_lake_periods.R | test | Lake-period construction (PLAN.md sections 4 and 5, Steps 1 to 4) on a | 35 |
 | R/tests/test_NOCA_fire_assignments.R | test | Offline regression checks for Wilson-style fire assignments on PaleoACES plots. | 25 |
@@ -91,7 +91,7 @@ Every file under `output/` is declared in `R/helpers/paths.R`; a script
 cannot write an undeclared output. Folders hold one file per table, in
 the folder of the step that writes it.
 
-**164 output files** (excluding the climate and age-draw cache).
+**160 output files** (excluding the climate and age-draw cache).
 
 | Step | File | Description | Size (kB) |
 |:---|:---|:---|---:|
@@ -181,12 +181,10 @@ the folder of the step that writes it.
 | 11_climate_eras | holocene_era_display_directional_cells.csv | era and high-fire classification tables | 53 |
 | 11_climate_eras | holocene_era_display_variable_thresholds.csv | era and high-fire classification tables | 0 |
 | 11_climate_eras | holocene_era_driver_subintervals.csv | era and high-fire classification tables | 1 |
-| 11_climate_eras | holocene_era_fire_core_frequency.csv | era and high-fire classification tables | 34 |
-| 11_climate_eras | holocene_era_fire_site_frequency.csv | era and high-fire classification tables | 21 |
+| 11_climate_eras | holocene_era_fire_core_frequency.csv | era and high-fire classification tables | 27 |
+| 11_climate_eras | holocene_era_fire_site_frequency.csv | era and high-fire classification tables | 4 |
 | 11_climate_eras | holocene_era_fire_source_settings.csv | era and high-fire classification tables | 1 |
-| 11_climate_eras | holocene_era_fire_thresholds.csv | era and high-fire classification tables | 0 |
 | 11_climate_eras | holocene_era_grid.csv | era and high-fire classification tables | 3 |
-| 11_climate_eras | holocene_era_high_fire_periods.csv | era and high-fire classification tables | 1 |
 | 11_climate_eras | holocene_period_comparison.csv | Periods after Step 0 against the four-variable periods | 2 |
 | 11_climate_eras | holocene_periods.csv | The analysis periods (C and S, sub-periods where split) that define the lake-periods | 0 |
 | 12_tracking | cca_tracking_anthropocene_plot_calculations.csv | Holocene and Anthropocene tracking calculations | 580 |
@@ -243,7 +241,6 @@ the folder of the step that writes it.
 | figures | charcoal_dunwiddie_walsh_event_matching.csv | Tables behind the figures (centroids, annotations) | 0 |
 | figures | holocene_anthropocene_raw_climate_rate_comparison.csv | Tables behind the figures (centroids, annotations) | 1 |
 | figures | holocene_climate_level_rates.csv | Tables behind the figures (centroids, annotations) | 1 |
-| figures | holocene_era_fire_threshold_ratio.csv | era and high-fire classification tables | 21 |
 | figures | holocene_standardized_climate_levels.csv | Tables behind the figures (centroids, annotations) | 67 |
 | figures | species_order_elevation.csv | Tables behind the figures (centroids, annotations) | 1 |
 | report | noca_plot_area_responses.csv | Tables computed only for the report | 1 |
@@ -258,7 +255,6 @@ the folder of the step that writes it.
 | report | test_survey_year_anomaly_plot.csv | Tables computed only for the report | 812 |
 | report | test_survey_year_anomaly.csv | Tables computed only for the report | 9 |
 | worked_examples | fire_event_detection_lake_audit.csv | Tables behind the worked examples | 2 |
-| worked_examples | holocene_fire_method_worked_example.csv | Tables behind the worked examples | 1 |
 
 <sub>Table file: [outputs.csv](../tables/outputs.csv)</sub>
 
@@ -276,7 +272,7 @@ built for this report).
 | main            |    12 |
 | models          |     1 |
 | supplementary   |    22 |
-| worked_examples |     4 |
+| worked_examples |     3 |
 
 <sub>Table file:
 [figure_folders.csv](../tables/figure_folders.csv)</sub>
