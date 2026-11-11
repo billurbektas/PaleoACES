@@ -91,29 +91,31 @@ and "Summer precipitation".
 
 The study covers Mount Rainier National Park (MORA) and the North Cascades National Park Service
 Complex (NOCA), Washington, USA. In each park, legacy vegetation plots were resurveyed decades later,
-and small lakes hold Holocene records in their sediments. Fig. S1 shows the plot pairs that enter
+and small lakes hold Holocene records in their sediments. Figure 2 shows the plot pairs that enter
 the CCA, whether each burned between the two surveys, and the cored lakes by what each record
 contributes. At MORA, the vegetation comes from Jay Bath, Log Wallow and Reflection Pond (Dunwiddie
 1986) and the fire from the Sunrise Ridge lakes of Walsh et al. (2017). At NOCA, vegetation and fire
 come from the same core at Panther Potholes (Prichard et al. 2009).
 
-```{r fig-s01-study-area}
-show_figure('report/figures/supplementary/figS01_study_area.pdf')
+```{r fig-2-study-area}
+show_figure('report/figures/main/fig_study_area.pdf')
 sa = read_output('cca_tracking_both_eras.csv') |> filter(period_type == 'Anthropocene') |>
   group_by(site) |> summarise(n = n(), burned = sum(burned))
 sa_n = function(p, v) sa[[v]][sa$site == p]
 ```
 
-**Fig. S1. Study area.** (A) Washington State with Mount Rainier National Park (MORA, blue) and the
-North Cascades National Park Service Complex (NOCA, orange: the national park with the Ross Lake and
-Lake Chelan National Recreation Areas). (B, C) The legacy–resurvey plot pairs that enter the CCA,
-`r sa_n('MORA', 'n')` at MORA and `r sa_n('NOCA', 'n')` at NOCA, grey when unburned and red when burned
-between the two surveys (`r sa_n('MORA', 'burned')` at MORA and `r sa_n('NOCA', 'burned')` at NOCA; the
-two MORA plots that burned are left out of the analysis), and the cored lakes: vegetation records
-(green circles, macrofossils, Dunwiddie 1986), fire records (orange triangles, charcoal, Walsh et al.
-2017) and Panther Potholes, whose core gives both (green diamond, Prichard et al. 2009). Park
-boundaries from the National Park Service administrative boundaries, Sunrise Ridge lake coordinates
-from Walsh et al. (2017, Table 1). Script: [`R/figures/supp_study_area.R`](R/figures/supp_study_area.R).
+**Figure 2. Study area.** (A) Mount Rainier National Park (MORA) and (B) the North Cascades National
+Park Service Complex (NOCA), which joins the national park with the Ross Lake and Lake Chelan National
+Recreation Areas. The points are the legacy–resurvey plot pairs that enter the CCA,
+`r sa_n('MORA', 'n')` at MORA and `r sa_n('NOCA', 'n')` at NOCA. They are grey when unburned and red when
+burned between the two surveys (`r sa_n('MORA', 'burned')` at MORA and `r sa_n('NOCA', 'burned')` at NOCA).
+The two MORA plots that burned are left out of the analysis. The large symbols are the cored lakes:
+vegetation records (green circles, macrofossils, Dunwiddie 1986), fire records (orange triangles,
+charcoal, Walsh et al. 2017) and Panther Potholes, whose core gives both (green diamond, Prichard et al.
+2009). The inset locates both maps in Washington State, USA. Each map has its own scale bar. Maps in UTM
+zone 10N, inset in an equal-area projection. Park boundaries from the National Park Service
+administrative boundaries, Sunrise Ridge lake coordinates from Walsh et al. (2017, Table 1). Script:
+[`R/figures/main_fig2_study_area.R`](R/figures/main_fig2_study_area.R).
 
 # Forest tree communities
 
@@ -123,11 +125,11 @@ Legacy surveys and resurveys of the same plots at Mount Rainier (MORA) and North
 (NOCA) National Parks were matched, cleaned and harmonized to one tree taxonomy
 (`R/pipeline/01_clean_mora_vegetation.R`, `R/pipeline/02_clean_noca_vegetation.R`).
 
-```{r fig-s02-occurrence-by-stage}
-show_figure('report/figures/supplementary/figS02_tree_occurrence_by_stage.pdf')
+```{r fig-s01-occurrence-by-stage}
+show_figure('report/figures/supplementary/figS01_tree_occurrence_by_stage.pdf')
 ```
 
-**Fig. S2. Tree species occurrence by developmental stage in legacy surveys and resurveys.**
+**Fig. S1. Tree species occurrence by developmental stage in legacy surveys and resurveys.**
 Number of plots in which each species was recorded as an adult tree or seedling/regeneration at
 Mount Rainier (MORA) and North Cascades (NOCA) National Parks, following taxonomic harmonization
 and exclusion of understory taxa, but before applying the CCA frequency threshold. Species could
@@ -138,11 +140,11 @@ recorded seedlings of 10–140 cm and adults taller than 1.4 m. Consequently, di
 vegetation stages at NOCA should be interpreted cautiously because size-class definitions
 differed between surveys.
 
-```{r fig-s03-plot-selection}
-show_figure('report/figures/supplementary/figS03_plot_and_sample_selection.pdf')
+```{r fig-s02-plot-selection}
+show_figure('report/figures/supplementary/figS02_plot_and_sample_selection.pdf')
 ```
 
-**Fig. S3. Selection of vegetation records for canonical correspondence analysis (CCA).**
+**Fig. S2. Selection of vegetation records for canonical correspondence analysis (CCA).**
 Flowchart summarizing the matching, cleaning, and selection of legacy–resurvey plots (upper
 panels) and Holocene macrofossil samples (lower panels) from Mount Rainier (MORA, blue) and North
 Cascades (NOCA, orange) National Parks. The final set of eligible paired plots was used both to
@@ -182,11 +184,11 @@ corrections, survey dates, raw-data provenance).
 
 ## Species selection
 
-```{r fig-s04-species-frequencies}
-show_figure('report/figures/supplementary/figS04_species_occurrence_frequencies.pdf')
+```{r fig-s03-species-frequencies}
+show_figure('report/figures/supplementary/figS03_species_occurrence_frequencies.pdf')
 ```
 
-**Fig. S4. Species occurrence frequencies across sites and periods before CCA species
+**Fig. S3. Species occurrence frequencies across sites and periods before CCA species
 selection.** Number of plots (legacy surveys and resurveys) or macrofossil samples (Holocene) in
 which each tree species was recorded at MORA and NOCA, following taxonomic harmonization and
 exclusion of understory and unidentified taxa. Presence was determined from both adult tree and
@@ -201,7 +203,7 @@ excluded taxa, occupancy through time).
 ## Holocene macrofossil records
 
 The Holocene communities come from plant macrofossils in dated lake-sediment cores, three at MORA and
-one at NOCA (Fig. S1). Each sample is dated with the age–depth model of its core (Appendix S1).
+one at NOCA (Figure 2). Each sample is dated with the age–depth model of its core (Appendix S1).
 
 ### Appendix S1. Construction of the Holocene age–depth models
 
@@ -219,7 +221,7 @@ We used the rbacon R package, which reconstructs sediment accumulation histories
 framework (Blaauw & Christen 2011). Rather than drawing a single line through the dated horizons,
 Bacon estimates many age–depth histories that are compatible with the chronological evidence and
 assumptions about sediment accumulation. The distribution of these histories represents the
-posterior chronological uncertainty shown in Fig. S5.
+posterior chronological uncertainty shown in Fig. S4.
 
 #### S1.2 Chronological controls and radiocarbon calibration
 
@@ -270,7 +272,7 @@ divided each sediment core into 5-cm sections and estimated an accumulation time
 each section. Accumulation times were allowed to differ among sections but were correlated between
 neighbouring sections through the model's memory parameter. The chronological controls in
 Table S1.1 were then used to update these prior expectations and generate the posterior age–depth
-chronology shown in Fig. S5.
+chronology shown in Fig. S4.
 
 The three MORA cores were modelled using the same accumulation and memory priors. Panther Potholes
 instead retained the settings of the archived Bacon chronology in the Neotoma database so that our
@@ -288,13 +290,13 @@ an instantaneous depositional interval in all three MORA cores, including the 58
 Wallow containing both primary and redeposited Y tephra. At Panther Potholes, the MSH-P, MSH-Y,
 and Mazama tephra intervals were treated in the same way. Bacon therefore removed these intervals
 while estimating gradual sediment accumulation and reinserted them without adding elapsed time.
-These intervals are shown as vertical grey bands in Fig. S5.
+These intervals are shown as vertical grey bands in Fig. S4.
 
-```{r fig-s05-age-depth}
-show_figure('report/figures/supplementary/figS05_age_depth_models.pdf')
+```{r fig-s04-age-depth}
+show_figure('report/figures/supplementary/figS04_age_depth_models.pdf')
 ```
 
-**Fig. S5. Bayesian age–depth models for the Jay Bath, Log Wallow, and Reflection Pond cores at
+**Fig. S4. Bayesian age–depth models for the Jay Bath, Log Wallow, and Reflection Pond cores at
 MORA and the Panther Potholes core at NOCA.** For each core, the three upper panels show, from left
 to right, the Markov chain Monte Carlo trace, the prior (green) and posterior (grey) distributions
 of sediment accumulation time, and the prior and posterior distributions of memory. In the main
@@ -309,13 +311,13 @@ For Panther Potholes, we reproduced the archived Neotoma chronology as the prima
 Prichard et al. (2009) report uncertainties for measured ²¹⁰Pb activity, in DPM g⁻¹, and the same
 numerical values were entered as age errors, in years, in the archived chronology. We therefore
 fitted a sensitivity model in which the five ²¹⁰Pb controls were each assigned an assumed ±10-year
-age error, all other controls and settings unchanged (Fig. S6).
+age error, all other controls and settings unchanged (Fig. S5).
 
-```{r fig-s06-pb210}
-show_figure('report/figures/supplementary/figS06_panther_potholes_pb210_sensitivity.pdf')
+```{r fig-s05-pb210}
+show_figure('report/figures/supplementary/figS05_panther_potholes_pb210_sensitivity.pdf')
 ```
 
-**Fig. S6. Sensitivity of the Panther Potholes age–depth chronology to uncertainty assigned to the
+**Fig. S5. Sensitivity of the Panther Potholes age–depth chronology to uncertainty assigned to the
 five ²¹⁰Pb controls in the upper 35 cm of the core.** The left panel shows that the two posterior
 chronologies are nearly identical below the ²¹⁰Pb-dated section, whereas the right panel shows the
 expected increase in uncertainty within the upper 35–40 cm. The uncertainty assigned to the ²¹⁰Pb
@@ -332,11 +334,11 @@ Modern climate is CHELSA V2.1 monthly climate in a survey-specific window for ev
 (`R/pipeline/04_modern_climate.R`); Holocene climate is CHELSA-TraCE21k at each lake and century
 (`R/pipeline/07_paleo_climate.R`).
 
-```{r fig-s07-survey-windows}
-show_figure('report/figures/supplementary/figS07_survey_climate_windows.pdf')
+```{r fig-s06-survey-windows}
+show_figure('report/figures/supplementary/figS06_survey_climate_windows.pdf')
 ```
 
-**Fig. S7. Climate conditions and survey-specific climate windows for the Anthropocene.** Upper
+**Fig. S6. Climate conditions and survey-specific climate windows for the Anthropocene.** Upper
 panels show annual climate variation from CHELSA v2.1 (1979–2021), averaged across the paired
 vegetation plots at Mount Rainier (MORA, blue) and North Cascades (NOCA, orange) National Parks.
 Variables include mean annual temperature (MAT), annual precipitation (AP), and the four seasonal
@@ -347,11 +349,11 @@ window (1979–1989). Lower panels show the six-year climate windows used for ea
 calculations also included December of the preceding calendar year. Climate conditions were
 therefore calculated separately for each plot according to its resurvey year.
 
-```{r fig-s08-correlations}
-show_figure('report/figures/supplementary/figS08_climate_correlations.pdf')
+```{r fig-s07-correlations}
+show_figure('report/figures/supplementary/figS07_climate_correlations.pdf')
 ```
 
-**Fig. S8. Correlations among climate variables during the Holocene and Anthropocene.** Pearson
+**Fig. S7. Correlations among climate variables during the Holocene and Anthropocene.** Pearson
 correlation coefficients (r) were calculated across lake locations and 100-year climate intervals
 for the Holocene (CHELSA-TraCE21k, left) and across vegetation plots and survey periods for the
 Anthropocene (CHELSA v2.1, right). Red indicates positive correlations and blue indicates negative
@@ -394,14 +396,14 @@ S1 and C2: its middle part (8600 to 8200 cal BP) was driven by winter wetting al
 longer a constraint. From 7200 cal BP onward every boundary is unchanged, and the periods are
 renumbered.
 
-```{r fig-2-main}
+```{r fig-3-main}
 show_figure('report/figures/main/fig_climate_levels_eras_fire.pdf')
 rates2 = read_output('figures/anthropocene_climate_rates.csv')
 r2 = function(v, park) { x = rates2[rates2$variable == v & rates2$site == park, ]
   if (v == 'SP') sprintf('%+.0f mm (%+.1f SD)', x$rate, x$z_rate) else sprintf('%+.2f °C (%+.1f SD)', x$rate, x$z_rate) }
 ```
 
-**Figure 2. Holocene climate and fire.** (A) Spring temperature (°C) and (B) summer
+**Figure 3. Holocene climate and fire.** (A) Spring temperature (°C) and (B) summer
 precipitation (mm), the two CCA constraints, averaged over the lakes of each park with the two parks
 weighted equally (CHELSA-TraCE21k). Bold lines are 1,000-year running means and thin lines the
 centennial series. Shading marks the climate-change (C) and stability (S) periods, with the change
@@ -419,35 +421,35 @@ every 100 years. At MORA it is the mean of the three Sunrise Ridge cores of Wals
 at least two cover the date, at NOCA the Panther Potholes core (Prichard et al. 2009). The two parks are
 on different y axes because their frequencies are not comparable: Panther Potholes is resampled every 12
 years and the Sunrise Ridge cores every 42 to 48 years, and a finer record resolves more events. The
-MORA cores lie on Sunrise Ridge, away from the vegetation lakes (Fig. S12). The models do not use this
+MORA cores lie on Sunrise Ridge, away from the vegetation lakes (Fig. S11). The models do not use this
 curve: their fire activity counts the same accepted events between the two ends of each lake-period,
 per century and per covered core (see Climate–community lags). To the right, the Anthropocene plot pairs of each park that
 burned between the two surveys (MORA's two burned plots are left out of the analysis).
 
 Stages and helpers: [`R/pipeline/11_climate_eras_fire_frequency.R`](R/pipeline/11_climate_eras_fire_frequency.R),
 [`R/helpers/holocene_climate_fire_era_functions.R`](R/helpers/holocene_climate_fire_era_functions.R),
-[`R/figures/main_fig2_climate_eras_fire.R`](R/figures/main_fig2_climate_eras_fire.R).
+[`R/figures/main_fig3_climate_eras_fire.R`](R/figures/main_fig3_climate_eras_fire.R).
 
-```{r fig-s09-four-variable-levels}
-show_figure('report/figures/supplementary/figS09_climate_levels_four_variables.pdf')
+```{r fig-s08-four-variable-levels}
+show_figure('report/figures/supplementary/figS08_climate_levels_four_variables.pdf')
 ```
 
-**Fig. S9. Holocene climate levels of the four seasonal variables.** As Figure 2A for spring
+**Fig. S8. Holocene climate levels of the four seasonal variables.** As Figure 3A for spring
 temperature, winter temperature, summer precipitation and winter precipitation, without the rate
 labels. Only spring temperature and summer precipitation constrain the CCA and define the periods.
-(B) Fire frequency as in Figure 2C.
+(B) Fire frequency as in Figure 3C.
 
-```{r fig-s10-period-method}
-show_figure('report/figures/supplementary/figS10_climate_period_method.pdf')
+```{r fig-s09-period-method}
+show_figure('report/figures/supplementary/figS09_climate_period_method.pdf')
 ```
 
-**Fig. S10. How the climate periods were drawn.** (A) Equal-site regional median of the signed
+**Fig. S9. How the climate periods were drawn.** (A) Equal-site regional median of the signed
 1,000-year change of the four seasonal variables, standardized by the legacy calibration standard
 deviation. Filled points mark the cells of the two CCA constraints that qualify as directional change
 (beyond 50% of the variable's maximum, with at least 8 of 10 phases agreeing in direction). The
 periods are classified from these points. Winter temperature and winter precipitation are shown for
 context. Brackets at the left give each variable's stability range. (B) Fire frequency as in
-Figure 2C.
+Figure 3C.
 
 # Fire dynamics
 
@@ -488,11 +490,11 @@ read_output('holocene_fire_source_settings.csv') |>
       'except its 12-year interpolation interval, the median resolution of our updated chronology.'))
 ```
 
-```{r fig-s11-fire-events}
-show_figure('report/figures/supplementary/figS11_fire_event_detection.pdf')
+```{r fig-s10-fire-events}
+show_figure('report/figures/supplementary/figS10_fire_event_detection.pdf')
 ```
 
-**Fig. S11. Identification of Holocene fire events in the four records.** The residual peak
+**Fig. S10. Identification of Holocene fire events in the four records.** The residual peak
 component is the difference between interpolated charcoal accumulation rates (CHAR) and the
 background estimated with the record's robust LOWESS window. Candidate events exceed the local
 noise threshold (dashed line) and are then screened with a 75-year minimum-count test
@@ -504,7 +506,7 @@ example is Little Sunrise Lake (lower left; 500-year background, 95th percentile
 We counted the accepted events of each record within centred 1,000-year windows evaluated every 100
 years and expressed them as events per 1,000 years. The MORA series is the mean of the three Sunrise
 Ridge records wherever at least two cover the date, the NOCA series is the Panther Potholes record
-(`R/pipeline/11_climate_eras_fire_frequency.R`). Figure 2C shows both, each park on its own axis,
+(`R/pipeline/11_climate_eras_fire_frequency.R`). Figure 3C shows both, each park on its own axis,
 because the records' different resolutions make their frequencies incomparable between the parks. No
 high-fire periods are classified: an earlier version marked periods above the park's median plus one
 robust standard deviation, but no model used them, and the frequency itself is shown instead.
@@ -544,8 +546,8 @@ modern fire assignment of the survey plots).
 
 ## Fire records and the vegetation lakes
 
-```{r fig-s12-charcoal}
-show_figure('report/figures/supplementary/figS12_charcoal_walsh_dunwiddie.pdf')
+```{r fig-s11-charcoal}
+show_figure('report/figures/supplementary/figS11_charcoal_walsh_dunwiddie.pdf')
 cc = read_output('figures/charcoal_dunwiddie_walsh_correlations.csv')
 cm = read_output('figures/charcoal_dunwiddie_walsh_event_matching.csv')
 cr = function(rec, what) { x = cc[cc$record == rec & cc$against == what, ]; sprintf('%+.2f (p = %.2f)', x$rho, x$p_shift) }
@@ -553,7 +555,7 @@ acc = 'Walsh charcoal accumulation (mean of three cores)'; frq = 'Walsh fire fre
 bench = cc[cc$against == 'Walsh core against core', ]
 ```
 
-**Fig. S12. Charcoal of the Walsh et al. (2017) Sunrise Ridge cores against the charcoal of the MORA
+**Fig. S11. Charcoal of the Walsh et al. (2017) Sunrise Ridge cores against the charcoal of the MORA
 vegetation lakes (Dunwiddie).** The MORA fire values of the analysis come from the three Sunrise Ridge
 cores, while the vegetation records come from Jay Bath, Log Wallow and Reflection Pond. The upper three
 rows show each Sunrise Ridge core's charcoal accumulation rate (grey) with its background (dashed) and
@@ -588,7 +590,7 @@ In the Anthropocene a plot pair counts as burned when a fire falls between its t
 this comes from the National Park Service LandTrendr landscape-change polygons of 1987 to 2017 (a
 fire polygon within 100 m of the plot), at NOCA from the assignment of Wilson et al. (2024). Of the
 plot pairs in the analysis, `r sa_n('MORA', 'burned')` at MORA and `r sa_n('NOCA', 'burned')` at NOCA
-burned (Fig. S1, Figure 2C). The two MORA plots that burned are left out of the analysis, so the
+burned (Figures 2 and 3C). The two MORA plots that burned are left out of the analysis, so the
 Anthropocene fire comparison is a NOCA comparison.
 
 # Climate–community space
@@ -646,7 +648,7 @@ either park is outside it. The display rotation turns the plane by
 increasing to the right and rotated axis 2 summer precipitation increasing upward. The pipeline
 asserts that mismatch, lag, turnover, pace and direction are identical before and after this rotation.
 
-**Choice of CCA constraints.** Candidate variables are screened by their correlations (Fig. S8)
+**Choice of CCA constraints.** Candidate variables are screened by their correlations (Fig. S7)
 and by their variance inflation in the fitted CCA, keeping one temperature and one precipitation
 variable. With the four seasonal variables MSpT, MWT, SP and WP, the two temperatures had variance
 inflation factors near 30 and opposite-signed coefficients that are not identifiable. The CCA is
@@ -675,20 +677,20 @@ read_output('cca_anova.csv') |>
     'unrestricted and restricted within parks).'))
 ```
 
-```{r fig-3-main}
+```{r fig-4-main}
 show_figure('report/figures/main/fig_cca_trajectories.pdf')
 spans3 = read_output('figures/cca_trajectory_holocene_spans.csv')
 rot = read_output('cca_display_rotation.csv')
 pos3 = read_output('cca_tracking_holocene_century_positions.csv')
 ```
 
-**Figure 3. Climate and community positions in the CCA plane.** (A) The species that carry more
+**Figure 4. Climate and community positions in the CCA plane.** (A) The species that carry more
 than an equal share of the constrained inertia (100% divided by the `r nrow(read_output('cca_species_contributions.csv'))` taxa),
 `r sp3 = read_output('cca_species_contributions.csv'); sum(sp3$percent_constrained_inertia > 100 / nrow(sp3))` taxa holding
 `r sprintf('%.0f%%', sum(sp3$percent_constrained_inertia[sp3$percent_constrained_inertia > 100 / nrow(sp3)]))` of it (vectors from the centre,
 shaded from light to dark by their share, with the percentage of legacy plots in which each occurs), and the two
 climate constraints (bold arrows) of the CCA fitted on `r cca_value('calibration_plots')` legacy plots. All taxa are
-shown in Fig. S13. (B) Observed (dark colours) and
+shown in Fig. S12. (B) Observed (dark colours) and
 climate-predicted (light colours) movement of each park: in the Holocene from the first to the last
 climate period with samples, in the Anthropocene from the legacy survey to the resurvey (averaged over
 `r n_group('Anthropocene', 'MORA')` MORA and `r n_group('Anthropocene', 'NOCA')` NOCA plot pairs). The MORA arrows run
@@ -702,20 +704,20 @@ of period centroids at MORA and NOCA, observed and predicted, each period named 
 centroid (C, climate-change period, S, stability period). Each centroid averages the sampled centuries
 of each lake within the period, with the lakes weighted equally. Axes orthogonally rotated (varimax,
 `r sprintf('%.1f', rot$angle_degrees)` degrees) for display, so that axis 1 follows spring temperature and axis 2
-summer precipitation. All metrics are rotation-invariant. The unrotated biplot is Fig. S13.
+summer precipitation. All metrics are rotation-invariant. The unrotated biplot is Fig. S12.
 
-```{r fig-s13-unrotated}
-show_figure('report/figures/supplementary/figS13_cca_biplot_unrotated.pdf', width = '70%')
+```{r fig-s12-unrotated}
+show_figure('report/figures/supplementary/figS12_cca_biplot_unrotated.pdf', width = '70%')
 ```
 
-**Fig. S13. Unrotated CCA biplot.** As Figure 3A on the unrotated axes, labelled with their share of
+**Fig. S12. Unrotated CCA biplot.** As Figure 4A on the unrotated axes, labelled with their share of
 the total inertia, with all taxa.
 
 Stages and helpers: [`R/pipeline/10_cca.R`](R/pipeline/10_cca.R),
 [`R/helpers/cca_report.R`](R/helpers/cca_report.R) (screening and add-back test),
 [`R/helpers/cca_display_rotation.R`](R/helpers/cca_display_rotation.R),
 [`R/pipeline/12_tracking.R`](R/pipeline/12_tracking.R) (rotation check),
-[`R/figures/main_fig3_cca_trajectories.R`](R/figures/main_fig3_cca_trajectories.R).
+[`R/figures/main_fig4_cca_trajectories.R`](R/figures/main_fig4_cca_trajectories.R).
 
 `r details_link('06_cca', 'CCA details')` (full model output, species and climate contributions,
 scaling 1 against scaling 2).
@@ -727,7 +729,7 @@ from the taxa it contains). Each lake also has a climate-predicted position for 
 (its LC score, from that lake's own climate cell). Samples are dated by the median of their Bacon
 ages and grouped by century. The observed position of a century is the centroid of its samples'
 WA positions. No vegetation is interpolated between sampled centuries. These century positions
-feed the lake-periods (Climate–community lags) and the period centroids of Figure 3. No model is fitted on the
+feed the lake-periods (Climate–community lags) and the period centroids of Figure 4. No model is fitted on the
 century steps any more.
 
 ```{r step1-positions}
@@ -888,11 +890,11 @@ more than in the stability periods (`r ct('displacement', 'NOCA', 'Anthropocene 
 their difference from the climate-change periods is not significant after the adjustment
 (`r ct('displacement', 'NOCA', 'Anthropocene - Holocene-C')`).
 
-```{r fig-4-main}
+```{r fig-5-main}
 show_figure('report/figures/main/fig_era_contrasts.pdf')
 ```
 
-**Figure 4. Climate change, community turnover and climate-community lag in the Holocene and the Anthropocene.**
+**Figure 5. Climate change, community turnover and climate-community lag in the Holocene and the Anthropocene.**
 For each park, the fitted mean and 95% confidence interval of the Holocene stability periods (triangles), the
 Holocene climate-change periods (circles) and the Anthropocene plot pairs (diamonds). Each row shows a total between
 the two ends of a lake-period or plot pair (left) and its rate per century (right): (A) the standardized climate
@@ -947,10 +949,36 @@ is the net movement from the first to the last century, so movement back and for
 does not add to it, and it does not grow in proportion to time. The rates of the long lake-periods are
 low partly for that reason.
 
+**Model checks.** Each era model is a generalized least squares fit with an AR(1) correlation
+between successive units of a series, a residual standard deviation for each period type and park
+(relative to the Anthropocene at MORA) multiplied by the square root of the endpoint variance, and the
+fixed effects period type × park. The table gives these parameters for each response, and Fig. S13
+shows the residuals. The coefficients of every model are on the
+`r details_link('08_models', 'model details page')`.
+
+```{r q1-model-checks}
+read_output('era_comparison/era_model_summary.csv') |>
+  transmute(Response = response_label[response], Units = n, `AR(1)` = AR1_phi,
+    `Residual SD by period type and park` = gsub('A[.]', '', gsub(';', ', ', variance_parameters)),
+    `Descriptive R²` = R2, Warnings = coalesce(warnings, 'none')) |>
+  show_table('era_model_summary', caption = paste('**Era models: covariance parameters.** Model estimate ~',
+    'period_type * site, AR(1) on the unit order within each series, residual SD per period type and park',
+    'relative to the Anthropocene at MORA, times the square root of endpoint_var. R² is descriptive.'))
+show_figure('report/figures/supplementary/figS13_era_model_residuals.pdf')
+```
+
+**Fig. S13. Residual checks of the ten era models.** Top: normal quantile plots of the normalized
+residuals, one per response. Bottom: normalized residuals by period type and park (points, with boxes
+for the quartiles). The models have no continuous predictor, so the fitted values take one value per
+period type and park, and residuals by group show what a plot against fitted values would. The climate
+change rate, the climate change, the turnover rate and the displacement are positive by construction
+and their residuals are right-skewed. The lag, lag rate, pace and direction residuals have heavy tails
+from a few Anthropocene plots.
+
 Stages and helpers: [`R/pipeline/13_era_models.R`](R/pipeline/13_era_models.R),
 [`R/helpers/tracking_model_reporting.R`](R/helpers/tracking_model_reporting.R) (period types),
 [`R/helpers/reconstruction_models.R`](R/helpers/reconstruction_models.R),
-[`R/figures/main_fig4_era_contrasts.R`](R/figures/main_fig4_era_contrasts.R).
+[`R/figures/main_fig5_era_contrasts.R`](R/figures/main_fig5_era_contrasts.R).
 
 # Pace and direction effects (Q2)
 
@@ -979,11 +1007,11 @@ direction effects do not differ between the eras either (pace against Holocene-C
 `r ct('pace_effect', 'NOCA', 'Anthropocene - Holocene-C')`). The Anthropocene effects are large per
 century mainly because they build up over a few decades.
 
-```{r fig-5-main}
+```{r fig-6-main}
 show_figure('report/figures/main/fig_lag_pace_direction.pdf')
 ```
 
-**Figure 5. Pace effect and direction effect in the Holocene and the Anthropocene.** For each park, the fitted
+**Figure 6. Pace effect and direction effect in the Holocene and the Anthropocene.** For each park, the fitted
 mean and 95% confidence interval of the Holocene stability periods (triangles), the Holocene climate-change periods
 (circles) and the Anthropocene (diamonds), with the fitted mean printed beside each point. Each row shows an effect
 over the whole lake-period or plot pair (left, not divided by time) and per century (right): (A) the pace effect
@@ -993,7 +1021,7 @@ climate-predicted pace (A, B, keeping its own direction) or in the climate-predi
 own distance). A positive effect means that the community's own pace or direction widened the lag. A negative
 effect means that it narrowed the lag. Connectors link the Anthropocene to the Holocene climate-change periods
 (lower) and to the Holocene stability periods (upper) within each park, and a star marks a contrast that differs
-from zero (two-sided t test, Holm-adjusted p < 0.05 across the six period-type contrasts of each response). Fitted means and contrasts come from the same models as Figure 4, whose
+from zero (two-sided t test, Holm-adjusted p < 0.05 across the six period-type contrasts of each response). Fitted means and contrasts come from the same models as Figure 5, whose
 panel F shows the lag rate. Lake-periods and plots whose observed or predicted position did not move have no pace or direction effect: the panels
 hold `r m5 = read_output('era_comparison/era_means.csv'); m5$n[m5$response == 'pace_effect' & m5$site == 'MORA' & m5$period_type == 'Holocene-C']` climate-change and `r m5$n[m5$response == 'pace_effect' & m5$site == 'MORA' & m5$period_type == 'Holocene-S']` stability lake-periods at MORA. `r both_spans` The totals are in CCA distance, the rates in CCA distance per century.
 
@@ -1062,9 +1090,25 @@ if (exists('bc')) {
 }
 ```
 
+**Model checks.** The joint model has one AR(1) parameter on the unit order and one correlation
+between the pace and the direction effect of the same unit for each era and park. The table gives
+them, and Fig. S14 shows the residuals.
+
+```{r q2-model-checks}
+read_output('era_comparison/joint_correction_effects/correlation_parameters.csv') |>
+  transmute(Parameter = if_else(parameter == 'AR1', 'AR(1) on the unit order',
+      paste('Pace–direction correlation,', parameter)), Estimate = estimate) |>
+  show_table('joint_correction_correlation', caption = paste('**Joint pace and direction model: correlation',
+    'parameters.**'))
+show_figure('report/figures/supplementary/figS14_joint_model_residuals.pdf')
+```
+
+**Fig. S14. Residual checks of the joint pace and direction model.** As Fig. S13, for the pace and
+direction effects fitted together.
+
 Stages and helpers: [`R/pipeline/13_era_models.R`](R/pipeline/13_era_models.R),
 [`R/helpers/tracking_model_reporting.R`](R/helpers/tracking_model_reporting.R) (paired AR(1) correlation),
-[`R/figures/main_fig5_lag_pace_direction.R`](R/figures/main_fig5_lag_pace_direction.R),
+[`R/figures/main_fig6_lag_pace_direction.R`](R/figures/main_fig6_lag_pace_direction.R),
 [`R/sensitivity_bias_corrected.R`](R/sensitivity_bias_corrected.R).
 
 # Associations with fire (Q3)
@@ -1133,13 +1177,13 @@ Anthropocene, burned plots had a smaller total pace effect than unburned ones
 Fire activity stays a frequency in both forms, because a count of events would grow with the length
 of the lake-period.
 
-```{r fig-6-main}
+```{r fig-7-main}
 show_figure('report/figures/main/fig_climate_fire_associations.pdf')
 perf6 = read_output('community_predictor_models/model_performance.csv')
 R2 = function(r, e) sprintf('%.2f', perf6$R2[perf6$response == r & perf6$era == e])
 ```
 
-**Figure 6. Climate and fire associations.** Model slopes with conditional 95% confidence
+**Figure 7. Climate and fire associations.** Model slopes with conditional 95% confidence
 intervals for the lag (black), the pace effect (pink) and the direction effect (blue), side by side
 for each term, in the colours of Figure 1. Faded estimates have intervals that include zero. Top row
 (A, B): the responses per century, the change in mismatch or the reduction in final mismatch under the
@@ -1158,9 +1202,22 @@ and `r perf6$n[perf6$response == 'pace_effect' & perf6$era == 'Anthropocene']` f
 Descriptive R² is given below each panel. `r both_spans` Effects are in CCA distance per century (A, B)
 or CCA distance (C, D) per unit of the term.
 
+**Model checks.** The table gives, for each explanatory model, the rows per park, the
+descriptive R², the AR(1) parameter of the Holocene models and the ratio of the NOCA to the MORA residual
+standard deviation. The rows left out and the coefficients are on the
+`r details_link('08_models', 'model details page')`.
+
+```{r q3-model-checks}
+perf6 |>
+  transmute(Response = response_label[response], Era = era, Model = model, MORA = n_MORA, NOCA = n_NOCA,
+    `Descriptive R²` = R2, `AR(1)` = AR1_phi, `SD ratio NOCA/MORA` = sd_ratio_NOCA_to_MORA,
+    Warnings = coalesce(warnings, 'none')) |>
+  show_table('explanatory_model_performance', caption = '**Explanatory models: rows and covariance parameters.**')
+```
+
 Stages and helpers: [`R/pipeline/14_predictor_models.R`](R/pipeline/14_predictor_models.R),
 [`R/helpers/reconstruction_models.R`](R/helpers/reconstruction_models.R),
-[`R/figures/main_fig6_climate_fire_associations.R`](R/figures/main_fig6_climate_fire_associations.R).
+[`R/figures/main_fig7_climate_fire_associations.R`](R/figures/main_fig7_climate_fire_associations.R).
 
 # Species contributions (Q4)
 
@@ -1263,11 +1320,11 @@ p < 0.05 before the adjustment and `r nrow(sc_sig)` after it
 (`r paste(sprintf('%s %s, %s, %s', sc_sig$species, sc_sig$site, sc_sig$contrast, sc_sig$measure), collapse = '; ')`).
 `r if (nrow(sc_sig) && all(startsWith(sc_sig$contrast, 'Anthropocene'))) 'All of them set the Anthropocene against a Holocene period type.' else ''`
 
-```{r fig-7-main}
+```{r fig-8-main}
 show_figure('report/figures/main/fig_species_contributions.pdf')
 ```
 
-**Figure 7. Species contributions in the Holocene and the Anthropocene.** Each species' vector is its
+**Figure 8. Species contributions in the Holocene and the Anthropocene.** Each species' vector is its
 change in share between the first and the last sampled century of a lake-period, or between the
 legacy survey and the resurvey of a plot, times its fixed position in the CCA plane. The upper row (following climate-predicted direction)
 projects these vectors on the direction in which the climate-predicted position moved, and the lower
@@ -1282,7 +1339,7 @@ Each park has its own x scale, symmetric around zero. `r both_spans` Contributio
 
 Stages and helpers: [`R/pipeline/15_contributions.R`](R/pipeline/15_contributions.R),
 [`R/helpers/cca_transition_contributions.R`](R/helpers/cca_transition_contributions.R),
-[`R/figures/main_fig7_species.R`](R/figures/main_fig7_species.R).
+[`R/figures/main_fig8_species.R`](R/figures/main_fig8_species.R).
 
 # Numbers for the Results text
 
@@ -1351,7 +1408,7 @@ species_means |> filter(interval_defined) |>
   show_table('numbers_step6', caption = '**Species means** per measure, park and period type (species with a defined interval).')
 ```
 
-**Figure 2, climate rates.**
+**Figure 3, climate rates.**
 
 ```{r numbers-fig2}
 read_output('figures/holocene_climate_level_rates.csv') |>

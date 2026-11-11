@@ -30,7 +30,7 @@ Hand-written records for this step:
 read_output('report/sample_selection_counts.csv') |>
   transmute(Site = site, Period = period, Step = step, Label = label, Remaining = remaining,
     Removed = removed, Explanation = explanation) |>
-  show_table('sample_selection_counts', caption = '**Counts behind Fig. S3.**')
+  show_table('sample_selection_counts', caption = '**Counts behind Fig. S2.**')
 read_output('report/sample_selection_choices.csv') |>
   transmute(Site = site, Choice = choice, Number = number, Unit = unit, `Plots removed` = plots_removed,
     Explanation = explanation) |>

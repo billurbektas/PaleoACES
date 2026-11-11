@@ -4,7 +4,7 @@
 # with `Rscript R/run_all.R --age-models` (or when no run manifest exists). Every
 # run also rebuilds Tables S1.1 and S1.2 from the Bacon inputs and settings.
 # Provenance of every control: report/details/03_chronology_control_points.md.
-# Figures S5 and S6 are drawn from the stored runs by R/figures/supp_age_depth_models.R.
+# Figures S4 and S5 are drawn from the stored runs by R/figures/supp_age_depth_models.R.
 #
 # rbacon vignette: https://cran.r-project.org/web/packages/rbacon/vignettes/rbacon.html
 

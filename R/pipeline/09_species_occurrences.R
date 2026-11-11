@@ -342,9 +342,9 @@ p_counts = ggplot(cnt_long, aes(species, n, fill = period)) +
         legend.position = "top")
 
 if (render_figures) {
-  ggsave(fig("supplementary", "figS04_species_occurrence_frequencies.pdf"), p_counts,
+  ggsave(fig("supplementary", "figS03_species_occurrence_frequencies.pdf"), p_counts,
          width = 11, height = 8)
-  cat("\nWrote report/figures/supplementary/figS04_species_occurrence_frequencies.pdf\n")
+  cat("\nWrote report/figures/supplementary/figS03_species_occurrence_frequencies.pdf\n")
 }
 
 # =============================================================================
@@ -419,7 +419,7 @@ p_stage = ggplot(stage_counts, aes(species, n_plots, fill = period)) +
         plot.caption = element_text(size = 12, hjust = 0, colour = "grey35"))
 
 if (render_figures) {
-  ggsave(fig("supplementary", "figS02_tree_occurrence_by_stage.pdf"), p_stage,
+  ggsave(fig("supplementary", "figS01_tree_occurrence_by_stage.pdf"), p_stage,
          width = 12, height = 12)
 }
 
@@ -427,7 +427,7 @@ cat("\n=== adult vs regeneration, plot occupancy ===\n")
 print(as.data.frame(stage_counts %>% group_by(site, period, stage) %>%
   summarize(species = n(), plot_occurrences = sum(n_plots), .groups = "drop")), row.names = FALSE)
 if (render_figures)
-  cat("\nWrote report/figures/supplementary/figS02_tree_occurrence_by_stage.pdf\n")
+  cat("\nWrote report/figures/supplementary/figS01_tree_occurrence_by_stage.pdf\n")
 
 # =============================================================================
 # VERIFICATION - re-derive the classification from the raw workbooks

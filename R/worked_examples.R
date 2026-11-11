@@ -1,7 +1,7 @@
 # Worked examples: step-by-step illustrations of four methods, drawn from the
 # finished pipeline outputs. Nothing here feeds the analysis. Run after the
 # pipeline (R/run_all.R does this last).
-#   1. Accepted charcoal-event detection (Fig. S7)
+#   1. Accepted charcoal-event detection (Fig. S10)
 #   2. Climate eras: phases, thresholds and era construction
 #   3. Tracking geometry: movement, lag, ratio and angle
 # The high-fire-period example was removed with the high-fire classification
@@ -106,7 +106,7 @@ p_flow = ggplot(steps, aes(x, 1, label = label)) +
   coord_cartesian(xlim = c(.6, 6.4), ylim = c(.65, 1.35), clip = "off") +
   labs(title = "How an individual charcoal peak becomes an accepted fire event",
        subtitle = paste("The detection settings differ among cores; the events are then",
-                        "counted per 1,000 years for Figure 2C.")) +
+                        "counted per 1,000 years for Figure 3C.")) +
   theme_void(base_size = 12) +
   theme(plot.title = element_text(face = "bold", size = 17, hjust = .5),
         plot.subtitle = element_text(size = 11, hjust = .5, color = "grey30"))
@@ -228,8 +228,8 @@ if (render_figures) {
   grDevices::pdf(pdf_path, width = 14, height = 9, onefile = TRUE)
   purrr::walk(pages, print)
   grDevices::dev.off()
-  # The four-record page on its own, as Fig. S11 of the README.
-  ggsave(fig("supplementary", "figS11_fire_event_detection.pdf"), lake_page, width = 14, height = 9)
+  # The four-record page on its own, as Fig. S10 of the README.
+  ggsave(fig("supplementary", "figS10_fire_event_detection.pdf"), lake_page, width = 14, height = 9)
   cat("Written three-page fire-event workflow with all four lake records on one page.\n")
 }
 })

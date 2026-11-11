@@ -1,4 +1,4 @@
-# Figures S5 (four Bacon age-depth models) and S6 (Panther Potholes 210Pb
+# Figures S4 (four Bacon age-depth models) and S5 (Panther Potholes 210Pb
 # sensitivity), redrawn from the stored runs in Cores/ without re-running MCMC.
 source(here::here('R/helpers/config.R'), local = TRUE)
 suppressPackageStartupMessages({library(here); library(rbacon); library(tidyverse)})
@@ -59,9 +59,9 @@ pp   = image_border(image_read(panels), color = "grey80", geometry = "6x6")
 rows = split(seq_along(panels), ceiling(seq_along(panels)/2))
 composite  = image_border(image_append(image_join(lapply(rows, function(i) image_append(pp[i]))),
                                  stack = TRUE), color = "white", geometry = "20x20")
-image_write(composite, fig("supplementary", "figS05_age_depth_models.pdf"),
+image_write(composite, fig("supplementary", "figS04_age_depth_models.pdf"),
             format = "pdf")
-cat("\nWritten report/figures/supplementary/figS05_age_depth_models.pdf\n")
+cat("\nWritten report/figures/supplementary/figS04_age_depth_models.pdf\n")
 
 # -----------------------------------------------------------------------------
 # 210Pb sensitivity. NOT two agedepth() panels side by side: the difference is
@@ -104,6 +104,6 @@ if (dir.exists(file.path(coredir, "PantherPotholes_pb210err"))) {
       labs(subtitle = sprintf("Top 40 cm: 95%% width %g -> %g yr. Bars = error given to each control",
                               round(w$w[w$run == lab_pub]), round(w$w[w$run == lab_var])))) +
     plot_layout(guides = "collect") & theme(legend.position = "top")
-  ggsave(fig("supplementary", "figS06_panther_potholes_pb210_sensitivity.pdf"), sens, width = 9.5, height = 4.2, device = cairo_pdf)
-  cat("Written report/figures/supplementary/figS06_panther_potholes_pb210_sensitivity.pdf\n")
+  ggsave(fig("supplementary", "figS05_panther_potholes_pb210_sensitivity.pdf"), sens, width = 9.5, height = 4.2, device = cairo_pdf)
+  cat("Written report/figures/supplementary/figS05_panther_potholes_pb210_sensitivity.pdf\n")
 }

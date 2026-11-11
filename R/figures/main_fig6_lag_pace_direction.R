@@ -1,5 +1,5 @@
-# Figure 5 (PLAN.md section 6; redrawn by Bills, 10 Nov 2026): the pace and
-# direction effects in the design of Figure 4, fitted means and 95% intervals
+# Figure 6 (PLAN.md section 6; redrawn by Bills, 10 Nov 2026): the pace and
+# direction effects in the design of Figure 5, fitted means and 95% intervals
 # of the three period types per park from the Step 5a models, with connectors
 # from the Anthropocene to each Holocene period type and a star where that
 # contrast is significant. Two rows, each the effect over the whole unit
@@ -29,7 +29,7 @@ y_range = function(responses) {
 }
 y_total = y_range(c('pace_effect_total', 'direction_effect_total'))
 y_rate = y_range(c('pace_effect', 'direction_effect'))
-# Text and spacing as in Figure 4 (Bills, 10 Nov 2026).
+# Text and spacing as in Figure 5 (Bills, 10 Nov 2026).
 panel = function(r, tag, ylim) era_means_panel(r, tag, data, k = 1.2, kl = 1.65, kt = 1.4, gap = .05, cap = .05,
   spread = 1.4, park_gap = 1.35, xmin = .45, xmax = 3.32) + coord_cartesian(ylim = ylim)
 figure = panel('pace_effect_total', 'A.', y_total) + panel('pace_effect', 'B.', y_rate) +
@@ -40,4 +40,4 @@ figure = panel('pace_effect_total', 'A.', y_total) + panel('pace_effect', 'B.', 
 if (render_figures) for (ext in c('pdf', 'png'))
   ggsave(fig('main', paste0('fig_lag_pace_direction.', ext)), figure, width = 26, height = 21, dpi = 300,
     device = if (ext == 'pdf') cairo_pdf else NULL)
-cat('Figure 5: pace and direction by era drawn.\n')
+cat('Figure 6: pace and direction by era drawn.\n')

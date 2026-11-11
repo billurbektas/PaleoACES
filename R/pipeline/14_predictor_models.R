@@ -68,7 +68,7 @@ for (response in responses) {
     warnings = paste(captured$warnings, collapse = '; '))
   exclusions[[paste(response, 'Holocene')]] = h$excluded
 
-  # Partial effects for Figure 6A: per park, over that park's own range of the
+  # Partial effects for Figure 7A: per park, over that park's own range of the
   # focal predictor, the other predictor at the park's mean.
   beta = coef(fit); V = vcov(fit); tq = qt(.975, fit$dims$N - fit$dims$p)
   design = function(site, climate, fire) cbind(1, site == 'NOCA', climate, fire)
@@ -107,7 +107,7 @@ for (response in responses) {
     R2 = reconstruction_r2(da$estimate, fitted(fit)), AR1_phi = NA_real_,
     sd_ratio_NOCA_to_MORA = unname(variance[grepl('NOCA', names(variance))]),
     warnings = paste(captured$warnings, collapse = '; '))
-  # Fitted means for Figure 6B: MORA unburned, NOCA unburned, NOCA burned.
+  # Fitted means for Figure 7B: MORA unburned, NOCA unburned, NOCA burned.
   groups = tibble(site = factor(c('MORA', 'NOCA', 'NOCA'), levels = c('MORA', 'NOCA')),
     burned = factor(c('Unburned', 'Unburned', 'Burned'), levels = c('Unburned', 'Burned')))
   X = model.matrix(~ site + burned, groups); Va = vcov(fit); ta = qt(.975, fit$dims$N - fit$dims$p)

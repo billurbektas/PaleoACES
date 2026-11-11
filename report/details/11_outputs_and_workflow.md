@@ -47,28 +47,28 @@ for the report.
 | R/pipeline/10_cca.R | pipeline | 10_cca.R - the pooled CCA and everything derived from it. NO FIGURES. | 665 |
 | R/pipeline/11_climate_eras_fire_frequency.R | pipeline | 11_climate_eras_fire_frequency.R | 191 |
 | R/pipeline/12_tracking.R | pipeline | Tracking: native-century Holocene positions, tracking metrics for both eras, | 85 |
-| R/pipeline/13_era_models.R | pipeline | Era models (PLAN.md section 5, Step 5a): Holocene stability periods, | 183 |
+| R/pipeline/13_era_models.R | pipeline | Era models (PLAN.md section 5, Step 5a): Holocene stability periods, | 186 |
 | R/pipeline/14_predictor_models.R | pipeline | Explanatory models (PLAN.md section 5, Step 5). | 131 |
 | R/pipeline/15_contributions.R | pipeline | Species contributions (PLAN.md section 5, Step 6): which species led the | 125 |
-| R/figures/supp_age_depth_models.R | figure | Figures S5 (four Bacon age-depth models) and S6 (Panther Potholes 210Pb | 109 |
+| R/figures/supp_age_depth_models.R | figure | Figures S4 (four Bacon age-depth models) and S5 (Panther Potholes 210Pb | 109 |
 | R/figures/supp_cca_scaling.R | figure | supp_cca_scaling.R - one CCA drawn at scaling 1 and scaling 2 | 108 |
-| R/figures/supp_charcoal_dunwiddie_walsh.R | figure | Fig. S12 (appendix figure A4 until the README was reordered; Bills, 11 Nov 2026): do the charcoal peaks of the Walsh | 98 |
+| R/figures/supp_charcoal_dunwiddie_walsh.R | figure | Fig. S11 (appendix figure A4 until the README was reordered; Bills, 11 Nov 2026): do the charcoal peaks of the Walsh | 98 |
 | R/figures/supp_climate_correlations.R | figure | supp_climate_correlations.R | 628 |
 | R/figures/supp_climate_windows.R | figure | Compare the actual plot-specific survey windows with V2.1 1979-2021. | 174 |
 | R/figures/supp_sample_selection.R | figure | Show which plots and core samples reach CCA, starting with the supplied data. | 368 |
 | R/figures/supp_species_through_time.R | figure | supp_species_through_time.R - STEP 4, the species half | 199 |
-| R/figures/supp_study_area.R | figure | Fig. S1 (Bills, 11 Nov 2026): the study area. (A) Washington State with the | 108 |
 | R/figures/supp_tracking_transitions.R | figure | Appendix figures of the lake-period values over time (redrawn on lake-periods | 86 |
-| R/figures/main_fig2_climate_eras_fire.R | figure | main_fig2_climate_eras_fire.R | 711 |
-| R/figures/main_fig3_cca_trajectories.R | figure | Figure 3: A, species and climate biplot; B, observed and predicted trajectories | 220 |
-| R/figures/main_fig4_era_contrasts.R | figure | Figure 4 (PLAN.md section 6; redrawn by Bills, 10 Nov 2026): fitted means | 34 |
-| R/figures/main_fig5_lag_pace_direction.R | figure | Figure 5 (PLAN.md section 6; redrawn by Bills, 10 Nov 2026): the pace and | 43 |
-| R/figures/main_fig6_climate_fire_associations.R | figure | Figure 6: climate and fire associations as model slopes (Bills, 9 Nov 2026). | 74 |
-| R/figures/main_fig7_species.R | figure | Figure 7 (PLAN.md section 6): species contributions in both eras. Species as | 151 |
+| R/figures/main_fig2_study_area.R | figure | Figure 2 (Bills, 11 Nov 2026; Fig. S1 until then): the study area. (A) Mount | 202 |
+| R/figures/main_fig3_climate_eras_fire.R | figure | main_fig3_climate_eras_fire.R | 711 |
+| R/figures/main_fig4_cca_trajectories.R | figure | Figure 4: A, species and climate biplot; B, observed and predicted trajectories | 220 |
+| R/figures/main_fig5_era_contrasts.R | figure | Figure 5 (PLAN.md section 6; redrawn by Bills, 10 Nov 2026): fitted means | 34 |
+| R/figures/main_fig6_lag_pace_direction.R | figure | Figure 6 (PLAN.md section 6; redrawn by Bills, 10 Nov 2026): the pace and | 43 |
+| R/figures/main_fig7_climate_fire_associations.R | figure | Figure 7: climate and fire associations as model slopes (Bills, 9 Nov 2026). | 74 |
+| R/figures/main_fig8_species.R | figure | Figure 8 (PLAN.md section 6): species contributions in both eras. Species as | 151 |
 | R/worked_examples.R | worked examples | Worked examples: step-by-step illustrations of four methods, drawn from the | 410 |
 | R/tests/test_bacon_provenance.R | test | The stored Bacon chronologies are exactly what the current age-model script and | 32 |
 | R/tests/test_cca_tracking_metrics.R | test | Independent geometry and integration checks for the canonical tracking data. | 38 |
-| R/tests/test_cca_trajectory_figure.R | test | Figure 3 inputs (PLAN.md section 6): the Anthropocene arrows are the means of | 37 |
+| R/tests/test_cca_trajectory_figure.R | test | Figure 4 inputs (PLAN.md section 6): the Anthropocene arrows are the means of | 37 |
 | R/tests/test_cca_transition_contributions.R | test | Independent contribution gate (PLAN.md Step 6): original sample weights, CCA | 120 |
 | R/tests/test_century_tracking.R | test | Independent native-century reconstruction, geometry and contribution checks. | 92 |
 | R/tests/test_check_vegetation.R | test | Standalone integrity checks for cleaned MORA and NOCA vegetation outputs. | 31 |
@@ -152,7 +152,7 @@ the folder of the step that writes it.
 | 08_fire_records | walsh_charanalysis_settings.csv | CharAnalysis settings | 1 |
 | 08_fire_records | walsh_charanalysis_software_comparison.csv | CharAnalysis vs tapas vs published | 1 |
 | 08_fire_records | walsh_charanalysis_table3_audit.csv | Comparison with Walsh Table 3 (Table S2.2) | 0 |
-| 09_species_occurrences | occ_consolidated.csv | All presence records, one taxonomy (Fig. S8) | 827 |
+| 09_species_occurrences | occ_consolidated.csv | All presence records, one taxonomy (Fig. S3) | 827 |
 | 10_cca | cca_anova_cache.rds | Cached permutation tests, keyed on the fit | 1 |
 | 10_cca | cca_anova.csv | Permutation tests (model, axes, terms) | 0 |
 | 10_cca | cca_axes.csv | Constrained axes: eigenvalues and variance explained | 0 |
@@ -216,9 +216,9 @@ the folder of the step that writes it.
 | 13_era_models | era_comparison/joint_correction_effects/model_input.csv | Era-comparison GLS fits, means and contrasts per response | 370 |
 | 13_era_models | era_comparison/joint_correction_effects/model_results.txt | Era-comparison GLS fits, means and contrasts per response | 7 |
 | 13_era_models | era_comparison/joint_correction_effects/period_type_contrasts.csv | Era-comparison GLS fits, means and contrasts per response | 3 |
-| 13_era_models | era_comparison/joint_correction_effects/primary_fit.rds | Era-comparison GLS fits, means and contrasts per response | 580 |
+| 13_era_models | era_comparison/joint_correction_effects/primary_fit.rds | Era-comparison GLS fits, means and contrasts per response | 582 |
 | 13_era_models | era_comparison/model_results.txt | Era-comparison GLS fits, means and contrasts per response | 19 |
-| 13_era_models | era_comparison/primary_fits.rds | Era-comparison GLS fits, means and contrasts per response | 677 |
+| 13_era_models | era_comparison/primary_fits.rds | Era-comparison GLS fits, means and contrasts per response | 679 |
 | 14_predictor_models | community_predictor_models/model_coefficients.csv | Within-era predictor GLS fits | 6 |
 | 14_predictor_models | community_predictor_models/model_exclusions.csv | Within-era predictor GLS fits | 45 |
 | 14_predictor_models | community_predictor_models/model_performance.csv | Within-era predictor GLS fits | 1 |
@@ -270,8 +270,7 @@ built for this report).
 
 | Folder          | Files |
 |:----------------|------:|
-| main            |    12 |
-| models          |     1 |
+| main            |    14 |
 | supplementary   |    26 |
 | worked_examples |     3 |
 

@@ -25,7 +25,7 @@ Hand-written records for this step:
 
 ## From starting plots to the CCA
 
-**Counts behind Fig. S3.**
+**Counts behind Fig. S2.**
 
 | Site | Period | Step | Label | Remaining | Removed | Explanation |
 |:---|:---|---:|:---|---:|---:|:---|

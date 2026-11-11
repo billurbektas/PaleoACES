@@ -110,18 +110,10 @@ MORA).
 <sub>Table file:
 [era_coefficients.csv](../tables/era_coefficients.csv)</sub>
 
-<img src="../figures/png/fig_tracking_model_residuals.png" alt="" width="1540" /><img src="../figures/png/fig_tracking_model_residuals-p2.png" alt="" width="1540" />
+Residual checks of the era models are Fig. S13 of the report, and those
+of the joint pace and direction model Fig. S14.
 
-**Residual checks** of the ten era models (page 1) and of the joint pace
-and direction model (page 2). Top: normal quantile plots of the
-normalized residuals, one per response. Bottom: normalized residuals by
-period type and park (points, with boxes for the quartiles). The models
-have no continuous predictor, so the fitted values take one value per
-period type and park, and residuals by group show what a plot against
-fitted values would. The climate change rate, the climate change, the
-turnover rate and the displacement are positive by construction and
-their residuals are right-skewed. The lag, lag rate, pace and direction
-residuals have heavy tails from a few Anthropocene plots.
+<img src="../figures/png/figS13_era_model_residuals.png" alt="" width="1540" /><img src="../figures/png/figS14_joint_model_residuals.png" alt="" width="1540" />
 
 ## Joint pace and direction model
 

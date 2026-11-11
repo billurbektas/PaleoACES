@@ -6,7 +6,7 @@
 # treated independently. This stage freezes the era grid; lake-level vegetation
 # tracking joins it later without moving boundaries. Until 11 Nov 2026 it also
 # classified high-fire periods (median + 1 robust SD); that classification was
-# dropped (Bills) because no model used it, and Figure 2C now shows the
+# dropped (Bills) because no model used it, and Figure 3C now shows the
 # frequency itself.
 
 suppressPackageStartupMessages({

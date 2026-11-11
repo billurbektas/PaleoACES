@@ -55,7 +55,7 @@ Step,File,Description,Size (kB)
 08_fire_records,walsh_charanalysis_settings.csv,CharAnalysis settings,1
 08_fire_records,walsh_charanalysis_software_comparison.csv,CharAnalysis vs tapas vs published,1
 08_fire_records,walsh_charanalysis_table3_audit.csv,Comparison with Walsh Table 3 (Table S2.2),0
-09_species_occurrences,occ_consolidated.csv,"All presence records, one taxonomy (Fig. S8)",827
+09_species_occurrences,occ_consolidated.csv,"All presence records, one taxonomy (Fig. S3)",827
 10_cca,cca_anova_cache.rds,"Cached permutation tests, keyed on the fit",1
 10_cca,cca_anova.csv,"Permutation tests (model, axes, terms)",0
 10_cca,cca_axes.csv,Constrained axes: eigenvalues and variance explained,0
@@ -119,9 +119,9 @@ Step,File,Description,Size (kB)
 13_era_models,era_comparison/joint_correction_effects/model_input.csv,"Era-comparison GLS fits, means and contrasts per response",370
 13_era_models,era_comparison/joint_correction_effects/model_results.txt,"Era-comparison GLS fits, means and contrasts per response",7
 13_era_models,era_comparison/joint_correction_effects/period_type_contrasts.csv,"Era-comparison GLS fits, means and contrasts per response",3
-13_era_models,era_comparison/joint_correction_effects/primary_fit.rds,"Era-comparison GLS fits, means and contrasts per response",580
+13_era_models,era_comparison/joint_correction_effects/primary_fit.rds,"Era-comparison GLS fits, means and contrasts per response",582
 13_era_models,era_comparison/model_results.txt,"Era-comparison GLS fits, means and contrasts per response",19
-13_era_models,era_comparison/primary_fits.rds,"Era-comparison GLS fits, means and contrasts per response",677
+13_era_models,era_comparison/primary_fits.rds,"Era-comparison GLS fits, means and contrasts per response",679
 14_predictor_models,community_predictor_models/model_coefficients.csv,Within-era predictor GLS fits,6
 14_predictor_models,community_predictor_models/model_exclusions.csv,Within-era predictor GLS fits,45
 14_predictor_models,community_predictor_models/model_performance.csv,Within-era predictor GLS fits,1

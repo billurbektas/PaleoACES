@@ -1,4 +1,4 @@
-# Figure 6: climate and fire associations as model slopes (Bills, 9 Nov 2026).
+# Figure 7: climate and fire associations as model slopes (Bills, 9 Nov 2026).
 # Left, Holocene lake-periods: response ~ site + climate + fire_activity.
 # Right, Anthropocene plot pairs: response ~ site + burned. The three responses
 # (lag, pace effect, direction effect) side by side for each term, with
@@ -71,4 +71,4 @@ if (render_figures) {
   ggsave(fig('main', 'fig_climate_fire_associations.pdf'), figure, width = 21, height = 19, device = cairo_pdf, bg = 'white')
   ggsave(fig('main', 'fig_climate_fire_associations.png'), figure, width = 21, height = 19, dpi = 300, bg = 'white')
 }
-cat('Figure 6: model slopes drawn, per century and not divided by time.\n')
+cat('Figure 7: model slopes drawn, per century and not divided by time.\n')

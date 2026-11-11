@@ -352,7 +352,7 @@ caption = paste(
   "The two starting surveys are separate lists; their exclusions must not be added. Legacy and resurvey exclusions are checked before fitting the CCA on matched plots.",
   "CCA keeps a species if it occurs in at least 20 plots or samples in any one site and period. Adult and seedling records supply presence together.",
   sprintf("Other preparation choices: %d MORA seedling record years assigned from adult visits; corrected NOCA tree records applied at %d plots. All current CCA climate values are complete.",sum(visit_rows$year_corrected),nrow(corrected)),
-  "Fire assignments remove no plots before CCA. Both burned MORA plots remain in CCA, Figure 3 and the canonical modern tracking table.",sep="\n")
+  "The two MORA plots that burned between the surveys are left out before species selection. Burned NOCA plots stay in the analysis.",sep="\n")
 figure = (modern_mora + modern_noca) /
   (plot_size_panel("MORA", 500) + plot_size_panel("NOCA", 100)) /
   (paleo_plot("MORA") + paleo_plot("NOCA")) +
@@ -361,7 +361,7 @@ figure = (modern_mora + modern_noca) /
     theme = theme(plot.title = element_text(size=28,face="bold"),
       plot.caption = element_text(size=14,hjust=0,lineheight=1.15),plot.margin=margin(14,14,14,14)))
 if (isTRUE(getOption("paleoaces.render_figures", TRUE))) {
-  ggsave(fig("supplementary", "figS03_plot_and_sample_selection.pdf"),figure,width=18,height=18,device=cairo_pdf)
+  ggsave(fig("supplementary", "figS02_plot_and_sample_selection.pdf"),figure,width=18,height=18,device=cairo_pdf)
 }
 cat("Plot selection summary: modern CCA fits ",mi$fit," MORA + ",ni$fit,
   " NOCA; paired comparisons ",mi$paired," + ",ni$paired,

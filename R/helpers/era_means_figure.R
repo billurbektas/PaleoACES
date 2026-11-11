@@ -1,4 +1,4 @@
-# Era-means panels shared by Figures 4 and 5 (Bills, 10 Nov 2026): fitted
+# Era-means panels shared by Figures 5 and 6 (Bills, 10 Nov 2026): fitted
 # means and 95% intervals of the three period types side by side per park,
 # from the Step 5a models, each mean printed beside its point in the park
 # colour. Rates on log axes carry an arrow with the Holocene-C fold. Signed
@@ -7,7 +7,7 @@
 # the Holm adjustment.
 # Linear-axis responses that are positive (the displacement) carry connectors
 # the same way.
-# Used by R/figures/main_fig4_era_contrasts.R and R/figures/main_fig5_lag_pace_direction.R.
+# Used by R/figures/main_fig5_era_contrasts.R and R/figures/main_fig6_lag_pace_direction.R.
 ERA_TYPES = c('Holocene-S', 'Holocene-C', 'Anthropocene')
 ERA_SITES = c('MORA', 'NOCA')
 # Period types side by side within each park, stability on the left.

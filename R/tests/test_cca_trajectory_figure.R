@@ -1,4 +1,4 @@
-# Figure 3 inputs (PLAN.md section 6): the Anthropocene arrows are the means of
+# Figure 4 inputs (PLAN.md section 6): the Anthropocene arrows are the means of
 # the plot-pair endpoints, the Holocene period centroids are equal-lake means of
 # the sampled centuries in each period, and the display rotation is rigid.
 source(here::here('R/helpers/config.R'), local = TRUE)
@@ -7,7 +7,7 @@ source(here('R/helpers/cca_display_rotation.R'), local = TRUE)
 render_figures = isTRUE(getOption('paleoaces.render_figures', TRUE))
 if (render_figures) {
   files = c(fig('main', 'fig_cca_trajectories.pdf'), fig('main', 'fig_cca_trajectories.png'),
-    fig('supplementary', 'figS13_cca_biplot_unrotated.pdf'))
+    fig('supplementary', 'figS12_cca_biplot_unrotated.pdf'))
   stopifnot(all(file.exists(files)), all(file.info(files)$size > 5000))
 }
 plots = read_csv(out('cca_tracking_anthropocene_plot_calculations.csv'), show_col_types = FALSE)
@@ -34,4 +34,4 @@ rotation = cca_display_rotation(scores(reference$model, display = 'bp', choices 
 xy = as.matrix(centroids[c('o1', 'o2')])
 stopifnot(max(abs(dist(xy) - dist(xy %*% rotation$matrix))) < 1e-12,
   abs(abs(det(rotation$matrix)) - 1) < 1e-12)
-cat('Figure 3 centroids, Anthropocene means and rigid display rotation checks passed.\n')
+cat('Figure 4 centroids, Anthropocene means and rigid display rotation checks passed.\n')

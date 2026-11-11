@@ -1,5 +1,5 @@
 # =============================================================================
-# main_fig2_climate_eras_fire.R
+# main_fig3_climate_eras_fire.R
 # =============================================================================
 # Two-panel display of standardized Holocene and Anthropocene climate change.
 # This figure reads authoritative outputs and does not recalculate eras.
@@ -357,12 +357,12 @@ p_climate_display = four_variable_key(climate_panel(text_scale = FIG2_TEXT,
   callouts = display_callouts, title = NULL,
   y_label = "Standardized 1,000-year change\n(calibration SD)"), thresholds = display_callouts)
 if (render_figures) {
-  ggsave(fig("supplementary", "figS10_climate_period_method.pdf"),
+  ggsave(fig("supplementary", "figS09_climate_period_method.pdf"),
     p_climate_display / p_fire + plot_layout(heights = c(4.5, 1.45)),
     width = 15, height = 11.5, device = cairo_pdf)
 }
 
-# Figure 2A: standardized climate LEVELS. Each lake's centennial CHELSA-TraCE
+# Figure 3A: standardized climate LEVELS. Each lake's centennial CHELSA-TraCE
 # value is scaled with the legacy calibration SD of the CCA, lakes are averaged
 # within park and the parks weighted equally. Zero is the mean of the legacy
 # calibration plots, as in the CCA (Bills, 9 Nov 2026). Thin lines:
@@ -459,7 +459,7 @@ levels_panel = function(vars, show_rates = TRUE) {
       show.legend = FALSE)
   p
 }
-# Figure 2 in raw units (Bills, 9 Nov 2026): one panel per CCA variable in °C
+# Figure 3 in raw units (Bills, 9 Nov 2026): one panel per CCA variable in °C
 # or mm, black lines, rates only in real units per century, then fire. The
 # park-average lake climate is the same series as above, before standardizing.
 raw_unit = c(MSpT = "°C", SP = "mm")
@@ -589,7 +589,7 @@ if (render_figures) {
 
 # Appendix: the same levels for all four seasonal variables, without rates.
 p_levels_four = four_variable_key(levels_panel(CLIMATE_DISPLAY_VARIABLES, show_rates = FALSE))
-if (render_figures) ggsave(fig("supplementary", "figS09_climate_levels_four_variables.pdf"),
+if (render_figures) ggsave(fig("supplementary", "figS08_climate_levels_four_variables.pdf"),
   p_levels_four / p_fire + plot_layout(heights = c(4.5, 1.45)), width = 15, height = 11.5, device = cairo_pdf)
 
 # Presentation version of panels A and B: no stability-range brackets, and all

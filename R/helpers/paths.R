@@ -72,7 +72,7 @@ OUTPUT_REGISTRY = tibble::tribble(
   "walsh_charanalysis_software_comparison.csv", "08_fire_records", "CharAnalysis vs tapas vs published",
   "walsh_charanalysis_table3_audit.csv", "08_fire_records", "Comparison with Walsh Table 3 (Table S2.2)",
   # 09 species occurrences --------------------------------------------------
-  "occ_consolidated.csv", "09_species_occurrences", "All presence records, one taxonomy (Fig. S8)",
+  "occ_consolidated.csv", "09_species_occurrences", "All presence records, one taxonomy (Fig. S3)",
   # 10 CCA ------------------------------------------------------------------
   "cca_sample_eligibility.csv", "10_cca", "Per-sample CCA eligibility and reason",
   "cca_pair_eligibility.csv", "10_cca", "Per-plot-pair CCA eligibility and reason",

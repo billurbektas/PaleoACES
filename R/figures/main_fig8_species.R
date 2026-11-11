@@ -1,4 +1,4 @@
-# Figure 7 (PLAN.md section 6): species contributions in both eras. Species as
+# Figure 8 (PLAN.md section 6): species contributions in both eras. Species as
 # rows ordered by the mean elevation of the plots where they occur, the highest
 # at the top (Bills). One column per park, with its own x
 # scale. Upper row contrib_climate, lower row contrib_lag (Bills, 11 Nov 2026,
@@ -148,4 +148,4 @@ if (render_figures) {
 write_csv(species_elevation |> mutate(holocene_absent = species %in% holocene_absent_species) |>
     arrange(match(species, order_species)) |> mutate(rank = row_number(), .before = 1),
   out('figures/species_order_elevation.csv'))
-cat('Figure 7: species contributions drawn.\n')
+cat('Figure 8: species contributions drawn.\n')

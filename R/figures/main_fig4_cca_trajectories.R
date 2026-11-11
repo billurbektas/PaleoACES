@@ -1,4 +1,4 @@
-# Figure 3: A, species and climate biplot; B, observed and predicted trajectories
+# Figure 4: A, species and climate biplot; B, observed and predicted trajectories
 # of both parks through the Holocene climate periods and the Anthropocene.
 # Layout of the earlier figure (Bills, 9 Nov 2026), on the MSpT + SP CCA with
 # the display-only varimax rotation (R/helpers/cca_display_rotation.R). The
@@ -214,7 +214,7 @@ if (render_figures) {
   # cairo_pdf draws the arrows of the axis titles, which the default pdf device cannot.
   ggsave(fig('main', 'fig_cca_trajectories.pdf'), figure, width = 24, height = 24, device = cairo_pdf, bg = 'white')
   ggsave(fig('main', 'fig_cca_trajectories.png'), figure, width = 24, height = 24, dpi = 300, bg = 'white')
-  ggsave(fig('supplementary', 'figS13_cca_biplot_unrotated.pdf'), biplot(FALSE), width = 12, height = 12.5,
+  ggsave(fig('supplementary', 'figS12_cca_biplot_unrotated.pdf'), biplot(FALSE), width = 12, height = 12.5,
     device = cairo_pdf, bg = 'white')
 }
-cat(sprintf('Figure 3: display rotation %.1f degrees; %d period centroids.\n', rotation$angle_degrees, nrow(centroids)))
+cat(sprintf('Figure 4: display rotation %.1f degrees; %d period centroids.\n', rotation$angle_degrees, nrow(centroids)))

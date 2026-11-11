@@ -126,7 +126,7 @@ stopifnot(isTRUE(all.equal(
   composite_check |> arrange(site, t, offset) |> pull(check))))
 
 # Fire settings and the fire frequency (Bills, 11 Nov 2026: the high-fire
-# classification was dropped; Figure 2C shows events per 1,000 years). Every
+# classification was dropped; Figure 3C shows events per 1,000 years). Every
 # window count is recounted from the accepted events, and the park series is
 # checked as the mean over the covered cores.
 fire_settings = read_csv(out("holocene_era_fire_source_settings.csv"),
@@ -171,7 +171,7 @@ source_text = paste(readLines(here("R/pipeline/11_climate_eras_fire_frequency.R"
   warn = FALSE), collapse = "\n")
 helper_text = paste(readLines(here("R/helpers/holocene_climate_fire_era_functions.R"),
   warn = FALSE), collapse = "\n")
-figure_text = paste(readLines(here("R/figures/main_fig2_climate_eras_fire.R"),
+figure_text = paste(readLines(here("R/figures/main_fig3_climate_eras_fire.R"),
   warn = FALSE), collapse = "\n")
 stopifnot(!grepl("holocene_period_candidates", source_text, fixed = TRUE),
   !grepl("forward_state", paste(source_text, helper_text), fixed = TRUE),

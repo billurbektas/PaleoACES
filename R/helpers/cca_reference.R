@@ -1,5 +1,5 @@
 # Export the existing primary fit and its exact prepared inputs, without changing
-# calibration, projections, axes, species selection or Figure 3 calculations.
+# calibration, projections, axes, species selection or Figure 4 calculations.
 export_cca_reference = function(e) {
   source(here::here('R/helpers/tracking_metrics.R'), local = TRUE)
   scaling = make_climate_scaling(e$env_past_final)
