@@ -143,6 +143,8 @@ figures,anthropocene_climate_rates.csv,"Tables behind the figures (centroids, an
 figures,cca_trajectory_anthropocene_centroids.csv,"Tables behind the figures (centroids, annotations)",0
 figures,cca_trajectory_holocene_spans.csv,"Tables behind the figures (centroids, annotations)",0
 figures,cca_trajectory_period_centroids.csv,"Tables behind the figures (centroids, annotations)",2
+figures,charcoal_dunwiddie_walsh_correlations.csv,"Tables behind the figures (centroids, annotations)",1
+figures,charcoal_dunwiddie_walsh_event_matching.csv,"Tables behind the figures (centroids, annotations)",0
 figures,holocene_anthropocene_raw_climate_rate_comparison.csv,"Tables behind the figures (centroids, annotations)",1
 figures,holocene_climate_level_rates.csv,"Tables behind the figures (centroids, annotations)",1
 figures,holocene_era_fire_threshold_ratio.csv,era and high-fire classification tables,21

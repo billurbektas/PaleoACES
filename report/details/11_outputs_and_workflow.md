@@ -52,6 +52,7 @@ for the report.
 | R/pipeline/15_contributions.R | pipeline | Species contributions (PLAN.md section 5, Step 6): which species led the | 125 |
 | R/figures/supp_age_depth_models.R | figure | Figures S5 (four Bacon age-depth models) and S6 (Panther Potholes 210Pb | 109 |
 | R/figures/supp_cca_scaling.R | figure | supp_cca_scaling.R - one CCA drawn at scaling 1 and scaling 2 | 108 |
+| R/figures/supp_charcoal_dunwiddie_walsh.R | figure | Appendix figure A4 (Bills, 11 Nov 2026): do the charcoal peaks of the Walsh | 98 |
 | R/figures/supp_climate_correlations.R | figure | supp_climate_correlations.R | 626 |
 | R/figures/supp_climate_windows.R | figure | Compare the actual plot-specific survey windows with V2.1 1979-2021. | 174 |
 | R/figures/supp_sample_selection.R | figure | Show which plots and core samples reach CCA, starting with the supplied data. | 368 |
@@ -90,7 +91,7 @@ Every file under `output/` is declared in `R/helpers/paths.R`; a script
 cannot write an undeclared output. Folders hold one file per table, in
 the folder of the step that writes it.
 
-**162 output files** (excluding the climate and age-draw cache).
+**164 output files** (excluding the climate and age-draw cache).
 
 | Step | File | Description | Size (kB) |
 |:---|:---|:---|---:|
@@ -238,6 +239,8 @@ the folder of the step that writes it.
 | figures | cca_trajectory_anthropocene_centroids.csv | Tables behind the figures (centroids, annotations) | 0 |
 | figures | cca_trajectory_holocene_spans.csv | Tables behind the figures (centroids, annotations) | 0 |
 | figures | cca_trajectory_period_centroids.csv | Tables behind the figures (centroids, annotations) | 2 |
+| figures | charcoal_dunwiddie_walsh_correlations.csv | Tables behind the figures (centroids, annotations) | 1 |
+| figures | charcoal_dunwiddie_walsh_event_matching.csv | Tables behind the figures (centroids, annotations) | 0 |
 | figures | holocene_anthropocene_raw_climate_rate_comparison.csv | Tables behind the figures (centroids, annotations) | 1 |
 | figures | holocene_climate_level_rates.csv | Tables behind the figures (centroids, annotations) | 1 |
 | figures | holocene_era_fire_threshold_ratio.csv | era and high-fire classification tables | 21 |
@@ -272,7 +275,7 @@ built for this report).
 |:----------------|------:|
 | main            |    12 |
 | models          |     1 |
-| supplementary   |    20 |
+| supplementary   |    22 |
 | worked_examples |     4 |
 
 <sub>Table file:

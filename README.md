@@ -1598,6 +1598,41 @@ Fire-frequency ratio as in Figure 2B.
 **Fig. A3. Unrotated CCA biplot.** As Figure 3A on the unrotated axes,
 labelled with their share of the total inertia, with all taxa.
 
+<img src="report/figures/png/fig_charcoal_dunwiddie_walsh.png" alt="" width="100%" />
+
+**Fig. A4. Charcoal of the Walsh et al. (2017) Sunrise Ridge cores
+against the charcoal of the MORA vegetation lakes (Dunwiddie).** The
+MORA fire values of the analysis come from the three Sunrise Ridge
+cores, while the vegetation records come from Jay Bath, Log Wallow and
+Reflection Pond. The upper three rows show each Sunrise Ridge core’s
+charcoal accumulation rate (grey) with its background (dashed) and the
+fire events accepted by tapas (dark red triangles). The lower three rows
+show the charcoal fragments counted in each Dunwiddie macrofossil
+sample. They are a concentration, since all samples of a core had the
+same volume, and the samples above each lake’s 75th percentile are
+filled. Every Walsh event is carried as a faint line through all rows.
+Time runs from 7,000 cal BP to the present, the span of the Dunwiddie
+records. The two kinds of record follow opposite long-term courses: the
+Sunrise Ridge cores hold most of their charcoal and events in the last
+3,500 years, while Jay Bath and Log Wallow hold most of theirs before
+4,000 cal BP. Correlated over 14 bins of 500 years with the mean of the
+three cores (Spearman, p from circular shifts that keep each record’s
+autocorrelation, so that the smallest possible p is about 0.07), Jay
+Bath gives -0.31 (p = 0.71) with the charcoal accumulation and +0.02 (p
+= 1.00) with the fire frequency, Log Wallow -0.45 (p = 0.29) and -0.53
+(p = 0.07), and Reflection Pond -0.18 (p = 0.62) and +0.14 (p = 0.77).
+The Sunrise Ridge cores agree only weakly with one another (Sunrise Lake
+and Shadow Lake +0.45, Sunrise Lake and Little Sunrise Lake +0.31,
+Shadow Lake and Little Sunrise Lake +0.09). A Dunwiddie peak lies within
+200 years of 38%, 29% and 21% of the 34 Walsh events at Jay Bath, Log
+Wallow and Reflection Pond, against 41%, 39% and 44% expected by chance.
+The Sunrise Ridge record therefore gives no evidence of the fire history
+at the vegetation lakes, and the MORA fire values should be read as
+regional at best. The Dunwiddie values are concentrations, not
+accumulation rates, so a change in sedimentation rate could shape part
+of their long-term course. Script:
+[`R/figures/supp_charcoal_dunwiddie_walsh.R`](R/figures/supp_charcoal_dunwiddie_walsh.R).
+
 **Figure 1. Conceptual framework (caption revisions).** The drawing is
 unchanged. In panel B, the lag is the difference between the mismatches
 at t2 and t1, the first and last sampled century of a lake-period (one

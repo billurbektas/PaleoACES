@@ -910,6 +910,44 @@ show_figure('report/figures/supplementary/fig_cca_biplot_unrotated.pdf', width =
 **Fig. A3. Unrotated CCA biplot.** As Figure 3A on the unrotated axes, labelled with their share of
 the total inertia, with all taxa.
 
+```{r fig-app-charcoal}
+show_figure('report/figures/supplementary/fig_charcoal_dunwiddie_walsh.pdf')
+cc = read_output('figures/charcoal_dunwiddie_walsh_correlations.csv')
+cm = read_output('figures/charcoal_dunwiddie_walsh_event_matching.csv')
+cr = function(rec, what) { x = cc[cc$record == rec & cc$against == what, ]; sprintf('%+.2f (p = %.2f)', x$rho, x$p_shift) }
+acc = 'Walsh charcoal accumulation (mean of three cores)'; frq = 'Walsh fire frequency (mean of three cores)'
+bench = cc[cc$against == 'Walsh core against core', ]
+```
+
+**Fig. A4. Charcoal of the Walsh et al. (2017) Sunrise Ridge cores against the charcoal of the MORA
+vegetation lakes (Dunwiddie).** The MORA fire values of the analysis come from the three Sunrise Ridge
+cores, while the vegetation records come from Jay Bath, Log Wallow and Reflection Pond. The upper three
+rows show each Sunrise Ridge core's charcoal accumulation rate (grey) with its background (dashed) and
+the fire events accepted by tapas (dark red triangles). The lower three rows show the charcoal fragments
+counted in each Dunwiddie macrofossil sample. They are a concentration, since all samples of a core had
+the same volume, and the samples above each lake's 75th percentile are filled. Every Walsh event is
+carried as a faint line through all rows. Time runs from 7,000 cal BP to the present, the span of the
+Dunwiddie records. The two kinds of record follow opposite long-term courses: the Sunrise Ridge cores
+hold most of their charcoal and events in the last 3,500 years, while Jay Bath and Log Wallow hold most
+of theirs before 4,000 cal BP. Correlated over `r unique(cc$bins)[1]` bins of 500 years with the mean of
+the three cores (Spearman, p from circular shifts that keep each record's autocorrelation, so that the
+smallest possible p is about 0.07), Jay Bath gives `r cr('Jay Bath', acc)` with the charcoal accumulation
+and `r cr('Jay Bath', frq)` with the fire frequency, Log Wallow `r cr('Log Wallow', acc)` and
+`r cr('Log Wallow', frq)`, and Reflection Pond `r cr('Reflection Pond', acc)` and
+`r cr('Reflection Pond', frq)`. The Sunrise Ridge cores agree only weakly with one another
+(`r paste(sprintf('%s %+.2f', bench$record, bench$rho), collapse = ', ')`). A Dunwiddie peak lies within
+200 years of `r sprintf('%.0f', 100 * cm$matched[cm$record == 'Jay Bath'])`%,
+`r sprintf('%.0f', 100 * cm$matched[cm$record == 'Log Wallow'])`% and
+`r sprintf('%.0f', 100 * cm$matched[cm$record == 'Reflection Pond'])`% of the `r cm$walsh_events[1]` Walsh
+events at Jay Bath, Log Wallow and Reflection Pond, against
+`r sprintf('%.0f', 100 * cm$chance[cm$record == 'Jay Bath'])`%,
+`r sprintf('%.0f', 100 * cm$chance[cm$record == 'Log Wallow'])`% and
+`r sprintf('%.0f', 100 * cm$chance[cm$record == 'Reflection Pond'])`% expected by chance. The Sunrise Ridge
+record therefore gives no evidence of the fire history at the vegetation lakes, and the MORA fire values
+should be read as regional at best. The Dunwiddie values are concentrations, not accumulation rates, so
+a change in sedimentation rate could shape part of their long-term course. Script:
+[`R/figures/supp_charcoal_dunwiddie_walsh.R`](R/figures/supp_charcoal_dunwiddie_walsh.R).
+
 **Figure 1. Conceptual framework (caption revisions).** The drawing is unchanged. In panel B, the lag
 is the difference between the mismatches at t2 and t1, the first and last sampled century of a
 lake-period (one lake within one climate period), and the lag rate is that difference per century.
