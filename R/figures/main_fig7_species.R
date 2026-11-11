@@ -16,7 +16,7 @@ render_figures = isTRUE(getOption('paleoaces.render_figures', TRUE))
 # Species order (Bills, 11 Nov 2026; by the mean until then): the maximum
 # elevation of the plots where each species occurs, over the 607 paired plots,
 # both surveys and both parks; the highest at the top, ties by the mean. The
-# species names are coloured by that maximum and carry it in metres.
+# species names are shaded by that maximum.
 source(here('R/helpers/tracking_predictor_models.R'), local = TRUE)
 plots = read_csv(out('cca_tracking_anthropocene_plot_calculations.csv'), show_col_types = FALSE) |> distinct(site, plot_id)
 mora_env = new.env(); load(here('data/MORA_plots.rda'), envir = mora_env)
@@ -106,13 +106,14 @@ figure = ggplot(drawn, aes(estimate, y)) +
     # Room between the parks, so their end tick labels do not collide.
     panel.spacing.x = unit(2.2, 'lines'))
 # The species names in their own column, aligned with the panel rows: coloured
-# by the maximum elevation of the plots where the species occurs, with that
-# maximum in metres, and in bold where the species is absent from the Holocene
+# by the maximum elevation of the plots where the species occurs, and in bold
+# where the species is absent from the Holocene
 # record of both parks (Bills, 11 Nov 2026). The row titles sit on its left.
 # The names are coloured in greyscale by that maximum.
 names = species_elevation |> mutate(y = match(species, order_species),
     holocene_absent = species %in% holocene_absent_species,
-    label = paste0(species, '  ', scales::comma(round(max_elevation)), ' m')) |>
+    # The elevation is shown by the shade only, not written (Bills, 11 Nov 2026).
+    label = species) |>
   expand_grid(measure_label = factor(levels(means$measure_label), levels = levels(means$measure_label))) |>
   mutate(column = ' ')
 name_column = ggplot(names, aes(x = 1, y = y)) +
@@ -137,7 +138,7 @@ name_column = ggplot(names, aes(x = 1, y = y)) +
     strip.text.x = element_text(size = 26, face = 'bold'), strip.background.x = element_blank(),
     legend.position = 'bottom', legend.title = element_text(size = 22), legend.text = element_text(size = 19))
 # The name column only as wide as the longest name, so the row titles sit close to the names.
-figure = (name_column | figure) + plot_layout(widths = c(.4, 1), guides = 'collect') &
+figure = (name_column | figure) + plot_layout(widths = c(.3, 1), guides = 'collect') &
   theme(legend.position = 'bottom')
 if (render_figures) {
   # cairo_pdf draws the arrows of the side labels.

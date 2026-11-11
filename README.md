@@ -1227,20 +1227,20 @@ not change (all species values zero) and is per century of the same
 interval as the lag rate. Species are ordered by the maximum elevation
 of the plots where they occur (the 607 plot pairs, both surveys, both
 parks), the highest at the top. Their names are shaded by that maximum
-in four grey steps, lightest below 1,500 m and black above 1,900 m, and
-the maximum follows each name in metres. Names in bold are species
-absent from the Holocene record of both parks. Symbols are means:
-triangles, Holocene stability periods, circles, Holocene climate-change
-periods, diamonds, Anthropocene plot pairs (burned and unburned
-together). Large symbols with bars are means whose 95% t-interval
-excludes zero, small faded symbols are means whose interval includes
-zero. A species with no Holocene symbols in a park is absent from that
-park’s Holocene record. Each park has its own x scale, symmetric around
-zero. Holocene climate-change lake-periods span 200 to 900 years and
-stability lake-periods 300 to 2600 years between their first and last
-sampled century. Anthropocene plot pairs span 27.5 to 32.5 years between
-the midpoints of their climate windows (about 29 years). Contributions
-are in CCA distance per century.
+in four grey steps, lightest below 1,500 m and black above 1,900 m (key
+below the figure). Names in bold are species absent from the Holocene
+record of both parks. Symbols are means: triangles, Holocene stability
+periods, circles, Holocene climate-change periods, diamonds,
+Anthropocene plot pairs (burned and unburned together). Large symbols
+with bars are means whose 95% t-interval excludes zero, small faded
+symbols are means whose interval includes zero. A species with no
+Holocene symbols in a park is absent from that park’s Holocene record.
+Each park has its own x scale, symmetric around zero. Holocene
+climate-change lake-periods span 200 to 900 years and stability
+lake-periods 300 to 2600 years between their first and last sampled
+century. Anthropocene plot pairs span 27.5 to 32.5 years between the
+midpoints of their climate windows (about 29 years). Contributions are
+in CCA distance per century.
 
 Stages and helpers:
 [`R/pipeline/15_contributions.R`](R/pipeline/15_contributions.R),
