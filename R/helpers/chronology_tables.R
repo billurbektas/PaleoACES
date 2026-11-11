@@ -1,10 +1,10 @@
 # =============================================================================
-# chronology_tables.R - supplementary Tables S1.1 and S1.2 (age-depth models)
+# chronology_tables.R - supplementary Tables S2 and S3 (age-depth models)
 # =============================================================================
 # Builds the two Appendix S1 tables from what Bacon actually used, so the
 # manuscript cannot drift from the models:
-#   Table S1.1  chronological controls  <- Cores/<core>/<core>.csv (Bacon inputs)
-#   Table S1.2  rbacon parameters       <- Cores/<core>/<core>_settings.txt and
+#   Table S2  chronological controls  <- Cores/<core>/<core>.csv (Bacon inputs)
+#   Table S3  rbacon parameters       <- Cores/<core>/<core>_settings.txt and
 #                                          CORE_ARGS (R/helpers/bacon_settings.R)
 # Every number comes from those files. Only the descriptive wording (control
 # names, sources, how each uncertainty was obtained) lives here, keyed by the
@@ -85,7 +85,7 @@ chronology_controls_table = function(cores = names(CHRONOLOGY_TABLE_CORES)) {
     w = wording[wording$group == group, ]
     key = chronology_wording_key(x, group, w$id)
     unmatched = setdiff(key, w$id)
-    if (length(unmatched)) stop("Table S1.1 has no wording for ", core, " control(s): ",
+    if (length(unmatched)) stop("Table S2 has no wording for ", core, " control(s): ",
       paste(unmatched, collapse = ", "), ". Add them to chronology_control_wording().")
     w = w[match(key, w$id), ]
     error = chronology_number(x$Error)
@@ -113,7 +113,7 @@ chronology_controls_table = function(cores = names(CHRONOLOGY_TABLE_CORES)) {
     chronology_wording_key(x, group, wording$id[wording$group == group])
   })))
   stale = setdiff(wording$id, used)
-  if (length(stale)) stop("Table S1.1 wording without a Bacon control: ", paste(stale, collapse = ", "))
+  if (length(stale)) stop("Table S2 wording without a Bacon control: ", paste(stale, collapse = ", "))
   out
 }
 
@@ -127,7 +127,7 @@ bacon_run_value = function(core, name) {
 }
 bacon_shared_value = function(cores, name) {
   v = unique(vapply(cores, bacon_run_value, character(1), name = name))
-  if (length(v) != 1L) stop("MORA cores differ in ", name, "; Table S1.2 assumes one value")
+  if (length(v) != 1L) stop("MORA cores differ in ", name, "; Table S3 assumes one value")
   v
 }
 

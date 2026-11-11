@@ -8,9 +8,9 @@
 
 Back to the
 [report](../../README.md#appendix-s1-construction-of-the-holocene-agedepth-models).
-Scripts: `R/pipeline/05_age_depth_models.R` (fitting, Tables S1.1–S1.2),
+Scripts: `R/pipeline/05_age_depth_models.R` (fitting, Tables S2 and S3),
 `R/helpers/bacon_settings.R` (every rbacon setting),
-`R/figures/supp_age_depth_models.R` (Figs S5–S9).
+`R/figures/supp_age_depth_models.R` (Figs. S4 and S5).
 
 Hand-written records:
 

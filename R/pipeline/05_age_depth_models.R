@@ -2,7 +2,7 @@
 #
 # SLOW: four seeded MCMC runs plus the +-10-year 210Pb sensitivity. They run only
 # with `Rscript R/run_all.R --age-models` (or when no run manifest exists). Every
-# run also rebuilds Tables S1.1 and S1.2 from the Bacon inputs and settings.
+# run also rebuilds Tables S2 and S3 from the Bacon inputs and settings.
 # Provenance of every control: report/details/03_chronology_control_points.md.
 # Figures S4 and S5 are drawn from the stored runs by R/figures/supp_age_depth_models.R.
 #
@@ -504,7 +504,7 @@ if (refit_age_models || !file.exists(manifest_path)) {
 }
 
 # =============================================================================
-# Tables S1.1 (chronological controls) and S1.2 (rbacon parameters)
+# Tables S2 (chronological controls) and S3 (rbacon parameters)
 # =============================================================================
 source(here('R/helpers/chronology_tables.R'), local = TRUE)
 write_chronology_tables()

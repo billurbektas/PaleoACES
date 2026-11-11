@@ -62,7 +62,7 @@ for (response in responses) {
   performance[[paste(response, 'Holocene')]] = tibble(response, era = 'Holocene',
     model = paste('site +', climate, '+ fire_activity'),
     n = nrow(d), n_MORA = sum(d$site == 'MORA'), n_NOCA = sum(d$site == 'NOCA'),
-    R2 = reconstruction_r2(d$estimate, fitted(fit)),
+    reconstruction_fit_statistics(fit), R2 = reconstruction_r2(d$estimate, fitted(fit)),
     AR1_phi = as.numeric(coef(fit$modelStruct$corStruct, unconstrained = FALSE)),
     sd_ratio_NOCA_to_MORA = unname(variance[grepl('NOCA', names(variance))]),
     warnings = paste(captured$warnings, collapse = '; '))
@@ -104,7 +104,7 @@ for (response in responses) {
   coefficients[[paste(response, 'Anthropocene')]] = reconstruction_coefficients(fit, response, 'Anthropocene', 'Independent')
   performance[[paste(response, 'Anthropocene')]] = tibble(response, era = 'Anthropocene', model = 'site + burned',
     n = nrow(da), n_MORA = sum(da$site == 'MORA'), n_NOCA = sum(da$site == 'NOCA'),
-    R2 = reconstruction_r2(da$estimate, fitted(fit)), AR1_phi = NA_real_,
+    reconstruction_fit_statistics(fit), R2 = reconstruction_r2(da$estimate, fitted(fit)), AR1_phi = NA_real_,
     sd_ratio_NOCA_to_MORA = unname(variance[grepl('NOCA', names(variance))]),
     warnings = paste(captured$warnings, collapse = '; '))
   # Fitted means for Figure 7B: MORA unburned, NOCA unburned, NOCA burned.

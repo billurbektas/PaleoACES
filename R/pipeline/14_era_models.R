@@ -2,9 +2,11 @@
 # Holocene climate-change periods and the Anthropocene compared within each
 # park, for climate change rate, climate change, turnover rate, displacement,
 # lag rate, lag, pace effect and direction effect, each per century and as a
-# total, and the joint pace and direction model. Climate change, displacement,
-# lag and the effect totals are not divided by time (Bills, 10 Nov 2026). The Holocene is
-# never pooled into one value and the parks are never pooled (standing rule).
+# total. Climate change, displacement, lag and the effect totals are not divided
+# by time (Bills, 10 Nov 2026). The Holocene is never pooled into one value and
+# the parks are never pooled (standing rule). The joint pace and direction model
+# was removed (Bills, 11 Nov 2026): the two effects are compared between the
+# period types in their own era models only.
 source(here::here('R/helpers/config.R'), local = TRUE)
 suppressPackageStartupMessages({library(here); library(tidyverse); library(nlme); library(patchwork)})
 source(here('R/helpers/reconstruction_models.R'), local = TRUE)
@@ -88,7 +90,7 @@ for (response in names(ERA_RESPONSES)) {
     }
   }
   variance = coef(fit$modelStruct$varStruct, unconstrained = FALSE)
-  summary_rows[[response]] = tibble(response, n = nrow(d),
+  summary_rows[[response]] = tibble(response, n = nrow(d), reconstruction_fit_statistics(fit),
     AR1_phi = as.numeric(coef(fit$modelStruct$corStruct, unconstrained = FALSE)),
     variance_parameters = paste(sprintf('%s=%.3f', names(variance), variance), collapse = ';'),
     R2 = reconstruction_r2(d$estimate, fitted(fit)), warnings = paste(captured$warnings, collapse = '; '))
@@ -129,61 +131,10 @@ writeLines(c('Step 5a era models: estimate ~ period_type * site, AR(1) within se
   file.path(results_dir, 'model_results.txt'))
 print(as.data.frame(tables$era_folds), digits = 3)
 
-# Joint pace and direction model: the two corrections on the same units, with
-# their within-unit correlation estimated for each era x park.
-d = tracking_joint_correction_input(both)
-joint_out = out('era_comparison/joint_correction_effects')
-dir.create(joint_out, recursive = TRUE, showWarnings = FALSE)
-captured = reconstruction_capture(function() {
-# report-snippet: joint-correction-model
-  # Pace and direction effects in one model, two rows per unit (correction =
-  # pace or direction), so that the two effects of the same unit can be
-  # compared with their correlation taken into account (corPairedAR1: the AR(1)
-  # above plus a correlation between the two rows of a unit). Same weights.
-  gls(estimate ~ period_type * site * correction, data = d,
-    correlation = corPairedAR1(sort(unique(d$pair_group))),
-    weights = varComb(varIdent(form = ~ 1 | period_type_site_correction), varFixed(~ endpoint_var)),
-    method = 'REML', na.action = na.fail, control = glsControl(msMaxIter = 500))
-# end-snippet: joint-correction-model
-})
-fit = captured$fit
-if (is.null(fit)) stop('Joint correction GLS failed: ', captured$error)
-grid = expand_grid(site = factor(c('MORA', 'NOCA'), levels = c('MORA', 'NOCA')),
-  period_type = factor(ERA_PERIOD_TYPES, levels = ERA_PERIOD_TYPES),
-  correction = factor(c('Pace', 'Direction'), levels = c('Pace', 'Direction')))
-X = model.matrix(~ period_type * site * correction, grid)
-joint_means = bind_cols(grid, linear(fit, X)) |> mutate(n = pmap_int(list(as.character(site),
-  as.character(period_type), as.character(correction)), function(s, p, k) sum(d$site == s & d$period_type == p & d$correction == k)))
-key = paste(grid$site, grid$period_type, grid$correction)
-correction_contrasts = holm(bind_rows(lapply(seq_len(nrow(groups)), function(i) {
-  g = paste(groups$site[i], groups$period_type[i])
-  L = X[key == paste(g, 'Direction'), , drop = FALSE] - X[key == paste(g, 'Pace'), , drop = FALSE]
-  tibble(site = groups$site[i], period_type = groups$period_type[i], contrast = 'Direction - Pace') |> bind_cols(linear(fit, L))
-})), 'within period type and park correction comparisons')
-period_contrasts = holm(bind_rows(lapply(c('MORA', 'NOCA'), function(park) bind_rows(lapply(c('Pace', 'Direction'), function(k) {
-  sel = grid$site == park & grid$correction == k
-  tibble(site = park, correction = k, contrast = vapply(CONTRASTS, paste, character(1), collapse = ' - ')) |>
-    bind_cols(linear(fit, contrast_rows(X[sel, , drop = FALSE], as.character(grid$period_type[sel]), CONTRASTS)))
-})))), 'within park and correction period type comparisons')
-parameters = coef(fit$modelStruct$corStruct, unconstrained = FALSE)
-write_csv(d, file.path(joint_out, 'model_input.csv'))
-write_csv(joint_means, file.path(joint_out, 'model_group_means.csv'))
-write_csv(correction_contrasts, file.path(joint_out, 'correction_contrasts.csv'))
-write_csv(period_contrasts, file.path(joint_out, 'period_type_contrasts.csv'))
-write_csv(tibble(parameter = names(parameters), estimate = unname(parameters),
-  warnings = paste(captured$warnings, collapse = '; ')), file.path(joint_out, 'correlation_parameters.csv'))
-writeLines(c('Joint pace and direction GLS: estimate ~ period_type * site * correction, paired AR(1).',
-  capture.output(print(summary(fit)))), file.path(joint_out, 'model_results.txt'))
-saveRDS(fit, file.path(joint_out, 'primary_fit.rds'))
-
 if (isTRUE(getOption('paleoaces.render_figures', TRUE))) {
-  joint_predictions = d |> transmute(metric = as.character(correction), era = as.character(period_type), site,
-    predicted = as.numeric(fitted(fit)), normalized_residual = as.numeric(residuals(fit, type = 'normalized')))
-  # Figs. S16 and S17 of the README (Bills, 11 Nov 2026: model checks shown with
-  # the results): residuals of the era models and of the joint model.
+  # Fig. S16 of the README (Bills, 11 Nov 2026: model checks shown with the
+  # results): residuals of the era models.
   ggsave(fig('supplementary', 'figS16_era_model_residuals.pdf'), reconstruction_residual_plot(tables$era_predictions),
     width = 14, height = 12, device = cairo_pdf)
-  ggsave(fig('supplementary', 'figS17_joint_model_residuals.pdf'), reconstruction_residual_plot(joint_predictions),
-    width = 14, height = 12, device = cairo_pdf)
 }
-cat('Era models:', length(fits), 'responses; joint model on', nrow(d) / 2, 'paired units.\n')
+cat('Era models:', length(fits), 'responses.\n')

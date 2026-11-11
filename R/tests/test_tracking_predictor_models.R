@@ -2,7 +2,7 @@
 # rebuild each residual covariance from the fitted parameters (AR(1) on the
 # unit order within series, park or period-type variances, endpoint weights)
 # and check the coefficients and their covariance against generalized least
-# squares computed by hand. Also checks the paired AR(1) correlation matrix.
+# squares computed by hand.
 source(here::here('R/helpers/config.R'), local = TRUE)
 suppressPackageStartupMessages({library(here); library(tidyverse); library(nlme)})
 source(here('R/helpers/reconstruction_models.R'), local = TRUE)
@@ -10,7 +10,7 @@ close = function(x, y, tol = 1e-6) stopifnot(length(x) == length(y),
   all(abs(as.numeric(x) - as.numeric(y)) <= tol * pmax(1, abs(as.numeric(y)))))
 both = read_csv(out('cca_tracking_both_eras.csv'), show_col_types = FALSE)
 
-check_gls = function(fit, d, group, series, pair = NULL) {
+check_gls = function(fit, d, group, series) {
   X = model.matrix(formula(fit), d)[, names(coef(fit)), drop = FALSE]
   ident = fit$modelStruct$varStruct[[1]]
   ratios = coef(ident, unconstrained = FALSE, allCoef = TRUE)
@@ -19,7 +19,6 @@ check_gls = function(fit, d, group, series, pair = NULL) {
   V = matrix(0, nrow(d), nrow(d))
   for (i in split(seq_len(nrow(d)), d[[series]])) {
     R = pars[1]^abs(outer(d$unit_index[i], d$unit_index[i], '-'))
-    if (!is.null(pair)) R = R * ifelse(outer(d$correction[i], d$correction[i], '=='), 1, pars[[pair[i[1]]]])
     V[i, i] = R * outer(sd[i], sd[i])
   }
   ViX = solve(V, X); covariance = solve(crossprod(X, ViX))
@@ -56,16 +55,4 @@ for (response in names(ERA_RESPONSES)) {
   check_gls(fit, d, 'period_type_site', 'series')
 }
 
-# Joint pace and direction model: paired AR(1).
-fit = readRDS(out('era_comparison/joint_correction_effects/primary_fit.rds'))
-d = tracking_joint_correction_input(both)
-stopifnot(fit$dims$N == nrow(d), all(table(d$series, d$unit_index)[table(d$series, d$unit_index) > 0] == 2L))
-check_gls(fit, d, 'period_type_site_correction', 'series',
-  pair = paste(ifelse(d$period_type == 'Anthropocene', 'Anthropocene', 'Holocene'), d$site))
-
-# The paired AR(1) correlation of a toy series, by hand.
-toy = tibble(series = 'A', unit_index = c(1, 1, 3, 3), correction = factor(c('Pace', 'Direction', 'Pace', 'Direction'),
-  levels = c('Pace', 'Direction')), period_type = 'Holocene-C', site = 'MORA')
-R = nlme::corMatrix(nlme::Initialize(corPairedAR1(c('Holocene MORA', 'Anthropocene MORA'), c(.5, .3, .1)), toy))[[1]]
-close(R, matrix(c(1, .3, .25, .075, .3, 1, .075, .25, .25, .075, 1, .3, .075, .25, .3, 1), 4), 1e-12)
-cat('Lake-period GLS algebra (Step 5, Step 5a, joint pace and direction) and the paired AR(1) checks passed.\n')
+cat('Lake-period GLS algebra (Step 5 and Step 5a) checks passed.\n')

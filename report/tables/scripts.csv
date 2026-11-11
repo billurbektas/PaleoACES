@@ -12,7 +12,7 @@ R/pipeline/10_species_occurrences.R,pipeline,10_species_occurrences.R,626
 R/pipeline/11_cca.R,pipeline,11_cca.R - the pooled CCA and everything derived from it. NO FIGURES.,665
 R/pipeline/12_climate_eras_fire_frequency.R,pipeline,12_climate_eras_fire_frequency.R,194
 R/pipeline/13_tracking.R,pipeline,"Tracking: native-century Holocene positions, tracking metrics for both eras,",85
-R/pipeline/14_era_models.R,pipeline,"Era models (PLAN.md section 5, Step 5a): Holocene stability periods,",189
+R/pipeline/14_era_models.R,pipeline,"Era models (PLAN.md section 5, Step 5a): Holocene stability periods,",140
 R/pipeline/15_predictor_models.R,pipeline,"Explanatory models (PLAN.md section 5, Step 5).",131
 R/pipeline/16_contributions.R,pipeline,"Species contributions (PLAN.md section 5, Step 6): which species led the",143
 R/figures/supp_age_depth_models.R,figure,Figures S4 (four Bacon age-depth models) and S5 (Panther Potholes 210Pb,109
@@ -21,7 +21,7 @@ R/figures/supp_charcoal_dunwiddie_walsh.R,figure,"Fig. S14 (appendix figure A4 u
 R/figures/supp_climate_correlations.R,figure,supp_climate_correlations.R,628
 R/figures/supp_climate_products.R,figure,"Figs. S6 to S8 (Appendix S2, Bills, 11 Nov 2026): the four CHELSA climate",117
 R/figures/supp_climate_windows.R,figure,Compare the actual plot-specific survey windows with V2.1 1979-2021.,174
-R/figures/supp_paleoclimate_sensitivity.R,figure,"Figs. S19 and S20 (Appendix S4, Bills, 11 Nov 2026): the three paleoclimates",137
+R/figures/supp_paleoclimate_sensitivity.R,figure,"Figs. S18 and S19 (Appendix S4, Bills, 11 Nov 2026): the three paleoclimates",137
 R/figures/supp_sample_selection.R,figure,"Show which plots and core samples reach CCA, starting with the supplied data.",368
 R/figures/supp_species_through_time.R,figure,"supp_species_through_time.R  -  STEP 4, the species half",199
 R/figures/supp_tracking_transitions.R,figure,Appendix figures of the lake-period values over time (redrawn on lake-periods,86
@@ -39,7 +39,7 @@ R/tests/test_cca_trajectory_figure.R,test,Figure 4 inputs (PLAN.md section 6): t
 R/tests/test_cca_transition_contributions.R,test,"Independent contribution gate (PLAN.md Step 6): original sample weights, CCA",120
 R/tests/test_century_tracking.R,test,"Independent native-century reconstruction, geometry and contribution checks.",92
 R/tests/test_check_vegetation.R,test,Standalone integrity checks for cleaned MORA and NOCA vegetation outputs.,31
-R/tests/test_chronology_tables.R,test,Supplementary Tables S1.1 and S1.2 must match what Bacon actually ran with.,49
+R/tests/test_chronology_tables.R,test,Supplementary Tables S2 and S3 must match what Bacon actually ran with.,49
 R/tests/test_holocene_climate_fire_eras.R,test,"Offline gate for the unified, literature-blind climate-era/fire analysis.",192
 R/tests/test_known_examples.R,test,Independent known examples and regressions from the 2026-10-06 audit.,256
 R/tests/test_lake_periods.R,test,"Lake-period construction (PLAN.md sections 4 and 5, Steps 1 to 4) on a",35
@@ -48,5 +48,5 @@ R/tests/test_NOCA_tree_corrections.R,test,Offline regression checks for the auth
 R/tests/test_paleo_climate_age_match.R,test,"test_paleo_climate_age_match.R - does every sample have climate, at its OWN age?",152
 R/tests/test_paleo_split_validation.R,test,Semantic validation of the refactored paleo vegetation and fire stages.,88
 R/tests/test_pipeline_outputs.R,test,"Every file under output/ is declared in R/helpers/paths.R, every declared output",43
-R/tests/test_tracking_predictor_models.R,test,Independent GLS algebra for the lake-period models (PLAN.md Steps 5 and 5a):,71
+R/tests/test_tracking_predictor_models.R,test,Independent GLS algebra for the lake-period models (PLAN.md Steps 5 and 5a):,58
 R/tests/test_walsh_fire_reproduction.R,test,Offline gate for the official Walsh source-method reproduction.,91

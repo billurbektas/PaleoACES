@@ -1,7 +1,7 @@
 # 08 Fire records (Appendix S3): tapas event detection for the three MORA charcoal
 # records and Panther Potholes, fire evidence per macrofossil sample, the
 # four-lake accepted-event catalog, and the CharAnalysis reproduction of
-# Walsh et al. (2017) (Table S3.2).
+# Walsh et al. (2017) (Table S8).
 
 # =============================================================================
 # 1. MORA charcoal records: tapas detection with Walsh settings

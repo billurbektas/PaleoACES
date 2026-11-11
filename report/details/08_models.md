@@ -2,7 +2,6 @@
 ================
 
 - [Era models (Step 5a)](#era-models-step-5a)
-- [Joint pace and direction model](#joint-pace-and-direction-model)
 - [Holocene explanatory models (Step
   5)](#holocene-explanatory-models-step-5)
 - [Species means (Step 6)](#species-means-step-6)
@@ -20,173 +19,85 @@ lake-periods and the plot pairs of
 
 ## Era models (Step 5a)
 
-**Era models**: estimate ~ period_type \* site, AR(1) on the unit order
-within series, residual SD per period type and park (relative to
-Anthropocene MORA) times the square root of endpoint_var. R² is
-descriptive.
-
-| Response | n | AR(1) | Variance parameters | R² | Warnings |
-|:---|---:|---:|:---|---:|:---|
-| climate_rate | 629 | 0.012 | A.Anthropocene NOCA=2.284, A.Holocene-C MORA=0.055, A.Holocene-S MORA=0.088, A.Holocene-C NOCA=0.104, A.Holocene-S NOCA=0.073 | 0.111 |  |
-| climate_change | 629 | -0.451 | A.Anthropocene NOCA=1.935, A.Holocene-C MORA=0.802, A.Holocene-S MORA=0.710, A.Holocene-C NOCA=1.519, A.Holocene-S NOCA=0.807 | 0.040 |  |
-| turnover_rate | 629 | -0.657 | A.Anthropocene NOCA=2.308, A.Holocene-C MORA=0.080, A.Holocene-S MORA=0.030, A.Holocene-C NOCA=0.114, A.Holocene-S NOCA=0.488 | 0.176 |  |
-| displacement | 629 | -0.372 | A.Anthropocene NOCA=1.944, A.Holocene-C MORA=0.546, A.Holocene-S MORA=0.822, A.Holocene-C NOCA=0.242, A.Holocene-S NOCA=2.253 | 0.110 |  |
-| lag_rate | 629 | -0.185 | A.Anthropocene NOCA=2.124, A.Holocene-C MORA=0.053, A.Holocene-S MORA=0.038, A.Holocene-C NOCA=0.097, A.Holocene-S NOCA=0.326 | 0.031 |  |
-| lag | 629 | 0.076 | A.Anthropocene NOCA=2.052, A.Holocene-C MORA=0.537, A.Holocene-S MORA=0.964, A.Holocene-C NOCA=2.152, A.Holocene-S NOCA=3.317 | 0.035 |  |
-| pace_effect | 483 | 0.626 | A.Anthropocene NOCA=2.765, A.Holocene-S MORA=0.018, A.Holocene-C MORA=0.029, A.Holocene-C NOCA=0.076, A.Holocene-S NOCA=0.425 | 0.021 |  |
-| direction_effect | 483 | 0.680 | A.Anthropocene NOCA=1.712, A.Holocene-S MORA=0.035, A.Holocene-C MORA=0.127, A.Holocene-C NOCA=0.096, A.Holocene-S NOCA=0.077 | 0.027 |  |
-| pace_effect_total | 483 | 0.583 | A.Anthropocene NOCA=2.691, A.Holocene-S MORA=0.873, A.Holocene-C MORA=0.297, A.Holocene-C NOCA=1.395, A.Holocene-S NOCA=4.722 | 0.023 |  |
-| direction_effect_total | 483 | 0.207 | A.Anthropocene NOCA=1.669, A.Holocene-S MORA=1.279, A.Holocene-C MORA=0.780, A.Holocene-C NOCA=1.980, A.Holocene-S NOCA=1.253 | 0.030 |  |
-
-<sub>Table file:
-[era_model_summary.csv](../tables/era_model_summary.csv)</sub>
+The fit statistics of every era model (units, coefficients, residual df,
+residual SE, covariance parameters, REML log-likelihood and AIC,
+descriptive R²) are Table S19 of the report, and the residual checks
+Fig. S16.
 
 **Era-model coefficients** (treatment contrasts, reference Holocene-S at
-MORA).
+MORA). Two-sided t tests on the residual degrees of freedom (df) of each
+model, with conditional 95% confidence intervals.
 
-| Response               | Term                             | Estimate |    SE |     p |
-|:-----------------------|:---------------------------------|---------:|------:|------:|
-| climate_rate           | (Intercept)                      |    0.067 | 0.028 | 0.016 |
-| climate_rate           | period_typeHolocene-C            |    0.028 | 0.033 | 0.390 |
-| climate_rate           | period_typeAnthropocene          |    2.529 | 0.054 | 0.000 |
-| climate_rate           | siteNOCA                         |   -0.024 | 0.030 | 0.424 |
-| climate_rate           | period_typeHolocene-C:siteNOCA   |   -0.007 | 0.037 | 0.847 |
-| climate_rate           | period_typeAnthropocene:siteNOCA |    0.139 | 0.128 | 0.278 |
-| climate_change         | (Intercept)                      |    0.363 | 0.083 | 0.000 |
-| climate_change         | period_typeHolocene-C            |   -0.027 | 0.160 | 0.865 |
-| climate_change         | period_typeAnthropocene          |    0.402 | 0.084 | 0.000 |
-| climate_change         | siteNOCA                         |   -0.151 | 0.094 | 0.110 |
-| climate_change         | period_typeHolocene-C:siteNOCA   |    0.207 | 0.199 | 0.299 |
-| climate_change         | period_typeAnthropocene:siteNOCA |    0.156 | 0.101 | 0.123 |
-| turnover_rate          | (Intercept)                      |    0.029 | 0.011 | 0.010 |
-| turnover_rate          | period_typeHolocene-C            |    0.059 | 0.040 | 0.143 |
-| turnover_rate          | period_typeAnthropocene          |    0.900 | 0.047 | 0.000 |
-| turnover_rate          | siteNOCA                         |    0.118 | 0.092 | 0.202 |
-| turnover_rate          | period_typeHolocene-C:siteNOCA   |   -0.144 | 0.117 | 0.221 |
-| turnover_rate          | period_typeAnthropocene:siteNOCA |    1.081 | 0.154 | 0.000 |
-| displacement           | (Intercept)                      |    0.334 | 0.103 | 0.001 |
-| displacement           | period_typeHolocene-C            |   -0.111 | 0.152 | 0.464 |
-| displacement           | period_typeAnthropocene          |    0.019 | 0.105 | 0.857 |
-| displacement           | siteNOCA                         |    0.172 | 0.168 | 0.307 |
-| displacement           | period_typeHolocene-C:siteNOCA   |   -0.029 | 0.208 | 0.888 |
-| displacement           | period_typeAnthropocene:siteNOCA |    0.153 | 0.173 | 0.378 |
-| lag_rate               | (Intercept)                      |    0.008 | 0.016 | 0.621 |
-| lag_rate               | period_typeHolocene-C            |   -0.005 | 0.031 | 0.871 |
-| lag_rate               | period_typeAnthropocene          |    0.546 | 0.063 | 0.000 |
-| lag_rate               | siteNOCA                         |    0.058 | 0.065 | 0.372 |
-| lag_rate               | period_typeHolocene-C:siteNOCA   |   -0.079 | 0.078 | 0.308 |
-| lag_rate               | period_typeAnthropocene:siteNOCA |   -0.693 | 0.167 | 0.000 |
-| lag                    | (Intercept)                      |   -0.119 | 0.118 | 0.316 |
-| lag                    | period_typeHolocene-C            |    0.106 | 0.129 | 0.408 |
-| lag                    | period_typeAnthropocene          |    0.282 | 0.120 | 0.019 |
-| lag                    | siteNOCA                         |    0.377 | 0.220 | 0.087 |
-| lag                    | period_typeHolocene-C:siteNOCA   |   -0.412 | 0.243 | 0.091 |
-| lag                    | period_typeAnthropocene:siteNOCA |   -0.563 | 0.225 | 0.012 |
-| pace_effect            | (Intercept)                      |   -0.013 | 0.007 | 0.064 |
-| pace_effect            | period_typeHolocene-C            |    0.045 | 0.007 | 0.000 |
-| pace_effect            | period_typeAnthropocene          |    0.185 | 0.048 | 0.000 |
-| pace_effect            | siteNOCA                         |    0.125 | 0.071 | 0.078 |
-| pace_effect            | period_typeHolocene-C:siteNOCA   |   -0.145 | 0.061 | 0.018 |
-| pace_effect            | period_typeAnthropocene:siteNOCA |   -0.568 | 0.166 | 0.001 |
-| direction_effect       | (Intercept)                      |   -0.013 | 0.024 | 0.581 |
-| direction_effect       | period_typeHolocene-C            |    0.057 | 0.067 | 0.394 |
-| direction_effect       | period_typeAnthropocene          |    0.364 | 0.088 | 0.000 |
-| direction_effect       | siteNOCA                         |    0.051 | 0.034 | 0.132 |
-| direction_effect       | period_typeHolocene-C:siteNOCA   |   -0.124 | 0.069 | 0.071 |
-| direction_effect       | period_typeAnthropocene:siteNOCA |   -0.666 | 0.183 | 0.000 |
-| pace_effect_total      | (Intercept)                      |   -0.179 | 0.094 | 0.058 |
-| pace_effect_total      | period_typeHolocene-C            |    0.274 | 0.077 | 0.000 |
-| pace_effect_total      | period_typeAnthropocene          |    0.227 | 0.095 | 0.017 |
-| pace_effect_total      | siteNOCA                         |    0.520 | 0.241 | 0.031 |
-| pace_effect_total      | period_typeHolocene-C:siteNOCA   |   -0.553 | 0.190 | 0.004 |
-| pace_effect_total      | period_typeAnthropocene:siteNOCA |   -0.646 | 0.245 | 0.009 |
-| direction_effect_total | (Intercept)                      |   -0.174 | 0.227 | 0.443 |
-| direction_effect_total | period_typeHolocene-C            |    0.155 | 0.234 | 0.509 |
-| direction_effect_total | period_typeAnthropocene          |    0.276 | 0.228 | 0.226 |
-| direction_effect_total | siteNOCA                         |    0.254 | 0.243 | 0.296 |
-| direction_effect_total | period_typeHolocene-C:siteNOCA   |   -0.387 | 0.269 | 0.150 |
-| direction_effect_total | period_typeAnthropocene:siteNOCA |   -0.430 | 0.248 | 0.083 |
+| Response | Term | Estimate | SE | df | t | 95% CI | p |
+|:---|:---|---:|---:|---:|---:|:---|---:|
+| climate_rate | (Intercept) | 0.067 | 0.028 | 623 | 2.416 | 0.013 to 0.122 | 0.016 |
+| climate_rate | period_typeHolocene-C | 0.028 | 0.033 | 623 | 0.861 | -0.036 to 0.092 | 0.390 |
+| climate_rate | period_typeAnthropocene | 2.529 | 0.054 | 623 | 46.782 | 2.423 to 2.635 | 0.000 |
+| climate_rate | siteNOCA | -0.024 | 0.030 | 623 | -0.801 | -0.082 to 0.035 | 0.424 |
+| climate_rate | period_typeHolocene-C:siteNOCA | -0.007 | 0.037 | 623 | -0.193 | -0.080 to 0.066 | 0.847 |
+| climate_rate | period_typeAnthropocene:siteNOCA | 0.139 | 0.128 | 623 | 1.086 | -0.112 to 0.389 | 0.278 |
+| climate_change | (Intercept) | 0.363 | 0.083 | 623 | 4.377 | 0.200 to 0.525 | 0.000 |
+| climate_change | period_typeHolocene-C | -0.027 | 0.160 | 623 | -0.170 | -0.341 to 0.286 | 0.865 |
+| climate_change | period_typeAnthropocene | 0.402 | 0.084 | 623 | 4.766 | 0.236 to 0.567 | 0.000 |
+| climate_change | siteNOCA | -0.151 | 0.094 | 623 | -1.600 | -0.336 to 0.034 | 0.110 |
+| climate_change | period_typeHolocene-C:siteNOCA | 0.207 | 0.199 | 623 | 1.040 | -0.183 to 0.597 | 0.299 |
+| climate_change | period_typeAnthropocene:siteNOCA | 0.156 | 0.101 | 623 | 1.545 | -0.042 to 0.354 | 0.123 |
+| turnover_rate | (Intercept) | 0.029 | 0.011 | 623 | 2.571 | 0.007 to 0.052 | 0.010 |
+| turnover_rate | period_typeHolocene-C | 0.059 | 0.040 | 623 | 1.468 | -0.020 to 0.137 | 0.143 |
+| turnover_rate | period_typeAnthropocene | 0.900 | 0.047 | 623 | 19.175 | 0.808 to 0.992 | 0.000 |
+| turnover_rate | siteNOCA | 0.118 | 0.092 | 623 | 1.278 | -0.063 to 0.299 | 0.202 |
+| turnover_rate | period_typeHolocene-C:siteNOCA | -0.144 | 0.117 | 623 | -1.226 | -0.374 to 0.087 | 0.221 |
+| turnover_rate | period_typeAnthropocene:siteNOCA | 1.081 | 0.154 | 623 | 7.027 | 0.779 to 1.383 | 0.000 |
+| displacement | (Intercept) | 0.334 | 0.103 | 623 | 3.237 | 0.131 to 0.537 | 0.001 |
+| displacement | period_typeHolocene-C | -0.111 | 0.152 | 623 | -0.733 | -0.409 to 0.187 | 0.464 |
+| displacement | period_typeAnthropocene | 0.019 | 0.105 | 623 | 0.180 | -0.187 to 0.225 | 0.857 |
+| displacement | siteNOCA | 0.172 | 0.168 | 623 | 1.022 | -0.159 to 0.503 | 0.307 |
+| displacement | period_typeHolocene-C:siteNOCA | -0.029 | 0.208 | 623 | -0.141 | -0.437 to 0.378 | 0.888 |
+| displacement | period_typeAnthropocene:siteNOCA | 0.153 | 0.173 | 623 | 0.882 | -0.187 to 0.493 | 0.378 |
+| lag_rate | (Intercept) | 0.008 | 0.016 | 623 | 0.495 | -0.024 to 0.039 | 0.621 |
+| lag_rate | period_typeHolocene-C | -0.005 | 0.031 | 623 | -0.162 | -0.066 to 0.056 | 0.871 |
+| lag_rate | period_typeAnthropocene | 0.546 | 0.063 | 623 | 8.661 | 0.422 to 0.669 | 0.000 |
+| lag_rate | siteNOCA | 0.058 | 0.065 | 623 | 0.893 | -0.070 to 0.187 | 0.372 |
+| lag_rate | period_typeHolocene-C:siteNOCA | -0.079 | 0.078 | 623 | -1.020 | -0.232 to 0.074 | 0.308 |
+| lag_rate | period_typeAnthropocene:siteNOCA | -0.693 | 0.167 | 623 | -4.153 | -1.020 to -0.365 | 0.000 |
+| lag | (Intercept) | -0.119 | 0.118 | 623 | -1.004 | -0.352 to 0.114 | 0.316 |
+| lag | period_typeHolocene-C | 0.106 | 0.129 | 623 | 0.828 | -0.146 to 0.359 | 0.408 |
+| lag | period_typeAnthropocene | 0.282 | 0.120 | 623 | 2.350 | 0.046 to 0.517 | 0.019 |
+| lag | siteNOCA | 0.377 | 0.220 | 623 | 1.712 | -0.055 to 0.810 | 0.087 |
+| lag | period_typeHolocene-C:siteNOCA | -0.412 | 0.243 | 623 | -1.691 | -0.890 to 0.066 | 0.091 |
+| lag | period_typeAnthropocene:siteNOCA | -0.563 | 0.225 | 623 | -2.507 | -1.005 to -0.122 | 0.012 |
+| pace_effect | (Intercept) | -0.013 | 0.007 | 477 | -1.855 | -0.026 to 0.001 | 0.064 |
+| pace_effect | period_typeHolocene-C | 0.045 | 0.007 | 477 | 6.139 | 0.030 to 0.059 | 0.000 |
+| pace_effect | period_typeAnthropocene | 0.185 | 0.048 | 477 | 3.884 | 0.092 to 0.279 | 0.000 |
+| pace_effect | siteNOCA | 0.125 | 0.071 | 477 | 1.765 | -0.014 to 0.265 | 0.078 |
+| pace_effect | period_typeHolocene-C:siteNOCA | -0.145 | 0.061 | 477 | -2.375 | -0.264 to -0.025 | 0.018 |
+| pace_effect | period_typeAnthropocene:siteNOCA | -0.568 | 0.166 | 477 | -3.419 | -0.895 to -0.242 | 0.001 |
+| direction_effect | (Intercept) | -0.013 | 0.024 | 477 | -0.552 | -0.060 to 0.033 | 0.581 |
+| direction_effect | period_typeHolocene-C | 0.057 | 0.067 | 477 | 0.852 | -0.075 to 0.190 | 0.394 |
+| direction_effect | period_typeAnthropocene | 0.364 | 0.088 | 477 | 4.135 | 0.191 to 0.537 | 0.000 |
+| direction_effect | siteNOCA | 0.051 | 0.034 | 477 | 1.510 | -0.015 to 0.117 | 0.132 |
+| direction_effect | period_typeHolocene-C:siteNOCA | -0.124 | 0.069 | 477 | -1.807 | -0.259 to 0.011 | 0.071 |
+| direction_effect | period_typeAnthropocene:siteNOCA | -0.666 | 0.183 | 477 | -3.639 | -1.025 to -0.306 | 0.000 |
+| pace_effect_total | (Intercept) | -0.179 | 0.094 | 477 | -1.897 | -0.364 to 0.006 | 0.058 |
+| pace_effect_total | period_typeHolocene-C | 0.274 | 0.077 | 477 | 3.569 | 0.123 to 0.424 | 0.000 |
+| pace_effect_total | period_typeAnthropocene | 0.227 | 0.095 | 477 | 2.388 | 0.040 to 0.414 | 0.017 |
+| pace_effect_total | siteNOCA | 0.520 | 0.241 | 477 | 2.157 | 0.046 to 0.993 | 0.031 |
+| pace_effect_total | period_typeHolocene-C:siteNOCA | -0.553 | 0.190 | 477 | -2.914 | -0.926 to -0.180 | 0.004 |
+| pace_effect_total | period_typeAnthropocene:siteNOCA | -0.646 | 0.245 | 477 | -2.638 | -1.126 to -0.165 | 0.009 |
+| direction_effect_total | (Intercept) | -0.174 | 0.227 | 477 | -0.767 | -0.620 to 0.272 | 0.443 |
+| direction_effect_total | period_typeHolocene-C | 0.155 | 0.234 | 477 | 0.661 | -0.305 to 0.615 | 0.509 |
+| direction_effect_total | period_typeAnthropocene | 0.276 | 0.228 | 477 | 1.212 | -0.172 to 0.725 | 0.226 |
+| direction_effect_total | siteNOCA | 0.254 | 0.243 | 477 | 1.045 | -0.223 to 0.731 | 0.296 |
+| direction_effect_total | period_typeHolocene-C:siteNOCA | -0.387 | 0.269 | 477 | -1.442 | -0.915 to 0.141 | 0.150 |
+| direction_effect_total | period_typeAnthropocene:siteNOCA | -0.430 | 0.248 | 477 | -1.734 | -0.918 to 0.057 | 0.083 |
 
 <sub>Table file:
 [era_coefficients.csv](../tables/era_coefficients.csv)</sub>
 
-Residual checks of the era models are Fig. S16 of the report, and those
-of the joint pace and direction model Fig. S17.
-
-<img src="../figures/png/figS16_era_model_residuals.png" alt="" width="1540" /><img src="../figures/png/figS17_joint_model_residuals.png" alt="" width="1540" />
-
-## Joint pace and direction model
-
-**Joint model** estimate ~ period_type \* site \* correction, paired
-AR(1): fitted means.
-
-| Park | Period type  | Correction |   n |   Mean | 95% CI          |
-|:-----|:-------------|:-----------|----:|-------:|:----------------|
-| MORA | Holocene-S   | Pace       |   5 | -0.012 | -0.028 to 0.003 |
-| MORA | Holocene-S   | Direction  |   5 | -0.012 | -0.055 to 0.030 |
-| MORA | Holocene-C   | Pace       |   5 |  0.031 | 0.012 to 0.051  |
-| MORA | Holocene-C   | Direction  |   5 |  0.049 | -0.120 to 0.218 |
-| MORA | Anthropocene | Pace       | 252 |  0.173 | 0.080 to 0.265  |
-| MORA | Anthropocene | Direction  | 252 |  0.351 | 0.184 to 0.517  |
-| NOCA | Holocene-S   | Pace       |   5 |  0.115 | -0.025 to 0.255 |
-| NOCA | Holocene-S   | Direction  |   5 |  0.038 | -0.009 to 0.086 |
-| NOCA | Holocene-C   | Pace       |   5 |  0.014 | -0.013 to 0.041 |
-| NOCA | Holocene-C   | Direction  |   5 | -0.030 | -0.083 to 0.023 |
-| NOCA | Anthropocene | Pace       | 211 | -0.270 | -0.551 to 0.010 |
-| NOCA | Anthropocene | Direction  | 211 | -0.264 | -0.575 to 0.047 |
-
-<sub>Table file:
-[joint_correction_means.csv](../tables/joint_correction_means.csv)</sub>
-
-**Direction minus pace** within each period type and park.
-
-| Park | Period type  | Contrast         | Estimate | 95% CI          | p (Holm) |
-|:-----|:-------------|:-----------------|---------:|:----------------|---------:|
-| MORA | Holocene-S   | Direction - Pace |    0.000 | -0.033 to 0.033 |    1.000 |
-| MORA | Holocene-C   | Direction - Pace |    0.018 | -0.137 to 0.173 |    1.000 |
-| MORA | Anthropocene | Direction - Pace |    0.178 | 0.002 to 0.354  |    0.285 |
-| NOCA | Holocene-S   | Direction - Pace |   -0.077 | -0.199 to 0.046 |    0.875 |
-| NOCA | Holocene-C   | Direction - Pace |   -0.044 | -0.089 to 0.001 |    0.285 |
-| NOCA | Anthropocene | Direction - Pace |    0.007 | -0.317 to 0.330 |    1.000 |
-
-<sub>Table file:
-[joint_correction_contrasts.csv](../tables/joint_correction_contrasts.csv)</sub>
-
-**Correlation parameters**: AR(1) on the unit order, and the correlation
-between the pace and direction of one unit per era and park.
-
-| Parameter         | Estimate |
-|:------------------|---------:|
-| AR1               |    0.657 |
-| Anthropocene MORA |    0.171 |
-| Anthropocene NOCA |    0.406 |
-| Holocene MORA     |    0.732 |
-| Holocene NOCA     |    0.527 |
-
-<sub>Table file:
-[joint_correction_correlation.csv](../tables/joint_correction_correlation.csv)</sub>
-
 ## Holocene explanatory models (Step 5)
 
-**Explanatory models**: rows, descriptive R² and covariance parameters.
-
-| Response | Era | Model | n | MORA | NOCA | R² | AR(1) | SD ratio NOCA/MORA |
-|:---|:---|:---|---:|---:|---:|---:|---:|---:|
-| lag_rate | Holocene | site + climate_rate + fire_activity | 24 | 14 | 10 | 0.335 | -0.091 | 5.159 |
-| lag_rate | Anthropocene | site + burned | 605 | 328 | 277 | 0.031 | — | 2.128 |
-| pace_effect | Holocene | site + climate_rate + fire_activity | 20 | 10 | 10 | 0.230 | -0.022 | 9.564 |
-| pace_effect | Anthropocene | site + burned | 463 | 252 | 211 | 0.042 | — | 2.737 |
-| direction_effect | Holocene | site + climate_rate + fire_activity | 20 | 10 | 10 | 0.264 | 0.079 | 1.780 |
-| direction_effect | Anthropocene | site + burned | 463 | 252 | 211 | 0.033 | — | 1.708 |
-| lag | Holocene | site + climate_change + fire_activity | 24 | 14 | 10 | 0.206 | -0.182 | 3.238 |
-| lag | Anthropocene | site + burned | 605 | 328 | 277 | 0.032 | — | 2.055 |
-| pace_effect_total | Holocene | site + climate_change + fire_activity | 20 | 10 | 10 | 0.174 | -0.592 | 5.513 |
-| pace_effect_total | Anthropocene | site + burned | 463 | 252 | 211 | 0.042 | — | 2.664 |
-| direction_effect_total | Holocene | site + climate_change + fire_activity | 20 | 10 | 10 | 0.098 | -0.150 | 1.894 |
-| direction_effect_total | Anthropocene | site + burned | 463 | 252 | 211 | 0.034 | — | 1.666 |
-
-<sub>Table file:
-[explanatory_model_performance.csv](../tables/explanatory_model_performance.csv)</sub>
+The coefficients and the fit statistics of every explanatory model are
+Tables S21 and S22 of the report.
 
 **Rows left out of the explanatory models.**
 

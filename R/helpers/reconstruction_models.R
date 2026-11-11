@@ -27,6 +27,12 @@ reconstruction_r2 = function(y,p) {
   denominator=sum((y-mean(y))^2)
   if(denominator>0) 1-sum((y-p)^2)/denominator else NA_real_
 }
+# Fit statistics of a GLS for the model tables of the report (Bills, 11 Nov
+# 2026): the residual df are those of every t-test and interval of the model.
+# The fits are REML, so the log-likelihood and AIC compare covariance
+# structures with the same fixed effects only.
+reconstruction_fit_statistics = function(fit) tibble::tibble(coefficients=fit$dims$p,
+  df_residual=fit$dims$N-fit$dims$p,sigma=fit$sigma,log_lik_REML=as.numeric(logLik(fit)),AIC=AIC(fit))
 reconstruction_model_theme = function() ggplot2::theme_minimal(base_size=17)+
   ggplot2::theme(panel.grid.minor=ggplot2::element_blank(),
     strip.text=ggplot2::element_text(size=17,face='bold'),legend.position='bottom')

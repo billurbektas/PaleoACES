@@ -48,7 +48,7 @@ for the report.
 | R/pipeline/11_cca.R | pipeline | 11_cca.R - the pooled CCA and everything derived from it. NO FIGURES. | 665 |
 | R/pipeline/12_climate_eras_fire_frequency.R | pipeline | 12_climate_eras_fire_frequency.R | 194 |
 | R/pipeline/13_tracking.R | pipeline | Tracking: native-century Holocene positions, tracking metrics for both eras, | 85 |
-| R/pipeline/14_era_models.R | pipeline | Era models (PLAN.md section 5, Step 5a): Holocene stability periods, | 189 |
+| R/pipeline/14_era_models.R | pipeline | Era models (PLAN.md section 5, Step 5a): Holocene stability periods, | 140 |
 | R/pipeline/15_predictor_models.R | pipeline | Explanatory models (PLAN.md section 5, Step 5). | 131 |
 | R/pipeline/16_contributions.R | pipeline | Species contributions (PLAN.md section 5, Step 6): which species led the | 143 |
 | R/figures/supp_age_depth_models.R | figure | Figures S4 (four Bacon age-depth models) and S5 (Panther Potholes 210Pb | 109 |
@@ -57,7 +57,7 @@ for the report.
 | R/figures/supp_climate_correlations.R | figure | supp_climate_correlations.R | 628 |
 | R/figures/supp_climate_products.R | figure | Figs. S6 to S8 (Appendix S2, Bills, 11 Nov 2026): the four CHELSA climate | 117 |
 | R/figures/supp_climate_windows.R | figure | Compare the actual plot-specific survey windows with V2.1 1979-2021. | 174 |
-| R/figures/supp_paleoclimate_sensitivity.R | figure | Figs. S19 and S20 (Appendix S4, Bills, 11 Nov 2026): the three paleoclimates | 137 |
+| R/figures/supp_paleoclimate_sensitivity.R | figure | Figs. S18 and S19 (Appendix S4, Bills, 11 Nov 2026): the three paleoclimates | 137 |
 | R/figures/supp_sample_selection.R | figure | Show which plots and core samples reach CCA, starting with the supplied data. | 368 |
 | R/figures/supp_species_through_time.R | figure | supp_species_through_time.R - STEP 4, the species half | 199 |
 | R/figures/supp_tracking_transitions.R | figure | Appendix figures of the lake-period values over time (redrawn on lake-periods | 86 |
@@ -75,7 +75,7 @@ for the report.
 | R/tests/test_cca_transition_contributions.R | test | Independent contribution gate (PLAN.md Step 6): original sample weights, CCA | 120 |
 | R/tests/test_century_tracking.R | test | Independent native-century reconstruction, geometry and contribution checks. | 92 |
 | R/tests/test_check_vegetation.R | test | Standalone integrity checks for cleaned MORA and NOCA vegetation outputs. | 31 |
-| R/tests/test_chronology_tables.R | test | Supplementary Tables S1.1 and S1.2 must match what Bacon actually ran with. | 49 |
+| R/tests/test_chronology_tables.R | test | Supplementary Tables S2 and S3 must match what Bacon actually ran with. | 49 |
 | R/tests/test_holocene_climate_fire_eras.R | test | Offline gate for the unified, literature-blind climate-era/fire analysis. | 192 |
 | R/tests/test_known_examples.R | test | Independent known examples and regressions from the 2026-10-06 audit. | 256 |
 | R/tests/test_lake_periods.R | test | Lake-period construction (PLAN.md sections 4 and 5, Steps 1 to 4) on a | 35 |
@@ -84,7 +84,7 @@ for the report.
 | R/tests/test_paleo_climate_age_match.R | test | test_paleo_climate_age_match.R - does every sample have climate, at its OWN age? | 152 |
 | R/tests/test_paleo_split_validation.R | test | Semantic validation of the refactored paleo vegetation and fire stages. | 88 |
 | R/tests/test_pipeline_outputs.R | test | Every file under output/ is declared in R/helpers/paths.R, every declared output | 43 |
-| R/tests/test_tracking_predictor_models.R | test | Independent GLS algebra for the lake-period models (PLAN.md Steps 5 and 5a): | 71 |
+| R/tests/test_tracking_predictor_models.R | test | Independent GLS algebra for the lake-period models (PLAN.md Steps 5 and 5a): | 58 |
 | R/tests/test_walsh_fire_reproduction.R | test | Offline gate for the official Walsh source-method reproduction. | 91 |
 
 <sub>Table file: [scripts.csv](../tables/scripts.csv)</sub>
@@ -95,7 +95,7 @@ Every file under `output/` is declared in `R/helpers/paths.R`; a script
 cannot write an undeclared output. Folders hold one file per table, in
 the folder of the step that writes it.
 
-**166 output files** (excluding the climate and age-draw cache).
+**159 output files** (excluding the climate and age-draw cache).
 
 | Step | File | Description | Size (kB) |
 |:---|:---|:---|---:|
@@ -124,30 +124,30 @@ the folder of the step that writes it.
 | 04_modern_climate | MORA_climate.csv | MORA survey-window CHELSA V2.1 climate per plot | 16132 |
 | 04_modern_climate | NOCA_climate.csv | NOCA survey-window CHELSA V2.1 climate per plot | 14406 |
 | 05_age_depth_models | bacon_run_manifest.csv | Bacon run settings, seeds and source hashes | 2 |
-| 05_age_depth_models | table_S1_1_chronological_controls.csv | Table S1.1 | 7 |
-| 05_age_depth_models | table_S1_2_rbacon_parameters.csv | Table S1.2 | 3 |
+| 05_age_depth_models | table_S1_1_chronological_controls.csv | Table S2 | 7 |
+| 05_age_depth_models | table_S1_2_rbacon_parameters.csv | Table S3 | 3 |
 | 06_paleo_samples | paleo_macrofossil_long.csv | All macrofossil measurements with ages | 108 |
 | 06_paleo_samples | paleo_occ.csv | Macrofossil presence by sample | 762 |
 | 06_paleo_samples | paleo_sample_depths.csv | Sample depth and median Bacon age | 95 |
-| 07_climate_products | climate_bias_correction_factors.csv | Two-step correction per park, month and variable: TraCE21k to CHELSAcruts (1900-1990) and CHELSAcruts to V2.1 (1979-2016) (Table S2.4) | 13 |
+| 07_climate_products | climate_bias_correction_factors.csv | Two-step correction per park, month and variable: TraCE21k to CHELSAcruts (1900-1990) and CHELSAcruts to V2.1 (1979-2016) (Fig. S8) | 13 |
 | 07_climate_products | climate_products_monthly.csv | Monthly climatology of each product and window at each place (Fig. S6) | 120 |
 | 07_climate_products | climate_products_points.csv | Plots, lake pixels and 5 km disc cells the four products are read at | 50 |
 | 07_climate_products | climate_products_values.csv | Each product’s monthly values per year at the plot means, lake pixels and disc means | 2565 |
-| 07_climate_products | climate_trace_cruts_check.csv | TraCE21k timeID 20 against CHELSAcruts 1901-1990 over the same cells (Table S2.3) | 21 |
+| 07_climate_products | climate_trace_cruts_check.csv | TraCE21k timeID 20 against CHELSAcruts 1901-1990 over the same cells (Table S5) | 21 |
 | 08_paleo_climate | chelsa_paleo_ponds.csv | CHELSA-TraCE21k monthly climate at each lake and century, raw and bias-corrected | 2375 |
 | 08_paleo_climate | paleo_env.csv | Climate at each macrofossil sample’s age | 460 |
 | 09_fire_records | fire_mora_tapas_events.csv | MORA accepted fire events | 2 |
 | 09_fire_records | fire_mora_tapas_series.csv | MORA tapas peak-detection series | 104 |
-| 09_fire_records | fire_mora_tapas_settings.csv | MORA tapas settings (Table S3.1) | 1 |
+| 09_fire_records | fire_mora_tapas_settings.csv | MORA tapas settings (Table S7) | 1 |
 | 09_fire_records | fire_noca_peaks.csv | NOCA charcoal peaks | 4 |
 | 09_fire_records | fire_noca_tapas_events.csv | NOCA accepted fire events | 3 |
 | 09_fire_records | fire_noca_tapas_sensitivity.csv | NOCA threshold sensitivity | 0 |
 | 09_fire_records | fire_noca_tapas_series.csv | NOCA tapas peak-detection series | 128 |
-| 09_fire_records | fire_noca_tapas_settings.csv | NOCA tapas settings (Table S3.1) | 0 |
+| 09_fire_records | fire_noca_tapas_settings.csv | NOCA tapas settings (Table S7) | 0 |
 | 09_fire_records | fire_walsh.csv | MORA charcoal records (Walsh et al. 2017) | 4 |
 | 09_fire_records | holocene_fire_source_events.csv | Accepted fire events, four lakes | 5 |
 | 09_fire_records | holocene_fire_source_series.csv | Accepted-event catalog series, four lakes | 230 |
-| 09_fire_records | holocene_fire_source_settings.csv | Accepted-event catalog settings (Table S3.1) | 1 |
+| 09_fire_records | holocene_fire_source_settings.csv | Accepted-event catalog settings (Table S7) | 1 |
 | 09_fire_records | holocene_fire_tapas_manifest.csv | Which tapas run each lake’s events came from | 2 |
 | 09_fire_records | paleo_fire.csv | Fire evidence per macrofossil sample | 97 |
 | 09_fire_records | walsh_charanalysis_inputs/LittleSunrise_charData.csv | CharAnalysis input files | 6 |
@@ -158,7 +158,7 @@ the folder of the step that writes it.
 | 09_fire_records | walsh_charanalysis_inputs/Sunrise_charParams.csv | CharAnalysis input files | 0 |
 | 09_fire_records | walsh_charanalysis_settings.csv | CharAnalysis settings | 1 |
 | 09_fire_records | walsh_charanalysis_software_comparison.csv | CharAnalysis vs tapas vs published | 1 |
-| 09_fire_records | walsh_charanalysis_table3_audit.csv | Comparison with Walsh Table 3 (Table S3.2) | 0 |
+| 09_fire_records | walsh_charanalysis_table3_audit.csv | Comparison with Walsh Table 3 (Table S8) | 0 |
 | 10_species_occurrences | occ_consolidated.csv | All presence records, one taxonomy (Fig. S3) | 827 |
 | 11_cca | cca_anova_cache.rds | Cached permutation tests, keyed on the fit | 1 |
 | 11_cca | cca_anova.csv | Permutation tests (model, axes, terms) | 0 |
@@ -217,18 +217,11 @@ the folder of the step that writes it.
 | 14_era_models | era_comparison/era_means.csv | Era-comparison GLS fits, means and contrasts per response | 8 |
 | 14_era_models | era_comparison/era_model_summary.csv | Era-comparison GLS fits, means and contrasts per response | 2 |
 | 14_era_models | era_comparison/era_predictions.csv | Era-comparison GLS fits, means and contrasts per response | 597 |
-| 14_era_models | era_comparison/joint_correction_effects/correction_contrasts.csv | Era-comparison GLS fits, means and contrasts per response | 1 |
-| 14_era_models | era_comparison/joint_correction_effects/correlation_parameters.csv | Era-comparison GLS fits, means and contrasts per response | 0 |
-| 14_era_models | era_comparison/joint_correction_effects/model_group_means.csv | Era-comparison GLS fits, means and contrasts per response | 2 |
-| 14_era_models | era_comparison/joint_correction_effects/model_input.csv | Era-comparison GLS fits, means and contrasts per response | 368 |
-| 14_era_models | era_comparison/joint_correction_effects/model_results.txt | Era-comparison GLS fits, means and contrasts per response | 7 |
-| 14_era_models | era_comparison/joint_correction_effects/period_type_contrasts.csv | Era-comparison GLS fits, means and contrasts per response | 3 |
-| 14_era_models | era_comparison/joint_correction_effects/primary_fit.rds | Era-comparison GLS fits, means and contrasts per response | 582 |
 | 14_era_models | era_comparison/model_results.txt | Era-comparison GLS fits, means and contrasts per response | 19 |
-| 14_era_models | era_comparison/primary_fits.rds | Era-comparison GLS fits, means and contrasts per response | 677 |
+| 14_era_models | era_comparison/primary_fits.rds | Era-comparison GLS fits, means and contrasts per response | 674 |
 | 15_predictor_models | community_predictor_models/model_coefficients.csv | Within-era predictor GLS fits | 6 |
 | 15_predictor_models | community_predictor_models/model_exclusions.csv | Within-era predictor GLS fits | 45 |
-| 15_predictor_models | community_predictor_models/model_performance.csv | Within-era predictor GLS fits | 1 |
+| 15_predictor_models | community_predictor_models/model_performance.csv | Within-era predictor GLS fits | 2 |
 | 15_predictor_models | community_predictor_models/model_results.txt | Within-era predictor GLS fits | 12 |
 | 15_predictor_models | community_predictor_models/partial_effects.csv | Within-era predictor GLS fits | 165 |
 | 15_predictor_models | community_predictor_models/partial_residuals.csv | Within-era predictor GLS fits | 25 |
@@ -280,7 +273,7 @@ built for this report).
 | Folder          | Files |
 |:----------------|------:|
 | main            |    14 |
-| supplementary   |    32 |
+| supplementary   |    31 |
 | worked_examples |     3 |
 
 <sub>Table file:
