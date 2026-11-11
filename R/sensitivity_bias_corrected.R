@@ -17,9 +17,10 @@
 # in both runs. The script ends with one table of the lag, pace effect and
 # direction effect of every lake-period from both runs side by side, and the
 # number that keep their sign. For Appendix S3 (Bills, 11 Nov 2026) it also
-# writes every era response of every lake-period (Fig. S16), the era contrasts
-# of all responses (Table S3.1) and the Holocene explanatory-model slopes
-# (Table S3.2) of both runs side by side.
+# writes every era response of every lake-period (Fig. S16) with the
+# correlation between the runs in each park, the era contrasts of all responses
+# (Table S3.1) and the Holocene explanatory-model slopes (Table S3.2, Fig. S17)
+# of both runs side by side.
 suppressPackageStartupMessages({library(here); library(tidyverse)})
 primary = here('output')
 root = here('output_bias_corrected')
@@ -107,6 +108,12 @@ responses_both = inner_join(lake_period_long(primary, 'raw'), lake_period_long(r
 # Rule: every response of every lake-period in both runs.
 stopifnot(nrow(responses_both) == nrow(raw) * length(ERA_RESPONSES))
 write_csv(responses_both, file.path(root, 'comparison', 'lake_period_responses_raw_vs_corrected.csv'))
+# How closely the corrected values follow the raw ones across the lake-periods
+# of a park (Pearson r, printed in Fig. S16). Lake-periods without a pace or
+# direction effect (a position that did not move) are left out.
+correlations = responses_both |> filter(is.finite(raw), is.finite(corrected)) |>
+  group_by(response, site) |> summarise(lake_periods = n(), r = cor(raw, corrected), .groups = 'drop')
+write_csv(correlations, file.path(root, 'comparison', 'lake_period_correlations_raw_vs_corrected.csv'))
 # The era contrasts of all responses in both runs (Table S3.1).
 era_contrasts = function(path) read_csv(file.path(path, '13_era_models', 'era_comparison', 'era_contrasts.csv'),
   show_col_types = FALSE) |> select(response, site, contrast, estimate, conf_low, conf_high, p_adjusted)
@@ -114,7 +121,7 @@ contrasts_both = inner_join(era_contrasts(primary), era_contrasts(root), by = c(
   suffix = c('_raw', '_corrected'), relationship = 'one-to-one')
 stopifnot(nrow(contrasts_both) == nrow(era_contrasts(primary)))
 write_csv(contrasts_both, file.path(root, 'comparison', 'era_contrasts_raw_vs_corrected.csv'))
-# The Holocene explanatory-model slopes in both runs (Table S3.2). The
+# The Holocene explanatory-model slopes in both runs (Table S3.2, Fig. S17). The
 # Anthropocene models hold no paleoclimate and are the same in both runs.
 slopes = function(path) read_csv(file.path(path, '14_predictor_models', 'community_predictor_models',
   'model_coefficients.csv'), show_col_types = FALSE) |> filter(era == 'Holocene', term != '(Intercept)') |>

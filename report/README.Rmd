@@ -1429,6 +1429,10 @@ if (s3_has) {
   s3_kept = function(r, p = c('MORA', 'NOCA')) { x = s3_lp |> filter(response == r, site %in% p)
     sprintf('%d of %d', sum(sign(x$raw) == sign(x$corrected)), nrow(x)) }
   s3_cc = s3_lp |> filter(response == 'climate_change', raw > 0)
+  s3_r = readr::read_csv(file.path(s3_dir, 'lake_period_correlations_raw_vs_corrected.csv'), show_col_types = FALSE)
+  s3_r1 = function(resp, park) sprintf('%.2f', s3_r$r[s3_r$response == resp & s3_r$site == park])
+  s3_tracking = c('lag', 'lag_rate', 'pace_effect_total', 'pace_effect', 'direction_effect_total', 'direction_effect')
+  s3_r_park = function(park) s3_r |> filter(site == park, response %in% s3_tracking) |> arrange(r)
   s3_ec = readr::read_csv(file.path(s3_dir, 'era_contrasts_raw_vs_corrected.csv'), show_col_types = FALSE) |>
     mutate(sig_raw = p_adjusted_raw < .05, sig_corrected = p_adjusted_corrected < .05)
   s3_ec_changed = s3_ec |> filter(sig_raw != sig_corrected)
@@ -1445,8 +1449,9 @@ paleoclimate (y): (A) climate change and (B) its rate, (C) the lag and (D) its r
 and (F) its rate, (G) the direction effect and (H) its rate. Totals over the lake-period on the left,
 rates per century on the right. Blue MORA, orange NOCA, triangles Holocene stability periods, circles
 Holocene climate-change periods. On the dashed line the correction changes nothing. In the shaded
-quadrants the value changes sign. Lake-periods whose observed or predicted position did not move have no
-pace or direction effect. Turnover and displacement are the same in both runs and are not shown. Climate
+quadrants the value changes sign. The numbers in each panel are the Pearson correlation r between the two
+runs across the lake-periods of each park. Lake-periods whose observed or predicted position did not move
+have no pace or direction effect. Turnover and displacement are the same in both runs and are not shown. Climate
 change in standardized units, the other quantities in CCA distance (totals) or CCA distance per century
 (rates). Script: [`R/figures/supp_bias_correction.R`](R/figures/supp_bias_correction.R).
 
@@ -1454,18 +1459,25 @@ change in standardized units, the other quantities in CCA distance (totals) or C
 if (s3_has) {
   s3_lst = function(d, f) if (nrow(d)) paste(f(d), collapse = '; ') else 'none'
   cat(paste0('**Result.** The correction changes the climate change of a lake-period by a median of ',
-    sprintf('%.0f%%', 100 * median(abs(s3_cc$corrected / s3_cc$raw - 1))), ' (Fig. S16A, B). It changes the sign of many ',
+    sprintf('%.0f%%', 100 * median(abs(s3_cc$corrected / s3_cc$raw - 1))), ' (Fig. S16A, B), but the corrected values follow the raw ones closely (r = ', s3_r1('climate_change', 'MORA'),
+    ' at MORA and ', s3_r1('climate_change', 'NOCA'), ' at NOCA). It changes the sign of many ',
     'lags. The lag keeps its sign in ', s3_kept('lag', 'MORA'), ' lake-periods at MORA and ', s3_kept('lag', 'NOCA'),
     ' at NOCA, the pace effect in ', s3_kept('pace_effect_total', 'MORA'), ' and ', s3_kept('pace_effect_total', 'NOCA'),
     ', and the direction effect in ', s3_kept('direction_effect_total', 'MORA'), ' and ',
     s3_kept('direction_effect_total', 'NOCA'), ' (the rates share the sign of the totals). The MORA Holocene lags are ',
-    'small, so a small shift in the two mismatches is enough to flip them. Of the ', nrow(s3_ec), ' era contrasts (Table S3.1), ',
+    'small, so a small shift in the two mismatches is enough to flip them. Across the lake-periods of a park, the ',
+    'corrected lag, pace effect and direction effect and their rates follow the raw ones at NOCA (r = ',
+    sprintf('%.2f', min(s3_r_park('NOCA')$r)), ' to ', sprintf('%.2f', max(s3_r_park('NOCA')$r)), ') but not at MORA, where ',
+    'r is ', s3_r1('lag', 'MORA'), ' for the lag, ', s3_r1('lag_rate', 'MORA'), ' for the lag rate, ',
+    s3_r1('pace_effect_total', 'MORA'), ' for the pace effect, ', s3_r1('pace_effect', 'MORA'), ' for its rate, ',
+    s3_r1('direction_effect_total', 'MORA'), ' for the direction effect and ', s3_r1('direction_effect', 'MORA'),
+    ' for its rate. Of the ', nrow(s3_ec), ' era contrasts (Table S3.1), ',
     sum(s3_ec$sig_raw), ' are significant after the Holm adjustment with the raw paleoclimate and ', sum(s3_ec$sig_corrected),
     ' with the bias-corrected one. Those whose significance differs between the runs: ',
     s3_lst(s3_ec_changed, function(d) sprintf('%s, %s, %s (Holm p %s raw, %s corrected)', response_label[d$response], d$site,
       d$contrast, s3_p(d$p_adjusted_raw), s3_p(d$p_adjusted_corrected))), '. Of the ', nrow(s3_sl), ' Holocene explanatory slopes ',
     '(Table S3.2), ', sum(s3_sl$away_raw), ' have an interval that excludes zero with the raw paleoclimate and ',
-    sum(s3_sl$away_corrected), ' with the bias-corrected one. Those that differ: ',
+    sum(s3_sl$away_corrected), ' with the bias-corrected one. Those that differ (Fig. S17): ',
     s3_lst(s3_sl_changed, function(d) sprintf('%s, %s (%+.3f raw, %+.3f corrected)', response_label[d$response],
       s3_term_label[d$term], d$estimate_raw, d$estimate_corrected)), '.\n'))
 }
@@ -1489,6 +1501,18 @@ if (s3_has) {
 }
 ```
 
+```{r appendix-s3-slope-figure}
+if (s3_has) show_figure('report/figures/supplementary/figS17_bias_correction_slopes.pdf', width = '100%')
+```
+
+**Fig. S17. Holocene explanatory slopes with the raw and the bias-corrected paleoclimate.** The slopes of
+Figure 7A and C, from the model response ~ site + climate + fire activity on the Holocene lake-periods, each
+with its conditional 95% confidence interval. Filled points and solid lines with the raw paleoclimate, open
+points and dashed lines with the bias-corrected paleoclimate. (A) The lag, the pace effect and the direction
+effect per century, with the climate change rate as the climate term. (B) The same responses not divided by
+time, with the climate change as the climate term. Black lag, pink pace effect, blue direction effect. The
+dashed vertical line marks no effect. Script: [`R/figures/supp_bias_correction.R`](R/figures/supp_bias_correction.R).
+
 ```{r appendix-s3-slopes}
 if (s3_has) {
   s3_sl |> arrange(match(response, s3_order), match(term, names(s3_term_label))) |>
@@ -1500,7 +1524,8 @@ if (s3_has) {
       'with the raw and the bias-corrected paleoclimate.** Model response ~ site + climate + fire activity on the',
       'Holocene lake-periods, as in Figure 7A and C, with an AR(1) correlation within each lake, conditional 95%',
       'confidence intervals and p. The climate term is the climate change rate for the per-century responses and the',
-      'climate change for the totals. The Anthropocene models hold no paleoclimate and are the same in both runs.'))
+      'climate change for the totals. The Anthropocene models hold no paleoclimate and are the same in both runs.',
+      'Fig. S17 draws the same slopes.'))
 }
 ```
 

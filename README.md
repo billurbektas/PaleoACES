@@ -2102,35 +2102,43 @@ effect and (H) its rate. Totals over the lake-period on the left, rates
 per century on the right. Blue MORA, orange NOCA, triangles Holocene
 stability periods, circles Holocene climate-change periods. On the
 dashed line the correction changes nothing. In the shaded quadrants the
-value changes sign. Lake-periods whose observed or predicted position
-did not move have no pace or direction effect. Turnover and displacement
-are the same in both runs and are not shown. Climate change in
-standardized units, the other quantities in CCA distance (totals) or CCA
-distance per century (rates). Script:
+value changes sign. The numbers in each panel are the Pearson
+correlation r between the two runs across the lake-periods of each park.
+Lake-periods whose observed or predicted position did not move have no
+pace or direction effect. Turnover and displacement are the same in both
+runs and are not shown. Climate change in standardized units, the other
+quantities in CCA distance (totals) or CCA distance per century (rates).
+Script:
 [`R/figures/supp_bias_correction.R`](R/figures/supp_bias_correction.R).
 
 **Result.** The correction changes the climate change of a lake-period
-by a median of 22% (Fig. S16A, B). It changes the sign of many lags. The
-lag keeps its sign in 5 of 14 lake-periods at MORA and 8 of 10 at NOCA,
-the pace effect in 3 of 12 and 8 of 10, and the direction effect in 11
-of 12 and 9 of 10 (the rates share the sign of the totals). The MORA
-Holocene lags are small, so a small shift in the two mismatches is
-enough to flip them. Of the 60 era contrasts (Table S3.1), 20 are
-significant after the Holm adjustment with the raw paleoclimate and 25
-with the bias-corrected one. Those whose significance differs between
-the runs: Direction effect (not divided by time), MORA, Anthropocene -
-Holocene-C (Holm p 0.646 raw, \< 0.001 corrected); Direction effect (not
-divided by time), MORA, Anthropocene - Holocene-S (Holm p 0.222 raw,
-0.001 corrected); Lag, MORA, Anthropocene - Holocene-C (Holm p 0.089
-raw, \< 0.001 corrected); Lag, MORA, Anthropocene - Holocene-S (Holm p
-1.000 raw, 0.009 corrected); Pace effect, MORA, Holocene-C - Holocene-S
-(Holm p 1.000 raw, 0.002 corrected). Of the 18 Holocene explanatory
-slopes (Table S3.2), 7 have an interval that excludes zero with the raw
-paleoclimate and 2 with the bias-corrected one. Those that differ: Lag
-rate, Climate change rate (+0.721 raw, +0.022 corrected); Pace effect,
-Climate change rate (+0.686 raw, +0.036 corrected); Pace effect, Fire
-activity (-0.187 raw, +0.216 corrected); Direction effect, Site (NOCA
-minus MORA) (-0.122 raw, +0.047 corrected); Direction effect, Fire
+by a median of 22% (Fig. S16A, B), but the corrected values follow the
+raw ones closely (r = 0.96 at MORA and 0.99 at NOCA). It changes the
+sign of many lags. The lag keeps its sign in 5 of 14 lake-periods at
+MORA and 8 of 10 at NOCA, the pace effect in 3 of 12 and 8 of 10, and
+the direction effect in 11 of 12 and 9 of 10 (the rates share the sign
+of the totals). The MORA Holocene lags are small, so a small shift in
+the two mismatches is enough to flip them. Across the lake-periods of a
+park, the corrected lag, pace effect and direction effect and their
+rates follow the raw ones at NOCA (r = 0.83 to 0.90) but not at MORA,
+where r is -0.21 for the lag, 0.28 for the lag rate, -0.51 for the pace
+effect, -0.14 for its rate, 0.56 for the direction effect and 0.75 for
+its rate. Of the 60 era contrasts (Table S3.1), 20 are significant after
+the Holm adjustment with the raw paleoclimate and 25 with the
+bias-corrected one. Those whose significance differs between the runs:
+Direction effect (not divided by time), MORA, Anthropocene - Holocene-C
+(Holm p 0.646 raw, \< 0.001 corrected); Direction effect (not divided by
+time), MORA, Anthropocene - Holocene-S (Holm p 0.222 raw, 0.001
+corrected); Lag, MORA, Anthropocene - Holocene-C (Holm p 0.089 raw, \<
+0.001 corrected); Lag, MORA, Anthropocene - Holocene-S (Holm p 1.000
+raw, 0.009 corrected); Pace effect, MORA, Holocene-C - Holocene-S (Holm
+p 1.000 raw, 0.002 corrected). Of the 18 Holocene explanatory slopes
+(Table S3.2), 7 have an interval that excludes zero with the raw
+paleoclimate and 2 with the bias-corrected one. Those that differ (Fig.
+S17): Lag rate, Climate change rate (+0.721 raw, +0.022 corrected); Pace
+effect, Climate change rate (+0.686 raw, +0.036 corrected); Pace effect,
+Fire activity (-0.187 raw, +0.216 corrected); Direction effect, Site
+(NOCA minus MORA) (-0.122 raw, +0.047 corrected); Direction effect, Fire
 activity (+0.268 raw, -0.094 corrected); Direction effect (not divided
 by time), Site (NOCA minus MORA) (-0.447 raw, -0.242 corrected);
 Direction effect (not divided by time), Fire activity (+0.903 raw,
@@ -2210,13 +2218,28 @@ and 6.
 <sub>Table file:
 [appendix_s3_era_contrasts.csv](report/tables/appendix_s3_era_contrasts.csv)</sub>
 
+<img src="report/figures/png/figS17_bias_correction_slopes.png" alt="" width="100%" />
+
+**Fig. S17. Holocene explanatory slopes with the raw and the
+bias-corrected paleoclimate.** The slopes of Figure 7A and C, from the
+model response ~ site + climate + fire activity on the Holocene
+lake-periods, each with its conditional 95% confidence interval. Filled
+points and solid lines with the raw paleoclimate, open points and dashed
+lines with the bias-corrected paleoclimate. (A) The lag, the pace effect
+and the direction effect per century, with the climate change rate as
+the climate term. (B) The same responses not divided by time, with the
+climate change as the climate term. Black lag, pink pace effect, blue
+direction effect. The dashed vertical line marks no effect. Script:
+[`R/figures/supp_bias_correction.R`](R/figures/supp_bias_correction.R).
+
 **Table S3.2. Holocene explanatory-model slopes with the raw and the
 bias-corrected paleoclimate.** Model response ~ site + climate + fire
 activity on the Holocene lake-periods, as in Figure 7A and C, with an
 AR(1) correlation within each lake, conditional 95% confidence intervals
 and p. The climate term is the climate change rate for the per-century
 responses and the climate change for the totals. The Anthropocene models
-hold no paleoclimate and are the same in both runs.
+hold no paleoclimate and are the same in both runs. Fig. S17 draws the
+same slopes.
 
 | Response | Term | Raw paleoclimate | Bias-corrected paleoclimate |
 |:---|:---|:---|:---|
