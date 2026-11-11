@@ -7,7 +7,7 @@ source(here('R/helpers/cca_display_rotation.R'), local = TRUE)
 render_figures = isTRUE(getOption('paleoaces.render_figures', TRUE))
 if (render_figures) {
   files = c(fig('main', 'fig_cca_trajectories.pdf'), fig('main', 'fig_cca_trajectories.png'),
-    fig('supplementary', 'fig_cca_biplot_unrotated.pdf'))
+    fig('supplementary', 'figS13_cca_biplot_unrotated.pdf'))
   stopifnot(all(file.exists(files)), all(file.info(files)$size > 5000))
 }
 plots = read_csv(out('cca_tracking_anthropocene_plot_calculations.csv'), show_col_types = FALSE)

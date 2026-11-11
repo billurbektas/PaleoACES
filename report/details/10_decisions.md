@@ -106,7 +106,7 @@ they are excluded from both observed and climate-predicted comparisons.
   endpoints receive explicit reasons if encountered.
 
 Generated totals, reasons and linked per-observation audits are in the
-[report](../../README.md#1-modern-vegetation).
+[report](../../README.md#legacy-surveys-and-resurveys).
 Figure 3's previously unequal endpoint membership is corrected by this decision.
 
 ## Adult resurvey dates and plot-specific climate — decided 2026-10-07
@@ -146,7 +146,7 @@ reinstatement on 2026-10-08 refits the shared CCA as recorded above.
 [95-plot discrepancy table](../../data/MORA/resurvey_year_source_discrepancies.csv),
 [13 latest visits](../tables/mora_repeat_visits.csv),
 [seedling visit mapping](../../data/MORA/resurvey_seedling_visit_mapping.csv) and
-[measured effects](../../README.md#2-climate)
+[measured effects](../../README.md#climate-change-and-comparisons-within-eras)
 record the adopted treatment. The chronology decisions below remain settled.
 
 ## Chronology and the previously discussed ²¹⁰Pb uncertainty
@@ -258,7 +258,7 @@ The detailed evidence and publication links are in the
 - Binary presence retains CCA's chi-square row and taxon weighting; it does not
   make plots or taxa equally weighted. The CCA1–CCA2 plane represents only part
   of total community inertia. The current axis percentages are reported in the
-  [report](../../README.md#4-canonical-correspondence-analysis).
+  [report](../../README.md#climatecommunity-space).
 - Resurvey and paleo observations do not fit the ordination, but their species
   counts influence the cross-group retention rule. This is a descriptive
   calibration/projection design, not an independent predictive validation.
@@ -273,7 +273,7 @@ The detailed evidence and publication links are in the
   the same direction and their separate coefficients (opposite-signed on CCA2)
   were not identifiable. Precipitation showed the same pattern to a lesser degree.
 - **Rule for choosing constraints:** screen candidates by their correlations in
-  both eras (Fig. S4) and by their variance inflation in the fitted CCA; keep one
+  both eras (Fig. S8) and by their variance inflation in the fitted CCA; keep one
   temperature and one precipitation variable.
 - **Choice:** `MSpT` + `SP`. Spring temperature is the temperature variable that
   changes most through the Holocene; summer precipitation represents summer
@@ -588,9 +588,10 @@ trajectories", which are kept as history.
 | Multiple comparisons (10 Nov) | Every group comparison is Holm-adjusted within its family (Bills): the era contrasts within each response (three period-type contrasts in each of two parks, six tests), the species contrasts within each measure and park (all species and their three period-type contrasts), and, as before, the joint pace and direction contrasts. Stars and statements of significance use the adjusted p. Intervals stay unadjusted 95% intervals. The explanatory models have one group contrast each (site, burned minus unburned) and need no adjustment. |
 | Species measure contrib_lag (11 Nov) | `contrib_gap` (projection on the mismatch at the start) is replaced by `contrib_lag` (Bills). With g1 and g2 the mismatch WA − LC at the two ends and m = (g1 + g2) / (|g1| + |g2|), each species' vector projected on m is its part of the lag rate, and −dLC·m is the climate's part. They add up exactly to the lag rate, and swapping the surveys reverses every value. `contrib_gap` came out positive also with the surveys swapped (MORA 0.445 forward, 0.621 swapped; NOCA 1.59 and 0.90), a lean towards the predicted position that is not a time trend. `contrib_lag` is per century of the lag-rate interval and includes the units where the community did not move. Figure 7B shows it. |
 | Wording and Figure 7 species (11 Nov) | "Climate-community lag" replaces "community-climate lag" in every figure and text (Bills). Figure 7 orders the species by the maximum elevation of the plots where they occur, shades their names by it in four grey steps (breaks at 1,500, 1,700 and 1,900 m), and sets in bold the species absent from the Holocene record of both parks (Abies grandis, Pinus albicaulis, Pinus ponderosa) (Bills). |
-| Burned MORA plots (11 Nov) | The two MORA plots burned between the surveys (JAME-295 and OHAN-013, 2003 fire, from `MORA_plot_info_fire.csv`) leave the whole analysis, before species selection and the CCA fit (Bills). Two plots cannot carry a MORA fire comparison, and in the shared Anthropocene fire term `site + burned` they tied the burned effect to MORA's level. The analysis now has 605 plot pairs (MORA 328, NOCA 277), set once in `ANTHROPOCENE_PAIRS` (R/helpers/config.R). The cleaned vegetation tables and Figures S1 and S8 still describe them as raw data. Figure S2 shows them as their own exclusion step. |
+| Burned MORA plots (11 Nov) | The two MORA plots burned between the surveys (JAME-295 and OHAN-013, 2003 fire, from `MORA_plot_info_fire.csv`) leave the whole analysis, before species selection and the CCA fit (Bills). Two plots cannot carry a MORA fire comparison, and in the shared Anthropocene fire term `site + burned` they tied the burned effect to MORA's level. The analysis now has 605 plot pairs (MORA 328, NOCA 277), set once in `ANTHROPOCENE_PAIRS` (R/helpers/config.R). The cleaned vegetation tables and Figures S2 and S4 still describe them as raw data. Figure S3 shows them as their own exclusion step. |
 | Appendix A4, charcoal comparison (11 Nov) | A descriptive figure sets the Walsh et al. (2017) Sunrise Ridge charcoal and fire events against the Dunwiddie charcoal fragments of the three MORA vegetation lakes, 0 to 7,000 cal BP, with Spearman correlations of 500-year bin means (circular-shift p) and the share of Walsh events with a Dunwiddie peak within 200 years against chance (Bills). The Dunwiddie values are counts per equal-volume sample (P. Dunwiddie, pers. comm.), a concentration; tapas was not run on them because the samples lie about 100 to 200 years apart. The fire measure of the analysis is unchanged. |
 | Fire frequency in Figure 2C, no high-fire periods (11 Nov) | The high-fire classification (each core's event frequency normalized to its maximum, averaged per park, periods above the median plus 1.4826 × MAD) is dropped (Bills). No model used it, its threshold had no published basis, and a reviewer asked why not z-scores. Figure 2C and the appendix climate figures show the fire frequency itself, accepted events per 1,000 years in a centred 1,000-year window, the mean of the covered Sunrise Ridge cores at MORA (at least two) and the Panther Potholes core at NOCA. Each park has its own y axis, because the records' resolutions (42 to 48 against 12 years) make the frequencies incomparable between the parks. Stage 11 is renamed `11_climate_eras_fire_frequency.R`; the high-fire worked example and its test checks are removed. |
+| README order and figure numbers (11 Nov) | The README follows the analysis (Bills): research questions (November 2026 draft), study area, forest tree communities (with Appendix S1), climate change and comparisons within eras, fire dynamics (with Appendix S2), climate–community space, climate–community lags (Q1), pace and direction effects (Q2), associations with fire (Q3), species contributions (Q4), numbers for the Results text, limitations. The earlier appendix text is kept in full. Supplementary figures are numbered S1 to S13 in order of appearance, and the number is part of each file name. Fig. S1 is a new study-area map. |
 | NOCA legacy plot area (10 Nov) | A descriptive supplement table of the 277 NOCA plot pairs by legacy plot area: plots, mean richness of the retained CCA taxa at both surveys, and plain means with t-intervals of turnover rate, lag and lag rate. No model changes (Bills). |
 | Bias-corrected sensitivity (10 Nov) | `R/sensitivity_bias_corrected.R` reruns stages 07 to 15 with `PALEO_USE_BIAS_CORRECTED = TRUE` into `output_bias_corrected/`, never writing `output/` or `report/`, and tabulates the lag, pace effect and direction effect of every lake-period from both runs with the number that keep their sign. The primary run stays on the raw TraCE21k paleoclimate (Bills). |
 | Figures 4 and 5 (10 Nov) | Fitted means and 95% intervals of the three period types per park, each mean printed beside its point. Climate change rate and turnover on log axes with an arrow for the fold against Holocene-C. Lag, lag rate, pace and direction on linear axes with connectors from the Anthropocene to each Holocene type, a star only where that contrast is significant, never on a single mean. Figure 5 holds pace and direction only, on one y scale, with "narrows the lag" and "widens the lag" along the axis (a positive effect means the community's own pace or direction widened the lag). Figure 4 has six panels in three rows (Bills): climate change and its rate, observed community turnover (the displacement) and its rate, the lag and the lag rate, each total on the left and its rate on the right, legend at the bottom. |

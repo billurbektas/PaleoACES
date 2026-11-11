@@ -1,4 +1,4 @@
-# Appendix figure A4 (Bills, 11 Nov 2026): do the charcoal peaks of the Walsh
+# Fig. S12 (appendix figure A4 until the README was reordered; Bills, 11 Nov 2026): do the charcoal peaks of the Walsh
 # et al. (2017) Sunrise Ridge cores, the source of the MORA fire values, line up
 # with the charcoal in the Dunwiddie cores of the MORA vegetation lakes? A
 # descriptive comparison: the Walsh charcoal accumulation rates with their tapas
@@ -92,7 +92,7 @@ figure = ggplot() +
     panel.grid.minor = element_blank(), panel.grid.major.y = element_blank(), legend.position = 'bottom',
     legend.text = element_text(size = 15))
 if (render_figures) {
-  ggsave(fig('supplementary', 'fig_charcoal_dunwiddie_walsh.pdf'), figure, width = 16, height = 11, device = cairo_pdf)
-  ggsave(fig('supplementary', 'fig_charcoal_dunwiddie_walsh.png'), figure, width = 16, height = 11, dpi = 300)
+  ggsave(fig('supplementary', 'figS12_charcoal_walsh_dunwiddie.pdf'), figure, width = 16, height = 11, device = cairo_pdf)
+  ggsave(fig('supplementary', 'figS12_charcoal_walsh_dunwiddie.png'), figure, width = 16, height = 11, dpi = 300)
 }
-cat('Appendix A4: Dunwiddie and Walsh charcoal drawn.\n')
+cat('Fig. S12: Dunwiddie and Walsh charcoal drawn.\n')

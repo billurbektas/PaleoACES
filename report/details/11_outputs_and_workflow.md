@@ -52,11 +52,12 @@ for the report.
 | R/pipeline/15_contributions.R | pipeline | Species contributions (PLAN.md section 5, Step 6): which species led the | 125 |
 | R/figures/supp_age_depth_models.R | figure | Figures S5 (four Bacon age-depth models) and S6 (Panther Potholes 210Pb | 109 |
 | R/figures/supp_cca_scaling.R | figure | supp_cca_scaling.R - one CCA drawn at scaling 1 and scaling 2 | 108 |
-| R/figures/supp_charcoal_dunwiddie_walsh.R | figure | Appendix figure A4 (Bills, 11 Nov 2026): do the charcoal peaks of the Walsh | 98 |
-| R/figures/supp_climate_correlations.R | figure | supp_climate_correlations.R | 626 |
+| R/figures/supp_charcoal_dunwiddie_walsh.R | figure | Fig. S12 (appendix figure A4 until the README was reordered; Bills, 11 Nov 2026): do the charcoal peaks of the Walsh | 98 |
+| R/figures/supp_climate_correlations.R | figure | supp_climate_correlations.R | 628 |
 | R/figures/supp_climate_windows.R | figure | Compare the actual plot-specific survey windows with V2.1 1979-2021. | 174 |
 | R/figures/supp_sample_selection.R | figure | Show which plots and core samples reach CCA, starting with the supplied data. | 368 |
 | R/figures/supp_species_through_time.R | figure | supp_species_through_time.R - STEP 4, the species half | 199 |
+| R/figures/supp_study_area.R | figure | Fig. S1 (Bills, 11 Nov 2026): the study area. (A) Washington State with the | 108 |
 | R/figures/supp_tracking_transitions.R | figure | Appendix figures of the lake-period values over time (redrawn on lake-periods | 86 |
 | R/figures/main_fig2_climate_eras_fire.R | figure | main_fig2_climate_eras_fire.R | 711 |
 | R/figures/main_fig3_cca_trajectories.R | figure | Figure 3: A, species and climate biplot; B, observed and predicted trajectories | 220 |
@@ -64,7 +65,7 @@ for the report.
 | R/figures/main_fig5_lag_pace_direction.R | figure | Figure 5 (PLAN.md section 6; redrawn by Bills, 10 Nov 2026): the pace and | 43 |
 | R/figures/main_fig6_climate_fire_associations.R | figure | Figure 6: climate and fire associations as model slopes (Bills, 9 Nov 2026). | 74 |
 | R/figures/main_fig7_species.R | figure | Figure 7 (PLAN.md section 6): species contributions in both eras. Species as | 151 |
-| R/worked_examples.R | worked examples | Worked examples: step-by-step illustrations of four methods, drawn from the | 408 |
+| R/worked_examples.R | worked examples | Worked examples: step-by-step illustrations of four methods, drawn from the | 410 |
 | R/tests/test_bacon_provenance.R | test | The stored Bacon chronologies are exactly what the current age-model script and | 32 |
 | R/tests/test_cca_tracking_metrics.R | test | Independent geometry and integration checks for the canonical tracking data. | 38 |
 | R/tests/test_cca_trajectory_figure.R | test | Figure 3 inputs (PLAN.md section 6): the Anthropocene arrows are the means of | 37 |
@@ -271,7 +272,7 @@ built for this report).
 |:----------------|------:|
 | main            |    12 |
 | models          |     1 |
-| supplementary   |    22 |
+| supplementary   |    26 |
 | worked_examples |     3 |
 
 <sub>Table file:

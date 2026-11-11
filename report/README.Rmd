@@ -29,11 +29,13 @@ PaleoACES compares climate-predicted and observed forest composition in Mount Ra
 North Cascades (NOCA) National Parks, using forest resurveys and four Holocene macrofossil records.
 One CCA calibrated on the legacy survey plots provides the shared coordinate system.
 
-This page is the supplementary appendix of the analysis. It shows every main and supplementary
-figure, the tables reported in the manuscript and the modelling code, in the order of the analysis
-and of the Supporting Information (Appendix S1, Appendix S2). Data cleaning is summarized by its
-figure here; the step-by-step detail sits in [`report/details/`](report/details), linked from
-each section.
+This page is the supplementary appendix of the analysis, in the order of the analysis: the research
+questions, the study area, the forest tree communities, climate change, fire dynamics, the
+climate–community space, and then the four questions in turn (lags, pace and direction effects,
+associations with fire, species contributions). It shows every main and supplementary figure, the
+tables reported in the manuscript and the modelling code, and keeps the text of the Supporting
+Information (Appendix S1, Appendix S2). Data cleaning is summarized by its figure here. The
+step-by-step detail sits in [`report/details/`](report/details), linked from each section.
 
 ```sh
 Rscript R/run_all.R --offline   # run the whole analysis from the cached climate (add --age-models to refit Bacon)
@@ -60,22 +62,541 @@ Rscript R/build_report.R        # rebuild this page and report/ from the outputs
 Software: R with rbacon 3.5.2, tapas 0.1.5 and CharAnalysis 2.0.3, plus `pdftoppm` (poppler) for
 the report.
 
-# The remodelled analysis at a glance
+# Research questions
 
-The Holocene side of the analysis is being remodelled on lake-periods: one lake within one climate
-period, compared from its first to its last sampled century. Each row below is filled when its step
-is finished.
+The analysis compares forest community reassembly under Holocene and Anthropocene climate change in
+Mount Rainier (MORA) and North Cascades (NOCA), in one climate–community ordination for both eras
+(Figure 1). It asks four questions (manuscript draft, November 2026), each answered in its own
+section below:
 
-| Step | What it does | Result |
-|---|---|---|
-| Step 0 | Climate variables and CCA refit | `r sprintf('MSpT + SP: VIF %.2f, adjusted R² %.3f (all four %.3f), no lake-century outside the calibration climate, display rotation %.1f°', max(read_output("cca_screening.csv")$VIF[read_output("cca_screening.csv")$set == "MSpT + SP"]), read_output("cca_screening.csv")$adjusted_R2[read_output("cca_screening.csv")$set == "MSpT + SP"][1], read_output("cca_screening.csv")$adjusted_R2[1], read_output("cca_display_rotation.csv")$angle_degrees)` |
-| Step 1 | Climate periods and lake-periods | `r p = read_output('holocene_periods.csv'); sprintf('%d periods from %d to %d cal BP (%d C, %d S), none split', nrow(p), max(p$older_cal_bp), min(p$younger_cal_bp), sum(p$period_type == "Holocene-C"), sum(p$period_type == "Holocene-S"))` |
-| Steps 2 to 4 | Mismatch, lag, turnover, pace, direction, climate change rate and fire per lake-period | `r u = read_output('cca_tracking_lake_periods.csv'); sprintf('%d lake-periods (MORA %d, NOCA %d, %d C, %d S), %d to %d years long', nrow(u), sum(u$site == "MORA"), sum(u$site == "NOCA"), sum(u$period_type == "Holocene-C"), sum(u$period_type == "Holocene-S"), min(u$duration_yr), max(u$duration_yr))` |
-| Step 5 | Holocene explanatory models | `r x = read_output('community_predictor_models/model_coefficients.csv') |> dplyr::filter(era == 'Holocene'); g = function(m, t) x[x$metric == m & x$term == t, ]; sprintf('Lag rate rises with climate change rate (%+.2f, %.2f to %.2f), fire goes with a larger direction effect (%+.2f, %.2f to %.2f)', g('lag_rate','climate_rate')$estimate, g('lag_rate','climate_rate')$conf_low, g('lag_rate','climate_rate')$conf_high, g('direction_effect','fire_activity')$estimate, g('direction_effect','fire_activity')$conf_low, g('direction_effect','fire_activity')$conf_high)` |
-| Step 5a | Holocene against Anthropocene (era models) | `r f = read_output('era_comparison/era_folds.csv'); g = function(r, p) f$fold[f$response == r & f$site == p & f$against == 'Holocene-C']; sprintf('Anthropocene climate change %.0f (MORA) and %.0f (NOCA) times faster than in Holocene-C periods, turnover %.0f and %.0f times faster', g('climate_rate','MORA'), g('climate_rate','NOCA'), g('turnover_rate','MORA'), g('turnover_rate','NOCA'))` |
-| Step 6 | Species contributions | `r m = read_output('species_contribution_models/species_means.csv'); h = m[m$period_type != 'Anthropocene' & m$interval_defined, ]; a = m[m$period_type == 'Anthropocene' & m$interval_defined & m$measure == 'contrib_lag', ]; sprintf('Holocene species means near zero (%d of %d intervals span zero). Anthropocene lag rate split into species and climate: %d of %d species-park means narrow the lag, %d widen it', sum(h$conf_low <= 0 & h$conf_high >= 0), nrow(h), sum(a$conf_high < 0), nrow(a), sum(a$conf_low > 0))` |
+1. Are climate–community lags smaller under slower Holocene climate change than under rapid
+   Anthropocene climate change? ([Climate–community lags](#climatecommunity-lags-q1))
+2. When communities fail to track climate, is this because observed community turnover is slower
+   than climate-predicted turnover, because communities reorganize in a different direction from
+   that predicted by climate, or both? ([Pace and direction effects](#pace-and-direction-effects-q2))
+3. Is fire associated with differences in the pace and direction of climate tracking?
+   ([Associations with fire](#associations-with-fire-q3))
+4. Which species contribute the most to the discrepancies between observed and climate-predicted
+   community change? ([Species contributions](#species-contributions-q4))
 
-# Step 0. Climate variables and the CCA
+**Figure 1. Conceptual framework.** *To be added (conceptual figure, not produced by the code).*
+
+Caption revisions: the drawing is unchanged. In panel B, the lag
+is the difference between the mismatches at t2 and t1, the first and last sampled century of a
+lake-period (one lake within one climate period), and the lag rate is that difference per century.
+In panel C, "at the same time point t" becomes "at t2". The axis labels may read "Spring temperature"
+and "Summer precipitation".
+
+# Study area
+
+The study covers Mount Rainier National Park (MORA) and the North Cascades National Park Service
+Complex (NOCA), Washington, USA. In each park, legacy vegetation plots were resurveyed decades later,
+and small lakes hold Holocene records in their sediments. Fig. S1 shows the plot pairs that enter
+the CCA, whether each burned between the two surveys, and the cored lakes by what each record
+contributes. At MORA, the vegetation comes from Jay Bath, Log Wallow and Reflection Pond (Dunwiddie
+1986) and the fire from the Sunrise Ridge lakes of Walsh et al. (2017). At NOCA, vegetation and fire
+come from the same core at Panther Potholes (Prichard et al. 2009).
+
+```{r fig-s01-study-area}
+show_figure('report/figures/supplementary/figS01_study_area.pdf')
+sa = read_output('cca_tracking_both_eras.csv') |> filter(period_type == 'Anthropocene') |>
+  group_by(site) |> summarise(n = n(), burned = sum(burned))
+sa_n = function(p, v) sa[[v]][sa$site == p]
+```
+
+**Fig. S1. Study area.** (A) Washington State with Mount Rainier National Park (MORA, blue) and the
+North Cascades National Park Service Complex (NOCA, orange: the national park with the Ross Lake and
+Lake Chelan National Recreation Areas). (B, C) The legacy–resurvey plot pairs that enter the CCA,
+`r sa_n('MORA', 'n')` at MORA and `r sa_n('NOCA', 'n')` at NOCA, grey when unburned and red when burned
+between the two surveys (`r sa_n('MORA', 'burned')` at MORA and `r sa_n('NOCA', 'burned')` at NOCA; the
+two MORA plots that burned are left out of the analysis), and the cored lakes: vegetation records
+(green circles, macrofossils, Dunwiddie 1986), fire records (orange triangles, charcoal, Walsh et al.
+2017) and Panther Potholes, whose core gives both (green diamond, Prichard et al. 2009). Park
+boundaries from the National Park Service administrative boundaries, Sunrise Ridge lake coordinates
+from Walsh et al. (2017, Table 1). Script: [`R/figures/supp_study_area.R`](R/figures/supp_study_area.R).
+
+# Forest tree communities
+
+## Legacy surveys and resurveys
+
+Legacy surveys and resurveys of the same plots at Mount Rainier (MORA) and North Cascades
+(NOCA) National Parks were matched, cleaned and harmonized to one tree taxonomy
+(`R/pipeline/01_clean_mora_vegetation.R`, `R/pipeline/02_clean_noca_vegetation.R`).
+
+```{r fig-s02-occurrence-by-stage}
+show_figure('report/figures/supplementary/figS02_tree_occurrence_by_stage.pdf')
+```
+
+**Fig. S2. Tree species occurrence by developmental stage in legacy surveys and resurveys.**
+Number of plots in which each species was recorded as an adult tree or seedling/regeneration at
+Mount Rainier (MORA) and North Cascades (NOCA) National Parks, following taxonomic harmonization
+and exclusion of understory taxa, but before applying the CCA frequency threshold. Species could
+occur in both vegetation stages within the same plot. At MORA, seedlings were defined as
+individuals 10–140 cm tall at both survey dates. At NOCA, however, legacy surveys classified
+individuals 0–3 m tall as regeneration and those taller than 3 m as adults, whereas resurveys
+recorded seedlings of 10–140 cm and adults taller than 1.4 m. Consequently, differences between
+vegetation stages at NOCA should be interpreted cautiously because size-class definitions
+differed between surveys.
+
+```{r fig-s03-plot-selection}
+show_figure('report/figures/supplementary/figS03_plot_and_sample_selection.pdf')
+```
+
+**Fig. S3. Selection of vegetation records for canonical correspondence analysis (CCA).**
+Flowchart summarizing the matching, cleaning, and selection of legacy–resurvey plots (upper
+panels) and Holocene macrofossil samples (lower panels) from Mount Rainier (MORA, blue) and North
+Cascades (NOCA, orange) National Parks. The final set of eligible paired plots was used both to
+calibrate the CCA using legacy community composition and to assess contemporary community
+change, whereas Holocene samples were projected into the fitted ordination. Plots without any
+retained tree species at either survey date were excluded because they could not be assigned an
+observed CCA position. Sample sizes and reasons for exclusion are indicated at each step.
+
+**Legacy plot area at NOCA.** Every resurvey plot is 500 m², but the NOCA legacy plots range
+from 25 to 400 m². A small legacy plot can miss species that the resurvey then records, which would
+show up as turnover. The table gives the NOCA plot pairs used in the analysis by legacy plot area, with their
+richness and their Anthropocene responses (turnover rate, lag and lag rate). It is descriptive only.
+
+```{r vegetation-noca-plot-area}
+pa = read_output('report/noca_plot_area_responses.csv')
+pci = function(m, lo, hi) ifelse(is.na(lo), sprintf('%.3f', m), sprintf('%.3f (%.3f to %.3f)', m, lo, hi))
+pa |> transmute(`Legacy area (m²)` = legacy_area, Plots = plots,
+    `Richness, legacy` = sprintf('%.2f', richness_legacy_mean), `Richness, resurvey` = sprintf('%.2f', richness_resurvey_mean),
+    `Turnover rate` = pci(turnover_rate_mean, turnover_rate_low, turnover_rate_high),
+    Lag = pci(lag_mean, lag_low, lag_high), `Lag rate` = pci(lag_rate_mean, lag_rate_low, lag_rate_high)) |>
+  show_table('noca_plot_area_responses', caption = paste('**NOCA plot pairs by legacy plot area.** Richness is',
+    'the mean number of the retained CCA taxa present in a plot. Turnover rate, lag and lag rate are plain means',
+    'with 95% t-intervals (no model): the turnover and lag rates in CCA distance per century, the lag in CCA',
+    'distance. The single 36 m² plot has no interval.'))
+pa_row = function(a) pa[pa$legacy_area == a, ]
+```
+
+The smallest legacy plots did not record fewer of the CCA taxa: `r sprintf('%.2f', pa_row('25')$richness_legacy_mean)`
+taxa per 25 m² plot against `r sprintf('%.2f', pa_row('100')$richness_legacy_mean)` per 100 m² plot. Their
+turnover rate was not higher (`r sprintf('%.2f', pa_row('25')$turnover_rate_mean)` against
+`r sprintf('%.2f', pa_row('100')$turnover_rate_mean)` CCA distance per century), and the intervals of the
+three common areas overlap for every response. The NOCA Anthropocene results do not rest on the small
+legacy plots.
+
+`r details_link('01_vegetation_cleaning', 'Cleaning details')` (plot-by-plot decisions, NOCA tree
+corrections, survey dates, raw-data provenance).
+
+## Species selection
+
+```{r fig-s04-species-frequencies}
+show_figure('report/figures/supplementary/figS04_species_occurrence_frequencies.pdf')
+```
+
+**Fig. S4. Species occurrence frequencies across sites and periods before CCA species
+selection.** Number of plots (legacy surveys and resurveys) or macrofossil samples (Holocene) in
+which each tree species was recorded at MORA and NOCA, following taxonomic harmonization and
+exclusion of understory and unidentified taxa. Presence was determined from both adult tree and
+seedling records. The dashed red line indicates the minimum occurrence threshold of
+`r cca_value('count_threshold')` plots or samples. Species were retained if they reached this
+threshold in at least one site and period combination, resulting in
+`r cca_value('retained_species')` species included in the CCA.
+
+`r details_link('05_species_selection', 'Species-selection details')` (consolidation rules,
+excluded taxa, occupancy through time).
+
+## Holocene macrofossil records
+
+The Holocene communities come from plant macrofossils in dated lake-sediment cores, three at MORA and
+one at NOCA (Fig. S1). Each sample is dated with the age–depth model of its core (Appendix S1).
+
+### Appendix S1. Construction of the Holocene age–depth models
+
+#### S1.1 Why an age–depth model was required
+
+The macrofossils are measured at known depths in a sediment core, but depth itself does not
+provide an age. Sediment does not necessarily accumulate at a constant rate: for example, 1 cm of
+sediment can represent relatively few years during rapid accumulation and many more years during
+slow accumulation. Chronological control is available only at selected depths, through
+radiocarbon dates, dated volcanic deposits, ²¹⁰Pb dating, or other independently dated horizons.
+We therefore required an age–depth model to estimate the calendar age of every depth between
+these dated points and, importantly, to quantify uncertainty in those estimated ages.
+
+We used the rbacon R package, which reconstructs sediment accumulation histories within a Bayesian
+framework (Blaauw & Christen 2011). Rather than drawing a single line through the dated horizons,
+Bacon estimates many age–depth histories that are compatible with the chronological evidence and
+assumptions about sediment accumulation. The distribution of these histories represents the
+posterior chronological uncertainty shown in Fig. S5.
+
+#### S1.2 Chronological controls and radiocarbon calibration
+
+For each core, we assembled chronological controls for which both sediment depth and age
+information were available (Table S1.1). For MORA, these consisted of the core surfaces, seven
+radiocarbon dates from Jay Bath and Log Wallow, dated volcanic tephra horizons, and a basal
+radiocarbon age for Reflection Pond. Reflection Pond contained no radiocarbon dates of its own and
+was therefore constrained by the core surface, tephra horizons, and this basal control. For
+Panther Potholes, we reproduced the chronology archived in the Neotoma database using the core
+surface, five ²¹⁰Pb ages, six Accelerator Mass Spectrometry (AMS) radiocarbon dates, and three
+tephra horizons. We used the corrected control depths archived in Neotoma rather than the depths
+reported in Prichard et al. (2009), which contain documented depth errors.
+
+Radiocarbon ages are expressed in ¹⁴C years and cannot be treated directly as calendar ages
+because atmospheric ¹⁴C concentrations have varied through time. We therefore supplied
+radiocarbon ages and their laboratory errors as uncalibrated dates (cc = 1), which Bacon
+calibrated against the IntCal20 Northern Hemisphere calibration curve (Reimer et al. 2020). This
+converts each radiocarbon measurement into a probability distribution of plausible calendar ages.
+Controls already expressed in calendar years, including the core surfaces and tephra ages, were
+supplied directly (cc = 0) and were not calibrated.
+
+The seven MORA radiocarbon ages and their laboratory errors were taken directly from Dunwiddie
+(1986). For all other chronological controls, the source and interpretation of the assigned age
+uncertainty are reported explicitly in Table S1.1. The Reflection Pond basal control is the mean
+of the two basal radiocarbon ages of Jay Bath (QL-1704) and Log Wallow (QL-1728), 6015 ± 110 ¹⁴C yr
+BP with the larger of the two laboratory errors, following P. Dunwiddie's advice that the three
+basins share the same basal age (pers. comm.).
+
+For Panther Potholes, the five ²¹⁰Pb ages were derived using a Constant Rate of Supply (CRS)
+model. We retained the error values used in the archived Gavin chronology for the primary model;
+however, these values correspond numerically to the ²¹⁰Pb activity uncertainties reported by
+Prichard et al. (2009), rather than to independently estimated age uncertainties in years. We
+therefore evaluated this uncertainty specification in a separate sensitivity analysis described
+below.
+
+```{r table-s1-1}
+read_output('table_S1_1_chronological_controls.csv', col_types = readr::cols(.default = 'c')) |>
+  show_table('table_S1_1_chronological_controls',
+    caption = paste('**Table S1.1. Chronological controls used in the four Bayesian age–depth models.**',
+      'For cc = 1, the entered age is an uncalibrated ¹⁴C age calibrated with IntCal20. For cc = 0,',
+      'the entered age is already in calibrated years before present (cal yr BP; present = A.D. 1950).'))
+```
+
+#### S1.3 Bayesian age–depth models
+
+We fitted each core independently with Bacon using the settings summarized in Table S1.2. Bacon
+divided each sediment core into 5-cm sections and estimated an accumulation time, in yr cm⁻¹, for
+each section. Accumulation times were allowed to differ among sections but were correlated between
+neighbouring sections through the model's memory parameter. The chronological controls in
+Table S1.1 were then used to update these prior expectations and generate the posterior age–depth
+chronology shown in Fig. S5.
+
+The three MORA cores were modelled using the same accumulation and memory priors. Panther Potholes
+instead retained the settings of the archived Bacon chronology in the Neotoma database so that our
+model reproduced the published chronology while providing the complete posterior age–depth draws
+required for subsequent analyses. All runs are seeded (seed 42).
+
+```{r table-s1-2}
+read_output('table_S1_2_rbacon_parameters.csv', col_types = readr::cols(.default = 'c')) |>
+  show_table('table_S1_2_rbacon_parameters',
+    caption = '**Table S1.2. rbacon parameters used to construct the age–depth models.**')
+```
+
+The thick volcanic deposits required one additional treatment. The MSH-Y tephra was represented as
+an instantaneous depositional interval in all three MORA cores, including the 58-cm interval at Log
+Wallow containing both primary and redeposited Y tephra. At Panther Potholes, the MSH-P, MSH-Y,
+and Mazama tephra intervals were treated in the same way. Bacon therefore removed these intervals
+while estimating gradual sediment accumulation and reinserted them without adding elapsed time.
+These intervals are shown as vertical grey bands in Fig. S5.
+
+```{r fig-s05-age-depth}
+show_figure('report/figures/supplementary/figS05_age_depth_models.pdf')
+```
+
+**Fig. S5. Bayesian age–depth models for the Jay Bath, Log Wallow, and Reflection Pond cores at
+MORA and the Panther Potholes core at NOCA.** For each core, the three upper panels show, from left
+to right, the Markov chain Monte Carlo trace, the prior (green) and posterior (grey) distributions
+of sediment accumulation time, and the prior and posterior distributions of memory. In the main
+panels, depth increases along the x-axis and age is expressed as calibrated years before present.
+Coloured distributions at dated depths represent the chronological controls and their
+uncertainty. The grey field represents the posterior distribution of possible age–depth
+relationships; the central red line shows the posterior age–depth estimate and the outer dotted
+lines the 95% posterior interval. Vertical grey bands identify tephra intervals treated as
+instantaneous deposition.
+
+For Panther Potholes, we reproduced the archived Neotoma chronology as the primary model. However,
+Prichard et al. (2009) report uncertainties for measured ²¹⁰Pb activity, in DPM g⁻¹, and the same
+numerical values were entered as age errors, in years, in the archived chronology. We therefore
+fitted a sensitivity model in which the five ²¹⁰Pb controls were each assigned an assumed ±10-year
+age error, all other controls and settings unchanged (Fig. S6).
+
+```{r fig-s06-pb210}
+show_figure('report/figures/supplementary/figS06_panther_potholes_pb210_sensitivity.pdf')
+```
+
+**Fig. S6. Sensitivity of the Panther Potholes age–depth chronology to uncertainty assigned to the
+five ²¹⁰Pb controls in the upper 35 cm of the core.** The left panel shows that the two posterior
+chronologies are nearly identical below the ²¹⁰Pb-dated section, whereas the right panel shows the
+expected increase in uncertainty within the upper 35–40 cm. The uncertainty assigned to the ²¹⁰Pb
+controls affects the precision of the most recent chronology but does not materially alter the
+deeper Holocene chronology used in our analyses.
+
+`r details_link('03_chronology', 'Chronology details')` (every control and its source).
+
+# Climate change and comparisons within eras
+
+## Climate data
+
+Modern climate is CHELSA V2.1 monthly climate in a survey-specific window for every plot
+(`R/pipeline/04_modern_climate.R`); Holocene climate is CHELSA-TraCE21k at each lake and century
+(`R/pipeline/07_paleo_climate.R`).
+
+```{r fig-s07-survey-windows}
+show_figure('report/figures/supplementary/figS07_survey_climate_windows.pdf')
+```
+
+**Fig. S7. Climate conditions and survey-specific climate windows for the Anthropocene.** Upper
+panels show annual climate variation from CHELSA v2.1 (1979–2021), averaged across the paired
+vegetation plots at Mount Rainier (MORA, blue) and North Cascades (NOCA, orange) National Parks.
+Variables include mean annual temperature (MAT), annual precipitation (AP), and the four seasonal
+seasonal variables mean spring temperature (MSpT), mean winter temperature (MWT), summer
+precipitation (SP), and winter precipitation (WP); MSpT and SP constrain the CCA. Shaded areas indicate the common legacy climate
+window (1979–1989). Lower panels show the six-year climate windows used for each resurvey year
+(Y−5 through Y), together with the number of paired plots (n) surveyed in that year. Winter
+calculations also included December of the preceding calendar year. Climate conditions were
+therefore calculated separately for each plot according to its resurvey year.
+
+```{r fig-s08-correlations}
+show_figure('report/figures/supplementary/figS08_climate_correlations.pdf')
+```
+
+**Fig. S8. Correlations among climate variables during the Holocene and Anthropocene.** Pearson
+correlation coefficients (r) were calculated across lake locations and 100-year climate intervals
+for the Holocene (CHELSA-TraCE21k, left) and across vegetation plots and survey periods for the
+Anthropocene (CHELSA v2.1, right). Red indicates positive correlations and blue indicates negative
+correlations, with numerical values showing Pearson's r. Climate variables include mean annual
+(MAT), spring (MSpT), summer (MST), and winter (MWT) temperature, and annual (AP), spring (SpP),
+summer (SP), and winter (WP) precipitation. Spring corresponds to March–May, summer to June–August,
+and winter to December–February.
+
+`r details_link('02_climate', 'Climate details')` (survey windows, TraCE21k against V2.1, full
+correlation tables).
+
+## Climate periods
+
+**What and why.** The Holocene is cut into climate-change (C) periods, when the park-average
+climate of the lakes moved steadily in one direction, and stability (S) periods between them. The
+rules of the climate-era step are unchanged. Only their input changed: the periods are now drawn
+from the two CCA variables, MSpT and SP, so that the periods describe change along the same
+climate axes that the CCA uses. A climate-change period that contains a long internal trough of
+low change is split into sub-periods (a, b, c). Each period, or sub-period, is one unit for the
+lake-periods (see Climate–community lags).
+
+**Result.**
+
+```{r step1-periods}
+comparison = read_output('holocene_period_comparison.csv')
+comparison |> transmute(Catalog = catalog, Period = period, Type = period_type,
+    `Older (cal BP)` = older_cal_bp, `Younger (cal BP)` = younger_cal_bp,
+    `Duration (years)` = duration_years, Drivers = gsub(';', ', ', coalesce(drivers, ''))) |>
+  show_table('step1_periods', caption = paste('**Climate periods** drawn from MSpT and SP (used in the',
+    'analysis) and, by the same rules, from all four seasonal variables (the periods before the CCA constraints',
+    'were reduced to MSpT and SP).'))
+periods = comparison |> filter(startsWith(catalog, 'MSpT'))
+```
+
+With MSpT and SP the Holocene from `r max(periods$older_cal_bp)` to `r min(periods$younger_cal_bp)`
+cal BP falls into `r sum(periods$period_type == 'Holocene-C')` climate-change periods and
+`r sum(periods$period_type == 'Holocene-S')` stability periods, and no climate-change period is
+split. The first four-variable climate-change period (C1a to C1c, 9600 to 7200 cal BP) becomes C1,
+S1 and C2: its middle part (8600 to 8200 cal BP) was driven by winter wetting alone, which is no
+longer a constraint. From 7200 cal BP onward every boundary is unchanged, and the periods are
+renumbered.
+
+```{r fig-2-main}
+show_figure('report/figures/main/fig_climate_levels_eras_fire.pdf')
+rates2 = read_output('figures/anthropocene_climate_rates.csv')
+r2 = function(v, park) { x = rates2[rates2$variable == v & rates2$site == park, ]
+  if (v == 'SP') sprintf('%+.0f mm (%+.1f SD)', x$rate, x$z_rate) else sprintf('%+.2f °C (%+.1f SD)', x$rate, x$z_rate) }
+```
+
+**Figure 2. Holocene climate and fire.** (A) Spring temperature (°C) and (B) summer
+precipitation (mm), the two CCA constraints, averaged over the lakes of each park with the two parks
+weighted equally (CHELSA-TraCE21k). Bold lines are 1,000-year running means and thin lines the
+centennial series. Shading marks the climate-change (C) and stability (S) periods, with the change
+that drove each climate-change period written below its name (cooling or warming of spring temperature, drying or
+wetting of summer precipitation). Labels linked to the bold lines give the change per century over a period for each
+variable that drove it. A cross marks the largest step between two consecutive centuries, labelled with its rate. To the right of each panel, the Anthropocene change per century from
+the legacy to the resurvey climate window, the median over plots in each park: spring temperature
+`r sprintf('%+.2f', rates2$rate[rates2$variable == 'MSpT' & rates2$site == 'MORA'])` °C at MORA and
+`r sprintf('%+.2f', rates2$rate[rates2$variable == 'MSpT' & rates2$site == 'NOCA'])` °C at NOCA, summer precipitation
+`r sprintf('%+.1f', rates2$rate[rates2$variable == 'SP' & rates2$site == 'MORA'])` mm at MORA and
+`r sprintf('%+.1f', rates2$rate[rates2$variable == 'SP' & rates2$site == 'NOCA'])` mm at NOCA. These come from a change
+over about 29 years, while each Holocene rate spans a whole period of 400 to 2,700 years. (C) Fire
+frequency of each park: accepted fire events per 1,000 years, counted in a 1,000-year window centred
+every 100 years. At MORA it is the mean of the three Sunrise Ridge cores of Walsh et al. (2017) wherever
+at least two cover the date, at NOCA the Panther Potholes core (Prichard et al. 2009). The two parks are
+on different y axes because their frequencies are not comparable: Panther Potholes is resampled every 12
+years and the Sunrise Ridge cores every 42 to 48 years, and a finer record resolves more events. The
+MORA cores lie on Sunrise Ridge, away from the vegetation lakes (Fig. S12). The models do not use this
+curve: their fire activity counts the same accepted events between the two ends of each lake-period,
+per century and per covered core (see Climate–community lags). To the right, the Anthropocene plot pairs of each park that
+burned between the two surveys (MORA's two burned plots are left out of the analysis).
+
+Stages and helpers: [`R/pipeline/11_climate_eras_fire_frequency.R`](R/pipeline/11_climate_eras_fire_frequency.R),
+[`R/helpers/holocene_climate_fire_era_functions.R`](R/helpers/holocene_climate_fire_era_functions.R),
+[`R/figures/main_fig2_climate_eras_fire.R`](R/figures/main_fig2_climate_eras_fire.R).
+
+```{r fig-s09-four-variable-levels}
+show_figure('report/figures/supplementary/figS09_climate_levels_four_variables.pdf')
+```
+
+**Fig. S9. Holocene climate levels of the four seasonal variables.** As Figure 2A for spring
+temperature, winter temperature, summer precipitation and winter precipitation, without the rate
+labels. Only spring temperature and summer precipitation constrain the CCA and define the periods.
+(B) Fire frequency as in Figure 2C.
+
+```{r fig-s10-period-method}
+show_figure('report/figures/supplementary/figS10_climate_period_method.pdf')
+```
+
+**Fig. S10. How the climate periods were drawn.** (A) Equal-site regional median of the signed
+1,000-year change of the four seasonal variables, standardized by the legacy calibration standard
+deviation. Filled points mark the cells of the two CCA constraints that qualify as directional change
+(beyond 50% of the variable's maximum, with at least 8 of 10 phases agreeing in direction). The
+periods are classified from these points. Winter temperature and winter precipitation are shown for
+context. Brackets at the left give each variable's stability range. (B) Fire frequency as in
+Figure 2C.
+
+# Fire dynamics
+
+## Appendix S2. Reconstruction of fire histories
+
+### S2.1 Holocene charcoal records
+
+For MORA, we reconstructed Holocene fire activity using the Sunrise Lake, Shadow Lake, and Little
+Sunrise Lake macrocharcoal records from Walsh et al. (2017). These records provide evidence of
+regional fire activity on Sunrise Ridge and are independent of the Jay Bath, Log Wallow, and
+Reflection Pond records used to reconstruct vegetation. For NOCA, we reconstructed Holocene fire
+activity using the Panther Potholes macrocharcoal record of Prichard et al. (2009), extracted from
+the archived Neotoma record and dated with the Panther Potholes chronology of Appendix S1. Thus,
+at NOCA fire and vegetation records share the same core and chronology.
+
+### S2.2 Identification of individual fire events
+
+We reconstructed the fire-event detection analyses of Walsh et al. (2017) and Prichard et al.
+(2009) within a common workflow implemented with the R package tapas
+(`R/pipeline/08_fire_records.R`). CHAR was interpolated to regular intervals, its slowly varying
+background estimated by robust LOWESS, and candidate fire events identified where the residual
+peak component exceeded a record-specific threshold of the background noise. Candidates were
+screened with a 75-year minimum-count test (p ≤ 0.05), and consecutive exceedances were treated as
+one event. Record-specific settings are given in Table S2.1.
+
+```{r table-s2-1}
+events = read_output('holocene_fire_source_events.csv') |> count(lake, name = 'Accepted fire events')
+read_output('holocene_fire_source_settings.csv') |>
+  left_join(events, by = 'lake') |>
+  transmute(Site = site, `Fire record` = if_else(lake == 'PantherPotholes', 'Panther Potholes', lake),
+    `Interpolation interval (years)` = interpolation_years,
+    `Background window (years)` = smoothing_years,
+    `Peak threshold` = paste0(100 * threshold_probability, '%'), `Accepted fire events`) |>
+  show_table('table_S2_1_fire_detection_parameters',
+    caption = paste('**Table S2.1. Parameters used to reconstruct individual Holocene fire events.**',
+      'All records were also screened with the same 75-year minimum-count test (p ≤ 0.05).',
+      'MORA settings follow Walsh et al. (2017) and Panther Potholes settings Prichard et al. (2009),',
+      'except its 12-year interpolation interval, the median resolution of our updated chronology.'))
+```
+
+```{r fig-s11-fire-events}
+show_figure('report/figures/supplementary/figS11_fire_event_detection.pdf')
+```
+
+**Fig. S11. Identification of Holocene fire events in the four records.** The residual peak
+component is the difference between interpolated charcoal accumulation rates (CHAR) and the
+background estimated with the record's robust LOWESS window. Candidate events exceed the local
+noise threshold (dashed line) and are then screened with a 75-year minimum-count test
+(p ≤ 0.05): filled circles are accepted events, red crosses rejected candidates. The manuscript
+example is Little Sunrise Lake (lower left; 500-year background, 95th percentile).
+
+### S2.3 Fire frequency
+
+We counted the accepted events of each record within centred 1,000-year windows evaluated every 100
+years and expressed them as events per 1,000 years. The MORA series is the mean of the three Sunrise
+Ridge records wherever at least two cover the date, the NOCA series is the Panther Potholes record
+(`R/pipeline/11_climate_eras_fire_frequency.R`). Figure 2C shows both, each park on its own axis,
+because the records' different resolutions make their frequencies incomparable between the parks. No
+high-fire periods are classified: an earlier version marked periods above the park's median plus one
+robust standard deviation, but no model used them, and the frequency itself is shown instead.
+
+### S2.4 Reproducibility against the original studies
+
+We compared the number of events identified by tapas with those reported by Walsh et al. (2017)
+and Prichard et al. (2009), and additionally reproduced the MORA analyses with CharAnalysis R
+2.0.3 (Table S2.2). Event counts differed from the published values, including with CharAnalysis,
+suggesting that discrepancies arise partly from differences between software implementations. We
+retained tapas for one consistent detection procedure across all four records, preserving their
+source-specific settings rather than tuning parameters to reproduce published counts.
+
+```{r table-s2-2}
+# Published Panther Potholes total: Prichard et al. (2009), as in the Supporting Information draft.
+PRICHARD_2009_PUBLISHED_EVENTS = 59L
+mora = read_output('walsh_charanalysis_software_comparison.csv') |>
+  transmute(Site = 'MORA', Lake = sub(' Lake$', '', lake), Published = published_total_episodes,
+    `CharAnalysis R 2.0.3` = official_r_episodes, tapas = tapas_episodes)
+noca = tibble(Site = 'NOCA', Lake = 'Panther Potholes', Published = PRICHARD_2009_PUBLISHED_EVENTS,
+  `CharAnalysis R 2.0.3` = NA_real_, tapas = events$`Accepted fire events`[events$lake == 'PantherPotholes'])
+difference = function(t, p) sprintf('%+d (%+.0f%%)', as.integer(t - p), 100 * (t - p) / p)
+rows = bind_rows(
+  mora |> arrange(match(Lake, c('Sunrise', 'Shadow', 'Little Sunrise'))),
+  mora |> summarise(Site = 'MORA total', Lake = '', across(c(Published, `CharAnalysis R 2.0.3`, tapas), sum)),
+  noca,
+  bind_rows(mora, noca) |> summarise(Site = 'Both sites', Lake = '', Published = sum(Published),
+    `CharAnalysis R 2.0.3` = NA_real_, tapas = sum(tapas))) |>
+  mutate(`Difference from published` = difference(tapas, Published))
+show_table(rows, 'table_S2_2_fire_event_counts', digits = 0,
+  caption = paste('**Table S2.2. Holocene fire-event counts reported in the original studies and',
+    'reconstructed with CharAnalysis R 2.0.3 (MORA only) and tapas (all four records).**'))
+```
+
+`r details_link('04_fire', 'Fire details')` (per-record detection, CharAnalysis reproduction,
+modern fire assignment of the survey plots).
+
+## Fire records and the vegetation lakes
+
+```{r fig-s12-charcoal}
+show_figure('report/figures/supplementary/figS12_charcoal_walsh_dunwiddie.pdf')
+cc = read_output('figures/charcoal_dunwiddie_walsh_correlations.csv')
+cm = read_output('figures/charcoal_dunwiddie_walsh_event_matching.csv')
+cr = function(rec, what) { x = cc[cc$record == rec & cc$against == what, ]; sprintf('%+.2f (p = %.2f)', x$rho, x$p_shift) }
+acc = 'Walsh charcoal accumulation (mean of three cores)'; frq = 'Walsh fire frequency (mean of three cores)'
+bench = cc[cc$against == 'Walsh core against core', ]
+```
+
+**Fig. S12. Charcoal of the Walsh et al. (2017) Sunrise Ridge cores against the charcoal of the MORA
+vegetation lakes (Dunwiddie).** The MORA fire values of the analysis come from the three Sunrise Ridge
+cores, while the vegetation records come from Jay Bath, Log Wallow and Reflection Pond. The upper three
+rows show each Sunrise Ridge core's charcoal accumulation rate (grey) with its background (dashed) and
+the fire events accepted by tapas (dark red triangles). The lower three rows show the charcoal fragments
+counted in each Dunwiddie macrofossil sample. They are a concentration, since all samples of a core had
+the same volume, and the samples above each lake's 75th percentile are filled. Every Walsh event is
+carried as a faint line through all rows. Time runs from 7,000 cal BP to the present, the span of the
+Dunwiddie records. The two kinds of record follow opposite long-term courses: the Sunrise Ridge cores
+hold most of their charcoal and events in the last 3,500 years, while Jay Bath and Log Wallow hold most
+of theirs before 4,000 cal BP. Correlated over `r unique(cc$bins)[1]` bins of 500 years with the mean of
+the three cores (Spearman, p from circular shifts that keep each record's autocorrelation, so that the
+smallest possible p is about 0.07), Jay Bath gives `r cr('Jay Bath', acc)` with the charcoal accumulation
+and `r cr('Jay Bath', frq)` with the fire frequency, Log Wallow `r cr('Log Wallow', acc)` and
+`r cr('Log Wallow', frq)`, and Reflection Pond `r cr('Reflection Pond', acc)` and
+`r cr('Reflection Pond', frq)`. The Sunrise Ridge cores agree only weakly with one another
+(`r paste(sprintf('%s %+.2f', bench$record, bench$rho), collapse = ', ')`). A Dunwiddie peak lies within
+200 years of `r sprintf('%.0f', 100 * cm$matched[cm$record == 'Jay Bath'])`%,
+`r sprintf('%.0f', 100 * cm$matched[cm$record == 'Log Wallow'])`% and
+`r sprintf('%.0f', 100 * cm$matched[cm$record == 'Reflection Pond'])`% of the `r cm$walsh_events[1]` Walsh
+events at Jay Bath, Log Wallow and Reflection Pond, against
+`r sprintf('%.0f', 100 * cm$chance[cm$record == 'Jay Bath'])`%,
+`r sprintf('%.0f', 100 * cm$chance[cm$record == 'Log Wallow'])`% and
+`r sprintf('%.0f', 100 * cm$chance[cm$record == 'Reflection Pond'])`% expected by chance. The Sunrise Ridge
+record therefore gives no evidence of the fire history at the vegetation lakes, and the MORA fire values
+should be read as regional at best. The Dunwiddie values are concentrations, not accumulation rates, so
+a change in sedimentation rate could shape part of their long-term course. Script:
+[`R/figures/supp_charcoal_dunwiddie_walsh.R`](R/figures/supp_charcoal_dunwiddie_walsh.R).
+
+## Fire between the two surveys
+
+In the Anthropocene a plot pair counts as burned when a fire falls between its two surveys. At MORA
+this comes from the National Park Service LandTrendr landscape-change polygons of 1987 to 2017 (a
+fire polygon within 100 m of the plot), at NOCA from the assignment of Wilson et al. (2024). Of the
+plot pairs in the analysis, `r sa_n('MORA', 'burned')` at MORA and `r sa_n('NOCA', 'burned')` at NOCA
+burned (Fig. S1, Figure 2C). The two MORA plots that burned are left out of the analysis, so the
+Anthropocene fire comparison is a NOCA comparison.
+
+# Climate–community space
+
+One CCA is fitted to the legacy composition of the `r cca_value('calibration_plots')` matched
+plots (MORA and NOCA pooled), constrained by the climate variables above (scaling 1, Hill = FALSE).
+Resurvey plots and Holocene samples are projected into it: their climate gives a predicted (LC)
+position and their composition an observed (WA) position.
 
 **What and why.** The four seasonal variables come in two tightly linked pairs: spring and winter
 temperature, and summer and winter precipitation. Inside a pair the CCA cannot tell the two
@@ -125,6 +646,35 @@ either park is outside it. The display rotation turns the plane by
 increasing to the right and rotated axis 2 summer precipitation increasing upward. The pipeline
 asserts that mismatch, lag, turnover, pace and direction are identical before and after this rotation.
 
+**Choice of CCA constraints.** Candidate variables are screened by their correlations (Fig. S8)
+and by their variance inflation in the fitted CCA, keeping one temperature and one precipitation
+variable. With the four seasonal variables MSpT, MWT, SP and WP, the two temperatures had variance
+inflation factors near 30 and opposite-signed coefficients that are not identifiable. The CCA is
+therefore constrained by spring temperature, the temperature that changes most through the
+Holocene, and summer precipitation. Figures in the CCA plane are rotated rigidly by the varimax
+angle so that the two arrows lie along the axes; distances and angles, and therefore every
+tracking metric, are unchanged by the rotation (decision of 2026-11-09 in
+`r details_link('10_decisions', 'Decisions')`). The constraints of this build:
+
+```{r cca-vif}
+read_output('cca_climate_contributions.csv') |>
+  transmute(Variable = variable, Label = variable_label, VIF, `CCA1 score` = CCA1, `CCA2 score` = CCA2) |>
+  show_table('cca_constraint_vif', digits = 2)
+```
+
+```{r cca-axes}
+read_output('cca_axes.csv') |>
+  transmute(Axis = axis, Eigenvalue = eigenvalue, `% total inertia` = percent_total_inertia,
+    `% constrained inertia` = percent_constrained_inertia) |>
+  show_table('cca_axes', caption = sprintf('**CCA axes.** Constrained inertia: %.1f%% of the total.',
+    as.numeric(cca_value('constrained_percent'))))
+read_output('cca_anova.csv') |>
+  transmute(Test = test, Component = component, df, `Pseudo-F` = pseudo_F,
+    `p (unrestricted)` = p_unrestricted, `p (within parks)` = p_within_parks) |>
+  show_table('cca_permutation_tests', caption = paste('**Permutation tests** (9,999 permutations,',
+    'unrestricted and restricted within parks).'))
+```
+
 ```{r fig-3-main}
 show_figure('report/figures/main/fig_cca_trajectories.pdf')
 spans3 = read_output('figures/cca_trajectory_holocene_spans.csv')
@@ -138,7 +688,7 @@ than an equal share of the constrained inertia (100% divided by the `r nrow(read
 `r sprintf('%.0f%%', sum(sp3$percent_constrained_inertia[sp3$percent_constrained_inertia > 100 / nrow(sp3)]))` of it (vectors from the centre,
 shaded from light to dark by their share, with the percentage of legacy plots in which each occurs), and the two
 climate constraints (bold arrows) of the CCA fitted on `r cca_value('calibration_plots')` legacy plots. All taxa are
-shown in Fig. A3. (B) Observed (dark colours) and
+shown in Fig. S13. (B) Observed (dark colours) and
 climate-predicted (light colours) movement of each park: in the Holocene from the first to the last
 climate period with samples, in the Anthropocene from the legacy survey to the resurvey (averaged over
 `r n_group('Anthropocene', 'MORA')` MORA and `r n_group('Anthropocene', 'NOCA')` NOCA plot pairs). The MORA arrows run
@@ -152,7 +702,14 @@ of period centroids at MORA and NOCA, observed and predicted, each period named 
 centroid (C, climate-change period, S, stability period). Each centroid averages the sampled centuries
 of each lake within the period, with the lakes weighted equally. Axes orthogonally rotated (varimax,
 `r sprintf('%.1f', rot$angle_degrees)` degrees) for display, so that axis 1 follows spring temperature and axis 2
-summer precipitation. All metrics are rotation-invariant. The unrotated biplot is Fig. A3.
+summer precipitation. All metrics are rotation-invariant. The unrotated biplot is Fig. S13.
+
+```{r fig-s13-unrotated}
+show_figure('report/figures/supplementary/figS13_cca_biplot_unrotated.pdf', width = '70%')
+```
+
+**Fig. S13. Unrotated CCA biplot.** As Figure 3A on the unrotated axes, labelled with their share of
+the total inertia, with all taxa.
 
 Stages and helpers: [`R/pipeline/10_cca.R`](R/pipeline/10_cca.R),
 [`R/helpers/cca_report.R`](R/helpers/cca_report.R) (screening and add-back test),
@@ -160,80 +717,17 @@ Stages and helpers: [`R/pipeline/10_cca.R`](R/pipeline/10_cca.R),
 [`R/pipeline/12_tracking.R`](R/pipeline/12_tracking.R) (rotation check),
 [`R/figures/main_fig3_cca_trajectories.R`](R/figures/main_fig3_cca_trajectories.R).
 
-# Step 1. Climate periods
+`r details_link('06_cca', 'CCA details')` (full model output, species and climate contributions,
+scaling 1 against scaling 2).
 
-**What and why.** The Holocene is cut into climate-change (C) periods, when the park-average
-climate of the lakes moved steadily in one direction, and stability (S) periods between them. The
-rules of the climate-era step are unchanged. Only their input changed: the periods are now drawn
-from the two CCA variables, MSpT and SP, so that the periods describe change along the same
-climate axes that the CCA uses. A climate-change period that contains a long internal trough of
-low change is split into sub-periods (a, b, c). Each period, or sub-period, is one unit for the
-lake-periods of the next step.
-
-**Result.**
-
-```{r step1-periods}
-comparison = read_output('holocene_period_comparison.csv')
-comparison |> transmute(Catalog = catalog, Period = period, Type = period_type,
-    `Older (cal BP)` = older_cal_bp, `Younger (cal BP)` = younger_cal_bp,
-    `Duration (years)` = duration_years, Drivers = gsub(';', ', ', coalesce(drivers, ''))) |>
-  show_table('step1_periods', caption = paste('**Climate periods** drawn from MSpT and SP (used from',
-    'Step 1 on) and, by the same rules, from all four seasonal variables (the periods before Step 0).'))
-periods = comparison |> filter(startsWith(catalog, 'MSpT'))
-```
-
-With MSpT and SP the Holocene from `r max(periods$older_cal_bp)` to `r min(periods$younger_cal_bp)`
-cal BP falls into `r sum(periods$period_type == 'Holocene-C')` climate-change periods and
-`r sum(periods$period_type == 'Holocene-S')` stability periods, and no climate-change period is
-split. The first four-variable climate-change period (C1a to C1c, 9600 to 7200 cal BP) becomes C1,
-S1 and C2: its middle part (8600 to 8200 cal BP) was driven by winter wetting alone, which is no
-longer a constraint. From 7200 cal BP onward every boundary is unchanged, and the periods are
-renumbered.
-
-```{r fig-2-main}
-show_figure('report/figures/main/fig_climate_levels_eras_fire.pdf')
-rates2 = read_output('figures/anthropocene_climate_rates.csv')
-r2 = function(v, park) { x = rates2[rates2$variable == v & rates2$site == park, ]
-  if (v == 'SP') sprintf('%+.0f mm (%+.1f SD)', x$rate, x$z_rate) else sprintf('%+.2f °C (%+.1f SD)', x$rate, x$z_rate) }
-```
-
-**Figure 2. Holocene climate and fire.** (A) Spring temperature (°C) and (B) summer
-precipitation (mm), the two CCA constraints, averaged over the lakes of each park with the two parks
-weighted equally (CHELSA-TraCE21k). Bold lines are 1,000-year running means and thin lines the
-centennial series. Shading marks the climate-change (C) and stability (S) periods, with the change
-that drove each climate-change period written below its name (cooling or warming of spring temperature, drying or
-wetting of summer precipitation). Labels linked to the bold lines give the change per century over a period for each
-variable that drove it. A cross marks the largest step between two consecutive centuries, labelled with its rate. To the right of each panel, the Anthropocene change per century from
-the legacy to the resurvey climate window, the median over plots in each park: spring temperature
-`r sprintf('%+.2f', rates2$rate[rates2$variable == 'MSpT' & rates2$site == 'MORA'])` °C at MORA and
-`r sprintf('%+.2f', rates2$rate[rates2$variable == 'MSpT' & rates2$site == 'NOCA'])` °C at NOCA, summer precipitation
-`r sprintf('%+.1f', rates2$rate[rates2$variable == 'SP' & rates2$site == 'MORA'])` mm at MORA and
-`r sprintf('%+.1f', rates2$rate[rates2$variable == 'SP' & rates2$site == 'NOCA'])` mm at NOCA. These come from a change
-over about 29 years, while each Holocene rate spans a whole period of 400 to 2,700 years. (C) Fire
-frequency of each park: accepted fire events per 1,000 years, counted in a 1,000-year window centred
-every 100 years. At MORA it is the mean of the three Sunrise Ridge cores of Walsh et al. (2017) wherever
-at least two cover the date, at NOCA the Panther Potholes core (Prichard et al. 2009). The two parks are
-on different y axes because their frequencies are not comparable: Panther Potholes is resampled every 12
-years and the Sunrise Ridge cores every 42 to 48 years, and a finer record resolves more events. The
-MORA cores lie on Sunrise Ridge, away from the vegetation lakes (Fig. A4). The models do not use this
-curve: their fire activity counts the same accepted events between the two ends of each lake-period,
-per century and per covered core (Step 4). To the right, the Anthropocene plot pairs of each park that
-burned between the two surveys (MORA's two burned plots are left out of the analysis).
-
-Stages and helpers: [`R/pipeline/11_climate_eras_fire_frequency.R`](R/pipeline/11_climate_eras_fire_frequency.R),
-[`R/helpers/holocene_climate_fire_era_functions.R`](R/helpers/holocene_climate_fire_era_functions.R),
-[`R/figures/main_fig2_climate_eras_fire.R`](R/figures/main_fig2_climate_eras_fire.R).
-
-# Steps 1 to 4. Lake-periods and their responses
-
-## Positions per sampled century
+## Holocene samples in the CCA plane
 
 **What and why.** Each macrofossil sample has an observed position in the CCA plane (its WA score,
 from the taxa it contains). Each lake also has a climate-predicted position for every century
 (its LC score, from that lake's own climate cell). Samples are dated by the median of their Bacon
 ages and grouped by century. The observed position of a century is the centroid of its samples'
 WA positions. No vegetation is interpolated between sampled centuries. These century positions
-feed the lake-periods below and the period centroids of Figure 3. No model is fitted on the
+feed the lake-periods (Climate–community lags) and the period centroids of Figure 3. No model is fitted on the
 century steps any more.
 
 ```{r step1-positions}
@@ -251,6 +745,8 @@ Panther Potholes (NOCA) covers the whole Holocene with several samples per centu
 Stages and helpers: [`R/pipeline/12_tracking.R`](R/pipeline/12_tracking.R),
 [`R/helpers/century_tracking.R`](R/helpers/century_tracking.R),
 [`R/helpers/tracking_metrics.R`](R/helpers/tracking_metrics.R).
+
+# Climate–community lags (Q1)
 
 ## Lake-periods
 
@@ -309,7 +805,269 @@ Stages and helpers: [`R/pipeline/12_tracking.R`](R/pipeline/12_tracking.R),
 [`R/helpers/century_tracking.R`](R/helpers/century_tracking.R) (fire per interval),
 [`R/tests/test_lake_periods.R`](R/tests/test_lake_periods.R).
 
-# Step 5. What goes with lag rate, pace and direction in the Holocene
+## Holocene against Anthropocene
+
+**What and why.** Each response is compared between the Holocene stability periods, the
+Holocene climate-change periods and the Anthropocene, within each park. The two Holocene types
+are never pooled, so back-and-forth change in the stability periods cannot cancel the directional
+change of the climate-change periods, and the parks are never pooled. The Holocene rows are the
+lake-periods and the Anthropocene rows are the plot pairs, in one model per response with
+group-specific residual spread, the endpoint weights and the AR(1) within each lake. Fire stays
+out of these models, because it is measured differently in the two eras. Rates over a few decades
+and over centuries are not on equal footing, since longer windows give lower rates, and every
+comparison states both time spans. The three contrasts between period types in each park are tested
+together for both parks, so each response has six contrasts, and their p-values are Holm-adjusted
+within that family. Significance is read from the adjusted p-values. The intervals are the unadjusted
+95% intervals.
+
+**How it is calculated.**
+
+```{r q1-code}
+code_snippet('R/pipeline/13_era_models.R', 'era-model')
+```
+
+**Result.**
+
+```{r step5a-results}
+era_dir = 'era_comparison'
+means = read_output(file.path(era_dir, 'era_means.csv'))
+contrasts = read_output(file.path(era_dir, 'era_contrasts.csv'))
+folds = read_output(file.path(era_dir, 'era_folds.csv'))
+durations = read_output(file.path(era_dir, 'era_durations.csv'))
+response_label = c(climate_rate = 'Climate change rate', climate_change = 'Climate change (not divided by time)',
+  pace_effect_total = 'Pace effect (not divided by time)', direction_effect_total = 'Direction effect (not divided by time)',
+  turnover_rate = 'Turnover rate',
+  displacement = 'Displacement (turnover, not divided by time)', lag_rate = 'Lag rate', lag = 'Lag',
+  pace_effect = 'Pace effect', direction_effect = 'Direction effect')
+span = function(type) { d = durations[durations$period_type == type, ]; sprintf('%g to %g', min(d$duration_min), max(d$duration_max)) }
+spans = sprintf(paste('Holocene-C lake-periods span %s years, Holocene-S lake-periods %s years, and the',
+  'Anthropocene plot pairs %s years.'), span('Holocene-C'), span('Holocene-S'), span('Anthropocene'))
+means |> transmute(Response = response_label[response], Park = site, `Period type` = period_type, n,
+    `Fitted mean` = estimate, `95% CI` = sprintf('%.3f to %.3f', conf_low, conf_high)) |>
+  show_table('step5a_era_means', caption = paste('**Fitted means by period type and park.** Climate change',
+    'rate in calibration SD per century, the climate change in calibration SD, the displacement, the lag and the',
+    'effect totals in CCA distance, the other responses in CCA distance per century.', spans))
+contrasts |> transmute(Response = response_label[response], Park = site, Contrast = contrast,
+    Estimate = estimate, `95% CI` = sprintf('%.3f to %.3f', conf_low, conf_high), p = p_value,
+    `p (Holm)` = p_adjusted) |>
+  show_table('step5a_era_contrasts', caption = paste('**Contrasts between period types within each park**,',
+    'with conditional 95% confidence intervals (unadjusted). p (Holm) is adjusted across the six contrasts of',
+    'each response, three per park.', spans))
+folds |> transmute(Response = response_label[response], Park = site, `Anthropocene over` = against,
+    Fold = fold, `Quoted as speed` = ifelse(quoted_as_speed, 'yes', 'no')) |>
+  show_table('step5a_era_folds', caption = paste('**Folds**: the Anthropocene fitted mean divided by the',
+    'Holocene fitted mean of each type.', spans))
+fold = function(r, p, a) folds$fold[folds$response == r & folds$site == p & folds$against == a]
+holm_p = function(p) ifelse(p < .001, 'Holm p < 0.001', sprintf('Holm p = %.3f', p))
+ct = function(r, p, k) { x = contrasts[contrasts$response == r & contrasts$site == p & contrasts$contrast == k, ]
+  sprintf('%+.2f (%.2f to %.2f, %s)', x$estimate, x$conf_low, x$conf_high, holm_p(x$p_adjusted)) }
+```
+
+Climate changed `r sprintf('%.0f', fold('climate_rate', 'MORA', 'Holocene-C'))` times faster at MORA
+and `r sprintf('%.0f', fold('climate_rate', 'NOCA', 'Holocene-C'))` times faster at NOCA in the
+Anthropocene than in the Holocene climate-change periods. The forest turned over
+`r sprintf('%.0f', fold('turnover_rate', 'MORA', 'Holocene-C'))` times faster at MORA and
+`r sprintf('%.0f', fold('turnover_rate', 'NOCA', 'Holocene-C'))` times faster at NOCA. At MORA the lag
+grew in the Anthropocene and did not grow in either Holocene type (Anthropocene minus Holocene-C
+`r ct('lag_rate', 'MORA', 'Anthropocene - Holocene-C')`, minus Holocene-S
+`r ct('lag_rate', 'MORA', 'Anthropocene - Holocene-S')` CCA distance per century). At NOCA the lag
+rate did not differ between the period types (`r ct('lag_rate', 'NOCA', 'Anthropocene - Holocene-C')`
+against Holocene-C). Within the Holocene, the C and S lake-periods did not differ in lag, pace or
+direction in either park. `r spans`
+
+Not divided by time, the climate still shifted further in the few decades of the Anthropocene than
+over a whole Holocene lake-period (Anthropocene minus Holocene-C
+`r ct('climate_change', 'MORA', 'Anthropocene - Holocene-C')` calibration SD at MORA,
+`r ct('climate_change', 'NOCA', 'Anthropocene - Holocene-C')` at NOCA). The distance the community moved
+(the displacement) tells a different story
+from its rate. At MORA the plots moved more in a few decades than the communities of the Holocene
+climate-change periods did in centuries (Anthropocene minus Holocene-C
+`r ct('displacement', 'MORA', 'Anthropocene - Holocene-C')` CCA distance), and as much as those of the
+stability periods (`r ct('displacement', 'MORA', 'Anthropocene - Holocene-S')`). At NOCA the plots moved
+more than in the stability periods (`r ct('displacement', 'NOCA', 'Anthropocene - Holocene-S')`), while
+their difference from the climate-change periods is not significant after the adjustment
+(`r ct('displacement', 'NOCA', 'Anthropocene - Holocene-C')`).
+
+```{r fig-4-main}
+show_figure('report/figures/main/fig_era_contrasts.pdf')
+```
+
+**Figure 4. Climate change, community turnover and climate-community lag in the Holocene and the Anthropocene.**
+For each park, the fitted mean and 95% confidence interval of the Holocene stability periods (triangles), the
+Holocene climate-change periods (circles) and the Anthropocene plot pairs (diamonds). Each row shows a total between
+the two ends of a lake-period or plot pair (left) and its rate per century (right): (A) the standardized climate
+change, the distance between the climates at the two ends, and (B) its rate; (C) the observed community turnover,
+the distance the community moved in CCA space, and (D) its rate; (E) the climate-community lag, the change in
+mismatch between the two ends (M at t2 minus M at t1), and (F) its rate. The fitted mean is printed beside each
+point. B and D are on log axes, where equal distances are equal folds, and the arrow gives the fold between the
+Anthropocene and the Holocene climate-change means. A, C, E and F are on linear axes without folds. Their connectors
+link the Anthropocene to the Holocene climate-change periods (lower) and to the Holocene stability periods (upper)
+within each park, and a star marks a contrast that differs from zero (two-sided t test, Holm-adjusted p < 0.05
+across the six period-type contrasts of each response, three per park). The intervals are unadjusted. The totals in A,
+C and E build up over a whole lake-period in the Holocene and over the few decades between the two surveys in the
+Anthropocene. Means come from the model response ~ period type × site, with an
+AR(1) correlation within each lake and weights for the number of samples at each end, fitted on
+`r n_group('Holocene-C', 'MORA')` climate-change and `r n_group('Holocene-S', 'MORA')` stability lake-periods and
+`r n_group('Anthropocene', 'MORA')` plot pairs at MORA, and `r n_group('Holocene-C', 'NOCA')`, `r n_group('Holocene-S', 'NOCA')`
+and `r n_group('Anthropocene', 'NOCA')` at NOCA. `r both_spans` Longer windows give lower rates, so the rates of the
+two eras are not on equal footing. Units: the climate change rate in calibration standard deviations per century,
+the climate change in calibration standard deviations, the turnover and lag rates in CCA distance per century,
+the turnover and the lag in CCA distance.
+
+**Check: displacement and lag by lake-period duration.** Displacement and lag are totals, so a
+longer lake-period could show more of both only because it is longer. The table gives their plain
+means (no model) for the three duration classes the lake-periods fall into.
+
+```{r step5a-duration-classes}
+dc = read_output(file.path(era_dir, 'era_duration_classes.csv'))
+dc |> transmute(Park = site, Duration = duration_class, `Lake-periods` = lake_periods,
+    `Stability / climate-change` = sprintf('%d / %d', stability, climate_change),
+    Years = sprintf('%g to %g', duration_min, duration_max), `Mean displacement` = mean_displacement,
+    `Mean absolute lag` = mean_absolute_lag, `Mean lag` = mean_lag) |>
+  show_table('step5a_duration_classes', caption = paste('**Displacement and lag of the lake-periods by duration.**',
+    'Plain means over the Holocene lake-periods of each park and duration class. The displacement is the distance',
+    'the community moved in CCA space from the first to the last sampled century. The absolute lag is the size of',
+    'the change in mismatch, |M at t2 minus M at t1|, and the lag is the same change with its sign. All three are',
+    'in CCA distance and not divided by time.'))
+dd = function(p, k, v) dc[[v]][dc$site == p & dc$duration_class == k]
+```
+
+At MORA the three longest lake-periods (over 2,000 years) moved further than the shorter ones
+(mean displacement `r sprintf('%.3f', dd('MORA', 'over 2,000 years', 'mean_displacement'))` against
+`r sprintf('%.3f', dd('MORA', '200 to 400 years', 'mean_displacement'))` for 200 to 400 years and
+`r sprintf('%.3f', dd('MORA', '500 to 900 years', 'mean_displacement'))` for 500 to 900 years). At NOCA
+the displacement did not grow with duration (`r sprintf('%.3f', dd('NOCA', '200 to 400 years', 'mean_displacement'))`,
+`r sprintf('%.3f', dd('NOCA', '500 to 900 years', 'mean_displacement'))` and
+`r sprintf('%.3f', dd('NOCA', 'over 2,000 years', 'mean_displacement'))`, the last from a single
+lake-period). The absolute lag ranged from `r sprintf('%.3f', min(dc$mean_absolute_lag[dc$site == 'MORA']))` to
+`r sprintf('%.3f', max(dc$mean_absolute_lag[dc$site == 'MORA']))` at MORA and from
+`r sprintf('%.3f', min(dc$mean_absolute_lag[dc$site == 'NOCA']))` to
+`r sprintf('%.3f', max(dc$mean_absolute_lag[dc$site == 'NOCA']))` at NOCA across the classes. The displacement
+is the net movement from the first to the last century, so movement back and forth within a lake-period
+does not add to it, and it does not grow in proportion to time. The rates of the long lake-periods are
+low partly for that reason.
+
+Stages and helpers: [`R/pipeline/13_era_models.R`](R/pipeline/13_era_models.R),
+[`R/helpers/tracking_model_reporting.R`](R/helpers/tracking_model_reporting.R) (period types),
+[`R/helpers/reconstruction_models.R`](R/helpers/reconstruction_models.R),
+[`R/figures/main_fig4_era_contrasts.R`](R/figures/main_fig4_era_contrasts.R).
+
+# Pace and direction effects (Q2)
+
+**What and why.** The pace effect and the direction effect, defined with the lake-periods above, ask
+whether a lag comes from how far the community moved or from the direction it took. They are compared
+between the period types with the same era models as the lag. A joint model also fits the two effects
+of a unit together, so that they can be compared with their correlation taken into account.
+
+**How it is calculated.**
+
+```{r q2-code}
+code_snippet('R/pipeline/13_era_models.R', 'joint-correction-model')
+```
+
+**Result.**
+
+The pace and direction effects lose their era differences when they are not divided by time. At
+MORA, the per-century pace effect of the Anthropocene exceeds that of both Holocene types
+(`r ct('pace_effect', 'MORA', 'Anthropocene - Holocene-C')` against Holocene-C), and so does the
+per-century direction effect (`r ct('direction_effect', 'MORA', 'Anthropocene - Holocene-C')`). As
+totals, no contrast between the Anthropocene and a Holocene period type is significant after the
+adjustment in either park (for example MORA direction against Holocene-S
+`r ct('direction_effect_total', 'MORA', 'Anthropocene - Holocene-S')`, NOCA pace against Holocene-C
+`r ct('pace_effect_total', 'NOCA', 'Anthropocene - Holocene-C')`). At NOCA the per-century pace and
+direction effects do not differ between the eras either (pace against Holocene-C
+`r ct('pace_effect', 'NOCA', 'Anthropocene - Holocene-C')`). The Anthropocene effects are large per
+century mainly because they build up over a few decades.
+
+```{r fig-5-main}
+show_figure('report/figures/main/fig_lag_pace_direction.pdf')
+```
+
+**Figure 5. Pace effect and direction effect in the Holocene and the Anthropocene.** For each park, the fitted
+mean and 95% confidence interval of the Holocene stability periods (triangles), the Holocene climate-change periods
+(circles) and the Anthropocene (diamonds), with the fitted mean printed beside each point. Each row shows an effect
+over the whole lake-period or plot pair (left, not divided by time) and per century (right): (A) the pace effect
+and (B) its rate, (C) the direction effect and (D) its rate. The two totals share one y scale and the two rates
+another. Each effect is the lag at the end of the period minus the lag the community would have had at the
+climate-predicted pace (A, B, keeping its own direction) or in the climate-predicted direction (C, D, keeping its
+own distance). A positive effect means that the community's own pace or direction widened the lag. A negative
+effect means that it narrowed the lag. Connectors link the Anthropocene to the Holocene climate-change periods
+(lower) and to the Holocene stability periods (upper) within each park, and a star marks a contrast that differs
+from zero (two-sided t test, Holm-adjusted p < 0.05 across the six period-type contrasts of each response). Fitted means and contrasts come from the same models as Figure 4, whose
+panel F shows the lag rate. Lake-periods and plots whose observed or predicted position did not move have no pace or direction effect: the panels
+hold `r m5 = read_output('era_comparison/era_means.csv'); m5$n[m5$response == 'pace_effect' & m5$site == 'MORA' & m5$period_type == 'Holocene-C']` climate-change and `r m5$n[m5$response == 'pace_effect' & m5$site == 'MORA' & m5$period_type == 'Holocene-S']` stability lake-periods at MORA. `r both_spans` The totals are in CCA distance, the rates in CCA distance per century.
+
+**Check: sensitivity to the paleoclimate bias correction.** The primary run uses the raw
+CHELSA-TraCE21k paleoclimate. Its modern slice differs from the CHELSA V2.1 climate the CCA is
+calibrated on, by a fixed offset per lake and month for temperature and a fixed ratio for
+precipitation. [`R/sensitivity_bias_corrected.R`](R/sensitivity_bias_corrected.R) reruns stages 07 to
+15 with that difference removed (`PALEO_USE_BIAS_CORRECTED = TRUE`) into `output_bias_corrected/`,
+and leaves the primary outputs untouched. The climate periods are defined on the raw series in both
+runs, so the same lake-periods are compared. Only the climate-predicted Holocene positions change.
+The observed positions and the Anthropocene do not.
+
+```{r step5a-bias-correction}
+bias_dir = here::here('output_bias_corrected', 'comparison')
+if (file.exists(file.path(bias_dir, 'sign_counts.csv'))) {
+  bc = readr::read_csv(file.path(bias_dir, 'sign_counts.csv'), show_col_types = FALSE)
+  bc |> transmute(Response = c(lag = 'Lag', pace_effect = 'Pace effect', direction_effect = 'Direction effect')[response],
+      Park = site, `Lake-periods` = lake_periods, `Defined in both runs` = defined_in_both,
+      `Keep their sign` = keep_sign, `Change sign` = change_sign) |>
+    show_table('bias_correction_sign_counts', caption = paste('**Lake-periods that keep their sign when the',
+      'paleoclimate is bias-corrected.** A pace or direction effect is undefined where a position did not move.'))
+  readr::read_csv(file.path(bias_dir, 'lake_periods_raw_vs_corrected.csv'), show_col_types = FALSE) |>
+    show_table('bias_correction_lake_periods', caption = paste('**Lag, pace effect and direction effect of every',
+      'lake-period, raw and bias-corrected paleoclimate side by side.** Lag in CCA distance, pace and direction',
+      'effects in CCA distance per century.'))
+  era_runs = function(path) readr::read_csv(file.path(path, '13_era_models', 'era_comparison', 'era_contrasts.csv'),
+    show_col_types = FALSE) |> filter(response %in% c('lag', 'lag_rate', 'pace_effect', 'direction_effect'),
+    contrast != 'Holocene-C - Holocene-S')
+  bc_era = inner_join(era_runs(here::here('output')), era_runs(here::here('output_bias_corrected')),
+    by = c('response', 'site', 'contrast'), suffix = c('_raw', '_corrected'))
+  bc_era |> transmute(Response = response_label[response], Park = site, Contrast = contrast,
+      `Raw` = sprintf('%+.3f (%.3f to %.3f), %s', estimate_raw, conf_low_raw, conf_high_raw, holm_p(p_adjusted_raw)),
+      `Bias-corrected` = sprintf('%+.3f (%.3f to %.3f), %s', estimate_corrected, conf_low_corrected,
+        conf_high_corrected, holm_p(p_adjusted_corrected))) |>
+    show_table('bias_correction_era_contrasts', caption = paste('**Era contrasts with the raw and the',
+      'bias-corrected paleoclimate**, from the same era models, with Holm-adjusted p (six contrasts per response).',
+      'The Anthropocene values are the same in both runs.'))
+} else cat('Run Rscript R/sensitivity_bias_corrected.R to fill this check.\n')
+```
+
+```{r step5a-bias-correction-text, results = 'asis'}
+if (exists('bc')) {
+  k = function(r, p) bc[bc$response == r & bc$site == p, ]
+  kk = function(r, p) sprintf('%d of %d', k(r, p)$keep_sign, k(r, p)$defined_in_both)
+  e = function(r, p, c, run) { x = bc_era[bc_era$response == r & bc_era$site == p & bc_era$contrast == c, ]
+    sprintf('%+.3f (%s)', x[[paste0('estimate_', run)]], holm_p(x[[paste0('p_adjusted_', run)]])) }
+  cat(paste0('The result is poor at MORA. There the lag kept its sign in ', kk('lag', 'MORA'),
+    ' lake-periods and the pace effect in ', kk('pace_effect', 'MORA'), ', while the direction effect kept it in ',
+    kk('direction_effect', 'MORA'), '. At NOCA the lag kept its sign in ', kk('lag', 'NOCA'), ', the pace effect in ',
+    kk('pace_effect', 'NOCA'), ' and the direction effect in ', kk('direction_effect', 'NOCA'), '. ',
+    'The correction shifts the spring temperature of each lake by a fixed offset and scales its summer ',
+    'precipitation by a fixed ratio, so it moves the climate-predicted positions of a lake together and changes ',
+    'the mismatch at both ends of a lake-period. Most MORA Holocene lags and pace effects are small, and a small ',
+    'change in the two mismatches is enough to flip their sign. The Holocene values of each lake-period are ',
+    'therefore not robust at MORA. The era comparisons are more robust, because the Anthropocene values are far ',
+    'from the Holocene ones: the MORA lag rate, Anthropocene minus Holocene-C, is ', e('lag_rate', 'MORA',
+    'Anthropocene - Holocene-C', 'raw'), ' raw and ', e('lag_rate', 'MORA', 'Anthropocene - Holocene-C', 'corrected'),
+    ' corrected. The MORA lag contrasts change their meaning: against Holocene-C the lag goes from ',
+    e('lag', 'MORA', 'Anthropocene - Holocene-C', 'raw'), ' to ', e('lag', 'MORA', 'Anthropocene - Holocene-C',
+    'corrected'), ', and against Holocene-S from ', e('lag', 'MORA', 'Anthropocene - Holocene-S', 'raw'), ' to ',
+    e('lag', 'MORA', 'Anthropocene - Holocene-S', 'corrected'), ', the latter because the long MORA S4 lake-periods ',
+    'turn from positive to negative lags. Whether the MORA Anthropocene lag, not divided by time, exceeds the ',
+    'Holocene one therefore depends on the paleoclimate correction. The NOCA pace contrast against ',
+    'Holocene-C is ', e('pace_effect', 'NOCA', 'Anthropocene - Holocene-C', 'raw'), ' raw and ',
+    e('pace_effect', 'NOCA', 'Anthropocene - Holocene-C', 'corrected'), ' corrected.\n'))
+}
+```
+
+Stages and helpers: [`R/pipeline/13_era_models.R`](R/pipeline/13_era_models.R),
+[`R/helpers/tracking_model_reporting.R`](R/helpers/tracking_model_reporting.R) (paired AR(1) correlation),
+[`R/figures/main_fig5_lag_pace_direction.R`](R/figures/main_fig5_lag_pace_direction.R),
+[`R/sensitivity_bias_corrected.R`](R/sensitivity_bias_corrected.R).
+
+# Associations with fire (Q3)
 
 **What and why.** Within the Holocene lake-periods, does a period with more climate change, or
 more fire, end with a larger lag, and with better or worse pace and direction? Each response is
@@ -404,250 +1162,7 @@ Stages and helpers: [`R/pipeline/14_predictor_models.R`](R/pipeline/14_predictor
 [`R/helpers/reconstruction_models.R`](R/helpers/reconstruction_models.R),
 [`R/figures/main_fig6_climate_fire_associations.R`](R/figures/main_fig6_climate_fire_associations.R).
 
-# Step 5a. Holocene against Anthropocene
-
-**What and why.** Each response is compared between the Holocene stability periods, the
-Holocene climate-change periods and the Anthropocene, within each park. The two Holocene types
-are never pooled, so back-and-forth change in the stability periods cannot cancel the directional
-change of the climate-change periods, and the parks are never pooled. The Holocene rows are the
-lake-periods and the Anthropocene rows are the plot pairs, in one model per response with
-group-specific residual spread, the endpoint weights and the AR(1) within each lake. Fire stays
-out of these models, because it is measured differently in the two eras. Rates over a few decades
-and over centuries are not on equal footing, since longer windows give lower rates, and every
-comparison states both time spans. The three contrasts between period types in each park are tested
-together for both parks, so each response has six contrasts, and their p-values are Holm-adjusted
-within that family. Significance is read from the adjusted p-values. The intervals are the unadjusted
-95% intervals.
-
-**How it is calculated.**
-
-```{r step5a-code}
-code_snippet('R/pipeline/13_era_models.R', 'era-model')
-code_snippet('R/pipeline/13_era_models.R', 'joint-correction-model')
-```
-
-**Result.**
-
-```{r step5a-results}
-era_dir = 'era_comparison'
-means = read_output(file.path(era_dir, 'era_means.csv'))
-contrasts = read_output(file.path(era_dir, 'era_contrasts.csv'))
-folds = read_output(file.path(era_dir, 'era_folds.csv'))
-durations = read_output(file.path(era_dir, 'era_durations.csv'))
-response_label = c(climate_rate = 'Climate change rate', climate_change = 'Climate change (not divided by time)',
-  pace_effect_total = 'Pace effect (not divided by time)', direction_effect_total = 'Direction effect (not divided by time)',
-  turnover_rate = 'Turnover rate',
-  displacement = 'Displacement (turnover, not divided by time)', lag_rate = 'Lag rate', lag = 'Lag',
-  pace_effect = 'Pace effect', direction_effect = 'Direction effect')
-span = function(type) { d = durations[durations$period_type == type, ]; sprintf('%g to %g', min(d$duration_min), max(d$duration_max)) }
-spans = sprintf(paste('Holocene-C lake-periods span %s years, Holocene-S lake-periods %s years, and the',
-  'Anthropocene plot pairs %s years.'), span('Holocene-C'), span('Holocene-S'), span('Anthropocene'))
-means |> transmute(Response = response_label[response], Park = site, `Period type` = period_type, n,
-    `Fitted mean` = estimate, `95% CI` = sprintf('%.3f to %.3f', conf_low, conf_high)) |>
-  show_table('step5a_era_means', caption = paste('**Fitted means by period type and park.** Climate change',
-    'rate in calibration SD per century, the climate change in calibration SD, the displacement, the lag and the',
-    'effect totals in CCA distance, the other responses in CCA distance per century.', spans))
-contrasts |> transmute(Response = response_label[response], Park = site, Contrast = contrast,
-    Estimate = estimate, `95% CI` = sprintf('%.3f to %.3f', conf_low, conf_high), p = p_value,
-    `p (Holm)` = p_adjusted) |>
-  show_table('step5a_era_contrasts', caption = paste('**Contrasts between period types within each park**,',
-    'with conditional 95% confidence intervals (unadjusted). p (Holm) is adjusted across the six contrasts of',
-    'each response, three per park.', spans))
-folds |> transmute(Response = response_label[response], Park = site, `Anthropocene over` = against,
-    Fold = fold, `Quoted as speed` = ifelse(quoted_as_speed, 'yes', 'no')) |>
-  show_table('step5a_era_folds', caption = paste('**Folds**: the Anthropocene fitted mean divided by the',
-    'Holocene fitted mean of each type.', spans))
-fold = function(r, p, a) folds$fold[folds$response == r & folds$site == p & folds$against == a]
-holm_p = function(p) ifelse(p < .001, 'Holm p < 0.001', sprintf('Holm p = %.3f', p))
-ct = function(r, p, k) { x = contrasts[contrasts$response == r & contrasts$site == p & contrasts$contrast == k, ]
-  sprintf('%+.2f (%.2f to %.2f, %s)', x$estimate, x$conf_low, x$conf_high, holm_p(x$p_adjusted)) }
-```
-
-Climate changed `r sprintf('%.0f', fold('climate_rate', 'MORA', 'Holocene-C'))` times faster at MORA
-and `r sprintf('%.0f', fold('climate_rate', 'NOCA', 'Holocene-C'))` times faster at NOCA in the
-Anthropocene than in the Holocene climate-change periods. The forest turned over
-`r sprintf('%.0f', fold('turnover_rate', 'MORA', 'Holocene-C'))` times faster at MORA and
-`r sprintf('%.0f', fold('turnover_rate', 'NOCA', 'Holocene-C'))` times faster at NOCA. At MORA the lag
-grew in the Anthropocene and did not grow in either Holocene type (Anthropocene minus Holocene-C
-`r ct('lag_rate', 'MORA', 'Anthropocene - Holocene-C')`, minus Holocene-S
-`r ct('lag_rate', 'MORA', 'Anthropocene - Holocene-S')` CCA distance per century). At NOCA the lag
-rate did not differ between the period types (`r ct('lag_rate', 'NOCA', 'Anthropocene - Holocene-C')`
-against Holocene-C). Within the Holocene, the C and S lake-periods did not differ in lag, pace or
-direction in either park. `r spans`
-
-Not divided by time, the climate still shifted further in the few decades of the Anthropocene than
-over a whole Holocene lake-period (Anthropocene minus Holocene-C
-`r ct('climate_change', 'MORA', 'Anthropocene - Holocene-C')` calibration SD at MORA,
-`r ct('climate_change', 'NOCA', 'Anthropocene - Holocene-C')` at NOCA). The distance the community moved
-(the displacement) tells a different story
-from its rate. At MORA the plots moved more in a few decades than the communities of the Holocene
-climate-change periods did in centuries (Anthropocene minus Holocene-C
-`r ct('displacement', 'MORA', 'Anthropocene - Holocene-C')` CCA distance), and as much as those of the
-stability periods (`r ct('displacement', 'MORA', 'Anthropocene - Holocene-S')`). At NOCA the plots moved
-more than in the stability periods (`r ct('displacement', 'NOCA', 'Anthropocene - Holocene-S')`), while
-their difference from the climate-change periods is not significant after the adjustment
-(`r ct('displacement', 'NOCA', 'Anthropocene - Holocene-C')`).
-The pace and direction effects lose their era differences when they are not divided by time. At
-MORA, the per-century pace effect of the Anthropocene exceeds that of both Holocene types
-(`r ct('pace_effect', 'MORA', 'Anthropocene - Holocene-C')` against Holocene-C), and so does the
-per-century direction effect (`r ct('direction_effect', 'MORA', 'Anthropocene - Holocene-C')`). As
-totals, no contrast between the Anthropocene and a Holocene period type is significant after the
-adjustment in either park (for example MORA direction against Holocene-S
-`r ct('direction_effect_total', 'MORA', 'Anthropocene - Holocene-S')`, NOCA pace against Holocene-C
-`r ct('pace_effect_total', 'NOCA', 'Anthropocene - Holocene-C')`). At NOCA the per-century pace and
-direction effects do not differ between the eras either (pace against Holocene-C
-`r ct('pace_effect', 'NOCA', 'Anthropocene - Holocene-C')`). The Anthropocene effects are large per
-century mainly because they build up over a few decades.
-
-```{r fig-4-main}
-show_figure('report/figures/main/fig_era_contrasts.pdf')
-```
-
-**Figure 4. Climate change, community turnover and climate-community lag in the Holocene and the Anthropocene.**
-For each park, the fitted mean and 95% confidence interval of the Holocene stability periods (triangles), the
-Holocene climate-change periods (circles) and the Anthropocene plot pairs (diamonds). Each row shows a total between
-the two ends of a lake-period or plot pair (left) and its rate per century (right): (A) the standardized climate
-change, the distance between the climates at the two ends, and (B) its rate; (C) the observed community turnover,
-the distance the community moved in CCA space, and (D) its rate; (E) the climate-community lag, the change in
-mismatch between the two ends (M at t2 minus M at t1), and (F) its rate. The fitted mean is printed beside each
-point. B and D are on log axes, where equal distances are equal folds, and the arrow gives the fold between the
-Anthropocene and the Holocene climate-change means. A, C, E and F are on linear axes without folds. Their connectors
-link the Anthropocene to the Holocene climate-change periods (lower) and to the Holocene stability periods (upper)
-within each park, and a star marks a contrast that differs from zero (two-sided t test, Holm-adjusted p < 0.05
-across the six period-type contrasts of each response, three per park). The intervals are unadjusted. The totals in A,
-C and E build up over a whole lake-period in the Holocene and over the few decades between the two surveys in the
-Anthropocene. Means come from the model response ~ period type × site, with an
-AR(1) correlation within each lake and weights for the number of samples at each end, fitted on
-`r n_group('Holocene-C', 'MORA')` climate-change and `r n_group('Holocene-S', 'MORA')` stability lake-periods and
-`r n_group('Anthropocene', 'MORA')` plot pairs at MORA, and `r n_group('Holocene-C', 'NOCA')`, `r n_group('Holocene-S', 'NOCA')`
-and `r n_group('Anthropocene', 'NOCA')` at NOCA. `r both_spans` Longer windows give lower rates, so the rates of the
-two eras are not on equal footing. Units: the climate change rate in calibration standard deviations per century,
-the climate change in calibration standard deviations, the turnover and lag rates in CCA distance per century,
-the turnover and the lag in CCA distance.
-
-```{r fig-5-main}
-show_figure('report/figures/main/fig_lag_pace_direction.pdf')
-```
-
-**Figure 5. Pace effect and direction effect in the Holocene and the Anthropocene.** For each park, the fitted
-mean and 95% confidence interval of the Holocene stability periods (triangles), the Holocene climate-change periods
-(circles) and the Anthropocene (diamonds), with the fitted mean printed beside each point. Each row shows an effect
-over the whole lake-period or plot pair (left, not divided by time) and per century (right): (A) the pace effect
-and (B) its rate, (C) the direction effect and (D) its rate. The two totals share one y scale and the two rates
-another. Each effect is the lag at the end of the period minus the lag the community would have had at the
-climate-predicted pace (A, B, keeping its own direction) or in the climate-predicted direction (C, D, keeping its
-own distance). A positive effect means that the community's own pace or direction widened the lag. A negative
-effect means that it narrowed the lag. Connectors link the Anthropocene to the Holocene climate-change periods
-(lower) and to the Holocene stability periods (upper) within each park, and a star marks a contrast that differs
-from zero (two-sided t test, Holm-adjusted p < 0.05 across the six period-type contrasts of each response). Fitted means and contrasts come from the same models as Figure 4, whose
-panel F shows the lag rate. Lake-periods and plots whose observed or predicted position did not move have no pace or direction effect: the panels
-hold `r m5 = read_output('era_comparison/era_means.csv'); m5$n[m5$response == 'pace_effect' & m5$site == 'MORA' & m5$period_type == 'Holocene-C']` climate-change and `r m5$n[m5$response == 'pace_effect' & m5$site == 'MORA' & m5$period_type == 'Holocene-S']` stability lake-periods at MORA. `r both_spans` The totals are in CCA distance, the rates in CCA distance per century.
-
-**Check: displacement and lag by lake-period duration.** Displacement and lag are totals, so a
-longer lake-period could show more of both only because it is longer. The table gives their plain
-means (no model) for the three duration classes the lake-periods fall into.
-
-```{r step5a-duration-classes}
-dc = read_output(file.path(era_dir, 'era_duration_classes.csv'))
-dc |> transmute(Park = site, Duration = duration_class, `Lake-periods` = lake_periods,
-    `Stability / climate-change` = sprintf('%d / %d', stability, climate_change),
-    Years = sprintf('%g to %g', duration_min, duration_max), `Mean displacement` = mean_displacement,
-    `Mean absolute lag` = mean_absolute_lag, `Mean lag` = mean_lag) |>
-  show_table('step5a_duration_classes', caption = paste('**Displacement and lag of the lake-periods by duration.**',
-    'Plain means over the Holocene lake-periods of each park and duration class. The displacement is the distance',
-    'the community moved in CCA space from the first to the last sampled century. The absolute lag is the size of',
-    'the change in mismatch, |M at t2 minus M at t1|, and the lag is the same change with its sign. All three are',
-    'in CCA distance and not divided by time.'))
-dd = function(p, k, v) dc[[v]][dc$site == p & dc$duration_class == k]
-```
-
-At MORA the three longest lake-periods (over 2,000 years) moved further than the shorter ones
-(mean displacement `r sprintf('%.3f', dd('MORA', 'over 2,000 years', 'mean_displacement'))` against
-`r sprintf('%.3f', dd('MORA', '200 to 400 years', 'mean_displacement'))` for 200 to 400 years and
-`r sprintf('%.3f', dd('MORA', '500 to 900 years', 'mean_displacement'))` for 500 to 900 years). At NOCA
-the displacement did not grow with duration (`r sprintf('%.3f', dd('NOCA', '200 to 400 years', 'mean_displacement'))`,
-`r sprintf('%.3f', dd('NOCA', '500 to 900 years', 'mean_displacement'))` and
-`r sprintf('%.3f', dd('NOCA', 'over 2,000 years', 'mean_displacement'))`, the last from a single
-lake-period). The absolute lag ranged from `r sprintf('%.3f', min(dc$mean_absolute_lag[dc$site == 'MORA']))` to
-`r sprintf('%.3f', max(dc$mean_absolute_lag[dc$site == 'MORA']))` at MORA and from
-`r sprintf('%.3f', min(dc$mean_absolute_lag[dc$site == 'NOCA']))` to
-`r sprintf('%.3f', max(dc$mean_absolute_lag[dc$site == 'NOCA']))` at NOCA across the classes. The displacement
-is the net movement from the first to the last century, so movement back and forth within a lake-period
-does not add to it, and it does not grow in proportion to time. The rates of the long lake-periods are
-low partly for that reason.
-
-**Check: sensitivity to the paleoclimate bias correction.** The primary run uses the raw
-CHELSA-TraCE21k paleoclimate. Its modern slice differs from the CHELSA V2.1 climate the CCA is
-calibrated on, by a fixed offset per lake and month for temperature and a fixed ratio for
-precipitation. [`R/sensitivity_bias_corrected.R`](R/sensitivity_bias_corrected.R) reruns stages 07 to
-15 with that difference removed (`PALEO_USE_BIAS_CORRECTED = TRUE`) into `output_bias_corrected/`,
-and leaves the primary outputs untouched. The climate periods are defined on the raw series in both
-runs, so the same lake-periods are compared. Only the climate-predicted Holocene positions change.
-The observed positions and the Anthropocene do not.
-
-```{r step5a-bias-correction}
-bias_dir = here::here('output_bias_corrected', 'comparison')
-if (file.exists(file.path(bias_dir, 'sign_counts.csv'))) {
-  bc = readr::read_csv(file.path(bias_dir, 'sign_counts.csv'), show_col_types = FALSE)
-  bc |> transmute(Response = c(lag = 'Lag', pace_effect = 'Pace effect', direction_effect = 'Direction effect')[response],
-      Park = site, `Lake-periods` = lake_periods, `Defined in both runs` = defined_in_both,
-      `Keep their sign` = keep_sign, `Change sign` = change_sign) |>
-    show_table('bias_correction_sign_counts', caption = paste('**Lake-periods that keep their sign when the',
-      'paleoclimate is bias-corrected.** A pace or direction effect is undefined where a position did not move.'))
-  readr::read_csv(file.path(bias_dir, 'lake_periods_raw_vs_corrected.csv'), show_col_types = FALSE) |>
-    show_table('bias_correction_lake_periods', caption = paste('**Lag, pace effect and direction effect of every',
-      'lake-period, raw and bias-corrected paleoclimate side by side.** Lag in CCA distance, pace and direction',
-      'effects in CCA distance per century.'))
-  era_runs = function(path) readr::read_csv(file.path(path, '13_era_models', 'era_comparison', 'era_contrasts.csv'),
-    show_col_types = FALSE) |> filter(response %in% c('lag', 'lag_rate', 'pace_effect', 'direction_effect'),
-    contrast != 'Holocene-C - Holocene-S')
-  bc_era = inner_join(era_runs(here::here('output')), era_runs(here::here('output_bias_corrected')),
-    by = c('response', 'site', 'contrast'), suffix = c('_raw', '_corrected'))
-  bc_era |> transmute(Response = response_label[response], Park = site, Contrast = contrast,
-      `Raw` = sprintf('%+.3f (%.3f to %.3f), %s', estimate_raw, conf_low_raw, conf_high_raw, holm_p(p_adjusted_raw)),
-      `Bias-corrected` = sprintf('%+.3f (%.3f to %.3f), %s', estimate_corrected, conf_low_corrected,
-        conf_high_corrected, holm_p(p_adjusted_corrected))) |>
-    show_table('bias_correction_era_contrasts', caption = paste('**Era contrasts with the raw and the',
-      'bias-corrected paleoclimate**, from the same era models, with Holm-adjusted p (six contrasts per response).',
-      'The Anthropocene values are the same in both runs.'))
-} else cat('Run Rscript R/sensitivity_bias_corrected.R to fill this check.\n')
-```
-
-```{r step5a-bias-correction-text, results = 'asis'}
-if (exists('bc')) {
-  k = function(r, p) bc[bc$response == r & bc$site == p, ]
-  kk = function(r, p) sprintf('%d of %d', k(r, p)$keep_sign, k(r, p)$defined_in_both)
-  e = function(r, p, c, run) { x = bc_era[bc_era$response == r & bc_era$site == p & bc_era$contrast == c, ]
-    sprintf('%+.3f (%s)', x[[paste0('estimate_', run)]], holm_p(x[[paste0('p_adjusted_', run)]])) }
-  cat(paste0('The result is poor at MORA. There the lag kept its sign in ', kk('lag', 'MORA'),
-    ' lake-periods and the pace effect in ', kk('pace_effect', 'MORA'), ', while the direction effect kept it in ',
-    kk('direction_effect', 'MORA'), '. At NOCA the lag kept its sign in ', kk('lag', 'NOCA'), ', the pace effect in ',
-    kk('pace_effect', 'NOCA'), ' and the direction effect in ', kk('direction_effect', 'NOCA'), '. ',
-    'The correction shifts the spring temperature of each lake by a fixed offset and scales its summer ',
-    'precipitation by a fixed ratio, so it moves the climate-predicted positions of a lake together and changes ',
-    'the mismatch at both ends of a lake-period. Most MORA Holocene lags and pace effects are small, and a small ',
-    'change in the two mismatches is enough to flip their sign. The Holocene values of each lake-period are ',
-    'therefore not robust at MORA. The era comparisons are more robust, because the Anthropocene values are far ',
-    'from the Holocene ones: the MORA lag rate, Anthropocene minus Holocene-C, is ', e('lag_rate', 'MORA',
-    'Anthropocene - Holocene-C', 'raw'), ' raw and ', e('lag_rate', 'MORA', 'Anthropocene - Holocene-C', 'corrected'),
-    ' corrected. The MORA lag contrasts change their meaning: against Holocene-C the lag goes from ',
-    e('lag', 'MORA', 'Anthropocene - Holocene-C', 'raw'), ' to ', e('lag', 'MORA', 'Anthropocene - Holocene-C',
-    'corrected'), ', and against Holocene-S from ', e('lag', 'MORA', 'Anthropocene - Holocene-S', 'raw'), ' to ',
-    e('lag', 'MORA', 'Anthropocene - Holocene-S', 'corrected'), ', the latter because the long MORA S4 lake-periods ',
-    'turn from positive to negative lags. Whether the MORA Anthropocene lag, not divided by time, exceeds the ',
-    'Holocene one therefore depends on the paleoclimate correction. The NOCA pace contrast against ',
-    'Holocene-C is ', e('pace_effect', 'NOCA', 'Anthropocene - Holocene-C', 'raw'), ' raw and ',
-    e('pace_effect', 'NOCA', 'Anthropocene - Holocene-C', 'corrected'), ' corrected.\n'))
-}
-```
-
-Stages and helpers: [`R/pipeline/13_era_models.R`](R/pipeline/13_era_models.R),
-[`R/helpers/tracking_model_reporting.R`](R/helpers/tracking_model_reporting.R) (period types, paired
-AR(1) correlation), [`R/helpers/reconstruction_models.R`](R/helpers/reconstruction_models.R),
-[`R/figures/main_fig4_era_contrasts.R`](R/figures/main_fig4_era_contrasts.R),
-[`R/figures/main_fig5_lag_pace_direction.R`](R/figures/main_fig5_lag_pace_direction.R).
-
-# Step 6. Species
+# Species contributions (Q4)
 
 **What and why.** The observed movement of a community between t1 and t2 is the sum of one
 vector per species: the change in the species' share times the species' fixed position in the
@@ -779,7 +1294,7 @@ f2 = function(x) sprintf('%+.3f', x)
 ci = function(lo, hi) sprintf('%.3f to %.3f', lo, hi)
 ```
 
-**Step 0, climate variables.**
+**Climate–community space: the climate constraints.**
 
 ```{r numbers-step0}
 screening |> group_by(Set = set) |> summarise(`Max VIF` = max(VIF), `Adjusted R²` = first(adjusted_R2),
@@ -790,7 +1305,7 @@ screening |> group_by(Set = set) |> summarise(`Max VIF` = max(VIF), `Adjusted R�
     ' unrestricted and ', sprintf('%.4f', addback$p_value[addback$design == 'Within parks']), ' within parks.'))
 ```
 
-**Steps 1 to 4, periods and lake-periods.**
+**Climate periods and lake-periods.**
 
 ```{r numbers-units}
 units |> group_by(Park = site, `Period type` = period_type) |>
@@ -801,7 +1316,7 @@ units |> group_by(Park = site, `Period type` = period_type) |>
     'period combinations had a sampled century, and %d had two or more.'), nrow(candidates), nrow(units)))
 ```
 
-**Step 5a, era models: fitted means, contrasts and folds per park.**
+**Climate–community lags, pace and direction: era models, fitted means, contrasts and folds per park.**
 
 ```{r numbers-era}
 means |> transmute(Response = response_label[response], Park = site, `Period type` = period_type, n,
@@ -815,7 +1330,7 @@ folds |> transmute(Response = response_label[response], Park = site, `Anthropoce
   show_table('numbers_era_folds', caption = '**Folds.** The Holocene-C fold is the one quoted as a speed.')
 ```
 
-**Step 5, Holocene explanatory models and their Anthropocene counterpart.**
+**Associations with fire: Holocene explanatory models and their Anthropocene counterpart.**
 
 ```{r numbers-step5}
 coefficients |> filter(term != '(Intercept)') |>
@@ -826,7 +1341,7 @@ coefficients |> filter(term != '(Intercept)') |>
     'burned minus unburned in the Anthropocene), so these p-values need no adjustment for multiple contrasts.'))
 ```
 
-**Step 6, species.**
+**Species contributions.**
 
 ```{r numbers-step6}
 species_means |> filter(interval_defined) |>
@@ -887,461 +1402,7 @@ tibble(Doubt = c(
 
 The last three are written by the model details page (`r details_link('08_models', 'Model details')`).
 
-# Appendix figures of the remodelled analysis
-
-```{r fig-app-levels}
-show_figure('report/figures/supplementary/fig_standardized_climate_levels_four_variables.pdf')
-```
-
-**Fig. A1. Holocene climate levels of the four seasonal variables.** As Figure 2A for spring
-temperature, winter temperature, summer precipitation and winter precipitation, without the rate
-labels. Only spring temperature and summer precipitation constrain the CCA and define the periods.
-(B) Fire frequency as in Figure 2C.
-
-```{r fig-app-change}
-show_figure('report/figures/supplementary/fig_standardized_climate_change_four_variables.pdf')
-```
-
-**Fig. A2. How the climate periods were drawn.** (A) Equal-site regional median of the signed
-1,000-year change of the four seasonal variables, standardized by the legacy calibration standard
-deviation. Filled points mark the cells of the two CCA constraints that qualify as directional change
-(beyond 50% of the variable's maximum, with at least 8 of 10 phases agreeing in direction). The
-periods are classified from these points. Winter temperature and winter precipitation are shown for
-context. Brackets at the left give each variable's stability range. (B) Fire frequency as in
-Figure 2C.
-
-```{r fig-app-unrotated}
-show_figure('report/figures/supplementary/fig_cca_biplot_unrotated.pdf', width = '70%')
-```
-
-**Fig. A3. Unrotated CCA biplot.** As Figure 3A on the unrotated axes, labelled with their share of
-the total inertia, with all taxa.
-
-```{r fig-app-charcoal}
-show_figure('report/figures/supplementary/fig_charcoal_dunwiddie_walsh.pdf')
-cc = read_output('figures/charcoal_dunwiddie_walsh_correlations.csv')
-cm = read_output('figures/charcoal_dunwiddie_walsh_event_matching.csv')
-cr = function(rec, what) { x = cc[cc$record == rec & cc$against == what, ]; sprintf('%+.2f (p = %.2f)', x$rho, x$p_shift) }
-acc = 'Walsh charcoal accumulation (mean of three cores)'; frq = 'Walsh fire frequency (mean of three cores)'
-bench = cc[cc$against == 'Walsh core against core', ]
-```
-
-**Fig. A4. Charcoal of the Walsh et al. (2017) Sunrise Ridge cores against the charcoal of the MORA
-vegetation lakes (Dunwiddie).** The MORA fire values of the analysis come from the three Sunrise Ridge
-cores, while the vegetation records come from Jay Bath, Log Wallow and Reflection Pond. The upper three
-rows show each Sunrise Ridge core's charcoal accumulation rate (grey) with its background (dashed) and
-the fire events accepted by tapas (dark red triangles). The lower three rows show the charcoal fragments
-counted in each Dunwiddie macrofossil sample. They are a concentration, since all samples of a core had
-the same volume, and the samples above each lake's 75th percentile are filled. Every Walsh event is
-carried as a faint line through all rows. Time runs from 7,000 cal BP to the present, the span of the
-Dunwiddie records. The two kinds of record follow opposite long-term courses: the Sunrise Ridge cores
-hold most of their charcoal and events in the last 3,500 years, while Jay Bath and Log Wallow hold most
-of theirs before 4,000 cal BP. Correlated over `r unique(cc$bins)[1]` bins of 500 years with the mean of
-the three cores (Spearman, p from circular shifts that keep each record's autocorrelation, so that the
-smallest possible p is about 0.07), Jay Bath gives `r cr('Jay Bath', acc)` with the charcoal accumulation
-and `r cr('Jay Bath', frq)` with the fire frequency, Log Wallow `r cr('Log Wallow', acc)` and
-`r cr('Log Wallow', frq)`, and Reflection Pond `r cr('Reflection Pond', acc)` and
-`r cr('Reflection Pond', frq)`. The Sunrise Ridge cores agree only weakly with one another
-(`r paste(sprintf('%s %+.2f', bench$record, bench$rho), collapse = ', ')`). A Dunwiddie peak lies within
-200 years of `r sprintf('%.0f', 100 * cm$matched[cm$record == 'Jay Bath'])`%,
-`r sprintf('%.0f', 100 * cm$matched[cm$record == 'Log Wallow'])`% and
-`r sprintf('%.0f', 100 * cm$matched[cm$record == 'Reflection Pond'])`% of the `r cm$walsh_events[1]` Walsh
-events at Jay Bath, Log Wallow and Reflection Pond, against
-`r sprintf('%.0f', 100 * cm$chance[cm$record == 'Jay Bath'])`%,
-`r sprintf('%.0f', 100 * cm$chance[cm$record == 'Log Wallow'])`% and
-`r sprintf('%.0f', 100 * cm$chance[cm$record == 'Reflection Pond'])`% expected by chance. The Sunrise Ridge
-record therefore gives no evidence of the fire history at the vegetation lakes, and the MORA fire values
-should be read as regional at best. The Dunwiddie values are concentrations, not accumulation rates, so
-a change in sedimentation rate could shape part of their long-term course. Script:
-[`R/figures/supp_charcoal_dunwiddie_walsh.R`](R/figures/supp_charcoal_dunwiddie_walsh.R).
-
-**Figure 1. Conceptual framework (caption revisions).** The drawing is unchanged. In panel B, the lag
-is the difference between the mismatches at t2 and t1, the first and last sampled century of a
-lake-period (one lake within one climate period), and the lag rate is that difference per century.
-In panel C, "at the same time point t" becomes "at t2". The axis labels may read "Spring temperature"
-and "Summer precipitation".
-
-# Figure 1. Conceptual framework
-
-*To be added (conceptual figure, not produced by the code).*
-
-# 1. Modern vegetation
-
-Legacy surveys and resurveys of the same plots at Mount Rainier (MORA) and North Cascades
-(NOCA) National Parks were matched, cleaned and harmonized to one tree taxonomy
-(`R/pipeline/01_clean_mora_vegetation.R`, `R/pipeline/02_clean_noca_vegetation.R`).
-
-```{r fig-s1}
-show_figure('report/figures/supplementary/stage_adult_seedling_past_present.pdf')
-```
-
-**Fig. S1. Tree species occurrence by developmental stage in legacy surveys and resurveys.**
-Number of plots in which each species was recorded as an adult tree or seedling/regeneration at
-Mount Rainier (MORA) and North Cascades (NOCA) National Parks, following taxonomic harmonization
-and exclusion of understory taxa, but before applying the CCA frequency threshold. Species could
-occur in both vegetation stages within the same plot. At MORA, seedlings were defined as
-individuals 10–140 cm tall at both survey dates. At NOCA, however, legacy surveys classified
-individuals 0–3 m tall as regeneration and those taller than 3 m as adults, whereas resurveys
-recorded seedlings of 10–140 cm and adults taller than 1.4 m. Consequently, differences between
-vegetation stages at NOCA should be interpreted cautiously because size-class definitions
-differed between surveys.
-
-```{r fig-s2}
-show_figure('report/figures/supplementary/plots_to_cca.pdf')
-```
-
-**Fig. S2. Selection of vegetation records for canonical correspondence analysis (CCA).**
-Flowchart summarizing the matching, cleaning, and selection of legacy–resurvey plots (upper
-panels) and Holocene macrofossil samples (lower panels) from Mount Rainier (MORA, blue) and North
-Cascades (NOCA, orange) National Parks. The final set of eligible paired plots was used both to
-calibrate the CCA using legacy community composition and to assess contemporary community
-change, whereas Holocene samples were projected into the fitted ordination. Plots without any
-retained tree species at either survey date were excluded because they could not be assigned an
-observed CCA position. Sample sizes and reasons for exclusion are indicated at each step.
-
-**Legacy plot area at NOCA.** Every resurvey plot is 500 m², but the NOCA legacy plots range
-from 25 to 400 m². A small legacy plot can miss species that the resurvey then records, which would
-show up as turnover. The table gives the NOCA plot pairs used in the analysis by legacy plot area, with their
-richness and the Anthropocene responses of Step 5a. It is descriptive only.
-
-```{r vegetation-noca-plot-area}
-pa = read_output('report/noca_plot_area_responses.csv')
-pci = function(m, lo, hi) ifelse(is.na(lo), sprintf('%.3f', m), sprintf('%.3f (%.3f to %.3f)', m, lo, hi))
-pa |> transmute(`Legacy area (m²)` = legacy_area, Plots = plots,
-    `Richness, legacy` = sprintf('%.2f', richness_legacy_mean), `Richness, resurvey` = sprintf('%.2f', richness_resurvey_mean),
-    `Turnover rate` = pci(turnover_rate_mean, turnover_rate_low, turnover_rate_high),
-    Lag = pci(lag_mean, lag_low, lag_high), `Lag rate` = pci(lag_rate_mean, lag_rate_low, lag_rate_high)) |>
-  show_table('noca_plot_area_responses', caption = paste('**NOCA plot pairs by legacy plot area.** Richness is',
-    'the mean number of the retained CCA taxa present in a plot. Turnover rate, lag and lag rate are plain means',
-    'with 95% t-intervals (no model): the turnover and lag rates in CCA distance per century, the lag in CCA',
-    'distance. The single 36 m² plot has no interval.'))
-pa_row = function(a) pa[pa$legacy_area == a, ]
-```
-
-The smallest legacy plots did not record fewer of the CCA taxa: `r sprintf('%.2f', pa_row('25')$richness_legacy_mean)`
-taxa per 25 m² plot against `r sprintf('%.2f', pa_row('100')$richness_legacy_mean)` per 100 m² plot. Their
-turnover rate was not higher (`r sprintf('%.2f', pa_row('25')$turnover_rate_mean)` against
-`r sprintf('%.2f', pa_row('100')$turnover_rate_mean)` CCA distance per century), and the intervals of the
-three common areas overlap for every response. The NOCA Anthropocene results do not rest on the small
-legacy plots.
-
-`r details_link('01_vegetation_cleaning', 'Cleaning details')` (plot-by-plot decisions, NOCA tree
-corrections, survey dates, raw-data provenance).
-
-# 2. Climate
-
-Modern climate is CHELSA V2.1 monthly climate in a survey-specific window for every plot
-(`R/pipeline/04_modern_climate.R`); Holocene climate is CHELSA-TraCE21k at each lake and century
-(`R/pipeline/07_paleo_climate.R`).
-
-```{r fig-s3}
-show_figure('report/figures/supplementary/test_survey_year_anomaly.pdf')
-```
-
-**Fig. S3. Climate conditions and survey-specific climate windows for the Anthropocene.** Upper
-panels show annual climate variation from CHELSA v2.1 (1979–2021), averaged across the paired
-vegetation plots at Mount Rainier (MORA, blue) and North Cascades (NOCA, orange) National Parks.
-Variables include mean annual temperature (MAT), annual precipitation (AP), and the four seasonal
-seasonal variables mean spring temperature (MSpT), mean winter temperature (MWT), summer
-precipitation (SP), and winter precipitation (WP); MSpT and SP constrain the CCA. Shaded areas indicate the common legacy climate
-window (1979–1989). Lower panels show the six-year climate windows used for each resurvey year
-(Y−5 through Y), together with the number of paired plots (n) surveyed in that year. Winter
-calculations also included December of the preceding calendar year. Climate conditions were
-therefore calculated separately for each plot according to its resurvey year.
-
-```{r fig-s4}
-show_figure('report/figures/supplementary/climate_holocene_timeseries.pdf', page = 2)
-```
-
-**Fig. S4. Correlations among climate variables during the Holocene and Anthropocene.** Pearson
-correlation coefficients (r) were calculated across lake locations and 100-year climate intervals
-for the Holocene (CHELSA-TraCE21k, left) and across vegetation plots and survey periods for the
-Anthropocene (CHELSA v2.1, right). Red indicates positive correlations and blue indicates negative
-correlations, with numerical values showing Pearson's r. Climate variables include mean annual
-(MAT), spring (MSpT), summer (MST), and winter (MWT) temperature, and annual (AP), spring (SpP),
-summer (SP), and winter (WP) precipitation. Spring corresponds to March–May, summer to June–August,
-and winter to December–February.
-
-**Choice of CCA constraints.** Candidate variables are screened by their correlations (Fig. S4)
-and by their variance inflation in the fitted CCA, keeping one temperature and one precipitation
-variable. With the four seasonal variables MSpT, MWT, SP and WP, the two temperatures had variance
-inflation factors near 30 and opposite-signed coefficients that are not identifiable. The CCA is
-therefore constrained by spring temperature, the temperature that changes most through the
-Holocene, and summer precipitation. Figures in the CCA plane are rotated rigidly by the varimax
-angle so that the two arrows lie along the axes; distances and angles, and therefore every
-tracking metric, are unchanged by the rotation (decision of 2026-11-09 in
-`r details_link('10_decisions', 'Decisions')`). The constraints of this build:
-
-```{r cca-vif}
-read_output('cca_climate_contributions.csv') |>
-  transmute(Variable = variable, Label = variable_label, VIF, `CCA1 score` = CCA1, `CCA2 score` = CCA2) |>
-  show_table('cca_constraint_vif', digits = 2)
-```
-
-`r details_link('02_climate', 'Climate details')` (survey windows, TraCE21k against V2.1, full
-correlation tables).
-
-# Appendix S1. Construction of the Holocene age–depth models
-
-### S1.1 Why an age–depth model was required
-
-The macrofossils are measured at known depths in a sediment core, but depth itself does not
-provide an age. Sediment does not necessarily accumulate at a constant rate: for example, 1 cm of
-sediment can represent relatively few years during rapid accumulation and many more years during
-slow accumulation. Chronological control is available only at selected depths, through
-radiocarbon dates, dated volcanic deposits, ²¹⁰Pb dating, or other independently dated horizons.
-We therefore required an age–depth model to estimate the calendar age of every depth between
-these dated points and, importantly, to quantify uncertainty in those estimated ages.
-
-We used the rbacon R package, which reconstructs sediment accumulation histories within a Bayesian
-framework (Blaauw & Christen 2011). Rather than drawing a single line through the dated horizons,
-Bacon estimates many age–depth histories that are compatible with the chronological evidence and
-assumptions about sediment accumulation. The distribution of these histories represents the
-posterior chronological uncertainty shown in Fig. S5.
-
-### S1.2 Chronological controls and radiocarbon calibration
-
-For each core, we assembled chronological controls for which both sediment depth and age
-information were available (Table S1.1). For MORA, these consisted of the core surfaces, seven
-radiocarbon dates from Jay Bath and Log Wallow, dated volcanic tephra horizons, and a basal
-radiocarbon age for Reflection Pond. Reflection Pond contained no radiocarbon dates of its own and
-was therefore constrained by the core surface, tephra horizons, and this basal control. For
-Panther Potholes, we reproduced the chronology archived in the Neotoma database using the core
-surface, five ²¹⁰Pb ages, six Accelerator Mass Spectrometry (AMS) radiocarbon dates, and three
-tephra horizons. We used the corrected control depths archived in Neotoma rather than the depths
-reported in Prichard et al. (2009), which contain documented depth errors.
-
-Radiocarbon ages are expressed in ¹⁴C years and cannot be treated directly as calendar ages
-because atmospheric ¹⁴C concentrations have varied through time. We therefore supplied
-radiocarbon ages and their laboratory errors as uncalibrated dates (cc = 1), which Bacon
-calibrated against the IntCal20 Northern Hemisphere calibration curve (Reimer et al. 2020). This
-converts each radiocarbon measurement into a probability distribution of plausible calendar ages.
-Controls already expressed in calendar years, including the core surfaces and tephra ages, were
-supplied directly (cc = 0) and were not calibrated.
-
-The seven MORA radiocarbon ages and their laboratory errors were taken directly from Dunwiddie
-(1986). For all other chronological controls, the source and interpretation of the assigned age
-uncertainty are reported explicitly in Table S1.1. The Reflection Pond basal control is the mean
-of the two basal radiocarbon ages of Jay Bath (QL-1704) and Log Wallow (QL-1728), 6015 ± 110 ¹⁴C yr
-BP with the larger of the two laboratory errors, following P. Dunwiddie's advice that the three
-basins share the same basal age (pers. comm.).
-
-For Panther Potholes, the five ²¹⁰Pb ages were derived using a Constant Rate of Supply (CRS)
-model. We retained the error values used in the archived Gavin chronology for the primary model;
-however, these values correspond numerically to the ²¹⁰Pb activity uncertainties reported by
-Prichard et al. (2009), rather than to independently estimated age uncertainties in years. We
-therefore evaluated this uncertainty specification in a separate sensitivity analysis described
-below.
-
-```{r table-s1-1}
-read_output('table_S1_1_chronological_controls.csv', col_types = readr::cols(.default = 'c')) |>
-  show_table('table_S1_1_chronological_controls',
-    caption = paste('**Table S1.1. Chronological controls used in the four Bayesian age–depth models.**',
-      'For cc = 1, the entered age is an uncalibrated ¹⁴C age calibrated with IntCal20. For cc = 0,',
-      'the entered age is already in calibrated years before present (cal yr BP; present = A.D. 1950).'))
-```
-
-### S1.3 Bayesian age–depth models
-
-We fitted each core independently with Bacon using the settings summarized in Table S1.2. Bacon
-divided each sediment core into 5-cm sections and estimated an accumulation time, in yr cm⁻¹, for
-each section. Accumulation times were allowed to differ among sections but were correlated between
-neighbouring sections through the model's memory parameter. The chronological controls in
-Table S1.1 were then used to update these prior expectations and generate the posterior age–depth
-chronology shown in Fig. S5.
-
-The three MORA cores were modelled using the same accumulation and memory priors. Panther Potholes
-instead retained the settings of the archived Bacon chronology in the Neotoma database so that our
-model reproduced the published chronology while providing the complete posterior age–depth draws
-required for subsequent analyses. All runs are seeded (seed 42).
-
-```{r table-s1-2}
-read_output('table_S1_2_rbacon_parameters.csv', col_types = readr::cols(.default = 'c')) |>
-  show_table('table_S1_2_rbacon_parameters',
-    caption = '**Table S1.2. rbacon parameters used to construct the age–depth models.**')
-```
-
-The thick volcanic deposits required one additional treatment. The MSH-Y tephra was represented as
-an instantaneous depositional interval in all three MORA cores, including the 58-cm interval at Log
-Wallow containing both primary and redeposited Y tephra. At Panther Potholes, the MSH-P, MSH-Y,
-and Mazama tephra intervals were treated in the same way. Bacon therefore removed these intervals
-while estimating gradual sediment accumulation and reinserted them without adding elapsed time.
-These intervals are shown as vertical grey bands in Fig. S5.
-
-```{r fig-s5}
-show_figure('report/figures/supplementary/fig_bacon_agedepth_slump.pdf')
-```
-
-**Fig. S5. Bayesian age–depth models for the Jay Bath, Log Wallow, and Reflection Pond cores at
-MORA and the Panther Potholes core at NOCA.** For each core, the three upper panels show, from left
-to right, the Markov chain Monte Carlo trace, the prior (green) and posterior (grey) distributions
-of sediment accumulation time, and the prior and posterior distributions of memory. In the main
-panels, depth increases along the x-axis and age is expressed as calibrated years before present.
-Coloured distributions at dated depths represent the chronological controls and their
-uncertainty. The grey field represents the posterior distribution of possible age–depth
-relationships; the central red line shows the posterior age–depth estimate and the outer dotted
-lines the 95% posterior interval. Vertical grey bands identify tephra intervals treated as
-instantaneous deposition.
-
-For Panther Potholes, we reproduced the archived Neotoma chronology as the primary model. However,
-Prichard et al. (2009) report uncertainties for measured ²¹⁰Pb activity, in DPM g⁻¹, and the same
-numerical values were entered as age errors, in years, in the archived chronology. We therefore
-fitted a sensitivity model in which the five ²¹⁰Pb controls were each assigned an assumed ±10-year
-age error, all other controls and settings unchanged (Fig. S6).
-
-```{r fig-s6}
-show_figure('report/figures/supplementary/fig_bacon_pb210_sensitivity.pdf')
-```
-
-**Fig. S6. Sensitivity of the Panther Potholes age–depth chronology to uncertainty assigned to the
-five ²¹⁰Pb controls in the upper 35 cm of the core.** The left panel shows that the two posterior
-chronologies are nearly identical below the ²¹⁰Pb-dated section, whereas the right panel shows the
-expected increase in uncertainty within the upper 35–40 cm. The uncertainty assigned to the ²¹⁰Pb
-controls affects the precision of the most recent chronology but does not materially alter the
-deeper Holocene chronology used in our analyses.
-
-`r details_link('03_chronology', 'Chronology details')` (every control and its source).
-
-# Appendix S2. Reconstruction of fire histories
-
-### S2.1 Holocene charcoal records
-
-For MORA, we reconstructed Holocene fire activity using the Sunrise Lake, Shadow Lake, and Little
-Sunrise Lake macrocharcoal records from Walsh et al. (2017). These records provide evidence of
-regional fire activity on Sunrise Ridge and are independent of the Jay Bath, Log Wallow, and
-Reflection Pond records used to reconstruct vegetation. For NOCA, we reconstructed Holocene fire
-activity using the Panther Potholes macrocharcoal record of Prichard et al. (2009), extracted from
-the archived Neotoma record and dated with the Panther Potholes chronology of Appendix S1. Thus,
-at NOCA fire and vegetation records share the same core and chronology.
-
-### S2.2 Identification of individual fire events
-
-We reconstructed the fire-event detection analyses of Walsh et al. (2017) and Prichard et al.
-(2009) within a common workflow implemented with the R package tapas
-(`R/pipeline/08_fire_records.R`). CHAR was interpolated to regular intervals, its slowly varying
-background estimated by robust LOWESS, and candidate fire events identified where the residual
-peak component exceeded a record-specific threshold of the background noise. Candidates were
-screened with a 75-year minimum-count test (p ≤ 0.05), and consecutive exceedances were treated as
-one event. Record-specific settings are given in Table S2.1.
-
-```{r table-s2-1}
-events = read_output('holocene_fire_source_events.csv') |> count(lake, name = 'Accepted fire events')
-read_output('holocene_fire_source_settings.csv') |>
-  left_join(events, by = 'lake') |>
-  transmute(Site = site, `Fire record` = if_else(lake == 'PantherPotholes', 'Panther Potholes', lake),
-    `Interpolation interval (years)` = interpolation_years,
-    `Background window (years)` = smoothing_years,
-    `Peak threshold` = paste0(100 * threshold_probability, '%'), `Accepted fire events`) |>
-  show_table('table_S2_1_fire_detection_parameters',
-    caption = paste('**Table S2.1. Parameters used to reconstruct individual Holocene fire events.**',
-      'All records were also screened with the same 75-year minimum-count test (p ≤ 0.05).',
-      'MORA settings follow Walsh et al. (2017) and Panther Potholes settings Prichard et al. (2009),',
-      'except its 12-year interpolation interval, the median resolution of our updated chronology.'))
-```
-
-```{r fig-s7}
-show_figure('report/figures/worked_examples/fig_fire_event_detection_workflow.pdf', page = 2)
-```
-
-**Fig. S7. Identification of Holocene fire events in the four records.** The residual peak
-component is the difference between interpolated charcoal accumulation rates (CHAR) and the
-background estimated with the record's robust LOWESS window. Candidate events exceed the local
-noise threshold (dashed line) and are then screened with a 75-year minimum-count test
-(p ≤ 0.05): filled circles are accepted events, red crosses rejected candidates. The manuscript
-example is Little Sunrise Lake (lower left; 500-year background, 95th percentile).
-
-### S2.3 Fire frequency
-
-We counted the accepted events of each record within centred 1,000-year windows evaluated every 100
-years and expressed them as events per 1,000 years. The MORA series is the mean of the three Sunrise
-Ridge records wherever at least two cover the date, the NOCA series is the Panther Potholes record
-(`R/pipeline/11_climate_eras_fire_frequency.R`). Figure 2C shows both, each park on its own axis,
-because the records' different resolutions make their frequencies incomparable between the parks. No
-high-fire periods are classified: an earlier version marked periods above the park's median plus one
-robust standard deviation, but no model used them, and the frequency itself is shown instead.
-
-### S2.4 Reproducibility against the original studies
-
-We compared the number of events identified by tapas with those reported by Walsh et al. (2017)
-and Prichard et al. (2009), and additionally reproduced the MORA analyses with CharAnalysis R
-2.0.3 (Table S2.2). Event counts differed from the published values, including with CharAnalysis,
-suggesting that discrepancies arise partly from differences between software implementations. We
-retained tapas for one consistent detection procedure across all four records, preserving their
-source-specific settings rather than tuning parameters to reproduce published counts.
-
-```{r table-s2-2}
-# Published Panther Potholes total: Prichard et al. (2009), as in the Supporting Information draft.
-PRICHARD_2009_PUBLISHED_EVENTS = 59L
-mora = read_output('walsh_charanalysis_software_comparison.csv') |>
-  transmute(Site = 'MORA', Lake = sub(' Lake$', '', lake), Published = published_total_episodes,
-    `CharAnalysis R 2.0.3` = official_r_episodes, tapas = tapas_episodes)
-noca = tibble(Site = 'NOCA', Lake = 'Panther Potholes', Published = PRICHARD_2009_PUBLISHED_EVENTS,
-  `CharAnalysis R 2.0.3` = NA_real_, tapas = events$`Accepted fire events`[events$lake == 'PantherPotholes'])
-difference = function(t, p) sprintf('%+d (%+.0f%%)', as.integer(t - p), 100 * (t - p) / p)
-rows = bind_rows(
-  mora |> arrange(match(Lake, c('Sunrise', 'Shadow', 'Little Sunrise'))),
-  mora |> summarise(Site = 'MORA total', Lake = '', across(c(Published, `CharAnalysis R 2.0.3`, tapas), sum)),
-  noca,
-  bind_rows(mora, noca) |> summarise(Site = 'Both sites', Lake = '', Published = sum(Published),
-    `CharAnalysis R 2.0.3` = NA_real_, tapas = sum(tapas))) |>
-  mutate(`Difference from published` = difference(tapas, Published))
-show_table(rows, 'table_S2_2_fire_event_counts', digits = 0,
-  caption = paste('**Table S2.2. Holocene fire-event counts reported in the original studies and',
-    'reconstructed with CharAnalysis R 2.0.3 (MORA only) and tapas (all four records).**'))
-```
-
-`r details_link('04_fire', 'Fire details')` (per-record detection, CharAnalysis reproduction,
-modern fire assignment of the survey plots).
-
-# 3. Species selection
-
-```{r fig-s8}
-show_figure('report/figures/supplementary/species_counts_consolidated.pdf')
-```
-
-**Fig. S8. Species occurrence frequencies across sites and periods before CCA species
-selection.** Number of plots (legacy surveys and resurveys) or macrofossil samples (Holocene) in
-which each tree species was recorded at MORA and NOCA, following taxonomic harmonization and
-exclusion of understory and unidentified taxa. Presence was determined from both adult tree and
-seedling records. The dashed red line indicates the minimum occurrence threshold of
-`r cca_value('count_threshold')` plots or samples. Species were retained if they reached this
-threshold in at least one site and period combination, resulting in
-`r cca_value('retained_species')` species included in the CCA.
-
-`r details_link('05_species_selection', 'Species-selection details')` (consolidation rules,
-excluded taxa, occupancy through time).
-
-# 4. Canonical correspondence analysis
-
-One CCA is fitted to the legacy composition of the `r cca_value('calibration_plots')` matched
-plots (MORA and NOCA pooled), constrained by the climate variables above (scaling 1, Hill = FALSE).
-Resurvey plots and Holocene samples are projected into it: their climate gives a predicted (LC)
-position and their composition an observed (WA) position.
-
-```{r cca-code}
-code_snippet('R/pipeline/10_cca.R', 'cca-fit')
-code_snippet('R/pipeline/10_cca.R', 'cca-projection')
-```
-
-```{r cca-axes}
-read_output('cca_axes.csv') |>
-  transmute(Axis = axis, Eigenvalue = eigenvalue, `% total inertia` = percent_total_inertia,
-    `% constrained inertia` = percent_constrained_inertia) |>
-  show_table('cca_axes', caption = sprintf('**CCA axes.** Constrained inertia: %.1f%% of the total.',
-    as.numeric(cca_value('constrained_percent'))))
-read_output('cca_anova.csv') |>
-  transmute(Test = test, Component = component, df, `Pseudo-F` = pseudo_F,
-    `p (unrestricted)` = p_unrestricted, `p (within parks)` = p_within_parks) |>
-  show_table('cca_permutation_tests', caption = paste('**Permutation tests** (9,999 permutations,',
-    'unrestricted and restricted within parks).'))
-```
-
-Figure 3 is shown in the Step 0 section above.
-
-`r details_link('06_cca', 'CCA details')` (full model output, species and climate contributions,
-scaling 1 against scaling 2).
-
-# 5. Limitations and open questions
+# Limitations and open questions
 
 ```{r open-questions, results = 'asis'}
 decisions = readLines(here('report/details/10_decisions.md'))

@@ -444,6 +444,8 @@ p_cor = ggplot(cor_df, aes(v1, v2, fill = r)) +
 pdf(fig("supplementary", "climate_holocene_timeseries.pdf"), width = 13, height = 15)
 print(p_change); print(p_cor)
 dev.off()
+# The correlation page on its own, as Fig. S8 of the README.
+ggsave(fig("supplementary", "figS08_climate_correlations.pdf"), p_cor, width = 13, height = 15)
 
 cat("\n=== variable pairs that FLIP SIGN between the eras ===\n")
 if (nrow(flip)) print(as.data.frame(flip %>% mutate(across(c(holo, anth), ~round(.x, 2)))), row.names = FALSE) else

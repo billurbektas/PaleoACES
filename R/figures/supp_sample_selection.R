@@ -361,7 +361,7 @@ figure = (modern_mora + modern_noca) /
     theme = theme(plot.title = element_text(size=28,face="bold"),
       plot.caption = element_text(size=14,hjust=0,lineheight=1.15),plot.margin=margin(14,14,14,14)))
 if (isTRUE(getOption("paleoaces.render_figures", TRUE))) {
-  ggsave(fig("supplementary", "plots_to_cca.pdf"),figure,width=18,height=18,device=cairo_pdf)
+  ggsave(fig("supplementary", "figS03_plot_and_sample_selection.pdf"),figure,width=18,height=18,device=cairo_pdf)
 }
 cat("Plot selection summary: modern CCA fits ",mi$fit," MORA + ",ni$fit,
   " NOCA; paired comparisons ",mi$paired," + ",ni$paired,
