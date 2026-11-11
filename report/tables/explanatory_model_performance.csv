@@ -1,13 +1,13 @@
 Response,Era,Model,MORA,NOCA,Descriptive R²,AR(1),SD ratio NOCA/MORA,Warnings
-Lag rate,Holocene,site + climate_rate + fire_activity,14,10,-0.29861812996653514,-0.5352698810931531,5.948020874036613,none
+Lag rate,Holocene,site + climate_rate + fire_activity,14,10,0.11232727413575094,-0.26437528636874374,5.132590782356969,none
 Lag rate,Anthropocene,site + burned,328,277,0.03094892337857235,,2.127702194440233,none
-Pace effect,Holocene,site + climate_rate + fire_activity,10,10,-0.3270632524609012,-0.23555141530141244,8.53051526588952,none
+Pace effect,Holocene,site + climate_rate + fire_activity,10,10,0.03690585809536084,-0.02143082826209973,13.318422208061628,none
 Pace effect,Anthropocene,site + burned,252,211,0.04204420556825383,,2.737418672550404,none
-Direction effect,Holocene,site + climate_rate + fire_activity,10,10,0.12994025289044886,-0.05528897704475064,2.0052862090572643,none
+Direction effect,Holocene,site + climate_rate + fire_activity,10,10,0.0941600856819378,-0.09875313717263376,1.679557079699321,none
 Direction effect,Anthropocene,site + burned,252,211,0.03329292140464823,,1.7082378927699002,none
-Lag,Holocene,site + climate_change + fire_activity,14,10,0.03803776580653884,-0.5945175737439509,6.494247632415159,none
+Lag,Holocene,site + climate_change + fire_activity,14,10,0.03263664567695645,-0.39774023529696984,2.9843840679250166,none
 Lag,Anthropocene,site + burned,328,277,0.03243664825143033,,2.0550068385708467,none
-Pace effect (not divided by time),Holocene,site + climate_change + fire_activity,10,10,0.10537019688946814,-0.08911431821331534,3.3852033659925356,none
+Pace effect (not divided by time),Holocene,site + climate_change + fire_activity,10,10,0.079209311784318,-0.47920922115393066,4.485974294595011,none
 Pace effect (not divided by time),Anthropocene,site + burned,252,211,0.0418297336605038,,2.6636784724197367,none
-Direction effect (not divided by time),Holocene,site + climate_change + fire_activity,10,10,0.09953539658753507,0.686694685956165,0.9025827077454818,none
+Direction effect (not divided by time),Holocene,site + climate_change + fire_activity,10,10,-0.02280758817772321,-0.28780027088547394,1.5891425517932367,none
 Direction effect (not divided by time),Anthropocene,site + burned,252,211,0.0335312676163978,,1.6655151910668091,none

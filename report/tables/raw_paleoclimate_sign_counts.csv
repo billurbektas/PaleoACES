@@ -1,0 +1,10 @@
+Response,Park,Shared lake-periods,Defined in both runs,Keep their sign,Change sign
+Lag,MORA,14,14,5,9
+Lag,NOCA,10,10,7,3
+Lag,both parks,24,24,12,12
+Pace effect,MORA,14,10,5,5
+Pace effect,NOCA,10,10,7,3
+Pace effect,both parks,24,20,12,8
+Direction effect,MORA,14,10,7,3
+Direction effect,NOCA,10,10,8,2
+Direction effect,both parks,24,20,15,5

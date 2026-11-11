@@ -1,0 +1,21 @@
+Run,Period,Type,Older (cal BP),Younger (cal BP)
+Bias-corrected (main),C1,Holocene-C,9650,8650
+Bias-corrected (main),S1,Holocene-S,8650,8250
+Bias-corrected (main),C2,Holocene-C,8250,7250
+Bias-corrected (main),S2,Holocene-S,7250,6850
+Bias-corrected (main),C3,Holocene-C,6850,6250
+Bias-corrected (main),S3,Holocene-S,6250,5450
+Bias-corrected (main),C4,Holocene-C,5450,4950
+Bias-corrected (main),S4,Holocene-S,4950,2250
+Bias-corrected (main),C5,Holocene-C,2250,1750
+Bias-corrected (main),S5,Holocene-S,1750,1350
+Raw,C1,Holocene-C,9650,8650
+Raw,S1,Holocene-S,8650,8250
+Raw,C2,Holocene-C,8250,7250
+Raw,S2,Holocene-S,7250,6850
+Raw,C3,Holocene-C,6850,6250
+Raw,S3,Holocene-S,6250,5450
+Raw,C4,Holocene-C,5450,4950
+Raw,S4,Holocene-S,4950,2250
+Raw,C5,Holocene-C,2250,1750
+Raw,S5,Holocene-S,1750,1350

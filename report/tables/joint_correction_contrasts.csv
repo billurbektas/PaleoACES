@@ -1,7 +1,7 @@
 Park,Period type,Contrast,Estimate,95% CI,p (Holm)
-MORA,Holocene-S,Direction - Pace,-0.00324304934438376,-0.025 to 0.019,1
-MORA,Holocene-C,Direction - Pace,0.00401326534694368,-0.092 to 0.100,1
-MORA,Anthropocene,Direction - Pace,0.17798584430128225,0.002 to 0.354,0.28474021944151834
-NOCA,Holocene-S,Direction - Pace,-0.05330241160222326,-0.184 to 0.077,1
-NOCA,Holocene-C,Direction - Pace,-0.02374052911310646,-0.117 to 0.069,1
-NOCA,Anthropocene,Direction - Pace,0.00650601286293378,-0.317 to 0.330,1
+MORA,Holocene-S,Direction - Pace,0.0013300639253223,-0.043 to 0.045,1
+MORA,Holocene-C,Direction - Pace,0.02626766854146882,-0.093 to 0.146,1
+MORA,Anthropocene,Direction - Pace,0.17798584430128214,0.002 to 0.354,0.23728401742572952
+NOCA,Holocene-S,Direction - Pace,-0.04634748226426376,-0.134 to 0.042,1
+NOCA,Holocene-C,Direction - Pace,-0.04382030515020844,-0.084 to -0.003,0.20764085625374457
+NOCA,Anthropocene,Direction - Pace,0.00650601286293366,-0.317 to 0.330,1

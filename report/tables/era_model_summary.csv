@@ -1,11 +1,11 @@
 Response,Units,AR(1),Residual SD by period type and park,Descriptive R²,Warnings
-Climate change rate,629,-0.05353330470639658,"Anthropocene NOCA=2.284, Holocene-C MORA=0.033, Holocene-S MORA=0.048, Holocene-C NOCA=0.100, Holocene-S NOCA=0.071",0.11224968711929673,none
-Climate change (not divided by time),629,-0.4261619129356698,"Anthropocene NOCA=1.935, Holocene-C MORA=0.568, Holocene-S MORA=0.396, Holocene-C NOCA=1.472, Holocene-S NOCA=0.830",0.05075907623693954,none
+Climate change rate,629,0.03708264652192823,"Anthropocene NOCA=2.284, Holocene-C MORA=0.047, Holocene-S MORA=0.074, Holocene-C NOCA=0.114, Holocene-S NOCA=0.078",0.11141129423658402,none
+Climate change (not divided by time),629,-0.45280681936271033,"Anthropocene NOCA=1.935, Holocene-C MORA=0.718, Holocene-S MORA=0.620, Holocene-C NOCA=1.595, Holocene-S NOCA=0.776",0.04213729166120983,none
 Turnover rate,629,-0.6573752431395679,"Anthropocene NOCA=2.308, Holocene-C MORA=0.080, Holocene-S MORA=0.030, Holocene-C NOCA=0.114, Holocene-S NOCA=0.488",0.1763105533497051,none
 "Displacement (turnover, not divided by time)",629,-0.3718728127460823,"Anthropocene NOCA=1.944, Holocene-C MORA=0.546, Holocene-S MORA=0.822, Holocene-C NOCA=0.242, Holocene-S NOCA=2.253",0.11024249952474684,none
-Lag rate,629,-0.6159755929494088,"Anthropocene NOCA=2.124, Holocene-C MORA=0.082, Holocene-S MORA=0.019, Holocene-C NOCA=0.190, Holocene-S NOCA=0.250",0.03139882731217514,none
-Lag,629,-0.33710419618726084,"Anthropocene NOCA=2.052, Holocene-C MORA=0.857, Holocene-S MORA=0.741, Holocene-C NOCA=2.720, Holocene-S NOCA=3.332",0.03362570149008637,none
-Pace effect,483,-0.4298181071116908,"Anthropocene NOCA=2.765, Holocene-S MORA=0.022, Holocene-C MORA=0.087, Holocene-C NOCA=0.117, Holocene-S NOCA=0.328",0.02117455130160905,none
-Direction effect,483,-0.42553648879701494,"Anthropocene NOCA=1.712, Holocene-S MORA=0.016, Holocene-C MORA=0.084, Holocene-C NOCA=0.179, Holocene-S NOCA=0.152",0.02699977475509041,none
-Pace effect (not divided by time),483,-0.26371082086184033,"Anthropocene NOCA=2.691, Holocene-S MORA=1.078, Holocene-C MORA=0.717, Holocene-C NOCA=1.828, Holocene-S NOCA=4.077",0.02187278288576233,none
-Direction effect (not divided by time),483,-0.5381790429597602,"Anthropocene NOCA=1.669, Holocene-S MORA=0.896, Holocene-C MORA=0.869, Holocene-C NOCA=3.065, Holocene-S NOCA=2.926",0.02931582111339026,none
+Lag rate,629,-0.5160859099231652,"Anthropocene NOCA=2.124, Holocene-C MORA=0.056, Holocene-S MORA=0.038, Holocene-C NOCA=0.118, Holocene-S NOCA=0.355",0.03130134106453164,none
+Lag,629,-0.5148402340856967,"Anthropocene NOCA=2.052, Holocene-C MORA=0.726, Holocene-S MORA=1.130, Holocene-C NOCA=2.569, Holocene-S NOCA=4.149",0.03433738159203925,none
+Pace effect,483,0.5200696647385581,"Anthropocene NOCA=2.765, Holocene-S MORA=0.016, Holocene-C MORA=0.029, Holocene-C NOCA=0.047, Holocene-S NOCA=0.427",0.02118880134540335,none
+Direction effect,483,0.26062870673362043,"Anthropocene NOCA=1.712, Holocene-S MORA=0.030, Holocene-C MORA=0.088, Holocene-C NOCA=0.099, Holocene-S NOCA=0.077",0.02699455535243666,none
+Pace effect (not divided by time),483,0.16455475449749485,"Anthropocene NOCA=2.691, Holocene-S MORA=0.827, Holocene-C MORA=0.332, Holocene-C NOCA=1.065, Holocene-S NOCA=4.502",0.02414217886616587,none
+Direction effect (not divided by time),483,-0.32837008381297095,"Anthropocene NOCA=1.669, Holocene-S MORA=1.325, Holocene-C MORA=0.820, Holocene-C NOCA=2.327, Holocene-S NOCA=1.489",0.03022135024925376,none

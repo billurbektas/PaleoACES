@@ -1,10 +1,10 @@
 # Occurrence consolidation — what was decided, and on what evidence
 
 > **Documents:** How presence records from the three sources are merged into one taxonomy, and which taxa are excluded.  
-> **Used by:** `R/pipeline/09_species_occurrences.R`  
+> **Used by:** `R/pipeline/10_species_occurrences.R`  
 > **Originally:** `docs/review/README_occurrence_consolidation.md` (moved into the report on 2026-11-09)
 
-Everything here is applied by [`R/pipeline/09_species_occurrences.R`](../../R/pipeline/09_species_occurrences.R),
+Everything here is applied by [`R/pipeline/10_species_occurrences.R`](../../R/pipeline/10_species_occurrences.R),
 which reads the three cleaned occurrence tables and writes the single file the
 ordination consumes:
 
@@ -268,7 +268,7 @@ questioning the identification. No recommendation from Rachel to exclude
 ponderosa was found in the available notes or correspondence.
 
 The exclusion list and its filtering step have been removed from
-`R/pipeline/09_species_occurrences.R`. The ≥20 threshold, other taxonomic
+`R/pipeline/10_species_occurrences.R`. The ≥20 threshold, other taxonomic
 decisions, understory exclusions and chronology settings are unchanged.
 Taxus brevifolia and Acer circinatum remain excluded by the understory rule.
 
@@ -349,7 +349,7 @@ that are now merged.
 `04_cca_model.R`; a caller can override it explicitly for a sweep:
 
 ```r
-for (thr in c(10, 15, 20, 25, 30)) { count.thr = thr; source(here("R/pipeline/10_cca.R")) }
+for (thr in c(10, 15, 20, 25, 30)) { count.thr = thr; source(here("R/pipeline/11_cca.R")) }
 ```
 
 The rule there: a species is dropped only if it is below the threshold in **every**

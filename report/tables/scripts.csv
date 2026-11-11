@@ -5,26 +5,28 @@ R/pipeline/03_modern_fire.R,pipeline,Anthropocene fire assignments for MORA and 
 R/pipeline/04_modern_climate.R,pipeline,Modern climate: CHELSA V2.1 survey-window climate for every paired plot.,368
 R/pipeline/05_age_depth_models.R,pipeline,Age-depth models: the four Bacon chronologies (Appendix S1).,510
 R/pipeline/06_paleo_samples.R,pipeline,"Paleo samples: original macrofossil sample identities, presences and the",33
-R/pipeline/07_paleo_climate.R,pipeline,"Paleo climate: CHELSA-TraCE21k monthly climate at each lake and century,",347
-R/pipeline/08_fire_records.R,pipeline,Fire records (Appendix S2): tapas event detection for the three MORA charcoal,406
-R/pipeline/09_species_occurrences.R,pipeline,09_species_occurrences.R,626
-R/pipeline/10_cca.R,pipeline,10_cca.R - the pooled CCA and everything derived from it. NO FIGURES.,665
-R/pipeline/11_climate_eras_fire_frequency.R,pipeline,11_climate_eras_fire_frequency.R,194
-R/pipeline/12_tracking.R,pipeline,"Tracking: native-century Holocene positions, tracking metrics for both eras,",85
-R/pipeline/13_era_models.R,pipeline,"Era models (PLAN.md section 5, Step 5a): Holocene stability periods,",189
-R/pipeline/14_predictor_models.R,pipeline,"Explanatory models (PLAN.md section 5, Step 5).",131
-R/pipeline/15_contributions.R,pipeline,"Species contributions (PLAN.md section 5, Step 6): which species led the",143
+R/pipeline/07_climate_products.R,pipeline,Climate products: four CHELSA climate products at the plots and around the,249
+R/pipeline/08_paleo_climate.R,pipeline,"Paleo climate: CHELSA-TraCE21k monthly climate at each lake and century,",214
+R/pipeline/09_fire_records.R,pipeline,Fire records (Appendix S3): tapas event detection for the three MORA charcoal,406
+R/pipeline/10_species_occurrences.R,pipeline,10_species_occurrences.R,626
+R/pipeline/11_cca.R,pipeline,11_cca.R - the pooled CCA and everything derived from it. NO FIGURES.,665
+R/pipeline/12_climate_eras_fire_frequency.R,pipeline,12_climate_eras_fire_frequency.R,194
+R/pipeline/13_tracking.R,pipeline,"Tracking: native-century Holocene positions, tracking metrics for both eras,",85
+R/pipeline/14_era_models.R,pipeline,"Era models (PLAN.md section 5, Step 5a): Holocene stability periods,",189
+R/pipeline/15_predictor_models.R,pipeline,"Explanatory models (PLAN.md section 5, Step 5).",131
+R/pipeline/16_contributions.R,pipeline,"Species contributions (PLAN.md section 5, Step 6): which species led the",143
 R/figures/supp_age_depth_models.R,figure,Figures S4 (four Bacon age-depth models) and S5 (Panther Potholes 210Pb,109
-R/figures/supp_bias_correction.R,figure,"Figs. S16 and S17 (Appendix S3, Bills, 11 Nov 2026): raw against bias-corrected paleoclimate.",131
 R/figures/supp_cca_scaling.R,figure,supp_cca_scaling.R - one CCA drawn at scaling 1 and scaling 2,108
-R/figures/supp_charcoal_dunwiddie_walsh.R,figure,"Fig. S11 (appendix figure A4 until the README was reordered; Bills, 11 Nov 2026): do the charcoal peaks of the Walsh",98
+R/figures/supp_charcoal_dunwiddie_walsh.R,figure,"Fig. S14 (appendix figure A4 until the README was reordered; Bills, 11 Nov 2026): do the charcoal peaks of the Walsh",98
 R/figures/supp_climate_correlations.R,figure,supp_climate_correlations.R,628
+R/figures/supp_climate_products.R,figure,"Figs. S6 to S8 (Appendix S2, Bills, 11 Nov 2026): the four CHELSA climate",114
 R/figures/supp_climate_windows.R,figure,Compare the actual plot-specific survey windows with V2.1 1979-2021.,174
+R/figures/supp_raw_paleoclimate.R,figure,"Figs. S19 and S20 (Appendix S4, Bills, 11 Nov 2026): the main run on the",131
 R/figures/supp_sample_selection.R,figure,"Show which plots and core samples reach CCA, starting with the supplied data.",368
 R/figures/supp_species_through_time.R,figure,"supp_species_through_time.R  -  STEP 4, the species half",199
 R/figures/supp_tracking_transitions.R,figure,Appendix figures of the lake-period values over time (redrawn on lake-periods,86
 R/figures/main_fig2_study_area.R,figure,"Figure 2 (Bills, 11 Nov 2026; Fig. S1 until then): the study area. (A)",214
-R/figures/main_fig3_climate_eras_fire.R,figure,main_fig3_climate_eras_fire.R,711
+R/figures/main_fig3_climate_eras_fire.R,figure,main_fig3_climate_eras_fire.R,712
 R/figures/main_fig4_cca_trajectories.R,figure,"Figure 4: A, species and climate biplot; B, observed and predicted trajectories",220
 R/figures/main_fig5_era_contrasts.R,figure,"Figure 5 (PLAN.md section 6; redrawn by Bills, 10 Nov 2026): fitted means",34
 R/figures/main_fig6_lag_pace_direction.R,figure,"Figure 6 (PLAN.md section 6; redrawn by Bills, 10 Nov 2026): the pace and",43

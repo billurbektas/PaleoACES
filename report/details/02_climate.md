@@ -12,7 +12,7 @@
 Back to the
 [report](../../README.md#climate-change-and-comparisons-within-eras).
 Scripts: `R/pipeline/04_modern_climate.R`,
-`R/pipeline/07_paleo_climate.R`, `R/figures/supp_climate_windows.R`,
+`R/pipeline/08_paleo_climate.R`, `R/figures/supp_climate_windows.R`,
 `R/figures/supp_climate_correlations.R`.
 
 ## Survey-specific climate windows
@@ -95,7 +95,7 @@ detrended removes the 1979–2021 trend).
 
 **Climate change per interval** at the four ponds through the Holocene,
 and at the survey plots in the Anthropocene. Page 2 of this figure is
-Fig. S7.
+Fig. S10.
 
 **Climate change per interval, by variable and era.**
 
@@ -118,26 +118,26 @@ Fig. S7.
 | NOCA | anthropocene | MWT      | 305 |    0.39 |   -0.15 |    0.65 | degC | 27.5–28.5 climate yr |
 | NOCA | holocene     | MWT      | 102 |    0.06 |   -0.40 |    0.45 | degC | 500 yr               |
 | MORA | anthropocene | AP       | 331 | -450.03 | -611.35 | -331.35 | mm   | 27.5–32.5 climate yr |
-| MORA | holocene     | AP       | 306 |  -11.10 |  -38.95 |   30.05 | mm   | 500 yr               |
+| MORA | holocene     | AP       | 306 |  -14.45 |  -52.95 |   39.71 | mm   | 500 yr               |
 | NOCA | anthropocene | AP       | 305 |  101.90 |  -96.93 |  352.33 | mm   | 27.5–28.5 climate yr |
-| NOCA | holocene     | AP       | 102 |   -1.70 |  -17.77 |   14.18 | mm   | 500 yr               |
+| NOCA | holocene     | AP       | 102 |   -2.37 |  -20.67 |   15.05 | mm   | 500 yr               |
 | MORA | anthropocene | SpP      | 331 |  -23.82 | -135.42 |   46.27 | mm   | 27.5–32.5 climate yr |
-| MORA | holocene     | SpP      | 306 |   -0.40 |  -16.40 |   11.95 | mm   | 500 yr               |
+| MORA | holocene     | SpP      | 306 |   -0.44 |  -26.07 |   19.52 | mm   | 500 yr               |
 | NOCA | anthropocene | SpP      | 305 |  130.88 |   81.94 |  215.50 | mm   | 27.5–28.5 climate yr |
-| NOCA | holocene     | SpP      | 102 |    0.50 |   -6.60 |    4.78 | mm   | 500 yr               |
+| NOCA | holocene     | SpP      | 102 |    0.73 |   -8.73 |    6.50 | mm   | 500 yr               |
 | MORA | anthropocene | SP       | 331 |  -41.91 |  -76.64 |  -26.27 | mm   | 27.5–32.5 climate yr |
-| MORA | holocene     | SP       | 306 |   -1.50 |   -9.20 |   10.50 | mm   | 500 yr               |
+| MORA | holocene     | SP       | 306 |   -2.81 |  -14.78 |   16.48 | mm   | 500 yr               |
 | NOCA | anthropocene | SP       | 305 |   29.53 |    0.97 |  122.84 | mm   | 27.5–28.5 climate yr |
-| NOCA | holocene     | SP       | 102 |   -0.70 |   -6.57 |    5.97 | mm   | 500 yr               |
+| NOCA | holocene     | SP       | 102 |   -1.24 |   -8.41 |    8.06 | mm   | 500 yr               |
 | MORA | anthropocene | WP       | 331 | -265.20 | -350.73 | -122.68 | mm   | 27.5–32.5 climate yr |
-| MORA | holocene     | WP       | 306 |    0.30 |  -25.35 |   27.55 | mm   | 500 yr               |
+| MORA | holocene     | WP       | 306 |   -0.37 |  -31.18 |   32.86 | mm   | 500 yr               |
 | NOCA | anthropocene | WP       | 305 | -113.50 | -188.62 |  -57.12 | mm   | 27.5–28.5 climate yr |
-| NOCA | holocene     | WP       | 102 |    1.60 |  -10.79 |   13.33 | mm   | 500 yr               |
+| NOCA | holocene     | WP       | 102 |    1.68 |  -11.62 |   14.24 | mm   | 500 yr               |
 
 <sub>Table file:
 [climate_change_by_variable.csv](../tables/climate_change_by_variable.csv)</sub>
 
-<img src="../figures/png/figS08_climate_levels_four_variables.png" alt="" width="1650" />
+<img src="../figures/png/figS11_climate_levels_four_variables.png" alt="" width="1650" />
 
 **Standardized climate levels** (rather than standardized change) with
 the climate eras and the fire frequency of Figure 3.
@@ -145,10 +145,13 @@ the climate eras and the fire frequency of Figure 3.
 ## CHELSA-TraCE21k against CHELSA V2.1
 
 The Holocene climate is CHELSA-TraCE21k, the modern climate CHELSA V2.1.
-Over their common period (1980–1990) the two products differ, so
-Holocene and Anthropocene positions are compared as changes within each
-product, never as levels across products (see
-[Decisions](10_decisions.md)).
+The two products differ in level, and since 11 November 2026 the
+TraCE21k paleoclimate is bias-corrected onto V2.1 through CHELSAcruts,
+per park and calendar month over 1979 to 2016 (Appendix S2 of the
+README, `R/pipeline/07_climate_products.R`). Until then the raw TraCE21k
+was used and the products were compared as changes within each product
+(see [Decisions](10_decisions.md)). The figure below is the earlier
+comparison of TraCE21k with V2.1 at the lakes, kept for the record.
 
 ![](assets/TraCE21k_vs_V21_monthly.png)
 

@@ -1,7 +1,7 @@
 # Panther Potholes (NOCA paleo) — provenance of every number
 
 > **Documents:** Sources for the Panther Potholes data in data/NOCA/NOCA_paleo/ (chronology, macrofossils, charcoal).  
-> **Used by:** `R/pipeline/05_age_depth_models.R`, `R/pipeline/08_fire_records.R`  
+> **Used by:** `R/pipeline/05_age_depth_models.R`, `R/pipeline/09_fire_records.R`  
 > **Originally:** `data/NOCA/NOCA_paleo/SOURCES.md` (moved into the report on 2026-11-09)
 
 Site: **Panther Potholes**, Fourth of July Pass, North Cascades NP, 48°39'N 121°02'W,
@@ -235,10 +235,10 @@ true posterior, and destroys the down-core error correlation that keeps `dt` sta
   presence/absence in `R/pipeline/06_paleo_samples.R`. Taxon harmonisation to the MORA/NOCA
   species list is in that script; `Cupressus nootkatensis` → `Callitropsis nootkatensis`.
 - **Macrocharcoal** — Neotoma dataset 52210, joined by depth to the same Bacon
-  chronology and converted to peaks by `R/pipeline/08_fire_records.R`; Panther Potholes
+  chronology and converted to peaks by `R/pipeline/09_fire_records.R`; Panther Potholes
   contributes directly to `output/paleo_fire.csv`.
 - **Lake climate** — CHELSA-TraCE21k at the pond coordinates,
-  `output/chelsa_paleo_ponds.csv`, matched to sample ages in `R/pipeline/07_paleo_climate.R`.
+  `output/chelsa_paleo_ponds.csv`, matched to sample ages in `R/pipeline/08_paleo_climate.R`.
 
 ---
 

@@ -1,7 +1,7 @@
 # Fixed-CCA transition contributions and species models
 
 > **Documents:** How each CCA displacement is split into species and seasonal-climate contributions.  
-> **Used by:** `R/pipeline/15_contributions.R`  
+> **Used by:** `R/pipeline/16_contributions.R`  
 > **Originally:** `docs/review/README_cca_transition_contributions.md` (moved into the report on 2026-11-09)
 
 **Update 2026-11-09 (lake-period remodelling).** Contributions are now computed once per
@@ -14,8 +14,8 @@ directions of time. Both are per century. The species explanatory GLS described 
 fitted. Species are summarized by plain means with t-intervals per species, park and period type.
 The identities in the sections below still hold, with "transition" read as "lake-period".
 
-[Stage 16](../../R/pipeline/15_contributions.R) calculates contributions before
-[stage 17](../../R/pipeline/15_contributions.R) fits species explanatory GLS.
+[Stage 16](../../R/pipeline/16_contributions.R) calculates contributions before
+[stage 17](../../R/pipeline/16_contributions.R) fits species explanatory GLS.
 Both belong to the active workflow. The fixed CCA uses 605 legacy plots (607 until 11 Nov 2026, see the decisions page), 14 retained taxa,
 CCA1–CCA2, site scaling and Hill = FALSE; it is neither recalibrated nor used to rerun Bacon.
 

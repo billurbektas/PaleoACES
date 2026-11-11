@@ -1,16 +1,16 @@
 Response,Park,Period type,n,Fitted mean,95% CI
-Climate change rate,MORA,Holocene-S,7,0.04219780231468487,0.012 to 0.072
-Climate change rate,MORA,Holocene-C,7,0.07404146825918254,0.054 to 0.094
-Climate change rate,MORA,Anthropocene,328,2.596463597463863,2.505 to 2.687
-Climate change rate,NOCA,Holocene-S,5,0.0417632526555354,0.022 to 0.062
-Climate change rate,NOCA,Holocene-C,5,0.06224581626754668,0.034 to 0.090
-Climate change rate,NOCA,Anthropocene,277,2.7112110651092824,2.485 to 2.937
-Climate change (not divided by time),MORA,Holocene-S,7,0.25138929936944476,0.161 to 0.341
-Climate change (not divided by time),MORA,Holocene-C,7,0.259630511288582,0.131 to 0.389
-Climate change (not divided by time),MORA,Anthropocene,328,0.764492767643585,0.734 to 0.795
-Climate change (not divided by time),NOCA,Holocene-S,5,0.2060937623089414,0.117 to 0.295
-Climate change (not divided by time),NOCA,Holocene-C,5,0.380577872388872,0.225 to 0.536
-Climate change (not divided by time),NOCA,Anthropocene,277,0.7698022542076229,0.705 to 0.834
+Climate change rate,MORA,Holocene-S,7,0.05902841548384294,0.013 to 0.105
+Climate change rate,MORA,Holocene-C,7,0.08902153605037641,0.059 to 0.119
+Climate change rate,MORA,Anthropocene,328,2.5964635974637846,2.505 to 2.687
+Climate change rate,NOCA,Holocene-S,5,0.04730454709302704,0.025 to 0.069
+Climate change rate,NOCA,Holocene-C,5,0.06854193816190075,0.037 to 0.100
+Climate change rate,NOCA,Anthropocene,277,2.71121106510921,2.485 to 2.937
+Climate change (not divided by time),MORA,Holocene-S,7,0.3195714642611732,0.177 to 0.462
+Climate change (not divided by time),MORA,Holocene-C,7,0.31209410505185997,0.147 to 0.477
+Climate change (not divided by time),MORA,Anthropocene,328,0.7644927676435733,0.734 to 0.795
+Climate change (not divided by time),NOCA,Holocene-S,5,0.22778806250198208,0.143 to 0.313
+Climate change (not divided by time),NOCA,Holocene-C,5,0.41017792987481,0.239 to 0.581
+Climate change (not divided by time),NOCA,Anthropocene,277,0.7698022542076112,0.705 to 0.834
 Turnover rate,MORA,Holocene-S,7,0.02924168943379382,0.007 to 0.052
 Turnover rate,MORA,Holocene-C,7,0.08795743321868439,0.029 to 0.147
 Turnover rate,MORA,Anthropocene,328,0.9294143853347252,0.840 to 1.019
@@ -23,39 +23,39 @@ Turnover rate,NOCA,Anthropocene,277,2.1280436545776924,1.903 to 2.353
 "Displacement (turnover, not divided by time)",NOCA,Holocene-S,5,0.506285827987406,0.245 to 0.767
 "Displacement (turnover, not divided by time)",NOCA,Holocene-C,5,0.3657373629879216,0.338 to 0.393
 "Displacement (turnover, not divided by time)",NOCA,Anthropocene,277,0.6777803664829247,0.606 to 0.750
-Lag rate,MORA,Holocene-S,7,0.00134899043001314,-0.017 to 0.020
-Lag rate,MORA,Holocene-C,7,-0.01095686675652729,-0.090 to 0.068
-Lag rate,MORA,Anthropocene,328,0.5535300705036796,0.434 to 0.673
-Lag rate,NOCA,Holocene-S,5,0.03619197699995232,-0.083 to 0.155
-Lag rate,NOCA,Holocene-C,5,-0.04680084476986493,-0.135 to 0.042
-Lag rate,NOCA,Anthropocene,277,-0.08058815797461083,-0.357 to 0.196
-Lag,MORA,Holocene-S,7,0.09347156825365964,-0.094 to 0.281
-Lag,MORA,Holocene-C,7,-0.02837037388526893,-0.245 to 0.189
-Lag,MORA,Anthropocene,328,0.16265737384878748,0.127 to 0.198
-Lag,NOCA,Holocene-S,5,-0.03023323794201726,-0.424 to 0.364
-Lag,NOCA,Holocene-C,5,-0.1596741473184616,-0.475 to 0.156
-Lag,NOCA,Anthropocene,277,-0.0233054076285958,-0.102 to 0.055
-Pace effect,MORA,Holocene-S,5,0.0038142595897167,-0.011 to 0.019
-Pace effect,MORA,Holocene-C,5,0.00199816643658575,-0.057 to 0.061
-Pace effect,MORA,Anthropocene,252,0.17273318122847364,0.080 to 0.266
-Pace effect,NOCA,Holocene-S,5,0.03676002149334056,-0.057 to 0.131
-Pace effect,NOCA,Holocene-C,5,-0.01372816864380883,-0.046 to 0.019
-Pace effect,NOCA,Anthropocene,211,-0.27044376946183574,-0.551 to 0.010
-Direction effect,MORA,Holocene-S,5,0.00126672250543462,-0.019 to 0.022
-Direction effect,MORA,Holocene-C,5,0.00662896132677989,-0.096 to 0.109
-Direction effect,MORA,Anthropocene,252,0.35071902552976053,0.184 to 0.517
-Direction effect,NOCA,Holocene-S,5,-0.01194055110576688,-0.090 to 0.066
-Direction effect,NOCA,Holocene-C,5,-0.03752614265429019,-0.127 to 0.052
-Direction effect,NOCA,Anthropocene,211,-0.2639377565988967,-0.575 to 0.048
-Pace effect (not divided by time),MORA,Holocene-S,5,0.11863544649288647,-0.093 to 0.330
-Pace effect (not divided by time),MORA,Holocene-C,5,0.02788153836226899,-0.111 to 0.167
-Pace effect (not divided by time),MORA,Anthropocene,252,0.04857681351824262,0.021 to 0.076
-Pace effect (not divided by time),NOCA,Holocene-S,5,0.05091869157232728,-0.265 to 0.367
-Pace effect (not divided by time),NOCA,Holocene-C,5,-0.03889750084640203,-0.178 to 0.100
-Pace effect (not divided by time),NOCA,Anthropocene,211,-0.07716891359256914,-0.157 to 0.002
-Direction effect (not divided by time),MORA,Holocene-S,5,-0.06794201600771656,-0.403 to 0.267
-Direction effect (not divided by time),MORA,Holocene-C,5,0.04047122530059893,-0.275 to 0.356
-Direction effect (not divided by time),MORA,Anthropocene,252,0.10245230907927257,0.054 to 0.151
-Direction effect (not divided by time),NOCA,Holocene-S,5,-0.16942375650983893,-0.637 to 0.298
-Direction effect (not divided by time),NOCA,Holocene-C,5,-0.19261090465036143,-0.672 to 0.287
-Direction effect (not divided by time),NOCA,Anthropocene,211,-0.07414848051445176,-0.162 to 0.014
+Lag rate,MORA,Holocene-S,7,0.00544630890845025,-0.030 to 0.040
+Lag rate,MORA,Holocene-C,7,0.01059002136975873,-0.041 to 0.062
+Lag rate,MORA,Anthropocene,328,0.5535300705036781,0.434 to 0.673
+Lag rate,NOCA,Holocene-S,5,0.05542375541082856,-0.102 to 0.213
+Lag rate,NOCA,Holocene-C,5,-0.03130154516652952,-0.083 to 0.020
+Lag rate,NOCA,Anthropocene,277,-0.08058815797460883,-0.357 to 0.196
+Lag,MORA,Holocene-S,7,-0.11793706681204467,-0.423 to 0.187
+Lag,MORA,Holocene-C,7,0.01677341781674476,-0.180 to 0.213
+Lag,MORA,Anthropocene,328,0.1626573738487868,0.127 to 0.198
+Lag,NOCA,Holocene-S,5,0.12137257284762462,-0.420 to 0.662
+Lag,NOCA,Holocene-C,5,-0.11479748418874448,-0.443 to 0.213
+Lag,NOCA,Anthropocene,277,-0.02330540762859451,-0.102 to 0.055
+Pace effect,MORA,Holocene-S,5,-0.01166776082960268,-0.023 to -0.001
+Pace effect,MORA,Holocene-C,5,0.03580254837389422,0.016 to 0.056
+Pace effect,MORA,Anthropocene,252,0.17273318122847597,0.080 to 0.266
+Pace effect,NOCA,Holocene-S,5,0.09249161274865236,-0.037 to 0.222
+Pace effect,NOCA,Holocene-C,5,0.00274112603745566,-0.011 to 0.017
+Pace effect,NOCA,Anthropocene,211,-0.27044376946183035,-0.551 to 0.010
+Direction effect,MORA,Holocene-S,5,-0.0098118399401737,-0.045 to 0.026
+Direction effect,MORA,Holocene-C,5,0.05219566360658373,-0.052 to 0.157
+Direction effect,MORA,Anthropocene,252,0.3507190255297544,0.184 to 0.517
+Direction effect,NOCA,Holocene-S,5,0.03068837073058819,-0.006 to 0.067
+Direction effect,NOCA,Holocene-C,5,-0.04376952476067727,-0.090 to 0.003
+Direction effect,NOCA,Anthropocene,211,-0.26393775659889884,-0.575 to 0.048
+Pace effect (not divided by time),MORA,Holocene-S,5,-0.18101318994414692,-0.341 to -0.021
+Pace effect (not divided by time),MORA,Holocene-C,5,0.10710231269588452,0.043 to 0.171
+Pace effect (not divided by time),MORA,Anthropocene,252,0.04857681351824633,0.021 to 0.076
+Pace effect (not divided by time),NOCA,Holocene-S,5,0.1906320117355955,-0.148 to 0.530
+Pace effect (not divided by time),NOCA,Holocene-C,5,0.01066148350637297,-0.068 to 0.089
+Pace effect (not divided by time),NOCA,Anthropocene,211,-0.07716891359256717,-0.157 to 0.002
+Direction effect (not divided by time),MORA,Holocene-S,5,-0.20435387674404287,-0.675 to 0.266
+Direction effect (not divided by time),MORA,Holocene-C,5,0.03475189069137521,-0.251 to 0.321
+Direction effect (not divided by time),MORA,Anthropocene,252,0.102452309079279,0.054 to 0.151
+Direction effect (not divided by time),NOCA,Holocene-S,5,0.02769846638082729,-0.184 to 0.239
+Direction effect (not divided by time),NOCA,Holocene-C,5,-0.1905783438320507,-0.515 to 0.134
+Direction effect (not divided by time),NOCA,Anthropocene,211,-0.07414848051444728,-0.162 to 0.014

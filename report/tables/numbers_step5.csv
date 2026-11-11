@@ -1,31 +1,31 @@
 Response,Era,Term,Estimate,95% CI,p
-Lag rate,Holocene,siteNOCA,-0.133,-0.238 to -0.027,0.01610271676123727
-Lag rate,Holocene,climate_rate,-0.098,-0.760 to 0.564,0.7606703206421428
-Lag rate,Holocene,fire_activity,+0.291,0.085 to 0.496,0.00784709730984956
+Lag rate,Holocene,siteNOCA,+0.046,-0.069 to 0.160,0.4144247501009203
+Lag rate,Holocene,climate_rate,+0.293,-0.224 to 0.811,0.2506987624654941
+Lag rate,Holocene,fire_activity,-0.081,-0.298 to 0.136,0.4461530817368166
 Lag rate,Anthropocene,siteNOCA,-0.650,-0.963 to -0.336,5.335405164144846e-5
 Lag rate,Anthropocene,burnedBurned,+0.180,-0.805 to 1.164,0.7201044528099639
-Pace effect,Holocene,siteNOCA,-0.082,-0.173 to 0.008,0.07058752866314619
-Pace effect,Holocene,climate_rate,-0.300,-0.916 to 0.315,0.31673819593082586
-Pace effect,Holocene,fire_activity,+0.206,0.043 to 0.369,0.01633256328148152
+Pace effect,Holocene,siteNOCA,+0.014,-0.065 to 0.094,0.7098003152012665
+Pace effect,Holocene,climate_rate,+0.389,0.089 to 0.690,0.01426143377348599
+Pace effect,Holocene,fire_activity,+0.023,-0.093 to 0.138,0.6860953454265646
 Pace effect,Anthropocene,siteNOCA,-0.347,-0.651 to -0.043,0.02540486614696332
 Pace effect,Anthropocene,burnedBurned,-1.194,-2.214 to -0.174,0.02191703076234525
-Direction effect,Holocene,siteNOCA,-0.083,-0.212 to 0.047,0.19606583458844143
-Direction effect,Holocene,climate_rate,-0.554,-1.794 to 0.685,0.3572127541011175
-Direction effect,Holocene,fire_activity,+0.101,-0.142 to 0.344,0.393055078556366
+Direction effect,Holocene,siteNOCA,+0.050,-0.057 to 0.157,0.3330999805239897
+Direction effect,Holocene,climate_rate,-0.021,-0.874 to 0.832,0.9594196471667796
+Direction effect,Holocene,fire_activity,-0.169,-0.363 to 0.025,0.08393952627836031
 Direction effect,Anthropocene,siteNOCA,-0.680,-1.044 to -0.315,2.749537756735495e-4
 Direction effect,Anthropocene,burnedBurned,+0.810,-0.332 to 1.952,0.16409850224792735
-Lag (not divided by time),Holocene,siteNOCA,-0.676,-1.093 to -0.258,0.00301281257924248
-Lag (not divided by time),Holocene,climate_change,-0.951,-1.703 to -0.200,0.0156190463515278
-Lag (not divided by time),Holocene,fire_activity,+1.245,0.422 to 2.068,0.00496835738522272
+Lag (not divided by time),Holocene,siteNOCA,+0.338,-0.218 to 0.894,0.21954488678934683
+Lag (not divided by time),Holocene,climate_change,+0.069,-0.851 to 0.990,0.8764968282515118
+Lag (not divided by time),Holocene,fire_activity,-0.593,-1.723 to 0.538,0.2870937262707077
 Lag (not divided by time),Anthropocene,siteNOCA,-0.190,-0.280 to -0.101,3.380673325060935e-5
 Lag (not divided by time),Anthropocene,burnedBurned,+0.052,-0.228 to 0.331,0.7172666443934463
-Pace effect (not divided by time),Holocene,siteNOCA,-0.070,-0.477 to 0.337,0.7197458308975817
-Pace effect (not divided by time),Holocene,climate_change,-0.409,-1.277 to 0.459,0.3325460229153686
-Pace effect (not divided by time),Holocene,fire_activity,+0.014,-0.799 to 0.828,0.9703946378959302
+Pace effect (not divided by time),Holocene,siteNOCA,+0.225,-0.189 to 0.640,0.2660667372642775
+Pace effect (not divided by time),Holocene,climate_change,+0.315,-0.313 to 0.944,0.3034497801803537
+Pace effect (not divided by time),Holocene,fire_activity,-0.235,-1.089 to 0.620,0.568332800751417
 Pace effect (not divided by time),Anthropocene,siteNOCA,-0.098,-0.185 to -0.012,0.02608690379975535
 Pace effect (not divided by time),Anthropocene,burnedBurned,-0.340,-0.630 to -0.050,0.02148937087868854
-Direction effect (not divided by time),Holocene,siteNOCA,-0.569,-1.361 to 0.223,0.14744319055844032
-Direction effect (not divided by time),Holocene,climate_change,-1.653,-2.288 to -1.018,4.686387527945047e-5
-Direction effect (not divided by time),Holocene,fire_activity,+0.676,0.161 to 1.190,0.01325879235607923
+Direction effect (not divided by time),Holocene,siteNOCA,+0.257,-0.328 to 0.842,0.36619897090367703
+Direction effect (not divided by time),Holocene,climate_change,+0.094,-1.016 to 1.204,0.8597401522123229
+Direction effect (not divided by time),Holocene,fire_activity,-0.553,-1.686 to 0.580,0.316255062394375
 Direction effect (not divided by time),Anthropocene,siteNOCA,-0.195,-0.299 to -0.091,2.491027216342332e-4
 Direction effect (not divided by time),Anthropocene,burnedBurned,+0.230,-0.094 to 0.553,0.1638745329768121
