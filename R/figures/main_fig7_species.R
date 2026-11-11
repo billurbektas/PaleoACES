@@ -109,6 +109,7 @@ figure = ggplot(drawn, aes(estimate, y)) +
 # by the maximum elevation of the plots where the species occurs, with that
 # maximum in metres, and in bold where the species is absent from the Holocene
 # record of both parks (Bills, 11 Nov 2026). The row titles sit on its left.
+# The names are coloured in greyscale by that maximum.
 names = species_elevation |> mutate(y = match(species, order_species),
     holocene_absent = species %in% holocene_absent_species,
     label = paste0(species, '  ', scales::comma(round(max_elevation)), ' m')) |>
@@ -122,8 +123,8 @@ name_column = ggplot(names, aes(x = 1, y = y)) +
   facet_grid(measure_label ~ column, switch = 'y') +
   scale_y_reverse(limits = y_limits, expand = c(0, 0)) +
   scale_x_continuous(limits = c(0, 1.02), expand = c(0, 0)) +
-  # Low to high: green, ochre, brown; dark enough to read as text.
-  scale_color_gradientn(colours = c('#1B7837', '#9C7A1E', '#5B3A12'), labels = scales::comma,
+  # Greyscale (Bills, 11 Nov 2026): mid grey at the lowest maximum, black at the highest.
+  scale_color_gradient(low = 'grey62', high = 'black', labels = scales::comma,
     name = 'Maximum elevation (m)', guide = guide_colorbar(barwidth = unit(9, 'cm'), barheight = unit(.6, 'cm'),
       title.position = 'top')) +
   theme_paleoaces(base_size = 24) +
@@ -133,7 +134,8 @@ name_column = ggplot(names, aes(x = 1, y = y)) +
     strip.placement = 'outside', strip.text.y.left = element_text(angle = 90, size = 22, face = 'bold'),
     strip.text.x = element_text(size = 26, face = 'bold'), strip.background.x = element_blank(),
     legend.position = 'bottom', legend.title = element_text(size = 22), legend.text = element_text(size = 19))
-figure = (name_column | figure) + plot_layout(widths = c(.55, 1), guides = 'collect') &
+# The name column only as wide as the longest name, so the row titles sit close to the names.
+figure = (name_column | figure) + plot_layout(widths = c(.4, 1), guides = 'collect') &
   theme(legend.position = 'bottom')
 if (render_figures) {
   # cairo_pdf draws the arrows of the side labels.

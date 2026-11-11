@@ -1226,13 +1226,13 @@ lower row includes the lake-periods and plot pairs whose composition did
 not change (all species values zero) and is per century of the same
 interval as the lag rate. Species are ordered by the maximum elevation
 of the plots where they occur (the 607 plot pairs, both surveys, both
-parks), the highest at the top. Their names are coloured from green
-(low) to brown (high) by that maximum, which follows each name in
-metres. Names in bold are species absent from the Holocene record of
-both parks. Symbols are means: triangles, Holocene stability periods,
-circles, Holocene climate-change periods, diamonds, Anthropocene plot
-pairs (burned and unburned together). Large symbols with bars are means
-whose 95% t-interval excludes zero, small faded symbols are means whose
+parks), the highest at the top. Their names are shaded from grey (low)
+to black (high) by that maximum, which follows each name in metres.
+Names in bold are species absent from the Holocene record of both parks.
+Symbols are means: triangles, Holocene stability periods, circles,
+Holocene climate-change periods, diamonds, Anthropocene plot pairs
+(burned and unburned together). Large symbols with bars are means whose
+95% t-interval excludes zero, small faded symbols are means whose
 interval includes zero. A species with no Holocene symbols in a park is
 absent from that park’s Holocene record. Each park has its own x scale,
 symmetric around zero. Holocene climate-change lake-periods span 200 to
