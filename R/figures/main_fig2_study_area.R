@@ -78,7 +78,7 @@ land = function(map, names) st_as_sf(maps::map(map, names, plot = FALSE, fill = 
 washington = land('state', 'washington')
 neighbours = bind_rows(land('state', c('oregon', 'idaho')), land('world', 'Canada'))
 
-PAPER = 22  # base font size; the figure is drawn at 19.5 x 15.5 inches
+PAPER = 22  # base font size; the figure is drawn at 19.5 x 16 inches
 OCEAN = '#DCE9F3'
 theme_map = theme_paleoaces(base_size = PAPER) +
   theme(panel.grid = element_line(color = 'grey88', linewidth = .3), axis.title = element_blank(),
@@ -144,12 +144,12 @@ overview = ggplot() +
   geom_sf(data = parks |> st_transform(WA_CRS), aes(fill = site), color = NA, alpha = .8) +
   geom_sf(data = boxes, aes(color = site), fill = NA, linewidth = .8) +
   geom_text(data = box_sides, aes(x = x + 12000, y = y, label = site, color = site), hjust = 0,
-    fontface = 'bold', size = 6.2) +
-  place(-120.3, 45.62, 'OREGON', size = 4.2, color = 'grey40', fontface = 'italic') +
-  place(-119.0, 49.13, 'CANADA', size = 4.2, color = 'grey40', fontface = 'italic') +
+    fontface = 'bold', size = 7) +
+  place(-120.3, 45.62, 'OREGON', size = 4.8, color = 'grey40', fontface = 'italic') +
+  place(-119.0, 49.13, 'CANADA', size = 4.8, color = 'grey40', fontface = 'italic') +
   scale_fill_manual(values = PAPER_SITE_COLORS, guide = 'none') +
   scale_color_manual(values = PAPER_SITE_COLORS, guide = 'none') +
-  scale_bar(wa_extent[['xmax']] - 205000, wa_extent[['ymin']] + 32000, km = 100, n = 1, height = 9000, text_size = 4.6) +
+  scale_bar(wa_extent[['xmax']] - 205000, wa_extent[['ymin']] + 32000, km = 100, n = 1, height = 9000, text_size = 5.2) +
   coord_sf(crs = WA_CRS, xlim = wa_extent[c('xmin', 'xmax')], ylim = wa_extent[c('ymin', 'ymax')], expand = FALSE,
     datum = NA) +
   labs(title = 'Washington State, USA') +
@@ -157,9 +157,9 @@ overview = ggplot() +
   theme(panel.background = element_rect(fill = OCEAN, color = NA),
     plot.title = element_text(size = PAPER + 2, face = 'bold', hjust = .5, margin = margin(b = 8)),
     plot.margin = margin(6, 6, 16, 6),
-    # Larger than before (Bills): 5.6 inches wide.
-    panel.widths = unit(5.6, 'in'),
-    panel.heights = unit(5.6 * (wa_extent[['ymax']] - wa_extent[['ymin']]) / (wa_extent[['xmax']] - wa_extent[['xmin']]), 'in'))
+    # Larger than before (Bills): 6.4 inches wide.
+    panel.widths = unit(6.4, 'in'),
+    panel.heights = unit(6.4 * (wa_extent[['ymax']] - wa_extent[['ymin']]) / (wa_extent[['xmax']] - wa_extent[['xmin']]), 'in'))
 
 park_panel = function(park, tag, title, bar_corner, arrow_corner, grid) {
   e = ext[[park]]; w = e[3] - e[1]; h = e[4] - e[2]
@@ -180,13 +180,13 @@ park_panel = function(park, tag, title, bar_corner, arrow_corner, grid) {
     geom_point(data = lakes, aes(x, y, shape = role, fill = role), color = 'black', stroke = 1, size = 7.5) +
     scale_color_manual(values = c(Unburned = 'grey35', `Burned between the surveys` = PAPER_FIRE_RED),
       breaks = c('Unburned', 'Burned between the surveys'), name = 'Anthropocene plot pairs',
-      guide = guide_legend(override.aes = list(size = 5.5), order = 1, ncol = 1)) +
+      guide = guide_legend(override.aes = list(size = 7), order = 1, ncol = 1)) +
     scale_shape_manual(values = c(`Vegetation record` = 21, `Fire record` = 24,
       `Vegetation and fire record` = 23), name = 'Holocene cored lakes', limits = roles, drop = FALSE,
-      guide = guide_legend(order = 2, ncol = 1)) +
+      guide = guide_legend(order = 2, ncol = 1, override.aes = list(size = 9))) +
     scale_fill_manual(values = c(`Vegetation record` = '#1B7837', `Fire record` = '#E8A33D',
       `Vegetation and fire record` = '#1B7837'), name = 'Holocene cored lakes', limits = roles, drop = FALSE,
-      guide = guide_legend(order = 2, ncol = 1)) +
+      guide = guide_legend(order = 2, ncol = 1, override.aes = list(size = 9))) +
     # The same 10 km bar and the same arrow in both maps (sized on the panel, which
     # is the same in both).
     scale_bar(bar[1], bar[2], km = 10, n = 2, height = h * .012, text_size = 6) +
@@ -206,10 +206,13 @@ p_noca = park_panel('NOCA', 'B.', 'North Cascades National Park\nService Complex
 # On top, the Washington map and the legend side by side. Below, the two park maps.
 figure = overview + guide_area() + p_mora + p_noca +
   plot_layout(design = 'AB\nCD', guides = 'collect') &
-  theme(legend.box = 'horizontal', legend.box.just = 'top', legend.title = element_text(size = PAPER, face = 'bold'),
-    legend.text = element_text(size = PAPER - 2), legend.title.position = 'top', legend.spacing.x = unit(.8, 'cm'))
+  theme(legend.box = 'horizontal', legend.box.just = 'top', legend.title = element_text(size = PAPER + 2, face = 'bold'),
+    legend.text = element_text(size = PAPER), legend.title.position = 'top', legend.spacing.x = unit(1, 'cm'),
+    legend.key.size = unit(1.1, 'cm'),
+    # A right margin moves the legend left within its area, towards the Washington map (Bills).
+    legend.box.margin = margin(0, 3, 0, 0, 'cm'))
 if (render_figures) {
-  ggsave(fig('main', 'fig_study_area.pdf'), figure, width = 19.5, height = 15.5, device = cairo_pdf)
-  ggsave(fig('main', 'fig_study_area.png'), figure, width = 19.5, height = 15.5, dpi = 300)
+  ggsave(fig('main', 'fig_study_area.pdf'), figure, width = 19.5, height = 16, device = cairo_pdf)
+  ggsave(fig('main', 'fig_study_area.png'), figure, width = 19.5, height = 16, dpi = 300)
 }
 cat('Figure 2: study area drawn with', nrow(plots), 'plot pairs and', nrow(lakes), 'cored lakes.\n')
