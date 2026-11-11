@@ -1,8 +1,8 @@
 # =============================================================================
 # paleo_ages.R - read the Bacon chronologies written by 05_age_depth_models.R
 # =============================================================================
-# Shared by 06_paleo_samples.R, 08_fire_records.R and
-# 07_paleo_climate.R so the age lookup is defined once. Contains NO side
+# Shared by 06_paleo_samples.R, 09_fire_records.R and
+# 08_paleo_climate.R so the age lookup is defined once. Contains NO side
 # effects: sourcing it reads Cores/ and defines objects, and writes nothing.
 #
 # Run 05_age_depth_models.R first (four MCMC runs, ~25 min). Everything here is

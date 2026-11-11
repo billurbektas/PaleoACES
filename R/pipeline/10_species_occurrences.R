@@ -1,12 +1,12 @@
 # =============================================================================
-# 09_species_occurrences.R
+# 10_species_occurrences.R
 # -----------------------------------------------------------------------------
 # ONE place where every cross-site, cross-era taxonomic decision is applied.
 #
 #   reads   output/MORA_occ.csv   (01_clean_mora_vegetation.R)
 #           output/NOCA_occ.csv   (02_clean_noca_vegetation.R)
 #           output/paleo_occ.csv  (06_paleo_samples.R)
-#   writes  output/occ_consolidated.csv   <- the ONLY occurrence input to 10_cca.R
+#   writes  output/occ_consolidated.csv   <- the ONLY occurrence input to 11_cca.R
 #           diagnostic PDFs, including native 100-year sampling/fire counts
 #
 # Nothing upstream is re-run. The three cleaning scripts keep producing exactly
@@ -154,7 +154,7 @@ NON_TAXA = c("unknown", "Abies sp.", "Unknown tree.")
 # exclusion was not justified by identification evidence or a general selection
 # rule. Site concentration, absence from the Holocene records and an extreme
 # ordination position are not exclusion criteria. It now follows the same >=20
-# species-selection rule as other tree taxa in 10_cca.R.
+# species-selection rule as other tree taxa in 11_cca.R.
 # The former rationale and the author's reversal are recorded in
 # report/details/05_species_occurrence_consolidation.md and report/details/10_decisions.md.
 
@@ -285,9 +285,9 @@ cat("\nWrote output/occ_consolidated.csv:", nrow(occ), "rows,",
 #
 # NOTHING IS FILTERED OR DECIDED HERE. This block reports the RAW EVIDENCE - how
 # many plots each species occupies in each site x period. The threshold itself
-# lives at the top of 10_cca.R as `count.thr`, so it can be swept:
+# lives at the top of 11_cca.R as `count.thr`, so it can be swept:
 #
-#   for (thr in c(10, 15, 20, 25, 30)) { count.thr = thr; source("R/pipeline/10_cca.R") }
+#   for (thr in c(10, 15, 20, 25, 30)) { count.thr = thr; source("R/pipeline/11_cca.R") }
 #
 # The rule there: a species is DROPPED only if it is below the threshold in EVERY
 # site x period group - so a species common in one group survives even if it is
@@ -306,7 +306,7 @@ counts = counts %>%
 
 cat("\n=== plots (or paleo samples) per species, by site x period ===\n")
 cat("    max_group = the largest count in any one group. A candidate count.thr\n",
-    "    is compared against THIS, because 10_cca.R drops a species only\n",
+    "    is compared against THIS, because 11_cca.R drops a species only\n",
     "    if it is below the cut-off in every group. Set the threshold there.\n", sep = "")
 print(as.data.frame(counts), row.names = FALSE)
 

@@ -1,5 +1,6 @@
-# 07 Paleo climate: CHELSA-TraCE21k monthly climate at each lake and century,
-# then the climate at each macrofossil sample's own age (paleo_env.csv).
+# 08 Paleo climate: CHELSA-TraCE21k monthly climate at each lake and century,
+# bias-corrected onto CHELSA V2.1 with the factors of R/pipeline/07_climate_products.R
+# (Appendix S2), then the climate at each macrofossil sample's own age (paleo_env.csv).
 # The download is resumable and cached in output/cache/chelsa_paleo/; an
 # --offline run assembles the pond climate from that cache and stops if a chunk is missing.
 
@@ -9,16 +10,11 @@
 library(here)
 suppressMessages({library(dplyr); library(tidyr); library(readr)})
 source(here("R/vendor/get_chelsa.R"), local = TRUE)          # vendored, commit 3d410b8
-source(here("R/helpers/get_chelsa_monthly.R"), local = TRUE)  # V2.1 monthly, for the bias anchor
 source(here("R/helpers/config.R"), local = TRUE)
 source(here("R/helpers/offline_cache.R"), local = TRUE)
 
 CACHE        = out("chelsa_paleo")
 OUT          = out("chelsa_paleo_ponds.csv")
-OUT_BIAS     = out("chelsa_paleo_bias_correction.csv")
-BIAS_CORRECT = TRUE
-V21_REF      = 1979:2021
-SLICE_MODERN = 20L
 
 # TraCE21k slice ids: integers -200..20, one step ~100 yr, 20 = present, 0 = 0 CE.
 # -90 is ~11 kyr BP, covering NOCA's 10,609 cal BP, so both sites get the SAME
@@ -27,75 +23,8 @@ SLICE_MODERN = 20L
 SLICES = -90:20
 VARS   = c("tasmin", "tasmax", "pr")
 
-# MORA coords per Dunwiddie 1986; NOCA per Prichard 2009.
-# =============================================================================
-# POND COORDINATES - provenance and precision (audited 2026-08-13)
-# =============================================================================
-# CHELSA is 30 arcsec (~0.00833 deg, ~700 m E-W here), so coordinate precision
-# below ~1 km changes the grid cell. Every coordinate below was traced to its
-# most precise published source; GNIS, Neotoma, NOAA WDS-Paleo and the open web
-# were all searched.
-#
-# PantherPotholes - CHANGED 2026-08-13, was (-121.0333, 48.6500).
-#   Neotoma site 13042 carries a site POLYGON:
-#     [-121.04089, 48.65816] .. [-121.0381, 48.65952], altitude 1033 m
-#   centre = (-121.0395, 48.6588). This is the dataset PI's own site footprint,
-#   precise to ~150 m. The old value was Prichard (2009)'s published
-#   "48 deg 39' N, 121 deg 02' W" - the SAME site, rounded to arcminutes, which
-#   put it 1.1 km away in a DIFFERENT CHELSA cell in both axes.
-#   Measured cost of the old coordinate: precipitation was unaffected (annual
-#   1231 vs 1224 mm) but temperature ran 0.85 degC COOL in every month - a
-#   constant displacement of 0.171 CCA units, 47% of the span of the entire NOCA
-#   Holocene climate trajectory. Corrected because it is wrong, not because of
-#   the size of its effect.
-#
-# The three MORA ponds - ALL CHANGED 2026-08-13. The previous values were
-# Dunwiddie (1986)'s published coordinates, given only to the ARCMINUTE:
-#     Jay Bath          46 deg 46' N, 121 deg 46' W, 1311 m
-#     Log Wallow        46 deg 46' N, 121 deg 45' W, "1.2 km NE of Jay Bath, +50 m"
-#     Reflection Pond 1 46 deg 46' N, 121 deg 43' W, "2.4 km E of Log Wallow,
-#                       easternmost of the ponds called the Reflection Lakes"
-#   Arcminute rounding at 46.77 N is +/-928 m in latitude and +/-635 m in
-#   longitude - MORE than one CHELSA cell - and it put all three ponds at the
-#   IDENTICAL latitude, which is a rounding artefact, not geography.
-#   ⚠ THE OLD JAY BATH COORDINATE HAD NO POND AT IT. Confirmed on satellite
-#   imagery by Billur, 2026-08-13. These are not small errors; they were the
-#   wrong locations.
-#
-#   The ponds are Dunwiddie's own informal names and appear in NO gazetteer or
-#   database - GNIS, Neotoma and NOAA WDS-Paleo all return nothing - so the
-#   ponds were located directly on satellite imagery by Billur. The values below
-#   are those, and they are INDEPENDENTLY CORROBORATED three ways:
-#
-#     1. they reproduce Dunwiddie's published arcminutes
-#          Jay Bath          46 46.23' / 121 46.10'   -> 46 46' / 121 46'  exact
-#          Log Wallow        46 46.50' / 121 45.23'   -> 121 45' exact; the
-#                            latitude falls exactly on the .50 rounding
-#                            boundary, which truncation renders as 46 46'
-#          Reflection Pond 1 46 46.17' / 121 43.49'   -> 46 46' / 121 43'  exact
-#     2. they reproduce his stated inter-pond distances
-#          Jay Bath -> Log Wallow    1.22 km   (he says 1.2 km)
-#          Log Wallow -> Reflection  2.30 km   (he says 2.4 km)
-#          Jay Bath -> Reflection    3.32 km   (he says a 3.5-km transect)
-#     3. they RESOLVE the contradiction the old coordinates carried. Dunwiddie's
-#        text says Log Wallow is NORTHEAST of Jay Bath; the rounded coordinates
-#        put it due EAST at identical latitude. The located ponds give a bearing
-#        of 65 deg - north of east. His prose was right; the rounding was the
-#        artefact.
-#
-#   ⚠ GNIS "Reflection Lakes" (46.7695, -121.7300, 1481 m) is NOT this pond: it
-#   is the group centroid, and Dunwiddie specifies the EASTERNMOST pond of that
-#   group. Do not substitute it.
-#
-# CRS: all coordinates are WGS 84 decimal degrees (EPSG:4326), which is what
-# Google Maps reports and what CHELSA rasters are stored in - verified directly
-# from a CHELSA GeoTIFF header (EPSG:4326, 0.008333 deg = 30 arcsec). NO
-# reprojection is needed or applied anywhere in this pipeline.
-ponds = data.frame(
-  ID  = c("JayBath", "LogWallow", "ReflectionPond", "PantherPotholes"),
-  lon = c(-121.768404, -121.753865, -121.724790,   -121.0395),
-  lat = c(  46.770463,   46.775068,   46.769559,     48.6588),
-  site = c("MORA", "MORA", "MORA", "NOCA"), stringsAsFactors = FALSE)
+# The four lakes and their coordinates (provenance in R/helpers/config.R).
+ponds = PALEO_LAKES
 
 if (!dir.exists(CACHE)) dir.create(CACHE, recursive = TRUE)
 
@@ -196,95 +125,33 @@ print(as.data.frame(paleo %>%
             pct_identical = 100 * mean(spread == 0), .groups = "drop")), digits = 3)
 
 # -----------------------------------------------------------------------------
-# 3. bias correction against V2.1 (cached the same way)
+# 3. bias correction onto CHELSA V2.1 (Appendix S2, Bills, 11 Nov 2026)
 # -----------------------------------------------------------------------------
-if (BIAS_CORRECT) {
-  v21_paths = file.path(CACHE, sprintf("v21_%s_%d.csv",
-                        rep(VARS, each = length(V21_REF)), rep(V21_REF, length(VARS))))
-  pond_points = ponds %>% transmute(id = ID, lon, lat)
-  v21_vars = rep(VARS, each = length(V21_REF))
-  v21_years = rep(V21_REF, length(VARS))
-  v21_valid = mapply(climate_cache_valid, v21_paths,
-                     MoreArgs = list(points = pond_points),
-                     variable = v21_vars, year = v21_years,
-                     expected_source = "v21_monthly")
-  require_offline_cache(v21_paths, v21_valid, "paleo V2.1 bias anchor")
-  cat("\nV2.1 monthly anchor: ", sum(!v21_valid), " of ",
-      length(v21_paths), " chunks to fetch\n", sep = "")
-  k = 0
-  for (v in VARS) for (yr in V21_REF) {
-    k = k + 1; p = file.path(CACHE, sprintf("v21_%s_%d.csv", v, yr))
-    if (climate_cache_valid(p, pond_points, v, yr,
-                            expected_source = "v21_monthly")) next
-    if (file.exists(p)) file.remove(p)
-    x = get_chelsa_monthly(ponds, vars = v, years = yr, months = 1:12,
-                           to_celsius = TRUE, id_col = "ID", verbose = FALSE)
-    if (nrow(x) != 12L * nrow(ponds) || anyNA(x$value)) {
-      cat(sprintf("  [%3d/%3d] v21_%s_%d INCOMPLETE - not cached\n",
-                  k, length(v21_paths), v, yr))
-      next
-    }
-    tmp = paste0(p, ".tmp"); write_csv(x, tmp); file.rename(tmp, p)
-    cat(sprintf("  [%3d/%3d] v21_%s_%d\n", k, length(v21_paths), v, yr))
-  }
-
-  v21_valid = mapply(climate_cache_valid, v21_paths,
-                     MoreArgs = list(points = pond_points),
-                     variable = v21_vars, year = v21_years,
-                     expected_source = "v21_monthly")
-  if (!all(v21_valid))
-    stop(sum(!v21_valid), " incomplete V2.1 anchor chunks; rerun to finish.")
-  v21 = bind_rows(lapply(v21_paths[v21_valid], read_csv,
-                         show_col_types = FALSE, progress = FALSE)) %>%
-    group_by(id, variable, month) %>%
-    summarise(v21_mean = mean(value, na.rm = TRUE), .groups = "drop")
-
-  bias = paleo %>% filter(slice == SLICE_MODERN) %>%
-    select(id, variable, month, trace_slice20 = value) %>%
-    inner_join(v21, by = c("id", "variable", "month")) %>%
-    mutate(add_offset = ifelse(variable == "pr", NA_real_, trace_slice20 - v21_mean),
-           mul_factor = ifelse(variable == "pr" & trace_slice20 > 0,
-                               v21_mean / trace_slice20, NA_real_))
-
-  cat("\n--- bias: TraCE21k slice 20 minus V2.1 (degC; pr as ratio) ---\n")
-  print(as.data.frame(bias %>% group_by(variable) %>%
-    summarise(
-      n = n(),
-      mean_add = if (all(is.na(add_offset))) NA_real_ else mean(add_offset, na.rm = TRUE),
-      min_add = if (all(is.na(add_offset))) NA_real_ else min(add_offset, na.rm = TRUE),
-      max_add = if (all(is.na(add_offset))) NA_real_ else max(add_offset, na.rm = TRUE),
-      mean_mul = if (all(is.na(mul_factor))) NA_real_ else mean(mul_factor, na.rm = TRUE),
-      .groups = "drop"
-    )), digits = 3)
-  write_csv(bias, OUT_BIAS)
-
-  paleo = paleo %>%
-    left_join(bias %>% select(id, variable, month, add_offset, mul_factor),
-              by = c("id", "variable", "month")) %>%
-    mutate(value_raw = value,
-           value_corrected = ifelse(variable == "pr", value * mul_factor,
-                                    value - add_offset))
-
-  chk = paleo %>% filter(slice == SLICE_MODERN) %>%
-    inner_join(v21, by = c("id", "variable", "month"))
-  stopifnot(max(abs(chk$value_corrected - chk$v21_mean), na.rm = TRUE) < 1e-6)
-  cat("check: slice 20 now equals the V2.1 reference exactly\n")
-
-} else {
-  cat("\n!! BIAS_CORRECT = FALSE - paleo climate is raw TraCE21k, on a different\n",
-      "   scale from the V2.1 climate the CCA is calibrated on.\n", sep = "")
-  paleo = paleo %>% mutate(value_raw = value, value_corrected = value,
-                           add_offset = NA_real_, mul_factor = NA_real_)
-}
+# One factor per park, calendar month and variable from stage 07: CHELSAcruts to
+# V2.1 over 1979 to 2016 on the 5 km disc around the park's lakes. Temperature
+# gets the offset added, precipitation is multiplied by the ratio, at every
+# slice and for every lake of the park. Both series are kept: the main run uses
+# the corrected one, the sensitivity run (R/sensitivity_raw_paleoclimate.R) the raw one.
+factors = read_csv(out("climate_bias_correction_factors.csv"), show_col_types = FALSE)
+paleo = paleo %>%
+  left_join(ponds %>% select(id = ID, site), by = "id") %>%
+  left_join(factors %>% select(site, variable, month, kind, factor), by = c("site", "variable", "month")) %>%
+  mutate(value_raw = value,
+         value_corrected = if_else(kind == "ratio", value * factor, value + factor),
+         correction_offset = if_else(kind == "offset", factor, NA_real_),
+         correction_ratio = if_else(kind == "ratio", factor, NA_real_))
+# Rule: every lake, slice, month and variable has its park's factor.
+stopifnot(!anyNA(paleo$factor), !anyNA(paleo$value_corrected))
+cat("\nbias correction applied: ", n_distinct(paleo$id), " lakes x ", n_distinct(paleo$slice),
+    " slices; main run uses the ", if (PALEO_USE_BIAS_CORRECTED) "corrected" else "raw", " series\n", sep = "")
 
 paleo_out = paleo %>%
-  left_join(ponds %>% select(id = ID, site), by = "id") %>%
   select(lake = id, site, lon, lat, variable, slice, year_CE, cal_BP, month,
-         value_raw, value_corrected, add_offset, mul_factor)
+         value_raw, value_corrected, correction_offset, correction_ratio)
 
 write_csv(paleo_out, OUT)
 cat("\nwritten: ", OUT, "  (", nrow(paleo_out), " rows)\n",
-    "Downstream uses value_raw by default; value_corrected is retained for the documented sensitivity run.\n", sep = "")
+    "The main run uses value_corrected; value_raw is kept for the raw-paleoclimate sensitivity run.\n", sep = "")
 
 # =============================================================================
 # 2. Climate at each sample age

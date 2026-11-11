@@ -1,7 +1,7 @@
-# 08 Fire records (Appendix S2): tapas event detection for the three MORA charcoal
+# 08 Fire records (Appendix S3): tapas event detection for the three MORA charcoal
 # records and Panther Potholes, fire evidence per macrofossil sample, the
 # four-lake accepted-event catalog, and the CharAnalysis reproduction of
-# Walsh et al. (2017) (Table S2.2).
+# Walsh et al. (2017) (Table S3.2).
 
 # =============================================================================
 # 1. MORA charcoal records: tapas detection with Walsh settings
@@ -224,7 +224,7 @@ stopifnot(nrow(noca_fire) == nrow(noca_samples))
 paleo_fire = bind_rows(paleo_fire, noca_fire)
 
 # ONE row per sample, and the same samples the vegetation has. Without this the
-# left_join in 10_cca.R silently multiplies rows: a plot_id appearing twice
+# left_join in 11_cca.R silently multiplies rows: a plot_id appearing twice
 # here makes that paleo sample count twice in the CCA.
 stopifnot(!any(duplicated(paleo_fire$plot_id)))
 paleo_occ_ids = read_csv(out("paleo_occ.csv"), show_col_types = FALSE)$plot_id
@@ -335,7 +335,7 @@ active_paths = out(c(
   "fire_mora_tapas_settings.csv", "fire_noca_tapas_series.csv",
   "fire_noca_tapas_events.csv", "fire_noca_tapas_settings.csv"))
 if (!all(file.exists(active_paths)))
-  stop("Run R/pipeline/08_fire_records.R and R/pipeline/08_fire_records.R first.")
+  stop("Run R/pipeline/09_fire_records.R and R/pipeline/09_fire_records.R first.")
 all_continuous = bind_rows(
   read_csv(active_paths[1], show_col_types = FALSE),
   read_csv(active_paths[4], show_col_types = FALSE))

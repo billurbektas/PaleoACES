@@ -646,7 +646,7 @@ if (sum(NOCA_tree_composition_audit$present_composition_changed) != 50L) {
 # Stage-resolved companion table (adult vs seedling/regeneration)
 # -----------------------------------------------------------------------------
 # Same plots and species as NOCA_occ.csv, one row per stage, so
-# R/pipeline/09_species_occurrences.R can draw the adult-vs-seedling comparison
+# R/pipeline/10_species_occurrences.R can draw the adult-vs-seedling comparison
 # WITHOUT source()-ing this script (which would rewrite these outputs as a side
 # effect, which was the problem in the removed historical stage diagnostic).
 #
@@ -785,7 +785,7 @@ print_turnover_summary(noca_turnover_results)
 noca_heatmap_plot = create_turnover_heatmap(noca_turnover_results$turnover_data) 
 noca_alluvial_plot = create_alluvial_plot(noca_turnover_results$turnover_data)
 
-# The CCA inclusion threshold belongs to R/pipeline/10_cca.R. This cleaner reports
+# The CCA inclusion threshold belongs to R/pipeline/11_cca.R. This cleaner reports
 # the raw NOCA occurrence counts without duplicating downstream model decisions.
 noca_count_data = NOCA_occ %>%
   filter(occurrence == 1) %>%
@@ -801,7 +801,7 @@ noca_count_plot =
   geom_col(position = "dodge", width = 0.7) +
   scale_fill_manual(values = c("past" = "#8B4513", "present" = "#228B22")) +
   labs(title = "NOCA species occurrence by period",
-       subtitle = "Raw cleaning output; CCA eligibility is decided centrally in R/pipeline/10_cca.R",
+       subtitle = "Raw cleaning output; CCA eligibility is decided centrally in R/pipeline/11_cca.R",
        x = "Species", y = "Number of plots",
        fill = "Period") +
   theme_minimal() +

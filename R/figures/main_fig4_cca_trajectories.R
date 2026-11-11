@@ -214,7 +214,7 @@ if (render_figures) {
   # cairo_pdf draws the arrows of the axis titles, which the default pdf device cannot.
   ggsave(fig('main', 'fig_cca_trajectories.pdf'), figure, width = 24, height = 24, device = cairo_pdf, bg = 'white')
   ggsave(fig('main', 'fig_cca_trajectories.png'), figure, width = 24, height = 24, dpi = 300, bg = 'white')
-  ggsave(fig('supplementary', 'figS12_cca_biplot_unrotated.pdf'), biplot(FALSE), width = 12, height = 12.5,
+  ggsave(fig('supplementary', 'figS15_cca_biplot_unrotated.pdf'), biplot(FALSE), width = 12, height = 12.5,
     device = cairo_pdf, bg = 'white')
 }
 cat(sprintf('Figure 4: display rotation %.1f degrees; %d period centroids.\n', rotation$angle_degrees, nrow(centroids)))

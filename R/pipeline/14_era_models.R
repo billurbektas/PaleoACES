@@ -179,11 +179,11 @@ saveRDS(fit, file.path(joint_out, 'primary_fit.rds'))
 if (isTRUE(getOption('paleoaces.render_figures', TRUE))) {
   joint_predictions = d |> transmute(metric = as.character(correction), era = as.character(period_type), site,
     predicted = as.numeric(fitted(fit)), normalized_residual = as.numeric(residuals(fit, type = 'normalized')))
-  # Figs. S13 and S14 of the README (Bills, 11 Nov 2026: model checks shown with
+  # Figs. S16 and S17 of the README (Bills, 11 Nov 2026: model checks shown with
   # the results): residuals of the era models and of the joint model.
-  ggsave(fig('supplementary', 'figS13_era_model_residuals.pdf'), reconstruction_residual_plot(tables$era_predictions),
+  ggsave(fig('supplementary', 'figS16_era_model_residuals.pdf'), reconstruction_residual_plot(tables$era_predictions),
     width = 14, height = 12, device = cairo_pdf)
-  ggsave(fig('supplementary', 'figS14_joint_model_residuals.pdf'), reconstruction_residual_plot(joint_predictions),
+  ggsave(fig('supplementary', 'figS17_joint_model_residuals.pdf'), reconstruction_residual_plot(joint_predictions),
     width = 14, height = 12, device = cairo_pdf)
 }
 cat('Era models:', length(fits), 'responses; joint model on', nrow(d) / 2, 'paired units.\n')

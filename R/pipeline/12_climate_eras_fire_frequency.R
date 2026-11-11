@@ -1,5 +1,5 @@
 # =============================================================================
-# 11_climate_eras_fire_frequency.R
+# 12_climate_eras_fire_frequency.R
 # =============================================================================
 # Literature-blind unified Holocene climate eras, and the Holocene fire
 # frequency of each park (accepted events per 1,000 years). Climate and fire are
@@ -27,7 +27,7 @@ required = c(CLIMATE_INPUT, CLIMATE_SCALING, FIRE_EVENTS, FIRE_SERIES,
              FIRE_SETTINGS)
 if (!all(file.exists(required))) stop("Missing unified-era input(s): ",
   paste(required[!file.exists(required)], collapse = ", "),
-  ". Run CCA reference and R/pipeline/08_fire_records.R first.")
+  ". Run CCA reference and R/pipeline/09_fire_records.R first.")
 
 # Eras are classified from the CCA constraints (R/helpers/config.R).
 PRIMARY_VARS = CCA_VARIABLES
@@ -42,7 +42,7 @@ REQUIRED_PHASES = 8L
 ponds = read_csv(CLIMATE_INPUT, show_col_types = FALSE)
 levels = ponds |>
   transmute(unit = lake, period = site, variable, time = slice, month,
-            value = value_raw) |>
+            value = if (PALEO_USE_BIAS_CORRECTED) value_corrected else value_raw) |>
   derive_climate_vars(winter_shift = FALSE) |>
   rename(lake = unit, site = period, slice = time) |>
   mutate(cal_bp = trace_slice_cal_bp(slice)) |>

@@ -25,7 +25,7 @@ source(here::here('R/helpers/config.R'), local = TRUE)
 library(here)
 if (!exists("extra_exclude")) extra_exclude = character(0)
 if (!exists("cca_suffix"))    cca_suffix    = ""
-source(here("R/pipeline/10_cca.R"), local = TRUE)
+source(here("R/pipeline/11_cca.R"), local = TRUE)
 library(ggrepel)
 library(patchwork)
 

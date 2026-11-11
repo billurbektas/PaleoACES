@@ -61,7 +61,7 @@ write_csv(MORA_visits$years, out("MORA_plot_years.csv"))
 # Patched HERE and not in the CSV, on purpose: the library file is shared, and
 # this is a code-LINKAGE fix, not a taxonomic one. The taxonomy (balsamifera and
 # trichocarpa are one taxon -> Populus trichocarpa) stays where every other
-# cross-site naming decision lives, in R/pipeline/09_species_occurrences.R.
+# cross-site naming decision lives, in R/pipeline/10_species_occurrences.R.
 stopifnot(sum(MORA_sp_lib$prst_code == "POPBAL", na.rm = TRUE) == 1)
 stopifnot(!"POTR" %in% MORA_sp_lib$past_code)   # no competing row to collide with
 MORA_sp_lib = MORA_sp_lib %>%
@@ -497,7 +497,7 @@ cat("- Present records:", sum(mora_occ$period == "present"), "\n")
 # Write to CSV (commented out for safety)
 write_csv(mora_occ, file = out("MORA_occ.csv"))
 # Stage-resolved companion. Same plots and species as MORA_occ.csv, but one row
-# per stage, so R/pipeline/09_species_occurrences.R can draw the adult vs
+# per stage, so R/pipeline/10_species_occurrences.R can draw the adult vs
 # seedling comparison WITHOUT source()-ing this script (which would rewrite these
 # outputs as a side effect, which was the problem in the removed historical stage diagnostic).
 write_csv(mora_stage, file = out("MORA_occ_stage.csv"))

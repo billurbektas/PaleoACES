@@ -124,7 +124,7 @@ ponds_monthly = read_csv(out("chelsa_paleo_ponds.csv"), show_col_types = FALSE)
 
 # winter_shift = FALSE: a slice is a 100-yr CLIMATOLOGY, so Dec/Jan/Feb of the
 # same slice already are its winter. Shifting December would strand it a century
-# away. Same convention as 07_paleo_climate.R.
+# away. Same convention as 08_paleo_climate.R.
 # BOTH the bias-corrected and the RAW TraCE21k series are built, so the figure
 # can show what the correction does. The expectation is exact and worth stating
 # in advance:
@@ -444,8 +444,8 @@ p_cor = ggplot(cor_df, aes(v1, v2, fill = r)) +
 pdf(fig("supplementary", "climate_holocene_timeseries.pdf"), width = 13, height = 15)
 print(p_change); print(p_cor)
 dev.off()
-# The correlation page on its own, as Fig. S7 of the README.
-ggsave(fig("supplementary", "figS07_climate_correlations.pdf"), p_cor, width = 13, height = 15)
+# The correlation page on its own, as Fig. S10 of the README.
+ggsave(fig("supplementary", "figS10_climate_correlations.pdf"), p_cor, width = 13, height = 15)
 
 cat("\n=== variable pairs that FLIP SIGN between the eras ===\n")
 if (nrow(flip)) print(as.data.frame(flip %>% mutate(across(c(holo, anth), ~round(.x, 2)))), row.names = FALSE) else

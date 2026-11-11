@@ -1,34 +1,34 @@
-# Figs. S16 and S17 (Appendix S3, Bills, 11 Nov 2026): raw against bias-corrected paleoclimate.
-# Both read the comparison written by R/sensitivity_bias_corrected.R.
-# Fig. S16: every Holocene lake-period with the raw paleoclimate (x) against the
-# bias-corrected paleoclimate (y), for the era responses that the correction can
-# change. Rows: climate change, lag, pace effect, direction effect; left the
-# total over the lake-period, right the rate per century. On the dashed 1:1 line
-# the correction changes nothing; in the shaded quadrants the value changes
-# sign. Each panel gives the Pearson r between the runs in each park. Turnover
-# and displacement use only the observed positions and are the same in both
-# runs, so they are not drawn.
-# Fig. S17: the Holocene explanatory-model slopes of Figure 7A and C with the
-# raw and the bias-corrected paleoclimate side by side.
+# Figs. S19 and S20 (Appendix S4, Bills, 11 Nov 2026): the main run on the
+# bias-corrected paleoclimate against the sensitivity run on the raw paleoclimate.
+# Both read the comparison written by R/sensitivity_raw_paleoclimate.R.
+# Fig. S19: every Holocene lake-period the two runs share (same lake, period type
+# and ends), with the corrected paleoclimate (x) against the raw one (y), for the
+# era responses the paleoclimate enters. Rows: climate change, lag, pace effect,
+# direction effect; left the total over the lake-period, right the rate per
+# century. On the dashed 1:1 line the two runs agree; in the shaded quadrants the
+# value changes sign. Each panel gives the Pearson r between the runs in each
+# park. Turnover and displacement use only the observed positions and are the
+# same in both runs, so they are not drawn.
+# Fig. S20: the Holocene explanatory-model slopes of Figure 7A and C in both runs.
 source(here::here('R/helpers/config.R'), local = TRUE)
 suppressPackageStartupMessages({library(here); library(tidyverse); library(patchwork)})
 source(here('R/helpers/figure_style.R'), local = TRUE)
 render_figures = isTRUE(getOption('paleoaces.render_figures', TRUE))
 
-comparison_dir = here('output_bias_corrected', 'comparison')
-comparison = file.path(comparison_dir, 'lake_period_responses_raw_vs_corrected.csv')
+comparison_dir = here('output_raw_paleoclimate', 'comparison')
+comparison = file.path(comparison_dir, 'lake_period_responses_corrected_vs_raw.csv')
 if (!file.exists(comparison)) {
-  cat('Figs. S16 and S17 skipped: run Rscript R/sensitivity_bias_corrected.R first.\n')
+  cat('Figs. S19 and S20 skipped: run Rscript R/sensitivity_raw_paleoclimate.R first.\n')
 } else {
   # The minus sign rather than the hyphen in printed numbers (cairo_pdf draws it).
   signed = function(x, digits) sub('^-', '−', formatC(x, format = 'f', digits = digits))
 
-  # Fig. S16 -------------------------------------------------------------------------
+  # Fig. S19 -------------------------------------------------------------------------
   d = read_csv(comparison, show_col_types = FALSE) |>
     # Pace and direction effects are undefined where a position did not move.
-    filter(is.finite(raw), is.finite(corrected)) |>
+    filter(is.finite(corrected), is.finite(raw)) |>
     mutate(period_type = factor(period_type, levels = c('Holocene-S', 'Holocene-C')))
-  correlations = read_csv(file.path(comparison_dir, 'lake_period_correlations_raw_vs_corrected.csv'),
+  correlations = read_csv(file.path(comparison_dir, 'lake_period_correlations_corrected_vs_raw.csv'),
     show_col_types = FALSE)
   labels = c(climate_change = 'Climate change', climate_rate = 'Climate change rate', lag = 'Lag',
     lag_rate = 'Lag rate', pace_effect_total = 'Pace effect', pace_effect = 'Pace effect rate',
@@ -36,13 +36,13 @@ if (!file.exists(comparison)) {
   panel = function(r, tag) {
     x = filter(d, response == r)
     # One square range per panel, around zero and every point of both runs.
-    lim = range(c(0, x$raw, x$corrected)); lim = lim + c(-1, 1) * .06 * diff(lim)
+    lim = range(c(0, x$corrected, x$raw)); lim = lim + c(-1, 1) * .06 * diff(lim)
     flips = tibble(xmin = c(lim[1], 0), xmax = c(0, lim[2]), ymin = c(0, lim[1]), ymax = c(lim[2], 0))
     # The r of each park in the top-left corner, MORA above NOCA, in the park colour.
     r_labels = correlations |> filter(response == .env$r) |> arrange(site) |>
-      mutate(label = paste0(site, '  r = ', signed(r, 2)), raw = lim[1] + .03 * diff(lim),
-        corrected = lim[2] - (.03 + .085 * (row_number() - 1)) * diff(lim))
-    ggplot(x, aes(raw, corrected)) +
+      mutate(label = paste0(site, '  r = ', signed(r, 2)), corrected = lim[1] + .03 * diff(lim),
+        raw = lim[2] - (.03 + .085 * (row_number() - 1)) * diff(lim))
+    ggplot(x, aes(corrected, raw)) +
       geom_rect(data = flips, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), inherit.aes = FALSE,
         fill = 'grey93') +
       geom_hline(yintercept = 0, color = 'grey70') + geom_vline(xintercept = 0, color = 'grey70') +
@@ -58,8 +58,8 @@ if (!file.exists(comparison)) {
         labels = c('Holocene stability periods', 'Holocene climate-change periods'),
         guide = guide_legend(override.aes = list(fill = 'grey60', size = 5.5), order = 2)) +
       coord_equal(xlim = lim, ylim = lim, expand = FALSE) +
-      labs(tag = tag, x = paste(labels[[r]], 'with raw paleoclimate'),
-        y = paste(labels[[r]], 'with bias-corrected\npaleoclimate')) +
+      labs(tag = tag, x = paste(labels[[r]], 'with bias-corrected paleoclimate'),
+        y = paste(labels[[r]], 'with raw\npaleoclimate')) +
       theme_paleoaces(base_size = 20) +
       theme(panel.grid.minor = element_blank(), plot.tag = element_text(size = 24, face = 'bold'),
         legend.position = 'bottom', legend.text = element_text(size = 19))
@@ -71,15 +71,15 @@ if (!file.exists(comparison)) {
     panel(rows[[i]][2], tags[2 * i]))), recursive = FALSE)
   figure = wrap_plots(panels, ncol = 2) + plot_layout(guides = 'collect') & theme(legend.position = 'bottom')
   if (render_figures) {
-    ggsave(fig('supplementary', 'figS16_bias_correction_lake_periods.pdf'), figure, width = 14, height = 25,
+    ggsave(fig('supplementary', 'figS19_raw_paleoclimate_lake_periods.pdf'), figure, width = 14, height = 25,
       device = cairo_pdf)
   }
-  cat('Fig. S16: raw against bias-corrected lake-periods drawn.\n')
+  cat('Fig. S19: bias-corrected against raw lake-periods drawn.\n')
 
-  # Fig. S17 -------------------------------------------------------------------------
-  slopes = read_csv(file.path(comparison_dir, 'explanatory_slopes_raw_vs_corrected.csv'), show_col_types = FALSE) |>
-    pivot_longer(-c(response, term), names_to = c('.value', 'run'), names_pattern = '(.*)_(raw|corrected)$') |>
-    mutate(run = factor(run, levels = c('raw', 'corrected')))
+  # Fig. S20 -------------------------------------------------------------------------
+  slopes = read_csv(file.path(comparison_dir, 'explanatory_slopes_corrected_vs_raw.csv'), show_col_types = FALSE) |>
+    pivot_longer(-c(response, term), names_to = c('.value', 'run'), names_pattern = '(.*)_(corrected|raw)$') |>
+    mutate(run = factor(run, levels = c('corrected', 'raw')))
   # Rows, responses, term labels and colours as in Figure 7 (lag black, pace pink,
   # direction blue).
   slope_rows = list(rate = c(lag_rate = 'lag', pace_effect = 'pace', direction_effect = 'direction'),
@@ -90,7 +90,7 @@ if (!file.exists(comparison)) {
   quantity_colors = c(lag = 'grey10', pace = '#C27B93', direction = '#6AB2E4')
   term_labels = c(siteNOCA = 'Site\nNOCA − MORA', climate_rate = 'Climate change rate',
     climate_change = 'Climate change', fire_activity = 'Fire activity')
-  run_labels = c(raw = 'Raw paleoclimate', corrected = 'Bias-corrected paleoclimate')
+  run_labels = c(corrected = 'Bias-corrected paleoclimate (main run)', raw = 'Raw paleoclimate')
   # Rule: every slope of Figure 7A and C is drawn in both runs.
   stopifnot(nrow(slopes) == 2 * sum(lengths(slope_rows) * lengths(slope_terms)))
   slope_panel = function(version, tag, title) {
@@ -107,10 +107,10 @@ if (!file.exists(comparison)) {
       scale_y_continuous(breaks = seq_along(terms), labels = unname(term_labels[rev(terms)]),
         limits = c(.5, length(terms) + .5), expand = expansion(0)) +
       scale_color_manual(values = quantity_colors, guide = 'none') +
-      # Raw filled and solid, corrected open and dashed. Same name and labels, so
+      # Main run filled and solid, raw open and dashed. Same name and labels, so
       # the two scales share one legend with the point drawn over the line.
-      scale_shape_manual(values = c(raw = 19, corrected = 21), labels = run_labels, name = NULL) +
-      scale_linetype_manual(values = c(raw = 'solid', corrected = '22'), labels = run_labels, name = NULL,
+      scale_shape_manual(values = c(corrected = 19, raw = 21), labels = run_labels, name = NULL) +
+      scale_linetype_manual(values = c(corrected = 'solid', raw = '22'), labels = run_labels, name = NULL,
         guide = guide_legend(override.aes = list(color = 'grey10', linewidth = 1.2))) +
       labs(tag = tag, title = title, x = 'Effect on response', y = NULL) +
       theme_paleoaces(base_size = 22) +
@@ -124,8 +124,8 @@ if (!file.exists(comparison)) {
   slope_figure = slope_panel('total', 'A.', 'Not divided by time') / slope_panel('rate', 'B.', 'Per century') +
     plot_layout(guides = 'collect') & theme(legend.position = 'bottom')
   if (render_figures) {
-    ggsave(fig('supplementary', 'figS17_bias_correction_slopes.pdf'), slope_figure, width = 21, height = 15,
+    ggsave(fig('supplementary', 'figS20_raw_paleoclimate_slopes.pdf'), slope_figure, width = 21, height = 15,
       device = cairo_pdf)
   }
-  cat('Fig. S17: Holocene explanatory slopes in both runs drawn.\n')
+  cat('Fig. S20: Holocene explanatory slopes in both runs drawn.\n')
 }

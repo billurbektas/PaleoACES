@@ -1,5 +1,5 @@
 # =============================================================================
-# 10_cca.R - the pooled CCA and everything derived from it. NO FIGURES.
+# 11_cca.R - the pooled CCA and everything derived from it. NO FIGURES.
 # =============================================================================
 # This file defines the ordination without rendering figures and is sourced by
 # the downstream analysis and figure stages.
@@ -31,10 +31,10 @@ source(here("R/helpers/config.R"), local = TRUE)
 # calling script can set any of them before source()-ing to run a variant
 # without editing this file:
 #
-#   count.thr = 10; source(here("R/pipeline/10_cca.R"))
+#   count.thr = 10; source(here("R/pipeline/11_cca.R"))
 #
 # Taxus brevifolia and Acer circinatum are removed by the documented understory
-# rule in R/pipeline/09_species_occurrences.R. The former manual exclusion
+# rule in R/pipeline/10_species_occurrences.R. The former manual exclusion
 # of Pinus ponderosa was reversed on 2026-10-08; it now follows the ordinary
 # frequency rule below. There is one active model and no extra exclusion by default.
 if (!exists("extra_exclude")) extra_exclude = character(0)
@@ -49,7 +49,7 @@ if (!exists("cca_suffix"))    cca_suffix    = ""
 #   for (thr in c(10, 15, 20, 25, 30)) { count.thr = thr; source(...); ... }
 #
 # The evidence for choosing it - plots per species per site x period - is printed
-# and plotted by R/pipeline/09_species_occurrences.R. On the consolidated species
+# and plotted by R/pipeline/10_species_occurrences.R. On the consolidated species
 # set after the 2026 NOCA correction and the BAK487/BEAV6061 exclusions:
 # 10 and 15 -> 15 species, 20 -> 13, 25 -> 11, and 30 -> 10.
 #
@@ -234,7 +234,7 @@ cca_pair_samples = function(samples) {
 # -----------------------------------------------------------------------------
 # Occurrence data
 # -----------------------------------------------------------------------------
-# ONE input, already consolidated. R/pipeline/09_species_occurrences.R binds the
+# ONE input, already consolidated. R/pipeline/10_species_occurrences.R binds the
 # three cleaned sources and applies every cross-site taxonomic decision - the
 # understory removal, the Populus/Picea/Abies harmonisation, the non-taxa drops -
 # with the evidence for each written out beside it. Run that script if any of
@@ -345,7 +345,7 @@ fire_summary = bind_rows(
 # 04_modern_climate.R / 04_modern_climate.R now write RAW MONTHLY tasmin/tasmax/pr
 # for each plot over that site's own survey window (max survey year and the five
 # before it). derive_climate_vars() turns them into the CCA variables and is the
-# SAME function 07_paleo_climate.R uses, so a season cannot mean one thing in
+# SAME function 08_paleo_climate.R uses, so a season cannot mean one thing in
 # the Holocene arm and another in the Anthropocene arm.
 source(here("R/helpers/climate_variables.R"), local = TRUE)
 source(here("R/helpers/survey_years.R"), local = TRUE)
@@ -407,7 +407,7 @@ env = bind_rows(
 # The fire join must not multiply rows. paleo_fire's plot_id is built from the
 # AGE, so core depths whose Bacon ages round to the same year collide - three
 # ReflectionPond depths at 3641 cal BP did, and tripled that sample in the CCA
-# until 08_fire_records.R was made to collapse them the way the vegetation is.
+# until 09_fire_records.R was made to collapse them the way the vegetation is.
 stopifnot(!any(duplicated(env %>% select(plot_id, site, era, period))))
 
 site_lookup = env %>% distinct(plot_id, site)

@@ -169,7 +169,7 @@ stopifnot(nrow(site_check) == nrow(site), all(site_check$covered == site_check$c
     site_check$events_per_1000yr[!is.na(site_check$events_per_1000yr)])))
 
 # No literature input or retired state machine may influence the stage.
-source_text = paste(readLines(here("R/pipeline/11_climate_eras_fire_frequency.R"),
+source_text = paste(readLines(here("R/pipeline/12_climate_eras_fire_frequency.R"),
   warn = FALSE), collapse = "\n")
 helper_text = paste(readLines(here("R/helpers/holocene_climate_fire_era_functions.R"),
   warn = FALSE), collapse = "\n")

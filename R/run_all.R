@@ -6,7 +6,7 @@
 #   Rscript R/run_all.R --presentation  also draw the presentation figures
 #   Optional: --skip-figures, --skip-tests
 #
-# 1. R/pipeline/01-15   data preparation and analysis; writes output/<step>/ only
+# 1. R/pipeline/01-16   data preparation and analysis; writes output/<step>/ only
 # 2. R/figures/         main and supplementary figures, from output/ only
 # 3. R/worked_examples.R  step-by-step method illustrations
 # 4. R/tests/           scientific regression checks

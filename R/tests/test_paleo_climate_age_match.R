@@ -15,11 +15,11 @@
 #      healthy in every table, and injects an 841-yr error into a 500-yr bin.
 #
 # Check 2 is only possible if paleo_env.csv records WHICH slice each sample was
-# matched to. R/pipeline/07_paleo_climate.R must therefore carry `slice` and
-# `slice_age_calBP` through; see R/pipeline/07_paleo_climate.R. Without those columns this
+# matched to. R/pipeline/08_paleo_climate.R must therefore carry `slice` and
+# `slice_age_calBP` through; see R/pipeline/08_paleo_climate.R. Without those columns this
 # script can only test coverage, and says so.
 #
-# Run after R/pipeline/07_paleo_climate.R. Exits non-zero on any failure.
+# Run after R/pipeline/08_paleo_climate.R. Exits non-zero on any failure.
 # =============================================================================
 
 library(here)
@@ -69,7 +69,7 @@ if (nrow(no_climate)) {
   cat("\n  samples WITHOUT usable climate, by lake:\n")
   print(as.data.frame(no_climate %>% group_by(lake, why) %>%
     summarise(n = n(), age_min = min(age), age_max = max(age), .groups = "drop")))
-  cat("\n  -> dropped by complete-case filtering / intersect() in 10_cca.R,\n")
+  cat("\n  -> dropped by complete-case filtering / intersect() in 11_cca.R,\n")
   cat("     with nothing printed. Their ages tell you WHICH end of the record\n")
   cat("     the download failed to reach.\n")
 }
@@ -128,7 +128,7 @@ if (all(c("slice", "slice_age_calBP") %in% names(env))) {
   cat("  match CANNOT be verified - only coverage was checked above.\n")
   cat("  A sample can carry climate from the wrong millennium and look healthy.\n")
   note(FALSE, "age-match provenance columns present",
-       "add `slice` and `slice_age_calBP` in R/pipeline/07_paleo_climate.R")
+       "add `slice` and `slice_age_calBP` in R/pipeline/08_paleo_climate.R")
 }
 
 cat("\n=== 3. the CCA variables are actually usable ===\n")

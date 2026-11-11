@@ -3,7 +3,7 @@
 # Differences between consecutive centuries are mostly sampling noise (one
 # scoop of sediment against the next); comparing the two ends of a period lets
 # the ecological drift outgrow that noise. Centuries in between enter no model.
-# Used by R/pipeline/12_tracking.R and R/pipeline/15_contributions.R.
+# Used by R/pipeline/13_tracking.R and R/pipeline/16_contributions.R.
 source(here::here('R/helpers/config.R'), local = TRUE)
 source(here::here('R/helpers/tracking_metrics.R'), local = TRUE)
 

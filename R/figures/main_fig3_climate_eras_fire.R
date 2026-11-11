@@ -24,7 +24,7 @@ required = c(
   paleo_climate = out("chelsa_paleo_ponds.csv"),
   scaling = out("cca_tracking_climate_scaling.csv"))
 if (!all(file.exists(required))) stop(
-  "Run R/pipeline/12_tracking.R and R/pipeline/11_climate_eras_fire_frequency.R first.")
+  "Run R/pipeline/13_tracking.R and R/pipeline/12_climate_eras_fire_frequency.R first.")
 
 climate = read_csv(required[["climate"]], show_col_types = FALSE)
 eras = read_csv(required[["eras"]], show_col_types = FALSE)
@@ -357,7 +357,7 @@ p_climate_display = four_variable_key(climate_panel(text_scale = FIG2_TEXT,
   callouts = display_callouts, title = NULL,
   y_label = "Standardized 1,000-year change\n(calibration SD)"), thresholds = display_callouts)
 if (render_figures) {
-  ggsave(fig("supplementary", "figS09_climate_period_method.pdf"),
+  ggsave(fig("supplementary", "figS12_climate_period_method.pdf"),
     p_climate_display / p_fire + plot_layout(heights = c(4.5, 1.45)),
     width = 15, height = 11.5, device = cairo_pdf)
 }
@@ -372,7 +372,8 @@ sys.source(here("R/helpers/config.R"), envir = climate_helpers)
 sys.source(here("R/helpers/climate_variables.R"), envir = climate_helpers)
 calibration_scaling = read_csv(required[["scaling"]], show_col_types = FALSE)
 level_series = function(vars) read_csv(required[["paleo_climate"]], show_col_types = FALSE) |>
-  transmute(unit = lake, period = site, variable, time = slice, month, value = value_raw) |>
+  transmute(unit = lake, period = site, variable, time = slice, month,
+    value = if (PALEO_USE_BIAS_CORRECTED) value_corrected else value_raw) |>
   climate_helpers$derive_climate_vars(winter_shift = FALSE) |>
   transmute(site = period, lake = unit, t = trace_slice_cal_bp(time), across(all_of(vars))) |>
   pivot_longer(all_of(vars), names_to = "variable", values_to = "raw_value") |>
@@ -589,7 +590,7 @@ if (render_figures) {
 
 # Appendix: the same levels for all four seasonal variables, without rates.
 p_levels_four = four_variable_key(levels_panel(CLIMATE_DISPLAY_VARIABLES, show_rates = FALSE))
-if (render_figures) ggsave(fig("supplementary", "figS08_climate_levels_four_variables.pdf"),
+if (render_figures) ggsave(fig("supplementary", "figS11_climate_levels_four_variables.pdf"),
   p_levels_four / p_fire + plot_layout(heights = c(4.5, 1.45)), width = 15, height = 11.5, device = cairo_pdf)
 
 # Presentation version of panels A and B: no stability-range brackets, and all

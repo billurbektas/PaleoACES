@@ -1,7 +1,7 @@
 # Worked examples: step-by-step illustrations of four methods, drawn from the
 # finished pipeline outputs. Nothing here feeds the analysis. Run after the
 # pipeline (R/run_all.R does this last).
-#   1. Accepted charcoal-event detection (Fig. S10)
+#   1. Accepted charcoal-event detection (Fig. S13)
 #   2. Climate eras: phases, thresholds and era construction
 #   3. Tracking geometry: movement, lag, ratio and angle
 # The high-fire-period example was removed with the high-fire classification
@@ -23,7 +23,7 @@ series_path = out("holocene_fire_source_series.csv")
 events_path = out("holocene_fire_source_events.csv")
 settings_path = out("holocene_fire_source_settings.csv")
 if (!all(file.exists(c(series_path, events_path, settings_path)))) {
-  stop("Run R/pipeline/08_fire_records.R first.")
+  stop("Run R/pipeline/09_fire_records.R first.")
 }
 
 series = read_csv(series_path, show_col_types = FALSE)
@@ -228,8 +228,8 @@ if (render_figures) {
   grDevices::pdf(pdf_path, width = 14, height = 9, onefile = TRUE)
   purrr::walk(pages, print)
   grDevices::dev.off()
-  # The four-record page on its own, as Fig. S10 of the README.
-  ggsave(fig("supplementary", "figS10_fire_event_detection.pdf"), lake_page, width = 14, height = 9)
+  # The four-record page on its own, as Fig. S13 of the README.
+  ggsave(fig("supplementary", "figS13_fire_event_detection.pdf"), lake_page, width = 14, height = 9)
   cat("Written three-page fire-event workflow with all four lake records on one page.\n")
 }
 })
@@ -240,7 +240,7 @@ if (render_figures) {
 local({
 source(here::here('R/helpers/config.R'), local = TRUE)
 # Rebuild the era classification in memory; its tables are rewritten unchanged.
-sys.source(here::here('R/pipeline/11_climate_eras_fire_frequency.R'), envir = environment())
+sys.source(here::here('R/pipeline/12_climate_eras_fire_frequency.R'), envir = environment())
 
 # =============================================================================
 # SINGLE-PAGE INTEGRATED FIGURE

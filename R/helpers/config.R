@@ -33,9 +33,83 @@ NOCA_FIRE_END = 2015L
 # plots burned between the surveys are left out (Bills, 11 Nov 2026), so MORA
 # has 328 pairs (330 before).
 ANTHROPOCENE_PAIRS = c(MORA = 328L, NOCA = 277L)
-# Raw TraCE21k in the primary run. The bias-corrected sensitivity run
-# (R/sensitivity_bias_corrected.R) sets the option to TRUE.
-PALEO_USE_BIAS_CORRECTED = isTRUE(getOption('paleoaces.bias_corrected', FALSE))
+# The main run uses the paleoclimate bias-corrected onto CHELSA V2.1 (Appendix S2,
+# Bills, 11 Nov 2026; raw TraCE21k until then). The sensitivity run on the raw
+# paleoclimate (R/sensitivity_raw_paleoclimate.R) sets the option to FALSE.
+PALEO_USE_BIAS_CORRECTED = isTRUE(getOption('paleoaces.bias_corrected', TRUE))
+# The four cored vegetation lakes (Holocene macrofossil records), read by
+# R/pipeline/07_climate_products.R and R/pipeline/08_paleo_climate.R. Moved here
+# from the paleo stage on 11 Nov 2026 with its provenance notes.
+# MORA coords per Dunwiddie 1986; NOCA per Prichard 2009.
+# =============================================================================
+# POND COORDINATES - provenance and precision (audited 2026-08-13)
+# =============================================================================
+# CHELSA is 30 arcsec (~0.00833 deg, ~700 m E-W here), so coordinate precision
+# below ~1 km changes the grid cell. Every coordinate below was traced to its
+# most precise published source; GNIS, Neotoma, NOAA WDS-Paleo and the open web
+# were all searched.
+#
+# PantherPotholes - CHANGED 2026-08-13, was (-121.0333, 48.6500).
+#   Neotoma site 13042 carries a site POLYGON:
+#     [-121.04089, 48.65816] .. [-121.0381, 48.65952], altitude 1033 m
+#   centre = (-121.0395, 48.6588). This is the dataset PI's own site footprint,
+#   precise to ~150 m. The old value was Prichard (2009)'s published
+#   "48 deg 39' N, 121 deg 02' W" - the SAME site, rounded to arcminutes, which
+#   put it 1.1 km away in a DIFFERENT CHELSA cell in both axes.
+#   Measured cost of the old coordinate: precipitation was unaffected (annual
+#   1231 vs 1224 mm) but temperature ran 0.85 degC COOL in every month - a
+#   constant displacement of 0.171 CCA units, 47% of the span of the entire NOCA
+#   Holocene climate trajectory. Corrected because it is wrong, not because of
+#   the size of its effect.
+#
+# The three MORA ponds - ALL CHANGED 2026-08-13. The previous values were
+# Dunwiddie (1986)'s published coordinates, given only to the ARCMINUTE:
+#     Jay Bath          46 deg 46' N, 121 deg 46' W, 1311 m
+#     Log Wallow        46 deg 46' N, 121 deg 45' W, "1.2 km NE of Jay Bath, +50 m"
+#     Reflection Pond 1 46 deg 46' N, 121 deg 43' W, "2.4 km E of Log Wallow,
+#                       easternmost of the ponds called the Reflection Lakes"
+#   Arcminute rounding at 46.77 N is +/-928 m in latitude and +/-635 m in
+#   longitude - MORE than one CHELSA cell - and it put all three ponds at the
+#   IDENTICAL latitude, which is a rounding artefact, not geography.
+#   ⚠ THE OLD JAY BATH COORDINATE HAD NO POND AT IT. Confirmed on satellite
+#   imagery by Billur, 2026-08-13. These are not small errors; they were the
+#   wrong locations.
+#
+#   The ponds are Dunwiddie's own informal names and appear in NO gazetteer or
+#   database - GNIS, Neotoma and NOAA WDS-Paleo all return nothing - so the
+#   ponds were located directly on satellite imagery by Billur. The values below
+#   are those, and they are INDEPENDENTLY CORROBORATED three ways:
+#
+#     1. they reproduce Dunwiddie's published arcminutes
+#          Jay Bath          46 46.23' / 121 46.10'   -> 46 46' / 121 46'  exact
+#          Log Wallow        46 46.50' / 121 45.23'   -> 121 45' exact; the
+#                            latitude falls exactly on the .50 rounding
+#                            boundary, which truncation renders as 46 46'
+#          Reflection Pond 1 46 46.17' / 121 43.49'   -> 46 46' / 121 43'  exact
+#     2. they reproduce his stated inter-pond distances
+#          Jay Bath -> Log Wallow    1.22 km   (he says 1.2 km)
+#          Log Wallow -> Reflection  2.30 km   (he says 2.4 km)
+#          Jay Bath -> Reflection    3.32 km   (he says a 3.5-km transect)
+#     3. they RESOLVE the contradiction the old coordinates carried. Dunwiddie's
+#        text says Log Wallow is NORTHEAST of Jay Bath; the rounded coordinates
+#        put it due EAST at identical latitude. The located ponds give a bearing
+#        of 65 deg - north of east. His prose was right; the rounding was the
+#        artefact.
+#
+#   ⚠ GNIS "Reflection Lakes" (46.7695, -121.7300, 1481 m) is NOT this pond: it
+#   is the group centroid, and Dunwiddie specifies the EASTERNMOST pond of that
+#   group. Do not substitute it.
+#
+# CRS: all coordinates are WGS 84 decimal degrees (EPSG:4326), which is what
+# Google Maps reports and what CHELSA rasters are stored in - verified directly
+# from a CHELSA GeoTIFF header (EPSG:4326, 0.008333 deg = 30 arcsec). NO
+# reprojection is needed or applied anywhere in this pipeline.
+PALEO_LAKES = data.frame(
+  ID  = c("JayBath", "LogWallow", "ReflectionPond", "PantherPotholes"),
+  lon = c(-121.768404, -121.753865, -121.724790,   -121.0395),
+  lat = c(  46.770463,   46.775068,   46.769559,     48.6588),
+  site = c("MORA", "MORA", "MORA", "NOCA"), stringsAsFactors = FALSE)
+
 # Dating of the CHELSA-TraCE21k slices. timeID k is the mean of the years
 # 100(k - 1) to 100k - 1 CE, and timeID 20 the mean of 1900 to 1990 (technical
 # specification v1.0, Table 4). A slice is dated at the centre of its century,
