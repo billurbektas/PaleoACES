@@ -1,6 +1,6 @@
 Parameter,Estimate
-AR(1) on the unit order,0.04478940187720156
-"Pace–direction correlation, Anthropocene MORA",0.17098803107368452
-"Pace–direction correlation, Anthropocene NOCA",0.4063143283763606
-"Pace–direction correlation, Holocene MORA",0.8342902306447207
-"Pace–direction correlation, Holocene NOCA",-0.16823368559868698
+AR(1) on the unit order,-0.5268337253805427
+"Pace–direction correlation, Anthropocene MORA",0.17098796893745968
+"Pace–direction correlation, Anthropocene NOCA",0.40631452295850923
+"Pace–direction correlation, Holocene MORA",0.40172497278259056
+"Pace–direction correlation, Holocene NOCA",0.2805916586499576

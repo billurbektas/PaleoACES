@@ -221,19 +221,21 @@ definition = Filter(function(x) is.call(x) && is.symbol(x[[1]]) &&
   identical(x[[2]], as.name("holocene_sampling_fire_counts")), as.list(sampling_functions))
 stopifnot(length(definition) == 1L)
 eval(definition[[1]])
+# Slices at whole centuries and cell edges at x50 (config.R, trace_slice_cal_bp);
+# every age sits on a cell edge, as before the slice dating fix of 11 Nov 2026.
 ages = tibble::tribble(~lake, ~plot_id, ~age,
-  "JayBath", "J1", 0, "JayBath", "J2", 100, "PantherPotholes", "P1", 200) |>
+  "JayBath", "J1", -50, "JayBath", "J2", 50, "PantherPotholes", "P1", 150) |>
   tidyr::crossing(draw = 1:2)
-climate = tidyr::expand_grid(lake = c("JayBath", "PantherPotholes"), cal_BP = c(50, 150, 250, 350)) |>
+climate = tidyr::expand_grid(lake = c("JayBath", "PantherPotholes"), cal_BP = c(0, 100, 200, 300)) |>
   dplyr::mutate(site = if_else(lake == "JayBath", "MORA", "NOCA"))
 series = tibble::tribble(~site, ~lake, ~age_cal_yr_BP,
-  "MORA", "A", 0, "MORA", "A", 400,
-  "MORA", "B", 0, "MORA", "B", 100,
-  "MORA", "C", 200, "MORA", "C", 400,
-  "NOCA", "N", 0, "NOCA", "N", 300)
+  "MORA", "A", -50, "MORA", "A", 350,
+  "MORA", "B", -50, "MORA", "B", 50,
+  "MORA", "C", 150, "MORA", "C", 350,
+  "NOCA", "N", -50, "NOCA", "N", 250)
 events = tibble::tribble(~site, ~lake, ~age_cal_yr_BP,
-  "MORA", "A", 0, "MORA", "A", 100, "MORA", "A", 200, "MORA", "A", 400,
-  "MORA", "B", 100, "MORA", "C", 200, "NOCA", "N", 100, "NOCA", "N", 300)
+  "MORA", "A", -50, "MORA", "A", 50, "MORA", "A", 150, "MORA", "A", 350,
+  "MORA", "B", 50, "MORA", "C", 150, "NOCA", "N", 50, "NOCA", "N", 250)
 counts = holocene_sampling_fire_counts(ages, climate, events, series, 2L)
 equal(counts$macro$count[counts$macro$lake == "JayBath"], c(1, 1, 0, 0))
 equal(counts$macro$count[counts$macro$lake == "PantherPotholes"], c(0, 0, 1, 0))

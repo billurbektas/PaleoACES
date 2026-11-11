@@ -45,7 +45,7 @@ levels = ponds |>
             value = value_raw) |>
   derive_climate_vars(winter_shift = FALSE) |>
   rename(lake = unit, site = period, slice = time) |>
-  mutate(cal_bp = 1950 - slice * 100) |>
+  mutate(cal_bp = trace_slice_cal_bp(slice)) |>
   select(site, lake, cal_bp, all_of(union(PRIMARY_VARS, CLIMATE_DISPLAY_VARIABLES)))
 counts = levels |> count(site, lake, name = "n_slices")
 if (nrow(counts) != 4L || any(counts$n_slices != 111L) ||
@@ -74,9 +74,12 @@ climate_display = classify_climate_era_union(
 write_csv(climate_display$variable_cells, out("holocene_era_display_directional_cells.csv"))
 write_csv(climate_display$thresholds, out("holocene_era_display_variable_thresholds.csv"))
 
+# 1300 to 9500 until the slice dating fix of 11 Nov 2026 moved every cell 50
+# years older (config.R, trace_slice_cal_bp).
 era_domain = range(climate$era_grid$t)
-if (!identical(era_domain, c(1300, 9500)))
-  stop("Complete ten-phase climate domain changed; review before interpreting eras.")
+if (!identical(era_domain, c(1350, 9550)))
+  stop("Complete ten-phase climate domain changed to ", paste(era_domain, collapse = " to "),
+    "; review before interpreting eras.")
 
 direction_terms = climate$drivers |>
   mutate(driver_label = case_when(

@@ -32,12 +32,13 @@ stopifnot(
   all(thresholds$required_phases == 8L),
   isTRUE(all.equal(thresholds$threshold_standardized_change,
     .5 * thresholds$maximum_absolute_regional_change)),
-  setequal(unique(phase$offset), seq(0, 900, 100)),
+  # Bins start halfway between slice centres (x50 cal BP, config.R).
+  setequal(unique(phase$offset), seq(50, 950, 100)),
   all(cells$n_phases == 10L),
   all(cells$phase_direction_support >= 0L &
       cells$phase_direction_support <= 10L),
   !any(c("site_divergent", "transition", "forward_extension") %in% names(cells)),
-  identical(range(era_grid$t), c(1300, 9500)),
+  identical(range(era_grid$t), c(1350, 9550)),  # 1300 to 9500 before the slice dating fix
   nrow(eras) == 10L)
 
 # Recalculate the regional medians, phase support, and any-variable union.
@@ -59,19 +60,20 @@ stopifnot(identical(
   era_grid |> arrange(t) |> pull(era_class),
   union_check |> arrange(t) |> pull(class_check)))
 
-# Regression: the eras classified from the MSpT + SP constraints (2026-11-09).
+# Regression: the eras classified from the MSpT + SP constraints (2026-11-09),
+# every boundary 50 years older since the slice dating fix (2026-11-11).
 expected = tribble(
   ~era_id, ~era_class, ~older_cal_bp, ~younger_cal_bp,
-  "C1", "climate change", 9600, 8600,
-  "S1", "relative stability", 8600, 8200,
-  "C2", "climate change", 8200, 7200,
-  "S2", "relative stability", 7200, 6800,
-  "C3", "climate change", 6800, 6200,
-  "S3", "relative stability", 6200, 5400,
-  "C4", "climate change", 5400, 4900,
-  "S4", "relative stability", 4900, 2200,
-  "C5", "climate change", 2200, 1700,
-  "S5", "relative stability", 1700, 1300)
+  "C1", "climate change", 9650, 8650,
+  "S1", "relative stability", 8650, 8250,
+  "C2", "climate change", 8250, 7250,
+  "S2", "relative stability", 7250, 6850,
+  "C3", "climate change", 6850, 6250,
+  "S3", "relative stability", 6250, 5450,
+  "C4", "climate change", 5450, 4950,
+  "S4", "relative stability", 4950, 2250,
+  "C5", "climate change", 2250, 1750,
+  "S5", "relative stability", 1750, 1350)
 stopifnot(isTRUE(all.equal(
   eras |> select(era_id, era_class, older_cal_bp, younger_cal_bp) |>
     arrange(desc(older_cal_bp)), expected, check.attributes = FALSE)),

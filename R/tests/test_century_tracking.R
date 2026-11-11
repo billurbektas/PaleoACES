@@ -27,7 +27,7 @@ for(core in unique(s$lake)) {
     close(ages[rows$posterior_row],b$cache$draws$age_cal_bp[b$cache$draws$sample_id==v$sample_id])
   }
 }
-use=s[s$eligible,];use$century=floor(use$median_age_cal_bp/100)*100+50
+use=s[s$eligible,];use$century=trace_century_cal_bp(use$median_age_cal_bp)
 pos=primary$positions
 for(i in seq_len(nrow(pos))) {
   ids=which(use$lake==pos$lake[i]&use$century==pos$century_cal_bp[i])

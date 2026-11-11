@@ -174,11 +174,14 @@ paleo = bind_rows(lapply(got, read_csv, show_col_types = FALSE, progress = FALSE
 # -----------------------------------------------------------------------------
 # 2. slice -> age, and check it rather than assuming it
 # -----------------------------------------------------------------------------
-paleo = paleo %>% mutate(year_CE = slice * 100, cal_BP = 1950 - year_CE)
+# Each slice at the centre of its century (config.R, trace_slice_cal_bp), and
+# year_CE the same centre in calendar years.
+paleo = paleo %>% mutate(cal_BP = trace_slice_cal_bp(slice), year_CE = 1950 - cal_BP)
 cat("\nslices ", min(paleo$slice), " to ", max(paleo$slice), " -> cal BP ",
     max(paleo$cal_BP), " to ", min(paleo$cal_BP), "\n", sep = "")
-stopifnot(max(paleo$cal_BP) > 10609,   # must cover NOCA's oldest sample
-          min(paleo$cal_BP) <= -49)    # must reach the youngest (1999 CE)
+# Each slice stands for the 50 years either side of its centre.
+stopifnot(max(paleo$cal_BP) + 50 > 10609,   # must cover NOCA's oldest sample
+          min(paleo$cal_BP) - 50 <= -49)    # must reach the youngest (1999 CE)
 
 # Do the three MORA ponds land in different ~1 km grid cells? They are 1.3-3.8 km
 # apart. If the series are identical, "per-lake climate" is fiction and MORA is one
@@ -305,7 +308,7 @@ env_slice = ponds %>%
             value = if (USE_CORRECTED) value_corrected else value_raw) %>%
   derive_climate_vars(winter_shift = FALSE) %>%
   rename(lake = unit, slice = time) %>%
-  mutate(slice_age_calBP = 1950 - slice * 100)
+  mutate(slice_age_calBP = trace_slice_cal_bp(slice))
 
 # The winter group of the OLDEST slice has no December from a previous slice and
 # the youngest has a December that belongs nowhere - with winter_shift = FALSE
@@ -317,7 +320,7 @@ cat("variables built for ", nrow(env_slice), " lake x slice combinations\n", sep
 samples = occ %>% distinct(period,plot_id,site,era,lake) %>%
   left_join(read_csv(out('paleo_sample_depths.csv'),show_col_types=FALSE) %>%
     select(plot_id,age=median_age),by='plot_id',relationship='one-to-one') %>%
-  mutate(slice_age_calBP=floor(age/100)*100+50)
+  mutate(slice_age_calBP=trace_century_cal_bp(age))
 paleo_env = samples %>% left_join(env_slice,by=c('lake','slice_age_calBP')) %>%
   mutate(age_error=slice_age_calBP-age) %>%
   select(period=period.x,plot_id,site,era,lake,age,slice,slice_age_calBP,age_error,

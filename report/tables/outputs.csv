@@ -31,7 +31,7 @@ Step,File,Description,Size (kB)
 06_paleo_samples,paleo_sample_depths.csv,Sample depth and median Bacon age,95
 07_paleo_climate,chelsa_paleo_bias_correction.csv,V2.1 bias anchor (not used in the primary run),11
 07_paleo_climate,chelsa_paleo_ponds.csv,CHELSA-TraCE21k monthly climate at each lake and century,1790
-07_paleo_climate,paleo_env.csv,Climate at each macrofossil sample's age,404
+07_paleo_climate,paleo_env.csv,Climate at each macrofossil sample's age,405
 08_fire_records,fire_mora_tapas_events.csv,MORA accepted fire events,2
 08_fire_records,fire_mora_tapas_series.csv,MORA tapas peak-detection series,104
 08_fire_records,fire_mora_tapas_settings.csv,MORA tapas settings (Table S2.1),1
@@ -59,7 +59,7 @@ Step,File,Description,Size (kB)
 10_cca,cca_anova_cache.rds,"Cached permutation tests, keyed on the fit",1
 10_cca,cca_anova.csv,"Permutation tests (model, axes, terms)",0
 10_cca,cca_axes.csv,Constrained axes: eigenvalues and variance explained,0
-10_cca,cca_calibration_reference.rds,The fitted CCA and its calibration inputs,1973
+10_cca,cca_calibration_reference.rds,The fitted CCA and its calibration inputs,1974
 10_cca,cca_climate_contributions.csv,Climate-variable contributions to the axes,0
 10_cca,cca_counts.csv,Plots and samples used to fit and projected,0
 10_cca,cca_display_rotation.csv,"Display-only varimax angle, rotation matrix and axis orientation",0
@@ -94,17 +94,17 @@ Step,File,Description,Size (kB)
 12_tracking,cca_tracking_anthropocene_plot_calculations.csv,Holocene and Anthropocene tracking calculations,580
 12_tracking,cca_tracking_anthropocene_plot_model_input.csv,Holocene and Anthropocene tracking calculations,119
 12_tracking,cca_tracking_both_eras.csv,Holocene and Anthropocene tracking calculations,187
-12_tracking,cca_tracking_holocene_century_positions.csv,Holocene and Anthropocene tracking calculations,92
-12_tracking,cca_tracking_holocene_lake_calculations.csv,Holocene and Anthropocene tracking calculations,276
+12_tracking,cca_tracking_holocene_century_positions.csv,Holocene and Anthropocene tracking calculations,90
+12_tracking,cca_tracking_holocene_lake_calculations.csv,Holocene and Anthropocene tracking calculations,270
 12_tracking,cca_tracking_holocene_lake_support.csv,Holocene and Anthropocene tracking calculations,0
-12_tracking,cca_tracking_holocene_lake_transitions.csv,Holocene and Anthropocene tracking calculations,55
+12_tracking,cca_tracking_holocene_lake_transitions.csv,Holocene and Anthropocene tracking calculations,54
 12_tracking,cca_tracking_holocene_sample_assignments.csv,Holocene and Anthropocene tracking calculations,99
-12_tracking,cca_tracking_lake_period_calculations.csv,Holocene and Anthropocene tracking calculations,30
-12_tracking,cca_tracking_lake_period_candidates.csv,Holocene and Anthropocene tracking calculations,2
+12_tracking,cca_tracking_lake_period_calculations.csv,Holocene and Anthropocene tracking calculations,29
+12_tracking,cca_tracking_lake_period_candidates.csv,Holocene and Anthropocene tracking calculations,1
 12_tracking,cca_tracking_lake_periods.csv,Holocene and Anthropocene tracking calculations,8
 12_tracking,cca_tracking_schema.csv,Holocene and Anthropocene tracking calculations,19
-12_tracking,chronology_reconstruction/prepared.rds,Reconstruction bundle and primary reconstruction,8863
-12_tracking,chronology_reconstruction/primary.rds,Reconstruction bundle and primary reconstruction,101
+12_tracking,chronology_reconstruction/prepared.rds,Reconstruction bundle and primary reconstruction,8865
+12_tracking,chronology_reconstruction/primary.rds,Reconstruction bundle and primary reconstruction,99
 13_era_models,era_comparison/era_coefficients.csv,"Era-comparison GLS fits, means and contrasts per response",9
 13_era_models,era_comparison/era_contrasts.csv,"Era-comparison GLS fits, means and contrasts per response",13
 13_era_models,era_comparison/era_duration_classes.csv,"Era-comparison GLS fits, means and contrasts per response",1
@@ -112,27 +112,27 @@ Step,File,Description,Size (kB)
 13_era_models,era_comparison/era_folds.csv,"Era-comparison GLS fits, means and contrasts per response",1
 13_era_models,era_comparison/era_means.csv,"Era-comparison GLS fits, means and contrasts per response",8
 13_era_models,era_comparison/era_model_summary.csv,"Era-comparison GLS fits, means and contrasts per response",2
-13_era_models,era_comparison/era_predictions.csv,"Era-comparison GLS fits, means and contrasts per response",598
+13_era_models,era_comparison/era_predictions.csv,"Era-comparison GLS fits, means and contrasts per response",597
 13_era_models,era_comparison/joint_correction_effects/correction_contrasts.csv,"Era-comparison GLS fits, means and contrasts per response",1
 13_era_models,era_comparison/joint_correction_effects/correlation_parameters.csv,"Era-comparison GLS fits, means and contrasts per response",0
 13_era_models,era_comparison/joint_correction_effects/model_group_means.csv,"Era-comparison GLS fits, means and contrasts per response",2
-13_era_models,era_comparison/joint_correction_effects/model_input.csv,"Era-comparison GLS fits, means and contrasts per response",370
+13_era_models,era_comparison/joint_correction_effects/model_input.csv,"Era-comparison GLS fits, means and contrasts per response",368
 13_era_models,era_comparison/joint_correction_effects/model_results.txt,"Era-comparison GLS fits, means and contrasts per response",7
 13_era_models,era_comparison/joint_correction_effects/period_type_contrasts.csv,"Era-comparison GLS fits, means and contrasts per response",3
-13_era_models,era_comparison/joint_correction_effects/primary_fit.rds,"Era-comparison GLS fits, means and contrasts per response",582
+13_era_models,era_comparison/joint_correction_effects/primary_fit.rds,"Era-comparison GLS fits, means and contrasts per response",581
 13_era_models,era_comparison/model_results.txt,"Era-comparison GLS fits, means and contrasts per response",19
-13_era_models,era_comparison/primary_fits.rds,"Era-comparison GLS fits, means and contrasts per response",679
+13_era_models,era_comparison/primary_fits.rds,"Era-comparison GLS fits, means and contrasts per response",678
 14_predictor_models,community_predictor_models/model_coefficients.csv,Within-era predictor GLS fits,6
 14_predictor_models,community_predictor_models/model_exclusions.csv,Within-era predictor GLS fits,45
 14_predictor_models,community_predictor_models/model_performance.csv,Within-era predictor GLS fits,1
 14_predictor_models,community_predictor_models/model_results.txt,Within-era predictor GLS fits,12
-14_predictor_models,community_predictor_models/partial_effects.csv,Within-era predictor GLS fits,166
-14_predictor_models,community_predictor_models/partial_residuals.csv,Within-era predictor GLS fits,26
-14_predictor_models,community_predictor_models/primary_fits.rds,Within-era predictor GLS fits,400
+14_predictor_models,community_predictor_models/partial_effects.csv,Within-era predictor GLS fits,165
+14_predictor_models,community_predictor_models/partial_residuals.csv,Within-era predictor GLS fits,25
+14_predictor_models,community_predictor_models/primary_fits.rds,Within-era predictor GLS fits,401
 15_contributions,cca_transition_contributions/climate_contributions.csv,Species and climate contributions to displacement,222
 15_contributions,cca_transition_contributions/lag_decomposition.csv,Species and climate contributions to displacement,91
-15_contributions,cca_transition_contributions/species_contributions.csv,Species and climate contributions to displacement,1432
-15_contributions,cca_transition_contributions/species_lake_periods.csv,Species and climate contributions to displacement,32
+15_contributions,cca_transition_contributions/species_contributions.csv,Species and climate contributions to displacement,1430
+15_contributions,cca_transition_contributions/species_lake_periods.csv,Species and climate contributions to displacement,31
 15_contributions,species_contribution_models/noca_burned_species_means.csv,"Species contribution means, contrasts and NOCA burned means",6
 15_contributions,species_contribution_models/species_contrasts_total.csv,"Species contribution means, contrasts and NOCA burned means",34
 15_contributions,species_contribution_models/species_contrasts.csv,"Species contribution means, contrasts and NOCA burned means",35
@@ -142,7 +142,7 @@ Step,File,Description,Size (kB)
 figures,anthropocene_climate_rates.csv,"Tables behind the figures (centroids, annotations)",0
 figures,cca_trajectory_anthropocene_centroids.csv,"Tables behind the figures (centroids, annotations)",0
 figures,cca_trajectory_holocene_spans.csv,"Tables behind the figures (centroids, annotations)",0
-figures,cca_trajectory_period_centroids.csv,"Tables behind the figures (centroids, annotations)",2
+figures,cca_trajectory_period_centroids.csv,"Tables behind the figures (centroids, annotations)",1
 figures,charcoal_dunwiddie_walsh_correlations.csv,"Tables behind the figures (centroids, annotations)",1
 figures,charcoal_dunwiddie_walsh_event_matching.csv,"Tables behind the figures (centroids, annotations)",0
 figures,holocene_anthropocene_raw_climate_rate_comparison.csv,"Tables behind the figures (centroids, annotations)",1

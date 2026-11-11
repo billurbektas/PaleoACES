@@ -5,13 +5,13 @@ R/pipeline/03_modern_fire.R,pipeline,Anthropocene fire assignments for MORA and 
 R/pipeline/04_modern_climate.R,pipeline,Modern climate: CHELSA V2.1 survey-window climate for every paired plot.,368
 R/pipeline/05_age_depth_models.R,pipeline,Age-depth models: the four Bacon chronologies (Appendix S1).,510
 R/pipeline/06_paleo_samples.R,pipeline,"Paleo samples: original macrofossil sample identities, presences and the",33
-R/pipeline/07_paleo_climate.R,pipeline,"Paleo climate: CHELSA-TraCE21k monthly climate at each lake and century,",344
+R/pipeline/07_paleo_climate.R,pipeline,"Paleo climate: CHELSA-TraCE21k monthly climate at each lake and century,",347
 R/pipeline/08_fire_records.R,pipeline,Fire records (Appendix S2): tapas event detection for the three MORA charcoal,406
 R/pipeline/09_species_occurrences.R,pipeline,09_species_occurrences.R,626
 R/pipeline/10_cca.R,pipeline,10_cca.R - the pooled CCA and everything derived from it. NO FIGURES.,665
-R/pipeline/11_climate_eras_fire_frequency.R,pipeline,11_climate_eras_fire_frequency.R,191
+R/pipeline/11_climate_eras_fire_frequency.R,pipeline,11_climate_eras_fire_frequency.R,194
 R/pipeline/12_tracking.R,pipeline,"Tracking: native-century Holocene positions, tracking metrics for both eras,",85
-R/pipeline/13_era_models.R,pipeline,"Era models (PLAN.md section 5, Step 5a): Holocene stability periods,",186
+R/pipeline/13_era_models.R,pipeline,"Era models (PLAN.md section 5, Step 5a): Holocene stability periods,",189
 R/pipeline/14_predictor_models.R,pipeline,"Explanatory models (PLAN.md section 5, Step 5).",131
 R/pipeline/15_contributions.R,pipeline,"Species contributions (PLAN.md section 5, Step 6): which species led the",143
 R/figures/supp_age_depth_models.R,figure,Figures S4 (four Bacon age-depth models) and S5 (Panther Potholes 210Pb,109
@@ -30,7 +30,7 @@ R/figures/main_fig5_era_contrasts.R,figure,"Figure 5 (PLAN.md section 6; redrawn
 R/figures/main_fig6_lag_pace_direction.R,figure,"Figure 6 (PLAN.md section 6; redrawn by Bills, 10 Nov 2026): the pace and",43
 R/figures/main_fig7_climate_fire_associations.R,figure,"Figure 7: climate and fire associations as model slopes (Bills, 9 Nov 2026).",74
 R/figures/main_fig8_species.R,figure,Figure 8 (PLAN.md section 6): species contributions in both eras. Species as,161
-R/worked_examples.R,worked examples,"Worked examples: step-by-step illustrations of four methods, drawn from the",410
+R/worked_examples.R,worked examples,"Worked examples: step-by-step illustrations of four methods, drawn from the",412
 R/tests/test_bacon_provenance.R,test,The stored Bacon chronologies are exactly what the current age-model script and,32
 R/tests/test_cca_tracking_metrics.R,test,Independent geometry and integration checks for the canonical tracking data.,38
 R/tests/test_cca_trajectory_figure.R,test,Figure 4 inputs (PLAN.md section 6): the Anthropocene arrows are the means of,37
@@ -38,8 +38,8 @@ R/tests/test_cca_transition_contributions.R,test,"Independent contribution gate 
 R/tests/test_century_tracking.R,test,"Independent native-century reconstruction, geometry and contribution checks.",92
 R/tests/test_check_vegetation.R,test,Standalone integrity checks for cleaned MORA and NOCA vegetation outputs.,31
 R/tests/test_chronology_tables.R,test,Supplementary Tables S1.1 and S1.2 must match what Bacon actually ran with.,49
-R/tests/test_holocene_climate_fire_eras.R,test,"Offline gate for the unified, literature-blind climate-era/fire analysis.",190
-R/tests/test_known_examples.R,test,Independent known examples and regressions from the 2026-10-06 audit.,254
+R/tests/test_holocene_climate_fire_eras.R,test,"Offline gate for the unified, literature-blind climate-era/fire analysis.",192
+R/tests/test_known_examples.R,test,Independent known examples and regressions from the 2026-10-06 audit.,256
 R/tests/test_lake_periods.R,test,"Lake-period construction (PLAN.md sections 4 and 5, Steps 1 to 4) on a",35
 R/tests/test_NOCA_fire_assignments.R,test,Offline regression checks for Wilson-style fire assignments on PaleoACES plots.,25
 R/tests/test_NOCA_tree_corrections.R,test,Offline regression checks for the authoritative 2026 NOCA tree patch.,73

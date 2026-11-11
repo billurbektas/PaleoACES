@@ -40,10 +40,16 @@ collapse_grid_runs = function(grid, class_col, cell_years = 100L,
 
 # Build adjacent complete 1,000-year climate-bin changes. MORA lakes are
 # averaged first, so MORA and NOCA receive equal weight in the regional score.
+# The slices sit at century centres, and the bins, the 100-year cells and so the
+# period boundaries fall halfway between them: at x50 cal BP with the slice
+# dating of config.R (trace_slice_cal_bp), at whole centuries for slices at x50.
 build_climate_changes_1000yr = function(levels_wide, variables,
                                          variable_units,
-                                         offsets = seq(0, 900, 100),
+                                         offsets = NULL,
                                          cell_years = 100L) {
+  edge = unique((levels_wide$cal_bp + cell_years / 2) %% cell_years)
+  stopifnot(length(edge) == 1L)
+  if (is.null(offsets)) offsets = seq(0, 900, 100) + edge
   bins = tidyr::crossing(offset = offsets, levels_wide) |>
     dplyr::mutate(
       bin = floor((.data$cal_bp - .data$offset) / 1000) * 1000 + .data$offset,
@@ -82,7 +88,7 @@ build_climate_changes_1000yr = function(levels_wide, variables,
     dplyr::summarise(signed_change = mean(.data$signed_change),
       n_lakes = dplyr::n_distinct(.data$lake), .groups = "drop")
 
-  cells = tibble::tibble(t = seq(-100, 11000, by = cell_years)) |>
+  cells = tibble::tibble(t = seq(-100, 11000, by = cell_years) + edge) |>
     tidyr::crossing(site_intervals) |>
     dplyr::filter(.data$t >= .data$age_lo, .data$t < .data$age_hi) |>
     dplyr::group_by(.data$site, .data$variable, .data$unit, .data$t) |>

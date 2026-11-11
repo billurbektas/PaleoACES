@@ -13,8 +13,8 @@ LAKE_PERIOD_RESPONSES = c(climate_rate = 'standardized_climate_change_rate',
   pace_effect = 'pace_effect_on_lag_per_century', direction_effect = 'direction_effect_on_lag_per_century')
 
 # Assign each sampled century to the period that contains it. Century centres
-# fall at x50 cal BP and period boundaries at whole centuries, so no century
-# sits on a boundary.
+# fall at whole centuries and period boundaries at x50 cal BP (config.R,
+# trace_slice_cal_bp), so no century sits on a boundary.
 lake_period_centuries = function(positions, periods) {
   k = vapply(positions$century_cal_bp, function(age) {
     i = which(age < periods$older_cal_bp & age >= periods$younger_cal_bp)

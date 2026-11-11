@@ -36,6 +36,18 @@ ANTHROPOCENE_PAIRS = c(MORA = 328L, NOCA = 277L)
 # Raw TraCE21k in the primary run. The bias-corrected sensitivity run
 # (R/sensitivity_bias_corrected.R) sets the option to TRUE.
 PALEO_USE_BIAS_CORRECTED = isTRUE(getOption('paleoaces.bias_corrected', FALSE))
+# Dating of the CHELSA-TraCE21k slices. timeID k is the mean of the years
+# 100(k - 1) to 100k - 1 CE, and timeID 20 the mean of 1900 to 1990 (technical
+# specification v1.0, Table 4). A slice is dated at the centre of its century,
+# 100k - 50 CE = 2000 - 100k cal BP, and stands for the 100 years around it, so
+# century cells, bins and period boundaries fall at x50 cal BP. timeID 20 stands
+# for 1900 to 2000 CE (0 cal BP): the samples of the 1990s get the 1900 to 1990
+# mean, the youngest the product has. Until 11 Nov 2026 every slice was dated 50
+# years too young (1950 - 100k cal BP), which gave about half of the samples the
+# climate of the century before their own.
+trace_slice_cal_bp = function(slice) 2000 - 100 * slice
+# The centre (cal BP) of the slice century that holds an age.
+trace_century_cal_bp = function(age_cal_bp) floor((age_cal_bp + 50) / 100) * 100
 
 object_fingerprint = function(x) {
   f = tempfile(pattern = "paleoaces-fingerprint-", fileext = ".rds")

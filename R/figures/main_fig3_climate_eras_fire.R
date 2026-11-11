@@ -52,7 +52,7 @@ time_breaks = c(10000, 8000, 6000, 4000, 2000, 0)
 
 stopifnot(
   setequal(unique(climate$variable), variables),
-  identical(range(climate$t), c(1300, 9500)),
+  identical(range(climate$t), c(1350, 9550)),  # 1300 to 9500 before the slice dating fix (11 Nov 2026)
   all(grepl("^(C|S)[0-9]+$", eras$era_id)), !anyDuplicated(eras$era_id),
   all(c(paste0(variables, "_z_change")) %in% names(anthropocene)))
 
@@ -374,7 +374,7 @@ calibration_scaling = read_csv(required[["scaling"]], show_col_types = FALSE)
 level_series = function(vars) read_csv(required[["paleo_climate"]], show_col_types = FALSE) |>
   transmute(unit = lake, period = site, variable, time = slice, month, value = value_raw) |>
   climate_helpers$derive_climate_vars(winter_shift = FALSE) |>
-  transmute(site = period, lake = unit, t = 1950 - time * 100, across(all_of(vars))) |>
+  transmute(site = period, lake = unit, t = trace_slice_cal_bp(time), across(all_of(vars))) |>
   pivot_longer(all_of(vars), names_to = "variable", values_to = "raw_value") |>
   left_join(select(calibration_scaling, variable, calibration_mean = mean, calibration_sd = sd), by = "variable") |>
   group_by(variable, site, t) |>
@@ -402,8 +402,8 @@ period_rates = read_csv(out("holocene_periods.csv"), show_col_types = FALSE) |>
     str_detect(drivers, "^winter (warming|cooling)") ~ "MWT", TRUE ~ "WP")) |>
   filter(variable %in% variables) |>
   rowwise() |>
-  # Climate slices sit at century centres (x50 cal BP) and period boundaries at
-  # whole centuries, so the line is interpolated at the boundaries.
+  # Climate slices sit at century centres (whole centuries cal BP) and period
+  # boundaries halfway between them (x50), so the line is interpolated at the boundaries.
   mutate(line = list(filter(climate_levels, variable == .env$variable, is.finite(regional_raw_1000yr))),
     older = approx(line$t, line$regional_raw_1000yr, older_cal_bp)$y,
     younger = approx(line$t, line$regional_raw_1000yr, younger_cal_bp)$y,

@@ -117,7 +117,7 @@ ANTH_INTERVAL = setNames(paste0(interval_support$climate_dt_min, "–",
 # then be shaped by when someone cored and how fast the sediment accumulated,
 # not by the climate.
 #
-# Every pond has all 111 slices (-50 to 10,950 cal BP), evenly spaced at ~100 yr.
+# Every pond has all 111 slices (0 to 11,000 cal BP), evenly spaced at ~100 yr.
 # Using them gives the location's actual trend, with bins filled by real slices
 # instead of by 1-3 macrofossil samples.
 ponds_monthly = read_csv(out("chelsa_paleo_ponds.csv"), show_col_types = FALSE)
@@ -140,7 +140,7 @@ pond_clim = map_dfr(c(corrected = "value_corrected", raw = "value_raw"), functio
               value = .data[[col]]) %>%
     derive_climate_vars(winter_shift = FALSE) %>%
     rename(lake = unit, site = period, slice = time) %>%
-    mutate(cal_BP = 1950 - slice * 100)
+    mutate(cal_BP = trace_slice_cal_bp(slice))
 }, .id = "correction")
 
 stopifnot(nrow(pond_clim) == 111 * 4 * 2)      # every pond, every slice, both versions

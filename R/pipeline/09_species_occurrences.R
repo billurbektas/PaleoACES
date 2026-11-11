@@ -501,7 +501,7 @@ holocene_sampling_fire_counts = function(draws, climate, events, series, n_draws
     transmute(site, lake, mid = cal_BP, lo = cal_BP - 50, hi = cal_BP + 50)
   lake_sites = grid |> distinct(lake, site)
   stopifnot(nrow(grid) > 0L, !anyNA(grid), all(is.finite(grid$mid)),
-    all(grid$mid %% 100 == 50), !anyDuplicated(grid[c("lake", "mid")]),
+    all(grid$mid %% 100 == 0), !anyDuplicated(grid[c("lake", "mid")]),
     !anyDuplicated(lake_sites$lake), all(lake_sites$site %in% c("MORA", "NOCA")),
     all(draws$lake %in% lake_sites$lake))
   # Each lake supplies its own native cells; no matching lake coverage is imposed.
@@ -510,7 +510,7 @@ holocene_sampling_fire_counts = function(draws, climate, events, series, n_draws
   stopifnot(all(spacing$regular))
   samples = draws |> group_by(lake, plot_id) |>
     summarize(age = median(age), n_draws = n_distinct(draw), .groups = "drop") |>
-    mutate(mid = floor(age / 100) * 100 + 50) |>
+    mutate(mid = trace_century_cal_bp(age)) |>
     left_join(lake_sites, by = "lake", relationship = "many-to-one")
   stopifnot(all(samples$n_draws == n_draws))
   outside = anti_join(samples, grid, by = c("site", "lake", "mid"))
@@ -532,7 +532,7 @@ holocene_sampling_fire_counts = function(draws, climate, events, series, n_draws
   core = grid |> distinct(site, mid, lo, hi) |>
     left_join(coverage, by = "site", relationship = "many-to-many") |>
     mutate(covered = lo >= youngest & hi <= oldest) |>
-    left_join(events |> mutate(mid = floor(age_cal_yr_BP / 100) * 100 + 50) |>
+    left_join(events |> mutate(mid = trace_century_cal_bp(age_cal_yr_BP)) |>
       count(site, lake, mid, name = "n_events"),
       by = c("site", "lake", "mid"), relationship = "one-to-one") |>
     mutate(n_events = if_else(covered, replace_na(n_events, 0L), NA_integer_))

@@ -255,10 +255,12 @@ fire_cols = site_cols
 time_scale = function() scale_x_reverse(limits = c(11000, -100),
   breaks = c(10000, 8000, 6000, 4000, 2000, 0),
   labels = scales::label_number(big.mark = ","))
+# Outside the complete ten-phase domain, 1350 to 9650 cal BP (1300 to 9600 before
+# the slice dating fix of 11 Nov 2026).
 shade_incomplete = function() list(
-  annotate("rect", xmin = 9600, xmax = 11000, ymin = -Inf, ymax = Inf,
+  annotate("rect", xmin = 9650, xmax = 11000, ymin = -Inf, ymax = Inf,
     fill = "grey80", alpha = .22),
-  annotate("rect", xmin = -100, xmax = 1300, ymin = -Inf, ymax = Inf,
+  annotate("rect", xmin = -100, xmax = 1350, ymin = -Inf, ymax = Inf,
     fill = "grey80", alpha = .22))
 
 threshold_lines = climate$thresholds |>

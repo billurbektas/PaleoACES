@@ -387,14 +387,18 @@ comparison |> transmute(Catalog = catalog, Period = period, Type = period_type,
     'analysis) and, by the same rules, from all four seasonal variables (the periods before the CCA constraints',
     'were reduced to MSpT and SP).'))
 periods = comparison |> filter(startsWith(catalog, 'MSpT'))
+# Boundaries of the four-variable periods quoted in the text below.
+four_bound = function(id, col) comparison[[col]][startsWith(comparison$catalog, 'All') & comparison$period == id]
 ```
 
 With MSpT and SP the Holocene from `r max(periods$older_cal_bp)` to `r min(periods$younger_cal_bp)`
 cal BP falls into `r sum(periods$period_type == 'Holocene-C')` climate-change periods and
 `r sum(periods$period_type == 'Holocene-S')` stability periods, and no climate-change period is
-split. The first four-variable climate-change period (C1a to C1c, 9600 to 7200 cal BP) becomes C1,
-S1 and C2: its middle part (8600 to 8200 cal BP) was driven by winter wetting alone, which is no
-longer a constraint. From 7200 cal BP onward every boundary is unchanged, and the periods are
+split. The first four-variable climate-change period (C1a to C1c, `r four_bound('C1a', 'older_cal_bp')` to
+`r four_bound('C1c', 'younger_cal_bp')` cal BP) becomes C1, S1 and C2: its middle part
+(`r four_bound('C1b', 'older_cal_bp')` to `r four_bound('C1b', 'younger_cal_bp')` cal BP) was driven by winter
+wetting alone, which is no longer a constraint. From `r four_bound('C1c', 'younger_cal_bp')` cal BP onward every
+boundary is unchanged, and the periods are
 renumbered.
 
 ```{r fig-3-main}
@@ -742,7 +746,8 @@ positions |> group_by(Park = site, Lake = lake) |>
   show_table('step1_sampled_centuries', caption = '**Sampled centuries per lake** on the MSpT + SP CCA.')
 ```
 
-The three MORA lakes begin about 6,850 cal BP and most of their centuries rest on a single sample.
+The three MORA lakes begin about `r format(max(positions$century_cal_bp[positions$site == 'MORA']), big.mark = ',')`
+cal BP and most of their centuries rest on a single sample.
 Panther Potholes (NOCA) covers the whole Holocene with several samples per century.
 
 Stages and helpers: [`R/pipeline/12_tracking.R`](R/pipeline/12_tracking.R),
@@ -883,13 +888,13 @@ over a whole Holocene lake-period (Anthropocene minus Holocene-C
 `r ct('climate_change', 'MORA', 'Anthropocene - Holocene-C')` calibration SD at MORA,
 `r ct('climate_change', 'NOCA', 'Anthropocene - Holocene-C')` at NOCA). The distance the community moved
 (the displacement) tells a different story
-from its rate. At MORA the plots moved more in a few decades than the communities of the Holocene
-climate-change periods did in centuries (Anthropocene minus Holocene-C
-`r ct('displacement', 'MORA', 'Anthropocene - Holocene-C')` CCA distance), and as much as those of the
-stability periods (`r ct('displacement', 'MORA', 'Anthropocene - Holocene-S')`). At NOCA the plots moved
-more than in the stability periods (`r ct('displacement', 'NOCA', 'Anthropocene - Holocene-S')`), while
-their difference from the climate-change periods is not significant after the adjustment
-(`r ct('displacement', 'NOCA', 'Anthropocene - Holocene-C')`).
+from its rate: in a few decades the plots moved about as far as, or further than, the Holocene communities
+did over whole lake-periods. Anthropocene minus Holocene, in CCA distance:
+`r moved = function(p, k) { x = contrasts[contrasts$response == 'displacement' & contrasts$site == p & contrasts$contrast == k, ]
+  sprintf('%s %s the %s periods (%s)', p, if (x$p_adjusted < .05) ifelse(x$estimate > 0, 'moved further than in', 'moved less far than in')
+    else 'did not differ significantly from', ifelse(grepl('-C$', k), 'climate-change', 'stability'), ct('displacement', p, k)) }
+  paste(c(moved('MORA', 'Anthropocene - Holocene-C'), moved('MORA', 'Anthropocene - Holocene-S'),
+    moved('NOCA', 'Anthropocene - Holocene-C'), moved('NOCA', 'Anthropocene - Holocene-S')), collapse = '; ')`.
 
 ```{r fig-5-main}
 show_figure('report/figures/main/fig_era_contrasts.pdf')
@@ -919,7 +924,7 @@ the turnover and the lag in CCA distance.
 
 **Check: displacement and lag by lake-period duration.** Displacement and lag are totals, so a
 longer lake-period could show more of both only because it is longer. The table gives their plain
-means (no model) for the three duration classes the lake-periods fall into.
+means (no model) for the duration classes the lake-periods fall into.
 
 ```{r step5a-duration-classes}
 dc = read_output(file.path(era_dir, 'era_duration_classes.csv'))
@@ -935,13 +940,15 @@ dc |> transmute(Park = site, Duration = duration_class, `Lake-periods` = lake_pe
 dd = function(p, k, v) dc[[v]][dc$site == p & dc$duration_class == k]
 ```
 
-At MORA the three longest lake-periods (over 2,000 years) moved further than the shorter ones
-(mean displacement `r sprintf('%.3f', dd('MORA', 'over 2,000 years', 'mean_displacement'))` against
+At MORA the `r dd('MORA', '1,000 years or more', 'lake_periods')` longest lake-periods
+(`r format(dd('MORA', '1,000 years or more', 'duration_min'), big.mark = ',')` to `r format(dd('MORA', '1,000 years or more', 'duration_max'), big.mark = ',')` years)
+moved further than the shorter ones
+(mean displacement `r sprintf('%.3f', dd('MORA', '1,000 years or more', 'mean_displacement'))` against
 `r sprintf('%.3f', dd('MORA', '200 to 400 years', 'mean_displacement'))` for 200 to 400 years and
 `r sprintf('%.3f', dd('MORA', '500 to 900 years', 'mean_displacement'))` for 500 to 900 years). At NOCA
 the displacement did not grow with duration (`r sprintf('%.3f', dd('NOCA', '200 to 400 years', 'mean_displacement'))`,
 `r sprintf('%.3f', dd('NOCA', '500 to 900 years', 'mean_displacement'))` and
-`r sprintf('%.3f', dd('NOCA', 'over 2,000 years', 'mean_displacement'))`, the last from a single
+`r sprintf('%.3f', dd('NOCA', '1,000 years or more', 'mean_displacement'))`, the last from a single
 lake-period). The absolute lag ranged from `r sprintf('%.3f', min(dc$mean_absolute_lag[dc$site == 'MORA']))` to
 `r sprintf('%.3f', max(dc$mean_absolute_lag[dc$site == 'MORA']))` at MORA and from
 `r sprintf('%.3f', min(dc$mean_absolute_lag[dc$site == 'NOCA']))` to
@@ -1066,6 +1073,8 @@ if (file.exists(file.path(bias_dir, 'sign_counts.csv'))) {
 
 ```{r step5a-bias-correction-text, results = 'asis'}
 if (exists('bc')) {
+  s4 = readr::read_csv(file.path(bias_dir, 'lake_periods_raw_vs_corrected.csv'), show_col_types = FALSE) |>
+    filter(site == 'MORA', period == 'S4')
   k = function(r, p) bc[bc$response == r & bc$site == p, ]
   kk = function(r, p) sprintf('%d of %d', k(r, p)$keep_sign, k(r, p)$defined_in_both)
   e = function(r, p, c, run) { x = bc_era[bc_era$response == r & bc_era$site == p & bc_era$contrast == c, ]
@@ -1085,7 +1094,8 @@ if (exists('bc')) {
     e('lag', 'MORA', 'Anthropocene - Holocene-C', 'raw'), ' to ', e('lag', 'MORA', 'Anthropocene - Holocene-C',
     'corrected'), ', and against Holocene-S from ', e('lag', 'MORA', 'Anthropocene - Holocene-S', 'raw'), ' to ',
     e('lag', 'MORA', 'Anthropocene - Holocene-S', 'corrected'), ', the latter because the long MORA S4 lake-periods ',
-    'turn from positive to negative lags. Whether the MORA Anthropocene lag, not divided by time, exceeds the ',
+    sprintf('turn negative: %d of the %d have a negative lag with the raw paleoclimate and %d with the corrected one',
+      sum(s4$lag_raw < 0), nrow(s4), sum(s4$lag_corrected < 0)), '. Whether the MORA Anthropocene lag, not divided by time, exceeds the ',
     'Holocene one therefore depends on the paleoclimate correction. The NOCA pace contrast against ',
     'Holocene-C is ', e('pace_effect', 'NOCA', 'Anthropocene - Holocene-C', 'raw'), ' raw and ',
     e('pace_effect', 'NOCA', 'Anthropocene - Holocene-C', 'corrected'), ' corrected.\n'))
@@ -1154,26 +1164,37 @@ slope = function(m, t) coefficients |> filter(metric == m, era == 'Holocene', te
 f = function(x) sprintf('%+.2f (%.2f to %.2f)', x$estimate, x$conf_low, x$conf_high)
 ```
 
-In the Holocene, lake-periods with faster climate change ended with a larger lag
-(`r f(slope('lag_rate', 'climate_rate'))` CCA distance per century for one more standardized
-unit of climate change per century) and with a larger pace effect
-(`r f(slope('pace_effect', 'climate_rate'))`). Fire activity did not go with the lag rate
-(`r f(slope('lag_rate', 'fire_activity'))` per extra event per century per core), but it went with
-a larger direction effect (`r f(slope('direction_effect', 'fire_activity'))`): where fire was more
-frequent, the community's direction was further from the predicted one. The fire values of the two
+```{r step5-slope-words}
+# The direction of each slope in words, from its interval, so that the text follows the fit.
+say = function(m, t, what) {
+  x = slope(m, t)
+  if (x$conf_low > 0) sprintf('went with a larger %s (%s)', what, f(x))
+  else if (x$conf_high < 0) sprintf('went with a smaller %s (%s)', what, f(x))
+  else sprintf('did not go with the %s (%s)', what, f(x))
+}
+hol_slopes = coefficients |> filter(era == 'Holocene', term %in% c('climate_rate', 'climate_change', 'fire_activity'))
+```
+
+In the Holocene, faster climate change `r say('lag_rate', 'climate_rate', 'lag rate')` and
+`r say('pace_effect', 'climate_rate', 'pace effect')`. More frequent fire
+`r say('lag_rate', 'fire_activity', 'lag rate')` and `r say('direction_effect', 'fire_activity', 'direction effect')`.
+The slopes are in CCA distance per century for one more standardized unit of climate change per century,
+or for one more event per century per core. The fire values of the two
 parks barely overlap. The site term absorbs the difference between the parks, so the fire slope
 comes from the narrow range within each park
 (`r u = read_output('cca_tracking_lake_periods.csv'); paste(sprintf('%s %.2f to %.2f', c('MORA', 'NOCA'), tapply(u$fire_activity, u$site, min), tapply(u$fire_activity, u$site, max)), collapse = ', ')`
 events per century per core).
 
-The same models on the responses not divided by time, with the climate change between the two ends
-in place of its rate, give a different picture. The lag of a lake-period went with neither climate
-change (`r f(slope('lag', 'climate_change'))` CCA distance per standardized unit of climate change)
-nor fire (`r f(slope('lag', 'fire_activity'))`), and neither did the pace effect. The direction effect
-went with both: lake-periods with more climate change (`r f(slope('direction_effect_total', 'climate_change'))`)
-and more fire (`r f(slope('direction_effect_total', 'fire_activity'))`) ended with directions further
-from the predicted one. The lag-rate and pace associations with the climate change rate therefore
-rest on the division by time, while the direction association with fire holds in both forms. In the
+The same models on the responses not divided by time use the climate change between the two ends in
+place of its rate, and the slopes are in CCA distance per standardized unit of climate change or per
+event per century per core. More climate change `r say('lag', 'climate_change', 'lag')`,
+`r say('pace_effect_total', 'climate_change', 'pace effect')` and
+`r say('direction_effect_total', 'climate_change', 'direction effect')`. More fire
+`r say('lag', 'fire_activity', 'lag')`, `r say('pace_effect_total', 'fire_activity', 'pace effect')` and
+`r say('direction_effect_total', 'fire_activity', 'direction effect')`. Of the
+`r nrow(hol_slopes)` Holocene climate and fire slopes, `r sum(hol_slopes$conf_low > 0 | hol_slopes$conf_high < 0)`
+have an interval that excludes zero. They rest on `r nrow(u)` lake-periods and change markedly with a
+bias-corrected paleoclimate (Appendix S3), so they are fragile. In the
 Anthropocene, burned plots had a smaller total pace effect than unburned ones
 (`r x = coefficients |> filter(metric == 'pace_effect_total', era == 'Anthropocene', term == 'burnedBurned'); f(x)`).
 Fire activity stays a frequency in both forms, because a count of events would grow with the length
@@ -1290,9 +1311,10 @@ r_measures = species_means |> filter(period_type == 'Anthropocene') |>
 
 In the Holocene every species mean is close to zero in both parks (largest absolute value
 `r sprintf('%.3f', max(abs(hol$estimate)))` CCA distance per century).
-`r nrow(hol_away)` of `r sum(hol$interval_defined)` Holocene intervals exclude zero
-(`r paste(sprintf('%s, %s, %s, %s', hol_away$species, hol_away$site, hol_away$period_type, hol_away$measure), collapse = '; ')`),
-all smaller than `r sprintf('%.3f', max(abs(hol_away$estimate)))` in absolute value. The Anthropocene
+`r if (nrow(hol_away)) paste0(nrow(hol_away), ' of ', sum(hol$interval_defined), ' Holocene intervals exclude zero (',
+paste(sprintf('%s, %s, %s, %s', hol_away$species, hol_away$site, hol_away$period_type, hol_away$measure), collapse = '; '),
+'), all smaller than ', sprintf('%.3f', max(abs(hol_away$estimate))), ' in absolute value.') else
+paste0('None of the ', sum(hol$interval_defined), ' Holocene intervals excludes zero.')` The Anthropocene
 means are larger.
 
 In the Anthropocene the climate's part of the lag rate is about the same in both parks
@@ -1367,8 +1389,8 @@ years. Fig. S15 shows the species means without dividing by time, that is how fa
 community over the whole lake-period or plot pair. The Holocene means then reach the size of the
 Anthropocene ones (largest *`r top$species`* at `r top$site`, `r top$period_type`, `r top$measure`,
 `r sprintf('%+.3f', top$estimate)` CCA distance), but they vary so much between the few lake-periods that
-`r nrow(away(hol_t))` of `r sum(hol_t$interval_defined)` Holocene intervals exclude zero, against
-`r nrow(away(hol_r))` per century. In the Anthropocene `r nrow(ant_t)` means exclude zero, against
+`r nrow(away(hol_t))` of `r sum(hol_t$interval_defined)` Holocene intervals exclude zero
+(`r nrow(away(hol_r))` per century). In the Anthropocene `r nrow(ant_t)` means exclude zero, against
 `r nrow(ant_r)` per century, `r if (identical(key(ant_t), key(ant_r))) 'the same species in the same parks' else 'not all the same species'`.
 After the Holm adjustment `r sum(stc$p_adjusted < .05, na.rm = TRUE)` of `r sum(!is.na(stc$p_value))`
 contrasts between period types are significant, against `r nrow(sc_sig)` per century. The large

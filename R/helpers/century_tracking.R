@@ -68,7 +68,7 @@ century_prepare = function() {
     value=if(PALEO_USE_BIAS_CORRECTED) value_corrected else value_raw) |>
     derive_climate_vars(winter_shift=FALSE) |>
     dplyr::rename(lake=unit,site=period,slice=time) |>
-    dplyr::mutate(century_cal_bp=1950-slice*100)
+    dplyr::mutate(century_cal_bp=trace_slice_cal_bp(slice))
   lc=predict(reference$model,newdata=climate,type='lc',scaling='sites',hill=FALSE)[,1:2,drop=FALSE]
   climate$p1=lc[,1];climate$p2=lc[,2]
   events=readr::read_csv(out('holocene_fire_source_events.csv'),show_col_types=FALSE)

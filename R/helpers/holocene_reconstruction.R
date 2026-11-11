@@ -175,12 +175,14 @@ reconstruction_original_age_draws = function(samples, cache_path, n_draws = 1000
   result
 }
 
+# One cell per TraCE21k slice: the century around the slice's date, which falls
+# at a whole century (config.R, trace_slice_cal_bp), so the cell edges are at x50.
 reconstruction_native_grid = function(ponds) {
   grid = ponds |> dplyr::distinct(site, lake, century_cal_bp = cal_BP) |>
     dplyr::mutate(lower_cal_bp = century_cal_bp - 50, upper_cal_bp = century_cal_bp + 50) |>
     dplyr::arrange(site, lake, century_cal_bp)
   if (!nrow(grid) || anyNA(grid) || anyDuplicated(grid[c('lake', 'century_cal_bp')]) ||
-      any(!is.finite(grid$century_cal_bp)) || any(grid$century_cal_bp %% 100 != 50))
+      any(!is.finite(grid$century_cal_bp)) || any(grid$century_cal_bp %% 100 != 0))
     stop('Invalid native CHELSA century grid')
   regular = grid |> dplyr::group_by(lake) |>
     dplyr::summarise(ok = all(diff(century_cal_bp) == 100), .groups = 'drop')

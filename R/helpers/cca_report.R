@@ -123,7 +123,7 @@ cca_screening_tables = function(e, permutations = 9999L, seed = 20261109L) {
     dplyr::transmute(unit = lake, period = site, variable, time = slice, month,
       value = if (PALEO_USE_BIAS_CORRECTED) value_corrected else value_raw) |>
     derive_climate_vars(winter_shift = FALSE) |>
-    dplyr::transmute(site = period, lake = unit, cal_bp = 1950 - time * 100,
+    dplyr::transmute(site = period, lake = unit, cal_bp = trace_slice_cal_bp(time),
       dplyr::across(dplyr::all_of(sets[[1]])))
   stopifnot(!anyNA(holocene[sets[[1]]]))
   fits = lapply(sets, function(v) vegan::cca(e$species_past_final ~ ., data = climate[, v, drop = FALSE]))
