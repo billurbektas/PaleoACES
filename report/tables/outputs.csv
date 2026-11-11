@@ -132,8 +132,9 @@ Step,File,Description,Size (kB)
 14_predictor_models,community_predictor_models/partial_residuals.csv,Within-era predictor GLS fits,26
 14_predictor_models,community_predictor_models/primary_fits.rds,Within-era predictor GLS fits,404
 15_contributions,cca_transition_contributions/climate_contributions.csv,Species and climate contributions to displacement,223
-15_contributions,cca_transition_contributions/species_contributions.csv,Species and climate contributions to displacement,1479
-15_contributions,cca_transition_contributions/species_lake_periods.csv,Species and climate contributions to displacement,31
+15_contributions,cca_transition_contributions/lag_decomposition.csv,Species and climate contributions to displacement,92
+15_contributions,cca_transition_contributions/species_contributions.csv,Species and climate contributions to displacement,1436
+15_contributions,cca_transition_contributions/species_lake_periods.csv,Species and climate contributions to displacement,32
 15_contributions,species_contribution_models/noca_burned_species_means.csv,"Species contribution means, contrasts and NOCA burned means",6
 15_contributions,species_contribution_models/species_contrasts.csv,"Species contribution means, contrasts and NOCA burned means",35
 15_contributions,species_contribution_models/species_mean_status.csv,"Species contribution means, contrasts and NOCA burned means",3

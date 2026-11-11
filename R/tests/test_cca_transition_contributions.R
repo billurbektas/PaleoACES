@@ -24,7 +24,7 @@ key=function(x) ifelse(x$era=='Holocene',paste('H',x$site,x$lake,x$age_start,x$a
  paste('A',x$site,x$plot_id,sep='|'))
 endpoint=bind_rows(h |> mutate(era='Holocene',plot_id=NA_character_),
  a |> mutate(era='Anthropocene',lake=NA_character_))
-stopifnot(!anyDuplicated(key(endpoint)),nrow(a)==607L,
+stopifnot(!anyDuplicated(key(endpoint)),nrow(a)==607L,!'contrib_gap' %in% names(species),
  nrow(species)==nrow(endpoint)*length(taxa),nrow(climate)==nrow(endpoint)*length(CCA_VARIABLES),
  !anyDuplicated(paste(key(species),species$species)),
  !anyDuplicated(paste(key(climate),climate$variable)),
@@ -86,11 +86,27 @@ for(type in c('species','climate')) {
  if(type=='species') {
   defined=endpoint$direction_defined[index]
   close(x$contrib_climate,ifelse(defined,projected*100/endpoint$vegetation_dt_years[index],NA_real_))
-  # The gap measure: projection on LC_t1 - WA_t1.
-  gx=(endpoint$p1-endpoint$o1)[index];gy=(endpoint$p2-endpoint$o2)[index]
-  gap=x$contribution_CCA1*cos(atan2(gy,gx))+x$contribution_CCA2*sin(atan2(gy,gx))
-  gap[sqrt(gx^2+gy^2)<=CCA_CONTRIBUTION_EPSILON]=NA_real_
-  close(x$contrib_gap,ifelse(defined,gap*100/endpoint$vegetation_dt_years[index],NA_real_))
+  # contrib_lag (Bills, 11 Nov 2026): projection on m = (g1 + g2) / (|g1| + |g2|),
+  # g = WA - LC at each end, from angles and lengths, per century of the
+  # lag-rate interval (lake-period span, climate interval of a plot).
+  g1x=endpoint$o1-endpoint$p1;g1y=endpoint$o2-endpoint$p2
+  g2x=endpoint$o1_2-endpoint$p1_2;g2y=endpoint$o2_2-endpoint$p2_2
+  mx=g1x+g2x;my=g1y+g2y;ml=sqrt(mx^2+my^2)/(sqrt(g1x^2+g1y^2)+sqrt(g2x^2+g2y^2))
+  lag_dt=ifelse(endpoint$era=='Holocene',endpoint$duration_yr,endpoint$climate_dt_years)
+  vl=sqrt(x$contribution_CCA1^2+x$contribution_CCA2^2)
+  lag_value=vl*ml[index]*cos(atan2(x$contribution_CCA2,x$contribution_CCA1)-atan2(my,mx)[index])*100/lag_dt[index]
+  close(x$contrib_lag,lag_value)
+  # The species values plus the climate part -dLC . m equal the lag rate of every unit.
+  climate_part=-ml*sqrt(endpoint$delta_predicted_CCA1^2+endpoint$delta_predicted_CCA2^2)*
+    cos(atan2(endpoint$delta_predicted_CCA2,endpoint$delta_predicted_CCA1)-atan2(my,mx))*100/lag_dt
+  species_sum=as.numeric(tapply(x$contrib_lag,factor(index,levels=seq_len(nrow(endpoint))),sum))
+  close(species_sum+climate_part,(endpoint$lag_t2-endpoint$lag_t1)*100/lag_dt)
+  # Swapping the two surveys: the ends exchange, every movement reverses, and
+  # every value changes sign.
+  sx=g2x+g1x;sy=g2y+g1y
+  swapped=(-x$contribution_CCA1*sx[index]-x$contribution_CCA2*sy[index])/
+    (sqrt(g2x^2+g2y^2)+sqrt(g1x^2+g1y^2))[index]*100/lag_dt[index]
+  close(swapped,-x$contrib_lag)
  }
 }
 # Zero components remain zero; undefined reference directions remain NA.

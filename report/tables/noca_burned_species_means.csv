@@ -27,31 +27,31 @@ contrib_climate,Tsuga heterophylla,FALSE,194,0.11401259640168396,0.064 to 0.164
 contrib_climate,Tsuga heterophylla,TRUE,17,0.04338230909786782,-0.049 to 0.135
 contrib_climate,Tsuga mertensiana,FALSE,194,0.00559955562498518,-0.034 to 0.046
 contrib_climate,Tsuga mertensiana,TRUE,17,0.06873508839251563,-0.020 to 0.158
-contrib_gap,Abies amabilis,FALSE,194,0.03455309054974877,0.001 to 0.068
-contrib_gap,Abies amabilis,TRUE,17,0.05004202344250563,-0.052 to 0.152
-contrib_gap,Abies grandis,FALSE,194,0.14530385649844893,0.049 to 0.242
-contrib_gap,Abies grandis,TRUE,17,0.1729552044981933,-0.194 to 0.540
-contrib_gap,Abies lasiocarpa,FALSE,194,0.3198533105776276,0.150 to 0.490
-contrib_gap,Abies lasiocarpa,TRUE,17,-0.10926313690607002,-0.757 to 0.538
-contrib_gap,Abies procera,FALSE,194,0,not defined
-contrib_gap,Abies procera,TRUE,17,0,not defined
-contrib_gap,Callitropsis nootkatensis,FALSE,194,0.07894845017432589,0.005 to 0.153
-contrib_gap,Callitropsis nootkatensis,TRUE,17,0,not defined
-contrib_gap,Picea engelmannii,FALSE,194,0.0244317891208172,-0.053 to 0.102
-contrib_gap,Picea engelmannii,TRUE,17,0.17812012176776537,-0.240 to 0.597
-contrib_gap,Pinus albicaulis,FALSE,194,0.27628076152639086,0.043 to 0.510
-contrib_gap,Pinus albicaulis,TRUE,17,1.339558151000836,-0.020 to 2.699
-contrib_gap,Pinus contorta,FALSE,194,0.1121934650121992,0.012 to 0.213
-contrib_gap,Pinus contorta,TRUE,17,-0.02457470294252248,-0.383 to 0.334
-contrib_gap,Pinus monticola,FALSE,194,-0.02832253774046806,-0.054 to -0.002
-contrib_gap,Pinus monticola,TRUE,17,0.00589867332706054,-0.211 to 0.222
-contrib_gap,Pinus ponderosa,FALSE,194,0.17942882805522117,-0.011 to 0.370
-contrib_gap,Pinus ponderosa,TRUE,17,1.755152811467953,-0.508 to 4.019
-contrib_gap,Pseudotsuga menziesii,FALSE,194,0.08688102697984854,0.014 to 0.160
-contrib_gap,Pseudotsuga menziesii,TRUE,17,-0.4031492348680032,-0.912 to 0.106
-contrib_gap,Thuja plicata,FALSE,194,0.08523221372880702,0.018 to 0.152
-contrib_gap,Thuja plicata,TRUE,17,0,not defined
-contrib_gap,Tsuga heterophylla,FALSE,194,0.02547910732176172,-0.019 to 0.070
-contrib_gap,Tsuga heterophylla,TRUE,17,0.01474561483716229,-0.017 to 0.046
-contrib_gap,Tsuga mertensiana,FALSE,194,0.11829661910954614,0.040 to 0.196
-contrib_gap,Tsuga mertensiana,TRUE,17,0.06844259589434598,-0.073 to 0.210
+contrib_lag,Abies amabilis,FALSE,253,0.00772659983260498,-0.013 to 0.029
+contrib_lag,Abies amabilis,TRUE,24,-0.02082259054234914,-0.058 to 0.016
+contrib_lag,Abies grandis,FALSE,253,-0.05630450485200918,-0.132 to 0.019
+contrib_lag,Abies grandis,TRUE,24,-0.1303243197166541,-0.400 to 0.139
+contrib_lag,Abies lasiocarpa,FALSE,253,0.04456531663809251,-0.088 to 0.177
+contrib_lag,Abies lasiocarpa,TRUE,24,0.18481132172756048,-0.223 to 0.592
+contrib_lag,Abies procera,FALSE,253,0,not defined
+contrib_lag,Abies procera,TRUE,24,0,not defined
+contrib_lag,Callitropsis nootkatensis,FALSE,253,0.01107617086912689,-0.040 to 0.063
+contrib_lag,Callitropsis nootkatensis,TRUE,24,0,not defined
+contrib_lag,Picea engelmannii,FALSE,253,0.01566242271796621,-0.046 to 0.077
+contrib_lag,Picea engelmannii,TRUE,24,-0.09447594439076554,-0.406 to 0.217
+contrib_lag,Pinus albicaulis,FALSE,253,-0.2169031813099285,-0.405 to -0.029
+contrib_lag,Pinus albicaulis,TRUE,24,-0.9889043263377588,-2.013 to 0.035
+contrib_lag,Pinus contorta,FALSE,253,-0.02760594621240104,-0.117 to 0.062
+contrib_lag,Pinus contorta,TRUE,24,0.04086359178303773,-0.216 to 0.298
+contrib_lag,Pinus monticola,FALSE,253,0.02290988883406296,0.001 to 0.045
+contrib_lag,Pinus monticola,TRUE,24,-0.01601298202179418,-0.199 to 0.167
+contrib_lag,Pinus ponderosa,FALSE,253,-0.12140126902473625,-0.287 to 0.044
+contrib_lag,Pinus ponderosa,TRUE,24,-0.9415101217392176,-2.740 to 0.857
+contrib_lag,Pseudotsuga menziesii,FALSE,253,-0.00721422247231167,-0.063 to 0.049
+contrib_lag,Pseudotsuga menziesii,TRUE,24,0.2801292756691891,-0.122 to 0.682
+contrib_lag,Thuja plicata,FALSE,253,-0.0171477078786625,-0.063 to 0.029
+contrib_lag,Thuja plicata,TRUE,24,0,not defined
+contrib_lag,Tsuga heterophylla,FALSE,253,0.02051539168922938,-0.011 to 0.052
+contrib_lag,Tsuga heterophylla,TRUE,24,-0.01103926880264493,-0.034 to 0.012
+contrib_lag,Tsuga mertensiana,FALSE,253,-0.04382617223370249,-0.101 to 0.013
+contrib_lag,Tsuga mertensiana,TRUE,24,-0.01834319470896332,-0.060 to 0.024

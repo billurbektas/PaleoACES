@@ -49,7 +49,7 @@ for the report.
 | R/pipeline/12_tracking.R | pipeline | Tracking: native-century Holocene positions, tracking metrics for both eras, | 85 |
 | R/pipeline/13_era_models.R | pipeline | Era models (PLAN.md section 5, Step 5a): Holocene stability periods, | 183 |
 | R/pipeline/14_predictor_models.R | pipeline | Explanatory models (PLAN.md section 5, Step 5). | 131 |
-| R/pipeline/15_contributions.R | pipeline | Species contributions (PLAN.md section 5, Step 6): which species led the | 107 |
+| R/pipeline/15_contributions.R | pipeline | Species contributions (PLAN.md section 5, Step 6): which species led the | 125 |
 | R/figures/supp_age_depth_models.R | figure | Figures S5 (four Bacon age-depth models) and S6 (Panther Potholes 210Pb | 109 |
 | R/figures/supp_cca_scaling.R | figure | supp_cca_scaling.R - one CCA drawn at scaling 1 and scaling 2 | 108 |
 | R/figures/supp_climate_correlations.R | figure | supp_climate_correlations.R | 626 |
@@ -62,12 +62,12 @@ for the report.
 | R/figures/main_fig4_era_contrasts.R | figure | Figure 4 (PLAN.md section 6; redrawn by Bills, 10 Nov 2026): fitted means | 34 |
 | R/figures/main_fig5_lag_pace_direction.R | figure | Figure 5 (PLAN.md section 6; redrawn by Bills, 10 Nov 2026): the pace and | 43 |
 | R/figures/main_fig6_climate_fire_associations.R | figure | Figure 6: climate and fire associations as model slopes (Bills, 9 Nov 2026). | 74 |
-| R/figures/main_fig7_species.R | figure | Figure 7 (PLAN.md section 6): species contributions in both eras. Species as | 97 |
+| R/figures/main_fig7_species.R | figure | Figure 7 (PLAN.md section 6): species contributions in both eras. Species as | 104 |
 | R/worked_examples.R | worked examples | Worked examples: step-by-step illustrations of four methods, drawn from the | 660 |
 | R/tests/test_bacon_provenance.R | test | The stored Bacon chronologies are exactly what the current age-model script and | 32 |
 | R/tests/test_cca_tracking_metrics.R | test | Independent geometry and integration checks for the canonical tracking data. | 38 |
 | R/tests/test_cca_trajectory_figure.R | test | Figure 3 inputs (PLAN.md section 6): the Anthropocene arrows are the means of | 37 |
-| R/tests/test_cca_transition_contributions.R | test | Independent contribution gate (PLAN.md Step 6): original sample weights, CCA | 104 |
+| R/tests/test_cca_transition_contributions.R | test | Independent contribution gate (PLAN.md Step 6): original sample weights, CCA | 120 |
 | R/tests/test_century_tracking.R | test | Independent native-century reconstruction, geometry and contribution checks. | 92 |
 | R/tests/test_check_vegetation.R | test | Standalone integrity checks for cleaned MORA and NOCA vegetation outputs. | 31 |
 | R/tests/test_chronology_tables.R | test | Supplementary Tables S1.1 and S1.2 must match what Bacon actually ran with. | 49 |
@@ -90,7 +90,7 @@ Every file under `output/` is declared in `R/helpers/paths.R`; a script
 cannot write an undeclared output. Folders hold one file per table, in
 the folder of the step that writes it.
 
-**161 output files** (excluding the climate and age-draw cache).
+**162 output files** (excluding the climate and age-draw cache).
 
 | Step | File | Description | Size (kB) |
 |:---|:---|:---|---:|
@@ -227,8 +227,9 @@ the folder of the step that writes it.
 | 14_predictor_models | community_predictor_models/partial_residuals.csv | Within-era predictor GLS fits | 26 |
 | 14_predictor_models | community_predictor_models/primary_fits.rds | Within-era predictor GLS fits | 404 |
 | 15_contributions | cca_transition_contributions/climate_contributions.csv | Species and climate contributions to displacement | 223 |
-| 15_contributions | cca_transition_contributions/species_contributions.csv | Species and climate contributions to displacement | 1479 |
-| 15_contributions | cca_transition_contributions/species_lake_periods.csv | Species and climate contributions to displacement | 31 |
+| 15_contributions | cca_transition_contributions/lag_decomposition.csv | Species and climate contributions to displacement | 92 |
+| 15_contributions | cca_transition_contributions/species_contributions.csv | Species and climate contributions to displacement | 1436 |
+| 15_contributions | cca_transition_contributions/species_lake_periods.csv | Species and climate contributions to displacement | 32 |
 | 15_contributions | species_contribution_models/noca_burned_species_means.csv | Species contribution means, contrasts and NOCA burned means | 6 |
 | 15_contributions | species_contribution_models/species_contrasts.csv | Species contribution means, contrasts and NOCA burned means | 35 |
 | 15_contributions | species_contribution_models/species_mean_status.csv | Species contribution means, contrasts and NOCA burned means | 3 |

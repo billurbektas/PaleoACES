@@ -92,6 +92,6 @@ read_output('species_contribution_models/noca_burned_species_means.csv') |>
   show_table('noca_burned_species_means', caption = '**NOCA species contributions on burned and unburned plots** (means with t-intervals).')
 read_output('cca_transition_contributions/species_lake_periods.csv') |>
   transmute(Park = site, Lake = lake, Period = period, Species = species, `contrib_climate` = contrib_climate,
-    `contrib_gap` = contrib_gap) |>
+    `contrib_lag` = contrib_lag) |>
   show_table('species_lake_periods', caption = '**Species contributions per lake-period** (CCA distance per century).')
 ```

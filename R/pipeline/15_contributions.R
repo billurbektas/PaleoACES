@@ -1,7 +1,7 @@
 # 15 Species contributions (PLAN.md section 5, Step 6): which species led the
-# climate-aligned movement, and which put the community back on track, per
-# lake-period and per plot pair; then the group means per species, park and
-# period type. Seasonal-climate contributions to the predicted movement are
+# climate-aligned movement (contrib_climate), and which widened or narrowed the
+# community-climate lag (contrib_lag, Bills 11 Nov 2026), per lake-period and
+# per plot pair; then the group means per species, park and period type. Seasonal-climate contributions to the predicted movement are
 # kept as a descriptive table.
 
 # =============================================================================
@@ -26,7 +26,11 @@ stopifnot(!anyNA(first), !anyNA(last))
 context = units |> transmute(era = 'Holocene', period_type, site, lake, plot_id = NA_character_, period,
   series = paste('H', site, lake, sep = '_'), unit_index, age_start, age_end, duration_yr,
   vegetation_dt_years, burned = NA)
-holocene = step6_species_contributions(context, first, last, basis$positions, units, units$vegetation_dt_years)
+# contrib_lag is per century of the lag rate's interval (duration_yr), so that
+# the species values and the climate part add up to the lag rate.
+holocene = step6_species_contributions(context, first, last, basis$positions, units, units$vegetation_dt_years,
+  units$duration_yr)
+holocene_lag = step6_lag_decomposition(context, holocene, units, units$duration_yr)
 
 occ = read_csv(out('occ_consolidated.csv'), show_col_types = FALSE)
 ids = select(plots, site, plot_id)
@@ -36,8 +40,17 @@ context = plots |> transmute(era = 'Anthropocene', period_type = 'Anthropocene',
   period = 'Anthropocene', series = paste('A', site, plot_id, sep = '_'), unit_index = 1L,
   age_start = NA_real_, age_end = NA_real_, duration_yr = climate_dt_years, vegetation_dt_years, burned)
 # Plot contributions are per century of the vegetation interval, like turnover.
-modern = step6_species_contributions(context, first, last, basis$positions, plots, plots$vegetation_dt_years)
+# Their contrib_lag is per century of the climate interval, as their lag rate is.
+modern = step6_species_contributions(context, first, last, basis$positions, plots, plots$vegetation_dt_years,
+  plots$climate_dt_years)
+modern_lag = step6_lag_decomposition(context, modern, plots, plots$climate_dt_years)
 species = bind_rows(holocene, modern)
+# The unit lag rates must be those of the era models (Rule: one lag rate per unit).
+lag_parts = bind_rows(holocene_lag, modern_lag)
+check = both |> transmute(key = if_else(period_type == 'Anthropocene', paste(site, plot_id), paste(site, lake, period)),
+  lag_rate) |> inner_join(lag_parts |> transmute(key = if_else(era == 'Anthropocene', paste(site, plot_id),
+    paste(site, lake, period)), lag_rate_parts = lag_rate), by = 'key')
+stopifnot(nrow(check) == nrow(lag_parts), max(abs(check$lag_rate - check$lag_rate_parts)) < 1e-9)
 
 climate = bind_rows(
   century_climate_contributions(units |> transmute(era = 'Holocene', period_type, site, lake, period, unit_index, age_start, age_end), units, bundle$reference),
@@ -45,9 +58,10 @@ climate = bind_rows(
 
 results_dir = out('cca_transition_contributions'); dir.create(results_dir, recursive = TRUE, showWarnings = FALSE)
 write_csv(species, file.path(results_dir, 'species_contributions.csv'))
+write_csv(lag_parts, file.path(results_dir, 'lag_decomposition.csv'))
 write_csv(climate, file.path(results_dir, 'climate_contributions.csv'))
 write_csv(holocene |> select(site, lake, period, period_type, age_start, age_end, duration_yr, species,
-  weight_t1, weight_t2, contrib_climate, contrib_gap), file.path(results_dir, 'species_lake_periods.csv'))
+  weight_t1, weight_t2, contrib_climate, contrib_lag), file.path(results_dir, 'species_lake_periods.csv'))
 cat('Species contributions:', nrow(units), 'lake-periods and', nrow(plots), 'plot pairs x',
   ncol(first), 'species; vectors sum to dWA in every row.\n')
 
@@ -60,7 +74,11 @@ source(here('R/helpers/tracking_model_reporting.R'), local = TRUE)
 models_dir = out('species_contribution_models'); dir.create(models_dir, recursive = TRUE, showWarnings = FALSE)
 presence = species |> group_by(species, site, period_type) |>
   summarise(present = any(weight_t1 > 0 | weight_t2 > 0), .groups = 'drop')
-long = species |> pivot_longer(c(contrib_climate, contrib_gap), names_to = 'measure', values_to = 'contribution') |>
+# contrib_climate exists only where both positions moved (epsilon rule).
+# contrib_lag exists in every unit: where the community did not move, every
+# species value is zero, and the means plus the climate part still give the
+# mean lag rate.
+long = species |> pivot_longer(c(contrib_climate, contrib_lag), names_to = 'measure', values_to = 'contribution') |>
   filter(is.finite(contribution))
 # report-snippet: species-means
 # For one species in one park and period type, x holds its contribution in

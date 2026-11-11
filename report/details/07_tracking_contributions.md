@@ -7,8 +7,10 @@
 **Update 2026-11-09 (lake-period remodelling).** Contributions are now computed once per
 lake-period, between its oldest and its youngest sampled century, and once per plot pair. Each
 species' vector is projected on two references: the direction in which the predicted position moved
-(`contrib_climate`) and the gap from the observed to the predicted position at the start
-(`contrib_gap`). Both are per century. The species explanatory GLS described below is no longer
+(`contrib_climate`) and, since 11 November 2026, the average direction m of the mismatch at the two
+ends (`contrib_lag`), so that the species values plus the climate part add up to the lag rate. It
+replaced the projection on the mismatch at the start (`contrib_gap`), which leaned positive in both
+directions of time. Both are per century. The species explanatory GLS described below is no longer
 fitted. Species are summarized by plain means with t-intervals per species, park and period type.
 The identities in the sections below still hold, with "transition" read as "lake-period".
 

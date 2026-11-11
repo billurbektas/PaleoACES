@@ -73,7 +73,7 @@ is finished.
 | Steps 2 to 4 | Mismatch, lag, turnover, pace, direction, climate change rate and fire per lake-period | `r u = read_output('cca_tracking_lake_periods.csv'); sprintf('%d lake-periods (MORA %d, NOCA %d, %d C, %d S), %d to %d years long', nrow(u), sum(u$site == "MORA"), sum(u$site == "NOCA"), sum(u$period_type == "Holocene-C"), sum(u$period_type == "Holocene-S"), min(u$duration_yr), max(u$duration_yr))` |
 | Step 5 | Holocene explanatory models | `r x = read_output('community_predictor_models/model_coefficients.csv') |> dplyr::filter(era == 'Holocene'); g = function(m, t) x[x$metric == m & x$term == t, ]; sprintf('Lag rate rises with climate change rate (%+.2f, %.2f to %.2f), fire goes with a larger direction effect (%+.2f, %.2f to %.2f)', g('lag_rate','climate_rate')$estimate, g('lag_rate','climate_rate')$conf_low, g('lag_rate','climate_rate')$conf_high, g('direction_effect','fire_activity')$estimate, g('direction_effect','fire_activity')$conf_low, g('direction_effect','fire_activity')$conf_high)` |
 | Step 5a | Holocene against Anthropocene (era models) | `r f = read_output('era_comparison/era_folds.csv'); g = function(r, p) f$fold[f$response == r & f$site == p & f$against == 'Holocene-C']; sprintf('Anthropocene climate change %.0f (MORA) and %.0f (NOCA) times faster than in Holocene-C periods, turnover %.0f and %.0f times faster', g('climate_rate','MORA'), g('climate_rate','NOCA'), g('turnover_rate','MORA'), g('turnover_rate','NOCA'))` |
-| Step 6 | Species contributions | `r m = read_output('species_contribution_models/species_means.csv'); h = m[m$period_type != 'Anthropocene' & m$interval_defined, ]; a = m[m$period_type == 'Anthropocene' & m$interval_defined & m$measure == 'contrib_gap', ]; sprintf('Holocene species means near zero (%d of %d intervals span zero), %d of %d Anthropocene gap means above zero', sum(h$conf_low <= 0 & h$conf_high >= 0), nrow(h), sum(a$conf_low > 0), nrow(a))` |
+| Step 6 | Species contributions | `r m = read_output('species_contribution_models/species_means.csv'); h = m[m$period_type != 'Anthropocene' & m$interval_defined, ]; a = m[m$period_type == 'Anthropocene' & m$interval_defined & m$measure == 'contrib_lag', ]; sprintf('Holocene species means near zero (%d of %d intervals span zero). Anthropocene lag rate split into species and climate: %d of %d species-park means narrow the lag, %d widen it', sum(h$conf_low <= 0 & h$conf_high >= 0), nrow(h), sum(a$conf_high < 0), nrow(a), sum(a$conf_low > 0))` |
 
 # Step 0. Climate variables and the CCA
 
@@ -645,14 +645,25 @@ AR(1) correlation), [`R/helpers/reconstruction_models.R`](R/helpers/reconstructi
 **What and why.** The observed movement of a community between t1 and t2 is the sum of one
 vector per species: the change in the species' share times the species' fixed position in the
 CCA plane. Projecting each species' vector on a reference direction says how much that species
-moved the community along it. Two references are used. Along the direction the prediction moved
-(`contrib_climate`), a positive value means the species carried the community with the climate.
-Along the initial mismatch, from the observed to the predicted position at t1 (`contrib_gap`), a
-positive value means the species closed that mismatch. Both are per century.
+moved the community along it. Two measures are used, both per century. Along the direction the
+prediction moved (`contrib_climate`), a positive value means the species carried the community with
+the climate. The second measure, `contrib_lag`, splits the lag rate itself. The mismatch g, from the
+predicted to the observed position, is taken at both ends (g1 at t1, g2 at t2), and m is their sum
+divided by the sum of their lengths. Each species' vector projected on m is that species' part of the
+lag rate, and the predicted movement projected on m, with its sign reversed, is the climate's part.
+Because the change in mismatch, g2 − g1, is the observed movement minus the predicted movement, and
+(g2 − g1)·m is exactly the change in the length of the mismatch, the species parts and the climate
+part add up exactly to the lag rate (asserted). A negative species value means the species narrowed
+the lag, a positive value that it widened it. Swapping the two surveys reverses every value, so the
+measure has no direction of its own. It replaces `contrib_gap`, the projection on the mismatch at
+the start alone. That measure leaned positive: a community sampled away from its predicted position
+tends to come back towards it by chance, and run backwards in time it also appeared to close the
+gap. `contrib_lag` is per century of the same interval as the lag rate.
 
 **How it is calculated.**
 
 ```{r step6-code}
+code_snippet('R/helpers/cca_transition_contributions.R', 'contrib-lag')
 code_snippet('R/pipeline/15_contributions.R', 'species-means')
 ```
 
@@ -667,15 +678,33 @@ species_means |> mutate(value = ifelse(interval_defined, sprintf('%+.3f (%.3f to
   rename(Species = species, Park = site) |>
   show_table('step6_species_means', caption = paste('**Species contributions**, mean and 95% t-interval in CCA',
     'distance per century, per species, park and period type. Columns: measure (contrib_climate along the',
-    'predicted movement, contrib_gap along the initial mismatch) and period type. "absent": the species does',
-    'not occur in that park and period type.'))
+    'predicted movement, contrib_lag the species\' part of the lag rate) and period type. "absent": the species',
+    'does not occur in that park and period type. contrib_lag includes the units where the community did not',
+    'move (all species values zero), contrib_climate does not (epsilon rule).'))
+lag_parts = read_output('cca_transition_contributions/lag_decomposition.csv')
+tci = function(x) { n = length(x); m = mean(x); h = qt(.975, n - 1) * sd(x) / sqrt(n)
+  sprintf('%+.3f (%+.3f to %+.3f)', m, m - h, m + h) }
+lag_parts |> mutate(period_type = factor(period_type, levels = c('Holocene-S', 'Holocene-C', 'Anthropocene'))) |>
+  group_by(Park = site, `Period type` = period_type) |>
+  summarise(Units = n(), `Lag rate` = tci(lag_rate), `Species (sum)` = tci(species_sum),
+    `Climate part` = tci(climate_part), .groups = 'drop') |>
+  show_table('step6_lag_decomposition', caption = paste('**The lag rate split into the species and the climate.**',
+    'Plain means over the lake-periods or plot pairs with 95% t-intervals, in CCA distance per century. In',
+    'every unit the sum over species plus the climate part equals the lag rate. Positive values widen the lag.'))
 ```
 
 The species vectors add up to the observed movement for every lake-period and plot pair (asserted).
 ```{r step6-numbers}
 hol = species_means |> filter(period_type != 'Anthropocene')
 hol_away = hol |> filter(interval_defined, conf_low > 0 | conf_high < 0)
-gap = species_means |> filter(period_type == 'Anthropocene', measure == 'contrib_gap', interval_defined)
+lag_species = species_means |> filter(period_type == 'Anthropocene', measure == 'contrib_lag', interval_defined)
+lp = lag_parts |> filter(era == 'Anthropocene') |> group_by(site) |>
+  summarise(lag = mean(lag_rate), species = mean(species_sum), climate = mean(climate_part))
+lpv = function(p, v) sprintf('%+.2f', lp[[v]][lp$site == p])
+narrow = lag_species |> filter(conf_high < 0); widen = lag_species |> filter(conf_low > 0)
+r_measures = species_means |> filter(period_type == 'Anthropocene') |>
+  select(measure, species, site, estimate) |> pivot_wider(names_from = measure, values_from = estimate) |>
+  group_by(site) |> summarise(r = cor(contrib_climate, contrib_lag, use = 'complete.obs'))
 ```
 
 In the Holocene every species mean is close to zero in both parks (largest absolute value
@@ -683,10 +712,22 @@ In the Holocene every species mean is close to zero in both parks (largest absol
 `r nrow(hol_away)` of `r sum(hol$interval_defined)` Holocene intervals exclude zero
 (`r paste(sprintf('%s, %s, %s, %s', hol_away$species, hol_away$site, hol_away$period_type, hol_away$measure), collapse = '; ')`),
 all smaller than `r sprintf('%.3f', max(abs(hol_away$estimate)))` in absolute value. The Anthropocene
-means are larger. Along the initial mismatch `r sum(gap$conf_low > 0)` of `r nrow(gap)` species-park
-means are positive with intervals above zero: the resurvey shifts of these species reduced the gap
-that existed at the legacy survey.
-The two measures do not agree species by species, so both stay in Figure 7.
+means are larger.
+
+In the Anthropocene the climate's part of the lag rate is about the same in both parks
+(`r lpv('MORA', 'climate')` at MORA, `r lpv('NOCA', 'climate')` at NOCA, CCA distance per century): the
+predicted positions moved away from the communities. The parks differ in their species. At MORA the
+species added to the lag (sum `r lpv('MORA', 'species')`), so the lag rate was `r lpv('MORA', 'lag')`. At
+NOCA they narrowed it by more than the climate widened it (sum `r lpv('NOCA', 'species')`), so the lag
+rate was `r lpv('NOCA', 'lag')`. Species whose interval lies below zero, which narrowed the lag:
+`r paste(sprintf('%s (%s, %+.3f)', narrow$species, narrow$site, narrow$estimate), collapse = ', ')`.
+Species whose interval lies above zero, which widened it:
+`r paste(sprintf('%s (%s, %+.3f)', widen$species, widen$site, widen$estimate), collapse = ', ')`.
+Across species the two measures are negatively correlated in the Anthropocene
+(r = `r sprintf('%.2f', r_measures$r[r_measures$site == 'MORA'])` at MORA,
+`r sprintf('%.2f', r_measures$r[r_measures$site == 'NOCA'])` at NOCA): species that moved the community with the
+climate-predicted direction narrowed the lag, and those that moved it against that direction widened
+it.
 
 ```{r step6-contrasts}
 sc = read_output('species_contribution_models/species_contrasts.csv')
@@ -708,7 +749,8 @@ show_figure('report/figures/main/fig_species_contributions.pdf')
 change in share between the first and the last sampled century of a lake-period, or between the
 legacy survey and the resurvey of a plot, times its fixed position in the CCA plane. The upper row (following climate-predicted direction)
 projects these vectors on the direction in which the climate-predicted position moved, and the lower
-row (shrinking the initial mismatch) on the initial mismatch, from the observed to the predicted position at the start. Labels at the top of each panel read with the row title: a species moved the community following or against the climate-predicted direction (upper row), and shrinking or enlarging the initial mismatch (lower row).
+row (changing the community-climate lag) on the average direction of the mismatch at the two ends, so
+that the species' values plus the climate's part add up to the lag rate. Labels at the top of each panel read with the row title: a species moved the community following or against the climate-predicted direction (upper row), and narrowed or widened the community-climate lag (lower row). The lower row includes the lake-periods and plot pairs whose composition did not change (all species values zero) and is per century of the same interval as the lag rate.
 Species are ordered by the mean elevation of the plots where they occur (the 607 plot pairs, both surveys), the highest at the top.
 Symbols are means: triangles, Holocene stability periods, circles, Holocene climate-change periods,
 diamonds, Anthropocene plot pairs (burned and unburned together). Large symbols with bars are means whose

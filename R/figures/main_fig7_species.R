@@ -1,7 +1,9 @@
 # Figure 7 (PLAN.md section 6): species contributions in both eras. Species as
 # rows ordered by the mean elevation of the plots where they occur, the highest
 # at the top (Bills). One column per park, with its own x
-# scale. Upper row contrib_climate, lower row contrib_gap. Per species a
+# scale. Upper row contrib_climate, lower row contrib_lag (Bills, 11 Nov 2026,
+# in place of contrib_gap): the species' part of the lag rate, negative where
+# the species narrowed the community-climate lag. Per species a
 # triangle (Holocene-S), a circle (Holocene-C) and a diamond (Anthropocene), each
 # with its 95% t-interval where the interval excludes zero; other means are
 # small faded symbols.
@@ -31,9 +33,9 @@ means = read_csv(out('species_contribution_models/species_means.csv'), show_col_
     period_type = factor(period_type, levels = c('Holocene-S', 'Holocene-C', 'Anthropocene')),
     spans_zero = !interval_defined | (conf_low <= 0 & conf_high >= 0),
     measure_label = factor(c(contrib_climate = 'Following climate-predicted direction',
-      contrib_gap = 'Shrinking the initial mismatch')[measure],
+      contrib_lag = 'Changing the community-climate lag')[measure],
       levels = c('Following climate-predicted direction',
-        'Shrinking the initial mismatch')))
+        'Changing the community-climate lag')))
 # Species absent from a park's Holocene record (no share at either end of any
 # lake-period) are marked instead of drawn as Holocene symbols.
 absent = means |> filter(period_type != 'Anthropocene') |> group_by(measure_label, species, site) |>
@@ -58,8 +60,9 @@ side_labels = expand_grid(measure_label = factor(levels(means$measure_label), le
       # The labels continue the row title (Bills).
       as.integer(measure_label) == 1 & side == 'negative' ~ '\u2190 against',
       as.integer(measure_label) == 1 ~ 'following \u2192',
-      side == 'negative' ~ '\u2190 enlarging',
-      TRUE ~ 'shrinking \u2192'))
+      # contrib_lag is the species' part of the lag rate: negative narrows the lag.
+      side == 'negative' ~ '\u2190 narrowing',
+      TRUE ~ 'widening \u2192'))
 figure = ggplot(drawn, aes(estimate, y)) +
   geom_rect(data = bands, aes(xmin = -Inf, xmax = Inf, ymin = species_index - .5, ymax = species_index + .5),
     inherit.aes = FALSE, fill = 'grey95') +
@@ -79,6 +82,8 @@ figure = ggplot(drawn, aes(estimate, y)) +
   scale_y_reverse(breaks = seq_along(order_species), labels = order_species, expand = expansion(add = c(1.5, .6))) +
   scale_shape_manual(values = PERIOD_TYPE_SHAPES[c('Holocene-S', 'Holocene-C', 'Anthropocene')], name = NULL,
     labels = c('Holocene stability periods', 'Holocene climate-change periods', 'Anthropocene')) +
+  # No tick labels at the very edges of a panel, where the two parks' labels would meet.
+  scale_x_continuous(breaks = function(l) { b = scales::extended_breaks()(l); b[abs(b) < .9 * max(abs(l))] }) +
   scale_fill_manual(values = PAPER_SITE_COLORS, guide = 'none') + scale_color_manual(values = PAPER_SITE_COLORS, guide = 'none') +
     guides(shape = guide_legend(override.aes = list(fill = 'grey60', size = 5))) +
   labs(x = 'Species contribution', y = NULL) +
@@ -86,7 +91,9 @@ figure = ggplot(drawn, aes(estimate, y)) +
   theme(axis.text.y = element_text(face = 'italic', size = 23), axis.text.x = element_text(size = 21),
     strip.placement = 'outside', legend.position = 'bottom', legend.text = element_text(size = 22),
     panel.grid.major.y = element_blank(), panel.grid.minor = element_blank(),
-    strip.text.x = element_text(size = 26, face = 'bold'), strip.text.y.left = element_text(angle = 90, size = 22, face = 'bold'))
+    strip.text.x = element_text(size = 26, face = 'bold'), strip.text.y.left = element_text(angle = 90, size = 22, face = 'bold'),
+    # Room between the parks, so their end tick labels do not collide.
+    panel.spacing.x = unit(2.2, 'lines'))
 if (render_figures) {
   # cairo_pdf draws the arrows of the side labels.
   ggsave(fig('main', 'fig_species_contributions.pdf'), figure, width = 18, height = 20, device = cairo_pdf)

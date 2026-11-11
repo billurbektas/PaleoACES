@@ -5,9 +5,9 @@ contrib_climate,MORA,Holocene-S,9,2,0,0.01074434821568065
 contrib_climate,NOCA,Anthropocene,13,2,0,0.257298120954898
 contrib_climate,NOCA,Holocene-C,8,0,0,0.015526990560086
 contrib_climate,NOCA,Holocene-S,9,0,0,0.04459387388200427
-contrib_gap,MORA,Anthropocene,14,6,0,0.09824534180317793
-contrib_gap,MORA,Holocene-C,9,0,0,0.04501465639133794
-contrib_gap,MORA,Holocene-S,9,0,2,0.00609497595890273
-contrib_gap,NOCA,Anthropocene,13,9,0,0.3619476602044267
-contrib_gap,NOCA,Holocene-C,8,0,0,0.03649855808740022
-contrib_gap,NOCA,Holocene-S,9,0,0,0.02159231717940533
+contrib_lag,MORA,Anthropocene,14,4,1,0.03469076759821562
+contrib_lag,MORA,Holocene-C,9,0,0,0.03961609122289936
+contrib_lag,MORA,Holocene-S,9,1,0,0.00637606652084066
+contrib_lag,NOCA,Anthropocene,13,0,1,0.28379136716071524
+contrib_lag,NOCA,Holocene-C,8,0,0,0.03199634590903245
+contrib_lag,NOCA,Holocene-S,9,0,0,0.02000102276573557

@@ -172,21 +172,54 @@ century_species_weights = function(reconstruction, bundle) {
 
 # Step 6 (PLAN.md): each species' vector is its change in share between t1 and
 # t2 times its fixed CCA position. The vectors add up to the observed movement.
-# Two measures, per century: the projection on the direction the prediction
-# moved (contrib_climate) and on the initial mismatch, LC_t1 - WA_t1
-# (contrib_gap). Undefined where the reference vector has no length, and, by
-# the epsilon rule, where the observed or predicted position did not move.
-step6_species_contributions = function(context, first, last, positions, endpoints, dt) {
+# Two measures, per century:
+#   contrib_climate: the projection on the direction the prediction moved,
+#     undefined, by the epsilon rule, where the observed or predicted position
+#     did not move; per century of the vegetation interval (`dt`).
+#   contrib_lag (Bills, 11 Nov 2026, in place of contrib_gap): the projection on
+#     m = (g1 + g2) / (|g1| + |g2|), with g1 = WA_t1 - LC_t1 and g2 = WA_t2 - LC_t2
+#     the mismatch at the two ends; per century of the lag-rate interval (`lag_dt`).
+# Why m: (g2 - g1) . (g1 + g2) = |g2|^2 - |g1|^2, so (g2 - g1) . m = |g2| - |g1|,
+# the lag. Since g2 - g1 = dWA - dLC, the species values plus the climate part
+# -dLC . m add up exactly to the lag rate. Swapping the two surveys leaves m as
+# it is and reverses dWA and dLC, so every value changes sign. The old
+# contrib_gap, a projection on the start mismatch only, leaned positive in both
+# directions of time.
+# report-snippet: contrib-lag
+step6_species_contributions = function(context, first, last, positions, endpoints, dt, lag_dt) {
+  # rows: one row per unit and species, with the species' vector (its change in
+  # share times its CCA position) in contribution_CCA1 and contribution_CCA2.
   rows = contribution_species(context, first, last, positions, endpoints)
   contribution_close((last - first) %*% positions,
     as.matrix(endpoints[c('delta_observed_CCA1', 'delta_observed_CCA2')]), 'Species vectors sum to dWA')
   index = rep(seq_len(nrow(context)), each = ncol(first))
-  gap = contribution_project(rows$contribution_CCA1, rows$contribution_CCA2,
-    (endpoints$p1 - endpoints$o1)[index], (endpoints$p2 - endpoints$o2)[index])
   defined = endpoints$direction_defined[index]
-  rows$gap_contribution = gap$parallel
-  rows$gap_direction_valid = gap$valid
+  # contrib_climate: the vector along the predicted movement, per century.
   rows$contrib_climate = ifelse(defined, rows$parallel_contribution * 100 / dt[index], NA_real_)
-  rows$contrib_gap = ifelse(defined, rows$gap_contribution * 100 / dt[index], NA_real_)
+  # contrib_lag: the vector projected on m (dot product), per century of the lag rate.
+  m = step6_lag_direction(endpoints)
+  rows$lag_projection = rows$contribution_CCA1 * m$x[index] + rows$contribution_CCA2 * m$y[index]
+  rows$contrib_lag = rows$lag_projection * 100 / lag_dt[index]
   rows
+}
+
+# The direction m of each unit: the mismatch at the start (g1) plus the
+# mismatch at the end (g2), divided by the sum of their lengths.
+step6_lag_direction = function(endpoints) {
+  g1x = endpoints$o1 - endpoints$p1; g1y = endpoints$o2 - endpoints$p2
+  g2x = endpoints$o1_2 - endpoints$p1_2; g2y = endpoints$o2_2 - endpoints$p2_2
+  total = sqrt(g1x^2 + g1y^2) + sqrt(g2x^2 + g2y^2)
+  if (any(!(total > CCA_CONTRIBUTION_EPSILON))) stop('A unit has no mismatch at either end: contrib_lag undefined')
+  list(x = (g1x + g2x) / total, y = (g1y + g2y) / total)
+}
+# end-snippet: contrib-lag
+step6_lag_decomposition = function(context, rows, endpoints, lag_dt) {
+  m = step6_lag_direction(endpoints)
+  climate_part = -(endpoints$delta_predicted_CCA1 * m$x + endpoints$delta_predicted_CCA2 * m$y) * 100 / lag_dt
+  species_sum = as.numeric(tapply(rows$contrib_lag, factor(rep(seq_len(nrow(context)),
+    each = nrow(rows) / nrow(context))), sum))
+  lag_rate = (endpoints$lag_t2 - endpoints$lag_t1) * 100 / lag_dt
+  # Rule (Step 6): the species values plus the climate part equal the lag rate in every unit.
+  contribution_close(species_sum + climate_part, lag_rate, 'Species plus climate part equal the lag rate')
+  dplyr::bind_cols(context, tibble::tibble(lag_rate, species_sum, climate_part))
 }
