@@ -69,8 +69,9 @@ figure = ggplot(drawn, aes(estimate, y)) +
   geom_vline(xintercept = 0, color = 'grey55', linetype = 'dashed') +
   geom_errorbar(data = filter(drawn, !spans_zero), aes(xmin = conf_low, xmax = conf_high, color = site),
     orientation = 'y', width = .2, linewidth = 1, na.rm = TRUE) +
-  geom_point(data = filter(drawn, spans_zero), aes(shape = period_type, fill = site), size = 3, color = 'grey45', alpha = .35) +
-  geom_point(data = filter(drawn, !spans_zero), aes(shape = period_type, fill = site), size = 4.6, color = 'grey10') +
+  # Symbols kept small so the intervals stay visible (Bills, 11 Nov 2026).
+  geom_point(data = filter(drawn, spans_zero), aes(shape = period_type, fill = site), size = 2.4, color = 'grey45', alpha = .35) +
+  geom_point(data = filter(drawn, !spans_zero), aes(shape = period_type, fill = site), size = 3.4, color = 'grey10') +
   # What each side of zero means, written at the top of every panel (Bills).
   # Symmetric x range per park, so both sides have room for their label.
   geom_blank(data = x_extent, aes(x = x, y = 1), inherit.aes = FALSE) +
