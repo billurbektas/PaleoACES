@@ -30,7 +30,7 @@ Step,File,Description,Size (kB)
 06_paleo_samples,paleo_occ.csv,Macrofossil presence by sample,762
 06_paleo_samples,paleo_sample_depths.csv,Sample depth and median Bacon age,95
 07_climate_products,climate_bias_correction_factors.csv,"Two-step correction per park, month and variable: TraCE21k to CHELSAcruts (1900-1990) and CHELSAcruts to V2.1 (1979-2016) (Fig. S6)",13
-07_climate_products,climate_products_monthly.csv,Monthly climatology of each product and window at each place (quoted in Appendix S2),120
+07_climate_products,climate_products_monthly.csv,Monthly climatology of each product and window at each place,120
 07_climate_products,climate_products_points.csv,"Plots, lake pixels and 5 km disc cells the four products are read at",50
 07_climate_products,climate_products_values.csv,"Each product's monthly values per year at the plot means, lake pixels and disc means",2565
 07_climate_products,climate_trace_cruts_check.csv,TraCE21k timeID 20 against CHELSAcruts 1901-1990 over the same cells (Table S5),21
@@ -107,7 +107,7 @@ Step,File,Description,Size (kB)
 13_tracking,cca_tracking_lake_period_candidates.csv,Holocene and Anthropocene tracking calculations,1
 13_tracking,cca_tracking_lake_periods.csv,Holocene and Anthropocene tracking calculations,8
 13_tracking,cca_tracking_schema.csv,Holocene and Anthropocene tracking calculations,19
-13_tracking,chronology_reconstruction/prepared.rds,Reconstruction bundle and primary reconstruction,8890
+13_tracking,chronology_reconstruction/prepared.rds,Reconstruction bundle and primary reconstruction,8893
 13_tracking,chronology_reconstruction/primary.rds,Reconstruction bundle and primary reconstruction,117
 14_era_models,era_comparison/era_coefficients.csv,"Era-comparison GLS fits, means and contrasts per response",9
 14_era_models,era_comparison/era_contrasts.csv,"Era-comparison GLS fits, means and contrasts per response",14

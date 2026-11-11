@@ -4,8 +4,8 @@
 # over 1900 to 1990, step 2 CHELSAcruts to V2.1 over 1979 to 2016 (with the
 # spread of the yearly values), and both together, the correction of the main
 # run. The monthly cycles of the four products and the yearly linker series were
-# drawn as Figs. S6 and S7 until Bills removed them on 11 Nov 2026; the README
-# quotes the product levels from climate_products_monthly.csv.
+# drawn as Figs. S6 and S7 until Bills removed them on 11 Nov 2026, together with
+# the README paragraph quoting the product levels (climate_products_monthly.csv).
 source(here::here('R/helpers/config.R'), local = TRUE)
 suppressPackageStartupMessages({library(here); library(tidyverse); library(patchwork)})
 source(here('R/helpers/figure_style.R'), local = TRUE)

@@ -336,20 +336,9 @@ deeper Holocene chronology used in our analyses.
 
 ```{r appendix-s2-setup}
 s2_points = read_output('climate_products_points.csv')
-s2_monthly = read_output('climate_products_monthly.csv')
 s2_factors = read_output('climate_bias_correction_factors.csv')
 s2_check = read_output('climate_trace_cruts_check.csv')
 s2_n = function(k, p) sum(s2_points$kind == k & s2_points$site == p)
-# The two CCA variables of every product and window at every place: spring temperature
-# (March to May mean of the monthly (tasmin + tasmax) / 2) and summer precipitation (June to August sum).
-s2_levels = s2_monthly |> group_by(product, window, place, site) |>
-  summarise(MSpT = mean(((value[variable == 'tasmin'] + value[variable == 'tasmax']) / 2)[month[variable == 'tasmin'] %in% 3:5]),
-    SP = sum(value[variable == 'pr' & month %in% 6:8]), .groups = 'drop')
-s2_product = c(trace = 'CHELSA-TraCE21k', cruts = 'CHELSAcruts', v12 = 'CHELSA V1.2', v21 = 'CHELSA V2.1')
-s2_lv = function(prod, win, pl, v) s2_levels[[v]][s2_levels$product == prod & s2_levels$window == win & s2_levels$place == pl]
-# The three products of the CHELSA V1 method over the years they share with V2.1 or TraCE21k.
-s2_v1 = function(pl, v) c(s2_lv('trace', 'timeID 20 (1900-1990)', pl, v), s2_lv('cruts', '1901-1990', pl, v),
-  s2_lv('cruts', '1979-1990', pl, v), s2_lv('v12', '1979-1990', pl, v))
 s2_rng = function(x, d = 1) sprintf(paste0('%.', d, 'f to %.', d, 'f'), min(x), max(x))
 s2_fr = function(p, v) s2_factors |> filter(site == p, variable == v)
 s2_ck = function(p, pl, v) s2_check |> filter(site == p, place == paste(p, pl), variable == v)
@@ -378,22 +367,6 @@ Each product was read at every plot (`r s2_n('plot', 'MORA')` at MORA, `r s2_n('
 the four lake pixels, and at every 30-arcsec cell within 5 km of each park's lakes (`r s2_n('disc', 'MORA')` cells
 around the midpoint of the three MORA lakes, `r s2_n('disc', 'NOCA')` around Panther Potholes), by
 [`R/pipeline/07_climate_products.R`](R/pipeline/07_climate_products.R).
-
-**Result.** The three products of the CHELSA V1 method are close to one another, and V2.1 differs from them.
-At the MORA plots their spring temperature spans `r s2_rng(s2_v1('MORA plots', 'MSpT'))` °C against
-`r sprintf('%.1f', s2_lv('v21', '1979-1990', 'MORA plots', 'MSpT'))` °C in V2.1, and their summer precipitation
-`r s2_rng(s2_v1('MORA plots', 'SP'), 0)` mm against `r sprintf('%.0f', s2_lv('v21', '1979-1990', 'MORA plots', 'SP'))` mm.
-At the NOCA plots the spans are `r s2_rng(s2_v1('NOCA plots', 'MSpT'))` °C against
-`r sprintf('%.1f', s2_lv('v21', '1979-1990', 'NOCA plots', 'MSpT'))` °C, and `r s2_rng(s2_v1('NOCA plots', 'SP'), 0)` mm
-against `r sprintf('%.0f', s2_lv('v21', '1979-1990', 'NOCA plots', 'SP'))` mm. Around the lakes the spans are
-`r s2_rng(s2_v1('MORA disc', 'MSpT'))` °C against `r sprintf('%.1f', s2_lv('v21', '1979-1990', 'MORA disc', 'MSpT'))` °C and
-`r s2_rng(s2_v1('MORA disc', 'SP'), 0)` mm against `r sprintf('%.0f', s2_lv('v21', '1979-1990', 'MORA disc', 'SP'))` mm at MORA,
-and `r s2_rng(s2_v1('NOCA disc', 'MSpT'))` °C against `r sprintf('%.1f', s2_lv('v21', '1979-1990', 'NOCA disc', 'MSpT'))` °C and
-`r s2_rng(s2_v1('NOCA disc', 'SP'), 0)` mm against `r sprintf('%.0f', s2_lv('v21', '1979-1990', 'NOCA disc', 'SP'))` mm at NOCA.
-The choice of years matters less than the product: CHELSAcruts over 1901 to 1990 and over 1979 to 1990 differ by
-`r sprintf('%.1f', abs(s2_lv('cruts', '1979-1990', 'MORA disc', 'MSpT') - s2_lv('cruts', '1901-1990', 'MORA disc', 'MSpT')))` °C in
-spring temperature around the MORA lakes and `r sprintf('%.1f', abs(s2_lv('cruts', '1979-1990', 'NOCA disc', 'MSpT') - s2_lv('cruts', '1901-1990', 'NOCA disc', 'MSpT')))` °C
-around Panther Potholes.
 
 ### S2.1 TraCE21k against CHELSAcruts
 
