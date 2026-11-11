@@ -1,6 +1,6 @@
 # 15 Species contributions (PLAN.md section 5, Step 6): which species led the
 # climate-aligned movement (contrib_climate), and which widened or narrowed the
-# community-climate lag (contrib_lag, Bills 11 Nov 2026), per lake-period and
+# climate-community lag (contrib_lag, Bills 11 Nov 2026), per lake-period and
 # per plot pair; then the group means per species, park and period type. Seasonal-climate contributions to the predicted movement are
 # kept as a descriptive table.
 

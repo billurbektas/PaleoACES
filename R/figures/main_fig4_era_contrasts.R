@@ -2,7 +2,7 @@
 # and 95% intervals of the three period types per park. Three rows, each a
 # total between the two ends of a unit (left) and its rate per century
 # (right): A and B the climate change, C and D the observed community turnover
-# (the displacement), E and F the community-climate lag. The climate change
+# (the displacement), E and F the climate-community lag. The climate change
 # and turnover rates are on log axes with the Holocene-C fold, the others on
 # linear axes with contrast connectors. The panels are drawn by
 # R/helpers/era_means_figure.R, shared with Figure 5.
@@ -15,7 +15,7 @@ render_figures = isTRUE(getOption('paleoaces.render_figures', TRUE))
 # Axis titles for this figure (Bills, 10 Nov 2026).
 data = era_means_data(c(climate_change = 'Climate change', climate_rate = 'Climate change rate\n(log scale)',
   displacement = 'Observed community turnover', turnover_rate = 'Observed community turnover rate\n(log scale)',
-  lag = 'Community-climate lag', lag_rate = 'Community-climate lag rate'),
+  lag = 'Climate-community lag', lag_rate = 'Climate-community lag rate'),
   log_responses = c('climate_rate', 'turnover_rate'))
 # Larger text than Figure 5 (Bills): axis text by kt, value labels by kl. The
 # period types and the parks are spread further apart and the caps are

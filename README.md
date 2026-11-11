@@ -867,7 +867,7 @@ decades.
 
 <img src="report/figures/png/fig_era_contrasts.png" alt="" width="100%" />
 
-**Figure 4. Climate change, community turnover and community-climate lag
+**Figure 4. Climate change, community turnover and climate-community lag
 in the Holocene and the Anthropocene.** For each park, the fitted mean
 and 95% confidence interval of the Holocene stability periods
 (triangles), the Holocene climate-change periods (circles) and the
@@ -876,7 +876,7 @@ two ends of a lake-period or plot pair (left) and its rate per century
 (right): (A) the standardized climate change, the distance between the
 climates at the two ends, and (B) its rate; (C) the observed community
 turnover, the distance the community moved in CCA space, and (D) its
-rate; (E) the community-climate lag, the change in mismatch between the
+rate; (E) the climate-community lag, the change in mismatch between the
 two ends (M at t2 minus M at t1), and (F) its rate. The fitted mean is
 printed beside each point. B and D are on log axes, where equal
 distances are equal folds, and the arrow gives the fold between the
@@ -1216,28 +1216,30 @@ first and the last sampled century of a lake-period, or between the
 legacy survey and the resurvey of a plot, times its fixed position in
 the CCA plane. The upper row (following climate-predicted direction)
 projects these vectors on the direction in which the climate-predicted
-position moved, and the lower row (changing the community-climate lag)
+position moved, and the lower row (changing the climate-community lag)
 on the average direction of the mismatch at the two ends, so that the
 species’ values plus the climate’s part add up to the lag rate. Labels
 at the top of each panel read with the row title: a species moved the
 community following or against the climate-predicted direction (upper
-row), and narrowed or widened the community-climate lag (lower row). The
+row), and narrowed or widened the climate-community lag (lower row). The
 lower row includes the lake-periods and plot pairs whose composition did
 not change (all species values zero) and is per century of the same
-interval as the lag rate. Species are ordered by the mean elevation of
-the plots where they occur (the 607 plot pairs, both surveys), the
-highest at the top. Symbols are means: triangles, Holocene stability
-periods, circles, Holocene climate-change periods, diamonds,
-Anthropocene plot pairs (burned and unburned together). Large symbols
-with bars are means whose 95% t-interval excludes zero, small faded
-symbols are means whose interval includes zero. A species with no
-Holocene symbols in a park is absent from that park’s Holocene record.
-Each park has its own x scale, symmetric around zero. Holocene
-climate-change lake-periods span 200 to 900 years and stability
-lake-periods 300 to 2600 years between their first and last sampled
-century. Anthropocene plot pairs span 27.5 to 32.5 years between the
-midpoints of their climate windows (about 29 years). Contributions are
-in CCA distance per century.
+interval as the lag rate. Species are ordered by the maximum elevation
+of the plots where they occur (the 607 plot pairs, both surveys, both
+parks), the highest at the top. Their names are coloured from green
+(low) to brown (high) by that maximum, which follows each name in
+metres. Names in bold are species absent from the Holocene record of
+both parks. Symbols are means: triangles, Holocene stability periods,
+circles, Holocene climate-change periods, diamonds, Anthropocene plot
+pairs (burned and unburned together). Large symbols with bars are means
+whose 95% t-interval excludes zero, small faded symbols are means whose
+interval includes zero. A species with no Holocene symbols in a park is
+absent from that park’s Holocene record. Each park has its own x scale,
+symmetric around zero. Holocene climate-change lake-periods span 200 to
+900 years and stability lake-periods 300 to 2600 years between their
+first and last sampled century. Anthropocene plot pairs span 27.5 to
+32.5 years between the midpoints of their climate windows (about 29
+years). Contributions are in CCA distance per century.
 
 Stages and helpers:
 [`R/pipeline/15_contributions.R`](R/pipeline/15_contributions.R),
