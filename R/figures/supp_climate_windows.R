@@ -171,4 +171,4 @@ p_bands = ggplot(bands, aes(y = label, colour = site)) +
     subtitle = "Separate bands: survey year, six climate years and number of analyzed plots. Winter begins with the preceding December.") +
   theme_bw(base_size = 10) + theme(panel.grid.major.y = element_blank())
 p = p_series / p_bands + plot_layout(heights = c(3, 1.2))
-ggsave(fig("supplementary", "figS09_survey_climate_windows.pdf"), p, width = 13, height = 13)
+ggsave(fig("supplementary", "figS07_survey_climate_windows.pdf"), p, width = 13, height = 13)

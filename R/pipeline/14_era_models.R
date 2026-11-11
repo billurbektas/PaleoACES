@@ -132,9 +132,9 @@ writeLines(c('Step 5a era models: estimate ~ period_type * site, AR(1) within se
 print(as.data.frame(tables$era_folds), digits = 3)
 
 if (isTRUE(getOption('paleoaces.render_figures', TRUE))) {
-  # Fig. S16 of the README (Bills, 11 Nov 2026: model checks shown with the
+  # Fig. S14 of the README (Bills, 11 Nov 2026: model checks shown with the
   # results): residuals of the era models.
-  ggsave(fig('supplementary', 'figS16_era_model_residuals.pdf'), reconstruction_residual_plot(tables$era_predictions),
+  ggsave(fig('supplementary', 'figS14_era_model_residuals.pdf'), reconstruction_residual_plot(tables$era_predictions),
     width = 14, height = 12, device = cairo_pdf)
 }
 cat('Era models:', length(fits), 'responses.\n')

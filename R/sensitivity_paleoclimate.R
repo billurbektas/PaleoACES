@@ -18,9 +18,9 @@
 # type and ends; the rest are counted. The script writes, to
 # output_paleoclimate_sensitivity/comparison/, the climate periods of the three
 # runs, every era response of the shared lake-periods with the correlation of
-# each corrected run with the raw one in each park (Fig. S18), the shared
+# each corrected run with the raw one in each park (Fig. S16), the shared
 # lake-periods whose lag, pace and direction effect keep their sign, the era
-# contrasts of all responses and the Holocene explanatory-model slopes (Fig. S19)
+# contrasts of all responses and the Holocene explanatory-model slopes (Fig. S17)
 # of the three runs side by side. Appendix S4 shows the two figures and quotes
 # the counts from these tables (Bills, 11 Nov 2026: no comparison tables).
 suppressPackageStartupMessages({library(here); library(tidyverse)})
@@ -81,7 +81,7 @@ shared = reduce(lapply(lake_periods, \(x) select(x, all_of(keys))), inner_join, 
 write_csv(tibble(run = names(paths), lake_periods = map_int(lake_periods, nrow), shared_by_all = nrow(shared)),
   file.path(comparison, 'lake_period_matching.csv'))
 
-# Every era response of the shared lake-periods in the three runs (Fig. S18).
+# Every era response of the shared lake-periods in the three runs (Fig. S16).
 source(here('R/helpers/tracking_model_reporting.R'), local = TRUE)
 responses = imap(lake_periods, \(x, run) x |> semi_join(shared, by = keys) |>
   select(all_of(keys), period, all_of(names(ERA_RESPONSES))) |>
@@ -91,7 +91,7 @@ responses = reduce(map(responses, \(x) select(x, -period)), inner_join, by = c(k
 stopifnot(nrow(responses) == nrow(shared) * length(ERA_RESPONSES))
 write_csv(responses, file.path(comparison, 'lake_period_responses.csv'))
 # How closely each corrected run follows the raw one across the shared lake-periods
-# of a park (Pearson r, printed in Fig. S18). Lake-periods without a pace or
+# of a park (Pearson r, printed in Fig. S16). Lake-periods without a pace or
 # direction effect (a position that did not move) are left out.
 correlations = responses |> pivot_longer(c(two_step, one_step), names_to = 'run', values_to = 'corrected') |>
   filter(is.finite(raw), is.finite(corrected)) |>
@@ -106,7 +106,7 @@ sign_counts = map_dfr(c('one_step', 'raw'), function(other) map_dfr(c('lag', 'pa
     mutate(against = other, response = r, .before = 1)))
 write_csv(sign_counts, file.path(comparison, 'sign_counts.csv'))
 
-# The era contrasts and the Holocene explanatory-model slopes (Fig. S19) of
+# The era contrasts and the Holocene explanatory-model slopes (Fig. S17) of
 # the three runs. The Anthropocene models hold no
 # paleoclimate and are the same in all runs.
 wide = function(read, by) reduce(imap(paths, \(p, run) read(p) |> rename_with(~ paste0(.x, '_', run), -all_of(by))),

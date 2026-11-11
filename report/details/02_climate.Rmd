@@ -43,7 +43,7 @@ show_figure('report/figures/supplementary/climate_holocene_timeseries.pdf', page
 ```
 
 **Climate change per interval** at the four ponds through the Holocene, and at the survey plots in
-the Anthropocene. Page 2 of this figure is Fig. S10.
+the Anthropocene. Page 2 of this figure is Fig. S8.
 
 ```{r}
 read_output('report/test_climate_change_variables.csv') |>
@@ -53,7 +53,7 @@ read_output('report/test_climate_change_variables.csv') |>
 ```
 
 ```{r}
-show_figure('report/figures/supplementary/figS11_climate_levels_four_variables.pdf')
+show_figure('report/figures/supplementary/figS09_climate_levels_four_variables.pdf')
 ```
 
 **Standardized climate levels** (rather than standardized change) with the climate eras and the

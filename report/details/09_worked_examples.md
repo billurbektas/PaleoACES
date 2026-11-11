@@ -19,7 +19,7 @@ Step-by-step illustrations drawn from the finished pipeline outputs by
 A charcoal record is interpolated, its background removed, peaks above
 the local noise threshold become candidates, and candidates surviving
 the 75-year count screen become accepted events (Appendix S3.2, Fig.
-S13).
+S11).
 
 ## Climate eras: from signed changes to numbered eras
 

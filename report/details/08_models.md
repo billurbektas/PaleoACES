@@ -22,7 +22,7 @@ lake-periods and the plot pairs of
 The fit statistics of every era model (units, coefficients, residual df,
 residual SE, covariance parameters, REML log-likelihood and AIC,
 descriptive R²) are Table S19 of the report, and the residual checks
-Fig. S16.
+Fig. S14.
 
 **Era-model coefficients** (treatment contrasts, reference Holocene-S at
 MORA). Two-sided t tests on the residual degrees of freedom (df) of each

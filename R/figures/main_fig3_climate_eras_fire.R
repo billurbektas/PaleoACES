@@ -357,7 +357,7 @@ p_climate_display = four_variable_key(climate_panel(text_scale = FIG2_TEXT,
   callouts = display_callouts, title = NULL,
   y_label = "Standardized 1,000-year change\n(calibration SD)"), thresholds = display_callouts)
 if (render_figures) {
-  ggsave(fig("supplementary", "figS12_climate_period_method.pdf"),
+  ggsave(fig("supplementary", "figS10_climate_period_method.pdf"),
     p_climate_display / p_fire + plot_layout(heights = c(4.5, 1.45)),
     width = 15, height = 11.5, device = cairo_pdf)
 }
@@ -590,7 +590,7 @@ if (render_figures) {
 
 # Appendix: the same levels for all four seasonal variables, without rates.
 p_levels_four = four_variable_key(levels_panel(CLIMATE_DISPLAY_VARIABLES, show_rates = FALSE))
-if (render_figures) ggsave(fig("supplementary", "figS11_climate_levels_four_variables.pdf"),
+if (render_figures) ggsave(fig("supplementary", "figS09_climate_levels_four_variables.pdf"),
   p_levels_four / p_fire + plot_layout(heights = c(4.5, 1.45)), width = 15, height = 11.5, device = cairo_pdf)
 
 # Presentation version of panels A and B: no stability-range brackets, and all

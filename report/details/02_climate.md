@@ -95,7 +95,7 @@ detrended removes the 1979–2021 trend).
 
 **Climate change per interval** at the four ponds through the Holocene,
 and at the survey plots in the Anthropocene. Page 2 of this figure is
-Fig. S10.
+Fig. S8.
 
 **Climate change per interval, by variable and era.**
 
@@ -137,7 +137,7 @@ Fig. S10.
 <sub>Table file:
 [climate_change_by_variable.csv](../tables/climate_change_by_variable.csv)</sub>
 
-<img src="../figures/png/figS11_climate_levels_four_variables.png" alt="" width="1650" />
+<img src="../figures/png/figS09_climate_levels_four_variables.png" alt="" width="1650" />
 
 **Standardized climate levels** (rather than standardized change) with
 the climate eras and the fire frequency of Figure 3.

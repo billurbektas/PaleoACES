@@ -25,7 +25,7 @@ show_figure('report/figures/worked_examples/fig_fire_event_detection_workflow.pd
 
 A charcoal record is interpolated, its background removed, peaks above the local noise threshold
 become candidates, and candidates surviving the 75-year count screen become accepted events
-(Appendix S3.2, Fig. S13).
+(Appendix S3.2, Fig. S11).
 
 ## Climate eras: from signed changes to numbered eras
 

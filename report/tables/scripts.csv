@@ -17,11 +17,11 @@ R/pipeline/15_predictor_models.R,pipeline,"Explanatory models (PLAN.md section 5
 R/pipeline/16_contributions.R,pipeline,"Species contributions (PLAN.md section 5, Step 6): which species led the",143
 R/figures/supp_age_depth_models.R,figure,Figures S4 (four Bacon age-depth models) and S5 (Panther Potholes 210Pb,109
 R/figures/supp_cca_scaling.R,figure,supp_cca_scaling.R - one CCA drawn at scaling 1 and scaling 2,108
-R/figures/supp_charcoal_dunwiddie_walsh.R,figure,"Fig. S14 (appendix figure A4 until the README was reordered; Bills, 11 Nov 2026): do the charcoal peaks of the Walsh",98
+R/figures/supp_charcoal_dunwiddie_walsh.R,figure,"Fig. S12 (appendix figure A4 until the README was reordered; Bills, 11 Nov 2026): do the charcoal peaks of the Walsh",98
 R/figures/supp_climate_correlations.R,figure,supp_climate_correlations.R,628
-R/figures/supp_climate_products.R,figure,"Figs. S6 to S8 (Appendix S2, Bills, 11 Nov 2026): the four CHELSA climate",117
+R/figures/supp_climate_products.R,figure,"Fig. S6 (Appendix S2, Bills, 11 Nov 2026): the two steps of the bias",59
 R/figures/supp_climate_windows.R,figure,Compare the actual plot-specific survey windows with V2.1 1979-2021.,174
-R/figures/supp_paleoclimate_sensitivity.R,figure,"Figs. S18 and S19 (Appendix S4, Bills, 11 Nov 2026): the three paleoclimates",137
+R/figures/supp_paleoclimate_sensitivity.R,figure,"Figs. S16 and S17 (Appendix S4, Bills, 11 Nov 2026): the three paleoclimates",137
 R/figures/supp_sample_selection.R,figure,"Show which plots and core samples reach CCA, starting with the supplied data.",368
 R/figures/supp_species_through_time.R,figure,"supp_species_through_time.R  -  STEP 4, the species half",199
 R/figures/supp_tracking_transitions.R,figure,Appendix figures of the lake-period values over time (redrawn on lake-periods,86

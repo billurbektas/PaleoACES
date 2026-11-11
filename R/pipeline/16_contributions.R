@@ -118,7 +118,7 @@ summarise_species = function(long) {
 }
 per_century = summarise_species(long)
 means = per_century$means; contrasts = per_century$contrasts
-# Totals, not divided by time (Bills, 11 Nov 2026; appendix Fig. S17): the
+# Totals, not divided by time (Bills, 11 Nov 2026; appendix Fig. S15): the
 # species' movement along the predicted direction (parallel_contribution) and
 # its part of the change in mismatch (lag_projection) over the whole lake-period
 # or plot pair. The per-century values above are these times 100 / dt. Same

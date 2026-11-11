@@ -53,11 +53,11 @@ for the report.
 | R/pipeline/16_contributions.R | pipeline | Species contributions (PLAN.md section 5, Step 6): which species led the | 143 |
 | R/figures/supp_age_depth_models.R | figure | Figures S4 (four Bacon age-depth models) and S5 (Panther Potholes 210Pb | 109 |
 | R/figures/supp_cca_scaling.R | figure | supp_cca_scaling.R - one CCA drawn at scaling 1 and scaling 2 | 108 |
-| R/figures/supp_charcoal_dunwiddie_walsh.R | figure | Fig. S14 (appendix figure A4 until the README was reordered; Bills, 11 Nov 2026): do the charcoal peaks of the Walsh | 98 |
+| R/figures/supp_charcoal_dunwiddie_walsh.R | figure | Fig. S12 (appendix figure A4 until the README was reordered; Bills, 11 Nov 2026): do the charcoal peaks of the Walsh | 98 |
 | R/figures/supp_climate_correlations.R | figure | supp_climate_correlations.R | 628 |
-| R/figures/supp_climate_products.R | figure | Figs. S6 to S8 (Appendix S2, Bills, 11 Nov 2026): the four CHELSA climate | 117 |
+| R/figures/supp_climate_products.R | figure | Fig. S6 (Appendix S2, Bills, 11 Nov 2026): the two steps of the bias | 59 |
 | R/figures/supp_climate_windows.R | figure | Compare the actual plot-specific survey windows with V2.1 1979-2021. | 174 |
-| R/figures/supp_paleoclimate_sensitivity.R | figure | Figs. S18 and S19 (Appendix S4, Bills, 11 Nov 2026): the three paleoclimates | 137 |
+| R/figures/supp_paleoclimate_sensitivity.R | figure | Figs. S16 and S17 (Appendix S4, Bills, 11 Nov 2026): the three paleoclimates | 137 |
 | R/figures/supp_sample_selection.R | figure | Show which plots and core samples reach CCA, starting with the supplied data. | 368 |
 | R/figures/supp_species_through_time.R | figure | supp_species_through_time.R - STEP 4, the species half | 199 |
 | R/figures/supp_tracking_transitions.R | figure | Appendix figures of the lake-period values over time (redrawn on lake-periods | 86 |
@@ -129,8 +129,8 @@ the folder of the step that writes it.
 | 06_paleo_samples | paleo_macrofossil_long.csv | All macrofossil measurements with ages | 108 |
 | 06_paleo_samples | paleo_occ.csv | Macrofossil presence by sample | 762 |
 | 06_paleo_samples | paleo_sample_depths.csv | Sample depth and median Bacon age | 95 |
-| 07_climate_products | climate_bias_correction_factors.csv | Two-step correction per park, month and variable: TraCE21k to CHELSAcruts (1900-1990) and CHELSAcruts to V2.1 (1979-2016) (Fig. S8) | 13 |
-| 07_climate_products | climate_products_monthly.csv | Monthly climatology of each product and window at each place (Fig. S6) | 120 |
+| 07_climate_products | climate_bias_correction_factors.csv | Two-step correction per park, month and variable: TraCE21k to CHELSAcruts (1900-1990) and CHELSAcruts to V2.1 (1979-2016) (Fig. S6) | 13 |
+| 07_climate_products | climate_products_monthly.csv | Monthly climatology of each product and window at each place (quoted in Appendix S2) | 120 |
 | 07_climate_products | climate_products_points.csv | Plots, lake pixels and 5 km disc cells the four products are read at | 50 |
 | 07_climate_products | climate_products_values.csv | Each product’s monthly values per year at the plot means, lake pixels and disc means | 2565 |
 | 07_climate_products | climate_trace_cruts_check.csv | TraCE21k timeID 20 against CHELSAcruts 1901-1990 over the same cells (Table S5) | 21 |
@@ -163,7 +163,7 @@ the folder of the step that writes it.
 | 11_cca | cca_anova_cache.rds | Cached permutation tests, keyed on the fit | 1 |
 | 11_cca | cca_anova.csv | Permutation tests (model, axes, terms) | 0 |
 | 11_cca | cca_axes.csv | Constrained axes: eigenvalues and variance explained | 0 |
-| 11_cca | cca_calibration_reference.rds | The fitted CCA and its calibration inputs | 1987 |
+| 11_cca | cca_calibration_reference.rds | The fitted CCA and its calibration inputs | 1989 |
 | 11_cca | cca_climate_contributions.csv | Climate-variable contributions to the axes | 0 |
 | 11_cca | cca_counts.csv | Plots and samples used to fit and projected | 0 |
 | 11_cca | cca_display_rotation.csv | Display-only varimax angle, rotation matrix and axis orientation | 0 |
@@ -218,7 +218,7 @@ the folder of the step that writes it.
 | 14_era_models | era_comparison/era_model_summary.csv | Era-comparison GLS fits, means and contrasts per response | 2 |
 | 14_era_models | era_comparison/era_predictions.csv | Era-comparison GLS fits, means and contrasts per response | 597 |
 | 14_era_models | era_comparison/model_results.txt | Era-comparison GLS fits, means and contrasts per response | 19 |
-| 14_era_models | era_comparison/primary_fits.rds | Era-comparison GLS fits, means and contrasts per response | 674 |
+| 14_era_models | era_comparison/primary_fits.rds | Era-comparison GLS fits, means and contrasts per response | 676 |
 | 15_predictor_models | community_predictor_models/model_coefficients.csv | Within-era predictor GLS fits | 6 |
 | 15_predictor_models | community_predictor_models/model_exclusions.csv | Within-era predictor GLS fits | 45 |
 | 15_predictor_models | community_predictor_models/model_performance.csv | Within-era predictor GLS fits | 2 |
@@ -273,7 +273,7 @@ built for this report).
 | Folder          | Files |
 |:----------------|------:|
 | main            |    14 |
-| supplementary   |    31 |
+| supplementary   |    29 |
 | worked_examples |     3 |
 
 <sub>Table file:

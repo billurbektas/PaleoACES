@@ -24,7 +24,7 @@ pairs of `output/13_tracking/cca_tracking_both_eras.csv`.
 
 The fit statistics of every era model (units, coefficients, residual df, residual SE, covariance
 parameters, REML log-likelihood and AIC, descriptive R²) are Table S19 of the report, and the
-residual checks Fig. S16.
+residual checks Fig. S14.
 
 ```{r}
 read_output('era_comparison/era_coefficients.csv') |>
