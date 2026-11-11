@@ -289,23 +289,31 @@ fire_display = fire_frequency |>
   mutate(site = factor(site, levels = c("MORA", "NOCA")))
 stopifnot(nrow(fire_display) > 0, all(c("MORA", "NOCA") %in% fire_display$site))
 
-# sites selects which fire lanes are drawn (both by default).
+# sites selects which fire lanes are drawn (both by default). The park is named
+# inside its lane (no side strips), so the right edge of panel C lines up with
+# A and B, and the lanes stand apart so their axis labels do not touch.
+FIRE_LANE_SPACING = grid::unit(1.4, "lines")
 fire_panel = function(text_scale = 1, sites = c("MORA", "NOCA")) {
   s = text_scale
   fire_data = filter(fire_display, site %in% sites)
+  lane_labels = tibble(site = factor(sites, levels = c("MORA", "NOCA")))
   ggplot(fire_data, aes(cal_bp, events_per_1000yr, group = site)) +
     era_background(.28) +
     geom_area(fill = "grey70", alpha = .55) +
     geom_line(color = "grey15", linewidth = .8) +
+    geom_text(data = lane_labels, aes(x = time_limits[1] - 80, y = Inf, label = site, color = site),
+      inherit.aes = FALSE, hjust = 0, vjust = 1.35, fontface = "bold", size = 4.4 * s) +
     facet_grid(rows = vars(site), scales = "free_y") +
     time_axis() +
     scale_fill_manual(values = era_colors, guide = "none") +
-    scale_y_continuous(expand = expansion(mult = c(0, .10)), limits = c(0, NA)) +
+    scale_color_manual(values = PAPER_SITE_COLORS, guide = "none") +
+    scale_y_continuous(expand = expansion(mult = c(0, .12)), limits = c(0, NA),
+      breaks = scales::breaks_pretty(n = 3)) +
     labs(tag = "B.", x = "cal BP", y = "Fire frequency") +
     theme_paleoaces(base_size = 13 * s) +
     theme(panel.grid.minor = element_blank(),
-      strip.background = element_rect(fill = "grey94", color = "grey65"),
-      strip.text.y = element_text(face = "bold", size = 12 * s),
+      strip.text.y = element_blank(), strip.background = element_blank(),
+      panel.spacing.y = FIRE_LANE_SPACING,
       axis.text.y = element_text(size = 11 * s),
       axis.text.x = element_text(size = 13 * s),
       axis.title = element_text(size = 14.5 * s),
@@ -532,8 +540,7 @@ anthropocene_column = function(v, panel, first) {
       label = paste0(rate_text(v, rate), "/century"))
   # The park name in its colour, the rate after it (Bills, 10 Nov 2026).
   p = ggplot(d, aes(0, y)) +
-    # Shifted left over the width taken by the fire panel's park strips, so the
-    # text starts right after the end of the time axis.
+    # Starts just right of the end of the time axis.
     geom_text(aes(x = -.05, label = site, color = site), hjust = 0, size = 4.6 * FIG2_TEXT, fontface = "bold") +
     geom_text(aes(x = .2, label = label), hjust = 0, size = 4.6 * FIG2_TEXT, color = "grey10") +
     scale_color_manual(values = PAPER_SITE_COLORS, guide = "none") +
@@ -543,6 +550,24 @@ anthropocene_column = function(v, panel, first) {
     size = 4.8 * FIG2_TEXT, fontface = "bold", color = "grey20")
   p
 }
+# Beside panel C: the Anthropocene plot pairs of each park that burned between
+# the two surveys (Bills, 11 Nov 2026), in the same lanes as the fire frequency.
+burned_plots = read_csv(out("cca_tracking_both_eras.csv"), show_col_types = FALSE) |>
+  filter(period_type == "Anthropocene") |>
+  group_by(site) |> summarise(burned = sum(burned), plots = n(), .groups = "drop") |>
+  mutate(site = factor(site, levels = c("MORA", "NOCA")),
+    label = sprintf("%d/%d plots burned\n(%s%%)", burned, plots,
+      formatC(100 * burned / plots, format = "fg", digits = 2)))
+stopifnot(nrow(burned_plots) == 2L, sum(burned_plots$plots) == sum(ANTHROPOCENE_PAIRS))
+fire_burned_column = function() {
+  ggplot(burned_plots, aes(0, .5)) +
+    geom_text(aes(x = -.05, label = site, color = site), hjust = 0, size = 4.6 * FIG2_TEXT, fontface = "bold") +
+    geom_text(aes(x = .2, label = label), hjust = 0, size = 4.6 * FIG2_TEXT, color = "grey10", lineheight = .9) +
+    facet_grid(rows = vars(site)) +
+    scale_color_manual(values = PAPER_SITE_COLORS, guide = "none") +
+    coord_cartesian(xlim = c(0, 1), ylim = c(0, 1), expand = FALSE, clip = "off") + theme_void() +
+    theme(strip.text = element_blank(), panel.spacing.y = FIRE_LANE_SPACING, plot.margin = margin(0, 0, 0, 0))
+}
 p_spring = raw_panel("MSpT", "A.", TRUE)
 p_summer = raw_panel("SP", "B.", FALSE)
 # One grid, so that the time axes of A, B and C line up.
@@ -550,7 +575,7 @@ p_summer = raw_panel("SP", "B.", FALSE)
 tight = theme(plot.margin = margin(5.5, 2, 5.5, 5.5))
 figure = wrap_plots(p_spring + tight, anthropocene_column("MSpT", p_spring, TRUE),
   p_summer + tight, anthropocene_column("SP", p_summer, FALSE),
-  p_fire + labs(tag = "C.", y = "Fire frequency") + tight, plot_spacer(),
+  p_fire + labs(tag = "C.", y = "Fire frequency") + tight, fire_burned_column(),
   ncol = 2, widths = c(5.2, 1.75), heights = c(3.6, 2.8, 2.5))
 if (render_figures) {
   # cairo_pdf draws the degree signs and arrows.

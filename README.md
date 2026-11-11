@@ -244,7 +244,11 @@ al. 2009). The two parks are on different y axes because their
 frequencies are not comparable: Panther Potholes is resampled every 12
 years and the Sunrise Ridge cores every 42 to 48 years, and a finer
 record resolves more events. The MORA cores lie on Sunrise Ridge, away
-from the vegetation lakes (Fig. A4).
+from the vegetation lakes (Fig. A4). The models do not use this curve:
+their fire activity counts the same accepted events between the two ends
+of each lake-period, per century and per covered core (Step 4). To the
+right, the Anthropocene plot pairs of each park that burned between the
+two surveys (MORA’s two burned plots are left out of the analysis).
 
 Stages and helpers:
 [`R/pipeline/11_climate_eras_fire_frequency.R`](R/pipeline/11_climate_eras_fire_frequency.R),
