@@ -25,7 +25,7 @@ plots = read_csv(out('cca_tracking_both_eras.csv'), show_col_types = FALSE) |> f
       transmute(plot_id = as.character(plot_id), magnitude_tracking_ratio = if_else(tracking_ratio_valid, magnitude_tracking_ratio, NA_real_),
         angle_degrees = if_else(angle_valid, angle_degrees, NA_real_)),
     by = 'plot_id', relationship = 'one-to-one')
-stopifnot(nrow(plots) == 607L)  # Rule: 607 Anthropocene plot pairs.
+stopifnot(nrow(plots) == sum(ANTHROPOCENE_PAIRS))  # Rule: the Anthropocene plot pairs of config.R.
 
 lake_period_panels = function(rows, title_text) {
   long = lake_periods |> pivot_longer(all_of(names(rows)), names_to = 'response', values_to = 'value') |>

@@ -24,7 +24,7 @@ key=function(x) ifelse(x$era=='Holocene',paste('H',x$site,x$lake,x$age_start,x$a
  paste('A',x$site,x$plot_id,sep='|'))
 endpoint=bind_rows(h |> mutate(era='Holocene',plot_id=NA_character_),
  a |> mutate(era='Anthropocene',lake=NA_character_))
-stopifnot(!anyDuplicated(key(endpoint)),nrow(a)==607L,!'contrib_gap' %in% names(species),
+stopifnot(!anyDuplicated(key(endpoint)),nrow(a)==sum(ANTHROPOCENE_PAIRS),!'contrib_gap' %in% names(species),
  nrow(species)==nrow(endpoint)*length(taxa),nrow(climate)==nrow(endpoint)*length(CCA_VARIABLES),
  !anyDuplicated(paste(key(species),species$species)),
  !anyDuplicated(paste(key(climate),climate$variable)),

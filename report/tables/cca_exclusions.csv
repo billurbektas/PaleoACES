@@ -1,5 +1,7 @@
 Era,Site,Use,Excluded at,Reason,Excluded
+anthropocene,MORA,Legacy calibration,past,Burned between the surveys (left out of the analysis),2
 anthropocene,MORA,Legacy calibration,present,Only taxa excluded by CCA species selection,1
+anthropocene,MORA,Modern paired comparison,past,Burned between the surveys (left out of the analysis),2
 anthropocene,MORA,Modern paired comparison,present,Only taxa excluded by CCA species selection,1
 anthropocene,NOCA,Legacy calibration,past,No tree taxa recorded at legacy,6
 anthropocene,NOCA,Legacy calibration,past,Only taxa excluded by CCA species selection,11

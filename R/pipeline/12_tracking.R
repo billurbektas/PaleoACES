@@ -43,7 +43,7 @@ rotation_check=function(x) {
 stopifnot(rotation_check(hc)<1e-9,rotation_check(ac)<1e-9)
 write_csv(ac,out('cca_tracking_anthropocene_plot_calculations.csv'))
 write_csv(a,out('cca_tracking_anthropocene_plot_model_input.csv'))
-stopifnot(nrow(a)==607L,!anyDuplicated(a[c('site','plot_id')]),nrow(ac)==607L,
+stopifnot(nrow(a)==sum(ANTHROPOCENE_PAIRS),!anyDuplicated(a[c('site','plot_id')]),nrow(ac)==sum(ANTHROPOCENE_PAIRS),
   !anyDuplicated(h[c('site','lake','age_hi','age_lo')]),
   all(h$vegetation_dt_years==h$age_hi-h$age_lo),all(h$climate_dt_years==h$vegetation_dt_years),
   all(is.na(h$fire_activity[!h$fire_coverage_valid])))

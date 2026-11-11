@@ -1,13 +1,13 @@
 Response,Era,Model,n,MORA,NOCA,R²,AR(1),SD ratio NOCA/MORA
-lag_rate,Holocene,site + climate_rate + fire_activity,24,14,10,0.08810568184908052,-0.02353391364130861,3.503718349002184
-lag_rate,Anthropocene,site + burned,607,330,277,0.02909661372381533,,2.1310297428059535
-pace_effect,Holocene,site + climate_rate + fire_activity,22,12,10,0.1722368262541657,0.23598006318733267,3.715799230687878
-pace_effect,Anthropocene,site + burned,465,254,211,0.04118166469738227,,2.746636190258498
-direction_effect,Holocene,site + climate_rate + fire_activity,22,12,10,0.2187929002598794,-0.503631524521248,2.1123271066972475
-direction_effect,Anthropocene,site + burned,465,254,211,0.03169433426827717,,1.7122554229940914
-lag,Holocene,site + climate_change + fire_activity,24,14,10,0.03197626089813177,-0.0694609925067164,3.248625439993569
-lag,Anthropocene,site + burned,607,330,277,0.03061699597838085,,2.0583963686985425
-pace_effect_total,Holocene,site + climate_change + fire_activity,22,12,10,-0.00115680983436616,0.2251714565077512,2.629195328448373
-pace_effect_total,Anthropocene,site + burned,465,254,211,0.04099589802787995,,2.672508300242529
-direction_effect_total,Holocene,site + climate_change + fire_activity,22,12,10,0.2678462248665129,-0.4543608071731112,3.2504627964052824
-direction_effect_total,Anthropocene,site + burned,465,254,211,0.03193807629598699,,1.6696268155042735
+lag_rate,Holocene,site + climate_rate + fire_activity,24,14,10,0.08909547850785726,-0.02221433515696338,3.490428014973936
+lag_rate,Anthropocene,site + burned,605,328,277,0.03094892337857235,,2.127702194440233
+pace_effect,Holocene,site + climate_rate + fire_activity,22,12,10,0.17311918889451627,0.23554159612941408,3.69998682682964
+pace_effect,Anthropocene,site + burned,463,252,211,0.04204420556825383,,2.737418672550404
+direction_effect,Holocene,site + climate_rate + fire_activity,22,12,10,0.22086700972486517,-0.504331708098798,2.099309683055871
+direction_effect,Anthropocene,site + burned,463,252,211,0.03329292140464823,,1.7082378927699002
+lag,Holocene,site + climate_change + fire_activity,24,14,10,0.03205780320766371,-0.06866032603721176,3.23700031783815
+lag,Anthropocene,site + burned,605,328,277,0.03243664825143033,,2.0550068385708467
+pace_effect_total,Holocene,site + climate_change + fire_activity,22,12,10,-0.0011080004627666,0.22455011100743952,2.6231006748524184
+pace_effect_total,Anthropocene,site + burned,463,252,211,0.0418297336605038,,2.6636784724197367
+direction_effect_total,Holocene,site + climate_change + fire_activity,22,12,10,0.26872029270439,-0.4580734239849956,3.232862511393246
+direction_effect_total,Anthropocene,site + burned,463,252,211,0.0335312676163978,,1.6655151910668091

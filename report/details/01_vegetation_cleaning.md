@@ -44,9 +44,9 @@ Hand-written records for this step:
 | NOCA | Modern | 6.0 | Match a legacy tree survey | 312 | 56 | 54 legacy plots also have no usable matched location. Counts for the two starting surveys must not be added. |
 | NOCA | Modern | 7.0 | Remove plots empty at both dates | 309 | 3 | — |
 | NOCA | Modern | 8.0 | Apply the agreed plot exclusions | 305 | 4 | One old clearcut, one uncertain resurvey location, and two unresolved GPS problems. |
-| MORA | Modern | 9.0 | Eligible legacy plots | 331 | 0 | Each legacy plot must contain a retained tree species and complete climate data. |
-| MORA | Modern | 10.0 | CCA calibration and comparisons at both dates | 330 | 1 | Fit the CCA on these matched legacy plots; use the same plots for observed and predicted positions at both dates. |
-| NOCA | Modern | 9.0 | Eligible legacy plots | 288 | 17 | Each legacy plot must contain a retained tree species and complete climate data. |
+| MORA | Modern | 9.0 | Eligible legacy plots | 329 | 2 | Each legacy plot must contain a retained tree species and complete climate data. Plots burned between the surveys are left out of the analysis (two at MORA). |
+| MORA | Modern | 10.0 | CCA calibration and comparisons at both dates | 328 | 1 | Fit the CCA on these matched legacy plots; use the same plots for observed and predicted positions at both dates. |
+| NOCA | Modern | 9.0 | Eligible legacy plots | 288 | 17 | Each legacy plot must contain a retained tree species and complete climate data. Plots burned between the surveys are left out of the analysis (two at MORA). |
 | NOCA | Modern | 10.0 | CCA calibration and comparisons at both dates | 277 | 11 | Fit the CCA on these matched legacy plots; use the same plots for observed and predicted positions at both dates. |
 | MORA | Holocene | 1.0 | Starting core sample depths | 119 | 0 | — |
 | MORA | Holocene | 2.0 | Retain original sample identities | 119 | 0 | — |
@@ -87,7 +87,7 @@ Hand-written records for this step:
 |:-----|---------------:|-----------------:|------:|
 | MORA |            250 |              500 |     6 |
 | MORA |            375 |              500 |     3 |
-| MORA |            500 |              500 |   291 |
+| MORA |            500 |              500 |   289 |
 | MORA |           1000 |              500 |    30 |
 | NOCA |             25 |              500 |    37 |
 | NOCA |             36 |              500 |     1 |
@@ -103,7 +103,9 @@ Hand-written records for this step:
 
 | Era | Site | Use | Excluded at | Reason | Excluded |
 |:---|:---|:---|:---|:---|---:|
+| anthropocene | MORA | Legacy calibration | past | Burned between the surveys (left out of the analysis) | 2 |
 | anthropocene | MORA | Legacy calibration | present | Only taxa excluded by CCA species selection | 1 |
+| anthropocene | MORA | Modern paired comparison | past | Burned between the surveys (left out of the analysis) | 2 |
 | anthropocene | MORA | Modern paired comparison | present | Only taxa excluded by CCA species selection | 1 |
 | anthropocene | NOCA | Legacy calibration | past | No tree taxa recorded at legacy | 6 |
 | anthropocene | NOCA | Legacy calibration | past | Only taxa excluded by CCA species selection | 11 |

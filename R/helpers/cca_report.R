@@ -101,7 +101,7 @@ cca_report_tables = function(e, permutations = 9999L, seed = 20261008L) {
 }
 
 # Step 0.1 screening of the climate constraints (PLAN.md section 5, Step 0).
-# The same 607 calibration plots and retained taxa are refitted with three
+# The same 605 calibration plots and retained taxa are refitted with three
 # constraint sets, so the sets differ only in their climate variables.
 # Extrapolation: a Holocene lake-century lies outside the calibration climate
 # cloud when its Mahalanobis distance from the calibration plots (their mean and
@@ -116,8 +116,8 @@ cca_screening_tables = function(e, permutations = 9999L, seed = 20261109L) {
     dplyr::distinct(plot_id, dplyr::across(dplyr::all_of(sets[[1]]))) |>
     tibble::column_to_rownames('plot_id')
   climate = climate[ids, sets[[1]], drop = FALSE]
-  # Rule: 607 legacy calibration plots, complete in all four seasonal variables.
-  stopifnot(nrow(climate) == 607L, !anyNA(climate))
+  # Rule: the legacy calibration plots of config.R, complete in all four seasonal variables.
+  stopifnot(nrow(climate) == sum(ANTHROPOCENE_PAIRS), !anyNA(climate))
   source(here::here('R/helpers/climate_variables.R'), local = TRUE)
   holocene = readr::read_csv(out('chelsa_paleo_ponds.csv'), show_col_types = FALSE) |>
     dplyr::transmute(unit = lake, period = site, variable, time = slice, month,

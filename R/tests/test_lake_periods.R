@@ -12,7 +12,7 @@ positions = tibble(site = 'MORA', lake = 'Test', century_cal_bp = c(950, 850, 75
   o1 = c(0, 5, 3, 9, 1, 1), o2 = c(0, 5, 4, 9, 2, 2), p1 = c(1, 0, 1, 0, 0, 2), p2 = c(0, 0, 0, 0, 0, 0),
   n_samples = c(2L, 1L, 4L, 1L, 3L, 1L))
 for (v in CCA_VARIABLES) positions[[v]] = c(10, 11, 12, 13, 14, 15)
-scaling = tibble(variable = CCA_VARIABLES, mean = 0, sd = 2, n_calibration = 607L, unit = 'x')
+scaling = tibble(variable = CCA_VARIABLES, mean = 0, sd = 2, n_calibration = sum(ANTHROPOCENE_PAIRS), unit = 'x')
 no_fire = function(intervals) list(regional = intervals |> distinct(site, age_hi, age_lo) |>
   mutate(fire_covered_cores = 1L, fire_coverage_valid = TRUE, fire_activity = 0, fire_source_ids = 'x'))
 

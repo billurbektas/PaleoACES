@@ -19,8 +19,8 @@ Back to the
 | Site | Period  | Input samples | Used to fit | Positioned |
 |:-----|:--------|--------------:|------------:|-----------:|
 | MORA | paleo   |           119 |           — |        119 |
-| MORA | past    |           331 |         330 |          — |
-| MORA | present |           331 |           — |        330 |
+| MORA | past    |           331 |         328 |          — |
+| MORA | present |           331 |           — |        328 |
 | NOCA | paleo   |           870 |           — |        812 |
 | NOCA | past    |           305 |         277 |          — |
 | NOCA | present |           305 |           — |        277 |
@@ -33,28 +33,28 @@ Back to the
     Call: cca(formula = species_past_final ~ MSpT + SP, data = env_past_final)
 
                   Inertia Proportion Rank
-    Total          3.4648     1.0000     
-    Constrained    0.4443     0.1282    2
-    Unconstrained  3.0205     0.8718   13
+    Total          3.4652     1.0000     
+    Constrained    0.4452     0.1285    2
+    Unconstrained  3.0200     0.8715   13
 
     Inertia is scaled Chi-square
 
     Eigenvalues for constrained axes:
        CCA1    CCA2 
-    0.29250 0.15183 
+    0.29347 0.15174 
 
     Eigenvalues for unconstrained axes:
        CA1    CA2    CA3    CA4    CA5    CA6    CA7    CA8    CA9   CA10   CA11 
-    0.4921 0.3791 0.3572 0.3395 0.2748 0.2408 0.2118 0.1811 0.1451 0.1279 0.1200 
+    0.4920 0.3791 0.3572 0.3393 0.2740 0.2409 0.2118 0.1811 0.1450 0.1277 0.1203 
       CA12   CA13 
-    0.1040 0.0470 
+    0.1044 0.0471 
 
 **Climate variables: marginal tests, inflation and biplot scores.**
 
 | Variable | Label | Marginal inertia | Unique % of constrained | Pseudo-F | p (unrestricted) | p (within parks) | VIF | CCA1 | CCA2 |
 |:---|:---|---:|---:|---:|---:|---:|---:|---:|---:|
-| MSpT | Spring temperature | 0.260 | 58.504 | 51.983 | 0 | 0 | 1.077 | 0.527 | -0.089 |
-| SP | Summer precipitation | 0.159 | 35.827 | 31.833 | 0 | 0 | 1.077 | -0.260 | -0.342 |
+| MSpT | Spring temperature | 0.261 | 58.526 | 51.941 | 0 | 0 | 1.077 | 0.527 | -0.090 |
+| SP | Summer precipitation | 0.159 | 35.769 | 31.744 | 0 | 0 | 1.077 | -0.261 | -0.341 |
 
 <sub>Table file:
 [cca_climate_contributions.csv](../tables/cca_climate_contributions.csv)</sub>
@@ -63,20 +63,20 @@ Back to the
 
 | Species | Legacy plots | % of legacy plots | % of constrained inertia | CCA1 | CCA2 |
 |:---|---:|---:|---:|---:|---:|
-| Abies lasiocarpa | 92 | 15.157 | 13.766 | -1.466 | 2.133 |
-| Callitropsis nootkatensis | 142 | 23.394 | 12.579 | -1.468 | -0.996 |
-| Tsuga mertensiana | 177 | 29.160 | 12.018 | -1.431 | -0.038 |
-| Pinus albicaulis | 18 | 2.965 | 11.259 | -2.543 | 4.886 |
-| Thuja plicata | 205 | 33.773 | 10.202 | 1.207 | -0.287 |
-| Pseudotsuga menziesii | 332 | 54.695 | 10.013 | 0.908 | 0.405 |
-| Pinus ponderosa | 22 | 3.624 | 10.008 | 2.888 | 3.218 |
-| Tsuga heterophylla | 369 | 60.791 | 5.437 | 0.437 | -0.698 |
-| Abies amabilis | 402 | 66.227 | 3.590 | -0.366 | -0.510 |
-| Pinus contorta | 33 | 5.437 | 3.232 | 0.759 | 2.140 |
-| Picea engelmannii | 36 | 5.931 | 2.977 | -0.589 | 2.034 |
-| Abies grandis | 19 | 3.130 | 2.845 | 1.992 | 1.027 |
-| Abies procera | 68 | 11.203 | 1.046 | -0.462 | -0.695 |
-| Pinus monticola | 70 | 11.532 | 1.029 | 0.078 | 0.918 |
+| Abies lasiocarpa | 92 | 15.207 | 13.709 | -1.457 | 2.131 |
+| Callitropsis nootkatensis | 141 | 23.306 | 12.614 | -1.474 | -0.994 |
+| Tsuga mertensiana | 176 | 29.091 | 12.049 | -1.433 | -0.032 |
+| Pinus albicaulis | 18 | 2.975 | 11.230 | -2.529 | 4.883 |
+| Thuja plicata | 204 | 33.719 | 10.148 | 1.203 | -0.293 |
+| Pseudotsuga menziesii | 332 | 54.876 | 10.079 | 0.910 | 0.401 |
+| Pinus ponderosa | 22 | 3.636 | 10.012 | 2.888 | 3.206 |
+| Tsuga heterophylla | 367 | 60.661 | 5.426 | 0.435 | -0.701 |
+| Abies amabilis | 400 | 66.116 | 3.623 | -0.370 | -0.511 |
+| Pinus contorta | 33 | 5.455 | 3.229 | 0.763 | 2.134 |
+| Picea engelmannii | 36 | 5.950 | 2.962 | -0.582 | 2.030 |
+| Abies grandis | 19 | 3.140 | 2.853 | 1.992 | 1.020 |
+| Abies procera | 68 | 11.240 | 1.041 | -0.458 | -0.695 |
+| Pinus monticola | 70 | 11.570 | 1.024 | 0.082 | 0.914 |
 
 <sub>Table file:
 [cca_species_contributions.csv](../tables/cca_species_contributions.csv)</sub>

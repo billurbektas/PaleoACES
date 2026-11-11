@@ -8,7 +8,7 @@ R/pipeline/06_paleo_samples.R,pipeline,"Paleo samples: original macrofossil samp
 R/pipeline/07_paleo_climate.R,pipeline,"Paleo climate: CHELSA-TraCE21k monthly climate at each lake and century,",344
 R/pipeline/08_fire_records.R,pipeline,Fire records (Appendix S2): tapas event detection for the three MORA charcoal,406
 R/pipeline/09_species_occurrences.R,pipeline,09_species_occurrences.R,626
-R/pipeline/10_cca.R,pipeline,10_cca.R - the pooled CCA and everything derived from it. NO FIGURES.,649
+R/pipeline/10_cca.R,pipeline,10_cca.R - the pooled CCA and everything derived from it. NO FIGURES.,665
 R/pipeline/11_climate_eras_high_fire.R,pipeline,11_climate_eras_high_fire.R,187
 R/pipeline/12_tracking.R,pipeline,"Tracking: native-century Holocene positions, tracking metrics for both eras,",85
 R/pipeline/13_era_models.R,pipeline,"Era models (PLAN.md section 5, Step 5a): Holocene stability periods,",183
@@ -18,7 +18,7 @@ R/figures/supp_age_depth_models.R,figure,Figures S5 (four Bacon age-depth models
 R/figures/supp_cca_scaling.R,figure,supp_cca_scaling.R - one CCA drawn at scaling 1 and scaling 2,108
 R/figures/supp_climate_correlations.R,figure,supp_climate_correlations.R,626
 R/figures/supp_climate_windows.R,figure,Compare the actual plot-specific survey windows with V2.1 1979-2021.,174
-R/figures/supp_sample_selection.R,figure,"Show which plots and core samples reach CCA, starting with the supplied data.",367
+R/figures/supp_sample_selection.R,figure,"Show which plots and core samples reach CCA, starting with the supplied data.",368
 R/figures/supp_species_through_time.R,figure,"supp_species_through_time.R  -  STEP 4, the species half",199
 R/figures/supp_tracking_transitions.R,figure,Appendix figures of the lake-period values over time (redrawn on lake-periods,86
 R/figures/main_fig2_climate_eras_fire.R,figure,main_fig2_climate_eras_fire.R,696

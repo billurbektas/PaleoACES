@@ -44,9 +44,9 @@ export_cca_reference = function(e) {
         'R/helpers/config.R','R/helpers/climate_variables.R','R/helpers/survey_years.R',
         'R/helpers/cca_reference.R','R/helpers/tracking_metrics.R'))),
       R_version=as.character(getRversion()), vegan_version=as.character(utils::packageVersion('vegan'))))
-  stopifnot(nrow(reference$legacy_species)==607L, length(reference$retained_species)==14L,
+  stopifnot(nrow(reference$legacy_species)==sum(ANTHROPOCENE_PAIRS), length(reference$retained_species)==14L,
     identical(rownames(reference$legacy_species),rownames(reference$legacy_climate)),
-    nrow(modern)==607L, !anyDuplicated(modern$plot_id))
+    nrow(modern)==sum(ANTHROPOCENE_PAIRS), !anyDuplicated(modern$plot_id))
   # The CSV also carries the display-only seasonal variables, standardized on the
   # same legacy calibration plots; the CCA constraints' rows equal `scaling`.
   calibration_climate = e$climate_summary[e$climate_summary$period == 'past' &

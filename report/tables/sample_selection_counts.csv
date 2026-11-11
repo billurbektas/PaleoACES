@@ -14,9 +14,9 @@ NOCA,Modern,5,Require usable tree identifications,368,2,The two removed plots ha
 NOCA,Modern,6,Match a legacy tree survey,312,56,54 legacy plots also have no usable matched location. Counts for the two starting surveys must not be added.
 NOCA,Modern,7,Remove plots empty at both dates,309,3,
 NOCA,Modern,8,Apply the agreed plot exclusions,305,4,"One old clearcut, one uncertain resurvey location, and two unresolved GPS problems."
-MORA,Modern,9,Eligible legacy plots,331,0,Each legacy plot must contain a retained tree species and complete climate data.
-MORA,Modern,10,CCA calibration and comparisons at both dates,330,1,Fit the CCA on these matched legacy plots; use the same plots for observed and predicted positions at both dates.
-NOCA,Modern,9,Eligible legacy plots,288,17,Each legacy plot must contain a retained tree species and complete climate data.
+MORA,Modern,9,Eligible legacy plots,329,2,Each legacy plot must contain a retained tree species and complete climate data. Plots burned between the surveys are left out of the analysis (two at MORA).
+MORA,Modern,10,CCA calibration and comparisons at both dates,328,1,Fit the CCA on these matched legacy plots; use the same plots for observed and predicted positions at both dates.
+NOCA,Modern,9,Eligible legacy plots,288,17,Each legacy plot must contain a retained tree species and complete climate data. Plots burned between the surveys are left out of the analysis (two at MORA).
 NOCA,Modern,10,CCA calibration and comparisons at both dates,277,11,Fit the CCA on these matched legacy plots; use the same plots for observed and predicted positions at both dates.
 MORA,Holocene,1,Starting core sample depths,119,0,
 MORA,Holocene,2,Retain original sample identities,119,0,

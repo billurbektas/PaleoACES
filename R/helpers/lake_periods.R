@@ -116,9 +116,10 @@ build_both_eras = function(units, plots) {
     M_start, M_end, direction_defined, fire_activity = NA_real_,
     fire_coverage_valid = NA, burned)
   x = dplyr::bind_rows(holocene, anthropocene)
-  # Rule: 607 Anthropocene pairs (330 MORA, 277 NOCA), each with endpoint_var 2.
+  # Rule: the Anthropocene pairs of config.R (MORA 328, NOCA 277), each with endpoint_var 2.
   a = x[x$period_type == 'Anthropocene', ]
-  stopifnot(nrow(a) == 607L, sum(a$site == 'MORA') == 330L, sum(a$site == 'NOCA') == 277L,
+  stopifnot(nrow(a) == sum(ANTHROPOCENE_PAIRS), sum(a$site == 'MORA') == ANTHROPOCENE_PAIRS[['MORA']],
+    sum(a$site == 'NOCA') == ANTHROPOCENE_PAIRS[['NOCA']],
     all(a$endpoint_var == 2), !anyDuplicated(x[c('series', 'unit_index')]))
   x
 }

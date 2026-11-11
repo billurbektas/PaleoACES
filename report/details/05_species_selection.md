@@ -12,21 +12,21 @@ consolidation](05_species_occurrence_consolidation.md).
 
 | species | MORA_paleo | MORA_past | MORA_present | NOCA_paleo | NOCA_past | NOCA_present | retained |
 |:---|---:|---:|---:|---:|---:|---:|:---|
-| Abies amabilis | 119 | 290 | 288 | 0 | 113 | 128 | TRUE |
+| Abies amabilis | 119 | 288 | 286 | 0 | 113 | 128 | TRUE |
 | Abies lasiocarpa | 94 | 34 | 31 | 473 | 63 | 76 | TRUE |
 | Abies procera | 43 | 68 | 50 | 0 | 0 | 0 | TRUE |
-| Callitropsis nootkatensis | 78 | 106 | 101 | 38 | 37 | 44 | TRUE |
+| Callitropsis nootkatensis | 78 | 105 | 101 | 38 | 37 | 44 | TRUE |
 | Picea engelmannii | 5 | 12 | 9 | 12 | 26 | 22 | TRUE |
 | Pinus contorta | 31 | 2 | 1 | 293 | 32 | 28 | TRUE |
 | Pinus monticola | 90 | 42 | 14 | 504 | 28 | 25 | TRUE |
-| Pseudotsuga menziesii | 40 | 181 | 147 | 597 | 157 | 147 | TRUE |
-| Tsuga heterophylla | 54 | 281 | 283 | 180 | 88 | 121 | TRUE |
-| Tsuga mertensiana | 110 | 88 | 75 | 39 | 89 | 76 | TRUE |
+| Pseudotsuga menziesii | 40 | 181 | 146 | 597 | 157 | 147 | TRUE |
+| Tsuga heterophylla | 54 | 279 | 281 | 180 | 88 | 121 | TRUE |
+| Tsuga mertensiana | 110 | 87 | 75 | 39 | 89 | 76 | TRUE |
 | Abies grandis | 0 | 8 | 7 | 0 | 11 | 20 | TRUE |
 | Alnus rubra | 0 | 15 | 15 | 0 | 11 | 18 | FALSE |
 | Picea sitchensis | 0 | 2 | 0 | 0 | 0 | 0 | FALSE |
 | Populus trichocarpa | 0 | 3 | 3 | 0 | 8 | 3 | FALSE |
-| Thuja plicata | 0 | 111 | 110 | 168 | 95 | 101 | TRUE |
+| Thuja plicata | 0 | 110 | 109 | 168 | 95 | 101 | TRUE |
 | Acer macrophyllum | 0 | 0 | 4 | 0 | 17 | 18 | FALSE |
 | Malus fusca | 0 | 0 | 1 | 0 | 0 | 0 | FALSE |
 | Pinus albicaulis | 0 | 0 | 2 | 0 | 20 | 7 | TRUE |

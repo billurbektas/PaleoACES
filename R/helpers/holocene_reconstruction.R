@@ -77,9 +77,9 @@ reconstruction_read_original_samples = function() {
 
 reconstruction_project_samples = function(original, reference) {
   if (!identical(reference$scaling, 'sites') || !identical(reference$hill, FALSE) ||
-      !identical(reference$axes, 1:2) || nrow(reference$legacy_species) != 607L ||
+      !identical(reference$axes, 1:2) || nrow(reference$legacy_species) != sum(ANTHROPOCENE_PAIRS) ||
       length(reference$retained_species) != 14L)
-    stop('Expected the fixed 607-plot, 14-taxon CCA1–CCA2 calibration')
+    stop('Expected the fixed 605-plot, 14-taxon CCA1–CCA2 calibration')
   samples = original$samples
   taxa = reference$retained_species
   x = matrix(0, nrow(samples), length(taxa), dimnames = list(samples$sample_id, taxa))

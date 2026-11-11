@@ -134,14 +134,15 @@ for (site_name in c("MORA", "NOCA")) {
   removed_resurvey = x |> filter(!comparison_included, exclusion_period == "present")
   stopifnot(setequal(legacy$plot_id, x$plot_id),
     identical(x$calibration_included, x$comparison_included),
-    all(x$reason_code %in% c("included", "no_recorded_taxa", "consolidation",
+    all(x$reason_code %in% c("included", "burned", "no_recorded_taxa", "consolidation",
       "species_selection", "no_calibration_taxa", "climate")))
   eligible_n = sum(legacy$eligible)
   fit_n = sum(x$calibration_included); paired_n = sum(x$comparison_included)
   stopifnot(nrow(x) - nrow(removed_legacy) == eligible_n,
     eligible_n - nrow(removed_resurvey) == paired_n, fit_n == paired_n)
   add_count(site_name, "Modern", 9, "Eligible legacy plots", eligible_n,
-    nrow(removed_legacy), explanation = "Each legacy plot must contain a retained tree species and complete climate data.")
+    nrow(removed_legacy), explanation = paste("Each legacy plot must contain a retained tree species and complete climate data.",
+      "Plots burned between the surveys are left out of the analysis (two at MORA)."))
   add_count(site_name, "Modern", 10, "CCA calibration and comparisons at both dates", paired_n,
     nrow(removed_resurvey), explanation = "Fit the CCA on these matched legacy plots; use the same plots for observed and predicted positions at both dates.")
   add_choice(site_name, "Complete climate at both dates",
@@ -227,8 +228,8 @@ noca_pairs = read_table(out("cca_tracking_both_eras.csv")) |>
   left_join(richness, by = "plot_id", relationship = "one-to-one") |>
   mutate(across(c(richness_past, richness_present), \(x) tidyr::replace_na(x, 0L)))
 legacy_richness = rowSums(reference$legacy_species[noca_pairs$plot_id, , drop = FALSE] > 0)
-# Rule: 277 NOCA plot pairs, and the legacy richness equals that of the CCA calibration matrix.
-stopifnot(nrow(noca_pairs) == 277L, all(noca_pairs$richness_past == legacy_richness))
+# Rule: the NOCA plot pairs of config.R, and the legacy richness equals that of the CCA calibration matrix.
+stopifnot(nrow(noca_pairs) == ANTHROPOCENE_PAIRS[['NOCA']], all(noca_pairs$richness_past == legacy_richness))
 mean_ci = function(x, name) {
   n = length(x); half = if (n > 1) qt(.975, n - 1) * sd(x) / sqrt(n) else NA_real_
   as_tibble(setNames(list(mean(x), mean(x) - half, mean(x) + half), paste0(name, c("_mean", "_low", "_high"))))
@@ -263,7 +264,7 @@ edge = function(x, y, xend, yend) tibble(x, y, xend, yend)
 note = function(x, y, label) tibble(x, y, label)
 explain = function(x, period_label) {
   if (!nrow(x)) return(paste0(period_label, ":\n0 plots removed"))
-  labels = c(no_recorded_taxa = "no study trees recorded", consolidation = "only species removed from the study",
+  labels = c(burned = "burned between the surveys", no_recorded_taxa = "no study trees recorded", consolidation = "only species removed from the study",
     species_selection = "only species below the CCA cutoff", no_calibration_taxa = "only species absent from the legacy CCA", climate = "missing climate values")
   lines = vapply(unique(x$reason_code), function(code) {
     description = labels[[code]]

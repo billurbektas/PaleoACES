@@ -16,7 +16,7 @@ The identities in the sections below still hold, with "transition" read as "lake
 
 [Stage 16](../../R/pipeline/15_contributions.R) calculates contributions before
 [stage 17](../../R/pipeline/15_contributions.R) fits species explanatory GLS.
-Both belong to the active workflow. The fixed CCA uses 607 legacy plots, 14 retained taxa,
+Both belong to the active workflow. The fixed CCA uses 605 legacy plots (607 until 11 Nov 2026, see the decisions page), 14 retained taxa,
 CCA1–CCA2, site scaling and Hill = FALSE; it is neither recalibrated nor used to rerun Bacon.
 
 ## Original samples and primary transitions

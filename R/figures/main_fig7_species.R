@@ -14,7 +14,7 @@ source(here('R/helpers/cca_display_rotation.R'), local = TRUE)
 render_figures = isTRUE(getOption('paleoaces.render_figures', TRUE))
 
 # Species order (Bills, 11 Nov 2026; by the mean until then): the maximum
-# elevation of the plots where each species occurs, over the 607 paired plots,
+# elevation of the plots where each species occurs, over the 605 paired plots,
 # both surveys and both parks; the highest at the top, ties by the mean. The
 # species names are shaded by that maximum.
 source(here('R/helpers/tracking_predictor_models.R'), local = TRUE)

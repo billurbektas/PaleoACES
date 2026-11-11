@@ -25,9 +25,9 @@ years](01_vegetation_survey_years.md).
 
 | Site | Period  | Survey year | Climate from | Climate to | Plots |
 |:-----|:--------|------------:|-------------:|-----------:|------:|
-| MORA | past    |           — |         1979 |       1989 |   330 |
-| MORA | present |        2014 |         2009 |       2014 |    50 |
-| MORA | present |        2015 |         2010 |       2015 |   174 |
+| MORA | past    |           — |         1979 |       1989 |   328 |
+| MORA | present |        2014 |         2009 |       2014 |    49 |
+| MORA | present |        2015 |         2010 |       2015 |   173 |
 | MORA | present |        2016 |         2011 |       2016 |    47 |
 | MORA | present |        2017 |         2012 |       2017 |    11 |
 | MORA | present |        2018 |         2013 |       2018 |     7 |
@@ -44,18 +44,18 @@ detrended removes the 1979–2021 trend).
 
 | Site | Period  | Survey year | Variable | Window mean | z (whole record) | z (detrended) |
 |:-----|:--------|------------:|:---------|------------:|-----------------:|--------------:|
-| MORA | past    |           — | AP       |     2417.23 |             0.10 |         -1.29 |
-| MORA | past    |           — | MAT      |        5.18 |            -0.55 |          0.05 |
-| MORA | past    |           — | MSpT     |        3.40 |            -0.24 |          0.08 |
-| MORA | past    |           — | SP       |      212.12 |             0.14 |         -1.74 |
-| MORA | present |        2014 | AP       |     1971.06 |            -0.74 |         -0.59 |
-| MORA | present |        2014 | MAT      |        6.14 |            -0.03 |         -1.01 |
-| MORA | present |        2014 | MSpT     |        3.66 |            -0.48 |         -1.27 |
-| MORA | present |        2014 | SP       |      163.05 |            -0.34 |         -0.05 |
-| MORA | present |        2015 | AP       |     1957.50 |            -0.83 |         -0.77 |
+| MORA | past    |           — | AP       |     2418.75 |             0.10 |         -1.29 |
+| MORA | past    |           — | MAT      |        5.17 |            -0.55 |          0.05 |
+| MORA | past    |           — | MSpT     |        3.39 |            -0.24 |          0.08 |
+| MORA | past    |           — | SP       |      212.33 |             0.14 |         -1.74 |
+| MORA | present |        2014 | AP       |     1979.27 |            -0.74 |         -0.59 |
+| MORA | present |        2014 | MAT      |        6.10 |            -0.03 |         -1.01 |
+| MORA | present |        2014 | MSpT     |        3.62 |            -0.48 |         -1.27 |
+| MORA | present |        2014 | SP       |      163.85 |            -0.34 |         -0.06 |
+| MORA | present |        2015 | AP       |     1957.79 |            -0.83 |         -0.77 |
 | MORA | present |        2015 | MAT      |        5.81 |             0.48 |          0.13 |
 | MORA | present |        2015 | MSpT     |        3.61 |             0.03 |         -0.35 |
-| MORA | present |        2015 | SP       |      172.36 |            -0.28 |          0.24 |
+| MORA | present |        2015 | SP       |      172.39 |            -0.28 |          0.24 |
 | MORA | present |        2016 | AP       |     1965.87 |            -0.80 |         -0.83 |
 | MORA | present |        2016 | MAT      |        5.35 |             0.60 |          0.38 |
 | MORA | present |        2016 | MSpT     |        3.62 |             0.39 |          0.36 |

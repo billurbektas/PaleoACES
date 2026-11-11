@@ -29,6 +29,10 @@ CLIMATE_VARIABLE_UNITS = c(
 )
 NOCA_FIRE_START = 1983L
 NOCA_FIRE_END = 2015L
+# The Anthropocene legacy-resurvey plot pairs of the analysis. The two MORA
+# plots burned between the surveys are left out (Bills, 11 Nov 2026), so MORA
+# has 328 pairs (330 before).
+ANTHROPOCENE_PAIRS = c(MORA = 328L, NOCA = 277L)
 # Raw TraCE21k in the primary run. The bias-corrected sensitivity run
 # (R/sensitivity_bias_corrected.R) sets the option to TRUE.
 PALEO_USE_BIAS_CORRECTED = isTRUE(getOption('paleoaces.bias_corrected', FALSE))

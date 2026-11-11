@@ -17,9 +17,9 @@ contribution_reference = function(reference) {
   model=reference$model;vars=reference$climate_variables
   if(!identical(reference$scaling,'sites') || !identical(reference$hill,FALSE) ||
      !identical(reference$axes,1:2) || !is.null(model$pCCA) ||
-     nrow(reference$legacy_species)!=607L || length(reference$retained_species)!=14L ||
+     nrow(reference$legacy_species)!=sum(ANTHROPOCENE_PAIRS) || length(reference$retained_species)!=14L ||
      !identical(attr(model$terms,'term.labels'),vars) || model$CCA$qrank!=length(vars))
-    stop('Contributions require the fixed, additive, full-rank 607-plot / 14-taxon CCA1–CCA2 reference')
+    stop('Contributions require the fixed, additive, full-rank 605-plot / 14-taxon CCA1–CCA2 reference')
   if(!identical(rownames(reference$legacy_species),reference$calibration_plot_ids) ||
      !identical(colnames(reference$legacy_species),reference$retained_species))
     stop('Calibration matrix identities do not match the reference')

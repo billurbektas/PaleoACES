@@ -145,7 +145,10 @@ color_era_pp   = c("anthropocene" = "#DC267F", "holocene" = "#785EF0")
 # proof of biological extinction. A zero macrofossil sample is non-detection.
 # Counts are unique plots/samples, not species records, age draws or time bins.
 cca_classify_samples = function(cleaned, consolidated, selected_taxa,
-                                calibration_taxa, climate, variables) {
+                                calibration_taxa, climate, variables, excluded = NULL) {
+  # `excluded`: site and plot_id of plots left out of the whole analysis (the
+  # MORA plots burned between the surveys); classified first, at both dates.
+  excluded_keys = if (is.null(excluded)) character(0) else paste(excluded$site, excluded$plot_id)
   keys = c("site", "era", "period", "plot_id")
   if (anyDuplicated(climate[keys])) stop("Duplicate climate sample keys in CCA eligibility.")
   for (x in list(cleaned, consolidated)) {
@@ -176,6 +179,7 @@ cca_classify_samples = function(cleaned, consolidated, selected_taxa,
   out %>% left_join(legacy, by = c("site", "plot_id")) %>%
     mutate(
       reason_code = case_when(
+        era == "anthropocene" & paste(site, plot_id) %in% excluded_keys ~ "burned",
         !has_occurrence_record ~ "missing_occurrence",
         cleaned_taxa == 0 ~ "no_recorded_taxa",
         consolidated_taxa == 0 ~ "consolidation",
@@ -184,6 +188,7 @@ cca_classify_samples = function(cleaned, consolidated, selected_taxa,
         !climate_complete ~ "climate",
         TRUE ~ "included"),
       reason = case_when(
+        reason_code == "burned" ~ "Burned between the surveys (left out of the analysis)",
         reason_code == "missing_occurrence" ~ "No cleaned occurrence record",
         reason_code == "no_recorded_taxa" & period == "past" ~ "No tree taxa recorded at legacy",
         reason_code == "no_recorded_taxa" & period == "present" &
@@ -241,6 +246,15 @@ cca_pair_samples = function(samples) {
 # is now part of that script, where it is justified rather than asserted.
 occ_consolidated = read_csv(out("occ_consolidated.csv"), show_col_types = FALSE) %>%
   select(period, plot_id, species, occurrence, site, era)
+# The MORA plots burned between the two surveys leave the whole analysis here,
+# before species selection (Bills, 11 Nov 2026). There are two, too few for a
+# MORA fire comparison, and in the shared Anthropocene fire term they tied the
+# burned effect to MORA's level. They keep their own exclusion reason below, so
+# the plot-selection figure counts them.
+burned_mora = read_csv(out("MORA_plot_info_fire.csv"), show_col_types = FALSE) %>%
+  filter(burnt) %>% transmute(site = "MORA", plot_id)
+occ_consolidated = occ_consolidated %>%
+  filter(!(era == "anthropocene" & paste(site, plot_id) %in% paste(burned_mora$site, burned_mora$plot_id)))
 occ = occ_consolidated
 
 # Species selection: drop species occurring in fewer than count.thr plots in
@@ -467,7 +481,7 @@ cleaned_occ = bind_rows(
 repeat {
   cca_sample_eligibility = cca_classify_samples(
     cleaned_occ, occ_consolidated, unique(occ$species), keep_species,
-    env, CCA_VARIABLES)
+    env, CCA_VARIABLES, excluded = burned_mora)
   cca_pair_eligibility = cca_pair_samples(cca_sample_eligibility)
   present_pairs = cca_pair_eligibility %>% filter(comparison_included) %>% pull(plot_id)
   present_pairs = rownames(species_present)[rownames(species_present) %in% present_pairs]
@@ -541,9 +555,9 @@ if (count.thr == CCA_COUNT_THRESHOLD && !length(extra_exclude) && !nzchar(cca_su
 # -----------------------------------------------------------------------------
 # report-snippet: cca-fit
 # The CCA is fitted once, on the legacy survey only.
-#   species_past_final: one row per calibration plot (607), one column per tree
+#   species_past_final: one row per calibration plot (605), one column per tree
 #     species (14), the counts of each species in the plot.
-#   env_past_final: the same 607 plots, two columns, MSpT (mean spring
+#   env_past_final: the same 605 plots, two columns, MSpT (mean spring
 #     temperature) and SP (summer precipitation) of the plot's legacy climate
 #     window.
 # The formula reads "species ~ MSpT + SP". vegan::cca finds the two axes,
@@ -643,7 +657,9 @@ if (count.thr == CCA_COUNT_THRESHOLD && !length(extra_exclude) && !nzchar(cca_su
   cca_report_tables(environment())
   # Step 0: screening of the constraint sets and the display rotation.
   # Rule: a two-variable CCA has exactly two constrained axes.
-  stopifnot(nrow(species_past_final) == 607L, length(cca_model$CCA$eig) == 2L)
+  # Rule: the Anthropocene plot pairs of config.R (MORA 328, NOCA 277).
+  stopifnot(nrow(species_past_final) == sum(ANTHROPOCENE_PAIRS), length(cca_model$CCA$eig) == 2L,
+    sum(rownames(species_past_final) %in% burned_mora$plot_id) == 0L)
   cca_screening_tables(environment())
   cca_rotation_table(environment())
 }

@@ -8,8 +8,9 @@ order and file dependencies are authoritative in [WORKFLOW.md](11_outputs_and_wo
 
 ## Study universes and vegetation
 
-- Modern vegetation is paired within plot. MORA has 330 modeled pairs and NOCA
-  has 277 after excluding `BAK487` (old clearcut), `BEAV6061` (uncertain
+- Modern vegetation is paired within plot. MORA has 328 modeled pairs (330 until
+  11 Nov 2026, when the two plots burned between the surveys, JAME-295 and
+  OHAN-013, were left out of the analysis) and NOCA has 277 after excluding `BAK487` (old clearcut), `BEAV6061` (uncertain
   relocation into an avalanche chute), and `CARI449`/`CARI450` (GPS problem).
 - The corrected NOCA workbook is authoritative for its 2,366 received stem
   rows. Unsupported labels are discarded before occurrence construction. The
@@ -248,7 +249,7 @@ The detailed evidence and publication links are in the
 - The active constraints are spring temperature (`MSpT`) and summer
   precipitation (`SP`), decided 2026-11-09 (below). They are seasonal climate
   correlates, not direct growing-degree, drought, fire or snowpack measurements.
-- The pooled CCA is calibrated on 607 matched legacy plots and 14 retained species.
+- The pooled CCA is calibrated on 605 matched legacy plots (607 until 11 Nov 2026) and 14 retained species.
   Vegan site/scaling 1 is retained because downstream metrics use Euclidean
   sample-score distances. The model positions 1,514 of 1,599 modern and paleo
   samples.
@@ -430,7 +431,7 @@ fit and coefficient table retain the original metre unit.
   legacy CCA calibration SDs. MORA's three lakes are averaged first; the MORA
   and NOCA site trajectories then receive equal regional weight.
 - **Standardization sensitivity to discuss later.** The active denominator
-  remains each variable's SD across the 607 matched MORA/NOCA legacy calibration
+  remains each variable's SD across the 605 matched MORA/NOCA legacy calibration
   plots. This fixed, model-calibration reference is independent of the
   Holocene and Anthropocene records being evaluated. A future sensitivity could
   instead calculate one SD per variable across all available climate values,
@@ -587,6 +588,7 @@ trajectories", which are kept as history.
 | Multiple comparisons (10 Nov) | Every group comparison is Holm-adjusted within its family (Bills): the era contrasts within each response (three period-type contrasts in each of two parks, six tests), the species contrasts within each measure and park (all species and their three period-type contrasts), and, as before, the joint pace and direction contrasts. Stars and statements of significance use the adjusted p. Intervals stay unadjusted 95% intervals. The explanatory models have one group contrast each (site, burned minus unburned) and need no adjustment. |
 | Species measure contrib_lag (11 Nov) | `contrib_gap` (projection on the mismatch at the start) is replaced by `contrib_lag` (Bills). With g1 and g2 the mismatch WA − LC at the two ends and m = (g1 + g2) / (|g1| + |g2|), each species' vector projected on m is its part of the lag rate, and −dLC·m is the climate's part. They add up exactly to the lag rate, and swapping the surveys reverses every value. `contrib_gap` came out positive also with the surveys swapped (MORA 0.445 forward, 0.621 swapped; NOCA 1.59 and 0.90), a lean towards the predicted position that is not a time trend. `contrib_lag` is per century of the lag-rate interval and includes the units where the community did not move. Figure 7B shows it. |
 | Wording and Figure 7 species (11 Nov) | "Climate-community lag" replaces "community-climate lag" in every figure and text (Bills). Figure 7 orders the species by the maximum elevation of the plots where they occur, shades their names by it in four grey steps (breaks at 1,500, 1,700 and 1,900 m), and sets in bold the species absent from the Holocene record of both parks (Abies grandis, Pinus albicaulis, Pinus ponderosa) (Bills). |
+| Burned MORA plots (11 Nov) | The two MORA plots burned between the surveys (JAME-295 and OHAN-013, 2003 fire, from `MORA_plot_info_fire.csv`) leave the whole analysis, before species selection and the CCA fit (Bills). Two plots cannot carry a MORA fire comparison, and in the shared Anthropocene fire term `site + burned` they tied the burned effect to MORA's level. The analysis now has 605 plot pairs (MORA 328, NOCA 277), set once in `ANTHROPOCENE_PAIRS` (R/helpers/config.R). The cleaned vegetation tables and Figures S1 and S8 still describe them as raw data. Figure S2 shows them as their own exclusion step. |
 | NOCA legacy plot area (10 Nov) | A descriptive supplement table of the 277 NOCA plot pairs by legacy plot area: plots, mean richness of the retained CCA taxa at both surveys, and plain means with t-intervals of turnover rate, lag and lag rate. No model changes (Bills). |
 | Bias-corrected sensitivity (10 Nov) | `R/sensitivity_bias_corrected.R` reruns stages 07 to 15 with `PALEO_USE_BIAS_CORRECTED = TRUE` into `output_bias_corrected/`, never writing `output/` or `report/`, and tabulates the lag, pace effect and direction effect of every lake-period from both runs with the number that keep their sign. The primary run stays on the raw TraCE21k paleoclimate (Bills). |
 | Figures 4 and 5 (10 Nov) | Fitted means and 95% intervals of the three period types per park, each mean printed beside its point. Climate change rate and turnover on log axes with an arrow for the fold against Holocene-C. Lag, lag rate, pace and direction on linear axes with connectors from the Anthropocene to each Holocene type, a star only where that contrast is significant, never on a single mean. Figure 5 holds pace and direction only, on one y scale, with "narrows the lag" and "widens the lag" along the axis (a positive effect means the community's own pace or direction widened the lag). Figure 4 has six panels in three rows (Bills): climate change and its rate, observed community turnover (the displacement) and its rate, the lag and the lag rate, each total on the left and its rate on the right, legend at the bottom. |
@@ -611,7 +613,7 @@ notes; any future chronology revision is separate work.
 | Question | Current choice | Consequence | Evidence needed to resolve it |
 |---|---|---|---|
 | Raw versus V2.1-anchored TraCE21k climate | The active Holocene analysis uses raw TraCE21k values; the V2.1 anchoring diagnostic is not authoritative. | Absolute Holocene climate levels and cross-product comparisons may retain product bias, although the active within-series change calculations are internally consistent. | A validated overlap-period comparison showing whether anchoring reduces bias without introducing a discontinuity or changing the intended anomaly interpretation. |
-| Legacy-calibration versus full-record climate SDs | Changes are divided by SDs from the 607 matched legacy CCA calibration plots. | The reference is tied to the fitted model. A full-record SD would change displayed standardized magnitudes, cross-variable weighting, the unthresholded composite, and standardized climate rates, but not CC/S boundaries under the current variable-specific 50%-of-own-maximum rule. | A prespecified full-record sensitivity with explicit temporal/site weighting and a scientific choice between calibration-relative and dataset-relative effect sizes. |
+| Legacy-calibration versus full-record climate SDs | Changes are divided by SDs from the 605 matched legacy CCA calibration plots. | The reference is tied to the fitted model. A full-record SD would change displayed standardized magnitudes, cross-variable weighting, the unthresholded composite, and standardized climate rates, but not CC/S boundaries under the current variable-specific 50%-of-own-maximum rule. | A prespecified full-record sensitivity with explicit temporal/site weighting and a scientific choice between calibration-relative and dataset-relative effect sizes. |
 | Anthropocene precipitation continuity | Historical climate remains 1979–1989; modern climate uses adult Y−5 through Y at both sites (2026-10-07 decision). The MORA precipitation contrast is flagged. | The apparent post-2010 MORA precipitation shift may partly reflect CHELSA inhomogeneity rather than climate. | Independent station/reanalysis validation and a documented decision on whether post-2010 MORA precipitation is usable. The agreed years are not a pending decision. |
 | MORA fire record location | The MORA fire values come from the Sunrise Ridge cores, while the vegetation lakes lie elsewhere in the park. | A MORA fire slope may reflect regional fire rather than fire at the lakes. | Charcoal from the vegetation lakes themselves. |
 | Fire scales of the two parks | One fire slope for both parks, in events per century per covered core. MORA values span 0.10 to 0.33 and NOCA 0.33 to 0.89, partly because Panther Potholes is read at 12 years and the Sunrise Ridge cores at 42 to 48 years. | The fire slope comes from the narrow range within each park. | Records at comparable resolution, or a resolution-corrected event rate. |
