@@ -138,6 +138,12 @@ boxes = holocene |> group_by(site) |> summarise(xmin = min(x), xmax = max(x), ym
   mutate(pad = .06 * pmax(xmax - xmin, ymax - ymin), xmin = xmin - pad, xmax = xmax + pad,
     ymin = ymin - pad, ymax = ymax + pad, letter = c(MORA = 'C', NOCA = 'D')[site],
     color = PAPER_SITE_COLORS[site])
+# Both zooms the same size (Bills, 11 Nov 2026): the narrower box is widened about
+# its centre to the height-to-width ratio of the wider one, so both keep equal
+# scaling on the two axes and draw at the same size.
+ZOOM_RATIO = min((boxes$ymax - boxes$ymin) / (boxes$xmax - boxes$xmin))
+boxes = boxes |> mutate(half = pmax(xmax - xmin, (ymax - ymin) / ZOOM_RATIO) / 2, centre = (xmin + xmax) / 2,
+  xmin = centre - half, xmax = centre + half) |> select(-half, -centre)
 # Panel B is cropped tightly around the trajectories, with
 # equal scaling on both axes so that directions are not distorted; its frame is
 # a little taller than wide (width 0.84 of the height).
@@ -200,11 +206,12 @@ zoom = function(park) {
     d |> filter(type == 'predicted') |> transmute(x, y, label = '', series, fontface = 'plain', size = TEXT))
   ggplot() + trajectory_layers(d, st, lab, c(box$xmin, box$xmax), c(box$ymin, box$ymax)) +
     coord_cartesian(xlim = c(box$xmin, box$xmax), ylim = c(box$ymin, box$ymax), expand = FALSE) +
-    labs(tag = paste0(box$letter, '.'), title = paste(park, 'Holocene periods'), x = NULL, y = NULL) +
+    # Title on two lines: a zoom can be narrower than a one-line title (Bills, 11 Nov 2026).
+    labs(tag = paste0(box$letter, '.'), title = paste0(park, '\nHolocene periods'), x = NULL, y = NULL) +
     # Only the observed and predicted key under the zooms: the park is in the title (Bills, 10 Nov 2026).
     guides(fill = 'none') +
     theme_fig3 + theme(legend.position = 'bottom', aspect.ratio = (box$ymax - box$ymin) / (box$xmax - box$xmin),
-      plot.title = element_text(size = 30, face = 'bold', color = box$color), axis.text = element_text(size = 22))
+      plot.title = element_text(size = 30, face = 'bold', color = box$color, lineheight = .9), axis.text = element_text(size = 22))
 }
 # A and B on top; the zooms C (MORA) and D (NOCA) below, as large as the top
 # panels allow, titled in the park's colour.

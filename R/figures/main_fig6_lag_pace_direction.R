@@ -16,24 +16,23 @@ render_figures = isTRUE(getOption('paleoaces.render_figures', TRUE))
 # pace or direction widened the lag. Negative: it narrowed the lag. The second
 # title line says so, with arrows along the axis (Bills, 10 Nov 2026).
 sign_words = '← narrows the lag      widens the lag →'
-titles = c(pace_effect_total = 'Pace effect', pace_effect = 'Pace effect rate',
-  direction_effect_total = 'Direction effect', direction_effect = 'Direction effect rate')
+titles = c(pace_effect_total = 'Pace effect', pace_effect = 'Pace effect per century',
+  direction_effect_total = 'Direction effect', direction_effect = 'Direction effect per century')
 data = era_means_data(setNames(paste0(titles, '\n', sign_words), names(titles)))
-# The pace and the direction effect share one y scale (Bills, 10 Nov 2026), the
-# totals one and the rates another, from the lowest interval end to the
-# highest connector star, so the two effects compare directly.
+# All four panels share one y scale (Bills, 11 Nov 2026; until then the totals
+# one and the rates per century another), from the lowest interval end to the
+# highest connector star, so the effects compare directly.
 y_range = function(responses) {
   y = range(dplyr::filter(data$means, response %in% responses)[c('conf_low', 'conf_high')],
     dplyr::filter(data$connectors, response %in% responses)$y)
   y + c(0, .04 * diff(y))
 }
-y_total = y_range(c('pace_effect_total', 'direction_effect_total'))
-y_rate = y_range(c('pace_effect', 'direction_effect'))
+y_all = y_range(c('pace_effect_total', 'direction_effect_total', 'pace_effect', 'direction_effect'))
 # Text and spacing as in Figure 5 (Bills, 10 Nov 2026).
 panel = function(r, tag, ylim) era_means_panel(r, tag, data, k = 1.2, kl = 1.65, kt = 1.4, gap = .05, cap = .05,
   spread = 1.4, park_gap = 1.35, xmin = .45, xmax = 3.32) + coord_cartesian(ylim = ylim)
-figure = panel('pace_effect_total', 'A.', y_total) + panel('pace_effect', 'B.', y_rate) +
-  panel('direction_effect_total', 'C.', y_total) + panel('direction_effect', 'D.', y_rate) +
+figure = panel('pace_effect_total', 'A.', y_all) + panel('pace_effect', 'B.', y_all) +
+  panel('direction_effect_total', 'C.', y_all) + panel('direction_effect', 'D.', y_all) +
   plot_layout(ncol = 2, guides = 'collect') &
   theme(legend.position = 'bottom', legend.direction = 'horizontal',
     axis.text.x = element_text(size = 38, color = 'grey10'), axis.text.y = element_text(size = 30))
