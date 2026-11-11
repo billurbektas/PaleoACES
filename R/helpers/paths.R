@@ -52,8 +52,8 @@ OUTPUT_REGISTRY = tibble::tribble(
   "climate_products_points.csv", "07_climate_products", "Plots, lake pixels and 5 km disc cells the four products are read at",
   "climate_products_values.csv", "07_climate_products", "Each product's monthly values per year at the plot means, lake pixels and disc means",
   "climate_products_monthly.csv", "07_climate_products", "Monthly climatology of each product and window at each place (Fig. S6)",
-  "climate_bias_correction_factors.csv", "07_climate_products", "CHELSAcruts to V2.1 correction per park, month and variable, 1979-2016 (Table S2.3)",
-  "climate_trace_cruts_check.csv", "07_climate_products", "TraCE21k timeID 20 against CHELSAcruts 1901-1990 over the same cells (Table S2.4)",
+  "climate_bias_correction_factors.csv", "07_climate_products", "Two-step correction per park, month and variable: TraCE21k to CHELSAcruts (1900-1990) and CHELSAcruts to V2.1 (1979-2016) (Table S2.4)",
+  "climate_trace_cruts_check.csv", "07_climate_products", "TraCE21k timeID 20 against CHELSAcruts 1901-1990 over the same cells (Table S2.3)",
   # 08 paleo climate --------------------------------------------------------
   "chelsa_paleo_ponds.csv", "08_paleo_climate", "CHELSA-TraCE21k monthly climate at each lake and century, raw and bias-corrected",
   "paleo_env.csv", "08_paleo_climate", "Climate at each macrofossil sample's age",

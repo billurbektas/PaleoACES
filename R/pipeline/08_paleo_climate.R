@@ -127,31 +127,37 @@ print(as.data.frame(paleo %>%
 # -----------------------------------------------------------------------------
 # 3. bias correction onto CHELSA V2.1 (Appendix S2, Bills, 11 Nov 2026)
 # -----------------------------------------------------------------------------
-# One factor per park, calendar month and variable from stage 07: CHELSAcruts to
-# V2.1 over 1979 to 2016 on the 5 km disc around the park's lakes. Temperature
-# gets the offset added, precipitation is multiplied by the ratio, at every
-# slice and for every lake of the park. Both series are kept: the main run uses
-# the corrected one, the sensitivity run (R/sensitivity_raw_paleoclimate.R) the raw one.
+# Factors per park, calendar month and variable from stage 07, on the 5 km disc
+# around the park's lakes: step 1 TraCE21k to CHELSAcruts (1900 to 1990), step 2
+# CHELSAcruts to V2.1 (1979 to 2016). Temperature gets the offset added,
+# precipitation is multiplied by the ratio, at every slice and for every lake of
+# the park. The run's correction (config.R, PALEO_CORRECTION) gives
+# value_corrected: both steps in the main run, step 2 alone or none in the
+# sensitivity runs. All three series are kept.
 factors = read_csv(out("climate_bias_correction_factors.csv"), show_col_types = FALSE)
+apply_factor = function(x, f, kind) if_else(kind == "ratio", x * f, x + f)
 paleo = paleo %>%
   left_join(ponds %>% select(id = ID, site), by = "id") %>%
-  left_join(factors %>% select(site, variable, month, kind, factor), by = c("site", "variable", "month")) %>%
+  left_join(factors %>% select(site, variable, month, kind, one_step, two_step), by = c("site", "variable", "month")) %>%
   mutate(value_raw = value,
-         value_corrected = if_else(kind == "ratio", value * factor, value + factor),
+         value_one_step = apply_factor(value, one_step, kind),
+         value_two_step = apply_factor(value, two_step, kind),
+         value_corrected = switch(PALEO_CORRECTION, two_step = value_two_step, one_step = value_one_step, none = value_raw),
+         factor = switch(PALEO_CORRECTION, two_step = two_step, one_step = one_step, none = if_else(kind == "ratio", 1, 0)),
          correction_offset = if_else(kind == "offset", factor, NA_real_),
          correction_ratio = if_else(kind == "ratio", factor, NA_real_))
-# Rule: every lake, slice, month and variable has its park's factor.
-stopifnot(!anyNA(paleo$factor), !anyNA(paleo$value_corrected))
-cat("\nbias correction applied: ", n_distinct(paleo$id), " lakes x ", n_distinct(paleo$slice),
-    " slices; main run uses the ", if (PALEO_USE_BIAS_CORRECTED) "corrected" else "raw", " series\n", sep = "")
+# Rule: every lake, slice, month and variable has its park's factors.
+stopifnot(!anyNA(paleo$two_step), !anyNA(paleo$one_step), !anyNA(paleo$value_corrected))
+cat("\nbias correction: ", n_distinct(paleo$id), " lakes x ", n_distinct(paleo$slice), " slices; this run uses ",
+    c(two_step = "both steps", one_step = "step 2 alone", none = "no correction")[[PALEO_CORRECTION]], "\n", sep = "")
 
 paleo_out = paleo %>%
   select(lake = id, site, lon, lat, variable, slice, year_CE, cal_BP, month,
-         value_raw, value_corrected, correction_offset, correction_ratio)
+         value_raw, value_one_step, value_two_step, value_corrected, correction_offset, correction_ratio)
 
 write_csv(paleo_out, OUT)
 cat("\nwritten: ", OUT, "  (", nrow(paleo_out), " rows)\n",
-    "The main run uses value_corrected; value_raw is kept for the raw-paleoclimate sensitivity run.\n", sep = "")
+    "value_corrected is the series of this run (", PALEO_CORRECTION, "); value_raw, value_one_step and value_two_step are all kept.\n", sep = "")
 
 # =============================================================================
 # 2. Climate at each sample age

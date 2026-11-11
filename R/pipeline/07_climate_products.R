@@ -7,17 +7,18 @@
 # with the CHELSA V1 method, as are CHELSAcruts and CHELSA V1.2, and the four
 # products differ in level. CHELSAcruts runs from 1901 to 2016, so it overlaps
 # both TraCE21k (timeID 20 is the mean of 1900 to 1990) and V2.1 (from 1979): it
-# links the two. The correction is one step, CHELSAcruts to V2.1, computed per
-# park, calendar month and variable on the monthly tasmin, tasmax and
-# precipitation (not on the seasonal variables) over the whole overlap of the
-# two products, 1979 to 2016. Each park's values are the mean over every
-# 30-arcsec cell within 5 km of its lakes (MORA: the midpoint of its three lakes;
-# NOCA: Panther Potholes), not single lake pixels. Temperature gets an offset
-# (V2.1 minus CHELSAcruts), precipitation a ratio (V2.1 over CHELSAcruts).
-# R/pipeline/08_paleo_climate.R applies them to every lake of the park.
-#
-# The stage also checks the premise that TraCE21k and CHELSAcruts agree: TraCE21k
-# timeID 20 against CHELSAcruts 1901 to 1990, the same years, over the same cells.
+# links the two. The correction has two steps, each computed per park, calendar
+# month and variable on the monthly tasmin, tasmax and precipitation (not on the
+# seasonal variables), on the mean over every 30-arcsec cell within 5 km of the
+# park's lakes (MORA: the midpoint of its three lakes; NOCA: Panther Potholes):
+#   step 1, TraCE21k to CHELSAcruts over the years TraCE21k timeID 20 stands for
+#           (1900 to 1990; CHELSAcruts from 1901), because the two products do not
+#           agree around the lakes although both come from the CHELSA V1 method;
+#   step 2, CHELSAcruts to V2.1 over the whole overlap of the two, 1979 to 2016.
+# Temperature gets offsets (added), precipitation ratios (multiplied). The main
+# run applies both steps (Bills, 11 Nov 2026); the sensitivity runs apply step 2
+# alone (the one-step correction) or none (R/sensitivity_paleoclimate.R).
+# R/pipeline/08_paleo_climate.R applies the factors to every lake of the park.
 #
 # Products read, all on the same 30-arcsec grid (checked on their file headers):
 #   trace  CHELSA-TraCE21k v1.0, timeIDs 16 to 20 (the centuries 1500 to 1990)
@@ -210,24 +211,42 @@ monthly = bind_rows(lapply(seq_len(nrow(windows_compared)), function(w) {
 write_csv(monthly, out('climate_products_monthly.csv'))
 
 # Correction --------------------------------------------------------------------------
-# Per park, month and variable over the years both products have.
-pairs = values |> filter(place %in% paste(c('MORA', 'NOCA'), 'disc'), product %in% c('cruts', 'v21'),
-  year %in% CORRECTION_YEARS) |>
-  select(product, site, variable, year, month, value) |>
-  pivot_wider(names_from = product, values_from = value) |> filter(!is.na(cruts), !is.na(v21))
-factors = pairs |> group_by(site, variable, month) |>
-  summarise(years = n(), first_year = min(year), last_year = max(year), cruts_mean = mean(cruts),
-    v21_mean = mean(v21), .groups = 'drop') |>
+disc_values = values |> filter(place %in% paste(c('MORA', 'NOCA'), 'disc')) |>
+  select(product, site, variable, year, month, value)
+# Step 2: CHELSAcruts to V2.1, per park, month and variable over the years both have.
+step2 = disc_values |> filter(product %in% c('cruts', 'v21'), year %in% CORRECTION_YEARS) |>
+  pivot_wider(names_from = product, values_from = value) |> filter(!is.na(cruts), !is.na(v21)) |>
+  group_by(site, variable, month) |>
+  summarise(step2_years = n(), step2_first = min(year), step2_last = max(year), cruts_1979_2016 = mean(cruts),
+    v21_1979_2016 = mean(v21), .groups = 'drop')
+# Step 1: TraCE21k to CHELSAcruts over the years TraCE21k timeID 20 averages.
+step1 = disc_values |> filter((product == 'trace' & year == 20) | (product == 'cruts' & year <= 1990)) |>
+  group_by(site, variable, month) |>
+  summarise(step1_years = sum(product == 'cruts'), trace_timeid20 = mean(value[product == 'trace']),
+    cruts_1901_1990 = mean(value[product == 'cruts']), .groups = 'drop')
+factors = inner_join(step1, step2, by = c('site', 'variable', 'month'), relationship = 'one-to-one') |>
   mutate(kind = if_else(variable == 'pr', 'ratio', 'offset'),
-    factor = if_else(variable == 'pr', v21_mean / cruts_mean, v21_mean - cruts_mean))
-# Rule: the correction anchors CHELSAcruts to V2.1, so applied to the
-# CHELSAcruts means it gives the V2.1 means.
-anchored = with(factors, if_else(kind == 'ratio', cruts_mean * factor, cruts_mean + factor))
-stopifnot(nrow(factors) == 2 * length(VARS) * 12, all(is.finite(factors$factor)), isTRUE(all.equal(anchored, factors$v21_mean)))
+    step1 = if_else(kind == 'ratio', cruts_1901_1990 / trace_timeid20, cruts_1901_1990 - trace_timeid20),
+    step2 = if_else(kind == 'ratio', v21_1979_2016 / cruts_1979_2016, v21_1979_2016 - cruts_1979_2016),
+    one_step = step2,
+    two_step = if_else(kind == 'ratio', step1 * step2, step1 + step2))
+apply_factor = function(x, f, kind) if_else(kind == 'ratio', x * f, x + f)
+# Rules: step 1 takes the TraCE21k means to the CHELSAcruts means of the same years,
+# step 2 the CHELSAcruts means to the V2.1 means, so both steps take TraCE21k
+# timeID 20 to the CHELSAcruts 1901-1990 level shifted by the V2.1 - CHELSAcruts
+# difference of 1979-2016.
+stopifnot(nrow(factors) == 2 * length(VARS) * 12, all(is.finite(c(factors$step1, factors$step2))),
+  all(factors$step1_years == 90),
+  isTRUE(all.equal(with(factors, apply_factor(trace_timeid20, step1, kind)), factors$cruts_1901_1990)),
+  isTRUE(all.equal(with(factors, apply_factor(cruts_1979_2016, step2, kind)), factors$v21_1979_2016)),
+  isTRUE(all.equal(with(factors, apply_factor(trace_timeid20, two_step, kind)),
+    with(factors, apply_factor(cruts_1901_1990, step2, kind)))))
 write_csv(factors, out('climate_bias_correction_factors.csv'))
-cat('\ncorrection, CHELSAcruts to V2.1 over the 5 km discs (offset in degC, ratio for pr):\n')
-print(as.data.frame(factors |> group_by(site, variable, kind) |>
-  summarise(years = min(years), min = min(factor), mean = mean(factor), max = max(factor), .groups = 'drop')), digits = 3)
+cat('\ncorrection factors over the 5 km discs (offset in degC, ratio for pr): step 1 TraCE21k to CHELSAcruts,\n',
+  'step 2 CHELSAcruts to V2.1, two-step both (main run)\n', sep = '')
+print(as.data.frame(factors |> pivot_longer(c(step1, step2, two_step), names_to = 'factor') |>
+  group_by(site, variable, factor) |> summarise(min = min(value), mean = mean(value), max = max(value), .groups = 'drop')),
+  digits = 3)
 
 # Check: TraCE21k against CHELSAcruts over the same years ------------------------------
 seasonal = function(x) x |> group_by(product, place, site) |>

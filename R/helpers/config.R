@@ -33,10 +33,13 @@ NOCA_FIRE_END = 2015L
 # plots burned between the surveys are left out (Bills, 11 Nov 2026), so MORA
 # has 328 pairs (330 before).
 ANTHROPOCENE_PAIRS = c(MORA = 328L, NOCA = 277L)
-# The main run uses the paleoclimate bias-corrected onto CHELSA V2.1 (Appendix S2,
-# Bills, 11 Nov 2026; raw TraCE21k until then). The sensitivity run on the raw
-# paleoclimate (R/sensitivity_raw_paleoclimate.R) sets the option to FALSE.
-PALEO_USE_BIAS_CORRECTED = isTRUE(getOption('paleoaces.bias_corrected', TRUE))
+# The correction of the paleoclimate (Appendix S2): 'two_step' in the main run
+# (TraCE21k to CHELSAcruts to CHELSA V2.1, Bills, 11 Nov 2026), 'one_step'
+# (CHELSAcruts to V2.1 only) and 'none' (raw TraCE21k, the main run until 11 Nov
+# 2026) in the sensitivity runs of R/sensitivity_paleoclimate.R.
+PALEO_CORRECTION = getOption('paleoaces.paleo_correction', 'two_step')
+stopifnot(PALEO_CORRECTION %in% c('two_step', 'one_step', 'none'))
+PALEO_USE_BIAS_CORRECTED = PALEO_CORRECTION != 'none'
 # The four cored vegetation lakes (Holocene macrofossil records), read by
 # R/pipeline/07_climate_products.R and R/pipeline/08_paleo_climate.R. Moved here
 # from the paleo stage on 11 Nov 2026 with its provenance notes.

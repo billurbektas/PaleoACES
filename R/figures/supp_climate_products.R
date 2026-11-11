@@ -8,9 +8,10 @@
 # Fig. S7: the linker. Yearly values on each park's disc: CHELSAcruts from 1901,
 # V1.2 from 1979 to 2013, V2.1 from 1979, and the TraCE21k century means as
 # steps. The correction window, 1979 to 2016, is shaded.
-# Fig. S8: the correction per park and month (V2.1 against CHELSAcruts, 1979 to
-# 2016, with the spread of the yearly values) next to the remaining difference
-# between TraCE21k timeID 20 and CHELSAcruts over the same years and cells.
+# Fig. S8: the two steps of the correction per park and month on the 5 km discs:
+# step 1 TraCE21k to CHELSAcruts over 1900 to 1990, step 2 CHELSAcruts to V2.1
+# over 1979 to 2016 (with the spread of the yearly values), and both together,
+# the correction of the main run.
 source(here::here('R/helpers/config.R'), local = TRUE)
 suppressPackageStartupMessages({library(here); library(tidyverse); library(patchwork)})
 source(here('R/helpers/figure_style.R'), local = TRUE)
@@ -19,7 +20,6 @@ render_figures = isTRUE(getOption('paleoaces.render_figures', TRUE))
 monthly = read_csv(out('climate_products_monthly.csv'), show_col_types = FALSE)
 values = read_csv(out('climate_products_values.csv'), show_col_types = FALSE)
 factors = read_csv(out('climate_bias_correction_factors.csv'), show_col_types = FALSE)
-check = read_csv(out('climate_trace_cruts_check.csv'), show_col_types = FALSE)
 
 # Not the park colours, which mean MORA and NOCA everywhere else.
 PRODUCT_COLORS = c(trace = '#7B3294', cruts = '#B8860B', v12 = '#1B9E77', v21 = 'black')
@@ -78,32 +78,35 @@ s7 = ggplot(lab7(yearly), aes(year, value, color = product)) +
   labs(x = 'Year CE', y = NULL) + theme_products
 
 # Fig. S8 -------------------------------------------------------------------------------
-# The yearly V2.1 against CHELSAcruts values give the spread around each factor.
+# The yearly V2.1 against CHELSAcruts values give the spread around step 2.
 spread = values |> filter(place %in% c('MORA disc', 'NOCA disc'), product %in% c('cruts', 'v21'), year %in% 1979:2016) |>
   select(product, site, variable, year, month, value) |> pivot_wider(names_from = product, values_from = value) |>
   filter(!is.na(cruts), !is.na(v21)) |>
   mutate(yearly = if_else(variable == 'pr', v21 / cruts, v21 - cruts)) |>
   group_by(site, variable, month) |>
   summarise(low = quantile(yearly, .1), high = quantile(yearly, .9), .groups = 'drop')
-correction = factors |> select(site, variable, month, value = factor) |> mutate(what = 'v21') |>
-  left_join(spread, by = c('site', 'variable', 'month'))
-residual = check |> filter(place %in% c('MORA disc', 'NOCA disc'), variable %in% names(var_labels)) |>
-  transmute(site, variable, month, value = if_else(variable == 'pr', ratio, difference), what = 'trace')
-var_factor = c(tasmin = 'Minimum temperature\n(°C difference)', tasmax = 'Maximum temperature\n(°C difference)',
+steps = factors |> select(site, variable, month, step1, step2, two_step) |>
+  pivot_longer(c(step1, step2, two_step), names_to = 'what') |>
+  left_join(spread |> mutate(what = 'step2'), by = c('site', 'variable', 'month', 'what'))
+var_factor = c(tasmin = 'Minimum temperature\n(°C added)', tasmax = 'Maximum temperature\n(°C added)',
   pr = 'Precipitation\n(ratio)')
-what_labels = c(v21 = 'CHELSA V2.1 against CHELSAcruts, 1979 to 2016 (the correction)',
-  trace = 'TraCE21k timeID 20 against CHELSAcruts 1901 to 1990')
-lab8 = function(x) mutate(x, variable = factor(var_factor[variable], var_factor), site = factor(site, c('MORA', 'NOCA')))
+what_labels = c(step1 = 'Step 1: TraCE21k to CHELSAcruts, 1900 to 1990', step2 = 'Step 2: CHELSAcruts to V2.1, 1979 to 2016',
+  two_step = 'Both steps: the correction of the main run')
+what_colors = c(step1 = PRODUCT_COLORS[['trace']], step2 = 'grey35', two_step = '#C0392B')
+lab8 = function(x) mutate(x, variable = factor(var_factor[variable], var_factor), site = factor(site, c('MORA', 'NOCA')),
+  what = factor(what, names(what_labels)))
 reference = tibble(variable = names(var_factor), y = c(0, 0, 1))
-s8 = ggplot(lab8(bind_rows(correction, residual)), aes(month, value, color = what)) +
-  geom_hline(data = lab8(reference |> crossing(site = c('MORA', 'NOCA'))), aes(yintercept = y), color = 'grey55',
-    linetype = 'dashed') +
-  geom_ribbon(data = lab8(correction), aes(ymin = low, ymax = high), fill = 'grey80', color = NA, alpha = .7) +
-  geom_line(linewidth = 1.1) + geom_point(size = 2.2) +
+s8 = ggplot(lab8(steps), aes(month, value, color = what)) +
+  geom_hline(data = lab8(reference |> crossing(site = c('MORA', 'NOCA'), what = 'step1')), aes(yintercept = y),
+    color = 'grey55', linetype = 'dashed') +
+  geom_ribbon(data = lab8(filter(steps, what == 'step2')), aes(ymin = low, ymax = high), fill = 'grey85', color = NA,
+    alpha = .8) +
+  geom_line(aes(linewidth = what)) + geom_point(size = 2.2) +
   facet_grid(variable ~ site, scales = 'free_y', switch = 'y') +
   scale_x_continuous(breaks = 1:12, labels = substr(month.abb, 1, 1), expand = expansion(.02)) +
-  scale_color_manual(values = c(v21 = 'black', trace = PRODUCT_COLORS[['trace']]), labels = what_labels, name = NULL) +
-  guides(color = guide_legend(nrow = 2)) +
+  scale_color_manual(values = what_colors, labels = what_labels, name = NULL) +
+  scale_linewidth_manual(values = c(step1 = .9, step2 = .9, two_step = 1.6), labels = what_labels, name = NULL) +
+  guides(color = guide_legend(nrow = 3), linewidth = guide_legend(nrow = 3)) +
   labs(x = 'Month', y = NULL) + theme_products
 
 if (render_figures) {
