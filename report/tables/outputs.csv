@@ -134,8 +134,10 @@ Step,File,Description,Size (kB)
 15_contributions,cca_transition_contributions/species_contributions.csv,Species and climate contributions to displacement,1432
 15_contributions,cca_transition_contributions/species_lake_periods.csv,Species and climate contributions to displacement,32
 15_contributions,species_contribution_models/noca_burned_species_means.csv,"Species contribution means, contrasts and NOCA burned means",6
+15_contributions,species_contribution_models/species_contrasts_total.csv,"Species contribution means, contrasts and NOCA burned means",34
 15_contributions,species_contribution_models/species_contrasts.csv,"Species contribution means, contrasts and NOCA burned means",35
 15_contributions,species_contribution_models/species_mean_status.csv,"Species contribution means, contrasts and NOCA burned means",3
+15_contributions,species_contribution_models/species_means_total.csv,"Species contribution means, contrasts and NOCA burned means",21
 15_contributions,species_contribution_models/species_means.csv,"Species contribution means, contrasts and NOCA burned means",21
 figures,anthropocene_climate_rates.csv,"Tables behind the figures (centroids, annotations)",0
 figures,cca_trajectory_anthropocene_centroids.csv,"Tables behind the figures (centroids, annotations)",0

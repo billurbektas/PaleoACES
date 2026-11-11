@@ -92,25 +92,43 @@ group_mean = function(x) {
     interval_defined = n > 1 && is.finite(se) && se > 0)
 }
 # end-snippet: species-means
-means = long |> group_by(measure, species, site, period_type) |>
-  reframe(group_mean(contribution)) |>
-  left_join(presence, by = c('species', 'site', 'period_type')) |>
-  mutate(period_type = factor(period_type, levels = ERA_PERIOD_TYPES)) |> arrange(measure, species, site, period_type)
-pairs = list(c('Anthropocene', 'Holocene-C'), c('Anthropocene', 'Holocene-S'), c('Holocene-C', 'Holocene-S'))
-contrasts = long |> group_by(measure, species, site) |> group_modify(function(d, key) bind_rows(lapply(pairs, function(p) {
-  x = d$contribution[d$period_type == p[1]]; y = d$contribution[d$period_type == p[2]]
-  test = if (length(x) > 1 && length(y) > 1 && (var(x) > 0 || var(y) > 0)) t.test(x, y) else NULL
-  tibble(contrast = paste(p, collapse = ' - '), estimate = mean(x) - mean(y),
-    conf_low = if (is.null(test)) NA_real_ else test$conf.int[1], conf_high = if (is.null(test)) NA_real_ else test$conf.int[2],
-    df = if (is.null(test)) NA_real_ else unname(test$parameter), p_value = if (is.null(test)) NA_real_ else test$p.value)
-}))) |> ungroup() |>
-  # Multiple comparisons (Bills, 10 Nov 2026): Holm-adjusted p-values within one
-  # family per measure and park, all species and their three period-type
-  # contrasts together. Contrasts without a test (constant groups) are not counted.
-  group_by(measure, site) |>
-  mutate(p_adjusted = p.adjust(p_value, 'holm'),
-    adjustment = paste('Holm across', sum(!is.na(p_value)), 'species contrasts of the measure in the park')) |>
-  ungroup()
+# The means and Welch contrasts of one table of contributions (per century, or
+# not divided by time below).
+summarise_species = function(long) {
+  means = long |> group_by(measure, species, site, period_type) |>
+    reframe(group_mean(contribution)) |>
+    left_join(presence, by = c('species', 'site', 'period_type')) |>
+    mutate(period_type = factor(period_type, levels = ERA_PERIOD_TYPES)) |> arrange(measure, species, site, period_type)
+  pairs = list(c('Anthropocene', 'Holocene-C'), c('Anthropocene', 'Holocene-S'), c('Holocene-C', 'Holocene-S'))
+  contrasts = long |> group_by(measure, species, site) |> group_modify(function(d, key) bind_rows(lapply(pairs, function(p) {
+    x = d$contribution[d$period_type == p[1]]; y = d$contribution[d$period_type == p[2]]
+    test = if (length(x) > 1 && length(y) > 1 && (var(x) > 0 || var(y) > 0)) t.test(x, y) else NULL
+    tibble(contrast = paste(p, collapse = ' - '), estimate = mean(x) - mean(y),
+      conf_low = if (is.null(test)) NA_real_ else test$conf.int[1], conf_high = if (is.null(test)) NA_real_ else test$conf.int[2],
+      df = if (is.null(test)) NA_real_ else unname(test$parameter), p_value = if (is.null(test)) NA_real_ else test$p.value)
+  }))) |> ungroup() |>
+    # Multiple comparisons (Bills, 10 Nov 2026): Holm-adjusted p-values within one
+    # family per measure and park, all species and their three period-type
+    # contrasts together. Contrasts without a test (constant groups) are not counted.
+    group_by(measure, site) |>
+    mutate(p_adjusted = p.adjust(p_value, 'holm'),
+      adjustment = paste('Holm across', sum(!is.na(p_value)), 'species contrasts of the measure in the park')) |>
+    ungroup()
+  list(means = means, contrasts = contrasts)
+}
+per_century = summarise_species(long)
+means = per_century$means; contrasts = per_century$contrasts
+# Totals, not divided by time (Bills, 11 Nov 2026; appendix Fig. S15): the
+# species' movement along the predicted direction (parallel_contribution) and
+# its part of the change in mismatch (lag_projection) over the whole lake-period
+# or plot pair. The per-century values above are these times 100 / dt. Same
+# means, intervals and Holm families, in their own files.
+long_total = species |> transmute(species, site, period_type,
+    contrib_climate = if_else(is.finite(contrib_climate), parallel_contribution, NA_real_),
+    contrib_lag = lag_projection) |>
+  pivot_longer(c(contrib_climate, contrib_lag), names_to = 'measure', values_to = 'contribution') |>
+  filter(is.finite(contribution))
+totals = summarise_species(long_total)
 status = means |> group_by(measure, species, site) |>
   summarise(n = sum(n), all_intervals_defined = all(interval_defined),
     constant_groups = paste(period_type[!interval_defined], collapse = ';'), .groups = 'drop')
@@ -118,7 +136,7 @@ status = means |> group_by(measure, species, site) |>
 burned = long |> filter(period_type == 'Anthropocene', site == 'NOCA') |>
   group_by(measure, species, burned) |> reframe(group_mean(contribution))
 tables = list(species_means = means, species_contrasts = contrasts, species_mean_status = status,
-  noca_burned_species_means = burned)
+  noca_burned_species_means = burned, species_means_total = totals$means, species_contrasts_total = totals$contrasts)
 unlink(list.files(models_dir, full.names = TRUE))
 for (name in names(tables)) write_csv(tables[[name]], file.path(models_dir, paste0(name, '.csv')))
 cat('Species means:', nrow(means), 'species x park x period type x measure groups;',

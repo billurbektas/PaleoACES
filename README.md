@@ -1991,6 +1991,79 @@ century. Anthropocene plot pairs span 27.5 to 32.5 years between the
 midpoints of their climate windows (about 29 years). Contributions are
 in CCA distance per century.
 
+**Check: species contributions not divided by time.** Per century, the
+Holocene species values are small partly because the lake-periods are
+long, and the Anthropocene values are large partly because the plot
+pairs are short.
+
+<img src="report/figures/png/figS15_species_contributions_total.png" alt="" width="100%" />
+
+The Holocene lake-periods span 200 to 2,600 years and the Anthropocene
+plot pairs 31 to 41.5 years. Fig. S15 shows the species means without
+dividing by time, that is how far each species moved the community over
+the whole lake-period or plot pair. The Holocene means then reach the
+size of the Anthropocene ones (largest *Abies lasiocarpa* at NOCA,
+Holocene-S, contrib_climate, +0.203 CCA distance), but they vary so much
+between the few lake-periods that 0 of 70 Holocene intervals exclude
+zero, against 3 per century. In the Anthropocene 12 means exclude zero,
+against 12 per century, the same species in the same parks. After the
+Holm adjustment 0 of 144 contrasts between period types are significant,
+against 4 per century. The large Anthropocene species rates therefore
+come mainly from changes made within a few decades. Over a whole
+lake-period, Holocene species moved the community about as far, but too
+variably to say which species did.
+
+**Fig. S15. Species contributions not divided by time.** As Figure 8,
+with each species’ contribution taken over the whole lake-period or plot
+pair instead of per century. Upper row: the distance the species moved
+the community along the direction in which the climate-predicted
+position moved. Lower row: the species’ part of the change in mismatch
+between the two ends, so that the species’ values plus the climate’s
+part add up to the lag. Plain means with 95% t-intervals, symbols, order
+and shading as in Figure 8. Holocene climate-change lake-periods span
+200 to 900 years and stability lake-periods 300 to 2600 years between
+their first and last sampled century. Anthropocene plot pairs span 27.5
+to 32.5 years between the midpoints of their climate windows (about 29
+years). Contributions are in CCA distance.
+
+**Species contributions not divided by time**, mean and 95% t-interval
+in CCA distance, per species, park and period type, as the per-century
+table above.
+
+| Species | Park | contrib_climate_Holocene-S | contrib_climate_Holocene-C | contrib_climate_Anthropocene | contrib_lag_Holocene-S | contrib_lag_Holocene-C | contrib_lag_Anthropocene |
+|:---|:---|:---|:---|:---|:---|:---|:---|
+| Abies amabilis | MORA | +0.027 (-0.017 to 0.072) | +0.003 (-0.013 to 0.019) | -0.016 (-0.028 to -0.004) | +0.024 (-0.004 to 0.051) | -0.020 (-0.055 to 0.015) | +0.009 (0.002 to 0.015) |
+| Abies amabilis | NOCA | absent | absent | +0.007 (-0.005 to 0.019) | absent | absent | +0.002 (-0.004 to 0.007) |
+| Abies grandis | MORA | absent | absent | -0.007 (-0.022 to 0.008) | absent | absent | -0.008 (-0.014 to -0.001) |
+| Abies grandis | NOCA | absent | absent | -0.017 (-0.044 to 0.010) | absent | absent | -0.018 (-0.038 to 0.003) |
+| Abies lasiocarpa | MORA | +0.065 (-0.110 to 0.240) | -0.044 (-0.146 to 0.058) | -0.003 (-0.015 to 0.009) | -0.014 (-0.096 to 0.069) | -0.029 (-0.100 to 0.042) | +0.004 (-0.011 to 0.019) |
+| Abies lasiocarpa | NOCA | +0.203 (-0.021 to 0.426) | -0.057 (-0.468 to 0.354) | -0.020 (-0.066 to 0.026) | -0.043 (-0.399 to 0.313) | +0.176 (-0.075 to 0.428) | +0.016 (-0.020 to 0.051) |
+| Abies procera | MORA | +0.008 (-0.042 to 0.059) | -0.004 (-0.016 to 0.008) | +0.011 (-0.000 to 0.023) | -0.018 (-0.052 to 0.015) | -0.019 (-0.053 to 0.015) | -0.006 (-0.013 to 0.001) |
+| Abies procera | NOCA | absent | absent | absent | absent | absent | absent |
+| Callitropsis nootkatensis | MORA | +0.034 (-0.030 to 0.097) | -0.022 (-0.093 to 0.049) | -0.002 (-0.027 to 0.024) | +0.036 (-0.016 to 0.087) | +0.077 (-0.125 to 0.280) | +0.003 (-0.010 to 0.017) |
+| Callitropsis nootkatensis | NOCA | -0.015 (-0.056 to 0.026) | -0.062 (-0.236 to 0.111) | +0.007 (-0.005 to 0.020) | -0.005 (-0.020 to 0.009) | -0.011 (-0.042 to 0.020) | +0.003 (-0.011 to 0.016) |
+| Picea engelmannii | MORA | absent | absent | -0.002 (-0.006 to 0.003) | absent | absent | -0.000 (-0.006 to 0.005) |
+| Picea engelmannii | NOCA | -0.019 (-0.070 to 0.033) | absent | -0.004 (-0.028 to 0.020) | +0.024 (-0.042 to 0.090) | absent | +0.002 (-0.015 to 0.019) |
+| Pinus albicaulis | MORA | absent | absent | +0.001 (-0.001 to 0.003) | absent | absent | +0.005 (-0.002 to 0.011) |
+| Pinus albicaulis | NOCA | absent | absent | +0.082 (0.025 to 0.139) | absent | absent | -0.081 (-0.135 to -0.026) |
+| Pinus contorta | MORA | +0.035 (-0.111 to 0.181) | +0.007 (-0.025 to 0.038) | -0.001 (-0.005 to 0.003) | +0.052 (-0.034 to 0.137) | +0.006 (-0.021 to 0.032) | -0.001 (-0.004 to 0.002) |
+| Pinus contorta | NOCA | +0.032 (-0.030 to 0.095) | +0.043 (-0.174 to 0.260) | +0.012 (-0.020 to 0.045) | -0.063 (-0.366 to 0.239) | -0.169 (-0.577 to 0.238) | -0.006 (-0.030 to 0.018) |
+| Pinus monticola | MORA | -0.005 (-0.030 to 0.020) | +0.036 (-0.054 to 0.125) | -0.015 (-0.021 to -0.009) | -0.011 (-0.030 to 0.008) | +0.012 (-0.011 to 0.034) | +0.005 (0.001 to 0.009) |
+| Pinus monticola | NOCA | -0.013 (-0.191 to 0.165) | -0.007 (-0.054 to 0.041) | +0.003 (-0.009 to 0.015) | +0.099 (-0.169 to 0.368) | +0.010 (-0.081 to 0.101) | +0.006 (-0.001 to 0.013) |
+| Pinus ponderosa | MORA | absent | absent | +0.003 (-0.003 to 0.010) | absent | absent | +0.003 (-0.003 to 0.008) |
+| Pinus ponderosa | NOCA | absent | absent | +0.069 (-0.012 to 0.150) | absent | absent | -0.055 (-0.115 to 0.005) |
+| Pseudotsuga menziesii | MORA | +0.020 (-0.027 to 0.067) | -0.011 (-0.030 to 0.009) | -0.020 (-0.038 to -0.001) | +0.019 (-0.018 to 0.056) | -0.003 (-0.017 to 0.012) | +0.010 (0.001 to 0.018) |
+| Pseudotsuga menziesii | NOCA | -0.046 (-0.205 to 0.112) | -0.018 (-0.152 to 0.117) | -0.003 (-0.026 to 0.019) | -0.046 (-0.121 to 0.029) | -0.006 (-0.067 to 0.055) | +0.005 (-0.012 to 0.023) |
+| Thuja plicata | MORA | absent | absent | +0.002 (-0.009 to 0.013) | absent | absent | +0.010 (-0.000 to 0.021) |
+| Thuja plicata | NOCA | -0.003 (-0.080 to 0.074) | -0.016 (-0.059 to 0.028) | +0.010 (-0.004 to 0.025) | -0.004 (-0.022 to 0.015) | -0.004 (-0.017 to 0.008) | -0.004 (-0.016 to 0.007) |
+| Tsuga heterophylla | MORA | -0.021 (-0.070 to 0.027) | +0.040 (-0.026 to 0.106) | -0.017 (-0.024 to -0.009) | -0.012 (-0.044 to 0.020) | +0.031 (-0.020 to 0.082) | +0.009 (0.002 to 0.016) |
+| Tsuga heterophylla | NOCA | -0.012 (-0.058 to 0.035) | +0.008 (-0.014 to 0.029) | +0.035 (0.020 to 0.050) | -0.004 (-0.036 to 0.028) | +0.003 (-0.005 to 0.011) | +0.005 (-0.003 to 0.013) |
+| Tsuga mertensiana | MORA | +0.054 (-0.006 to 0.114) | +0.023 (-0.060 to 0.106) | +0.004 (-0.007 to 0.016) | +0.057 (-0.012 to 0.127) | -0.044 (-0.105 to 0.016) | -0.002 (-0.009 to 0.005) |
+| Tsuga mertensiana | NOCA | +0.006 (-0.011 to 0.024) | -0.007 (-0.027 to 0.012) | +0.004 (-0.008 to 0.015) | -0.003 (-0.010 to 0.005) | -0.002 (-0.007 to 0.003) | -0.012 (-0.027 to 0.003) |
+
+<sub>Table file:
+[step6_species_means_total.csv](report/tables/step6_species_means_total.csv)</sub>
+
 Stages and helpers:
 [`R/pipeline/15_contributions.R`](R/pipeline/15_contributions.R),
 [`R/helpers/cca_transition_contributions.R`](R/helpers/cca_transition_contributions.R),
@@ -2314,7 +2387,7 @@ that bear on them.**
 | NOCA plot pairs by legacy plot area | [`report/tables/noca_plot_area_responses.csv`](report/tables/noca_plot_area_responses.csv) |
 | Bias-corrected paleoclimate | [`report/tables/bias_correction_lake_periods.csv`](report/tables/bias_correction_lake_periods.csv), [`report/tables/bias_correction_sign_counts.csv`](report/tables/bias_correction_sign_counts.csv) |
 | Explanatory models | [`report/tables/step5_explanatory_models.csv`](report/tables/step5_explanatory_models.csv) |
-| Species means | [`report/tables/step6_species_means.csv`](report/tables/step6_species_means.csv), [`report/tables/species_contrasts.csv`](report/tables/species_contrasts.csv) |
+| Species means | [`report/tables/step6_species_means.csv`](report/tables/step6_species_means.csv), [`report/tables/step6_species_means_total.csv`](report/tables/step6_species_means_total.csv) (not divided by time), [`report/tables/species_contrasts.csv`](report/tables/species_contrasts.csv) |
 | Species per lake-period | [`report/tables/species_lake_periods.csv`](report/tables/species_lake_periods.csv) |
 | NOCA species, burned and unburned | [`report/tables/noca_burned_species_means.csv`](report/tables/noca_burned_species_means.csv) |
 

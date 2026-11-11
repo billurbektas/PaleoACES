@@ -49,7 +49,7 @@ for the report.
 | R/pipeline/12_tracking.R | pipeline | Tracking: native-century Holocene positions, tracking metrics for both eras, | 85 |
 | R/pipeline/13_era_models.R | pipeline | Era models (PLAN.md section 5, Step 5a): Holocene stability periods, | 186 |
 | R/pipeline/14_predictor_models.R | pipeline | Explanatory models (PLAN.md section 5, Step 5). | 131 |
-| R/pipeline/15_contributions.R | pipeline | Species contributions (PLAN.md section 5, Step 6): which species led the | 125 |
+| R/pipeline/15_contributions.R | pipeline | Species contributions (PLAN.md section 5, Step 6): which species led the | 143 |
 | R/figures/supp_age_depth_models.R | figure | Figures S4 (four Bacon age-depth models) and S5 (Panther Potholes 210Pb | 109 |
 | R/figures/supp_cca_scaling.R | figure | supp_cca_scaling.R - one CCA drawn at scaling 1 and scaling 2 | 108 |
 | R/figures/supp_charcoal_dunwiddie_walsh.R | figure | Fig. S11 (appendix figure A4 until the README was reordered; Bills, 11 Nov 2026): do the charcoal peaks of the Walsh | 98 |
@@ -64,7 +64,7 @@ for the report.
 | R/figures/main_fig5_era_contrasts.R | figure | Figure 5 (PLAN.md section 6; redrawn by Bills, 10 Nov 2026): fitted means | 34 |
 | R/figures/main_fig6_lag_pace_direction.R | figure | Figure 6 (PLAN.md section 6; redrawn by Bills, 10 Nov 2026): the pace and | 43 |
 | R/figures/main_fig7_climate_fire_associations.R | figure | Figure 7: climate and fire associations as model slopes (Bills, 9 Nov 2026). | 74 |
-| R/figures/main_fig8_species.R | figure | Figure 8 (PLAN.md section 6): species contributions in both eras. Species as | 151 |
+| R/figures/main_fig8_species.R | figure | Figure 8 (PLAN.md section 6): species contributions in both eras. Species as | 161 |
 | R/worked_examples.R | worked examples | Worked examples: step-by-step illustrations of four methods, drawn from the | 410 |
 | R/tests/test_bacon_provenance.R | test | The stored Bacon chronologies are exactly what the current age-model script and | 32 |
 | R/tests/test_cca_tracking_metrics.R | test | Independent geometry and integration checks for the canonical tracking data. | 38 |
@@ -92,7 +92,7 @@ Every file under `output/` is declared in `R/helpers/paths.R`; a script
 cannot write an undeclared output. Folders hold one file per table, in
 the folder of the step that writes it.
 
-**160 output files** (excluding the climate and age-draw cache).
+**162 output files** (excluding the climate and age-draw cache).
 
 | Step | File | Description | Size (kB) |
 |:---|:---|:---|---:|
@@ -231,8 +231,10 @@ the folder of the step that writes it.
 | 15_contributions | cca_transition_contributions/species_contributions.csv | Species and climate contributions to displacement | 1432 |
 | 15_contributions | cca_transition_contributions/species_lake_periods.csv | Species and climate contributions to displacement | 32 |
 | 15_contributions | species_contribution_models/noca_burned_species_means.csv | Species contribution means, contrasts and NOCA burned means | 6 |
+| 15_contributions | species_contribution_models/species_contrasts_total.csv | Species contribution means, contrasts and NOCA burned means | 34 |
 | 15_contributions | species_contribution_models/species_contrasts.csv | Species contribution means, contrasts and NOCA burned means | 35 |
 | 15_contributions | species_contribution_models/species_mean_status.csv | Species contribution means, contrasts and NOCA burned means | 3 |
+| 15_contributions | species_contribution_models/species_means_total.csv | Species contribution means, contrasts and NOCA burned means | 21 |
 | 15_contributions | species_contribution_models/species_means.csv | Species contribution means, contrasts and NOCA burned means | 21 |
 | figures | anthropocene_climate_rates.csv | Tables behind the figures (centroids, annotations) | 0 |
 | figures | cca_trajectory_anthropocene_centroids.csv | Tables behind the figures (centroids, annotations) | 0 |
@@ -271,7 +273,7 @@ built for this report).
 | Folder          | Files |
 |:----------------|------:|
 | main            |    14 |
-| supplementary   |    26 |
+| supplementary   |    27 |
 | worked_examples |     3 |
 
 <sub>Table file:

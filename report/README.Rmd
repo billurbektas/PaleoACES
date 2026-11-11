@@ -1338,6 +1338,59 @@ diamonds, Anthropocene plot pairs (burned and unburned together). Large symbols 
 Holocene symbols in a park is absent from that park's Holocene record.
 Each park has its own x scale, symmetric around zero. `r both_spans` Contributions are in CCA distance per century.
 
+**Check: species contributions not divided by time.** Per century, the Holocene species values are
+small partly because the lake-periods are long, and the Anthropocene values are large partly because the
+plot pairs are short.
+
+```{r step6-totals}
+st = read_output('species_contribution_models/species_means_total.csv')
+stc = read_output('species_contribution_models/species_contrasts_total.csv')
+dts = read_output('cca_transition_contributions/species_contributions.csv') |>
+  distinct(era, site, series, unit_index, plot_id, vegetation_dt_years) |>
+  group_by(era) |> summarise(lo = min(vegetation_dt_years), hi = max(vegetation_dt_years))
+dr = function(e) sprintf('%s to %s', prettyNum(dts$lo[dts$era == e], big.mark = ','),
+  prettyNum(dts$hi[dts$era == e], big.mark = ','))
+# Means whose 95% interval excludes zero, for species present in that park and period type.
+away = function(d) d |> filter(present, interval_defined, conf_low > 0 | conf_high < 0)
+key = function(d) sort(paste(d$measure, d$species, d$site))
+hol_t = st |> filter(period_type != 'Anthropocene', present)
+hol_r = species_means |> filter(period_type != 'Anthropocene', present)
+top = hol_t |> slice_max(abs(estimate), n = 1)
+ant_t = away(st |> filter(period_type == 'Anthropocene'))
+ant_r = away(species_means |> filter(period_type == 'Anthropocene'))
+show_figure('report/figures/supplementary/figS15_species_contributions_total.pdf')
+```
+
+The Holocene lake-periods span `r dr('Holocene')` years and the Anthropocene plot pairs `r dr('Anthropocene')`
+years. Fig. S15 shows the species means without dividing by time, that is how far each species moved the
+community over the whole lake-period or plot pair. The Holocene means then reach the size of the
+Anthropocene ones (largest *`r top$species`* at `r top$site`, `r top$period_type`, `r top$measure`,
+`r sprintf('%+.3f', top$estimate)` CCA distance), but they vary so much between the few lake-periods that
+`r nrow(away(hol_t))` of `r sum(hol_t$interval_defined)` Holocene intervals exclude zero, against
+`r nrow(away(hol_r))` per century. In the Anthropocene `r nrow(ant_t)` means exclude zero, against
+`r nrow(ant_r)` per century, `r if (identical(key(ant_t), key(ant_r))) 'the same species in the same parks' else 'not all the same species'`.
+After the Holm adjustment `r sum(stc$p_adjusted < .05, na.rm = TRUE)` of `r sum(!is.na(stc$p_value))`
+contrasts between period types are significant, against `r nrow(sc_sig)` per century. The large
+Anthropocene species rates therefore come mainly from changes made within a few decades. Over a whole
+lake-period, Holocene species moved the community about as far, but too variably to say which species did.
+
+**Fig. S15. Species contributions not divided by time.** As Figure 8, with each species' contribution
+taken over the whole lake-period or plot pair instead of per century. Upper row: the distance the species
+moved the community along the direction in which the climate-predicted position moved. Lower row: the
+species' part of the change in mismatch between the two ends, so that the species' values plus the
+climate's part add up to the lag. Plain means with 95% t-intervals, symbols, order and shading as in
+Figure 8. `r both_spans` Contributions are in CCA distance.
+
+```{r step6-totals-table}
+st |> mutate(value = ifelse(interval_defined, sprintf('%+.3f (%.3f to %.3f)', estimate, conf_low, conf_high),
+    ifelse(present, sprintf('%+.3f', estimate), 'absent'))) |>
+  select(measure, species, site, period_type, value) |>
+  pivot_wider(names_from = c(measure, period_type), values_from = value) |>
+  rename(Species = species, Park = site) |>
+  show_table('step6_species_means_total', caption = paste('**Species contributions not divided by time**, mean and',
+    '95% t-interval in CCA distance, per species, park and period type, as the per-century table above.'))
+```
+
 Stages and helpers: [`R/pipeline/15_contributions.R`](R/pipeline/15_contributions.R),
 [`R/helpers/cca_transition_contributions.R`](R/helpers/cca_transition_contributions.R),
 [`R/figures/main_fig8_species.R`](R/figures/main_fig8_species.R).
@@ -1454,7 +1507,7 @@ tibble(Doubt = c(
 | NOCA plot pairs by legacy plot area | [`report/tables/noca_plot_area_responses.csv`](report/tables/noca_plot_area_responses.csv) |
 | Bias-corrected paleoclimate | [`report/tables/bias_correction_lake_periods.csv`](report/tables/bias_correction_lake_periods.csv), [`report/tables/bias_correction_sign_counts.csv`](report/tables/bias_correction_sign_counts.csv) |
 | Explanatory models | [`report/tables/step5_explanatory_models.csv`](report/tables/step5_explanatory_models.csv) |
-| Species means | [`report/tables/step6_species_means.csv`](report/tables/step6_species_means.csv), [`report/tables/species_contrasts.csv`](report/tables/species_contrasts.csv) |
+| Species means | [`report/tables/step6_species_means.csv`](report/tables/step6_species_means.csv), [`report/tables/step6_species_means_total.csv`](report/tables/step6_species_means_total.csv) (not divided by time), [`report/tables/species_contrasts.csv`](report/tables/species_contrasts.csv) |
 | Species per lake-period | [`report/tables/species_lake_periods.csv`](report/tables/species_lake_periods.csv) |
 | NOCA species, burned and unburned | [`report/tables/noca_burned_species_means.csv`](report/tables/noca_burned_species_means.csv) |
 
