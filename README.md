@@ -16,9 +16,10 @@ and then the four questions in turn (lags, pace and direction effects,
 associations with fire, species contributions). It shows every main and
 supplementary figure, the tables reported in the manuscript and the
 modelling code, and keeps the text of the Supporting Information
-(Appendix S1, Appendix S2). Data cleaning is summarized by its figure
-here. The step-by-step detail sits in
-[`report/details/`](report/details), linked from each section.
+(Appendix S1, Appendix S2), and adds Appendix S3 on the bias-corrected
+paleoclimate. Data cleaning is summarized by its figure here. The
+step-by-step detail sits in [`report/details/`](report/details), linked
+from each section.
 
 ``` sh
 Rscript R/run_all.R --offline   # run the whole analysis from the cached climate (add --age-models to refit Bacon)
@@ -1518,7 +1519,8 @@ reruns stages 07 to 15 with that difference removed
 leaves the primary outputs untouched. The climate periods are defined on
 the raw series in both runs, so the same lake-periods are compared. Only
 the climate-predicted Holocene positions change. The observed positions
-and the Anthropocene do not.
+and the Anthropocene do not. Appendix S3 compares every response, era
+contrast and explanatory-model slope of the two runs.
 
 **Era contrasts with the raw and the bias-corrected paleoclimate**, from
 the same era models, with Holm-adjusted p (six contrasts per response).
@@ -2068,6 +2070,174 @@ Stages and helpers:
 [`R/pipeline/15_contributions.R`](R/pipeline/15_contributions.R),
 [`R/helpers/cca_transition_contributions.R`](R/helpers/cca_transition_contributions.R),
 [`R/figures/main_fig8_species.R`](R/figures/main_fig8_species.R).
+
+# Appendix S3. Bias-corrected paleoclimate
+
+**What and why.** The Holocene climate-predicted positions come from
+CHELSA-TraCE21k, while the CCA is calibrated on CHELSA V2.1. Over the
+period both products cover, they differ at each lake. Depending on the
+lake and the month, the modern CHELSA-TraCE21k slice differs from the
+1979 to 2021 CHELSA V2.1 mean by -2.6 to +1.5 °C in maximum temperature
+and +0.3 to +3.0 °C in minimum temperature, and CHELSA V2.1 has 1.1 to
+2.3 times its precipitation. A difference of this kind shifts every
+climate-predicted position of a lake, and with it the mismatch at both
+ends of a lake-period. All Holocene analyses were therefore repeated
+with the difference removed, by a fixed offset per lake and month for
+temperature and a fixed ratio for precipitation:
+[`R/sensitivity_bias_corrected.R`](R/sensitivity_bias_corrected.R)
+reruns stages 07 to 15 with `PALEO_USE_BIAS_CORRECTED = TRUE` into
+`output_bias_corrected/` and leaves the primary outputs untouched. The
+climate periods stay those of the raw series, so the same lake-periods
+are compared. The observed positions do not change, and therefore
+neither do the turnover, the displacement and the Anthropocene values.
+
+<img src="report/figures/png/figS16_bias_correction_lake_periods.png" alt="" width="100%" />
+
+**Fig. S16. Holocene lake-periods with the raw and the bias-corrected
+paleoclimate.** Each point is one lake-period, with its value from the
+raw paleoclimate (x) against its value from the bias-corrected
+paleoclimate (y): (A) climate change and (B) its rate, (C) the lag and
+(D) its rate, (E) the pace effect and (F) its rate, (G) the direction
+effect and (H) its rate. Totals over the lake-period on the left, rates
+per century on the right. Blue MORA, orange NOCA, triangles Holocene
+stability periods, circles Holocene climate-change periods. On the
+dashed line the correction changes nothing. In the shaded quadrants the
+value changes sign. Lake-periods whose observed or predicted position
+did not move have no pace or direction effect. Turnover and displacement
+are the same in both runs and are not shown. Climate change in
+standardized units, the other quantities in CCA distance (totals) or CCA
+distance per century (rates). Script:
+[`R/figures/supp_bias_correction.R`](R/figures/supp_bias_correction.R).
+
+**Result.** The correction changes the climate change of a lake-period
+by a median of 22% (Fig. S16A, B). It changes the sign of many lags. The
+lag keeps its sign in 5 of 14 lake-periods at MORA and 8 of 10 at NOCA,
+the pace effect in 3 of 12 and 8 of 10, and the direction effect in 11
+of 12 and 9 of 10 (the rates share the sign of the totals). The MORA
+Holocene lags are small, so a small shift in the two mismatches is
+enough to flip them. Of the 60 era contrasts (Table S3.1), 20 are
+significant after the Holm adjustment with the raw paleoclimate and 25
+with the bias-corrected one. Those whose significance differs between
+the runs: Direction effect (not divided by time), MORA, Anthropocene -
+Holocene-C (Holm p 0.646 raw, \< 0.001 corrected); Direction effect (not
+divided by time), MORA, Anthropocene - Holocene-S (Holm p 0.222 raw,
+0.001 corrected); Lag, MORA, Anthropocene - Holocene-C (Holm p 0.089
+raw, \< 0.001 corrected); Lag, MORA, Anthropocene - Holocene-S (Holm p
+1.000 raw, 0.009 corrected); Pace effect, MORA, Holocene-C - Holocene-S
+(Holm p 1.000 raw, 0.002 corrected). Of the 18 Holocene explanatory
+slopes (Table S3.2), 7 have an interval that excludes zero with the raw
+paleoclimate and 2 with the bias-corrected one. Those that differ: Lag
+rate, Climate change rate; Pace effect, Climate change rate; Pace
+effect, Fire activity; Direction effect, Site (NOCA minus MORA);
+Direction effect, Fire activity; Direction effect (not divided by time),
+Site (NOCA minus MORA); Direction effect (not divided by time), Fire
+activity.
+
+**Table S3.1. Era contrasts with the raw and the bias-corrected
+paleoclimate.** Differences of fitted means between period types in each
+park, from the era models (estimate ~ period_type \* site), with 95%
+confidence intervals and Holm-adjusted p across the six period-type
+contrasts of each response. Turnover rate and displacement use only the
+observed positions and are the same in both runs. Units as in Figures 5
+and 6.
+
+| Response | Park | Contrast | Raw paleoclimate | Bias-corrected paleoclimate |
+|:---|:---|:---|:---|:---|
+| Climate change (not divided by time) | MORA | Anthropocene - Holocene-C | +0.523 (0.372 to 0.673), Holm p \< 0.001 | +0.415 (0.183 to 0.647), Holm p = 0.001 |
+| Climate change (not divided by time) | MORA | Anthropocene - Holocene-S | +0.592 (0.485 to 0.699), Holm p \< 0.001 | +0.482 (0.285 to 0.678), Holm p \< 0.001 |
+| Climate change (not divided by time) | MORA | Holocene-C - Holocene-S | +0.069 (-0.129 to 0.267), Holm p = 0.493 | +0.067 (-0.285 to 0.418), Holm p = 0.711 |
+| Climate change (not divided by time) | NOCA | Anthropocene - Holocene-C | +0.400 (0.245 to 0.554), Holm p \< 0.001 | +0.378 (0.216 to 0.541), Holm p \< 0.001 |
+| Climate change (not divided by time) | NOCA | Anthropocene - Holocene-S | +0.560 (0.455 to 0.665), Holm p \< 0.001 | +0.545 (0.445 to 0.644), Holm p \< 0.001 |
+| Climate change (not divided by time) | NOCA | Holocene-C - Holocene-S | +0.160 (-0.021 to 0.341), Holm p = 0.164 | +0.166 (-0.027 to 0.359), Holm p = 0.183 |
+| Climate change rate | MORA | Anthropocene - Holocene-C | +2.525 (2.426 to 2.624), Holm p \< 0.001 | +2.495 (2.386 to 2.603), Holm p \< 0.001 |
+| Climate change rate | MORA | Anthropocene - Holocene-S | +2.570 (2.477 to 2.663), Holm p \< 0.001 | +2.550 (2.451 to 2.648), Holm p \< 0.001 |
+| Climate change rate | MORA | Holocene-C - Holocene-S | +0.045 (0.002 to 0.088), Holm p = 0.077 | +0.055 (-0.013 to 0.123), Holm p = 0.225 |
+| Climate change rate | NOCA | Anthropocene - Holocene-C | +2.649 (2.421 to 2.877), Holm p \< 0.001 | +2.645 (2.417 to 2.873), Holm p \< 0.001 |
+| Climate change rate | NOCA | Anthropocene - Holocene-S | +2.670 (2.443 to 2.897), Holm p \< 0.001 | +2.665 (2.438 to 2.892), Holm p \< 0.001 |
+| Climate change rate | NOCA | Holocene-C - Holocene-S | +0.021 (-0.013 to 0.054), Holm p = 0.230 | +0.020 (-0.016 to 0.056), Holm p = 0.277 |
+| Displacement (turnover, not divided by time) | MORA | Anthropocene - Holocene-C | +0.130 (0.035 to 0.226), Holm p = 0.037 | +0.130 (0.035 to 0.226), Holm p = 0.037 |
+| Displacement (turnover, not divided by time) | MORA | Anthropocene - Holocene-S | -0.010 (-0.213 to 0.192), Holm p = 0.919 | -0.010 (-0.213 to 0.192), Holm p = 0.919 |
+| Displacement (turnover, not divided by time) | MORA | Holocene-C - Holocene-S | -0.141 (-0.351 to 0.069), Holm p = 0.564 | -0.141 (-0.351 to 0.069), Holm p = 0.564 |
+| Displacement (turnover, not divided by time) | NOCA | Anthropocene - Holocene-C | +0.226 (0.017 to 0.435), Holm p = 0.136 | +0.226 (0.017 to 0.435), Holm p = 0.136 |
+| Displacement (turnover, not divided by time) | NOCA | Anthropocene - Holocene-S | +0.328 (0.137 to 0.520), Holm p = 0.005 | +0.328 (0.137 to 0.520), Holm p = 0.005 |
+| Displacement (turnover, not divided by time) | NOCA | Holocene-C - Holocene-S | +0.102 (-0.148 to 0.352), Holm p = 0.846 | +0.102 (-0.148 to 0.352), Holm p = 0.846 |
+| Turnover rate | MORA | Anthropocene - Holocene-C | +0.853 (0.754 to 0.952), Holm p \< 0.001 | +0.853 (0.754 to 0.952), Holm p \< 0.001 |
+| Turnover rate | MORA | Anthropocene - Holocene-S | +0.889 (0.795 to 0.984), Holm p \< 0.001 | +0.889 (0.795 to 0.984), Holm p \< 0.001 |
+| Turnover rate | MORA | Holocene-C - Holocene-S | +0.037 (-0.027 to 0.100), Holm p = 0.511 | +0.037 (-0.027 to 0.100), Holm p = 0.511 |
+| Turnover rate | NOCA | Anthropocene - Holocene-C | +2.049 (1.815 to 2.283), Holm p \< 0.001 | +2.049 (1.815 to 2.283), Holm p \< 0.001 |
+| Turnover rate | NOCA | Anthropocene - Holocene-S | +2.020 (1.783 to 2.257), Holm p \< 0.001 | +2.020 (1.783 to 2.257), Holm p \< 0.001 |
+| Turnover rate | NOCA | Holocene-C - Holocene-S | -0.029 (-0.155 to 0.097), Holm p = 0.652 | -0.029 (-0.155 to 0.097), Holm p = 0.652 |
+| Lag | MORA | Anthropocene - Holocene-C | +0.189 (0.037 to 0.340), Holm p = 0.089 | +0.183 (0.101 to 0.266), Holm p \< 0.001 |
+| Lag | MORA | Anthropocene - Holocene-S | +0.035 (-0.112 to 0.181), Holm p = 1.000 | +0.367 (0.137 to 0.598), Holm p = 0.009 |
+| Lag | MORA | Holocene-C - Holocene-S | -0.154 (-0.366 to 0.058), Holm p = 0.772 | +0.184 (-0.083 to 0.450), Holm p = 0.704 |
+| Lag | NOCA | Anthropocene - Holocene-C | -0.003 (-0.192 to 0.186), Holm p = 1.000 | +0.109 (-0.134 to 0.352), Holm p = 1.000 |
+| Lag | NOCA | Anthropocene - Holocene-S | -0.027 (-0.301 to 0.248), Holm p = 1.000 | -0.090 (-0.490 to 0.310), Holm p = 1.000 |
+| Lag | NOCA | Holocene-C - Holocene-S | -0.023 (-0.349 to 0.302), Holm p = 1.000 | -0.199 (-0.735 to 0.337), Holm p = 1.000 |
+| Lag rate | MORA | Anthropocene - Holocene-C | +0.554 (0.420 to 0.687), Holm p \< 0.001 | +0.552 (0.430 to 0.674), Holm p \< 0.001 |
+| Lag rate | MORA | Anthropocene - Holocene-S | +0.546 (0.423 to 0.669), Holm p \< 0.001 | +0.573 (0.451 to 0.695), Holm p \< 0.001 |
+| Lag rate | MORA | Holocene-C - Holocene-S | -0.008 (-0.079 to 0.063), Holm p = 1.000 | +0.021 (-0.007 to 0.048), Holm p = 0.459 |
+| Lag rate | NOCA | Anthropocene - Holocene-C | -0.072 (-0.351 to 0.206), Holm p = 1.000 | -0.056 (-0.336 to 0.223), Holm p = 0.764 |
+| Lag rate | NOCA | Anthropocene - Holocene-S | -0.102 (-0.387 to 0.184), Holm p = 1.000 | -0.131 (-0.424 to 0.163), Holm p = 0.764 |
+| Lag rate | NOCA | Holocene-C - Holocene-S | -0.030 (-0.115 to 0.055), Holm p = 1.000 | -0.074 (-0.167 to 0.018), Holm p = 0.459 |
+| Pace effect (not divided by time) | MORA | Anthropocene - Holocene-C | +0.063 (-0.073 to 0.199), Holm p = 1.000 | -0.011 (-0.054 to 0.032), Holm p = 0.938 |
+| Pace effect (not divided by time) | MORA | Anthropocene - Holocene-S | -0.093 (-0.304 to 0.118), Holm p = 1.000 | +0.284 (0.008 to 0.560), Holm p = 0.217 |
+| Pace effect (not divided by time) | MORA | Holocene-C - Holocene-S | -0.155 (-0.343 to 0.032), Holm p = 0.519 | +0.295 (0.031 to 0.559), Holm p = 0.171 |
+| Pace effect (not divided by time) | NOCA | Anthropocene - Holocene-C | -0.126 (-0.245 to -0.007), Holm p = 0.224 | -0.066 (-0.245 to 0.113), Holm p = 0.938 |
+| Pace effect (not divided by time) | NOCA | Anthropocene - Holocene-S | -0.130 (-0.380 to 0.120), Holm p = 1.000 | -0.200 (-0.484 to 0.084), Holm p = 0.667 |
+| Pace effect (not divided by time) | NOCA | Holocene-C - Holocene-S | -0.004 (-0.203 to 0.195), Holm p = 1.000 | -0.134 (-0.376 to 0.108), Holm p = 0.834 |
+| Pace effect | MORA | Anthropocene - Holocene-C | +0.172 (0.065 to 0.280), Holm p = 0.010 | +0.155 (0.062 to 0.249), Holm p = 0.005 |
+| Pace effect | MORA | Anthropocene - Holocene-S | +0.162 (0.062 to 0.263), Holm p = 0.010 | +0.193 (0.097 to 0.289), Holm p \< 0.001 |
+| Pace effect | MORA | Holocene-C - Holocene-S | -0.010 (-0.056 to 0.036), Holm p = 1.000 | +0.037 (0.017 to 0.058), Holm p = 0.002 |
+| Pace effect | NOCA | Anthropocene - Holocene-C | -0.285 (-0.566 to -0.004), Holm p = 0.181 | -0.278 (-0.563 to 0.007), Holm p = 0.111 |
+| Pace effect | NOCA | Anthropocene - Holocene-S | -0.296 (-0.585 to -0.006), Holm p = 0.181 | -0.325 (-0.621 to -0.028), Holm p = 0.096 |
+| Pace effect | NOCA | Holocene-C - Holocene-S | -0.011 (-0.070 to 0.049), Holm p = 1.000 | -0.046 (-0.114 to 0.022), Holm p = 0.181 |
+| Direction effect (not divided by time) | MORA | Anthropocene - Holocene-C | +0.185 (-0.054 to 0.423), Holm p = 0.646 | +0.186 (0.102 to 0.271), Holm p \< 0.001 |
+| Direction effect (not divided by time) | MORA | Anthropocene - Holocene-S | +0.228 (0.014 to 0.443), Holm p = 0.222 | +0.317 (0.150 to 0.484), Holm p = 0.001 |
+| Direction effect (not divided by time) | MORA | Holocene-C - Holocene-S | +0.044 (-0.261 to 0.348), Holm p = 1.000 | +0.131 (-0.020 to 0.282), Holm p = 0.357 |
+| Direction effect (not divided by time) | NOCA | Anthropocene - Holocene-C | +0.067 (-0.207 to 0.340), Holm p = 1.000 | +0.175 (-0.170 to 0.520), Holm p = 0.638 |
+| Direction effect (not divided by time) | NOCA | Anthropocene - Holocene-S | -0.000 (-0.206 to 0.205), Holm p = 1.000 | -0.079 (-0.275 to 0.117), Holm p = 0.638 |
+| Direction effect (not divided by time) | NOCA | Holocene-C - Holocene-S | -0.067 (-0.374 to 0.240), Holm p = 1.000 | -0.254 (-0.557 to 0.048), Holm p = 0.357 |
+| Direction effect | MORA | Anthropocene - Holocene-C | +0.369 (0.182 to 0.557), Holm p \< 0.001 | +0.374 (0.206 to 0.542), Holm p \< 0.001 |
+| Direction effect | MORA | Anthropocene - Holocene-S | +0.373 (0.200 to 0.545), Holm p \< 0.001 | +0.376 (0.206 to 0.546), Holm p \< 0.001 |
+| Direction effect | MORA | Holocene-C - Holocene-S | +0.003 (-0.097 to 0.103), Holm p = 0.974 | +0.002 (-0.035 to 0.039), Holm p = 0.922 |
+| Direction effect | NOCA | Anthropocene - Holocene-C | -0.225 (-0.540 to 0.091), Holm p = 0.488 | -0.198 (-0.519 to 0.123), Holm p = 0.452 |
+| Direction effect | NOCA | Anthropocene - Holocene-S | -0.253 (-0.570 to 0.064), Holm p = 0.469 | -0.278 (-0.593 to 0.037), Holm p = 0.250 |
+| Direction effect | NOCA | Holocene-C - Holocene-S | -0.029 (-0.109 to 0.052), Holm p = 0.974 | -0.080 (-0.155 to -0.004), Holm p = 0.155 |
+
+<sub>Table file:
+[appendix_s3_era_contrasts.csv](report/tables/appendix_s3_era_contrasts.csv)</sub>
+
+**Table S3.2. Holocene explanatory-model slopes with the raw and the
+bias-corrected paleoclimate.** Model response ~ site + climate + fire
+activity on the Holocene lake-periods, as in Figure 7A and C, with an
+AR(1) correlation within each lake, conditional 95% confidence intervals
+and p. The climate term is the climate change rate for the per-century
+responses and the climate change for the totals. The Anthropocene models
+hold no paleoclimate and are the same in both runs.
+
+| Response | Term | Raw paleoclimate | Bias-corrected paleoclimate |
+|:---|:---|:---|:---|
+| Lag | Site (NOCA minus MORA) | -0.088 (-0.526 to 0.349), p = 0.679 | +0.080 (-0.475 to 0.636), p = 0.766 |
+| Lag | Climate change | +0.057 (-0.665 to 0.779), p = 0.871 | +0.053 (-0.508 to 0.615), p = 0.845 |
+| Lag | Fire activity | +0.052 (-0.888 to 0.993), p = 0.909 | +0.039 (-1.089 to 1.168), p = 0.943 |
+| Lag rate | Site (NOCA minus MORA) | +0.043 (-0.080 to 0.166), p = 0.473 | +0.002 (-0.126 to 0.130), p = 0.973 |
+| Lag rate | Climate change rate | +0.721 (0.007 to 1.435), p = 0.048 | +0.022 (-0.300 to 0.343), p = 0.889 |
+| Lag rate | Fire activity | -0.098 (-0.352 to 0.157), p = 0.433 | +0.043 (-0.189 to 0.276), p = 0.701 |
+| Pace effect (not divided by time) | Site (NOCA minus MORA) | +0.173 (-0.206 to 0.552), p = 0.350 | +0.240 (-0.265 to 0.745), p = 0.331 |
+| Pace effect (not divided by time) | Climate change | +0.172 (-0.473 to 0.817), p = 0.582 | +0.285 (-0.329 to 0.898), p = 0.342 |
+| Pace effect (not divided by time) | Fire activity | -0.426 (-1.198 to 0.345), p = 0.261 | -0.219 (-1.223 to 0.785), p = 0.652 |
+| Pace effect | Site (NOCA minus MORA) | +0.100 (-0.001 to 0.201), p = 0.053 | -0.030 (-0.228 to 0.168), p = 0.752 |
+| Pace effect | Climate change rate | +0.686 (0.138 to 1.234), p = 0.017 | +0.036 (-0.144 to 0.217), p = 0.678 |
+| Pace effect | Fire activity | -0.187 (-0.386 to 0.013), p = 0.065 | +0.216 (0.083 to 0.349), p = 0.003 |
+| Direction effect (not divided by time) | Site (NOCA minus MORA) | -0.447 (-0.797 to -0.097), p = 0.015 | -0.242 (-0.616 to 0.131), p = 0.190 |
+| Direction effect (not divided by time) | Climate change | +0.779 (0.164 to 1.394), p = 0.016 | +0.320 (0.016 to 0.623), p = 0.040 |
+| Direction effect (not divided by time) | Fire activity | +0.903 (0.140 to 1.665), p = 0.023 | +0.559 (-0.202 to 1.321), p = 0.140 |
+| Direction effect | Site (NOCA minus MORA) | -0.122 (-0.214 to -0.030), p = 0.013 | +0.047 (-0.080 to 0.175), p = 0.446 |
+| Direction effect | Climate change rate | +0.504 (-0.272 to 1.280), p = 0.189 | +0.250 (-0.081 to 0.581), p = 0.130 |
+| Direction effect | Fire activity | +0.268 (0.076 to 0.459), p = 0.009 | -0.094 (-0.323 to 0.135), p = 0.398 |
+
+<sub>Table file:
+[appendix_s3_explanatory_slopes.csv](report/tables/appendix_s3_explanatory_slopes.csv)</sub>
 
 # Numbers for the Results text
 
