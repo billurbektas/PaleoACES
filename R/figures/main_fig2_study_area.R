@@ -3,10 +3,10 @@
 # Complex (NOCA): the legacy-resurvey plot pairs that enter the CCA, burned and
 # unburned between the surveys, and the lakes whose cores give the Holocene
 # records, by what each record contributes (vegetation from macrofossils, fire
-# from charcoal). The two park maps sit side by side at full size, each with its
-# own scale bar and north arrow. Below them, a small map of Washington State,
-# USA, sits next to the legend (Bills, 11 Nov 2026). Sources are cited in the
-# caption, not on the figure.
+# from charcoal). The two park maps have the same size, the same coordinate
+# grid, the same 10 km scale bar and the same north arrow. A map of Washington
+# State, USA, and the legend sit side by side above them (Bills, 11 Nov 2026).
+# Sources are cited in the caption, not on the figure.
 source(here::here('R/helpers/config.R'), local = TRUE)
 suppressPackageStartupMessages({library(here); library(tidyverse); library(sf); library(patchwork); library(ggrepel)})
 source(here('R/helpers/figure_style.R'), local = TRUE)
@@ -52,7 +52,7 @@ label_offsets = tribble(
   'Shadow Lake',         -4300,   2500,
   'Sunrise Lake',         2600,  -3400,
   'Little Sunrise Lake', -1200,   4300,
-  'Panther Potholes',     6500,   5500)
+  'Panther Potholes',     8000,   6500)
 in_utm = function(d) {
   xy = st_coordinates(st_transform(st_as_sf(d, coords = c('lon', 'lat'), crs = 4326, remove = FALSE), UTM))
   mutate(d, x = xy[, 1], y = xy[, 2])
@@ -78,7 +78,7 @@ land = function(map, names) st_as_sf(maps::map(map, names, plot = FALSE, fill = 
 washington = land('state', 'washington')
 neighbours = bind_rows(land('state', c('oregon', 'idaho')), land('world', 'Canada'))
 
-PAPER = 22  # base font size; the figure is drawn at 19 x 13.5 inches
+PAPER = 22  # base font size; the figure is drawn at 19.5 x 15.5 inches
 OCEAN = '#DCE9F3'
 theme_map = theme_paleoaces(base_size = PAPER) +
   theme(panel.grid = element_line(color = 'grey88', linewidth = .3), axis.title = element_blank(),
@@ -116,6 +116,12 @@ extent = function(park, pad) {
   as.numeric(b) + pad
 }
 ext = list(MORA = extent('MORA', c(-2500, -3200, 2500, 2800)), NOCA = extent('NOCA', c(-3000, -3000, 3000, 5000)))
+# Both park maps the same size (Bills, 11 Nov 2026): each extent is widened to one
+# common height-to-width ratio, and both panels are drawn PARK_WIDTH inches wide.
+RATIO = max(sapply(ext, function(e) (e[4] - e[2]) / (e[3] - e[1])))
+ext = lapply(ext, function(e) { d = (RATIO * (e[3] - e[1]) - (e[4] - e[2])) / 2; e[2] = e[2] - d; e[4] = e[4] + d; e })
+PARK_WIDTH = 8.1
+panel_size = theme(panel.widths = unit(PARK_WIDTH, 'in'), panel.heights = unit(PARK_WIDTH * RATIO, 'in'))
 
 # The locator map: Washington State, with the two map extents.
 boxes = bind_rows(lapply(names(ext), function(p) {
@@ -149,10 +155,13 @@ overview = ggplot() +
   labs(title = 'Washington State, USA') +
   theme_void(base_size = PAPER) +
   theme(panel.background = element_rect(fill = OCEAN, color = NA),
-    plot.title = element_text(size = PAPER - 1, face = 'bold', hjust = .5, margin = margin(b = 6)),
-    plot.margin = margin(10, 30, 6, 6))
+    plot.title = element_text(size = PAPER + 2, face = 'bold', hjust = .5, margin = margin(b = 8)),
+    plot.margin = margin(6, 6, 16, 6),
+    # Larger than before (Bills): 5.6 inches wide.
+    panel.widths = unit(5.6, 'in'),
+    panel.heights = unit(5.6 * (wa_extent[['ymax']] - wa_extent[['ymin']]) / (wa_extent[['xmax']] - wa_extent[['xmin']]), 'in'))
 
-park_panel = function(park, tag, title, bar_km, bar_corner, arrow_corner) {
+park_panel = function(park, tag, title, bar_corner, arrow_corner) {
   e = ext[[park]]; w = e[3] - e[1]; h = e[4] - e[2]
   at = function(corner, fx, fy) c(e[1] + corner[1] * w + fx, e[2] + corner[2] * h + fy)
   bar = at(bar_corner, 0, 0); arrow = at(arrow_corner, 0, 0)
@@ -171,32 +180,34 @@ park_panel = function(park, tag, title, bar_km, bar_corner, arrow_corner) {
     geom_point(data = lakes, aes(x, y, shape = role, fill = role), color = 'black', stroke = 1, size = 7.5) +
     scale_color_manual(values = c(Unburned = 'grey35', `Burned between the surveys` = PAPER_FIRE_RED),
       breaks = c('Unburned', 'Burned between the surveys'), name = 'Anthropocene plot pairs',
-      guide = guide_legend(override.aes = list(size = 5.5), order = 1)) +
+      guide = guide_legend(override.aes = list(size = 5.5), order = 1, ncol = 1)) +
     scale_shape_manual(values = c(`Vegetation record` = 21, `Fire record` = 24,
       `Vegetation and fire record` = 23), name = 'Holocene cored lakes', limits = roles, drop = FALSE,
-      guide = guide_legend(order = 2)) +
+      guide = guide_legend(order = 2, ncol = 1)) +
     scale_fill_manual(values = c(`Vegetation record` = '#1B7837', `Fire record` = '#E8A33D',
       `Vegetation and fire record` = '#1B7837'), name = 'Holocene cored lakes', limits = roles, drop = FALSE,
-      guide = guide_legend(order = 2)) +
-    scale_bar(bar[1], bar[2], km = bar_km, n = 2, height = h * .012, text_size = 6) +
-    north_arrow(arrow[1], arrow[2], h * .085) +
+      guide = guide_legend(order = 2, ncol = 1)) +
+    # The same 10 km bar and the same arrow in both maps (sized on the panel, which
+    # is the same in both).
+    scale_bar(bar[1], bar[2], km = 10, n = 2, height = h * .012, text_size = 6) +
+    north_arrow(arrow[1], arrow[2], h * .08) +
+    # The same coordinate grid in both maps: 0.2 degrees of longitude, 0.1 of latitude.
+    scale_x_continuous(breaks = seq(-122, -120, .2)) + scale_y_continuous(breaks = seq(46, 49.5, .1)) +
     coord_sf(crs = UTM, xlim = e[c(1, 3)], ylim = e[c(2, 4)], expand = FALSE) +
-    labs(tag = tag, title = title) + theme_map
+    labs(tag = tag, title = title) + theme_map + panel_size
 }
-p_mora = park_panel('MORA', 'A.', 'Mount Rainier National Park (MORA)', bar_km = 10,
-  bar_corner = c(.66, .035), arrow_corner = c(.935, .83)) +
-  scale_x_continuous(breaks = seq(-121.9, -121.5, .1)) + scale_y_continuous(breaks = seq(46.7, 47, .1))
-p_noca = park_panel('NOCA', 'B.', 'North Cascades National Park\nService Complex (NOCA)', bar_km = 20,
-  bar_corner = c(.66, .935), arrow_corner = c(.935, .76)) +
-  scale_x_continuous(breaks = seq(-121.6, -120.6, .2)) + scale_y_continuous(breaks = seq(48.3, 49, .1))
+p_mora = park_panel('MORA', 'A.', 'Mount Rainier National\nPark (MORA)',
+  bar_corner = c(.67, .035), arrow_corner = c(.935, .8))
+p_noca = park_panel('NOCA', 'B.', 'North Cascades National Park\nService Complex (NOCA)',
+  bar_corner = c(.77, .935), arrow_corner = c(.935, .78))
 
-# The two maps on top. Below, the Washington map and the legend side by side.
-figure = p_mora + p_noca + overview + guide_area() +
-  plot_layout(design = 'AAAABBBB\n#CCDDDD#', heights = c(1, .3), guides = 'collect') &
-  theme(legend.box = 'vertical', legend.box.just = 'left', legend.title = element_text(size = PAPER, face = 'bold'),
-    legend.text = element_text(size = PAPER - 2), legend.spacing.x = unit(.3, 'cm'))
+# On top, the Washington map and the legend side by side. Below, the two park maps.
+figure = overview + guide_area() + p_mora + p_noca +
+  plot_layout(design = 'AB\nCD', guides = 'collect') &
+  theme(legend.box = 'horizontal', legend.box.just = 'top', legend.title = element_text(size = PAPER, face = 'bold'),
+    legend.text = element_text(size = PAPER - 2), legend.title.position = 'top', legend.spacing.x = unit(.8, 'cm'))
 if (render_figures) {
-  ggsave(fig('main', 'fig_study_area.pdf'), figure, width = 19, height = 13.5, device = cairo_pdf)
-  ggsave(fig('main', 'fig_study_area.png'), figure, width = 19, height = 13.5, dpi = 300)
+  ggsave(fig('main', 'fig_study_area.pdf'), figure, width = 19.5, height = 15.5, device = cairo_pdf)
+  ggsave(fig('main', 'fig_study_area.png'), figure, width = 19.5, height = 15.5, dpi = 300)
 }
 cat('Figure 2: study area drawn with', nrow(plots), 'plot pairs and', nrow(lakes), 'cored lakes.\n')

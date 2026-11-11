@@ -112,8 +112,9 @@ burned between the two surveys (`r sa_n('MORA', 'burned')` at MORA and `r sa_n('
 The two MORA plots that burned are left out of the analysis. The large symbols are the cored lakes:
 vegetation records (green circles, macrofossils, Dunwiddie 1986), fire records (orange triangles,
 charcoal, Walsh et al. 2017) and Panther Potholes, whose core gives both (green diamond, Prichard et al.
-2009). The small map beside the legend locates both parks in Washington State, USA. Each map has its own
-scale bar. Park maps in UTM zone 10N, the Washington map in an equal-area projection. Park boundaries from the National Park Service
+2009). The map above the park maps locates both parks in Washington State, USA. The two park maps have
+the same size and therefore different scales, shown by the same 10 km scale bar on each. Park maps in UTM
+zone 10N, the Washington map in an equal-area projection. Park boundaries from the National Park Service
 administrative boundaries, Sunrise Ridge lake coordinates from Walsh et al. (2017, Table 1). Script:
 [`R/figures/main_fig2_study_area.R`](R/figures/main_fig2_study_area.R).
 
