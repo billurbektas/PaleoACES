@@ -1,0 +1,13 @@
+Against,Response,Park,Shared lake-periods,Defined in both runs,Keep the sign of the main run,Change sign
+One-step correction,Lag,MORA,14,14,13,1
+One-step correction,Lag,NOCA,10,10,10,0
+One-step correction,Pace effect,MORA,14,10,10,0
+One-step correction,Pace effect,NOCA,10,10,10,0
+One-step correction,Direction effect,MORA,14,10,8,2
+One-step correction,Direction effect,NOCA,10,10,9,1
+Raw paleoclimate,Lag,MORA,14,14,4,10
+Raw paleoclimate,Lag,NOCA,10,10,7,3
+Raw paleoclimate,Pace effect,MORA,14,10,5,5
+Raw paleoclimate,Pace effect,NOCA,10,10,7,3
+Raw paleoclimate,Direction effect,MORA,14,10,5,5
+Raw paleoclimate,Direction effect,NOCA,10,10,7,3

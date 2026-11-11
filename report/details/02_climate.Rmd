@@ -62,9 +62,9 @@ fire frequency of Figure 3.
 ## CHELSA-TraCE21k against CHELSA V2.1
 
 The Holocene climate is CHELSA-TraCE21k, the modern climate CHELSA V2.1. The two products differ in
-level, and since 11 November 2026 the TraCE21k paleoclimate is bias-corrected onto V2.1 through
-CHELSAcruts, per park and calendar month over 1979 to 2016 (Appendix S2 of the README,
-`R/pipeline/07_climate_products.R`). Until then the raw TraCE21k was used and the products were
+level, and since 11 November 2026 the TraCE21k paleoclimate is bias-corrected onto V2.1 in two steps,
+TraCE21k to CHELSAcruts over 1900 to 1990 and CHELSAcruts to V2.1 over 1979 to 2016, per park and
+calendar month (Appendix S2 of the README, `R/pipeline/07_climate_products.R`). Until then the raw TraCE21k was used and the products were
 compared as changes within each product (see
 `r repo_link('report/details/10_decisions.md', 'Decisions')`). The figure below is the earlier
 comparison of TraCE21k with V2.1 at the lakes, kept for the record.

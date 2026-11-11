@@ -18,7 +18,7 @@ Rscript R/run_all.R                # same, downloading any missing CHELSA chunks
 Rscript R/run_all.R --age-models   # also refit the four Bacon chronologies (about 5 minutes)
 Rscript R/run_all.R --presentation # also draw the presentation figures
 Rscript R/build_report.R           # rebuild this report from the outputs
-Rscript R/sensitivity_raw_paleoclimate.R  # stages 08-16 on the raw paleoclimate, into output_raw_paleoclimate/ (Appendix S4)
+Rscript R/sensitivity_paleoclimate.R  # stages 08-16 with the one-step correction and on the raw paleoclimate, into output_paleoclimate_sensitivity/ (Appendix S4)
 ```
 
 `R/run_all.R` runs the pipeline steps in order, then every figure
@@ -41,8 +41,8 @@ for the report.
 | R/pipeline/04_modern_climate.R | pipeline | Modern climate: CHELSA V2.1 survey-window climate for every paired plot. | 368 |
 | R/pipeline/05_age_depth_models.R | pipeline | Age-depth models: the four Bacon chronologies (Appendix S1). | 510 |
 | R/pipeline/06_paleo_samples.R | pipeline | Paleo samples: original macrofossil sample identities, presences and the | 33 |
-| R/pipeline/07_climate_products.R | pipeline | Climate products: four CHELSA climate products at the plots and around the | 249 |
-| R/pipeline/08_paleo_climate.R | pipeline | Paleo climate: CHELSA-TraCE21k monthly climate at each lake and century, | 214 |
+| R/pipeline/07_climate_products.R | pipeline | Climate products: four CHELSA climate products at the plots and around the | 268 |
+| R/pipeline/08_paleo_climate.R | pipeline | Paleo climate: CHELSA-TraCE21k monthly climate at each lake and century, | 220 |
 | R/pipeline/09_fire_records.R | pipeline | Fire records (Appendix S3): tapas event detection for the three MORA charcoal | 406 |
 | R/pipeline/10_species_occurrences.R | pipeline | 10_species_occurrences.R | 626 |
 | R/pipeline/11_cca.R | pipeline | 11_cca.R - the pooled CCA and everything derived from it. NO FIGURES. | 665 |
@@ -55,17 +55,17 @@ for the report.
 | R/figures/supp_cca_scaling.R | figure | supp_cca_scaling.R - one CCA drawn at scaling 1 and scaling 2 | 108 |
 | R/figures/supp_charcoal_dunwiddie_walsh.R | figure | Fig. S14 (appendix figure A4 until the README was reordered; Bills, 11 Nov 2026): do the charcoal peaks of the Walsh | 98 |
 | R/figures/supp_climate_correlations.R | figure | supp_climate_correlations.R | 628 |
-| R/figures/supp_climate_products.R | figure | Figs. S6 to S8 (Appendix S2, Bills, 11 Nov 2026): the four CHELSA climate | 114 |
+| R/figures/supp_climate_products.R | figure | Figs. S6 to S8 (Appendix S2, Bills, 11 Nov 2026): the four CHELSA climate | 117 |
 | R/figures/supp_climate_windows.R | figure | Compare the actual plot-specific survey windows with V2.1 1979-2021. | 174 |
-| R/figures/supp_raw_paleoclimate.R | figure | Figs. S19 and S20 (Appendix S4, Bills, 11 Nov 2026): the main run on the | 131 |
+| R/figures/supp_paleoclimate_sensitivity.R | figure | Figs. S19 and S20 (Appendix S4, Bills, 11 Nov 2026): the three paleoclimates | 137 |
 | R/figures/supp_sample_selection.R | figure | Show which plots and core samples reach CCA, starting with the supplied data. | 368 |
 | R/figures/supp_species_through_time.R | figure | supp_species_through_time.R - STEP 4, the species half | 199 |
 | R/figures/supp_tracking_transitions.R | figure | Appendix figures of the lake-period values over time (redrawn on lake-periods | 86 |
 | R/figures/main_fig2_study_area.R | figure | Figure 2 (Bills, 11 Nov 2026; Fig. S1 until then): the study area. (A) | 214 |
 | R/figures/main_fig3_climate_eras_fire.R | figure | main_fig3_climate_eras_fire.R | 712 |
-| R/figures/main_fig4_cca_trajectories.R | figure | Figure 4: A, species and climate biplot; B, observed and predicted trajectories | 220 |
+| R/figures/main_fig4_cca_trajectories.R | figure | Figure 4: A, species and climate biplot; B, observed and predicted trajectories | 227 |
 | R/figures/main_fig5_era_contrasts.R | figure | Figure 5 (PLAN.md section 6; redrawn by Bills, 10 Nov 2026): fitted means | 34 |
-| R/figures/main_fig6_lag_pace_direction.R | figure | Figure 6 (PLAN.md section 6; redrawn by Bills, 10 Nov 2026): the pace and | 43 |
+| R/figures/main_fig6_lag_pace_direction.R | figure | Figure 6 (PLAN.md section 6; redrawn by Bills, 10 Nov 2026): the pace and | 42 |
 | R/figures/main_fig7_climate_fire_associations.R | figure | Figure 7: climate and fire associations as model slopes (Bills, 9 Nov 2026). | 71 |
 | R/figures/main_fig8_species.R | figure | Figure 8 (PLAN.md section 6): species contributions in both eras. Species as | 161 |
 | R/worked_examples.R | worked examples | Worked examples: step-by-step illustrations of four methods, drawn from the | 412 |
@@ -129,12 +129,12 @@ the folder of the step that writes it.
 | 06_paleo_samples | paleo_macrofossil_long.csv | All macrofossil measurements with ages | 108 |
 | 06_paleo_samples | paleo_occ.csv | Macrofossil presence by sample | 762 |
 | 06_paleo_samples | paleo_sample_depths.csv | Sample depth and median Bacon age | 95 |
-| 07_climate_products | climate_bias_correction_factors.csv | CHELSAcruts to V2.1 correction per park, month and variable, 1979-2016 (Table S2.3) | 6 |
+| 07_climate_products | climate_bias_correction_factors.csv | Two-step correction per park, month and variable: TraCE21k to CHELSAcruts (1900-1990) and CHELSAcruts to V2.1 (1979-2016) (Table S2.4) | 13 |
 | 07_climate_products | climate_products_monthly.csv | Monthly climatology of each product and window at each place (Fig. S6) | 120 |
 | 07_climate_products | climate_products_points.csv | Plots, lake pixels and 5 km disc cells the four products are read at | 50 |
 | 07_climate_products | climate_products_values.csv | Each product’s monthly values per year at the plot means, lake pixels and disc means | 2565 |
-| 07_climate_products | climate_trace_cruts_check.csv | TraCE21k timeID 20 against CHELSAcruts 1901-1990 over the same cells (Table S2.4) | 21 |
-| 08_paleo_climate | chelsa_paleo_ponds.csv | CHELSA-TraCE21k monthly climate at each lake and century, raw and bias-corrected | 1799 |
+| 07_climate_products | climate_trace_cruts_check.csv | TraCE21k timeID 20 against CHELSAcruts 1901-1990 over the same cells (Table S2.3) | 21 |
+| 08_paleo_climate | chelsa_paleo_ponds.csv | CHELSA-TraCE21k monthly climate at each lake and century, raw and bias-corrected | 2375 |
 | 08_paleo_climate | paleo_env.csv | Climate at each macrofossil sample’s age | 460 |
 | 09_fire_records | fire_mora_tapas_events.csv | MORA accepted fire events | 2 |
 | 09_fire_records | fire_mora_tapas_series.csv | MORA tapas peak-detection series | 104 |
@@ -182,7 +182,7 @@ the folder of the step that writes it.
 | 12_climate_eras | holocene_era_catalog.csv | era and high-fire classification tables | 2 |
 | 12_climate_eras | holocene_era_climate_change_subphases.csv | era and high-fire classification tables | 1 |
 | 12_climate_eras | holocene_era_climate_composite_site_phase.csv | era and high-fire classification tables | 58 |
-| 12_climate_eras | holocene_era_climate_directional_cells.csv | era and high-fire classification tables | 27 |
+| 12_climate_eras | holocene_era_climate_directional_cells.csv | era and high-fire classification tables | 26 |
 | 12_climate_eras | holocene_era_climate_regional_phase_changes.csv | era and high-fire classification tables | 205 |
 | 12_climate_eras | holocene_era_climate_site_phase_changes.csv | era and high-fire classification tables | 354 |
 | 12_climate_eras | holocene_era_climate_variable_thresholds.csv | era and high-fire classification tables | 0 |
@@ -207,8 +207,8 @@ the folder of the step that writes it.
 | 13_tracking | cca_tracking_lake_period_candidates.csv | Holocene and Anthropocene tracking calculations | 1 |
 | 13_tracking | cca_tracking_lake_periods.csv | Holocene and Anthropocene tracking calculations | 8 |
 | 13_tracking | cca_tracking_schema.csv | Holocene and Anthropocene tracking calculations | 19 |
-| 13_tracking | chronology_reconstruction/prepared.rds | Reconstruction bundle and primary reconstruction | 8892 |
-| 13_tracking | chronology_reconstruction/primary.rds | Reconstruction bundle and primary reconstruction | 118 |
+| 13_tracking | chronology_reconstruction/prepared.rds | Reconstruction bundle and primary reconstruction | 8890 |
+| 13_tracking | chronology_reconstruction/primary.rds | Reconstruction bundle and primary reconstruction | 117 |
 | 14_era_models | era_comparison/era_coefficients.csv | Era-comparison GLS fits, means and contrasts per response | 9 |
 | 14_era_models | era_comparison/era_contrasts.csv | Era-comparison GLS fits, means and contrasts per response | 14 |
 | 14_era_models | era_comparison/era_duration_classes.csv | Era-comparison GLS fits, means and contrasts per response | 1 |
@@ -223,7 +223,7 @@ the folder of the step that writes it.
 | 14_era_models | era_comparison/joint_correction_effects/model_input.csv | Era-comparison GLS fits, means and contrasts per response | 368 |
 | 14_era_models | era_comparison/joint_correction_effects/model_results.txt | Era-comparison GLS fits, means and contrasts per response | 7 |
 | 14_era_models | era_comparison/joint_correction_effects/period_type_contrasts.csv | Era-comparison GLS fits, means and contrasts per response | 3 |
-| 14_era_models | era_comparison/joint_correction_effects/primary_fit.rds | Era-comparison GLS fits, means and contrasts per response | 581 |
+| 14_era_models | era_comparison/joint_correction_effects/primary_fit.rds | Era-comparison GLS fits, means and contrasts per response | 582 |
 | 14_era_models | era_comparison/model_results.txt | Era-comparison GLS fits, means and contrasts per response | 19 |
 | 14_era_models | era_comparison/primary_fits.rds | Era-comparison GLS fits, means and contrasts per response | 677 |
 | 15_predictor_models | community_predictor_models/model_coefficients.csv | Within-era predictor GLS fits | 6 |

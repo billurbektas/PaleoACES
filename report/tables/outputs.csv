@@ -29,12 +29,12 @@ Step,File,Description,Size (kB)
 06_paleo_samples,paleo_macrofossil_long.csv,All macrofossil measurements with ages,108
 06_paleo_samples,paleo_occ.csv,Macrofossil presence by sample,762
 06_paleo_samples,paleo_sample_depths.csv,Sample depth and median Bacon age,95
-07_climate_products,climate_bias_correction_factors.csv,"CHELSAcruts to V2.1 correction per park, month and variable, 1979-2016 (Table S2.3)",6
+07_climate_products,climate_bias_correction_factors.csv,"Two-step correction per park, month and variable: TraCE21k to CHELSAcruts (1900-1990) and CHELSAcruts to V2.1 (1979-2016) (Table S2.4)",13
 07_climate_products,climate_products_monthly.csv,Monthly climatology of each product and window at each place (Fig. S6),120
 07_climate_products,climate_products_points.csv,"Plots, lake pixels and 5 km disc cells the four products are read at",50
 07_climate_products,climate_products_values.csv,"Each product's monthly values per year at the plot means, lake pixels and disc means",2565
-07_climate_products,climate_trace_cruts_check.csv,TraCE21k timeID 20 against CHELSAcruts 1901-1990 over the same cells (Table S2.4),21
-08_paleo_climate,chelsa_paleo_ponds.csv,"CHELSA-TraCE21k monthly climate at each lake and century, raw and bias-corrected",1799
+07_climate_products,climate_trace_cruts_check.csv,TraCE21k timeID 20 against CHELSAcruts 1901-1990 over the same cells (Table S2.3),21
+08_paleo_climate,chelsa_paleo_ponds.csv,"CHELSA-TraCE21k monthly climate at each lake and century, raw and bias-corrected",2375
 08_paleo_climate,paleo_env.csv,Climate at each macrofossil sample's age,460
 09_fire_records,fire_mora_tapas_events.csv,MORA accepted fire events,2
 09_fire_records,fire_mora_tapas_series.csv,MORA tapas peak-detection series,104
@@ -82,7 +82,7 @@ Step,File,Description,Size (kB)
 12_climate_eras,holocene_era_catalog.csv,era and high-fire classification tables,2
 12_climate_eras,holocene_era_climate_change_subphases.csv,era and high-fire classification tables,1
 12_climate_eras,holocene_era_climate_composite_site_phase.csv,era and high-fire classification tables,58
-12_climate_eras,holocene_era_climate_directional_cells.csv,era and high-fire classification tables,27
+12_climate_eras,holocene_era_climate_directional_cells.csv,era and high-fire classification tables,26
 12_climate_eras,holocene_era_climate_regional_phase_changes.csv,era and high-fire classification tables,205
 12_climate_eras,holocene_era_climate_site_phase_changes.csv,era and high-fire classification tables,354
 12_climate_eras,holocene_era_climate_variable_thresholds.csv,era and high-fire classification tables,0
@@ -107,8 +107,8 @@ Step,File,Description,Size (kB)
 13_tracking,cca_tracking_lake_period_candidates.csv,Holocene and Anthropocene tracking calculations,1
 13_tracking,cca_tracking_lake_periods.csv,Holocene and Anthropocene tracking calculations,8
 13_tracking,cca_tracking_schema.csv,Holocene and Anthropocene tracking calculations,19
-13_tracking,chronology_reconstruction/prepared.rds,Reconstruction bundle and primary reconstruction,8892
-13_tracking,chronology_reconstruction/primary.rds,Reconstruction bundle and primary reconstruction,118
+13_tracking,chronology_reconstruction/prepared.rds,Reconstruction bundle and primary reconstruction,8890
+13_tracking,chronology_reconstruction/primary.rds,Reconstruction bundle and primary reconstruction,117
 14_era_models,era_comparison/era_coefficients.csv,"Era-comparison GLS fits, means and contrasts per response",9
 14_era_models,era_comparison/era_contrasts.csv,"Era-comparison GLS fits, means and contrasts per response",14
 14_era_models,era_comparison/era_duration_classes.csv,"Era-comparison GLS fits, means and contrasts per response",1
@@ -123,7 +123,7 @@ Step,File,Description,Size (kB)
 14_era_models,era_comparison/joint_correction_effects/model_input.csv,"Era-comparison GLS fits, means and contrasts per response",368
 14_era_models,era_comparison/joint_correction_effects/model_results.txt,"Era-comparison GLS fits, means and contrasts per response",7
 14_era_models,era_comparison/joint_correction_effects/period_type_contrasts.csv,"Era-comparison GLS fits, means and contrasts per response",3
-14_era_models,era_comparison/joint_correction_effects/primary_fit.rds,"Era-comparison GLS fits, means and contrasts per response",581
+14_era_models,era_comparison/joint_correction_effects/primary_fit.rds,"Era-comparison GLS fits, means and contrasts per response",582
 14_era_models,era_comparison/model_results.txt,"Era-comparison GLS fits, means and contrasts per response",19
 14_era_models,era_comparison/primary_fits.rds,"Era-comparison GLS fits, means and contrasts per response",677
 15_predictor_models,community_predictor_models/model_coefficients.csv,Within-era predictor GLS fits,6
