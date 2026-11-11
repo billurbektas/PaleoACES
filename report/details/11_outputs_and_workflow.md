@@ -51,7 +51,7 @@ for the report.
 | R/pipeline/14_predictor_models.R | pipeline | Explanatory models (PLAN.md section 5, Step 5). | 131 |
 | R/pipeline/15_contributions.R | pipeline | Species contributions (PLAN.md section 5, Step 6): which species led the | 143 |
 | R/figures/supp_age_depth_models.R | figure | Figures S4 (four Bacon age-depth models) and S5 (Panther Potholes 210Pb | 109 |
-| R/figures/supp_bias_correction.R | figure | Figs. S16 and S17 (Appendix S3, Bills, 11 Nov 2026): raw against bias-corrected paleoclimate. | 130 |
+| R/figures/supp_bias_correction.R | figure | Figs. S16 and S17 (Appendix S3, Bills, 11 Nov 2026): raw against bias-corrected paleoclimate. | 131 |
 | R/figures/supp_cca_scaling.R | figure | supp_cca_scaling.R - one CCA drawn at scaling 1 and scaling 2 | 108 |
 | R/figures/supp_charcoal_dunwiddie_walsh.R | figure | Fig. S11 (appendix figure A4 until the README was reordered; Bills, 11 Nov 2026): do the charcoal peaks of the Walsh | 98 |
 | R/figures/supp_climate_correlations.R | figure | supp_climate_correlations.R | 628 |
@@ -64,7 +64,7 @@ for the report.
 | R/figures/main_fig4_cca_trajectories.R | figure | Figure 4: A, species and climate biplot; B, observed and predicted trajectories | 220 |
 | R/figures/main_fig5_era_contrasts.R | figure | Figure 5 (PLAN.md section 6; redrawn by Bills, 10 Nov 2026): fitted means | 34 |
 | R/figures/main_fig6_lag_pace_direction.R | figure | Figure 6 (PLAN.md section 6; redrawn by Bills, 10 Nov 2026): the pace and | 43 |
-| R/figures/main_fig7_climate_fire_associations.R | figure | Figure 7: climate and fire associations as model slopes (Bills, 9 Nov 2026). | 74 |
+| R/figures/main_fig7_climate_fire_associations.R | figure | Figure 7: climate and fire associations as model slopes (Bills, 9 Nov 2026). | 71 |
 | R/figures/main_fig8_species.R | figure | Figure 8 (PLAN.md section 6): species contributions in both eras. Species as | 161 |
 | R/worked_examples.R | worked examples | Worked examples: step-by-step illustrations of four methods, drawn from the | 412 |
 | R/tests/test_bacon_provenance.R | test | The stored Bacon chronologies are exactly what the current age-model script and | 32 |

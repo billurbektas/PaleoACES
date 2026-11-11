@@ -120,7 +120,8 @@ if (!file.exists(comparison)) {
         panel.spacing.x = unit(1.2, 'cm'), legend.position = 'bottom', legend.text = element_text(size = 22),
         legend.key.width = unit(1.6, 'cm'))
   }
-  slope_figure = slope_panel('rate', 'A.', 'Per century') / slope_panel('total', 'B.', 'Not divided by time') +
+  # Rows in the order of Figure 7: not divided by time on top, per century below.
+  slope_figure = slope_panel('total', 'A.', 'Not divided by time') / slope_panel('rate', 'B.', 'Per century') +
     plot_layout(guides = 'collect') & theme(legend.position = 'bottom')
   if (render_figures) {
     ggsave(fig('supplementary', 'figS17_bias_correction_slopes.pdf'), slope_figure, width = 21, height = 15,

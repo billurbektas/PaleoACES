@@ -1736,26 +1736,27 @@ because a count of events would grow with the length of the lake-period.
 conditional 95% confidence intervals for the lag (black), the pace
 effect (pink) and the direction effect (blue), side by side for each
 term, in the colours of Figure 1. Faded estimates have intervals that
-include zero. Top row (A, B): the responses per century, the change in
-mismatch or the reduction in final mismatch under the pace or direction
-correction divided by the elapsed time. Bottom row (C, D): the same
-responses not divided by time. The panels of a row share one x scale.
-(A, C) Holocene lake-periods, model response ~ site + climate + fire
-activity with an AR(1) correlation within each lake and weights for the
-number of samples at each end, where climate is the climate change rate
-in A and the climate change between the two ends in C: 14 MORA and 10
-NOCA lake-periods for the lag, and 10 and 10 for pace and direction. The
-climate slope is per standardized unit of climate change per century (A)
-or per standardized unit of climate change (C), and the fire slope per
-accepted event per century per covered core. (B, D) Anthropocene plot
-pairs, model response ~ site + burned with park-specific variances: 605
-plot pairs for the lag and 463 for pace and direction. Descriptive R² is
-given below each panel. Holocene climate-change lake-periods span 200 to
-900 years and stability lake-periods 200 to 2600 years between their
-first and last sampled century. Anthropocene plot pairs span 27.5 to
-32.5 years between the midpoints of their climate windows (about 29
-years). Effects are in CCA distance per century (A, B) or CCA distance
-(C, D) per unit of the term.
+include zero. Top row (A, B): the responses not divided by time, the
+change in mismatch or the reduction in final mismatch under the pace or
+direction correction between the two ends. Bottom row (C, D): the same
+responses divided by the elapsed time, per century. The panels of a row
+share one x scale. (A, C) Holocene lake-periods, model response ~ site +
+climate + fire activity with an AR(1) correlation within each lake and
+weights for the number of samples at each end, where climate is the
+climate change between the two ends in A and the climate change rate in
+C: 14 MORA and 10 NOCA lake-periods for the lag, and 10 and 10 for pace
+and direction. The climate slope is per standardized unit of climate
+change (A) or per standardized unit of climate change per century (C),
+and the fire slope per accepted event per century per covered core. (B,
+D) Anthropocene plot pairs, model response ~ site + burned with
+park-specific variances: 605 plot pairs for the lag and 463 for pace and
+direction. The descriptive R² of each model is in the model-check table
+below. Holocene climate-change lake-periods span 200 to 900 years and
+stability lake-periods 200 to 2600 years between their first and last
+sampled century. Anthropocene plot pairs span 27.5 to 32.5 years between
+the midpoints of their climate windows (about 29 years). Effects are in
+CCA distance (A, B) or CCA distance per century (C, D) per unit of the
+term.
 
 **Model checks.** The table gives, for each explanatory model, the rows
 per park, the descriptive R², the AR(1) parameter of the Holocene models
@@ -2225,9 +2226,9 @@ model response ~ site + climate + fire activity on the Holocene
 lake-periods, each with its conditional 95% confidence interval. Filled
 points and solid lines with the raw paleoclimate, open points and dashed
 lines with the bias-corrected paleoclimate. (A) The lag, the pace effect
-and the direction effect per century, with the climate change rate as
-the climate term. (B) The same responses not divided by time, with the
-climate change as the climate term. Black lag, pink pace effect, blue
+and the direction effect not divided by time, with the climate change as
+the climate term. (B) The same responses per century, with the climate
+change rate as the climate term. Black lag, pink pace effect, blue
 direction effect. The dashed vertical line marks no effect. Script:
 [`R/figures/supp_bias_correction.R`](R/figures/supp_bias_correction.R).
 
