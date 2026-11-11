@@ -2127,11 +2127,14 @@ raw, \< 0.001 corrected); Lag, MORA, Anthropocene - Holocene-S (Holm p
 (Holm p 1.000 raw, 0.002 corrected). Of the 18 Holocene explanatory
 slopes (Table S3.2), 7 have an interval that excludes zero with the raw
 paleoclimate and 2 with the bias-corrected one. Those that differ: Lag
-rate, Climate change rate; Pace effect, Climate change rate; Pace
-effect, Fire activity; Direction effect, Site (NOCA minus MORA);
-Direction effect, Fire activity; Direction effect (not divided by time),
-Site (NOCA minus MORA); Direction effect (not divided by time), Fire
-activity.
+rate, Climate change rate (+0.721 raw, +0.022 corrected); Pace effect,
+Climate change rate (+0.686 raw, +0.036 corrected); Pace effect, Fire
+activity (-0.187 raw, +0.216 corrected); Direction effect, Site (NOCA
+minus MORA) (-0.122 raw, +0.047 corrected); Direction effect, Fire
+activity (+0.268 raw, -0.094 corrected); Direction effect (not divided
+by time), Site (NOCA minus MORA) (-0.447 raw, -0.242 corrected);
+Direction effect (not divided by time), Fire activity (+0.903 raw,
++0.559 corrected).
 
 **Table S3.1. Era contrasts with the raw and the bias-corrected
 paleoclimate.** Differences of fitted means between period types in each

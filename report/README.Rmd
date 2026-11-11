@@ -1466,7 +1466,8 @@ if (s3_has) {
       d$contrast, s3_p(d$p_adjusted_raw), s3_p(d$p_adjusted_corrected))), '. Of the ', nrow(s3_sl), ' Holocene explanatory slopes ',
     '(Table S3.2), ', sum(s3_sl$away_raw), ' have an interval that excludes zero with the raw paleoclimate and ',
     sum(s3_sl$away_corrected), ' with the bias-corrected one. Those that differ: ',
-    s3_lst(s3_sl_changed, function(d) sprintf('%s, %s', response_label[d$response], s3_term_label[d$term])), '.\n'))
+    s3_lst(s3_sl_changed, function(d) sprintf('%s, %s (%+.3f raw, %+.3f corrected)', response_label[d$response],
+      s3_term_label[d$term], d$estimate_raw, d$estimate_corrected)), '.\n'))
 }
 ```
 
