@@ -3,8 +3,8 @@
 # Complex (NOCA): the legacy-resurvey plot pairs that enter the CCA, burned and
 # unburned between the surveys, and the lakes whose cores give the Holocene
 # records, by what each record contributes (vegetation from macrofossils, fire
-# from charcoal). The two park maps have the same size, the same coordinate
-# grid, the same 10 km scale bar and the same north arrow. A map of Washington
+# from charcoal). The two park maps have the same size, grid lines at about the
+# same spacing, the same 10 km scale bar and the same north arrow. A map of Washington
 # State, USA, and the legend sit side by side above them (Bills, 11 Nov 2026).
 # Sources are cited in the caption, not on the figure.
 source(here::here('R/helpers/config.R'), local = TRUE)
@@ -161,7 +161,7 @@ overview = ggplot() +
     panel.widths = unit(5.6, 'in'),
     panel.heights = unit(5.6 * (wa_extent[['ymax']] - wa_extent[['ymin']]) / (wa_extent[['xmax']] - wa_extent[['xmin']]), 'in'))
 
-park_panel = function(park, tag, title, bar_corner, arrow_corner) {
+park_panel = function(park, tag, title, bar_corner, arrow_corner, grid) {
   e = ext[[park]]; w = e[3] - e[1]; h = e[4] - e[2]
   at = function(corner, fx, fy) c(e[1] + corner[1] * w + fx, e[2] + corner[2] * h + fy)
   bar = at(bar_corner, 0, 0); arrow = at(arrow_corner, 0, 0)
@@ -191,15 +191,17 @@ park_panel = function(park, tag, title, bar_corner, arrow_corner) {
     # is the same in both).
     scale_bar(bar[1], bar[2], km = 10, n = 2, height = h * .012, text_size = 6) +
     north_arrow(arrow[1], arrow[2], h * .08) +
-    # The same coordinate grid in both maps: 0.2 degrees of longitude, 0.1 of latitude.
-    scale_x_continuous(breaks = seq(-122, -120, .2)) + scale_y_continuous(breaks = seq(46, 49.5, .1)) +
+    # Grid lines every `grid` degrees in both directions. NOCA covers about twice the
+    # distance of MORA, so a step twice as large spaces its ticks like those of MORA
+    # on the page (Bills, 11 Nov 2026).
+    scale_x_continuous(breaks = seq(-122, -120, grid)) + scale_y_continuous(breaks = seq(46, 49.5, grid)) +
     coord_sf(crs = UTM, xlim = e[c(1, 3)], ylim = e[c(2, 4)], expand = FALSE) +
     labs(tag = tag, title = title) + theme_map + panel_size
 }
 p_mora = park_panel('MORA', 'A.', 'Mount Rainier National\nPark (MORA)',
-  bar_corner = c(.67, .035), arrow_corner = c(.935, .8))
+  bar_corner = c(.67, .035), arrow_corner = c(.935, .8), grid = .1)
 p_noca = park_panel('NOCA', 'B.', 'North Cascades National Park\nService Complex (NOCA)',
-  bar_corner = c(.77, .935), arrow_corner = c(.935, .78))
+  bar_corner = c(.77, .935), arrow_corner = c(.935, .78), grid = .2)
 
 # On top, the Washington map and the legend side by side. Below, the two park maps.
 figure = overview + guide_area() + p_mora + p_noca +
