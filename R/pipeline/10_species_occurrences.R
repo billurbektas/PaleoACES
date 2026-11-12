@@ -327,15 +327,11 @@ p_counts = ggplot(cnt_long, aes(species, n, fill = period)) +
                     labels = c(paleo = "Holocene", past = "Legacy", present = "Resurvey")) +
   facet_wrap(~ site, scales = "free_x") +
   coord_flip() +
-  labs(x = NULL, y = "Number of plots (Holocene: number of samples)", fill = "Period",
-       title = "Species occurrence after consolidation",
-       subtitle = paste0("Dashed line: selection threshold of ", CCA_COUNT_THRESHOLD, " plots or samples.\n",
-                         "A species is retained if it reaches the threshold in any site and period.\n",
-                         "Understory and unresolved taxa are removed; ponderosa pine is retained.")) +
+  # No title or subtitle (Bills, 12 Nov 2026): the caption of Fig. S3 gives the
+  # threshold and the retention rule.
+  labs(x = NULL, y = "Number of plots (Holocene: number of samples)", fill = "Period") +
   theme_minimal(base_size = 16) +
-  theme(plot.title = element_text(size = 18, face = "bold"),
-        plot.subtitle = element_text(size = 14),
-        axis.text = element_text(size = 14),
+  theme(axis.text = element_text(size = 14),
         strip.text = element_text(size = 16, face = "bold"),
         legend.text = element_text(size = 14),
         panel.grid.major.y = element_blank(),

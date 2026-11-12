@@ -44,7 +44,7 @@ for the report.
 | R/pipeline/07_climate_products.R | pipeline | Climate products: four CHELSA climate products at the plots and around the | 268 |
 | R/pipeline/08_paleo_climate.R | pipeline | Paleo climate: CHELSA-TraCE21k monthly climate at each lake and century, | 220 |
 | R/pipeline/09_fire_records.R | pipeline | Fire records (Appendix S3): tapas event detection for the three MORA charcoal | 406 |
-| R/pipeline/10_species_occurrences.R | pipeline | 10_species_occurrences.R | 626 |
+| R/pipeline/10_species_occurrences.R | pipeline | 10_species_occurrences.R | 622 |
 | R/pipeline/11_cca.R | pipeline | 11_cca.R - the pooled CCA and everything derived from it. NO FIGURES. | 665 |
 | R/pipeline/12_climate_eras_fire_frequency.R | pipeline | 12_climate_eras_fire_frequency.R | 194 |
 | R/pipeline/13_tracking.R | pipeline | Tracking: native-century Holocene positions, tracking metrics for both eras, | 85 |
