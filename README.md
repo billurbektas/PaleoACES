@@ -162,12 +162,11 @@ surveys were excluded, because they have no observed position in this
 space. Sample sizes and reasons for exclusion are given at each step.
 
 **Legacy plot size at NOCA.** Both parks were resurveyed with 500-m²
-plots, whereas the legacy plots at NOCA ranged from 25 to 400 m². A
-small legacy plot can miss species that the larger resurvey plot then
-records, which would be counted as community turnover. We therefore
-compared species richness, turnover rate, lag, and lag rate among the
-legacy plot sizes of the NOCA plot pairs used in the analysis (Table
-S1). This comparison is descriptive.
+plots, whereas the legacy plots at NOCA ranged from 25 to 400 m². To
+test whether the smaller legacy plots missed species, which would be
+counted as community turnover at the resurvey, we compared species
+richness, turnover rate, lag, and lag rate among the legacy plot sizes
+at NOCA (Table S1).
 
 **Table S1. Plot pairs at NOCA by legacy plot size.** Richness is the
 mean number of the 14 tree species of the analysis that were present in
@@ -226,70 +225,33 @@ lake-sediment cores, three at MORA and one at NOCA (Fig. 2 of the main
 text). We dated each sample with the age–depth model of its core
 (Appendix S1).
 
-### Appendix S1. Construction of the Holocene age–depth models
+### Appendix S1. Age–depth models of the Holocene records
 
-#### S1.1 Why an age–depth model was required
+#### S1.1 Why new age–depth models were needed
 
-The macrofossils are measured at known depths in a sediment core, but
-depth itself does not provide an age. Sediment does not necessarily
-accumulate at a constant rate: for example, 1 cm of sediment can
-represent relatively few years during rapid accumulation and many more
-years during slow accumulation. Chronological control is available only
-at selected depths, through radiocarbon dates, dated volcanic deposits,
-²¹⁰Pb dating, or other independently dated horizons. We therefore
-required an age–depth model to estimate the calendar age of every depth
-between these dated points and, importantly, to quantify uncertainty in
-those estimated ages.
+To place the macrofossil samples in time, we needed a calendar age, with
+its uncertainty, for each sample. The published chronologies did not
+provide this. At MORA, the ages of Dunwiddie (1986) are radiocarbon ages
+that were not calibrated to calendar years. At NOCA, the chronology of
+Prichard et al. (2009) is calibrated, but the median ages of the single
+macrofossil samples were not available to us. We therefore built a
+Bayesian age–depth model for each of the four cores with the same method
+(R package rbacon; Blaauw & Christen, 2011).
 
-We used the rbacon R package, which reconstructs sediment accumulation
-histories within a Bayesian framework (Blaauw & Christen 2011). Rather
-than drawing a single line through the dated horizons, Bacon estimates
-many age–depth histories that are compatible with the chronological
-evidence and assumptions about sediment accumulation. The distribution
-of these histories represents the posterior chronological uncertainty
-shown in Fig. S4.
+#### S1.2 Chronological controls
 
-#### S1.2 Chronological controls and radiocarbon calibration
-
-For each core, we assembled chronological controls for which both
-sediment depth and age information were available (Table S2). For MORA,
-these consisted of the core surfaces, seven radiocarbon dates from Jay
-Bath and Log Wallow, dated volcanic tephra horizons, and a basal
-radiocarbon age for Reflection Pond. Reflection Pond contained no
-radiocarbon dates of its own and was therefore constrained by the core
-surface, tephra horizons, and this basal control. For Panther Potholes,
-we reproduced the chronology archived in the Neotoma database using the
-core surface, five ²¹⁰Pb ages, six Accelerator Mass Spectrometry (AMS)
-radiocarbon dates, and three tephra horizons. We used the corrected
-control depths archived in Neotoma rather than the depths reported in
-Prichard et al. (2009), which contain documented depth errors.
-
-Radiocarbon ages are expressed in ¹⁴C years and cannot be treated
-directly as calendar ages because atmospheric ¹⁴C concentrations have
-varied through time. We therefore supplied radiocarbon ages and their
-laboratory errors as uncalibrated dates (cc = 1), which Bacon calibrated
-against the IntCal20 Northern Hemisphere calibration curve (Reimer et
-al. 2020). This converts each radiocarbon measurement into a probability
-distribution of plausible calendar ages. Controls already expressed in
-calendar years, including the core surfaces and tephra ages, were
-supplied directly (cc = 0) and were not calibrated.
-
-The seven MORA radiocarbon ages and their laboratory errors were taken
-directly from Dunwiddie (1986). For all other chronological controls,
-the source and interpretation of the assigned age uncertainty are
-reported explicitly in Table S2. The Reflection Pond basal control is
-the mean of the two basal radiocarbon ages of Jay Bath (QL-1704) and Log
-Wallow (QL-1728), 6015 ± 110 ¹⁴C yr BP with the larger of the two
-laboratory errors, following P. Dunwiddie’s advice that the three basins
-share the same basal age (pers. comm.).
-
-For Panther Potholes, the five ²¹⁰Pb ages were derived using a Constant
-Rate of Supply (CRS) model. We retained the error values used in the
-archived Gavin chronology for the primary model; however, these values
-correspond numerically to the ²¹⁰Pb activity uncertainties reported by
-Prichard et al. (2009), rather than to independently estimated age
-uncertainties in years. We therefore evaluated this uncertainty
-specification in a separate sensitivity analysis described below.
+To build the models from the same information as the original studies,
+we used the published chronological controls of each core, i.e., the
+depths with a known age: the core surface, radiocarbon dates, tephra
+layers, and, at Panther Potholes, ²¹⁰Pb ages (Table S2). We entered the
+radiocarbon ages as uncalibrated ages, which rbacon calibrated with the
+IntCal20 curve (Reimer et al., 2020), and the other controls as calendar
+ages. Two decisions differ from the original studies. Reflection Pond
+has no radiocarbon date of its own, so we gave it the mean basal age of
+Jay Bath and Log Wallow, following the advice of P. Dunwiddie that the
+three basins have the same basal age (pers. comm.). For Panther
+Potholes, we used the depths of the controls archived in the Neotoma
+database, which correct depth errors in Prichard et al. (2009).
 
 **Table S2. Chronological controls used in the four Bayesian age–depth
 models.** For cc = 1, the entered age is an uncalibrated ¹⁴C age
@@ -342,23 +304,16 @@ calibrated years before present (cal yr BP; present = A.D. 1950).
 <sub>Table file:
 [chronological_controls.csv](report/tables/chronological_controls.csv)</sub>
 
-#### S1.3 Bayesian age–depth models
+#### S1.3 Age–depth models
 
-We fitted each core independently with Bacon using the settings
-summarized in Table S3. Bacon divided each sediment core into 5-cm
-sections and estimated an accumulation time, in yr cm⁻¹, for each
-section. Accumulation times were allowed to differ among sections but
-were correlated between neighbouring sections through the model’s memory
-parameter. The chronological controls in Table S2 were then used to
-update these prior expectations and generate the posterior age–depth
-chronology shown in Fig. S4.
-
-The three MORA cores were modelled using the same accumulation and
-memory priors. Panther Potholes instead retained the settings of the
-archived Bacon chronology in the Neotoma database so that our model
-reproduced the published chronology while providing the complete
-posterior age–depth draws required for subsequent analyses. All runs are
-seeded (seed 42).
+To estimate the age of every depth between the controls, rbacon models
+how fast sediment accumulated along the core, and returns many age–depth
+curves that are compatible with the controls (Fig. S4; settings in Table
+S3). We used the same settings for the three MORA cores. For Panther
+Potholes, we kept the settings of the chronology archived in Neotoma, so
+that our model reproduced the published chronology. Thick tephra layers
+were treated as deposited instantaneously (grey bands in Fig. S4). We
+dated each macrofossil sample by the median of its ages.
 
 **Table S3. rbacon parameters used to construct the age–depth models.**
 
@@ -379,15 +334,6 @@ seeded (seed 42).
 <sub>Table file:
 [rbacon_parameters.csv](report/tables/rbacon_parameters.csv)</sub>
 
-The thick volcanic deposits required one additional treatment. The MSH-Y
-tephra was represented as an instantaneous depositional interval in all
-three MORA cores, including the 58-cm interval at Log Wallow containing
-both primary and redeposited Y tephra. At Panther Potholes, the MSH-P,
-MSH-Y, and Mazama tephra intervals were treated in the same way. Bacon
-therefore removed these intervals while estimating gradual sediment
-accumulation and reinserted them without adding elapsed time. These
-intervals are shown as vertical grey bands in Fig. S4.
-
 <img src="report/figures/png/figS04_age_depth_models.png" alt="" width="100%" />
 
 **Fig. S4. Bayesian age–depth models for the Jay Bath, Log Wallow, and
@@ -404,13 +350,15 @@ posterior age–depth estimate and the outer dotted lines the 95%
 posterior interval. Vertical grey bands identify tephra intervals
 treated as instantaneous deposition.
 
-For Panther Potholes, we reproduced the archived Neotoma chronology as
-the primary model. However, Prichard et al. (2009) report uncertainties
-for measured ²¹⁰Pb activity, in DPM g⁻¹, and the same numerical values
-were entered as age errors, in years, in the archived chronology. We
-therefore fitted a sensitivity model in which the five ²¹⁰Pb controls
-were each assigned an assumed ±10-year age error, all other controls and
-settings unchanged (Fig. S5).
+#### S1.4 Sensitivity of the Panther Potholes chronology
+
+In the archived chronology of Panther Potholes, the errors of the five
+²¹⁰Pb ages are the uncertainties of the measured ²¹⁰Pb activity, and not
+age errors in years. To test whether this affects the chronology, we
+fitted a second model with an assumed error of ±10 years for these five
+ages. The two chronologies were nearly identical below the upper 35 to
+40 cm of the core, so that this choice does not affect the Holocene ages
+of the analysis (Fig. S5).
 
 <img src="report/figures/png/figS05_panther_potholes_pb210_sensitivity.png" alt="" width="100%" />
 
@@ -440,15 +388,15 @@ would be with CHELSA V2.1, and this difference enters every mismatch and
 every lag. We therefore corrected the Holocene climate to the level of
 CHELSA V2.1.
 
-Four CHELSA products cover the two parks (Table S4). CHELSA V2.1 is the
-most recent one and the product of the Anthropocene analysis, so we kept
-it and corrected CHELSA-TraCE21k. The most recent time step of
-CHELSA-TraCE21k is the mean of the years 1900 to 1990 (technical
-specification, Table 4), and not the present climate. CHELSAcruts covers
-1901 to 2016 and therefore has years in common with both CHELSA-TraCE21k
-and CHELSA V2.1, so we used it as the link between them. Note that
-CHELSA-TraCE21k, CHELSAcruts, and CHELSA V1.2 are downscaled with the
-CHELSA V1 method, and CHELSA V2.1 with the more recent method.
+To correct it, we followed the change-factor approach that is commonly
+used for paleoclimate simulations (Lorenz et al., 2016): the difference
+between two products is calculated over the years that they have in
+common, and is then applied to all time steps of the product to be
+corrected. CHELSA-TraCE21k and CHELSA V2.1 cannot be compared directly,
+because the most recent time step of CHELSA-TraCE21k is the mean of the
+years 1900 to 1990, whereas CHELSA V2.1 starts in 1979. We therefore
+used CHELSAcruts (1901 to 2016), which has years in common with both
+products, as a link between them (Table S4).
 
 **Table S4. The four CHELSA products.** All four products have the same
 grid of 30 arcsec.
@@ -460,29 +408,28 @@ grid of 30 arcsec.
 | CHELSA V1.2 | 1.2.1 | 1979 to 2013, monthly | CHELSA time series, first version |
 | CHELSA V2.1 | 2.1 | 1979 to 2021, monthly | CHELSA time series, current version; the climate of the climate–community space |
 
-We read each product at all forest plots (331 at MORA and 305 at NOCA),
-at the grid cells of the four lakes, and at all grid cells within 5 km
-of the lakes of each park (136 grid cells around the midpoint of the
-three MORA lakes, and 136 around Panther Potholes).
-Script:
-[`R/pipeline/07_climate_products.R`](R/pipeline/07_climate_products.R).
+The correction thus has two steps (Fig. S6). In step 1, we corrected
+CHELSA-TraCE21k to CHELSAcruts over 1900 to 1990, and in step 2,
+CHELSAcruts to CHELSA V2.1 over 1979 to 2016. For each park and calendar
+month, each step is an offset that we added to minimum and maximum
+temperature, and a ratio by which we multiplied precipitation. We
+calculated both steps from the mean over the grid cells within 5 km of
+the lakes of each park, and applied them to all time steps of
+CHELSA-TraCE21k. Step 1 was needed because CHELSA-TraCE21k and
+CHELSAcruts did not agree over the years that they have in common,
+although both are downscaled with the same method (Table
+S5). Scripts:
+[`R/pipeline/07_climate_products.R`](R/pipeline/07_climate_products.R),
+[`R/pipeline/08_paleo_climate.R`](R/pipeline/08_paleo_climate.R). The
+factors of every park, variable and month are written to
+`climate_bias_correction_factors.csv`. **Climate
+details →**
+[02_climate](report/details/02_climate.md).
 
-### S2.1 CHELSA-TraCE21k against CHELSAcruts
-
-CHELSA-TraCE21k and CHELSAcruts are downscaled with the same method, so
-they could be expected to agree over the years that they have in common.
-They did not. Over 1900 to 1990, on the grid cells within 5 km of the
-lakes, CHELSA-TraCE21k was 0.80 °C warmer in spring and had 84% of the
-summer precipitation of CHELSAcruts at MORA, and was 0.32 °C warmer with
-119% of the summer precipitation at NOCA (Table S5). At the forest
-plots, the same comparison gave 0.27 °C warmer and 100% at MORA, and
-0.14 °C warmer and 119% at NOCA. At the grid cells of the lakes, it gave
-0.62 °C warmer and 77% at MORA (mean of the three lakes), and 0.24 °C
-warmer and 93% at Panther Potholes. The differences were larger for the
-monthly variables: around the MORA lakes, CHELSA-TraCE21k was 1.1 to 3.9
-°C warmer in minimum temperature, depending on the month (Fig. S6).
-Because the two products did not agree around the lakes, we first
-corrected CHELSA-TraCE21k to CHELSAcruts.
+Note that this correction assumes that the difference between the
+products was constant through the Holocene. We therefore repeated the
+analysis with step 2 alone and without correction, and report how the
+results changed in the sensitivity analysis of Appendix S4.
 
 **Table S5. CHELSA-TraCE21k against CHELSAcruts over the same years.**
 The most recent time step of CHELSA-TraCE21k (timeID 20, the mean of
@@ -510,29 +457,6 @@ divided by CHELSAcruts.
 <sub>Table file:
 [appendix_s2_trace_cruts_check.csv](report/tables/appendix_s2_trace_cruts_check.csv)</sub>
 
-### S2.2 The two-step bias correction
-
-We corrected the Holocene climate in two steps. We calculated both steps
-for each park, calendar month, and variable (monthly minimum
-temperature, maximum temperature, and precipitation, and not the
-seasonal variables), from the mean over the grid cells within 5 km of
-the lakes of the park, and not from the single grid cells of the lakes.
-In step 1, we corrected CHELSA-TraCE21k to CHELSAcruts over the years
-1900 to 1990 (CHELSAcruts starts in 1901). In step 2, we corrected
-CHELSAcruts to CHELSA V2.1 over all years that the two products have in
-common (1979 to 2016). For temperature, each step is an offset that we
-added, and for precipitation, a ratio by which we multiplied. We applied
-both steps to all time steps of CHELSA-TraCE21k at all lakes of the
-park, and used this corrected Holocene climate in the main
-analysis. Script:
-[`R/pipeline/08_paleo_climate.R`](R/pipeline/08_paleo_climate.R).
-
-Note that this correction assumes that the difference between the
-products was constant through the Holocene. We therefore repeated the
-analysis with step 2 alone (one-step correction, which assumes that
-CHELSA-TraCE21k and CHELSAcruts agree) and without correction (Appendix
-S4).
-
 <img src="report/figures/png/figS06_climate_bias_correction.png" alt="" width="100%" />
 
 **Fig. S6. The two steps of the bias correction of the Holocene
@@ -545,19 +469,6 @@ percentile of the yearly values in light grey. Red: both steps together,
 i.e., the correction of the main analysis. On the dashed line, a step
 changes nothing. Script:
 [`R/figures/supp_climate_products.R`](R/figures/supp_climate_products.R).
-
-Across the months, the two steps together changed the minimum
-temperature at MORA by -4.2 to -1.5 °C and the maximum temperature by
--2.2 to 1.8 °C, and multiplied precipitation by 1.41 to 2.00. At NOCA,
-they changed the minimum temperature by -3.4 to -0.9 °C and the maximum
-temperature by -1.1 to 2.0 °C, and multiplied precipitation by 1.00 to
-1.30 (Fig. S6). Step 2 alone would have changed the two temperatures at
-MORA by -1.9 to 0.9 °C and -2.3 to 0.5 °C, and multiplied precipitation
-by 1.16 to 1.78. How the correction affected the results is shown in
-Appendix S4. The stage writes the factors of every
-park, variable and month to `climate_bias_correction_factors.csv`.
-**Climate details →**
-[02_climate](report/details/02_climate.md).
 
 # Climate change and comparisons within eras
 
@@ -719,34 +630,27 @@ of the main text.
 
 # Fire dynamics
 
-## Appendix S3. Reconstruction of fire histories
+## Appendix S3. Fire histories of the Holocene
 
-### S3.1 Holocene charcoal records
+### S3.1 Charcoal records
 
-For MORA, we reconstructed Holocene fire activity using the Sunrise
-Lake, Shadow Lake, and Little Sunrise Lake macrocharcoal records from
-Walsh et al. (2017). These records provide evidence of regional fire
-activity on Sunrise Ridge and are independent of the Jay Bath, Log
-Wallow, and Reflection Pond records that we used for the forest
-communities. For NOCA, we reconstructed Holocene fire activity using the
-Panther Potholes macrocharcoal record of Prichard et al. (2009),
-extracted from the archived Neotoma record and dated with the Panther
-Potholes chronology of Appendix S1. Thus, at NOCA, the fire record and
-the forest record come from the same core and have the same chronology.
+To describe fire activity through the Holocene in each park, we used
+published records of macroscopic charcoal in lake sediments: Sunrise
+Lake, Shadow Lake, and Little Sunrise Lake at MORA (Walsh et al., 2017),
+and Panther Potholes at NOCA (Prichard et al., 2009). At MORA, these
+records come from Sunrise Ridge and not from the lakes of the forest
+records (see S3.5). At NOCA, the fire record and the forest record come
+from the same core and have the same chronology (Appendix S1).
 
-### S3.2 Identification of individual fire events
+### S3.2 Fire events
 
-We reconstructed the fire-event detection analyses of Walsh et
-al. (2017) and Prichard et al. (2009) within one workflow, with the R
-package tapas
-(`R/pipeline/09_fire_records.R`). The charcoal
-accumulation rate (CHAR) was interpolated to regular intervals, its
-slowly varying background estimated by robust LOWESS, and candidate fire
-events identified where the residual peak component exceeded a
-record-specific threshold of the background noise. Candidates were
-screened with a 75-year minimum-count test (p ≤ 0.05), and consecutive
-exceedances were treated as one event. Record-specific settings are
-given in Table S7.
+To identify fire events in the same way in the four records, we repeated
+the peak detection of the two original studies in one workflow (R
+package tapas), with the settings of each original study (Table S7). In
+this workflow, a fire event is a peak in the charcoal accumulation rate
+that exceeds the background noise of the record and passes a
+minimum-count test (Fig. S11). Script:
+[`R/pipeline/09_fire_records.R`](R/pipeline/09_fire_records.R).
 
 **Table S7. Parameters used to reconstruct individual Holocene fire
 events.** All records were also screened with the same 75-year
@@ -776,32 +680,26 @@ accepted events, and red crosses are rejected candidates.
 
 ### S3.3 Fire frequency
 
-We counted the accepted events of each record within centred 1,000-year
-windows evaluated every 100 years and expressed them as events per 1,000
-years. The MORA series is the mean of the three Sunrise Ridge records
-wherever at least two of them cover the date, and the NOCA series is the
-Panther Potholes record
-(`R/pipeline/12_climate_eras_fire_frequency.R`).
-Fig. 3C of the main text shows both series, each park with its own axis,
-because the records differ in resolution and their fire frequencies
-therefore cannot be compared between the parks. Note that the models do
-not use this fire frequency: they use the number of fire events between
-t1 and t2 of each lake-period (see Methods of the main
-text). No high-fire periods are classified: an
-earlier version marked periods above the park’s median plus one robust
-standard deviation, but no model used them, and the frequency itself is
-shown instead.
+To show how fire activity changed through the Holocene (Fig. 3C of the
+main text), we counted the fire events of each record in windows of
+1,000 years, moved in steps of 100 years. The MORA series is the mean of
+the three Sunrise Ridge records, and the NOCA series is the Panther
+Potholes record. The records differ in resolution, so that fire
+frequencies cannot be compared between the parks. Note that the models
+do not use this fire frequency, but the number of fire events between t1
+and t2 of each lake-period (see Methods of the main
+text). Script:
+[`R/pipeline/12_climate_eras_fire_frequency.R`](R/pipeline/12_climate_eras_fire_frequency.R).
 
-### S3.4 Reproducibility against the original studies
+### S3.4 Comparison with the original studies
 
-We compared the number of events identified by tapas with those reported
-by Walsh et al. (2017) and Prichard et al. (2009), and additionally
-reproduced the MORA analyses with CharAnalysis R 2.0.3 (Table S8). Event
-counts differed from the published values, including with CharAnalysis,
-suggesting that discrepancies arise partly from differences between
-software implementations. We retained tapas for one consistent detection
-procedure across all four records, preserving their source-specific
-settings rather than tuning parameters to reproduce published counts.
+To check the workflow, we compared the numbers of fire events that we
+identified with those of the original studies, and repeated the analysis
+of the MORA records with a second software (CharAnalysis; Table S8). The
+numbers differed from the published ones, also with CharAnalysis, which
+suggests that part of the difference comes from the software. We kept
+one workflow for the four records, with the settings of the original
+studies, and did not tune the settings to match the published numbers.
 
 **Table S8. Holocene fire-event counts reported in the original studies
 and reconstructed with CharAnalysis R 2.0.3 (MORA only) and tapas (all
@@ -824,45 +722,47 @@ four records).**
 detection, CharAnalysis reproduction, modern fire assignment of the
 survey plots).
 
-## Charcoal of the fire records and of the forest records at MORA
+### S3.5 Fire records and forest records at MORA
+
+At MORA, the fire records and the forest records come from different
+lakes. To assess whether the fire records of Sunrise Ridge can describe
+fire at the lakes of the forest records, we compared them with the
+charcoal fragments that Dunwiddie (1986) counted in the macrofossil
+samples of Jay Bath, Log Wallow, and Reflection Pond (Fig. S12). The two
+kinds of record followed opposite long-term courses: the Sunrise Ridge
+records hold most of their charcoal and fire events in the last 3,500
+years, whereas Jay Bath and Log Wallow hold most of their charcoal
+before 4,000 cal BP. Over bins of 500 years, the Spearman correlation
+between the charcoal of a forest record and the fire frequency of
+Sunrise Ridge was +0.02 (p = 1.00) at Jay Bath, -0.53 (p = 0.07) at Log
+Wallow, and +0.14 (p = 0.77) at Reflection Pond. A charcoal peak of the
+forest records lay within 200 years of 38%, 29%, and 21% of the 34 fire
+events of Sunrise Ridge, against 41%, 39%, and 44% expected by chance.
+The Sunrise Ridge records therefore give no evidence of the fire history
+at the lakes of the forest records, and the fire activity of MORA should
+be interpreted as regional at best. Note that the charcoal of the forest
+records is a concentration and not an accumulation rate, so that a
+change in sedimentation rate could explain part of its long-term course.
 
 <img src="report/figures/png/figS12_charcoal_walsh_dunwiddie.png" alt="" width="100%" />
 
 **Fig. S12. Charcoal in the fire records of Sunrise Ridge (Walsh et al.,
-2017) and in the forest records of MORA (Dunwiddie, 1986).** The fire
-activity of MORA comes from the three Sunrise Ridge records, whereas the
-forest communities come from Jay Bath, Log Wallow, and Reflection Pond.
-The upper three rows show the charcoal accumulation rate of each Sunrise
-Ridge record (grey), with its background (dashed) and the fire events
-that we identified (dark red triangles). The lower three rows show the
-number of charcoal fragments in each macrofossil sample of Dunwiddie
-(1986). This number is a concentration, because all samples of a core
-had the same volume, and the samples above the 75th percentile of each
-lake are filled. Each fire event of the Sunrise Ridge records is drawn
-as a faint line through all rows. Time runs from 7,000 cal BP to the
-present, which is the time span of the forest records. The two kinds of
-record followed opposite long-term courses: the Sunrise Ridge records
-hold most of their charcoal and fire events in the last 3,500 years,
-whereas Jay Bath and Log Wallow hold most of their charcoal before 4,000
-cal BP. We correlated the charcoal of each forest record with the mean
-of the three Sunrise Ridge records over 14 bins of 500 years (Spearman
-correlation, with p from circular shifts that keep the autocorrelation
-of each record, so that the smallest possible p is about 0.07). Jay Bath
-gave -0.31 (p = 0.71) with the charcoal accumulation rate and +0.02 (p =
-1.00) with the fire frequency, Log Wallow -0.45 (p = 0.29) and -0.53 (p
-= 0.07), and Reflection Pond -0.18 (p = 0.62) and +0.14 (p = 0.77). The
-Sunrise Ridge records agreed only weakly with one another (Sunrise Lake
-and Shadow Lake +0.45, Sunrise Lake and Little Sunrise Lake +0.31,
-Shadow Lake and Little Sunrise Lake +0.09). A charcoal peak of the
-forest records lay within 200 years of 38%, 29%, and 21% of the 34 fire
-events of Sunrise Ridge at Jay Bath, Log Wallow, and Reflection Pond,
-against 41%, 39%, and 44% expected by chance. The Sunrise Ridge records
-therefore give no evidence of the fire history at the lakes of the
-forest records, and the fire activity of MORA should be interpreted as
-regional at best. Note that the charcoal of the forest records is a
-concentration and not an accumulation rate, so that a change in
-sedimentation rate could explain part of its long-term
-course. Script:
+2017) and in the forest records of MORA (Dunwiddie, 1986).** Upper three
+rows: charcoal accumulation rate of each Sunrise Ridge record (grey),
+with its background (dashed) and the fire events that we identified
+(dark red triangles). Lower three rows: number of charcoal fragments in
+each macrofossil sample of Dunwiddie (1986). This number is a
+concentration, because all samples of a core had the same volume, and
+the samples above the 75th percentile of each lake are filled. Each fire
+event of the Sunrise Ridge records is drawn as a faint line through all
+rows. Time runs from 7,000 cal BP to the present, which is the time span
+of the forest records. The correlations in the text were calculated over
+14 bins of 500 years, with p from circular shifts that keep the
+autocorrelation of each record (the smallest possible p is about 0.07).
+Among themselves, the Sunrise Ridge records were also only weakly
+correlated (Sunrise Lake and Shadow Lake +0.45, Sunrise Lake and Little
+Sunrise Lake +0.31, Shadow Lake and Little Sunrise Lake
++0.09). Script:
 [`R/figures/supp_charcoal_dunwiddie_walsh.R`](R/figures/supp_charcoal_dunwiddie_walsh.R).
 
 ## Fire between the two surveys
@@ -1546,10 +1446,10 @@ deviations per century, the climate change in calibration standard
 deviations, the turnover and lag rates in CCA distance per century, the
 turnover and the lag in CCA distance.
 
-**Turnover and lag by the duration of the lake-periods.** Turnover and
-lag are not divided by time, so a longer lake-period could have more of
-both only because it is longer. Table S18 gives their means (no model)
-for three classes of duration.
+**Turnover and lag by the duration of the lake-periods.** To test
+whether longer lake-periods had more turnover and larger lags only
+because they are longer, we compared the lake-periods among three
+classes of duration (Table S18).
 
 **Table S18. Turnover and lag of the lake-periods by duration.** Means
 over the Holocene lake-periods of each park and class of duration.
@@ -1582,19 +1482,10 @@ within a lake-period do not add to it, and it does not increase in
 proportion to time. This is one reason why the rates of the long
 lake-periods are low.
 
-**Model checks.** Each model of the comparison among period types is a
-generalized least-squares model with period type, park, and their
-interaction as fixed effects, a first-order autoregressive correlation
-between successive lake-periods of a lake, and a residual standard
-deviation for each period type and park (relative to the Anthropocene at
-MORA), multiplied by the square root of the variance that comes from the
-number of samples at t1 and t2 (see Methods of the main text). Table S19
-gives, for each model, the number of lake-periods and plot pairs, the
-number of coefficients, the residual degrees of freedom, the residual
-standard error, the parameters of the correlation and of the variances,
-the restricted log-likelihood, the AIC, and a descriptive R². Fig. S14
-shows the residuals. The coefficients of every model
-are on the **model details page →**
+**Model checks.** To check the models of the comparison among period
+types (see Methods of the main text), we report their fit (Table S19)
+and their residuals (Fig. S14). The coefficients of
+every model are on the **model details page →**
 [08_models](report/details/08_models.md).
 
 **Table S19. Comparison among period types: fit of the models.** Units,
@@ -1701,14 +1592,11 @@ their two climate windows (about 29 years). The totals are in CCA
 distance, the rates in CCA distance per century.
 
 **Sign of the lag and of the pace and direction effects with the three
-versions of the Holocene climate.** We repeated the analysis with the
-one-step correction and without correction of the Holocene climate
-(Appendix S4). Among these three analyses, only the climate-predicted
-positions of the Holocene communities and the climate periods can
-change, whereas the observed positions and the Anthropocene do not.
-Table S20 gives the number of lake-periods in which the lag, the pace
-effect, and the direction effect (not divided by time) had the same sign
-as in the main analysis.
+versions of the Holocene climate.** To assess whether the sign of the
+lag and of the two effects depends on the correction of the Holocene
+climate, we counted the lake-periods in which they had the same sign as
+in the main analysis, with the one-step correction and without
+correction (Table S20; see Appendix S4).
 [`R/sensitivity_paleoclimate.R`](R/sensitivity_paleoclimate.R) reruns
 stages 08 to 16 into `output_paleoclimate_sensitivity/` and leaves the
 main outputs untouched. Each run draws its climate periods from its own
@@ -1912,13 +1800,9 @@ years between the midpoints of their two climate windows (about 29
 years). Effects are in CCA distance (A, B) or CCA distance per century
 (C, D) per unit of the term.
 
-**Model checks.** Table S22 gives, for each of these models, the number
-of lake-periods or plot pairs in each park, the number of coefficients,
-the residual degrees of freedom, the residual standard error, the
-parameter of the autoregressive correlation (Holocene models), the ratio
-of the residual standard deviations of NOCA and MORA, the restricted
-log-likelihood, the AIC, and a descriptive R². The
-rows left out are on the **model details page →**
+**Model checks.** The fit of these models is given in Table
+S22. The rows left out are on the
+**model details page →**
 [08_models](report/details/08_models.md).
 
 **Table S22. Associations with fire: fit of the models.** MORA and NOCA,
@@ -2164,27 +2048,20 @@ years). Contributions are in CCA distance per century.
 **Species contributions not divided by time.** Per century, the species
 contributions of the Holocene are small partly because the lake-periods
 are long, and those of the Anthropocene are large partly because the
-time between the two surveys is short. We therefore also calculated them
-without dividing by time (Fig. S15, Table S25).
+time between the two surveys is short. To test whether this explains the
+difference between the two eras, we also calculated the species
+contributions without dividing by time (Fig. S15, Table S25).
 
 <img src="report/figures/png/figS15_species_contributions_total.png" alt="" width="100%" />
 
-The Holocene lake-periods span 200 to 2,600 years and the Anthropocene
-plot pairs 31 to 41.5 years. Not divided by time, a species contribution
-is how far the species moved the community between t1 and t2. The mean
-contributions of the Holocene were then as large as those of the
-Anthropocene (the largest was *Abies lasiocarpa* at NOCA, Holocene-S,
-contrib_climate, with +0.263 CCA distance). However, they varied so much
-among the few lake-periods that the confidence interval excluded zero
-for 1 of the 70 Holocene means (0 per century). In the Anthropocene, the
-confidence interval excluded zero for 12 means, against 12 per century,
-for the same species in the same parks. After adjustment with the Holm
-method, 0 of the 144 differences between period types were significant,
-against 5 per century. Thus, the large species contributions per century
-in the Anthropocene come mainly from changes that took place within a
-few decades. Within a lake-period, the species of the Holocene moved the
-communities about as far, but too variably among lake-periods to
-identify which species did so.
+Not divided by time, the mean contributions of the Holocene were as
+large as those of the Anthropocene. However, they varied so much among
+the few lake-periods that the confidence interval excluded zero for 1 of
+the 70 Holocene means (0 per century). In the Anthropocene, it excluded
+zero for 12 means, against 12 per century, for the same species in the
+same parks. Thus, within a lake-period, the species of the Holocene
+moved the communities about as far as those of the Anthropocene, but too
+variably among lake-periods to identify which species did so.
 
 **Fig. S15. Species contributions not divided by time.** As Fig. 8 of
 the main text, with the contribution of each species between t1 and t2
@@ -2243,22 +2120,21 @@ Stages and helpers:
 [`R/helpers/cca_transition_contributions.R`](R/helpers/cca_transition_contributions.R),
 [`R/figures/main_fig8_species.R`](R/figures/main_fig8_species.R).
 
-# Appendix S4. The analysis with a partial correction and without correction of the Holocene climate
+# Appendix S4. Sensitivity of the results to the correction of the Holocene climate
 
-The bias correction of the Holocene climate (Appendix S2) assumes that
-the difference between the climate products was constant through the
-Holocene. To assess how much the results depend on this correction, we
-repeated the analysis, from the Holocene climate onwards, with two other
-versions of the Holocene climate: with the one-step correction (step 2
-alone, i.e., CHELSAcruts to CHELSA V2.1), and without correction. Among
-the three analyses, only the climate-predicted positions of the Holocene
-communities and the climate periods can change. The observed positions
-do not change, and neither do community turnover and all quantities of
-the Anthropocene. We compared the lake-periods that the three analyses
-have in common, i.e., those with the same lake, period type, t1, and t2
-(Fig. S16, Table S20), the differences between period types (see Table
-S16 for the main analysis), and the associations with climate change and
-fire in the Holocene (Fig. S17).
+The bias correction of the Holocene climate assumes that the difference
+between the climate products was constant through the Holocene (Appendix
+S2). To assess how much the results depend on this correction, we
+repeated the analysis with two other versions of the Holocene climate:
+with the one-step correction (step 2 alone, i.e., CHELSAcruts to CHELSA
+V2.1), and without correction. Among the three analyses, only the
+climate-predicted positions of the Holocene communities and the climate
+periods can change, whereas the observed positions, community turnover,
+and all quantities of the Anthropocene do not. We compared three results
+among the analyses: the lag and the pace and direction effects of each
+lake-period (Fig. S16, Table S20), the differences between period types
+(Table S16), and the associations with climate change and fire in the
+Holocene (Fig. S17).
 [`R/sensitivity_paleoclimate.R`](R/sensitivity_paleoclimate.R) reruns
 stages 08 to 16 twice into `output_paleoclimate_sensitivity/` and leaves
 the main outputs untouched. The raw TraCE21k was the paleoclimate of the
@@ -2288,64 +2164,38 @@ and the other quantities are in CCA distance (left) or in CCA distance
 per century (right). Script:
 [`R/figures/supp_paleoclimate_sensitivity.R`](R/figures/supp_paleoclimate_sensitivity.R).
 
-**Lake-periods.** The three analyses had the same 10 climate periods
-(Table S6). They also had the same 24 lake-periods. The climate change
-of a lake-period differed from that without correction by a median of 8%
-with the two-step correction and of 13% with the one-step correction
-(Fig. S16A, B). The lag had the same sign in the main analysis and with
-the one-step correction in 13 of 14 lake-periods at MORA and in 10 of 10
-at NOCA. Without correction, it had the same sign as in the main
-analysis in 4 of 14 lake-periods at MORA and in 7 of 10 at NOCA (Fig.
-S16C, Table S20). Across the lake-periods, the lag, the pace effect, the
-direction effect, and their rates in the main analysis were correlated
-with those without correction with r = -0.53 to 0.37 at MORA and 0.38 to
-0.89 at NOCA, and those with the one-step correction with r = -0.26 to
-0.70 and 0.55 to 0.92.
+**Lake-periods.** The three analyses had the same 10 climate periods and
+the same 24 lake-periods. With the one-step correction, the lag had the
+same sign as in the main analysis in 13 of 14 lake-periods at MORA and
+in 10 of 10 at NOCA. Without correction, it had the same sign in 4 of 14
+lake-periods at MORA and in 7 of 10 at NOCA (Fig. S16C). The pace and
+direction effects are given in Table S20.
 
-**Differences between period types.** Of the 40 differences between the
-Anthropocene and a Holocene period type (ten quantities, two parks, and
-two Holocene period types; Table S16), 20 were significant in the main
-analysis. Of these, 19 were also significant, with the same sign, with
-the one-step correction, and 19 without correction. None of them changed
-sign. Of the 20 differences between the Holocene climate-change periods
-and the Holocene stability periods, 3 were significant in the main
-analysis (direction effect at NOCA; pace effect at MORA; pace effect
-(not divided by time) at MORA). Of these, 3 were also significant, with
-the same sign, with the one-step correction, and 0 without correction.
+**Differences between the Anthropocene and the Holocene.** Of the 20
+differences that were significant in the main analysis (Table S16), 19
+were also significant, with the same sign, with the one-step correction,
+and 19 without correction. None of them changed sign.
 
-**Associations with climate change and fire in the Holocene.** Of the 18
-coefficients of park, climate change, and fire activity in the Holocene
-models (Fig. S17), the confidence interval excluded zero for 6 in the
-main analysis, for 1 with the one-step correction, and for 8 without
-correction. Of the 6 coefficients of the main analysis, 6 had the same
-sign with the one-step correction, and 0 without correction: lag rate,
-site (noca minus mora) (+0.152 in the main analysis, +0.046 with the
-one-step correction, -0.133 without correction); lag rate, fire activity
-(-0.278 in the main analysis, -0.081 with the one-step correction,
-+0.291 without correction); pace effect, climate change rate (+0.376 in
-the main analysis, +0.389 with the one-step correction, -0.300 without
-correction); direction effect, fire activity (-0.202 in the main
-analysis, -0.169 with the one-step correction, +0.101 without
-correction); lag, site (noca minus mora) (+0.582 in the main analysis,
-+0.338 with the one-step correction, -0.676 without correction); pace
-effect (not divided by time), site (noca minus mora) (+0.431 in the main
-analysis, +0.225 with the one-step correction, -0.070 without
-correction).
+**Differences within the Holocene.** Of the 3 differences between the
+climate-change and the stability periods that were significant in the
+main analysis (direction effect at NOCA; pace effect at MORA; pace
+effect (not divided by time) at MORA), 3 were also significant, with the
+same sign, with the one-step correction, and 0 without correction.
 
-**Consequences for the conclusions.** All differences between the
-Anthropocene and the Holocene that were significant in the main analysis
-had the same sign in the three analyses. The comparison between the two
-eras therefore does not depend on the correction of the Holocene
-climate. The results that rest on the Holocene alone were less robust.
-Without correction, the lag had the opposite sign in 10 of 14
-lake-periods at MORA and in 3 of 10 at NOCA, 0 of the 3 significant
-differences between the Holocene climate-change and stability periods
-remained, and 6 of the 6 Holocene coefficients changed sign. With the
-one-step correction, 6 of these 6 coefficients kept their sign, but the
-confidence interval excluded zero for only 1 of them. We therefore
-interpret the lags of single lake-periods, the differences within the
-Holocene, and the associations with climate change and fire in the
-Holocene with caution.
+**Associations with climate change and fire in the Holocene.** Of the 6
+coefficients whose confidence interval excluded zero in the main
+analysis, 6 had the same sign with the one-step correction (1 with a
+confidence interval that excluded zero), and 0 without correction (0;
+Fig. S17).
+
+**Consequences for the conclusions.** The comparison between the
+Anthropocene and the Holocene does not depend on the correction of the
+Holocene climate: all differences that were significant in the main
+analysis had the same sign in the three analyses. The results that rest
+on the Holocene alone depend on it more, i.e., the lags of single
+lake-periods, the differences between the climate-change and the
+stability periods, and the associations with climate change and fire. We
+therefore interpret these three results with caution.
 
 <img src="report/figures/png/figS17_paleoclimate_slopes.png" alt="" width="100%" />
 
