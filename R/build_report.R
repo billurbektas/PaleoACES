@@ -54,8 +54,30 @@ appendix = gsub('(\\]\\(|src=")report/', '\\1', appendix, perl = TRUE)          
 if (grepl('](R/', appendix, fixed = TRUE) || grepl('```r', appendix, fixed = TRUE))
   stop('The appendix still holds a link to a script or a code block: mark it readme-only in report/README.Rmd.')
 write_text(appendix, here('report/appendix.md'))
+# Smaller tables in the Word appendix, so that the wide ones fit the page (Bills, 12 Nov 2026): pandoc's
+# default reference document with the table-cell style (Compact, used only in tables here) at 7 pt and
+# table-cell margins of 40 instead of 108 twips.
+reference_docx = function() {
+  dir = tempfile('reference'); dir.create(file.path(dir, 'x'), recursive = TRUE)
+  default = file.path(dir, 'default.docx')
+  system2(rmarkdown::pandoc_exec(), c('-o', shQuote(default), '--print-default-data-file', 'reference.docx'))
+  unzip(default, exdir = file.path(dir, 'x'))
+  styles = file.path(dir, 'x', 'word', 'styles.xml')
+  x = read_text(styles)
+  y = sub('(?s)(<w:style [^>]*w:styleId="Compact">.*?</w:pPr>)', '\\1<w:rPr><w:sz w:val="14" /><w:szCs w:val="14" /></w:rPr>',
+    x, perl = TRUE)
+  y = gsub('<w:(left|right) w:w="108" w:type="dxa" />', '<w:\\1 w:w="40" w:type="dxa" />', y, perl = TRUE)
+  if (identical(x, y) || !grepl('(?s)w:styleId="Compact">.*?<w:sz w:val="14"', y, perl = TRUE))
+    stop('The table style of the pandoc reference document has changed: update reference_docx() in R/build_report.R.')
+  write_text(y, styles)
+  reference = file.path(dir, 'reference.docx')
+  owd = setwd(file.path(dir, 'x')); on.exit(setwd(owd))
+  zip(reference, list.files(all.files = TRUE, recursive = TRUE, no.. = TRUE), flags = '-qX')
+  reference
+}
 rmarkdown::pandoc_convert(here('report/appendix.md'), to = 'docx', from = 'gfm',
-  output = here('report/PaleoACES_appendix.docx'), options = c('--toc', '--toc-depth=3'), wd = here('report'))
+  output = here('report/PaleoACES_appendix.docx'),
+  options = c('--toc', '--toc-depth=3', paste0('--reference-doc=', reference_docx())), wd = here('report'))
 # A self-contained HTML copy of the appendix for sharing outside GitHub.
 options(paleoaces.report_output_dir = here('report'))
 rmarkdown::render(here('report/README.Rmd'), output_format = rmarkdown::html_document(toc = TRUE,

@@ -1,4 +1,4 @@
-# Fig. S12 (appendix figure A4 until the README was reordered; Bills, 11 Nov 2026): do the charcoal peaks of the Walsh
+# Fig. S13 (appendix figure A4 until the README was reordered; Bills, 11 Nov 2026): do the charcoal peaks of the Walsh
 # et al. (2017) Sunrise Ridge cores, the source of the MORA fire values, line up
 # with the charcoal in the Dunwiddie cores of the MORA vegetation lakes? A
 # descriptive comparison: the Walsh charcoal accumulation rates with their tapas
@@ -8,7 +8,8 @@
 # also writes the numbers quoted with the figure: Spearman correlations of
 # 500-year bin means, tested against circular shifts of the Walsh series (which
 # keep each record's autocorrelation), and the share of Walsh events with a
-# Dunwiddie peak within 200 years against the share expected by chance.
+# Dunwiddie peak within 200 years against the share expected by chance, and the
+# correlations of the Sunrise Ridge cores and of the Dunwiddie records among themselves.
 source(here::here('R/helpers/config.R'), local = TRUE)
 suppressPackageStartupMessages({library(here); library(tidyverse)})
 source(here('R/helpers/figure_style.R'), local = TRUE)
@@ -65,7 +66,16 @@ matching = bind_rows(lapply(names(lake_names), function(L) {
   tibble(record = lake_names[[L]], walsh_events = nrow(events), matched = hit(events$age),
     chance = mean(replicate(2000, hit(runif(nrow(events), span[1], span[2])))))
 }))
-write_csv(bind_rows(correlations, benchmarks), out('figures/charcoal_dunwiddie_walsh_correlations.csv'))
+# The three forest records against one another, in the same way as the Sunrise
+# Ridge cores (Bills, 12 Nov 2026: quoted in Appendix S3.5).
+forest_bins = dunwiddie |> group_by(lake, t = bin_mid(age)) |> summarise(v = mean(fragments), .groups = 'drop')
+forest_pairs = bind_rows(lapply(combn(names(lake_names), 2, simplify = FALSE), function(p) {
+  x = forest_bins |> filter(lake == p[1]) |> select(t, a = v) |>
+    inner_join(forest_bins |> filter(lake == p[2]) |> select(t, b = v), by = 't') |> arrange(t)
+  shift_test(x$a, x$b) |>
+    mutate(record = paste(lake_names[p], collapse = ' and '), against = 'Dunwiddie record against record', .before = 1)
+}))
+write_csv(bind_rows(correlations, benchmarks, forest_pairs), out('figures/charcoal_dunwiddie_walsh_correlations.csv'))
 write_csv(matching, out('figures/charcoal_dunwiddie_walsh_event_matching.csv'))
 
 # Figure ---------------------------------------------------------------------------
@@ -92,7 +102,7 @@ figure = ggplot() +
     panel.grid.minor = element_blank(), panel.grid.major.y = element_blank(), legend.position = 'bottom',
     legend.text = element_text(size = 15))
 if (render_figures) {
-  ggsave(fig('supplementary', 'figS12_charcoal_walsh_dunwiddie.pdf'), figure, width = 16, height = 11, device = cairo_pdf)
-  ggsave(fig('supplementary', 'figS12_charcoal_walsh_dunwiddie.png'), figure, width = 16, height = 11, dpi = 300)
+  ggsave(fig('supplementary', 'figS13_charcoal_walsh_dunwiddie.pdf'), figure, width = 16, height = 11, device = cairo_pdf)
+  ggsave(fig('supplementary', 'figS13_charcoal_walsh_dunwiddie.png'), figure, width = 16, height = 11, dpi = 300)
 }
-cat('Fig. S12: Dunwiddie and Walsh charcoal drawn.\n')
+cat('Fig. S13: Dunwiddie and Walsh charcoal drawn.\n')

@@ -29,8 +29,9 @@ Step,File,Description,Size (kB)
 06_paleo_samples,paleo_macrofossil_long.csv,All macrofossil measurements with ages,108
 06_paleo_samples,paleo_occ.csv,Macrofossil presence by sample,762
 06_paleo_samples,paleo_sample_depths.csv,Sample depth and median Bacon age,95
-07_climate_products,climate_bias_correction_factors.csv,"Two-step correction per park, month and variable: TraCE21k to CHELSAcruts (1900-1990) and CHELSAcruts to V2.1 (1979-2016) (Fig. S6)",13
+07_climate_products,climate_bias_correction_factors.csv,"Two-step correction per park, month and variable: TraCE21k to CHELSAcruts (1900-1990) and CHELSAcruts to V2.1 (1979-2016) (Fig. S7)",13
 07_climate_products,climate_products_monthly.csv,Monthly climatology of each product and window at each place,120
+07_climate_products,climate_products_point_medians.csv,"Median and quartiles over the plots and the 5 km disc cells of TraCE21k timeID 20, CHELSAcruts and V2.1 1979-1990, per park, month and variable, without correction (Fig. S6)",34
 07_climate_products,climate_products_points.csv,"Plots, lake pixels and 5 km disc cells the four products are read at",50
 07_climate_products,climate_products_values.csv,"Each product's monthly values per year at the plot means, lake pixels and disc means",2565
 07_climate_products,climate_trace_cruts_check.csv,TraCE21k timeID 20 against CHELSAcruts 1901-1990 over the same cells (Table S5),21
@@ -118,7 +119,7 @@ Step,File,Description,Size (kB)
 14_era_models,era_comparison/era_model_summary.csv,"Era-comparison GLS fits, means and contrasts per response",2
 14_era_models,era_comparison/era_predictions.csv,"Era-comparison GLS fits, means and contrasts per response",597
 14_era_models,era_comparison/model_results.txt,"Era-comparison GLS fits, means and contrasts per response",19
-14_era_models,era_comparison/primary_fits.rds,"Era-comparison GLS fits, means and contrasts per response",676
+14_era_models,era_comparison/primary_fits.rds,"Era-comparison GLS fits, means and contrasts per response",674
 15_predictor_models,community_predictor_models/model_coefficients.csv,Within-era predictor GLS fits,6
 15_predictor_models,community_predictor_models/model_exclusions.csv,Within-era predictor GLS fits,45
 15_predictor_models,community_predictor_models/model_performance.csv,Within-era predictor GLS fits,2

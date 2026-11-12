@@ -41,23 +41,23 @@ for the report.
 | R/pipeline/04_modern_climate.R | pipeline | Modern climate: CHELSA V2.1 survey-window climate for every paired plot. | 368 |
 | R/pipeline/05_age_depth_models.R | pipeline | Age-depth models: the four Bacon chronologies (Appendix S1). | 510 |
 | R/pipeline/06_paleo_samples.R | pipeline | Paleo samples: original macrofossil sample identities, presences and the | 33 |
-| R/pipeline/07_climate_products.R | pipeline | Climate products: four CHELSA climate products at the plots and around the | 268 |
+| R/pipeline/07_climate_products.R | pipeline | Climate products: four CHELSA climate products at the plots and around the | 291 |
 | R/pipeline/08_paleo_climate.R | pipeline | Paleo climate: CHELSA-TraCE21k monthly climate at each lake and century, | 220 |
 | R/pipeline/09_fire_records.R | pipeline | Fire records (Appendix S3): tapas event detection for the three MORA charcoal | 406 |
 | R/pipeline/10_species_occurrences.R | pipeline | 10_species_occurrences.R | 622 |
 | R/pipeline/11_cca.R | pipeline | 11_cca.R - the pooled CCA and everything derived from it. NO FIGURES. | 665 |
 | R/pipeline/12_climate_eras_fire_frequency.R | pipeline | 12_climate_eras_fire_frequency.R | 194 |
 | R/pipeline/13_tracking.R | pipeline | Tracking: native-century Holocene positions, tracking metrics for both eras, | 85 |
-| R/pipeline/14_era_models.R | pipeline | Era models (PLAN.md section 5, Step 5a): Holocene stability periods, | 140 |
+| R/pipeline/14_era_models.R | pipeline | Era models (PLAN.md section 5, Step 5a): Holocene stability periods, | 141 |
 | R/pipeline/15_predictor_models.R | pipeline | Explanatory models (PLAN.md section 5, Step 5). | 131 |
 | R/pipeline/16_contributions.R | pipeline | Species contributions (PLAN.md section 5, Step 6): which species led the | 143 |
 | R/figures/supp_age_depth_models.R | figure | Figures S4 (four Bacon age-depth models) and S5 (Panther Potholes 210Pb | 109 |
 | R/figures/supp_cca_scaling.R | figure | supp_cca_scaling.R - one CCA drawn at scaling 1 and scaling 2 | 108 |
-| R/figures/supp_charcoal_dunwiddie_walsh.R | figure | Fig. S12 (appendix figure A4 until the README was reordered; Bills, 11 Nov 2026): do the charcoal peaks of the Walsh | 98 |
+| R/figures/supp_charcoal_dunwiddie_walsh.R | figure | Fig. S13 (appendix figure A4 until the README was reordered; Bills, 11 Nov 2026): do the charcoal peaks of the Walsh | 108 |
 | R/figures/supp_climate_correlations.R | figure | supp_climate_correlations.R | 628 |
-| R/figures/supp_climate_products.R | figure | Fig. S6 (Appendix S2, Bills, 11 Nov 2026): the two steps of the bias | 59 |
+| R/figures/supp_climate_products.R | figure | Figs. S6 and S7 (Appendix S2), from the outputs of R/pipeline/07_climate_products.R. | 80 |
 | R/figures/supp_climate_windows.R | figure | Compare the actual plot-specific survey windows with V2.1 1979-2021. | 174 |
-| R/figures/supp_paleoclimate_sensitivity.R | figure | Figs. S16 and S17 (Appendix S4, Bills, 11 Nov 2026): the three paleoclimates | 137 |
+| R/figures/supp_paleoclimate_sensitivity.R | figure | Figs. S17, S18 and S19 (Appendix S4, Bills, 11 and 12 Nov 2026): the three paleoclimates | 189 |
 | R/figures/supp_sample_selection.R | figure | Show which plots and core samples reach CCA, starting with the supplied data. | 368 |
 | R/figures/supp_species_through_time.R | figure | supp_species_through_time.R - STEP 4, the species half | 199 |
 | R/figures/supp_tracking_transitions.R | figure | Appendix figures of the lake-period values over time (redrawn on lake-periods | 86 |
@@ -96,7 +96,7 @@ Every file under `output/` is declared in `R/helpers/paths.R`; a script
 cannot write an undeclared output. Folders hold one file per table, in
 the folder of the step that writes it.
 
-**159 output files** (excluding the climate and age-draw cache).
+**160 output files** (excluding the climate and age-draw cache).
 
 | Step | File | Description | Size (kB) |
 |:---|:---|:---|---:|
@@ -130,8 +130,9 @@ the folder of the step that writes it.
 | 06_paleo_samples | paleo_macrofossil_long.csv | All macrofossil measurements with ages | 108 |
 | 06_paleo_samples | paleo_occ.csv | Macrofossil presence by sample | 762 |
 | 06_paleo_samples | paleo_sample_depths.csv | Sample depth and median Bacon age | 95 |
-| 07_climate_products | climate_bias_correction_factors.csv | Two-step correction per park, month and variable: TraCE21k to CHELSAcruts (1900-1990) and CHELSAcruts to V2.1 (1979-2016) (Fig. S6) | 13 |
+| 07_climate_products | climate_bias_correction_factors.csv | Two-step correction per park, month and variable: TraCE21k to CHELSAcruts (1900-1990) and CHELSAcruts to V2.1 (1979-2016) (Fig. S7) | 13 |
 | 07_climate_products | climate_products_monthly.csv | Monthly climatology of each product and window at each place | 120 |
+| 07_climate_products | climate_products_point_medians.csv | Median and quartiles over the plots and the 5 km disc cells of TraCE21k timeID 20, CHELSAcruts and V2.1 1979-1990, per park, month and variable, without correction (Fig. S6) | 34 |
 | 07_climate_products | climate_products_points.csv | Plots, lake pixels and 5 km disc cells the four products are read at | 50 |
 | 07_climate_products | climate_products_values.csv | Each product’s monthly values per year at the plot means, lake pixels and disc means | 2565 |
 | 07_climate_products | climate_trace_cruts_check.csv | TraCE21k timeID 20 against CHELSAcruts 1901-1990 over the same cells (Table S5) | 21 |
@@ -219,7 +220,7 @@ the folder of the step that writes it.
 | 14_era_models | era_comparison/era_model_summary.csv | Era-comparison GLS fits, means and contrasts per response | 2 |
 | 14_era_models | era_comparison/era_predictions.csv | Era-comparison GLS fits, means and contrasts per response | 597 |
 | 14_era_models | era_comparison/model_results.txt | Era-comparison GLS fits, means and contrasts per response | 19 |
-| 14_era_models | era_comparison/primary_fits.rds | Era-comparison GLS fits, means and contrasts per response | 676 |
+| 14_era_models | era_comparison/primary_fits.rds | Era-comparison GLS fits, means and contrasts per response | 674 |
 | 15_predictor_models | community_predictor_models/model_coefficients.csv | Within-era predictor GLS fits | 6 |
 | 15_predictor_models | community_predictor_models/model_exclusions.csv | Within-era predictor GLS fits | 45 |
 | 15_predictor_models | community_predictor_models/model_performance.csv | Within-era predictor GLS fits | 2 |
@@ -275,7 +276,7 @@ built for this report).
 | Folder          | Files |
 |:----------------|------:|
 | main            |    14 |
-| supplementary   |    29 |
+| supplementary   |    31 |
 | worked_examples |     3 |
 
 <sub>Table file:

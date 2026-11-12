@@ -193,6 +193,29 @@ values = bind_rows(lapply(seq_len(nrow(present)), function(i) {
 stopifnot(!anyNA(values$value))
 write_csv(values, out('climate_products_values.csv'))
 
+# Medians over the points, without correction (Fig. S6, Bills, 12 Nov 2026): the
+# monthly value of each product of the correction at every plot and every cell
+# within 5 km of the lakes, averaged over the years the three products share
+# (TraCE21k timeID 20, the mean of 1900 to 1990, and CHELSAcruts and V2.1 over
+# 1979 to 1990), then the median and quartiles over the points of each place.
+COMMON_YEARS = 1979:1990
+common = present |> filter((product == 'trace' & year == 20) | (product %in% c('cruts', 'v21') & year %in% COMMON_YEARS))
+spread_points = points$kind != 'lake'
+point_medians = bind_rows(lapply(split(common, list(common$product, common$variable, common$month), drop = TRUE),
+  function(g) {
+    v = rowMeans(do.call(cbind, lapply(g$file, \(f) scan(f, skip = 1, quiet = TRUE))))
+    stopifnot(length(v) == nrow(points))
+    by_place = split(v[spread_points], place[spread_points])
+    tibble(product = g$product[1], variable = g$variable[1], month = g$month[1],
+      years = if (g$product[1] == 'trace') '1900-1990' else sprintf('%d-%d', min(g$year), max(g$year)),
+      place = names(by_place), n_points = lengths(by_place), median = vapply(by_place, median, numeric(1)),
+      q25 = vapply(by_place, quantile, numeric(1), .25), q75 = vapply(by_place, quantile, numeric(1), .75))
+  })) |>
+  left_join(distinct(tibble(place, site = points$site)), by = 'place')
+# Rule: every product, variable and month at the plots and the disc of both parks.
+stopifnot(nrow(point_medians) == 3 * length(VARS) * 12 * 4, !anyNA(point_medians$median))
+write_csv(point_medians, out('climate_products_point_medians.csv'))
+
 # Monthly climatology of each product over each window compared.
 windows_compared = tribble(~product, ~window, ~first, ~last,
   'trace', 'timeID 20 (1900-1990)', 20, 20,
