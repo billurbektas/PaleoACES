@@ -1,6 +1,14 @@
 # Helpers for the report (report/README.Rmd and report/details/*.Rmd).
 # Figures are shown from report/figures/; tables are read from output/ and
 # also saved under report/tables/; code is quoted verbatim from the scripts.
+#
+# The report is knitted once and then split into two documents by R/build_report.R:
+# the repository README.md (with code, script links and the main-text figures) and
+# report/appendix.md (the supplementary appendix of the manuscript, without them).
+# Text between <!-- readme-only --> and <!-- /readme-only --> goes to the README only,
+# text between <!-- appendix-only --> and <!-- /appendix-only --> to the appendix only.
+# The helpers below mark the links they write with <!-- link-only -->, which is also
+# left out of the appendix (a separate name, so that it can sit inside a readme-only block).
 source(here::here('R/helpers/config.R'), local = TRUE)
 options(knitr.kable.NA = '—')
 
@@ -50,8 +58,8 @@ show_table = function(x, name, caption = NULL, digits = 3, ...) {
   knitr::asis_output(paste(c(
     if (!is.null(caption)) paste0('\n', caption, '\n'),
     knitr::kable(x, digits = digits, format = 'pipe', ...),
-    '', paste0('<sub>Table file: ', repo_link(file.path('report/tables', paste0(name, '.csv')),
-      paste0(name, '.csv')), '</sub>'), ''), collapse = '\n'))
+    '', paste0('<!-- link-only --><sub>Table file: ', repo_link(file.path('report/tables', paste0(name, '.csv')),
+      paste0(name, '.csv')), '</sub><!-- /link-only -->'), ''), collapse = '\n'))
 }
 
 read_output = function(name, ...) readr::read_csv(out(name), show_col_types = FALSE, ...)
@@ -68,5 +76,6 @@ code_snippet = function(file, name) {
 }
 
 details_link = function(page, label = 'Details') {
-  sprintf('**%s →** %s', label, repo_link(file.path('report/details', paste0(page, '.md')), page))
+  sprintf('<!-- link-only -->**%s →** %s<!-- /link-only -->', label,
+    repo_link(file.path('report/details', paste0(page, '.md')), page))
 }

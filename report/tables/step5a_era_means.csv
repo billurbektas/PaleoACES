@@ -1,4 +1,4 @@
-Response,Park,Period type,n,Fitted mean,SE,df,95% CI
+Quantity,Park,Period type,n,Estimated mean,SE,df,95% CI
 Climate change rate,MORA,Holocene-S,7,0.06730706721937062,0.02785804040987372,623,0.013 to 0.122
 Climate change rate,MORA,Holocene-C,7,0.0953521399571298,0.01742544384554343,623,0.061 to 0.130
 Climate change rate,MORA,Anthropocene,328,2.5964635974638677,0.04633305065300384,623,2.505 to 2.687
@@ -17,12 +17,12 @@ Turnover rate,MORA,Anthropocene,328,0.9294143853347252,0.04554702677657391,623,0
 Turnover rate,NOCA,Holocene-S,5,0.14705301334888668,0.09150115209164156,623,-0.033 to 0.327
 Turnover rate,NOCA,Holocene-C,5,0.06205031575128844,0.02096391839007992,623,0.021 to 0.103
 Turnover rate,NOCA,Anthropocene,277,2.1280436545776924,0.11437850567069992,623,1.903 to 2.353
-"Displacement (turnover, not divided by time)",MORA,Holocene-S,7,0.33426924502213573,0.1032766442432852,623,0.131 to 0.537
-"Displacement (turnover, not divided by time)",MORA,Holocene-C,7,0.22299180418494777,0.06857224075438373,623,0.088 to 0.358
-"Displacement (turnover, not divided by time)",MORA,Anthropocene,328,0.35316609240317437,0.01727275434589361,623,0.319 to 0.387
-"Displacement (turnover, not divided by time)",NOCA,Holocene-S,5,0.506285827987406,0.1328993907533352,623,0.245 to 0.767
-"Displacement (turnover, not divided by time)",NOCA,Holocene-C,5,0.3657373629879216,0.01399168795581023,623,0.338 to 0.393
-"Displacement (turnover, not divided by time)",NOCA,Anthropocene,277,0.6777803664829247,0.03654251671279857,623,0.606 to 0.750
+Turnover (not divided by time),MORA,Holocene-S,7,0.33426924502213573,0.1032766442432852,623,0.131 to 0.537
+Turnover (not divided by time),MORA,Holocene-C,7,0.22299180418494777,0.06857224075438373,623,0.088 to 0.358
+Turnover (not divided by time),MORA,Anthropocene,328,0.35316609240317437,0.01727275434589361,623,0.319 to 0.387
+Turnover (not divided by time),NOCA,Holocene-S,5,0.506285827987406,0.1328993907533352,623,0.245 to 0.767
+Turnover (not divided by time),NOCA,Holocene-C,5,0.3657373629879216,0.01399168795581023,623,0.338 to 0.393
+Turnover (not divided by time),NOCA,Anthropocene,277,0.6777803664829247,0.03654251671279857,623,0.606 to 0.750
 Lag rate,MORA,Holocene-S,7,0.00795229429744352,0.0160624094625861,623,-0.024 to 0.039
 Lag rate,MORA,Holocene-C,7,0.00291696207445634,0.02233859292015306,623,-0.041 to 0.047
 Lag rate,MORA,Anthropocene,328,0.5535300705036645,0.06091073203611488,623,0.434 to 0.673

@@ -87,7 +87,8 @@ for the report.
 | R/tests/test_tracking_predictor_models.R | test | Independent GLS algebra for the lake-period models (PLAN.md Steps 5 and 5a): | 58 |
 | R/tests/test_walsh_fire_reproduction.R | test | Offline gate for the official Walsh source-method reproduction. | 91 |
 
-<sub>Table file: [scripts.csv](../tables/scripts.csv)</sub>
+<sub>Table file:
+[scripts.csv](../tables/scripts.csv)</sub>
 
 ## Outputs
 
@@ -259,7 +260,8 @@ the folder of the step that writes it.
 | report | test_survey_year_anomaly.csv | Tables computed only for the report | 9 |
 | worked_examples | fire_event_detection_lake_audit.csv | Tables behind the worked examples | 2 |
 
-<sub>Table file: [outputs.csv](../tables/outputs.csv)</sub>
+<sub>Table file:
+[outputs.csv](../tables/outputs.csv)</sub>
 
 The cache (`output/cache/`) holds the downloaded CHELSA V2.1 and
 CHELSA-TraCE21k chunks and the 1,000 seeded Bacon age draws per sample;

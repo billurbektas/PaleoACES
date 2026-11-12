@@ -1,4 +1,4 @@
-Response,Era,Model,MORA,NOCA,Coefficients,Residual df,Residual SE,AR(1),SD ratio NOCA/MORA,Log-likelihood (REML),AIC,Descriptive R²,Warnings
+Quantity,Era,Model,MORA,NOCA,Coefficients,Residual df,Residual SE,AR(1),SD ratio NOCA/MORA,Log-likelihood (REML),AIC,Descriptive R²,Warnings
 Lag rate,Holocene,site + climate_rate + fire_activity,14,10,4,20,0.03031720916255349,-0.09134147922959727,5.158503113667572,28.0980305738149,-42.1960611476298,0.3348846825844646,none
 Lag rate,Anthropocene,site + burned,328,277,3,602,1.1031401557093683,,2.127702194440233,-1128.1827462645886,2266.365492529177,0.03094892337857235,none
 Pace effect,Holocene,site + climate_rate + fire_activity,10,10,4,16,0.01611915632756128,-0.02198527307031761,9.563685316338274,26.6267736370733,-39.2535472741466,0.23036600534833507,none

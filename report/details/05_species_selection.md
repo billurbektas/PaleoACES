@@ -35,7 +35,8 @@ consolidation](05_species_occurrence_consolidation.md).
 | Betula papyrifera | 0 | 0 | 0 | 0 | 4 | 6 | FALSE |
 | Larix lyallii | 0 | 0 | 0 | 0 | 7 | 9 | FALSE |
 
-<sub>Table file: [cca_taxa.csv](../tables/cca_taxa.csv)</sub>
+<sub>Table file:
+[cca_taxa.csv](../tables/cca_taxa.csv)</sub>
 
 <img src="../figures/png/species_through_time.png" alt="" width="1650" />
 

@@ -36,7 +36,8 @@ checks against the stored files.
 | PantherPotholes | primary | 42 | 3.5.2 | Cores/PantherPotholes/PantherPotholes.csv | Cores/PantherPotholes/PantherPotholes_169.out | 2026-11-09 20:32:14 UTC |
 | PantherPotholes_pb210err | configured +-10-year 210Pb sensitivity | 42 | 3.5.2 | Cores/PantherPotholes_pb210err/PantherPotholes_pb210err.csv | Cores/PantherPotholes_pb210err/PantherPotholes_pb210err_169.out | 2026-11-09 20:32:14 UTC |
 
-<sub>Table file: [bacon_runs.csv](../tables/bacon_runs.csv)</sub>
+<sub>Table file:
+[bacon_runs.csv](../tables/bacon_runs.csv)</sub>
 
 ## ²¹⁰Pb error values
 

@@ -24,29 +24,29 @@ Back to the [report](../../README.md#climatecommunity-space). Script:
 | NOCA | past    |           305 |         277 |          — |
 | NOCA | present |           305 |           — |        277 |
 
-<sub>Table file: [cca_counts.csv](../tables/cca_counts.csv)</sub>
+<sub>Table file:
+[cca_counts.csv](../tables/cca_counts.csv)</sub>
 
 ## Model
-
 
     Call: cca(formula = species_past_final ~ MSpT + SP, data = env_past_final)
 
                   Inertia Proportion Rank
-    Total          3.4652     1.0000     
+    Total          3.4652     1.0000
     Constrained    0.4452     0.1285    2
     Unconstrained  3.0200     0.8715   13
 
     Inertia is scaled Chi-square
 
     Eigenvalues for constrained axes:
-       CCA1    CCA2 
-    0.29347 0.15174 
+       CCA1    CCA2
+    0.29347 0.15174
 
     Eigenvalues for unconstrained axes:
-       CA1    CA2    CA3    CA4    CA5    CA6    CA7    CA8    CA9   CA10   CA11 
-    0.4920 0.3791 0.3572 0.3393 0.2740 0.2409 0.2118 0.1811 0.1450 0.1277 0.1203 
-      CA12   CA13 
-    0.1044 0.0471 
+       CA1    CA2    CA3    CA4    CA5    CA6    CA7    CA8    CA9   CA10   CA11
+    0.4920 0.3791 0.3572 0.3393 0.2740 0.2409 0.2118 0.1811 0.1450 0.1277 0.1203
+      CA12   CA13
+    0.1044 0.0471
 
 **Climate variables: marginal tests, inflation and biplot scores.**
 
