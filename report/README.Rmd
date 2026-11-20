@@ -1074,7 +1074,7 @@ change, the distance between the climates at the two ends, and (B) its rate; (C)
 the distance the community moved in CCA space, and (D) its rate; (E) the climate-community lag, the change in
 mismatch between the two ends (M at t2 minus M at t1), and (F) its rate. The fitted mean is printed beside each
 point. B and D are on log axes, where equal distances are equal folds, and the arrow gives the fold between the
-Anthropocene and the Holocene climate-change means. A, C, E and F are on linear axes without folds. Their connectors
+Anthropocene and the Holocene climate-change means. `r below = means[means$response %in% c('climate_rate', 'turnover_rate') & means$conf_low <= 0, ]; if (nrow(below)) paste0(if (nrow(below) > 1) 'The intervals of ' else 'The interval of ', paste(sprintf('the %s at %s in %s', c('Holocene-S' = 'Holocene stability periods', 'Holocene-C' = 'Holocene climate-change periods', Anthropocene = 'Anthropocene')[as.character(below$period_type)], below$site, c(climate_rate = 'B', turnover_rate = 'D')[below$response]), collapse = ' and '), if (nrow(below) > 1) ' reach' else ' reaches', ' below zero, which a log axis cannot show. Such an interval runs to the bottom of the panel and ends in an arrow.') else ''` A, C, E and F are on linear axes without folds. Their connectors
 show the three differences between period types within each park: on the lower level, the Holocene stability against
 the Holocene climate-change periods (left) and the Holocene climate-change periods against the Anthropocene (right), and
 on the upper level, the Holocene stability periods against the Anthropocene. A star marks a difference that differs

@@ -76,13 +76,25 @@ era_means_panel = function(r, tag, data, k = 1, kl = k, kt = 1, gap = .045 + .01
   xs = function(x) { p = round(x); 1 + (p - 1) * park_gap + (x - p) * spread }
   d = data$means |> dplyr::filter(response == r) |> dplyr::mutate(x = xs(x))
   log_axis = r %in% data$log_responses
+  # The intervals are symmetric on the linear scale, so a small positive mean can
+  # have a lower bound at or below zero, which a log axis cannot show. Such an
+  # interval runs to the bottom of the axis and ends in an arrow, without a lower
+  # cap (Bills, 20 Nov 2026). The arrow ends level with the lowest value drawn,
+  # inside the axis expansion, so that the panel border does not clip its head.
+  below = log_axis & d$conf_low <= 0
+  d$arrow_end = min(d$conf_low[d$conf_low > 0], d$estimate)
   p = ggplot(d, aes(x, estimate)) +
     (if (!log_axis) geom_hline(yintercept = 0, color = 'grey60', linetype = 'dashed')) +
     # The fitted mean beside its point, in the park colour, on a white backing
     # that hides the zero line but sits under the intervals.
     geom_label(aes(x = x + gap, label = label, color = site), hjust = 0, size = 5.2 * kl, fontface = 'bold',
       fill = 'white', label.size = 0, label.padding = unit(.06, 'lines')) +
-    geom_errorbar(aes(ymin = conf_low, ymax = conf_high, color = site), width = cap, linewidth = 1.1 * k) +
+    geom_errorbar(data = d[!below, ], aes(ymin = conf_low, ymax = conf_high, color = site), width = cap,
+      linewidth = 1.1 * k) +
+    geom_errorbar(data = d[below, ], aes(ymin = conf_high, ymax = conf_high, color = site), width = cap,
+      linewidth = 1.1 * k) +
+    geom_segment(data = d[below, ], aes(x = x, xend = x, y = conf_high, yend = arrow_end, color = site), linewidth = 1.1 * k,
+      arrow = arrow(length = unit(.22, 'cm'), type = 'closed')) +
     geom_point(aes(shape = period_type, fill = site), size = 5 * k, color = 'grey10', stroke = .6 * k) +
     scale_x_continuous(breaks = c(1, 1 + park_gap), labels = ERA_SITES, limits = c(xmin, xmax), expand = c(0, 0)) +
     scale_shape_manual(values = PERIOD_TYPE_SHAPES, name = NULL, breaks = ERA_TYPES, drop = FALSE,
