@@ -4,7 +4,8 @@
 # (right): A and B the climate change, C and D the observed community turnover
 # (the displacement), E and F the climate-community lag. The climate change
 # and turnover rates are on log axes with the Holocene-C fold, the others on
-# linear axes with contrast connectors. The panels are drawn by
+# linear axes with connectors for the three differences between period types
+# of each park (Holocene-C minus Holocene-S added by Bills, 20 Nov 2026). The panels are drawn by
 # R/helpers/era_means_figure.R, shared with Figure 6.
 source(here::here('R/helpers/config.R'), local = TRUE)
 suppressPackageStartupMessages({library(here); library(tidyverse); library(patchwork)})

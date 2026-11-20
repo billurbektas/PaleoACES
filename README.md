@@ -1460,27 +1460,30 @@ two ends (M at t2 minus M at t1), and (F) its rate. The fitted mean is
 printed beside each point. B and D are on log axes, where equal
 distances are equal folds, and the arrow gives the fold between the
 Anthropocene and the Holocene climate-change means. A, C, E and F are on
-linear axes without folds. Their connectors link the Anthropocene to the
-Holocene climate-change periods (lower) and to the Holocene stability
-periods (upper) within each park, and a star marks a contrast that
-differs from zero (two-sided t test, Holm-adjusted p \< 0.05 across the
-six period-type contrasts of each response, three per park). The
-intervals are unadjusted. The totals in A, C and E build up over a whole
-lake-period in the Holocene and over the few decades between the two
-surveys in the Anthropocene. Means come from the model response ~ period
-type × site, with an AR(1) correlation within each lake and weights for
-the number of samples at each end, fitted on 7 climate-change and 7
-stability lake-periods and 328 plot pairs at MORA, and 5, 5 and 277 at
-NOCA. The lake-periods of the Holocene climate-change periods span 200
-to 900 years, and those of the stability periods 200 to 2600 years,
-between t1 and t2. The Anthropocene plot pairs span 27.5 to 32.5 years
-between the midpoints of their two climate windows (about 29 years).
-Longer windows give lower rates, so the rates of the two eras are not on
-equal footing. Units: the climate change rate in calibration standard
-deviations per century, the climate change in calibration standard
-deviations, the turnover and lag rates in CCA distance per century, the
-turnover and the lag in CCA distance. The Holocene climate is
-CHELSA-TraCE21k after the bias correction of Appendix S2.
+linear axes without folds. Their connectors show the three differences
+between period types within each park: on the lower level, the Holocene
+stability against the Holocene climate-change periods (left) and the
+Holocene climate-change periods against the Anthropocene (right), and on
+the upper level, the Holocene stability periods against the
+Anthropocene. A star marks a difference that differs from zero
+(two-sided t test, Holm-adjusted p \< 0.05 across the six differences of
+each response, three per park). The intervals are unadjusted. The totals
+in A, C and E build up over a whole lake-period in the Holocene and over
+the few decades between the two surveys in the Anthropocene. Means come
+from the model response ~ period type × site, with an AR(1) correlation
+within each lake and weights for the number of samples at each end,
+fitted on 7 climate-change and 7 stability lake-periods and 328 plot
+pairs at MORA, and 5, 5 and 277 at NOCA. The lake-periods of the
+Holocene climate-change periods span 200 to 900 years, and those of the
+stability periods 200 to 2600 years, between t1 and t2. The Anthropocene
+plot pairs span 27.5 to 32.5 years between the midpoints of their two
+climate windows (about 29 years). Longer windows give lower rates, so
+the rates of the two eras are not on equal footing. Units: the climate
+change rate in calibration standard deviations per century, the climate
+change in calibration standard deviations, the turnover and lag rates in
+CCA distance per century, the turnover and the lag in CCA distance. The
+Holocene climate is CHELSA-TraCE21k after the bias correction of
+Appendix S2.
 
 **Turnover and lag by the duration of the lake-periods.** To test
 whether longer lake-periods had more turnover and larger lags only
@@ -1612,17 +1615,20 @@ the end of the period minus the lag the community would have had at the
 climate-predicted pace (A, B, keeping its own direction) or in the
 climate-predicted direction (C, D, keeping its own distance). A positive
 effect means that the community’s own pace or direction widened the lag.
-A negative effect means that it narrowed the lag. Connectors link the
-Anthropocene to the Holocene climate-change periods (lower) and to the
-Holocene stability periods (upper) within each park, and a star marks a
-contrast that differs from zero (two-sided t test, Holm-adjusted p \<
-0.05 across the six period-type contrasts of each response). Fitted
-means and contrasts come from the same models as Fig. 5, whose panel F
-shows the lag rate. Lake-periods and plots whose observed or predicted
-position did not move have no pace or direction effect: the panels hold
-5 climate-change and 5 stability lake-periods at MORA. The lake-periods
-of the Holocene climate-change periods span 200 to 900 years, and those
-of the stability periods 200 to 2600 years, between t1 and t2. The
+A negative effect means that it narrowed the lag. Connectors show the
+three differences between period types within each park: on the lower
+level, the Holocene stability against the Holocene climate-change
+periods (left) and the Holocene climate-change periods against the
+Anthropocene (right), and on the upper level, the Holocene stability
+periods against the Anthropocene. A star marks a difference that differs
+from zero (two-sided t test, Holm-adjusted p \< 0.05 across the six
+differences of each response, three per park). Fitted means and
+contrasts come from the same models as Fig. 5, whose panel F shows the
+lag rate. Lake-periods and plots whose observed or predicted position
+did not move have no pace or direction effect: the panels hold 5
+climate-change and 5 stability lake-periods at MORA. The lake-periods of
+the Holocene climate-change periods span 200 to 900 years, and those of
+the stability periods 200 to 2600 years, between t1 and t2. The
 Anthropocene plot pairs span 27.5 to 32.5 years between the midpoints of
 their two climate windows (about 29 years). The totals are in CCA
 distance, the rates in CCA distance per century.

@@ -1075,9 +1075,10 @@ the distance the community moved in CCA space, and (D) its rate; (E) the climate
 mismatch between the two ends (M at t2 minus M at t1), and (F) its rate. The fitted mean is printed beside each
 point. B and D are on log axes, where equal distances are equal folds, and the arrow gives the fold between the
 Anthropocene and the Holocene climate-change means. A, C, E and F are on linear axes without folds. Their connectors
-link the Anthropocene to the Holocene climate-change periods (lower) and to the Holocene stability periods (upper)
-within each park, and a star marks a contrast that differs from zero (two-sided t test, Holm-adjusted p < 0.05
-across the six period-type contrasts of each response, three per park). The intervals are unadjusted. The totals in A,
+show the three differences between period types within each park: on the lower level, the Holocene stability against
+the Holocene climate-change periods (left) and the Holocene climate-change periods against the Anthropocene (right), and
+on the upper level, the Holocene stability periods against the Anthropocene. A star marks a difference that differs
+from zero (two-sided t test, Holm-adjusted p < 0.05 across the six differences of each response, three per park). The intervals are unadjusted. The totals in A,
 C and E build up over a whole lake-period in the Holocene and over the few decades between the two surveys in the
 Anthropocene. Means come from the model response ~ period type × site, with an
 AR(1) correlation within each lake and weights for the number of samples at each end, fitted on
@@ -1212,9 +1213,11 @@ and (B) the pace effect per century, (C) the direction effect and (D) the direct
 panels share one y scale. Each effect is the lag at the end of the period minus the lag the community would have had at the
 climate-predicted pace (A, B, keeping its own direction) or in the climate-predicted direction (C, D, keeping its
 own distance). A positive effect means that the community's own pace or direction widened the lag. A negative
-effect means that it narrowed the lag. Connectors link the Anthropocene to the Holocene climate-change periods
-(lower) and to the Holocene stability periods (upper) within each park, and a star marks a contrast that differs
-from zero (two-sided t test, Holm-adjusted p < 0.05 across the six period-type contrasts of each response). Fitted means and contrasts come from the same models as Fig. 5, whose
+effect means that it narrowed the lag. Connectors show the three differences between period types within each
+park: on the lower level, the Holocene stability against the Holocene climate-change periods (left) and the Holocene
+climate-change periods against the Anthropocene (right), and on the upper level, the Holocene stability periods
+against the Anthropocene. A star marks a difference that differs from zero (two-sided t test, Holm-adjusted
+p < 0.05 across the six differences of each response, three per park). Fitted means and contrasts come from the same models as Fig. 5, whose
 panel F shows the lag rate. Lake-periods and plots whose observed or predicted position did not move have no pace or direction effect: the panels
 hold `r m5 = read_output('era_comparison/era_means.csv'); m5$n[m5$response == 'pace_effect' & m5$site == 'MORA' & m5$period_type == 'Holocene-C']` climate-change and `r m5$n[m5$response == 'pace_effect' & m5$site == 'MORA' & m5$period_type == 'Holocene-S']` stability lake-periods at MORA. `r both_spans` The totals are in CCA distance, the rates in CCA distance per century.
 

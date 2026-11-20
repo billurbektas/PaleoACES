@@ -1,8 +1,9 @@
 # Figure 6 (PLAN.md section 6; redrawn by Bills, 10 Nov 2026): the pace and
 # direction effects in the design of Figure 5, fitted means and 95% intervals
 # of the three period types per park from the Step 5a models, with connectors
-# from the Anthropocene to each Holocene period type and a star where that
-# contrast is significant. Two rows, each the effect over the whole unit
+# for the three differences between period types of each park (Holocene-C
+# minus Holocene-S added by Bills, 20 Nov 2026) and a star where that
+# difference is significant. Two rows, each the effect over the whole unit
 # (left, not divided by time) and per century (right): A and B the pace
 # effect, C and D the direction effect. Panels drawn by R/helpers/era_means_figure.R.
 source(here::here('R/helpers/config.R'), local = TRUE)

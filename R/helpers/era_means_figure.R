@@ -2,9 +2,11 @@
 # means and 95% intervals of the three period types side by side per park,
 # from the Step 5a models, each mean printed beside its point in the park
 # colour. Rates on log axes carry an arrow with the Holocene-C fold. Signed
-# responses on linear axes carry connectors from the Anthropocene to each
-# Holocene period type, with a star where that contrast is significant after
-# the Holm adjustment.
+# responses on linear axes carry connectors for the three differences between
+# period types of each park (Holocene-S to Holocene-C and Holocene-C to the
+# Anthropocene on the lower level, Holocene-S to the Anthropocene above; the
+# Holocene-S to Holocene-C connector added by Bills, 20 Nov 2026), with a star
+# where that difference is significant after the Holm adjustment.
 # Linear-axis responses that are positive (the displacement) carry connectors
 # the same way.
 # Used by R/figures/main_fig5_era_contrasts.R and R/figures/main_fig6_lag_pace_direction.R.
@@ -40,17 +42,22 @@ era_means_data = function(titles, log_responses = character()) {
     dplyr::inner_join(folds |> dplyr::mutate(site = factor(site, levels = ERA_SITES)), by = c('response', 'site')) |>
     dplyr::mutate(x = as.integer(site) + .16, y = `conf_high_Holocene-C` * 1.1, yend = conf_low_Anthropocene / 1.1,
       y_text = sqrt(y * yend), text = dplyr::if_else(fold < 10, sprintf('%.1f-fold', fold), sprintf('%.0f-fold', fold)))
-  # Connectors above each park's intervals: Anthropocene to Holocene-C on the
-  # lower level, Anthropocene to Holocene-S on the upper one.
+  # Connectors above each park's intervals for the three differences of the era
+  # model: Holocene-S to Holocene-C and Holocene-C to the Anthropocene on the
+  # lower level, which stop just short of the Holocene-C symbol so that the two
+  # stay apart, and Holocene-S to the Anthropocene on the upper one.
   connectors = readr::read_csv(out('era_comparison/era_contrasts.csv'), show_col_types = FALSE) |>
-    dplyr::filter(response %in% names(titles), !response %in% log_responses,
-      contrast %in% c('Anthropocene - Holocene-C', 'Anthropocene - Holocene-S')) |>
-    dplyr::mutate(against = sub('Anthropocene - ', '', contrast), site = factor(site, levels = ERA_SITES)) |>
+    dplyr::filter(response %in% names(titles), !response %in% log_responses) |>
+    # A contrast 'first - second' joins the symbols of its two period types.
+    dplyr::mutate(first = sub(' - .*', '', contrast), second = sub('.* - ', '', contrast),
+      site = factor(site, levels = ERA_SITES)) |>
     dplyr::left_join(means |> dplyr::group_by(response) |> dplyr::summarise(span = max(conf_high) - min(conf_low)), by = 'response') |>
     dplyr::left_join(means |> dplyr::group_by(response, site) |> dplyr::summarise(top = max(conf_high), .groups = 'drop'),
       by = c('response', 'site')) |>
-    dplyr::mutate(level = dplyr::if_else(against == 'Holocene-C', 1, 2), y = top + (.03 + .085 * level) * span, drop = .03 * span,
-      x = as.integer(site) + ERA_OFFSET[against], xend = as.integer(site) + ERA_OFFSET[['Anthropocene']],
+    dplyr::mutate(level = dplyr::if_else(contrast == 'Anthropocene - Holocene-S', 2, 1),
+      y = top + (.03 + .085 * level) * span, drop = .03 * span,
+      x = as.integer(site) + ERA_OFFSET[second] + dplyr::if_else(second == 'Holocene-C', .025, 0),
+      xend = as.integer(site) + ERA_OFFSET[first] - dplyr::if_else(first == 'Holocene-C', .025, 0),
       # Stars use the Holm-adjusted p of the response's six contrasts (Bills, 10 Nov 2026).
       star = dplyr::if_else(p_adjusted < .05, '*', ''))
   list(means = means, arrows = arrows, connectors = connectors, titles = titles, log_responses = log_responses)
