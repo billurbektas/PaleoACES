@@ -283,7 +283,9 @@ p_climate = climate_panel()
 # the covered cores of each park (Bills, 11 Nov 2026, in place of the high-fire
 # ratio). The two parks' frequencies are not comparable: Panther Potholes is
 # resampled every 12 years, the Sunrise Ridge cores every 42 to 48, and a finer
-# record resolves more events. Each park therefore has its own y axis.
+# record resolves more events. The two lanes still share one y axis (Bills,
+# 23 Nov 2026; each park had its own until then), and the caption says that
+# part of the gap between the parks comes from the records.
 fire_display = fire_frequency |>
   filter(between(cal_bp, time_limits[2], time_limits[1]), is.finite(events_per_1000yr)) |>
   mutate(site = factor(site, levels = c("MORA", "NOCA")))
@@ -303,7 +305,7 @@ fire_panel = function(text_scale = 1, sites = c("MORA", "NOCA")) {
     geom_line(color = "grey15", linewidth = .8) +
     geom_text(data = lane_labels, aes(x = time_limits[1] - 80, y = Inf, label = site, color = site),
       inherit.aes = FALSE, hjust = 0, vjust = 1.35, fontface = "bold", size = 4.4 * s) +
-    facet_grid(rows = vars(site), scales = "free_y") +
+    facet_grid(rows = vars(site)) +
     time_axis() +
     scale_fill_manual(values = era_colors, guide = "none") +
     scale_color_manual(values = PAPER_SITE_COLORS, guide = "none") +
@@ -466,6 +468,8 @@ levels_panel = function(vars, show_rates = TRUE) {
 raw_unit = c(MSpT = "°C", SP = "mm")
 raw_axis = c(MSpT = "Spring temperature (°C)", SP = "Summer precipitation (mm)")
 rate_text = function(v, x) if (v == "SP") sprintf("%+.1f mm", x) else sprintf("%+.2f °C", x)
+# Per decade one decimal more, so that it keeps the digits of the century value.
+decade_text = function(v, x) if (v == "SP") sprintf("%+.2f mm", x) else sprintf("%+.3f °C", x)
 raw_panel = function(v, tag, show_periods) {
   d = climate_levels |> filter(in_view, variable == v)
   line = d |> filter(is.finite(regional_raw_1000yr))
@@ -542,12 +546,15 @@ anthropocene_column = function(v, panel, first) {
   end = climate_levels |> filter(in_view, variable == v, is.finite(regional_raw_1000yr)) |> slice_min(t, n = 1)
   d = anthropocene_rates |> filter(variable == v) |> arrange(site) |>
     mutate(y = end$regional_raw_1000yr + (row_number() - 1.5) * diff(y_range) * .2,
-      label = paste0(rate_text(v, rate), "/century"))
-  # The park name in its colour, the rate after it (Bills, 10 Nov 2026).
+      label = paste0(rate_text(v, rate), "/century"), decade = paste0(decade_text(v, rate / 10), "/decade"))
+  # The park name in its colour, the rate after it (Bills, 10 Nov 2026), and
+  # the same change per decade beneath it, in the Anthropocene column only
+  # (Bills, 23 Nov 2026).
   p = ggplot(d, aes(0, y)) +
     # Starts just right of the panel frame, clear of it (Bills, 11 Nov 2026).
     geom_text(aes(x = ANTHRO_NAME_X, label = site, color = site), hjust = 0, size = 4.6 * FIG2_TEXT, fontface = "bold") +
     geom_text(aes(x = ANTHRO_VALUE_X, label = label), hjust = 0, size = 4.6 * FIG2_TEXT, color = "grey10") +
+    geom_text(aes(x = ANTHRO_VALUE_X, label = decade), hjust = 0, vjust = 2.1, size = 4.6 * FIG2_TEXT, color = "grey10") +
     scale_color_manual(values = PAPER_SITE_COLORS, guide = "none") +
     coord_cartesian(xlim = c(0, 1), ylim = y_range, expand = FALSE, clip = "off") + theme_void() +
     theme(plot.margin = margin(0, 0, 0, 0))

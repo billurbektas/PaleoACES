@@ -520,7 +520,7 @@ weighted equally (CHELSA-TraCE21k after the bias correction of Appendix S2). Bol
 centennial series. Shading marks the climate-change (C) and stability (S) periods, with the change
 that drove each climate-change period written below its name (cooling or warming of spring temperature, drying or
 wetting of summer precipitation). Labels linked to the bold lines give the change per century over a period for each
-variable that drove it. A cross marks the largest step between two consecutive centuries, labelled with its rate. To the right of each panel, the Anthropocene change per century from
+variable that drove it. A cross marks the largest step between two consecutive centuries, labelled with its rate. To the right of each panel, the Anthropocene change per century, and beneath it per decade, from
 the legacy to the resurvey climate window, the median over plots in each park: spring temperature
 `r sprintf('%+.2f', rates2$rate[rates2$variable == 'MSpT' & rates2$site == 'MORA'])` °C at MORA and
 `r sprintf('%+.2f', rates2$rate[rates2$variable == 'MSpT' & rates2$site == 'NOCA'])` °C at NOCA, summer precipitation
@@ -529,9 +529,10 @@ the legacy to the resurvey climate window, the median over plots in each park: s
 over about 29 years, while each Holocene rate spans a whole period of 400 to 2,700 years. (C) Fire
 frequency of each park: accepted fire events per 1,000 years, counted in a 1,000-year window centred
 every 100 years. At MORA it is the mean of the three Sunrise Ridge cores of Walsh et al. (2017) wherever
-at least two cover the date, at NOCA the Panther Potholes core (Prichard et al. 2009). The two parks are
-on different y axes because their frequencies are not comparable: Panther Potholes is resampled every 12
-years and the Sunrise Ridge cores every 42 to 48 years, and a finer record resolves more events. The
+at least two cover the date, at NOCA the Panther Potholes core (Prichard et al. 2009). The two parks share
+one y axis, but their frequencies are not directly comparable: Panther Potholes is resampled every 12
+years and the Sunrise Ridge cores every 42 to 48 years, and a finer record resolves more events, so part of the
+gap between the parks comes from the records. The
 MORA cores lie on Sunrise Ridge, away from the vegetation lakes (Fig. S13). The models do not use this
 curve: their fire activity counts the same accepted events between the two ends of each lake-period,
 per century and per covered core (see Climate–community lags). To the right, the Anthropocene plot pairs of each park that
@@ -827,7 +828,7 @@ climate period with samples, in the Anthropocene from the legacy survey to the r
 `r n_group('Anthropocene', 'MORA')` MORA and `r n_group('Anthropocene', 'NOCA')` NOCA plot pairs). Observed positions are
 filled symbols in the dark park colour, predicted positions open symbols in the light park colour. The symbol gives
 the period type: diamonds for Holocene climate-change periods, squares for Holocene stability periods and circles
-for the Anthropocene. Each line is tagged with its era at its arrowhead end, the tags of predicted lines in italics.
+for the Anthropocene. Each line is tagged once with its era, the tags of predicted lines in italics.
 `r ln3 = read_output('figures/cca_trajectory_lines.csv'); what3 = function(d) paste(sprintf('the %s %s %s', d$type, d$site, d$era), collapse = ' and '); b3 = ln3[ln3$panel == 'B' & ln3$drawn == 0, ]; if (nrow(b3)) paste0('The two ends of ', what3(b3), ' lie so close that their symbols overlap and no line is drawn.') else ''` The MORA arrows run
 from `r spans3$first_period[spans3$site == 'MORA']` to `r spans3$last_period[spans3$site == 'MORA']`
 (`r spans3$first_older[spans3$site == 'MORA']` to `r spans3$last_younger[spans3$site == 'MORA']` cal BP), and the first MORA period rests on
@@ -837,7 +838,7 @@ The NOCA arrows run from `r spans3$first_period[spans3$site == 'NOCA']` to `r sp
 of period centroids at MORA and NOCA, observed and predicted, each period named at its observed
 centroid (C, climate-change period, S, stability period) and drawn with the symbol of its period type.
 `r z3 = ln3[ln3$panel != 'B' & !ln3$arrowheads & ln3$drawn > 0, ]; if (nrow(z3)) paste0('The steps of ', what3(z3), ' sequence are short, and its centroids are joined by plain lines without arrowheads.') else ''` `r small3 = sum(ln3$smaller_heads); skip3 = sum(ln3$steps - ln3$drawn) - sum(ln3$panel == 'B' & ln3$drawn == 0); paste0(if (small3) 'Where two symbols lie close, the arrowhead is drawn smaller' else '', if (small3 && skip3) ', and where' else if (skip3) 'Where' else '', if (skip3) ' two symbols all but touch, no line is drawn between them' else '', if (small3 || skip3) '.' else '')` Each centroid averages the sampled centuries
-of each lake within the period, with the lakes weighted equally. Axes orthogonally rotated (varimax,
+of each lake within the period, with the lakes weighted equally. `r cn3 = read_output('figures/cca_trajectory_period_centroids.csv'); ls3 = read_output('figures/cca_trajectory_lake_set_steps.csv'); lk3 = c(JayBath = 'Jay Bath', LogWallow = 'Log Wallow', ReflectionPond = 'Reflection Pond', PantherPotholes = 'Panther Potholes'); nm3 = function(x) paste(unname(lk3[strsplit(x, '; ')[[1]]]), collapse = ' and '); few3 = cn3[cn3$n_lakes < cn3$park_lakes, ]; paste(c(sprintf('%s %s (%d to %d cal BP) averages %d of the %d lakes, because %s has no samples in it.', few3$site, few3$period, p3$older_cal_bp[match(few3$period, p3$period)], p3$younger_cal_bp[match(few3$period, p3$period)], few3$n_lakes, few3$park_lakes, vapply(few3$missing_lakes, nm3, '')), sprintf('The observed %s step from %s to %s is %.2f CCA units as drawn and %.2f over %s alone, so it %s shows a lake joining the mean.', ls3$site, ls3$from, ls3$to, ls3$step_drawn, ls3$step_shared_lakes, vapply(ls3$shared_lakes, nm3, ''), ifelse(ls3$step_shared_lakes < ls3$step_drawn / 2, 'mostly', 'partly'))), collapse = ' ')` Axes orthogonally rotated (varimax,
 `r sprintf('%.1f', rot$angle_degrees)` degrees) for display, so that axis 1 follows spring temperature and axis 2
 summer precipitation. All metrics are rotation-invariant. The unrotated biplot is Fig. S14.
 

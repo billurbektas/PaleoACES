@@ -28,11 +28,39 @@ positions = read_csv(out('cca_tracking_holocene_century_positions.csv'), show_co
 k = vapply(positions$century_cal_bp, function(a) {
   i = which(a < periods$older_cal_bp & a >= periods$younger_cal_bp); if (length(i)) i else NA_integer_ }, integer(1))
 positions = positions |> mutate(period = periods$period[k], order = k) |> filter(!is.na(period))
-centroids = positions |> group_by(site, lake, period, order) |>
-  summarise(across(c(o1, o2, p1, p2), mean), .groups = 'drop') |>
-  group_by(site, period, order) |>
-  summarise(across(c(o1, o2, p1, p2), mean), n_lakes = n(), .groups = 'drop') |> arrange(site, order)
+lake_means = positions |> group_by(site, lake, period, order) |>
+  summarise(across(c(o1, o2, p1, p2), mean), .groups = 'drop')
+# A period sampled at fewer lakes than the park has is still drawn (Bills,
+# 23 Nov 2026), as the mean of the lakes it has. Its missing lakes are written
+# out for the caption: MORA C3 lacks Reflection Pond, whose record begins later.
+park_lakes = positions |> distinct(site, lake)
+missing = lake_means |> distinct(site, period, order) |> inner_join(park_lakes, by = 'site', relationship = 'many-to-many') |>
+  anti_join(lake_means, by = c('site', 'period', 'order', 'lake')) |>
+  group_by(site, period) |> summarise(missing_lakes = paste(lake, collapse = '; '), .groups = 'drop')
+centroids = lake_means |> group_by(site, period, order) |>
+  summarise(across(c(o1, o2, p1, p2), mean), n_lakes = n(), .groups = 'drop') |>
+  left_join(count(park_lakes, site, name = 'park_lakes'), by = 'site') |>
+  left_join(missing, by = c('site', 'period')) |> mutate(missing_lakes = coalesce(missing_lakes, '')) |>
+  arrange(site, order)
 write_csv(centroids, out('figures/cca_trajectory_period_centroids.csv'))
+# Where the lakes differ between two adjacent periods, part of the step drawn is
+# a lake joining or leaving the mean. The observed step over the lakes the two
+# periods share shows how much, for the caption.
+shared_step = function(park, from, to) {
+  a = lake_means[lake_means$site == park & lake_means$period == from, ]
+  b = lake_means[lake_means$site == park & lake_means$period == to, ]
+  shared = intersect(a$lake, b$lake)
+  a = a[a$lake %in% shared, ]; b = b[b$lake %in% shared, ]
+  tibble(lakes_from = sum(lake_means$site == park & lake_means$period == from),
+    lakes_to = sum(lake_means$site == park & lake_means$period == to), shared_lakes = paste(shared, collapse = '; '),
+    n_shared = length(shared), step_shared_lakes = sqrt((mean(b$o1) - mean(a$o1))^2 + (mean(b$o2) - mean(a$o2))^2))
+}
+lake_set_steps = centroids |> group_by(site) |> arrange(order, .by_group = TRUE) |>
+  transmute(site, from = period, to = lead(period), step_drawn = sqrt((lead(o1) - o1)^2 + (lead(o2) - o2)^2)) |>
+  ungroup() |> filter(!is.na(to))
+lake_set_steps = bind_cols(lake_set_steps, pmap_dfr(select(lake_set_steps, park = site, from, to), shared_step)) |>
+  filter(lakes_from != n_shared | lakes_to != n_shared)
+write_csv(lake_set_steps, out('figures/cca_trajectory_lake_set_steps.csv'))
 plots = read_csv(out('cca_tracking_anthropocene_plot_calculations.csv'), show_col_types = FALSE)
 anthropocene = plots |> group_by(site) |>
   summarise(o1 = mean(o1), o2 = mean(o2), p1 = mean(p1), p2 = mean(p2),
@@ -214,13 +242,23 @@ trim_steps = function(steps, mm, size, full_cm) {
     x = x + ux * a, y = y + uy * a, xend = xend - ux * b, yend = yend - uy * b)
 }
 
-# In B every line carries one tag at its arrowhead end, "Holocene" or
+# In B every line carries one tag, "Holocene" or
 # "Anthropocene" (Bills, 23 Nov 2026; tags at both ends, H. start, H. end,
 # A. legacy and A. resurvey, earlier that day). Tags take the colour of their
 # line, the predicted ones also in italics.
-labels_b = shown |> group_by(group) |> arrange(order, .by_group = TRUE) |>
-  mutate(label = if_else(order == max(order), era, '')) |> ungroup() |>
-  transmute(x, y, label, series, fontface = if_else(type == 'predicted', 'italic', 'plain'), size = TEXT - 1.2)
+# Two tags start on the side Bills named (23 Nov 2026): the predicted NOCA
+# Holocene above its square, the observed NOCA Anthropocene below its circles.
+# The latter hangs from the legacy circle, because the resurvey circle has the
+# legacy circle just below it. Offsets in mm on the page, about a symbol and
+# half a label.
+TAG_SIDE = tribble(~group, ~at_start, ~dx_mm, ~dy_mm,
+  'NOCA Holocene predicted', FALSE, 0, 7.5,
+  'NOCA Anthropocene observed', TRUE, -4, -7.5)
+labels_b = shown |> left_join(TAG_SIDE, by = 'group') |> group_by(group) |> arrange(order, .by_group = TRUE) |>
+  mutate(tag_at = if_else(coalesce(at_start, FALSE), min(order), max(order)),
+    label = if_else(order == tag_at, era, '')) |> ungroup() |>
+  transmute(x, y, label, series, fontface = if_else(type == 'predicted', 'italic', 'plain'), size = TEXT - 1.2,
+    nudge_x_mm = if_else(label != '', coalesce(dx_mm, 0), 0), nudge_y_mm = if_else(label != '', coalesce(dy_mm, 0), 0))
 
 trajectory_layers = function(points, steps, labels, xl, yl, width_mm, style, legend = FALSE) {
   mm = diff(xl) / width_mm
@@ -239,7 +277,9 @@ trajectory_layers = function(points, steps, labels, xl, yl, width_mm, style, leg
     tidyr::crossing(f = seq(0, 1, length.out = 6)) |>
     transmute(x = xend - (xend - x) * share * f, y = yend - (yend - y) * share * f, label = '', series,
       fontface = 'plain', size = TEXT, point_size = head_cm * 12)
-  labels = bind_rows(labels |> mutate(point_size = style$size + 1), along, tips)
+  labels = bind_rows(tibble(nudge_x_mm = numeric(), nudge_y_mm = numeric()),
+      labels |> mutate(point_size = style$size + 1), along, tips) |>
+    mutate(nudge_x_mm = coalesce(nudge_x_mm, 0), nudge_y_mm = coalesce(nudge_y_mm, 0))
   list(
     # One layer per arrowhead length, since a layer takes a single arrow.
     lapply(sort(unique(st$head_cm[st$drawn & st$head])), function(h)
@@ -255,7 +295,7 @@ trajectory_layers = function(points, steps, labels, xl, yl, width_mm, style, leg
       fill = 'white', linewidth = 0, label.padding = unit(.08, 'lines'), box.padding = .12, point.padding = .05,
       force = 3, force_pull = 2, segment.size = .3, segment.color = 'grey60', min.segment.length = unit(.5, 'lines'),
       max.overlaps = Inf, max.iter = 200000, max.time = 10, seed = 3, lineheight = .9, xlim = xl, ylim = yl,
-      show.legend = FALSE),
+      position = position_nudge_repel(x = labels$nudge_x_mm * mm, y = labels$nudge_y_mm * mm), show.legend = FALSE),
     # Legend keys only.
     geom_point(data = tibble(x = NA_real_, y = NA_real_, key = key_fill), aes(x, y, fill = key), shape = 21, na.rm = TRUE),
     geom_point(data = tibble(x = NA_real_, y = NA_real_, kind = key_shape), aes(x, y, shape = kind), na.rm = TRUE),

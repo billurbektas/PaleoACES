@@ -63,8 +63,8 @@ for the report.
 | R/figures/supp_species_through_time.R | figure | supp_species_through_time.R - STEP 4, the species half | 199 |
 | R/figures/supp_tracking_transitions.R | figure | Appendix figures of the lake-period values over time (redrawn on lake-periods | 86 |
 | R/figures/main_fig2_study_area.R | figure | Figure 2 (Bills, 11 Nov 2026; Fig. S1 until then): the study area. (A) | 214 |
-| R/figures/main_fig3_climate_eras_fire.R | figure | main_fig3_climate_eras_fire.R | 712 |
-| R/figures/main_fig4_cca_trajectories.R | figure | Figure 4: A, species and climate biplot; B, observed and predicted trajectories | 323 |
+| R/figures/main_fig3_climate_eras_fire.R | figure | main_fig3_climate_eras_fire.R | 719 |
+| R/figures/main_fig4_cca_trajectories.R | figure | Figure 4: A, species and climate biplot; B, observed and predicted trajectories | 363 |
 | R/figures/main_fig5_era_contrasts.R | figure | Figure 5 (PLAN.md section 6; redrawn by Bills, 10 Nov 2026): fitted means | 35 |
 | R/figures/main_fig6_lag_pace_direction.R | figure | Figure 6 (PLAN.md section 6; redrawn by Bills, 10 Nov 2026): the pace and | 43 |
 | R/figures/main_fig7_climate_fire_associations.R | figure | Figure 7: climate and fire associations as model slopes (Bills, 9 Nov 2026). | 71 |
@@ -72,7 +72,7 @@ for the report.
 | R/worked_examples.R | worked examples | Worked examples: step-by-step illustrations of four methods, drawn from the | 412 |
 | R/tests/test_bacon_provenance.R | test | The stored Bacon chronologies are exactly what the current age-model script and | 32 |
 | R/tests/test_cca_tracking_metrics.R | test | Independent geometry and integration checks for the canonical tracking data. | 38 |
-| R/tests/test_cca_trajectory_figure.R | test | Figure 4 inputs (PLAN.md section 6): the Anthropocene arrows are the means of | 37 |
+| R/tests/test_cca_trajectory_figure.R | test | Figure 4 inputs (PLAN.md section 6): the Anthropocene arrows are the means of | 50 |
 | R/tests/test_cca_transition_contributions.R | test | Independent contribution gate (PLAN.md Step 6): original sample weights, CCA | 120 |
 | R/tests/test_century_tracking.R | test | Independent native-century reconstruction, geometry and contribution checks. | 92 |
 | R/tests/test_check_vegetation.R | test | Standalone integrity checks for cleaned MORA and NOCA vegetation outputs. | 31 |
@@ -97,7 +97,7 @@ Every file under `output/` is declared in `R/helpers/paths.R`; a script
 cannot write an undeclared output. Folders hold one file per table, in
 the folder of the step that writes it.
 
-**162 output files** (excluding the climate and age-draw cache).
+**163 output files** (excluding the climate and age-draw cache).
 
 | Step | File | Description | Size (kB) |
 |:---|:---|:---|---:|
@@ -243,8 +243,9 @@ the folder of the step that writes it.
 | figures | cca_inertia_commonness.csv | Tables behind the figures (centroids, annotations) | 0 |
 | figures | cca_trajectory_anthropocene_centroids.csv | Tables behind the figures (centroids, annotations) | 0 |
 | figures | cca_trajectory_holocene_spans.csv | Tables behind the figures (centroids, annotations) | 0 |
+| figures | cca_trajectory_lake_set_steps.csv | Tables behind the figures (centroids, annotations) | 0 |
 | figures | cca_trajectory_lines.csv | Tables behind the figures (centroids, annotations) | 1 |
-| figures | cca_trajectory_period_centroids.csv | Tables behind the figures (centroids, annotations) | 1 |
+| figures | cca_trajectory_period_centroids.csv | Tables behind the figures (centroids, annotations) | 2 |
 | figures | charcoal_dunwiddie_walsh_correlations.csv | Tables behind the figures (centroids, annotations) | 1 |
 | figures | charcoal_dunwiddie_walsh_event_matching.csv | Tables behind the figures (centroids, annotations) | 0 |
 | figures | holocene_anthropocene_raw_climate_rate_comparison.csv | Tables behind the figures (centroids, annotations) | 1 |

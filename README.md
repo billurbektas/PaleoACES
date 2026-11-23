@@ -603,25 +603,27 @@ change that drove each climate-change period written below its name
 precipitation). Labels linked to the bold lines give the change per
 century over a period for each variable that drove it. A cross marks the
 largest step between two consecutive centuries, labelled with its rate.
-To the right of each panel, the Anthropocene change per century from the
-legacy to the resurvey climate window, the median over plots in each
-park: spring temperature +1.30 °C at MORA and +0.77 °C at NOCA, summer
-precipitation -143.6 mm at MORA and +103.6 mm at NOCA. These come from a
-change over about 29 years, while each Holocene rate spans a whole
-period of 400 to 2,700 years. (C) Fire frequency of each park: accepted
-fire events per 1,000 years, counted in a 1,000-year window centred
-every 100 years. At MORA it is the mean of the three Sunrise Ridge cores
-of Walsh et al. (2017) wherever at least two cover the date, at NOCA the
-Panther Potholes core (Prichard et al. 2009). The two parks are on
-different y axes because their frequencies are not comparable: Panther
-Potholes is resampled every 12 years and the Sunrise Ridge cores every
-42 to 48 years, and a finer record resolves more events. The MORA cores
-lie on Sunrise Ridge, away from the vegetation lakes (Fig. S13). The
-models do not use this curve: their fire activity counts the same
-accepted events between the two ends of each lake-period, per century
-and per covered core (see Climate–community lags). To the right, the
-Anthropocene plot pairs of each park that burned between the two surveys
-(MORA’s two burned plots are left out of the analysis).
+To the right of each panel, the Anthropocene change per century, and
+beneath it per decade, from the legacy to the resurvey climate window,
+the median over plots in each park: spring temperature +1.30 °C at MORA
+and +0.77 °C at NOCA, summer precipitation -143.6 mm at MORA and +103.6
+mm at NOCA. These come from a change over about 29 years, while each
+Holocene rate spans a whole period of 400 to 2,700 years. (C) Fire
+frequency of each park: accepted fire events per 1,000 years, counted in
+a 1,000-year window centred every 100 years. At MORA it is the mean of
+the three Sunrise Ridge cores of Walsh et al. (2017) wherever at least
+two cover the date, at NOCA the Panther Potholes core (Prichard et
+al. 2009). The two parks share one y axis, but their frequencies are not
+directly comparable: Panther Potholes is resampled every 12 years and
+the Sunrise Ridge cores every 42 to 48 years, and a finer record
+resolves more events, so part of the gap between the parks comes from
+the records. The MORA cores lie on Sunrise Ridge, away from the
+vegetation lakes (Fig. S13). The models do not use this curve: their
+fire activity counts the same accepted events between the two ends of
+each lake-period, per century and per covered core (see
+Climate–community lags). To the right, the Anthropocene plot pairs of
+each park that burned between the two surveys (MORA’s two burned plots
+are left out of the analysis).
 
 Stages and helpers:
 [`R/pipeline/12_climate_eras_fire_frequency.R`](R/pipeline/12_climate_eras_fire_frequency.R),
@@ -961,24 +963,27 @@ pairs). Observed positions are filled symbols in the dark park colour,
 predicted positions open symbols in the light park colour. The symbol
 gives the period type: diamonds for Holocene climate-change periods,
 squares for Holocene stability periods and circles for the Anthropocene.
-Each line is tagged with its era at its arrowhead end, the tags of
-predicted lines in italics. The two ends of the observed MORA
-Anthropocene and the predicted NOCA Holocene lie so close that their
-symbols overlap and no line is drawn. The MORA arrows run from C3 to S5
-(6850 to 1350 cal BP), and the first MORA period rests on 8 samples in 8
-lake-centuries. The NOCA arrows run from C1 to S5 (9650 to 1350 cal BP).
-(C, D) The full Holocene sequence of period centroids at MORA and NOCA,
-observed and predicted, each period named at its observed centroid (C,
-climate-change period, S, stability period) and drawn with the symbol of
-its period type. The steps of the predicted NOCA Holocene sequence are
-short, and its centroids are joined by plain lines without arrowheads.
-Where two symbols lie close, the arrowhead is drawn smaller, and where
-two symbols all but touch, no line is drawn between them. Each centroid
-averages the sampled centuries of each lake within the period, with the
-lakes weighted equally. Axes orthogonally rotated (varimax, -23.5
-degrees) for display, so that axis 1 follows spring temperature and axis
-2 summer precipitation. All metrics are rotation-invariant. The
-unrotated biplot is Fig. S14.
+Each line is tagged once with its era, the tags of predicted lines in
+italics. The two ends of the observed MORA Anthropocene and the
+predicted NOCA Holocene lie so close that their symbols overlap and no
+line is drawn. The MORA arrows run from C3 to S5 (6850 to 1350 cal BP),
+and the first MORA period rests on 8 samples in 8 lake-centuries. The
+NOCA arrows run from C1 to S5 (9650 to 1350 cal BP). (C, D) The full
+Holocene sequence of period centroids at MORA and NOCA, observed and
+predicted, each period named at its observed centroid (C, climate-change
+period, S, stability period) and drawn with the symbol of its period
+type. The steps of the predicted NOCA Holocene sequence are short, and
+its centroids are joined by plain lines without arrowheads. Where two
+symbols lie close, the arrowhead is drawn smaller, and where two symbols
+all but touch, no line is drawn between them. Each centroid averages the
+sampled centuries of each lake within the period, with the lakes
+weighted equally. MORA C3 (6850 to 6250 cal BP) averages 2 of the 3
+lakes, because Reflection Pond has no samples in it. The observed MORA
+step from C3 to S3 is 0.28 CCA units as drawn and 0.01 over Jay Bath and
+Log Wallow alone, so it mostly shows a lake joining the mean. Axes
+orthogonally rotated (varimax, -23.5 degrees) for display, so that axis
+1 follows spring temperature and axis 2 summer precipitation. All
+metrics are rotation-invariant. The unrotated biplot is Fig. S14.
 
 <img src="report/figures/png/figS14_cca_biplot_unrotated.png" alt="" width="100%" />
 

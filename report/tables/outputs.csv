@@ -141,8 +141,9 @@ figures,anthropocene_climate_rates.csv,"Tables behind the figures (centroids, an
 figures,cca_inertia_commonness.csv,"Tables behind the figures (centroids, annotations)",0
 figures,cca_trajectory_anthropocene_centroids.csv,"Tables behind the figures (centroids, annotations)",0
 figures,cca_trajectory_holocene_spans.csv,"Tables behind the figures (centroids, annotations)",0
+figures,cca_trajectory_lake_set_steps.csv,"Tables behind the figures (centroids, annotations)",0
 figures,cca_trajectory_lines.csv,"Tables behind the figures (centroids, annotations)",1
-figures,cca_trajectory_period_centroids.csv,"Tables behind the figures (centroids, annotations)",1
+figures,cca_trajectory_period_centroids.csv,"Tables behind the figures (centroids, annotations)",2
 figures,charcoal_dunwiddie_walsh_correlations.csv,"Tables behind the figures (centroids, annotations)",1
 figures,charcoal_dunwiddie_walsh_event_matching.csv,"Tables behind the figures (centroids, annotations)",0
 figures,holocene_anthropocene_raw_climate_rate_comparison.csv,"Tables behind the figures (centroids, annotations)",1
