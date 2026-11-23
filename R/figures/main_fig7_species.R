@@ -1,4 +1,4 @@
-# Figure 8 (PLAN.md section 6): species contributions in both eras. Species as
+# Figure 7 (PLAN.md section 6): species contributions in both eras. Species as
 # rows ordered by the mean elevation of the plots where they occur, the highest
 # at the top (Bills). One column per park, with its own x
 # scale. Upper row contrib_climate, lower row contrib_lag (Bills, 11 Nov 2026,
@@ -30,8 +30,8 @@ species_elevation = read_csv(out('occ_consolidated.csv'), show_col_types = FALSE
   group_by(species) |> summarise(max_elevation = max(elevation), mean_elevation = mean(elevation),
     occurrences = n(), .groups = 'drop')
 order_species = species_elevation |> arrange(desc(max_elevation), desc(mean_elevation)) |> pull(species)
-# The figure for one table of species means: per century (Figure 8) or not
-# divided by time (Fig. S17, Bills, 11 Nov 2026), in the same layout.
+# The figure for one table of species means: per century (Figure 7) or not
+# divided by time (Fig. S19, Bills, 11 Nov 2026), in the same layout.
 species_figure = function(file, x_label) {
   means = read_csv(out(file.path('species_contribution_models', file)), show_col_types = FALSE) |>
     mutate(species = factor(species, levels = order_species),
@@ -152,10 +152,10 @@ if (render_figures) {
   # cairo_pdf draws the arrows of the side labels.
   ggsave(fig('main', 'fig_species_contributions.pdf'), per_century$figure, width = 20, height = 20, device = cairo_pdf)
   ggsave(fig('main', 'fig_species_contributions.png'), per_century$figure, width = 20, height = 20, dpi = 300)
-  ggsave(fig('supplementary', 'figS17_species_contributions_total.pdf'), total$figure, width = 20, height = 20,
+  ggsave(fig('supplementary', 'figS19_species_contributions_total.pdf'), total$figure, width = 20, height = 20,
     device = cairo_pdf)
 }
 write_csv(species_elevation |> mutate(holocene_absent = species %in% holocene_absent_species) |>
     arrange(match(species, order_species)) |> mutate(rank = row_number(), .before = 1),
   out('figures/species_order_elevation.csv'))
-cat('Figure 8 and Fig. S17: species contributions drawn, per century and not divided by time.\n')
+cat('Figure 7 and Fig. S19: species contributions drawn, per century and not divided by time.\n')

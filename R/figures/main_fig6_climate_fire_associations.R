@@ -1,13 +1,14 @@
-# Figure 7: climate and fire associations as model slopes (Bills, 9 Nov 2026).
-# Left, Holocene lake-periods: response ~ site + climate + fire_activity.
-# Right, Anthropocene plot pairs: response ~ site + burned. The three responses
-# (lag, pace effect, direction effect) side by side for each term, with
-# conditional 95% intervals. Top row the responses not divided by time, with the
-# climate change between the two ends as the climate term (added by Bills, 10 Nov
-# 2026; on top since 11 Nov). Bottom row per century, with the climate change
-# rate as the climate term. Each row has one x scale for both eras. Estimates whose interval
-# includes zero are faded. No R² under the panels (Bills, 11 Nov 2026): the
-# descriptive R² is in the model-check table of the README.
+# Figure 6 and Fig. S18: climate and fire associations as model slopes (Bills,
+# 9 Nov 2026). Left, Holocene lake-periods: response ~ site + climate +
+# fire_activity. Right, Anthropocene plot pairs: response ~ site + burned. The
+# three responses (lag, pace effect, direction effect) side by side for each
+# term, with conditional 95% intervals. The main text keeps the responses per
+# century, with the climate change rate as the climate term (Figure 6), and the
+# appendix the responses not divided by time, with the climate change between
+# the two ends as the climate term (Fig. S18; Bills, 23 Nov 2026, until then the
+# top row of Figure 6). Each figure has one x scale for both eras. Estimates
+# whose interval includes zero are faded. No R² under the panels (Bills, 11 Nov
+# 2026): the descriptive R² is in the model-check table of the README.
 source(here::here('R/helpers/config.R'), local = TRUE)
 suppressPackageStartupMessages({library(here); library(tidyverse); library(patchwork)})
 source(here('R/helpers/figure_style.R'), local = TRUE)
@@ -55,17 +56,20 @@ panel = function(era_name, version, terms, tag) {
       legend.position = 'bottom', legend.text = element_text(size = 32), legend.key.size = unit(1.4, 'cm'),
       legend.spacing.x = unit(.6, 'cm'))
 }
-# The legend in its own row at the bottom (Bills, 11 Nov 2026).
-# Top row the responses not divided by time, bottom row per century (Bills, 11 Nov 2026).
-figure = (panel('Holocene', 'total', c('siteNOCA', 'climate_change', 'fire_activity'), 'A.') |
-    panel('Anthropocene', 'total', c('siteNOCA', 'burnedBurned'), 'B.')) /
-  (panel('Holocene', 'rate', c('siteNOCA', 'climate_rate', 'fire_activity'), 'C.') |
-    panel('Anthropocene', 'rate', c('siteNOCA', 'burnedBurned'), 'D.')) /
-  guide_area() +
-  plot_layout(guides = 'collect', heights = c(1, 1, .07)) & theme(legend.position = 'bottom')
+# The legend in its own row at the bottom (Bills, 11 Nov 2026). Text and panel
+# size as when both versions were rows of one figure.
+associations = function(version, climate_term) {
+  (panel('Holocene', version, c('siteNOCA', climate_term, 'fire_activity'), 'A.') |
+      panel('Anthropocene', version, c('siteNOCA', 'burnedBurned'), 'B.')) /
+    guide_area() +
+    plot_layout(guides = 'collect', heights = c(1, .07)) & theme(legend.position = 'bottom')
+}
 if (render_figures) {
   # cairo_pdf draws the minus signs of the term labels, which the default pdf device cannot.
-  ggsave(fig('main', 'fig_climate_fire_associations.pdf'), figure, width = 21, height = 19, device = cairo_pdf, bg = 'white')
-  ggsave(fig('main', 'fig_climate_fire_associations.png'), figure, width = 21, height = 19, dpi = 300, bg = 'white')
+  rates = associations('rate', 'climate_rate')
+  ggsave(fig('main', 'fig_climate_fire_associations.pdf'), rates, width = 21, height = 10, device = cairo_pdf, bg = 'white')
+  ggsave(fig('main', 'fig_climate_fire_associations.png'), rates, width = 21, height = 10, dpi = 300, bg = 'white')
+  ggsave(fig('supplementary', 'figS18_climate_fire_associations_total.pdf'), associations('total', 'climate_change'),
+    width = 21, height = 10, device = cairo_pdf, bg = 'white')
 }
-cat('Figure 7: model slopes drawn, per century and not divided by time.\n')
+cat('Figure 6 (per century) and Fig. S18 (not divided by time): model slopes drawn.\n')

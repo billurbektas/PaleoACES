@@ -58,17 +58,16 @@ for the report.
 | R/figures/supp_climate_correlations.R | figure | supp_climate_correlations.R | 628 |
 | R/figures/supp_climate_products.R | figure | Figs. S6 and S7 (Appendix S2), from the outputs of R/pipeline/07_climate_products.R. | 80 |
 | R/figures/supp_climate_windows.R | figure | Compare the actual plot-specific survey windows with V2.1 1979-2021. | 174 |
-| R/figures/supp_paleoclimate_sensitivity.R | figure | Figs. S18, S19 and S20 (Appendix S4, Bills, 11 and 12 Nov 2026): the three paleoclimates | 189 |
+| R/figures/supp_paleoclimate_sensitivity.R | figure | Figs. S20, S21 and S22 (Appendix S4, Bills, 11 and 12 Nov 2026): the three paleoclimates | 189 |
 | R/figures/supp_sample_selection.R | figure | Show which plots and core samples reach CCA, starting with the supplied data. | 368 |
 | R/figures/supp_species_through_time.R | figure | supp_species_through_time.R - STEP 4, the species half | 199 |
 | R/figures/supp_tracking_transitions.R | figure | Appendix figures of the lake-period values over time (redrawn on lake-periods | 86 |
 | R/figures/main_fig2_study_area.R | figure | Figure 2 (Bills, 11 Nov 2026; Fig. S1 until then): the study area. (A) | 214 |
 | R/figures/main_fig3_climate_eras_fire.R | figure | main_fig3_climate_eras_fire.R | 719 |
 | R/figures/main_fig4_cca_trajectories.R | figure | Figure 4: A, species and climate biplot; B, observed and predicted trajectories | 363 |
-| R/figures/main_fig5_era_contrasts.R | figure | Figure 5 (PLAN.md section 6; redrawn by Bills, 10 Nov 2026): fitted means | 35 |
-| R/figures/main_fig6_lag_pace_direction.R | figure | Figure 6 (PLAN.md section 6; redrawn by Bills, 10 Nov 2026): the pace and | 43 |
-| R/figures/main_fig7_climate_fire_associations.R | figure | Figure 7: climate and fire associations as model slopes (Bills, 9 Nov 2026). | 71 |
-| R/figures/main_fig8_species.R | figure | Figure 8 (PLAN.md section 6): species contributions in both eras. Species as | 161 |
+| R/figures/main_fig5_era_contrasts.R | figure | Figure 5 and Fig. S16 (PLAN.md section 6; Bills, 23 Nov 2026): fitted means | 81 |
+| R/figures/main_fig6_climate_fire_associations.R | figure | Figure 6 and Fig. S18: climate and fire associations as model slopes (Bills, | 75 |
+| R/figures/main_fig7_species.R | figure | Figure 7 (PLAN.md section 6): species contributions in both eras. Species as | 161 |
 | R/worked_examples.R | worked examples | Worked examples: step-by-step illustrations of four methods, drawn from the | 412 |
 | R/tests/test_bacon_provenance.R | test | The stored Bacon chronologies are exactly what the current age-model script and | 32 |
 | R/tests/test_cca_tracking_metrics.R | test | Independent geometry and integration checks for the canonical tracking data. | 38 |
@@ -279,8 +278,8 @@ built for this report).
 
 | Folder          | Files |
 |:----------------|------:|
-| main            |    14 |
-| supplementary   |    32 |
+| main            |    12 |
+| supplementary   |    34 |
 | worked_examples |     3 |
 
 <sub>Table file:

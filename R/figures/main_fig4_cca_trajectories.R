@@ -4,7 +4,7 @@
 # the display-only varimax rotation (R/helpers/cca_display_rotation.R). The
 # appendix figure is the unrotated biplot. Redrawn after a reviewer comment
 # (Bills, 23 Nov 2026): observed symbols filled and predicted symbols open, the
-# period-type symbols of Figures 5 and 6, one era tag per line in B,
+# period-type symbols of Figure 5, one era tag per line in B,
 # labels kept off lines and symbols, and the species shaded by commonness.
 source(here::here('R/helpers/config.R'), local = TRUE)
 suppressPackageStartupMessages({library(here); library(tidyverse); library(vegan); library(patchwork); library(ggrepel)})
@@ -73,7 +73,7 @@ spans = centroids |> group_by(site) |>
 write_csv(spans, out('figures/cca_trajectory_holocene_spans.csv'))
 
 # Long form: one point per series and step, in display coordinates. Each point
-# carries the symbol of its period type, as in Figures 5 and 6.
+# carries the symbol of its period type, as in Figure 5.
 point_rows = function(d, x, y, type, era, order, lab) {
   r = rotate(d[c(x, y)])
   tibble(site = d$site, era, type, order = order, lab = lab, x = r[, 1], y = r[, 2])

@@ -1,9 +1,9 @@
-# Figs. S18, S19 and S20 (Appendix S4, Bills, 11 and 12 Nov 2026): the three paleoclimates
+# Figs. S20, S21 and S22 (Appendix S4, Bills, 11 and 12 Nov 2026): the three paleoclimates
 # of the analysis compared. The main run corrects TraCE21k onto CHELSA V2.1 in two
 # steps (TraCE21k to CHELSAcruts to V2.1), the sensitivity runs in one step
 # (CHELSAcruts to V2.1) or not at all (raw). Both figures read the comparison
 # written by R/sensitivity_paleoclimate.R.
-# Fig. S18: every Holocene lake-period the three runs share (same lake, period
+# Fig. S20: every Holocene lake-period the three runs share (same lake, period
 # type and ends), with the raw paleoclimate on x and the two corrected ones on y,
 # each with its least-squares line, for the era responses the paleoclimate
 # enters. Rows: climate change, lag, pace effect, direction effect; left the total
@@ -12,8 +12,8 @@
 # Each panel gives the Pearson r of each corrected run with the raw one, per park.
 # Turnover and displacement use only the observed positions and are the same in
 # all runs, so they are not drawn.
-# Fig. S19: the differences between period types (era contrasts) in the three runs.
-# Fig. S20: the Holocene explanatory-model slopes of Figure 7A and C in the three runs.
+# Fig. S21: the differences between period types (era contrasts) in the three runs.
+# Fig. S22: the Holocene explanatory-model slopes of Figure 6A and Fig. S18A in the three runs.
 source(here::here('R/helpers/config.R'), local = TRUE)
 suppressPackageStartupMessages({library(here); library(tidyverse); library(patchwork)})
 source(here('R/helpers/figure_style.R'), local = TRUE)
@@ -21,7 +21,7 @@ render_figures = isTRUE(getOption('paleoaces.render_figures', TRUE))
 
 comparison_dir = here('output_paleoclimate_sensitivity', 'comparison')
 if (!file.exists(file.path(comparison_dir, 'lake_period_responses.csv'))) {
-  cat('Figs. S18, S19 and S20 skipped: run Rscript R/sensitivity_paleoclimate.R first.\n')
+  cat('Figs. S20, S21 and S22 skipped: run Rscript R/sensitivity_paleoclimate.R first.\n')
 } else {
   # The minus sign rather than the hyphen in printed numbers (cairo_pdf draws it).
   signed = function(x, digits) sub('^-', '−', formatC(x, format = 'f', digits = digits))
@@ -30,7 +30,7 @@ if (!file.exists(file.path(comparison_dir, 'lake_period_responses.csv'))) {
   # The colours of Fig. S7: both steps red, step 2 alone grey.
   run_colors = c(two_step = '#C0392B', one_step = 'grey45')
 
-  # Fig. S18 -------------------------------------------------------------------------
+  # Fig. S20 -------------------------------------------------------------------------
   d = read_csv(file.path(comparison_dir, 'lake_period_responses.csv'), show_col_types = FALSE) |>
     pivot_longer(c(two_step, one_step), names_to = 'run', values_to = 'corrected') |>
     # Pace and direction effects are undefined where a position did not move.
@@ -81,15 +81,15 @@ if (!file.exists(file.path(comparison_dir, 'lake_period_responses.csv'))) {
     panel(rows[[i]][2], tags[2 * i]))), recursive = FALSE)
   figure = wrap_plots(panels, ncol = 2) + plot_layout(guides = 'collect') & theme(legend.position = 'bottom')
   if (render_figures) {
-    ggsave(fig('supplementary', 'figS18_paleoclimate_lake_periods.pdf'), figure, width = 14, height = 25,
+    ggsave(fig('supplementary', 'figS20_paleoclimate_lake_periods.pdf'), figure, width = 14, height = 25,
       device = cairo_pdf)
   }
-  cat('Fig. S18: lake-periods with the corrected against the raw paleoclimate drawn.\n')
+  cat('Fig. S20: lake-periods with the corrected against the raw paleoclimate drawn.\n')
 
-  # Fig. S19 -------------------------------------------------------------------------
+  # Fig. S21 -------------------------------------------------------------------------
   # The differences between period types of each park (Table S16) in the three
   # runs, for the responses the paleoclimate enters; turnover and displacement
-  # are the same in all runs. Rows of quantities as in Fig. S20, parks in rows.
+  # are the same in all runs. Rows of quantities as in Fig. S22, parks in rows.
   era = read_csv(file.path(comparison_dir, 'era_contrasts.csv'), show_col_types = FALSE) |>
     pivot_longer(-c(response, site, contrast), names_to = c('.value', 'run'),
       names_pattern = '(.*)_(two_step|one_step|raw)$') |>
@@ -131,16 +131,16 @@ if (!file.exists(file.path(comparison_dir, 'lake_period_responses.csv'))) {
   contrast_figure = contrast_panel('total', 'A.', 'Not divided by time') / contrast_panel('rate', 'B.', 'Per century') +
     plot_layout(guides = 'collect') & theme(legend.position = 'bottom')
   if (render_figures) {
-    ggsave(fig('supplementary', 'figS19_paleoclimate_era_contrasts.pdf'), contrast_figure, width = 22, height = 18,
+    ggsave(fig('supplementary', 'figS21_paleoclimate_era_contrasts.pdf'), contrast_figure, width = 22, height = 18,
       device = cairo_pdf)
   }
-  cat('Fig. S19: differences between period types in the three runs drawn.\n')
+  cat('Fig. S21: differences between period types in the three runs drawn.\n')
 
-  # Fig. S20 -------------------------------------------------------------------------
+  # Fig. S22 -------------------------------------------------------------------------
   slopes = read_csv(file.path(comparison_dir, 'explanatory_slopes.csv'), show_col_types = FALSE) |>
     pivot_longer(-c(response, term), names_to = c('.value', 'run'), names_pattern = '(.*)_(two_step|one_step|raw)$') |>
     mutate(run = factor(run, names(run_labels)))
-  # Rows, responses, term labels and colours as in Figure 7 (lag black, pace pink,
+  # Rows, responses, term labels and colours as in Figure 6 (lag black, pace pink,
   # direction blue): not divided by time on top, per century below.
   slope_rows = list(rate = c(lag_rate = 'lag', pace_effect = 'pace', direction_effect = 'direction'),
     total = c(lag = 'lag', pace_effect_total = 'pace', direction_effect_total = 'direction'))
@@ -150,7 +150,7 @@ if (!file.exists(file.path(comparison_dir, 'lake_period_responses.csv'))) {
   quantity_colors = c(lag = 'grey10', pace = '#C27B93', direction = '#6AB2E4')
   term_labels = c(siteNOCA = 'Site\nNOCA − MORA', climate_rate = 'Climate change rate',
     climate_change = 'Climate change', fire_activity = 'Fire activity')
-  # Rule: every slope of Figure 7A and C is drawn in all three runs.
+  # Rule: every slope of Figure 6A and Fig. S18A is drawn in all three runs.
   stopifnot(nrow(slopes) == 3 * sum(lengths(slope_rows) * lengths(slope_terms)))
   slope_panel = function(version, tag, title) {
     responses = slope_rows[[version]]; terms = slope_terms[[version]]
@@ -182,8 +182,8 @@ if (!file.exists(file.path(comparison_dir, 'lake_period_responses.csv'))) {
   slope_figure = slope_panel('total', 'A.', 'Not divided by time') / slope_panel('rate', 'B.', 'Per century') +
     plot_layout(guides = 'collect') & theme(legend.position = 'bottom')
   if (render_figures) {
-    ggsave(fig('supplementary', 'figS20_paleoclimate_slopes.pdf'), slope_figure, width = 21, height = 17,
+    ggsave(fig('supplementary', 'figS22_paleoclimate_slopes.pdf'), slope_figure, width = 21, height = 17,
       device = cairo_pdf)
   }
-  cat('Fig. S20: Holocene explanatory slopes in the three runs drawn.\n')
+  cat('Fig. S22: Holocene explanatory slopes in the three runs drawn.\n')
 }

@@ -1059,14 +1059,14 @@ Climate changed `r sprintf('%.0f', fold('climate_rate', 'MORA', 'Holocene-C'))` 
 and `r sprintf('%.0f', fold('climate_rate', 'NOCA', 'Holocene-C'))` times faster at NOCA in the
 Anthropocene than in the Holocene climate-change periods. The forest turned over
 `r sprintf('%.0f', fold('turnover_rate', 'MORA', 'Holocene-C'))` times faster at MORA and
-`r sprintf('%.0f', fold('turnover_rate', 'NOCA', 'Holocene-C'))` times faster at NOCA. At MORA the lag
+`r sprintf('%.0f', fold('turnover_rate', 'NOCA', 'Holocene-C'))` times faster at NOCA (Fig. 5A, B). At MORA the lag
 grew in the Anthropocene and did not grow in either Holocene type (Anthropocene minus Holocene-C
 `r ct('lag_rate', 'MORA', 'Anthropocene - Holocene-C')`, minus Holocene-S
-`r ct('lag_rate', 'MORA', 'Anthropocene - Holocene-S')` CCA distance per century). At NOCA the lag
+`r ct('lag_rate', 'MORA', 'Anthropocene - Holocene-S')` CCA distance per century, Fig. 5C). At NOCA the lag
 rate did not differ between the period types (`r ct('lag_rate', 'NOCA', 'Anthropocene - Holocene-C')`
 against Holocene-C). `r cs = contrasts |> filter(contrast == 'Holocene-C - Holocene-S', response %in% c('lag', 'lag_rate', 'pace_effect', 'pace_effect_total', 'direction_effect', 'direction_effect_total'), p_adjusted < .05); if (nrow(cs)) paste0('Within the Holocene, the C and S lake-periods differed in ', paste(sprintf('the %s at %s (%s)', tolower(response_label[cs$response]), cs$site, mapply(ct, cs$response, cs$site, cs$contrast)), collapse = ' and '), ', and in no other lag, pace or direction response.') else 'Within the Holocene, the C and S lake-periods did not differ in lag, pace or direction in either park.'` `r spans`
 
-Not divided by time, the climate still shifted further in the few decades of the Anthropocene than
+Not divided by time (Fig. S16), the climate still shifted further in the few decades of the Anthropocene than
 over a whole Holocene lake-period (Anthropocene minus Holocene-C
 `r ct('climate_change', 'MORA', 'Anthropocene - Holocene-C')` calibration SD at MORA,
 `r ct('climate_change', 'NOCA', 'Anthropocene - Holocene-C')` at NOCA). The distance the community moved
@@ -1087,31 +1087,54 @@ did over whole lake-periods. Anthropocene minus Holocene, in CCA distance:
 show_figure('report/figures/main/fig_era_contrasts.pdf')
 ```
 
-**Fig. 5. Climate change, community turnover and climate-community lag in the Holocene and the Anthropocene.**
-For each park, the fitted mean and 95% confidence interval of the Holocene stability periods (squares), the
-Holocene climate-change periods (diamonds) and the Anthropocene plot pairs (circles). Each row shows a total between
-the two ends of a lake-period or plot pair (left) and its rate per century (right): (A) the standardized climate
-change, the distance between the climates at the two ends, and (B) its rate; (C) the observed community turnover,
-the distance the community moved in CCA space, and (D) its rate; (E) the climate-community lag, the change in
-mismatch between the two ends (M at t2 minus M at t1), and (F) its rate. The fitted mean is printed beside each
-point. B and D are on log axes, where equal distances are equal folds, and the arrow gives the fold between the
-Anthropocene and the Holocene climate-change means. `r below = means[means$response %in% c('climate_rate', 'turnover_rate') & means$conf_low <= 0, ]; if (nrow(below)) paste0(if (nrow(below) > 1) 'The intervals of ' else 'The interval of ', paste(sprintf('the %s at %s in %s', c('Holocene-S' = 'Holocene stability periods', 'Holocene-C' = 'Holocene climate-change periods', Anthropocene = 'Anthropocene')[as.character(below$period_type)], below$site, c(climate_rate = 'B', turnover_rate = 'D')[below$response]), collapse = ' and '), if (nrow(below) > 1) ' reach' else ' reaches', ' below zero, which a log axis cannot show. Such an interval runs to the bottom of the panel and ends in an arrow.') else ''` A, C, E and F are on linear axes without folds. Their connectors
+**Fig. 5. Rates of climate change, community turnover and climate-community lag, and the pace and direction
+contributions to the lag, in the Holocene and the Anthropocene.** For each park, the fitted mean and 95% confidence
+interval per century of the Holocene stability periods (squares), the Holocene climate-change periods (diamonds) and
+the Anthropocene plot pairs (circles), with the fitted mean printed beside each point: (A) the standardized climate
+change, the distance between the climates at the two ends of a lake-period or plot pair; (B) the observed community
+turnover, the distance the community moved in CCA space; (C) the climate-community lag, the change in mismatch
+between the two ends (M at t2 minus M at t1); (D) the pace contribution and (E) the direction contribution to the
+lag, the pace and direction effects of the text. Each contribution is the lag at the end of the period minus the lag
+the community would have had at the climate-predicted pace (D, keeping its own direction) or in the
+climate-predicted direction (E, keeping its own distance). A positive contribution means that the community's own
+pace or direction widened the lag, a negative one that it narrowed the lag. D and E share one y scale. A and B are
+on log axes, where equal distances are equal folds, and the arrow gives the fold between the Anthropocene and the
+Holocene climate-change means. `r below = means[means$response %in% c('climate_rate', 'turnover_rate') & means$conf_low <= 0, ]; if (nrow(below)) paste0(if (nrow(below) > 1) 'The intervals of ' else 'The interval of ', paste(sprintf('the %s at %s in %s', c('Holocene-S' = 'Holocene stability periods', 'Holocene-C' = 'Holocene climate-change periods', Anthropocene = 'Anthropocene')[as.character(below$period_type)], below$site, c(climate_rate = 'A', turnover_rate = 'B')[below$response]), collapse = ' and '), if (nrow(below) > 1) ' reach' else ' reaches', ' below zero, which a log axis cannot show. Such an interval runs to the bottom of the panel and ends in an arrow.') else ''` C, D and E are on linear axes without folds. Their connectors
 show the three differences between period types within each park: on the lower level, the Holocene stability against
 the Holocene climate-change periods (left) and the Holocene climate-change periods against the Anthropocene (right), and
 on the upper level, the Holocene stability periods against the Anthropocene. A star marks a difference that differs
-from zero (two-sided t test, Holm-adjusted p < 0.05 across the six differences of each response, three per park). The intervals are unadjusted. The totals in A,
-C and E build up over a whole lake-period in the Holocene and over the few decades between the two surveys in the
-Anthropocene. Means come from the model response ~ period type × site, with an
+from zero (two-sided t test, Holm-adjusted p < 0.05 across the six differences of each response, three per park). The
+intervals are unadjusted. Means come from the model response ~ period type × site, with an
 AR(1) correlation within each lake and weights for the number of samples at each end, fitted on
 `r n_group('Holocene-C', 'MORA')` climate-change and `r n_group('Holocene-S', 'MORA')` stability lake-periods and
 `r n_group('Anthropocene', 'MORA')` plot pairs at MORA, and `r n_group('Holocene-C', 'NOCA')`, `r n_group('Holocene-S', 'NOCA')`
-and `r n_group('Anthropocene', 'NOCA')` at NOCA. `r both_spans` Longer windows give lower rates, so the rates of the
-two eras are not on equal footing. Units: the climate change rate in calibration standard deviations per century,
-the climate change in calibration standard deviations, the turnover and lag rates in CCA distance per century,
-the turnover and the lag in CCA distance. The Holocene climate is CHELSA-TraCE21k after the bias correction of
-Appendix S2.
+and `r n_group('Anthropocene', 'NOCA')` at NOCA. Lake-periods and plots whose observed or predicted position did not
+move have no pace or direction contribution: D and E hold `r means$n[means$response == 'pace_effect' & means$site == 'MORA' & means$period_type == 'Holocene-C']` climate-change and `r means$n[means$response == 'pace_effect' & means$site == 'MORA' & means$period_type == 'Holocene-S']`
+stability lake-periods at MORA. `r both_spans` Longer windows give lower rates, so the rates of the
+two eras are not on equal footing. The same quantities not divided by time are in Fig. S16. Units: the climate change
+in calibration standard deviations per century, the others in CCA distance per century. The Holocene climate is
+CHELSA-TraCE21k after the bias correction of Appendix S2.
 
 <!-- /readme-only -->
+
+**Quantities not divided by time.** The main text compares the rates per century (Fig. 5). The same models fitted
+on the quantities not divided by time give the means and differences in Fig. S16 (Tables S15 and S16).
+
+```{r fig-s16-totals}
+show_figure('report/figures/supplementary/figS16_era_totals.pdf')
+```
+
+**Fig. S16. Climate change, community turnover, climate–community lag, and the pace and direction contributions
+not divided by time.** As Fig. 5 of the main text, for the totals over a whole lake-period or plot pair: (A) the
+standardized climate change between the two ends, (B) the observed community turnover, (C) the climate–community
+lag, (D) the pace contribution, and (E) the direction contribution to the lag. For each park, the fitted mean and
+95% confidence interval of the Holocene stability periods (squares), the Holocene climate-change periods (diamonds),
+and the Anthropocene plot pairs (circles), with the fitted mean printed beside each point. All panels are on linear
+axes, and D and E share one y scale. Connectors show the three differences between period types within each park,
+and a star marks a difference that differs from zero (two-sided t test, Holm-adjusted p < 0.05 across the six
+differences of each quantity, three per park). The intervals are unadjusted. The totals build up over a whole
+lake-period in the Holocene and over the few decades between the two surveys in the Anthropocene. `r both_spans`
+Units: the climate change in calibration standard deviations, the others in CCA distance.
 
 **Turnover and lag by the duration of the lake-periods.** To test whether longer lake-periods had more
 turnover and larger lags only because they are longer, we compared the lake-periods among three classes of
@@ -1149,7 +1172,7 @@ add to it, and it does not increase in proportion to time. This is one reason wh
 lake-periods are low.
 
 **Model checks.** To check the models of the comparison among period types (see Methods of the main text),
-we report their fit (Table S19) and their residuals (Fig. S16).<!-- readme-only --> The coefficients of every model are on the
+we report their fit (Table S19) and their residuals (Fig. S17).<!-- readme-only --> The coefficients of every model are on the
 `r details_link('08_models', 'model details page')`.<!-- /readme-only -->
 
 ```{r q1-model-checks}
@@ -1166,10 +1189,10 @@ read_output('era_comparison/era_model_summary.csv') |>
     'of 1. The models were fitted with restricted maximum likelihood (REML), so that the log-likelihood and the AIC can only be',
     'compared among models with the same fixed effects. R² is descriptive (the residual sum of squares divided by the total',
     'sum of squares, subtracted from 1).'))
-show_figure('report/figures/supplementary/figS16_era_model_residuals.pdf')
+show_figure('report/figures/supplementary/figS17_era_model_residuals.pdf')
 ```
 
-**Fig. S16. Residuals of the ten models of the comparison among period types.** Top: normal quantile
+**Fig. S17. Residuals of the ten models of the comparison among period types.** Top: normal quantile
 plots of the normalized residuals, one for each quantity. Bottom: normalized residuals for each period
 type and park (points, with boxes for the quartiles). The models have no continuous explanatory variable,
 so the fitted values take one value for each period type and park, and the residuals for each group show
@@ -1194,7 +1217,7 @@ Stages and helpers: [`R/pipeline/14_era_models.R`](R/pipeline/14_era_models.R),
 **What and why.** The pace effect and the direction effect, defined with the lake-periods above, ask
 whether a lag comes from how far the community moved or from the direction it took. They are compared
 between the period types with the same era models as the lag (code, fit statistics and residuals in
-Q1: Table S19, Fig. S16).
+Q1: Table S19, Fig. S17).
 
 **Result.**
 
@@ -1216,31 +1239,11 @@ totals_sig = totals |> filter(p_adjusted < .05)
 
 <!-- readme-only -->
 
-Per century, the MORA pace effect of the Anthropocene `r era_words('pace_effect', 'MORA')`, and the MORA direction
+Per century (Fig. 5D, E), the MORA pace effect of the Anthropocene `r era_words('pace_effect', 'MORA')`, and the MORA direction
 effect `r era_words('direction_effect', 'MORA')`. At NOCA the per-century pace effect
 `r era_words('pace_effect', 'NOCA')`, and the direction effect `r era_words('direction_effect', 'NOCA')`. Not divided
-by time, `r if (nrow(totals_sig)) paste0(nrow(totals_sig), ' of the ', nrow(totals), ' contrasts between the Anthropocene and a Holocene period type ', if (nrow(totals_sig) == 1) 'is' else 'are', ' significant after the adjustment: ', paste(sprintf('%s at %s, %s (%s)', tolower(response_label[totals_sig$response]), totals_sig$site, totals_sig$contrast, mapply(ct, totals_sig$response, totals_sig$site, totals_sig$contrast)), collapse = '; ')) else paste0('none of the ', nrow(totals), ' contrasts between the Anthropocene and a Holocene period type is significant after the adjustment')`.
+by time (Fig. S16D, E), `r if (nrow(totals_sig)) paste0(nrow(totals_sig), ' of the ', nrow(totals), ' contrasts between the Anthropocene and a Holocene period type ', if (nrow(totals_sig) == 1) 'is' else 'are', ' significant after the adjustment: ', paste(sprintf('%s at %s, %s (%s)', tolower(response_label[totals_sig$response]), totals_sig$site, totals_sig$contrast, mapply(ct, totals_sig$response, totals_sig$site, totals_sig$contrast)), collapse = '; ')) else paste0('none of the ', nrow(totals), ' contrasts between the Anthropocene and a Holocene period type is significant after the adjustment')`.
 The Anthropocene effects are large per century mainly because they build up over a few decades.
-
-```{r fig-6-main}
-show_figure('report/figures/main/fig_lag_pace_direction.pdf')
-```
-
-**Fig. 6. Pace effect and direction effect in the Holocene and the Anthropocene.** For each park, the fitted
-mean and 95% confidence interval of the Holocene stability periods (squares), the Holocene climate-change periods
-(diamonds) and the Anthropocene (circles), with the fitted mean printed beside each point. Each row shows an effect
-over the whole lake-period or plot pair (left, not divided by time) and per century (right): (A) the pace effect
-and (B) the pace effect per century, (C) the direction effect and (D) the direction effect per century. All four
-panels share one y scale. Each effect is the lag at the end of the period minus the lag the community would have had at the
-climate-predicted pace (A, B, keeping its own direction) or in the climate-predicted direction (C, D, keeping its
-own distance). A positive effect means that the community's own pace or direction widened the lag. A negative
-effect means that it narrowed the lag. Connectors show the three differences between period types within each
-park: on the lower level, the Holocene stability against the Holocene climate-change periods (left) and the Holocene
-climate-change periods against the Anthropocene (right), and on the upper level, the Holocene stability periods
-against the Anthropocene. A star marks a difference that differs from zero (two-sided t test, Holm-adjusted
-p < 0.05 across the six differences of each response, three per park). Fitted means and contrasts come from the same models as Fig. 5, whose
-panel F shows the lag rate. Lake-periods and plots whose observed or predicted position did not move have no pace or direction effect: the panels
-hold `r m5 = read_output('era_comparison/era_means.csv'); m5$n[m5$response == 'pace_effect' & m5$site == 'MORA' & m5$period_type == 'Holocene-C']` climate-change and `r m5$n[m5$response == 'pace_effect' & m5$site == 'MORA' & m5$period_type == 'Holocene-S']` stability lake-periods at MORA. `r both_spans` The totals are in CCA distance, the rates in CCA distance per century.
 
 <!-- /readme-only -->
 
@@ -1274,7 +1277,7 @@ if (file.exists(file.path(sens_dir, 'sign_counts.csv'))) {
 
 Stages and helpers: [`R/pipeline/14_era_models.R`](R/pipeline/14_era_models.R),
 [`R/helpers/tracking_model_reporting.R`](R/helpers/tracking_model_reporting.R) (period types),
-[`R/figures/main_fig6_lag_pace_direction.R`](R/figures/main_fig6_lag_pace_direction.R),
+[`R/figures/main_fig5_era_contrasts.R`](R/figures/main_fig5_era_contrasts.R),
 [`R/sensitivity_paleoclimate.R`](R/sensitivity_paleoclimate.R).
 
 <!-- /readme-only -->
@@ -1347,7 +1350,7 @@ comes from the narrow range within each park
 (`r u = read_output('cca_tracking_lake_periods.csv'); paste(sprintf('%s %.2f to %.2f', c('MORA', 'NOCA'), tapply(u$fire_activity, u$site, min), tapply(u$fire_activity, u$site, max)), collapse = ', ')`
 events per century per core).
 
-The same models on the responses not divided by time use the climate change between the two ends in
+The same models on the responses not divided by time (Fig. S18) use the climate change between the two ends in
 place of its rate, and the slopes are in CCA distance per standardized unit of climate change or per
 event per century per core. More climate change `r say('lag', 'climate_change', 'lag')`,
 `r say('pace_effect_total', 'climate_change', 'pace effect')` and
@@ -1362,32 +1365,48 @@ Anthropocene, burned plots had a smaller total pace effect than unburned ones
 Fire activity stays a frequency in both forms, because a count of events would grow with the length
 of the lake-period.
 
-```{r fig-7-main}
+```{r fig-6-main}
 show_figure('report/figures/main/fig_climate_fire_associations.pdf')
 perf6 = read_output('community_predictor_models/model_performance.csv')
 R2 = function(r, e) sprintf('%.2f', perf6$R2[perf6$response == r & perf6$era == e])
 ```
 
-**Fig. 7. Climate and fire associations.** Model slopes with conditional 95% confidence
-intervals for the lag (black), the pace effect (pink) and the direction effect (blue), side by side
-for each term, in the colours of Fig. 1. Faded estimates have intervals that include zero. Top row
-(A, B): the responses not divided by time, the change in mismatch or the reduction in final mismatch under
-the pace or direction correction between the two ends. Bottom row (C, D): the same responses divided by
-the elapsed time, per century. The panels of a row share one x scale. (A, C) Holocene lake-periods, model
-response ~ site + climate + fire activity with an AR(1) correlation within each lake and weights for the
-number of samples at each end, where climate is the climate change between the two ends in A and the
-climate change rate in C: `r perf6$n_MORA[perf6$response == 'lag_rate' & perf6$era == 'Holocene']` MORA and
+**Fig. 6. Climate and fire associations.** Model slopes with conditional 95% confidence
+intervals for the lag (black), the pace effect (pink) and the direction effect (blue) per century, side by side
+for each term, in the colours of Fig. 1. Faded estimates have intervals that include zero. The two panels share one
+x scale. (A) Holocene lake-periods, model response ~ site + climate change rate + fire activity with an AR(1)
+correlation within each lake and weights for the number of samples at each end:
+`r perf6$n_MORA[perf6$response == 'lag_rate' & perf6$era == 'Holocene']` MORA and
 `r perf6$n_NOCA[perf6$response == 'lag_rate' & perf6$era == 'Holocene']` NOCA lake-periods for the lag, and
 `r perf6$n_MORA[perf6$response == 'pace_effect' & perf6$era == 'Holocene']` and `r perf6$n_NOCA[perf6$response == 'pace_effect' & perf6$era == 'Holocene']`
-for pace and direction. The climate slope is per standardized unit of climate change (A) or per
-standardized unit of climate change per century (C), and the fire slope per accepted event per century per
-covered core. (B, D) Anthropocene plot pairs, model response ~ site + burned with park-specific
-variances: `r perf6$n[perf6$response == 'lag_rate' & perf6$era == 'Anthropocene']` plot pairs for the lag
+for pace and direction. The climate slope is per standardized unit of climate change per century, and the fire
+slope per accepted event per century per covered core. (B) Anthropocene plot pairs, model response ~ site + burned
+with park-specific variances: `r perf6$n[perf6$response == 'lag_rate' & perf6$era == 'Anthropocene']` plot pairs for the lag
 and `r perf6$n[perf6$response == 'pace_effect' & perf6$era == 'Anthropocene']` for pace and direction.
-The descriptive R² and the degrees of freedom of each model are in Tables S21 and S22. `r both_spans` Effects are in CCA distance (A, B) or CCA distance
-per century (C, D) per unit of the term.
+The descriptive R² and the degrees of freedom of each model are in Tables S21 and S22. The same models on the
+responses not divided by time are in Fig. S18. `r both_spans` Effects are in CCA distance per century per unit of
+the term.
 
 <!-- /readme-only -->
+
+**Associations not divided by time.** The main text gives the associations per century (Fig. 6). The same models on
+the responses not divided by time, with the climate change between the two ends in place of its rate, give the
+slopes in Fig. S18.
+
+```{r fig-s18-associations-total}
+show_figure('report/figures/supplementary/figS18_climate_fire_associations_total.pdf')
+```
+
+**Fig. S18. Climate and fire associations not divided by time.** As Fig. 6 of the main text, for the lag, the
+pace effect, and the direction effect not divided by time: the change in mismatch, or the reduction in final
+mismatch under the pace or direction correction, between the two ends. Model slopes with conditional 95% confidence
+intervals, the lag in black, the pace effect in pink, and the direction effect in blue. Faded estimates have
+intervals that include zero, and the two panels share one x scale. (A) Holocene lake-periods, model response ~
+site + climate change + fire activity, where climate change is the standardized climate change between the two ends,
+with an AR(1) correlation within each lake and weights for the number of samples at each end. (B) Anthropocene plot
+pairs, model response ~ site + burned with park-specific variances. The climate slope is per standardized unit of
+climate change, and the fire slope per accepted event per century per covered core. Effects are in CCA distance per
+unit of the term. `r both_spans`
 
 **Model checks.** The fit of these models is given in Table S22.<!-- readme-only --> The rows left out
 are on the `r details_link('08_models', 'model details page')`.<!-- /readme-only -->
@@ -1409,7 +1428,7 @@ perf6 |>
 
 Stages and helpers: [`R/pipeline/15_predictor_models.R`](R/pipeline/15_predictor_models.R),
 [`R/helpers/reconstruction_models.R`](R/helpers/reconstruction_models.R),
-[`R/figures/main_fig7_climate_fire_associations.R`](R/figures/main_fig7_climate_fire_associations.R).
+[`R/figures/main_fig6_climate_fire_associations.R`](R/figures/main_fig6_climate_fire_associations.R).
 
 <!-- /readme-only -->
 
@@ -1527,7 +1546,7 @@ p < 0.05 before the adjustment and `r nrow(sc_sig)` after it
 show_figure('report/figures/main/fig_species_contributions.pdf')
 ```
 
-**Fig. 8. Species contributions in the Holocene and the Anthropocene.** Each species' vector is its
+**Fig. 7. Species contributions in the Holocene and the Anthropocene.** Each species' vector is its
 change in share between the first and the last sampled century of a lake-period, or between the
 legacy survey and the resurvey of a plot, times its fixed position in the CCA plane. The upper row (following climate-predicted direction)
 projects these vectors on the direction in which the climate-predicted position moved, and the lower
@@ -1545,7 +1564,7 @@ Each park has its own x scale, symmetric around zero. `r both_spans` Contributio
 **Species contributions not divided by time.** Per century, the species contributions of the Holocene are
 small partly because the lake-periods are long, and those of the Anthropocene are large partly because the
 time between the two surveys is short. To test whether this explains the difference between the two eras,
-we also calculated the species contributions without dividing by time (Fig. S17, Table S25).
+we also calculated the species contributions without dividing by time (Fig. S19, Table S25).
 
 ```{r step6-totals}
 st = read_output('species_contribution_models/species_means_total.csv')
@@ -1563,7 +1582,7 @@ hol_r = species_means |> filter(period_type != 'Anthropocene', present)
 top = hol_t |> slice_max(abs(estimate), n = 1)
 ant_t = away(st |> filter(period_type == 'Anthropocene'))
 ant_r = away(species_means |> filter(period_type == 'Anthropocene'))
-show_figure('report/figures/supplementary/figS17_species_contributions_total.pdf')
+show_figure('report/figures/supplementary/figS19_species_contributions_total.pdf')
 ```
 
 Not divided by time, the mean contributions of the Holocene were as large as those of the Anthropocene.
@@ -1574,12 +1593,12 @@ century, `r if (identical(key(ant_t), key(ant_r))) 'for the same species in the 
 Thus, within a lake-period, the species of the Holocene moved the communities about as far as those of the
 Anthropocene, but too variably among lake-periods to identify which species did so.
 
-**Fig. S17. Species contributions not divided by time.** As Fig. 8 of the main text, with the contribution
+**Fig. S19. Species contributions not divided by time.** As Fig. 7 of the main text, with the contribution
 of each species between t1 and t2 and not per century. Upper row: how far each species moved the community
 in the climate-predicted direction (positive values) or against it (negative values). Lower row: how far
 each species moved the community away from its climate-predicted position, which is the part of the lag
 that is due to that species. Means with 95% confidence intervals (t-intervals). Symbols, order of the
-species, and shading as in Fig. 8. `r both_spans` Contributions are in CCA distance.
+species, and shading as in Fig. 7. `r both_spans` Contributions are in CCA distance.
 
 ```{r step6-totals-table}
 st |> mutate(value = ifelse(interval_defined, sprintf('%+.3f (%.3f to %.3f)', estimate, conf_low, conf_high),
@@ -1595,7 +1614,7 @@ st |> mutate(value = ifelse(interval_defined, sprintf('%+.3f (%.3f to %.3f)', es
 
 Stages and helpers: [`R/pipeline/16_contributions.R`](R/pipeline/16_contributions.R),
 [`R/helpers/cca_transition_contributions.R`](R/helpers/cca_transition_contributions.R),
-[`R/figures/main_fig8_species.R`](R/figures/main_fig8_species.R).
+[`R/figures/main_fig7_species.R`](R/figures/main_fig7_species.R).
 
 <!-- /readme-only -->
 
@@ -1617,9 +1636,9 @@ repeated the analysis with two other versions of the Holocene climate: with the 
 alone, i.e., CHELSAcruts to CHELSA V2.1), and without correction. Among the three analyses, only the
 climate-predicted positions of the Holocene communities and the climate periods can change, whereas the
 observed positions, community turnover, and all quantities of the Anthropocene do not. We compared three
-results among the analyses: the lag and the pace and direction effects of each lake-period (Fig. S18,
-Table S20), the differences between period types (Table S16, Fig. S19), and the associations with climate
-change and fire in the Holocene (Fig. S20).<!-- readme-only --> [`R/sensitivity_paleoclimate.R`](R/sensitivity_paleoclimate.R) reruns stages 08 to 16 twice into
+results among the analyses: the lag and the pace and direction effects of each lake-period (Fig. S20,
+Table S20), the differences between period types (Table S16, Fig. S21), and the associations with climate
+change and fire in the Holocene (Fig. S22).<!-- readme-only --> [`R/sensitivity_paleoclimate.R`](R/sensitivity_paleoclimate.R) reruns stages 08 to 16 twice into
 `output_paleoclimate_sensitivity/` and leaves the main outputs untouched. The raw TraCE21k was the
 paleoclimate of the analysis until 11 November 2026. The counts below are read from the tables that the
 script writes to `output_paleoclimate_sensitivity/comparison/`.<!-- /readme-only -->
@@ -1649,11 +1668,11 @@ if (s4_has) {
   s4_sl = s4_read('explanatory_slopes.csv')
   s4_away = function(run) sum(s4_sl[[paste0('conf_low_', run)]] > 0 | s4_sl[[paste0('conf_high_', run)]] < 0)
   s4_sl_main = s4_sl |> filter(conf_low_two_step > 0 | conf_high_two_step < 0)
-  show_figure('report/figures/supplementary/figS18_paleoclimate_lake_periods.pdf', width = '75%')
+  show_figure('report/figures/supplementary/figS20_paleoclimate_lake_periods.pdf', width = '75%')
 } else cat('Run Rscript R/sensitivity_paleoclimate.R to fill this appendix.\n')
 ```
 
-**Fig. S18. Holocene lake-periods with and without correction of the Holocene climate.** Each point is one
+**Fig. S20. Holocene lake-periods with and without correction of the Holocene climate.** Each point is one
 lake-period that the three analyses have in common, with its value without correction (x-axis) against its
 value with the two-step correction of the main analysis (red) and with the one-step correction (grey), each
 with its least-squares line: (A) climate change and (B) its rate, (C) the lag and (D) its rate, (E) the pace
@@ -1668,10 +1687,10 @@ per century (right).<!-- readme-only --> Script:
 [`R/figures/supp_paleoclimate_sensitivity.R`](R/figures/supp_paleoclimate_sensitivity.R).<!-- /readme-only -->
 
 ```{r appendix-s4-contrast-figure}
-if (s4_has) show_figure('report/figures/supplementary/figS19_paleoclimate_era_contrasts.pdf', width = '100%')
+if (s4_has) show_figure('report/figures/supplementary/figS21_paleoclimate_era_contrasts.pdf', width = '100%')
 ```
 
-**Fig. S19. Differences between period types with the three versions of the Holocene climate.** The
+**Fig. S21. Differences between period types with the three versions of the Holocene climate.** The
 differences between the estimated means of two period types within each park (Table S16 for the main
 analysis), each with its 95% confidence interval (not adjusted): filled points and solid lines with the
 two-step correction of the main analysis, open circles and dashed lines with the one-step correction, and
@@ -1707,9 +1726,9 @@ if (s4_has) {
     'With the one-step correction, the lag had the same sign as in the main analysis in ', s4_kept('lag', 'MORA', 'one_step'),
     ' lake-periods at MORA and in ', s4_kept('lag', 'NOCA', 'one_step'), ' at NOCA. Without correction, it had the same sign in ',
     s4_kept('lag', 'MORA', 'raw'), ' lake-periods at MORA and in ', s4_kept('lag', 'NOCA', 'raw'),
-    ' at NOCA (Fig. S18C). The pace and direction effects are given in Table S20.\n\n',
+    ' at NOCA (Fig. S20C). The pace and direction effects are given in Table S20.\n\n',
     '**Differences between the Anthropocene and the Holocene.** Of the ', nrow(s4_era_main), ' differences that were significant ',
-    'in the main analysis (Table S16, Fig. S19), ', s4_robust(s4_era_main, 'one_step'),
+    'in the main analysis (Table S16, Fig. S21), ', s4_robust(s4_era_main, 'one_step'),
     ' were also significant, with the same sign, with the one-step correction, and ', s4_robust(s4_era_main, 'raw'),
     ' without correction. ',
     if (nrow(s4_era_flip)) paste0('The sign changed for: ', s4_lst(s4_era_flip, function(d) sprintf('%s at %s, %s',
@@ -1722,7 +1741,7 @@ if (s4_has) {
     '**Associations with climate change and fire in the Holocene.** Of the ', nrow(s4_sl_main), ' coefficients whose confidence ',
     'interval excluded zero in the main analysis, ', s4_sl_same('one_step'), ' had the same sign with the one-step correction (',
     s4_sl_also('one_step'), ' with a confidence interval that excluded zero), and ', s4_sl_same('raw'), ' without correction (',
-    s4_sl_also('raw'), '; Fig. S20).\n\n',
+    s4_sl_also('raw'), '; Fig. S22).\n\n',
     '**Consequences for the conclusions.** ',
     if (nrow(s4_era_flip) == 0) paste0('The comparison between the Anthropocene and the Holocene does not depend on the correction ',
       'of the Holocene climate: all differences that were significant in the main analysis had the same sign in the three ',
@@ -1735,11 +1754,11 @@ if (s4_has) {
 ```
 
 ```{r appendix-s4-slope-figure}
-if (s4_has) show_figure('report/figures/supplementary/figS20_paleoclimate_slopes.pdf', width = '100%')
+if (s4_has) show_figure('report/figures/supplementary/figS22_paleoclimate_slopes.pdf', width = '100%')
 ```
 
-**Fig. S20. Associations with climate change and fire in the Holocene, with the three versions of the
-Holocene climate.** Coefficients of Fig. 7A and C of the main text, from the models of the Holocene
+**Fig. S22. Associations with climate change and fire in the Holocene, with the three versions of the
+Holocene climate.** Coefficients of Fig. 6A of the main text and Fig. S18A, from the models of the Holocene
 lake-periods with park, climate change, and fire activity as explanatory variables, each with its 95%
 confidence interval: filled points and solid lines with the two-step correction of the main analysis, open
 circles and dashed lines with the one-step correction, and open squares and dotted lines without
