@@ -1554,8 +1554,9 @@ whose composition did not change (all species values zero) and are per century o
 lag rate.
 Species are ordered by the maximum elevation of the plots where they occur (the 605 plot pairs, both surveys, both parks), the highest at the top. Their names are shaded by that maximum in four grey steps, lightest below 1,500 m and black above 1,900 m (key below the figure). Names in bold are species absent from the Holocene record of both parks.
 Symbols are means: squares, Holocene stability periods, diamonds, Holocene climate-change periods,
-circles, Anthropocene plot pairs (burned and unburned together). Large symbols with bars are means whose
-95% t-interval excludes zero, small faded symbols are means whose interval includes zero. A species with no
+circles, Anthropocene plot pairs (burned and unburned together), each with its 95% t-interval. Means whose
+interval excludes zero are large and dark, and means whose interval includes zero are small and faded, with
+faded intervals. A species with no
 Holocene symbols in a park is absent from that park's Holocene record.
 Each park has its own x scale, symmetric around zero. `r both_spans` Contributions are in CCA distance per century.
 

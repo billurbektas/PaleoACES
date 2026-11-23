@@ -6,8 +6,8 @@
 # contrib_climate row (until then the upper row) stays in the code and is drawn
 # again by adding it to SHOWN_MEASURES. Per species a
 # square (Holocene-S), a diamond (Holocene-C) and a circle (Anthropocene), each
-# with its 95% t-interval where the interval excludes zero; other means are
-# small faded symbols.
+# with its 95% t-interval; means whose interval includes zero are small and
+# faded, with faded intervals.
 source(here::here('R/helpers/config.R'), local = TRUE)
 suppressPackageStartupMessages({library(here); library(tidyverse); library(vegan); library(patchwork)})
 source(here('R/helpers/figure_style.R'), local = TRUE)
@@ -59,8 +59,9 @@ species_figure = function(file, x_label) {
   # Species absent from the Holocene record of both parks.
   holocene_absent_species = means |> filter(period_type != 'Anthropocene') |> group_by(species) |>
     summarise(any_present = any(present)) |> filter(!any_present) |> pull(species) |> as.character()
-  # Decluttered (Bills): intervals only where they exclude zero, the other means
-  # as small faded symbols; light bands alternate between species rows; species
+  # Every mean with its 95% interval (Bills, 23 Nov 2026; until then intervals
+  # only where they excluded zero). Means whose interval includes zero, and their
+  # intervals, are faded; light bands alternate between species rows; species
   # absent from a park's Holocene record simply have no Holocene symbols.
   bands = tibble(species_index = seq(1, length(order_species), by = 2))
   x_extent = drawn |> group_by(site) |> summarise(m = max(abs(c(estimate, conf_low, conf_high)), na.rm = TRUE)) |>
@@ -81,6 +82,8 @@ species_figure = function(file, x_label) {
     geom_rect(data = bands, aes(xmin = -Inf, xmax = Inf, ymin = species_index - .5, ymax = species_index + .5),
       inherit.aes = FALSE, fill = 'grey95') +
     geom_vline(xintercept = 0, color = 'grey55', linetype = 'dashed') +
+    geom_errorbar(data = filter(drawn, spans_zero, interval_defined), aes(xmin = conf_low, xmax = conf_high, color = site),
+      orientation = 'y', width = .2, linewidth = .7, alpha = .4, na.rm = TRUE) +
     geom_errorbar(data = filter(drawn, !spans_zero), aes(xmin = conf_low, xmax = conf_high, color = site),
       orientation = 'y', width = .2, linewidth = 1, na.rm = TRUE) +
     # Symbols kept small so the intervals stay visible (Bills, 11 Nov 2026).

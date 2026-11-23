@@ -2129,15 +2129,16 @@ names are shaded by that maximum in four grey steps, lightest below
 are species absent from the Holocene record of both parks. Symbols are
 means: squares, Holocene stability periods, diamonds, Holocene
 climate-change periods, circles, Anthropocene plot pairs (burned and
-unburned together). Large symbols with bars are means whose 95%
-t-interval excludes zero, small faded symbols are means whose interval
-includes zero. A species with no Holocene symbols in a park is absent
-from that park’s Holocene record. Each park has its own x scale,
-symmetric around zero. The lake-periods of the Holocene climate-change
-periods span 200 to 900 years, and those of the stability periods 200 to
-2600 years, between t1 and t2. The Anthropocene plot pairs span 27.5 to
-32.5 years between the midpoints of their two climate windows (about 29
-years). Contributions are in CCA distance per century.
+unburned together), each with its 95% t-interval. Means whose interval
+excludes zero are large and dark, and means whose interval includes zero
+are small and faded, with faded intervals. A species with no Holocene
+symbols in a park is absent from that park’s Holocene record. Each park
+has its own x scale, symmetric around zero. The lake-periods of the
+Holocene climate-change periods span 200 to 900 years, and those of the
+stability periods 200 to 2600 years, between t1 and t2. The Anthropocene
+plot pairs span 27.5 to 32.5 years between the midpoints of their two
+climate windows (about 29 years). Contributions are in CCA distance per
+century.
 
 **Species contributions not divided by time.** Per century, the species
 contributions of the Holocene are small partly because the lake-periods
