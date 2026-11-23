@@ -1,7 +1,7 @@
 # Figure 6 and Fig. S18: climate and fire associations as model slopes (Bills,
 # 9 Nov 2026). Left, Holocene lake-periods: response ~ site + climate +
 # fire_activity. Right, Anthropocene plot pairs: response ~ site + burned. The
-# three responses (lag, pace effect, direction effect) side by side for each
+# three responses (lag, pace contribution, direction contribution) side by side for each
 # term, with conditional 95% intervals. The main text keeps the responses per
 # century, with the climate change rate as the climate term (Figure 6), and the
 # appendix the responses not divided by time, with the climate change between
@@ -20,7 +20,7 @@ coefficients = read_csv(out(file.path(dir, 'model_coefficients.csv')), show_col_
 # whether it is per century or a total.
 rows = list(rate = c(lag_rate = 'lag', pace_effect = 'pace', direction_effect = 'direction'),
   total = c(lag = 'lag', pace_effect_total = 'pace', direction_effect_total = 'direction'))
-quantity_labels = c(lag = 'Lag', pace = 'Pace effect', direction = 'Direction effect')
+quantity_labels = c(lag = 'Lag', pace = 'Pace contribution', direction = 'Direction contribution')
 # Colours of the conceptual figure (Figure 1): mismatch and lag black, pace pink,
 # direction blue.
 quantity_colors = c(lag = 'grey10', pace = '#C27B93', direction = '#6AB2E4')

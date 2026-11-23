@@ -6,7 +6,7 @@
 # Fig. S20: every Holocene lake-period the three runs share (same lake, period
 # type and ends), with the raw paleoclimate on x and the two corrected ones on y,
 # each with its least-squares line, for the era responses the paleoclimate
-# enters. Rows: climate change, lag, pace effect, direction effect; left the total
+# enters. Rows: climate change, lag, pace contribution, direction contribution; left the total
 # over the lake-period, right the rate per century. On the dashed 1:1 line a
 # correction changes nothing; in the shaded quadrants the value changes sign.
 # Each panel gives the Pearson r of each corrected run with the raw one, per park.
@@ -33,13 +33,13 @@ if (!file.exists(file.path(comparison_dir, 'lake_period_responses.csv'))) {
   # Fig. S20 -------------------------------------------------------------------------
   d = read_csv(file.path(comparison_dir, 'lake_period_responses.csv'), show_col_types = FALSE) |>
     pivot_longer(c(two_step, one_step), names_to = 'run', values_to = 'corrected') |>
-    # Pace and direction effects are undefined where a position did not move.
+    # Pace and direction contributions are undefined where a position did not move.
     filter(is.finite(raw), is.finite(corrected)) |>
     mutate(run = factor(run, names(run_colors)), site = factor(site, c('MORA', 'NOCA')))
   correlations = read_csv(file.path(comparison_dir, 'lake_period_correlations.csv'), show_col_types = FALSE)
   labels = c(climate_change = 'Climate change', climate_rate = 'Climate change rate', lag = 'Lag',
-    lag_rate = 'Lag per century', pace_effect_total = 'Pace effect', pace_effect = 'Pace effect per century',
-    direction_effect_total = 'Direction effect', direction_effect = 'Direction effect per century')
+    lag_rate = 'Lag per century', pace_effect_total = 'Pace contribution', pace_effect = 'Pace contribution per century',
+    direction_effect_total = 'Direction contribution', direction_effect = 'Direction contribution per century')
   panel = function(r, tag) {
     x = filter(d, response == r)
     # One square range per panel, around zero and every point of the three runs.
@@ -100,7 +100,7 @@ if (!file.exists(file.path(comparison_dir, 'lake_period_responses.csv'))) {
   contrast_rows = list(total = c(climate_change = 'climate', lag = 'lag', pace_effect_total = 'pace',
       direction_effect_total = 'direction'),
     rate = c(climate_rate = 'climate', lag_rate = 'lag', pace_effect = 'pace', direction_effect = 'direction'))
-  contrast_quantities = c(climate = 'Climate change', lag = 'Lag', pace = 'Pace effect', direction = 'Direction effect')
+  contrast_quantities = c(climate = 'Climate change', lag = 'Lag', pace = 'Pace contribution', direction = 'Direction contribution')
   # Rule: every difference of the drawn responses, in both parks and all three runs.
   stopifnot(sum(era$response %in% names(unlist(unname(contrast_rows)))) == 8 * 2 * 3 * 3)
   contrast_panel = function(version, tag, title) {
@@ -146,7 +146,7 @@ if (!file.exists(file.path(comparison_dir, 'lake_period_responses.csv'))) {
     total = c(lag = 'lag', pace_effect_total = 'pace', direction_effect_total = 'direction'))
   slope_terms = list(rate = c('siteNOCA', 'climate_rate', 'fire_activity'),
     total = c('siteNOCA', 'climate_change', 'fire_activity'))
-  quantity_labels = c(lag = 'Lag', pace = 'Pace effect', direction = 'Direction effect')
+  quantity_labels = c(lag = 'Lag', pace = 'Pace contribution', direction = 'Direction contribution')
   quantity_colors = c(lag = 'grey10', pace = '#C27B93', direction = '#6AB2E4')
   term_labels = c(siteNOCA = 'Site\nNOCA − MORA', climate_rate = 'Climate change rate',
     climate_change = 'Climate change', fire_activity = 'Fire activity')

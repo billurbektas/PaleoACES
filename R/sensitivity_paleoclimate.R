@@ -19,7 +19,7 @@
 # output_paleoclimate_sensitivity/comparison/, the climate periods of the three
 # runs, every era response of the shared lake-periods with the correlation of
 # each corrected run with the raw one in each park (Fig. S20), the shared
-# lake-periods whose lag, pace and direction effect keep their sign, the era
+# lake-periods whose lag, pace and direction contribution keep their sign, the era
 # contrasts of all responses and the Holocene explanatory-model slopes (Fig. S22)
 # of the three runs side by side. Appendix S4 shows the two figures and quotes
 # the counts from these tables (Bills, 11 Nov 2026: no comparison tables).
@@ -92,12 +92,12 @@ stopifnot(nrow(responses) == nrow(shared) * length(ERA_RESPONSES))
 write_csv(responses, file.path(comparison, 'lake_period_responses.csv'))
 # How closely each corrected run follows the raw one across the shared lake-periods
 # of a park (Pearson r, printed in Fig. S20). Lake-periods without a pace or
-# direction effect (a position that did not move) are left out.
+# direction contribution (a position that did not move) are left out.
 correlations = responses |> pivot_longer(c(two_step, one_step), names_to = 'run', values_to = 'corrected') |>
   filter(is.finite(raw), is.finite(corrected)) |>
   group_by(response, site, run) |> summarise(lake_periods = n(), r = cor(raw, corrected), .groups = 'drop')
 write_csv(correlations, file.path(comparison, 'lake_period_correlations.csv'))
-# Shared lake-periods whose lag, pace and direction effect keep the sign of the
+# Shared lake-periods whose lag, pace and direction contribution keep the sign of the
 # main run in each sensitivity run. Undefined effects are counted as undefined.
 sign_counts = map_dfr(c('one_step', 'raw'), function(other) map_dfr(c('lag', 'pace_effect_total', 'direction_effect_total'),
   function(r) responses |> filter(response == r) |> mutate(same = sign(two_step) == sign(.data[[other]])) |>

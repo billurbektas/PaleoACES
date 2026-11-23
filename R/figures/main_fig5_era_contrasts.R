@@ -3,9 +3,9 @@
 # models. The main text keeps the rates per century only (Figure 5) and the
 # appendix the same quantities not divided by time (Fig. S16), in one layout:
 # the climate change and the observed community turnover in the first row,
-# the climate-community lag, the pace effect and the direction effect in the
+# the climate-community lag, the pace contribution and the direction contribution in the
 # second. Until 23 Nov 2026 Figure 5 held the climate change, turnover and lag
-# as total and rate side by side, and Figure 6 the pace and direction effects.
+# as total and rate side by side, and Figure 6 the pace and direction contributions.
 # The climate change and turnover rates are on log axes with the Holocene-C
 # fold, the others on linear axes with connectors for the three differences
 # between period types of each park. Panels drawn by R/helpers/era_means_figure.R.
@@ -15,7 +15,7 @@ source(here('R/helpers/figure_style.R'), local = TRUE)
 source(here('R/helpers/era_means_figure.R'), local = TRUE)
 render_figures = isTRUE(getOption('paleoaces.render_figures', TRUE))
 
-# The pace and direction effects are the lag at t2 minus the lag had the
+# The pace and direction contributions are the lag at t2 minus the lag had the
 # community moved at the predicted pace or in the predicted direction.
 # Positive: its own pace or direction widened the lag. Negative: it narrowed
 # the lag. The last title line says so, with arrows along the axis (Bills,

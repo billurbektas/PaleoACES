@@ -94,7 +94,7 @@ lake_period_table_columns = function() c('site', 'lake', 'period', 'period_type'
 # climate change (Bills, 10 Nov 2026) is the matching total for the climate: the
 # distance between the two ends in standardized climate space, in calibration
 # SD, the climate change rate times the climate interval / 100. The pace and
-# direction effect totals (Bills, 10 Nov 2026) are the same effects not divided
+# direction contribution totals (Bills, 10 Nov 2026) are the same contributions not divided
 # by time, undefined where the per-century effects are (PLAN.md 4.7).
 build_both_eras = function(units, plots) {
   holocene = units |> dplyr::transmute(period_type, site, lake, plot_id = NA_character_, period,

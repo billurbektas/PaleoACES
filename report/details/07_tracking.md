@@ -26,7 +26,7 @@ stability periods), under the C (darker) and S (lighter) period bands.
 The last column holds the Anthropocene plot pairs of each park as
 boxplots, on their own scale, because their values are much larger.
 First figure: climate change rate (calibration SD per century),
-turnover, lag rate, pace and direction effects (CCA distance per
+turnover, lag rate, pace and direction contributions (CCA distance per
 century) and fire activity (events per century per core). Second figure:
 the magnitude tracking ratio (unitless, 1 = observed and predicted moved
 equally far), the movement angle (degrees, 90 = perpendicular to the

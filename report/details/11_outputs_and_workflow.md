@@ -220,14 +220,14 @@ the folder of the step that writes it.
 | 14_era_models | era_comparison/era_model_summary.csv | Era-comparison GLS fits, means and contrasts per response | 2 |
 | 14_era_models | era_comparison/era_predictions.csv | Era-comparison GLS fits, means and contrasts per response | 597 |
 | 14_era_models | era_comparison/model_results.txt | Era-comparison GLS fits, means and contrasts per response | 19 |
-| 14_era_models | era_comparison/primary_fits.rds | Era-comparison GLS fits, means and contrasts per response | 676 |
+| 14_era_models | era_comparison/primary_fits.rds | Era-comparison GLS fits, means and contrasts per response | 151 |
 | 15_predictor_models | community_predictor_models/model_coefficients.csv | Within-era predictor GLS fits | 6 |
 | 15_predictor_models | community_predictor_models/model_exclusions.csv | Within-era predictor GLS fits | 45 |
 | 15_predictor_models | community_predictor_models/model_performance.csv | Within-era predictor GLS fits | 2 |
 | 15_predictor_models | community_predictor_models/model_results.txt | Within-era predictor GLS fits | 12 |
 | 15_predictor_models | community_predictor_models/partial_effects.csv | Within-era predictor GLS fits | 165 |
 | 15_predictor_models | community_predictor_models/partial_residuals.csv | Within-era predictor GLS fits | 25 |
-| 15_predictor_models | community_predictor_models/primary_fits.rds | Within-era predictor GLS fits | 401 |
+| 15_predictor_models | community_predictor_models/primary_fits.rds | Within-era predictor GLS fits | 44 |
 | 16_contributions | cca_transition_contributions/climate_contributions.csv | Species and climate contributions to displacement | 223 |
 | 16_contributions | cca_transition_contributions/lag_decomposition.csv | Species and climate contributions to displacement | 91 |
 | 16_contributions | cca_transition_contributions/species_contributions.csv | Species and climate contributions to displacement | 1430 |

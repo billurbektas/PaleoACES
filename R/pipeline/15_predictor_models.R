@@ -39,9 +39,9 @@ for (response in responses) {
   h = holocene_rows(response); d = h$data; climate = climate_term[[response]]
 # report-snippet: holocene-explanatory-model
   # Holocene lake-periods only. Does the response go with more climate change
-  # or more fire? Fitted twice: per century (lag rate, pace effect, direction
+  # or more fire? Fitted twice: per century (lag rate, pace contribution, direction
   # effect) with climate = climate_rate, the climate change rate, and as totals
-  # not divided by time (lag, pace and direction effect totals) with
+  # not divided by time (lag, pace and direction contribution totals) with
   # climate = climate_change, the climate change between the two ends.
   #   site: a separate level for each park;
   #   climate: the slope per unit of climate change (rate or total);

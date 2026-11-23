@@ -96,7 +96,7 @@ calculate_tracking_metrics = function(x, epsilon = TRACKING_EPSILON) {
   px = x$p1_2-x$p1; py = x$p2_2-x$p2
   a = sqrt(ox^2+oy^2); b = sqrt(px^2+py^2)
   # A movement shorter than epsilon has no direction, so the angle, the pace
-  # and direction effects and the tracking ratio are left undefined there.
+  # and direction contributions and the tracking ratio are left undefined there.
   x$finite_endpoints = rowSums(!is.finite(as.matrix(x[coords]))) == 0L
   x$small_observed_movement = is.finite(a) & a <= epsilon
   x$small_predicted_movement = is.finite(b) & b <= epsilon
@@ -136,7 +136,7 @@ calculate_tracking_metrics = function(x, epsilon = TRACKING_EPSILON) {
   #     distance b (as if it had moved at the climate's pace);
   #   direction-corrected: the predicted direction, but its own distance a
   #     (as if it had moved the climate's way).
-  # Each effect is the observed lag at t2 minus the lag at that "what if" end
+  # Each contribution is the observed lag at t2 minus the lag at that "what if" end
   # point, per century. Positive: the community's own pace (or direction)
   # widened the lag. Negative: it narrowed the lag.
   x$pace_corrected_CCA1 = x$pace_corrected_CCA2 = rep(NA_real_, nrow(x))
@@ -161,7 +161,7 @@ calculate_tracking_metrics = function(x, epsilon = TRACKING_EPSILON) {
 
 # Additional modeling responses derived from the maintained counterfactual
 # geometry. Apply within each realization before taking chronology medians;
-# subtracting medians of lag rate and effect does not preserve this identity.
+# subtracting medians of lag rate and contribution does not preserve this identity.
 add_corrected_lag_rates = function(x) {
   needed = c('lag_t1', 'lag_t2_pace_corrected', 'lag_t2_direction_corrected',
     'climate_dt_years', 'pace_counterfactual_valid', 'direction_counterfactual_valid')

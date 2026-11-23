@@ -75,7 +75,7 @@ lake_period_panels = function(rows, title_text) {
     theme(legend.position = 'bottom')
 }
 p_rates = lake_period_panels(c(climate_rate = 'Climate change rate', turnover_rate = 'Turnover rate',
-  lag_rate = 'Lag rate', pace_effect = 'Pace effect', direction_effect = 'Direction effect',
+  lag_rate = 'Lag rate', pace_effect = 'Pace contribution', direction_effect = 'Direction contribution',
   fire_activity = 'Fire activity'), 'Lake-period values over time')
 p_other = lake_period_panels(c(magnitude_tracking_ratio = 'Magnitude ratio', angle_degrees = 'Movement angle',
   climate_rate = 'Climate change rate', fire_activity = 'Fire activity'), 'Lake-period tracking ratio and angle over time')
