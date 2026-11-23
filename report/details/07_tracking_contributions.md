@@ -4,6 +4,8 @@
 > **Used by:** `R/pipeline/16_contributions.R`  
 > **Originally:** `docs/review/README_cca_transition_contributions.md` (moved into the report on 2026-11-09)
 
+**Update 2026-11-23.** The report shows only `contrib_lag`, the species contributions to the climate–community lag (Figure 7, Fig. S19, Tables S23 and S25; Bills). `contrib_climate` is still computed by `R/pipeline/16_contributions.R` and kept in the figure code, but is not shown for now.
+
 **Update 2026-11-09 (lake-period remodelling).** Contributions are now computed once per
 lake-period, between its oldest and its youngest sampled century, and once per plot pair. Each
 species' vector is projected on two references: the direction in which the predicted position moved

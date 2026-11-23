@@ -1128,46 +1128,42 @@ among models with the same fixed effects. R² is descriptive.
 
 # Species contributions (Q4)
 
-**Table S23. Species contributions per century.** Mean and 95%
-confidence interval (t-interval) in CCA distance per century, for each
-species, park, and period type. The columns give the measure and the
-period type: contrib_climate, how far the species moved the community in
-the climate-predicted direction (positive) or against it (negative);
-contrib_lag, the part of the lag rate that is due to the species
-(positive values amplify the lag, and negative values shrink it).
-“absent”: the species was not found in that park and period type.
-contrib_lag includes the lake-periods and plot pairs in which the
-community did not move (all species at zero), and contrib_climate does
-not.
+**Table S23. Species contributions to the climate–community lag per
+century.** Mean and 95% confidence interval (t-interval) in CCA distance
+per century, for each species, park, and period type: the part of the
+lag rate that is due to the species (positive values amplify the lag,
+and negative values shrink it). “absent”: the species was not found in
+that park and period type. The means include the lake-periods and plot
+pairs in which the community did not move (all species at zero).
 
-| Species | Park | contrib_climate_Holocene-S | contrib_climate_Holocene-C | contrib_climate_Anthropocene | contrib_lag_Holocene-S | contrib_lag_Holocene-C | contrib_lag_Anthropocene |
-|:---|:---|:---|:---|:---|:---|:---|:---|
-| Abies amabilis/grandis | MORA | -0.000 (-0.003 to 0.003) | +0.004 (-0.008 to 0.017) | -0.032 (-0.060 to -0.004) | +0.001 (-0.002 to 0.003) | +0.004 (-0.004 to 0.011) | +0.023 (0.002 to 0.043) |
-| Abies amabilis/grandis | NOCA | +0.001 (-0.002 to 0.004) | +0.001 (-0.003 to 0.005) | +0.018 (-0.017 to 0.052) | -0.001 (-0.006 to 0.003) | +0.003 (-0.005 to 0.010) | +0.005 (-0.017 to 0.027) |
-| Abies lasiocarpa | MORA | -0.000 (-0.018 to 0.017) | +0.017 (-0.040 to 0.074) | -0.009 (-0.042 to 0.023) | -0.003 (-0.009 to 0.003) | -0.012 (-0.041 to 0.018) | +0.013 (-0.038 to 0.065) |
-| Abies lasiocarpa | NOCA | +0.062 (-0.036 to 0.161) | -0.023 (-0.064 to 0.018) | -0.061 (-0.208 to 0.087) | +0.008 (-0.096 to 0.112) | +0.003 (-0.030 to 0.036) | +0.055 (-0.072 to 0.181) |
-| Abies procera | MORA | -0.003 (-0.006 to 0.001) | +0.002 (-0.004 to 0.009) | +0.029 (-0.002 to 0.060) | +0.002 (-0.001 to 0.005) | +0.005 (-0.007 to 0.017) | -0.016 (-0.039 to 0.008) |
-| Abies procera | NOCA | absent | absent | absent | absent | absent | absent |
-| Callitropsis nootkatensis | MORA | +0.003 (-0.000 to 0.006) | -0.034 (-0.116 to 0.048) | -0.004 (-0.073 to 0.065) | -0.008 (-0.019 to 0.004) | +0.006 (-0.003 to 0.014) | +0.012 (-0.036 to 0.060) |
-| Callitropsis nootkatensis | NOCA | -0.007 (-0.024 to 0.011) | -0.008 (-0.030 to 0.014) | +0.026 (-0.015 to 0.068) | +0.002 (-0.002 to 0.006) | -0.008 (-0.031 to 0.015) | +0.009 (-0.040 to 0.058) |
-| Picea engelmannii | MORA | absent | absent | -0.004 (-0.018 to 0.009) | absent | absent | -0.003 (-0.023 to 0.017) |
-| Picea engelmannii | NOCA | -0.003 (-0.012 to 0.006) | +0.001 (-0.002 to 0.003) | -0.010 (-0.087 to 0.068) | +0.003 (-0.006 to 0.012) | -0.001 (-0.002 to 0.001) | +0.013 (-0.049 to 0.076) |
-| Pinus albicaulis | MORA | absent | absent | +0.004 (-0.001 to 0.009) | absent | absent | +0.015 (-0.006 to 0.037) |
-| Pinus albicaulis | NOCA | absent | absent | +0.265 (0.082 to 0.448) | absent | absent | -0.283 (-0.476 to -0.091) |
-| Pinus contorta | MORA | +0.008 (-0.002 to 0.019) | +0.001 (-0.009 to 0.011) | -0.003 (-0.013 to 0.008) | -0.006 (-0.014 to 0.002) | -0.006 (-0.016 to 0.004) | -0.004 (-0.014 to 0.006) |
-| Pinus contorta | NOCA | -0.003 (-0.023 to 0.016) | +0.008 (-0.011 to 0.028) | +0.041 (-0.065 to 0.147) | +0.021 (-0.050 to 0.091) | +0.003 (-0.056 to 0.063) | -0.013 (-0.099 to 0.073) |
-| Pinus monticola | MORA | +0.001 (-0.005 to 0.006) | -0.009 (-0.032 to 0.015) | -0.042 (-0.059 to -0.025) | -0.000 (-0.004 to 0.003) | +0.014 (-0.027 to 0.056) | +0.018 (0.004 to 0.032) |
-| Pinus monticola | NOCA | +0.008 (-0.042 to 0.059) | +0.000 (-0.014 to 0.014) | +0.009 (-0.030 to 0.048) | +0.017 (-0.024 to 0.058) | -0.002 (-0.025 to 0.021) | +0.019 (-0.006 to 0.044) |
-| Pinus ponderosa | MORA | absent | absent | +0.009 (-0.009 to 0.027) | absent | absent | +0.009 (-0.009 to 0.027) |
-| Pinus ponderosa | NOCA | absent | absent | +0.224 (-0.038 to 0.486) | absent | absent | -0.214 (-0.428 to -0.001) |
-| Pseudotsuga menziesii | MORA | -0.001 (-0.007 to 0.005) | -0.023 (-0.065 to 0.018) | -0.053 (-0.104 to -0.002) | -0.000 (-0.010 to 0.010) | +0.002 (-0.024 to 0.028) | +0.026 (-0.008 to 0.061) |
-| Pseudotsuga menziesii | NOCA | -0.009 (-0.026 to 0.008) | -0.006 (-0.031 to 0.018) | -0.011 (-0.085 to 0.063) | -0.002 (-0.017 to 0.012) | +0.001 (-0.030 to 0.032) | +0.013 (-0.052 to 0.078) |
-| Thuja plicata | MORA | absent | absent | +0.005 (-0.025 to 0.036) | absent | absent | +0.035 (-0.001 to 0.070) |
-| Thuja plicata | NOCA | -0.002 (-0.006 to 0.002) | -0.005 (-0.016 to 0.007) | +0.033 (-0.013 to 0.078) | +0.005 (-0.004 to 0.014) | -0.004 (-0.015 to 0.007) | -0.012 (-0.055 to 0.031) |
-| Tsuga heterophylla | MORA | +0.002 (-0.010 to 0.014) | -0.005 (-0.021 to 0.010) | -0.047 (-0.067 to -0.027) | -0.002 (-0.006 to 0.001) | -0.002 (-0.006 to 0.002) | +0.034 (0.010 to 0.059) |
-| Tsuga heterophylla | NOCA | +0.008 (-0.016 to 0.032) | +0.001 (-0.002 to 0.005) | +0.110 (0.062 to 0.157) | +0.014 (-0.024 to 0.052) | +0.002 (-0.003 to 0.006) | +0.020 (-0.010 to 0.050) |
-| Tsuga mertensiana | MORA | -0.001 (-0.006 to 0.005) | +0.022 (-0.016 to 0.060) | +0.011 (-0.019 to 0.042) | -0.001 (-0.002 to 0.001) | -0.001 (-0.012 to 0.010) | -0.007 (-0.033 to 0.018) |
-| Tsuga mertensiana | NOCA | +0.001 (-0.000 to 0.002) | absent | +0.019 (-0.021 to 0.058) | -0.001 (-0.002 to 0.001) | absent | -0.038 (-0.093 to 0.016) |
+| Species | Park | Holocene-S | Holocene-C | Anthropocene |
+|:---|:---|:---|:---|:---|
+| Abies amabilis/grandis | MORA | +0.001 (-0.002 to 0.003) | +0.004 (-0.004 to 0.011) | +0.023 (0.002 to 0.043) |
+| Abies amabilis/grandis | NOCA | -0.001 (-0.006 to 0.003) | +0.003 (-0.005 to 0.010) | +0.005 (-0.017 to 0.027) |
+| Abies lasiocarpa | MORA | -0.003 (-0.009 to 0.003) | -0.012 (-0.041 to 0.018) | +0.013 (-0.038 to 0.065) |
+| Abies lasiocarpa | NOCA | +0.008 (-0.096 to 0.112) | +0.003 (-0.030 to 0.036) | +0.055 (-0.072 to 0.181) |
+| Abies procera | MORA | +0.002 (-0.001 to 0.005) | +0.005 (-0.007 to 0.017) | -0.016 (-0.039 to 0.008) |
+| Abies procera | NOCA | absent | absent | absent |
+| Callitropsis nootkatensis | MORA | -0.008 (-0.019 to 0.004) | +0.006 (-0.003 to 0.014) | +0.012 (-0.036 to 0.060) |
+| Callitropsis nootkatensis | NOCA | +0.002 (-0.002 to 0.006) | -0.008 (-0.031 to 0.015) | +0.009 (-0.040 to 0.058) |
+| Picea engelmannii | MORA | absent | absent | -0.003 (-0.023 to 0.017) |
+| Picea engelmannii | NOCA | +0.003 (-0.006 to 0.012) | -0.001 (-0.002 to 0.001) | +0.013 (-0.049 to 0.076) |
+| Pinus albicaulis | MORA | absent | absent | +0.015 (-0.006 to 0.037) |
+| Pinus albicaulis | NOCA | absent | absent | -0.283 (-0.476 to -0.091) |
+| Pinus contorta | MORA | -0.006 (-0.014 to 0.002) | -0.006 (-0.016 to 0.004) | -0.004 (-0.014 to 0.006) |
+| Pinus contorta | NOCA | +0.021 (-0.050 to 0.091) | +0.003 (-0.056 to 0.063) | -0.013 (-0.099 to 0.073) |
+| Pinus monticola | MORA | -0.000 (-0.004 to 0.003) | +0.014 (-0.027 to 0.056) | +0.018 (0.004 to 0.032) |
+| Pinus monticola | NOCA | +0.017 (-0.024 to 0.058) | -0.002 (-0.025 to 0.021) | +0.019 (-0.006 to 0.044) |
+| Pinus ponderosa | MORA | absent | absent | +0.009 (-0.009 to 0.027) |
+| Pinus ponderosa | NOCA | absent | absent | -0.214 (-0.428 to -0.001) |
+| Pseudotsuga menziesii | MORA | -0.000 (-0.010 to 0.010) | +0.002 (-0.024 to 0.028) | +0.026 (-0.008 to 0.061) |
+| Pseudotsuga menziesii | NOCA | -0.002 (-0.017 to 0.012) | +0.001 (-0.030 to 0.032) | +0.013 (-0.052 to 0.078) |
+| Thuja plicata | MORA | absent | absent | +0.035 (-0.001 to 0.070) |
+| Thuja plicata | NOCA | +0.005 (-0.004 to 0.014) | -0.004 (-0.015 to 0.007) | -0.012 (-0.055 to 0.031) |
+| Tsuga heterophylla | MORA | -0.002 (-0.006 to 0.001) | -0.002 (-0.006 to 0.002) | +0.034 (0.010 to 0.059) |
+| Tsuga heterophylla | NOCA | +0.014 (-0.024 to 0.052) | +0.002 (-0.003 to 0.006) | +0.020 (-0.010 to 0.050) |
+| Tsuga mertensiana | MORA | -0.001 (-0.002 to 0.001) | -0.001 (-0.012 to 0.010) | -0.007 (-0.033 to 0.018) |
+| Tsuga mertensiana | NOCA | -0.001 (-0.002 to 0.001) | absent | -0.038 (-0.093 to 0.016) |
 
 **Table S24. The lag rate divided into the part due to the species and
 the part due to climate.** Means over the lake-periods or plot pairs
@@ -1194,61 +1190,62 @@ contributions without dividing by time (Fig. S19, Table S25).
 
 ![](figures/png/figS19_species_contributions_total.png)
 
-Not divided by time, the mean contributions of the Holocene were as
-large as those of the Anthropocene. However, they varied so much among
-the few lake-periods that the confidence interval excluded zero for 1 of
-the 74 Holocene means (0 per century). In the Anthropocene, it excluded
-zero for 11 means, against 11 per century, for the same species in the
-same parks. Thus, within a lake-period, the species of the Holocene
-moved the communities about as far as those of the Anthropocene, but too
-variably among lake-periods to identify which species did so.
+Not divided by time, the mean contributions of the Holocene were at
+least as large as those of the Anthropocene (mean absolute value 0.026
+against 0.005 at MORA and 0.023 against 0.016 at NOCA, CCA distance).
+However, they varied so much among the few lake-periods that the
+confidence interval excluded zero for 1 of the 37 Holocene means (0 per
+century). In the Anthropocene, it excluded zero for 5 means, against 5
+per century, for the same species in the same parks. Thus, within a
+lake-period, the species of the Holocene moved the communities about as
+far as those of the Anthropocene, but too variably among lake-periods to
+identify which species did so.
 
-**Fig. S19. Species contributions not divided by time.** As Fig. 7 of
-the main text, with the contribution of each species between t1 and t2
-and not per century. Upper row: how far each species moved the community
-in the climate-predicted direction (positive values) or against it
-(negative values). Lower row: how far each species moved the community
-away from its climate-predicted position, which is the part of the lag
-that is due to that species. Means with 95% confidence intervals
-(t-intervals). Symbols, order of the species, and shading as in Fig. 7.
-The lake-periods of the Holocene climate-change periods span 200 to 900
-years, and those of the stability periods 200 to 2600 years, between t1
-and t2. The Anthropocene plot pairs span 27.5 to 32.5 years between the
-midpoints of their two climate windows (about 29 years). Contributions
-are in CCA distance.
+**Fig. S19. Species contributions to the climate–community lag not
+divided by time.** As Fig. 7 of the main text, with the contribution of
+each species between t1 and t2 and not per century: how far each species
+moved the community away from its climate-predicted position, which is
+the part of the lag that is due to that species. Means with 95%
+confidence intervals (t-intervals). Symbols, order of the species, and
+shading as in Fig. 7. The lake-periods of the Holocene climate-change
+periods span 200 to 900 years, and those of the stability periods 200 to
+2600 years, between t1 and t2. The Anthropocene plot pairs span 27.5 to
+32.5 years between the midpoints of their two climate windows (about 29
+years). Contributions are in CCA distance.
 
-**Table S25. Species contributions not divided by time.** Mean and 95%
-confidence interval (t-interval) in CCA distance, for each species,
-park, and period type. Columns as in Table S23.
+**Table S25. Species contributions to the climate–community lag not
+divided by time.** Mean and 95% confidence interval (t-interval) in CCA
+distance, for each species, park, and period type. Columns as in Table
+S23.
 
-| Species | Park | contrib_climate_Holocene-S | contrib_climate_Holocene-C | contrib_climate_Anthropocene | contrib_lag_Holocene-S | contrib_lag_Holocene-C | contrib_lag_Anthropocene |
-|:---|:---|:---|:---|:---|:---|:---|:---|
-| Abies amabilis/grandis | MORA | +0.012 (-0.021 to 0.045) | +0.018 (-0.031 to 0.066) | -0.012 (-0.023 to -0.001) | +0.002 (-0.030 to 0.034) | +0.007 (-0.011 to 0.025) | +0.007 (0.001 to 0.012) |
-| Abies amabilis/grandis | NOCA | +0.002 (-0.008 to 0.013) | +0.003 (-0.015 to 0.021) | +0.005 (-0.005 to 0.016) | -0.011 (-0.033 to 0.011) | +0.014 (-0.022 to 0.050) | +0.001 (-0.005 to 0.007) |
-| Abies lasiocarpa | MORA | -0.063 (-0.284 to 0.158) | +0.027 (-0.103 to 0.157) | -0.003 (-0.015 to 0.009) | -0.035 (-0.134 to 0.064) | -0.023 (-0.085 to 0.039) | +0.004 (-0.011 to 0.019) |
-| Abies lasiocarpa | NOCA | +0.234 (-0.187 to 0.654) | -0.170 (-0.438 to 0.098) | -0.020 (-0.067 to 0.027) | +0.022 (-0.295 to 0.339) | -0.008 (-0.184 to 0.168) | +0.015 (-0.021 to 0.051) |
-| Abies procera | MORA | -0.045 (-0.103 to 0.013) | +0.012 (-0.021 to 0.045) | +0.012 (-0.000 to 0.023) | +0.035 (-0.009 to 0.080) | +0.024 (-0.035 to 0.083) | -0.005 (-0.012 to 0.002) |
-| Abies procera | NOCA | absent | absent | absent | absent | absent | absent |
-| Callitropsis nootkatensis | MORA | +0.062 (-0.018 to 0.142) | -0.129 (-0.461 to 0.203) | -0.002 (-0.028 to 0.025) | -0.096 (-0.190 to -0.001) | +0.017 (-0.012 to 0.045) | +0.003 (-0.010 to 0.017) |
-| Callitropsis nootkatensis | NOCA | -0.028 (-0.080 to 0.024) | -0.031 (-0.119 to 0.056) | +0.008 (-0.005 to 0.021) | +0.028 (-0.039 to 0.096) | -0.033 (-0.125 to 0.059) | +0.002 (-0.012 to 0.016) |
-| Picea engelmannii | MORA | absent | absent | -0.002 (-0.007 to 0.003) | absent | absent | -0.001 (-0.007 to 0.005) |
-| Picea engelmannii | NOCA | -0.010 (-0.036 to 0.017) | +0.008 (-0.015 to 0.031) | -0.003 (-0.028 to 0.022) | +0.010 (-0.017 to 0.036) | -0.006 (-0.021 to 0.010) | +0.004 (-0.014 to 0.022) |
-| Pinus albicaulis | MORA | absent | absent | +0.001 (-0.001 to 0.003) | absent | absent | +0.005 (-0.002 to 0.011) |
-| Pinus albicaulis | NOCA | absent | absent | +0.085 (0.026 to 0.143) | absent | absent | -0.081 (-0.136 to -0.026) |
-| Pinus contorta | MORA | +0.128 (-0.038 to 0.294) | -0.003 (-0.034 to 0.028) | -0.001 (-0.005 to 0.003) | -0.096 (-0.217 to 0.026) | -0.019 (-0.048 to 0.011) | -0.001 (-0.004 to 0.002) |
-| Pinus contorta | NOCA | -0.000 (-0.079 to 0.079) | +0.078 (-0.083 to 0.239) | +0.013 (-0.021 to 0.047) | +0.027 (-0.255 to 0.310) | +0.028 (-0.479 to 0.536) | -0.004 (-0.028 to 0.021) |
-| Pinus monticola | MORA | -0.012 (-0.068 to 0.044) | -0.020 (-0.067 to 0.026) | -0.016 (-0.022 to -0.010) | +0.009 (-0.024 to 0.042) | +0.026 (-0.058 to 0.111) | +0.005 (0.001 to 0.009) |
-| Pinus monticola | NOCA | -0.012 (-0.211 to 0.188) | +0.003 (-0.072 to 0.078) | +0.003 (-0.010 to 0.015) | +0.082 (-0.111 to 0.276) | +0.003 (-0.129 to 0.136) | +0.005 (-0.002 to 0.012) |
-| Pinus ponderosa | MORA | absent | absent | +0.004 (-0.003 to 0.011) | absent | absent | +0.003 (-0.003 to 0.008) |
-| Pinus ponderosa | NOCA | absent | absent | +0.072 (-0.012 to 0.155) | absent | absent | -0.061 (-0.122 to -0.000) |
-| Pseudotsuga menziesii | MORA | +0.009 (-0.065 to 0.084) | -0.056 (-0.152 to 0.039) | -0.020 (-0.040 to -0.001) | -0.015 (-0.090 to 0.060) | -0.002 (-0.065 to 0.062) | +0.007 (-0.003 to 0.017) |
-| Pseudotsuga menziesii | NOCA | -0.031 (-0.097 to 0.036) | -0.011 (-0.153 to 0.131) | -0.004 (-0.027 to 0.020) | -0.032 (-0.114 to 0.051) | +0.006 (-0.206 to 0.218) | +0.004 (-0.015 to 0.022) |
-| Thuja plicata | MORA | absent | absent | +0.002 (-0.010 to 0.014) | absent | absent | +0.010 (-0.000 to 0.021) |
-| Thuja plicata | NOCA | -0.043 (-0.155 to 0.070) | -0.019 (-0.064 to 0.026) | +0.010 (-0.004 to 0.025) | +0.042 (-0.044 to 0.128) | -0.017 (-0.062 to 0.028) | -0.004 (-0.016 to 0.008) |
-| Tsuga heterophylla | MORA | -0.009 (-0.127 to 0.109) | -0.027 (-0.103 to 0.049) | -0.018 (-0.025 to -0.010) | -0.027 (-0.070 to 0.017) | -0.008 (-0.029 to 0.012) | +0.010 (0.003 to 0.017) |
-| Tsuga heterophylla | NOCA | +0.015 (-0.069 to 0.098) | +0.005 (-0.009 to 0.019) | +0.035 (0.020 to 0.050) | +0.045 (-0.069 to 0.158) | +0.006 (-0.011 to 0.023) | +0.006 (-0.003 to 0.014) |
-| Tsuga mertensiana | MORA | -0.007 (-0.113 to 0.100) | +0.079 (-0.037 to 0.195) | +0.004 (-0.007 to 0.016) | -0.015 (-0.050 to 0.020) | -0.013 (-0.064 to 0.038) | -0.002 (-0.010 to 0.005) |
-| Tsuga mertensiana | NOCA | +0.010 (-0.016 to 0.037) | absent | +0.006 (-0.006 to 0.018) | -0.011 (-0.038 to 0.016) | absent | -0.011 (-0.026 to 0.004) |
+| Species | Park | Holocene-S | Holocene-C | Anthropocene |
+|:---|:---|:---|:---|:---|
+| Abies amabilis/grandis | MORA | +0.002 (-0.030 to 0.034) | +0.007 (-0.011 to 0.025) | +0.007 (0.001 to 0.012) |
+| Abies amabilis/grandis | NOCA | -0.011 (-0.033 to 0.011) | +0.014 (-0.022 to 0.050) | +0.001 (-0.005 to 0.007) |
+| Abies lasiocarpa | MORA | -0.035 (-0.134 to 0.064) | -0.023 (-0.085 to 0.039) | +0.004 (-0.011 to 0.019) |
+| Abies lasiocarpa | NOCA | +0.022 (-0.295 to 0.339) | -0.008 (-0.184 to 0.168) | +0.015 (-0.021 to 0.051) |
+| Abies procera | MORA | +0.035 (-0.009 to 0.080) | +0.024 (-0.035 to 0.083) | -0.005 (-0.012 to 0.002) |
+| Abies procera | NOCA | absent | absent | absent |
+| Callitropsis nootkatensis | MORA | -0.096 (-0.190 to -0.001) | +0.017 (-0.012 to 0.045) | +0.003 (-0.010 to 0.017) |
+| Callitropsis nootkatensis | NOCA | +0.028 (-0.039 to 0.096) | -0.033 (-0.125 to 0.059) | +0.002 (-0.012 to 0.016) |
+| Picea engelmannii | MORA | absent | absent | -0.001 (-0.007 to 0.005) |
+| Picea engelmannii | NOCA | +0.010 (-0.017 to 0.036) | -0.006 (-0.021 to 0.010) | +0.004 (-0.014 to 0.022) |
+| Pinus albicaulis | MORA | absent | absent | +0.005 (-0.002 to 0.011) |
+| Pinus albicaulis | NOCA | absent | absent | -0.081 (-0.136 to -0.026) |
+| Pinus contorta | MORA | -0.096 (-0.217 to 0.026) | -0.019 (-0.048 to 0.011) | -0.001 (-0.004 to 0.002) |
+| Pinus contorta | NOCA | +0.027 (-0.255 to 0.310) | +0.028 (-0.479 to 0.536) | -0.004 (-0.028 to 0.021) |
+| Pinus monticola | MORA | +0.009 (-0.024 to 0.042) | +0.026 (-0.058 to 0.111) | +0.005 (0.001 to 0.009) |
+| Pinus monticola | NOCA | +0.082 (-0.111 to 0.276) | +0.003 (-0.129 to 0.136) | +0.005 (-0.002 to 0.012) |
+| Pinus ponderosa | MORA | absent | absent | +0.003 (-0.003 to 0.008) |
+| Pinus ponderosa | NOCA | absent | absent | -0.061 (-0.122 to -0.000) |
+| Pseudotsuga menziesii | MORA | -0.015 (-0.090 to 0.060) | -0.002 (-0.065 to 0.062) | +0.007 (-0.003 to 0.017) |
+| Pseudotsuga menziesii | NOCA | -0.032 (-0.114 to 0.051) | +0.006 (-0.206 to 0.218) | +0.004 (-0.015 to 0.022) |
+| Thuja plicata | MORA | absent | absent | +0.010 (-0.000 to 0.021) |
+| Thuja plicata | NOCA | +0.042 (-0.044 to 0.128) | -0.017 (-0.062 to 0.028) | -0.004 (-0.016 to 0.008) |
+| Tsuga heterophylla | MORA | -0.027 (-0.070 to 0.017) | -0.008 (-0.029 to 0.012) | +0.010 (0.003 to 0.017) |
+| Tsuga heterophylla | NOCA | +0.045 (-0.069 to 0.158) | +0.006 (-0.011 to 0.023) | +0.006 (-0.003 to 0.014) |
+| Tsuga mertensiana | MORA | -0.015 (-0.050 to 0.020) | -0.013 (-0.064 to 0.038) | -0.002 (-0.010 to 0.005) |
+| Tsuga mertensiana | NOCA | -0.011 (-0.038 to 0.016) | absent | -0.011 (-0.026 to 0.004) |
 
 # Appendix S4. Sensitivity of the results to the correction of the Holocene climate
 

@@ -1963,41 +1963,35 @@ Stages and helpers:
 is the sum of one vector per species: the change in the species’ share
 times the species’ fixed position in the CCA plane. Projecting each
 species’ vector on a reference direction says how much that species
-moved the community along it. Two measures are used, both per century.
-Along the direction the prediction moved (`contrib_climate`), a positive
-value means the species carried the community with the climate. The
-second measure, `contrib_lag`, splits the lag rate itself. The mismatch
-g, from the predicted to the observed position, is taken at both ends
-(g1 at t1, g2 at t2), and m is their sum divided by the sum of their
-lengths. Each species’ vector projected on m is that species’ part of
-the lag rate, and the predicted movement projected on m, with its sign
-reversed, is the climate’s part. Because the change in mismatch, g2 −
-g1, is the observed movement minus the predicted movement, and (g2 −
-g1)·m is exactly the change in the length of the mismatch, the species
-parts and the climate part add up exactly to the lag rate (asserted). A
-negative species value means the species narrowed the lag, a positive
-value that it widened it. Swapping the two surveys reverses every value,
-so the measure has no direction of its own. It replaces `contrib_gap`,
-the projection on the mismatch at the start alone. That measure leaned
-positive: a community sampled away from its predicted position tends to
-come back towards it by chance, and run backwards in time it also
-appeared to close the gap. `contrib_lag` is per century of the same
-interval as the lag rate.
+moved the community along it. The measure, `contrib_lag`, splits the lag
+rate itself. The mismatch g, from the predicted to the observed
+position, is taken at both ends (g1 at t1, g2 at t2), and m is their sum
+divided by the sum of their lengths. Each species’ vector projected on m
+is that species’ part of the lag rate, and the predicted movement
+projected on m, with its sign reversed, is the climate’s part. Because
+the change in mismatch, g2 − g1, is the observed movement minus the
+predicted movement, and (g2 − g1)·m is exactly the change in the length
+of the mismatch, the species parts and the climate part add up exactly
+to the lag rate (asserted). A negative species value means the species
+narrowed the lag, a positive value that it widened it. Swapping the two
+surveys reverses every value, so the measure has no direction of its
+own. It replaces `contrib_gap`, the projection on the mismatch at the
+start alone. That measure leaned positive: a community sampled away from
+its predicted position tends to come back towards it by chance, and run
+backwards in time it also appeared to close the gap. `contrib_lag` is
+per century of the same interval as the lag rate.
 
 **How it is calculated.**
 
 ``` r
 # R/helpers/cca_transition_contributions.R
-step6_species_contributions = function(context, first, last, positions, endpoints, dt, lag_dt) {
+step6_lag_contributions = function(context, first, last, positions, endpoints, lag_dt) {
   # rows: one row per unit and species, with the species' vector (its change in
   # share times its CCA position) in contribution_CCA1 and contribution_CCA2.
   rows = contribution_species(context, first, last, positions, endpoints)
   contribution_close((last - first) %*% positions,
     as.matrix(endpoints[c('delta_observed_CCA1', 'delta_observed_CCA2')]), 'Species vectors sum to dWA')
   index = rep(seq_len(nrow(context)), each = ncol(first))
-  defined = endpoints$direction_defined[index]
-  # contrib_climate: the vector along the predicted movement, per century.
-  rows$contrib_climate = ifelse(defined, rows$parallel_contribution * 100 / dt[index], NA_real_)
   # contrib_lag: the vector projected on m (dot product), per century of the lag rate.
   m = step6_lag_direction(endpoints)
   rows$lag_projection = rows$contribution_CCA1 * m$x[index] + rows$contribution_CCA2 * m$y[index]
@@ -2032,46 +2026,42 @@ group_mean = function(x) {
 
 **Result.**
 
-**Table S23. Species contributions per century.** Mean and 95%
-confidence interval (t-interval) in CCA distance per century, for each
-species, park, and period type. The columns give the measure and the
-period type: contrib_climate, how far the species moved the community in
-the climate-predicted direction (positive) or against it (negative);
-contrib_lag, the part of the lag rate that is due to the species
-(positive values amplify the lag, and negative values shrink it).
-“absent”: the species was not found in that park and period type.
-contrib_lag includes the lake-periods and plot pairs in which the
-community did not move (all species at zero), and contrib_climate does
-not.
+**Table S23. Species contributions to the climate–community lag per
+century.** Mean and 95% confidence interval (t-interval) in CCA distance
+per century, for each species, park, and period type: the part of the
+lag rate that is due to the species (positive values amplify the lag,
+and negative values shrink it). “absent”: the species was not found in
+that park and period type. The means include the lake-periods and plot
+pairs in which the community did not move (all species at zero).
 
-| Species | Park | contrib_climate_Holocene-S | contrib_climate_Holocene-C | contrib_climate_Anthropocene | contrib_lag_Holocene-S | contrib_lag_Holocene-C | contrib_lag_Anthropocene |
-|:---|:---|:---|:---|:---|:---|:---|:---|
-| Abies amabilis/grandis | MORA | -0.000 (-0.003 to 0.003) | +0.004 (-0.008 to 0.017) | -0.032 (-0.060 to -0.004) | +0.001 (-0.002 to 0.003) | +0.004 (-0.004 to 0.011) | +0.023 (0.002 to 0.043) |
-| Abies amabilis/grandis | NOCA | +0.001 (-0.002 to 0.004) | +0.001 (-0.003 to 0.005) | +0.018 (-0.017 to 0.052) | -0.001 (-0.006 to 0.003) | +0.003 (-0.005 to 0.010) | +0.005 (-0.017 to 0.027) |
-| Abies lasiocarpa | MORA | -0.000 (-0.018 to 0.017) | +0.017 (-0.040 to 0.074) | -0.009 (-0.042 to 0.023) | -0.003 (-0.009 to 0.003) | -0.012 (-0.041 to 0.018) | +0.013 (-0.038 to 0.065) |
-| Abies lasiocarpa | NOCA | +0.062 (-0.036 to 0.161) | -0.023 (-0.064 to 0.018) | -0.061 (-0.208 to 0.087) | +0.008 (-0.096 to 0.112) | +0.003 (-0.030 to 0.036) | +0.055 (-0.072 to 0.181) |
-| Abies procera | MORA | -0.003 (-0.006 to 0.001) | +0.002 (-0.004 to 0.009) | +0.029 (-0.002 to 0.060) | +0.002 (-0.001 to 0.005) | +0.005 (-0.007 to 0.017) | -0.016 (-0.039 to 0.008) |
-| Abies procera | NOCA | absent | absent | absent | absent | absent | absent |
-| Callitropsis nootkatensis | MORA | +0.003 (-0.000 to 0.006) | -0.034 (-0.116 to 0.048) | -0.004 (-0.073 to 0.065) | -0.008 (-0.019 to 0.004) | +0.006 (-0.003 to 0.014) | +0.012 (-0.036 to 0.060) |
-| Callitropsis nootkatensis | NOCA | -0.007 (-0.024 to 0.011) | -0.008 (-0.030 to 0.014) | +0.026 (-0.015 to 0.068) | +0.002 (-0.002 to 0.006) | -0.008 (-0.031 to 0.015) | +0.009 (-0.040 to 0.058) |
-| Picea engelmannii | MORA | absent | absent | -0.004 (-0.018 to 0.009) | absent | absent | -0.003 (-0.023 to 0.017) |
-| Picea engelmannii | NOCA | -0.003 (-0.012 to 0.006) | +0.001 (-0.002 to 0.003) | -0.010 (-0.087 to 0.068) | +0.003 (-0.006 to 0.012) | -0.001 (-0.002 to 0.001) | +0.013 (-0.049 to 0.076) |
-| Pinus albicaulis | MORA | absent | absent | +0.004 (-0.001 to 0.009) | absent | absent | +0.015 (-0.006 to 0.037) |
-| Pinus albicaulis | NOCA | absent | absent | +0.265 (0.082 to 0.448) | absent | absent | -0.283 (-0.476 to -0.091) |
-| Pinus contorta | MORA | +0.008 (-0.002 to 0.019) | +0.001 (-0.009 to 0.011) | -0.003 (-0.013 to 0.008) | -0.006 (-0.014 to 0.002) | -0.006 (-0.016 to 0.004) | -0.004 (-0.014 to 0.006) |
-| Pinus contorta | NOCA | -0.003 (-0.023 to 0.016) | +0.008 (-0.011 to 0.028) | +0.041 (-0.065 to 0.147) | +0.021 (-0.050 to 0.091) | +0.003 (-0.056 to 0.063) | -0.013 (-0.099 to 0.073) |
-| Pinus monticola | MORA | +0.001 (-0.005 to 0.006) | -0.009 (-0.032 to 0.015) | -0.042 (-0.059 to -0.025) | -0.000 (-0.004 to 0.003) | +0.014 (-0.027 to 0.056) | +0.018 (0.004 to 0.032) |
-| Pinus monticola | NOCA | +0.008 (-0.042 to 0.059) | +0.000 (-0.014 to 0.014) | +0.009 (-0.030 to 0.048) | +0.017 (-0.024 to 0.058) | -0.002 (-0.025 to 0.021) | +0.019 (-0.006 to 0.044) |
-| Pinus ponderosa | MORA | absent | absent | +0.009 (-0.009 to 0.027) | absent | absent | +0.009 (-0.009 to 0.027) |
-| Pinus ponderosa | NOCA | absent | absent | +0.224 (-0.038 to 0.486) | absent | absent | -0.214 (-0.428 to -0.001) |
-| Pseudotsuga menziesii | MORA | -0.001 (-0.007 to 0.005) | -0.023 (-0.065 to 0.018) | -0.053 (-0.104 to -0.002) | -0.000 (-0.010 to 0.010) | +0.002 (-0.024 to 0.028) | +0.026 (-0.008 to 0.061) |
-| Pseudotsuga menziesii | NOCA | -0.009 (-0.026 to 0.008) | -0.006 (-0.031 to 0.018) | -0.011 (-0.085 to 0.063) | -0.002 (-0.017 to 0.012) | +0.001 (-0.030 to 0.032) | +0.013 (-0.052 to 0.078) |
-| Thuja plicata | MORA | absent | absent | +0.005 (-0.025 to 0.036) | absent | absent | +0.035 (-0.001 to 0.070) |
-| Thuja plicata | NOCA | -0.002 (-0.006 to 0.002) | -0.005 (-0.016 to 0.007) | +0.033 (-0.013 to 0.078) | +0.005 (-0.004 to 0.014) | -0.004 (-0.015 to 0.007) | -0.012 (-0.055 to 0.031) |
-| Tsuga heterophylla | MORA | +0.002 (-0.010 to 0.014) | -0.005 (-0.021 to 0.010) | -0.047 (-0.067 to -0.027) | -0.002 (-0.006 to 0.001) | -0.002 (-0.006 to 0.002) | +0.034 (0.010 to 0.059) |
-| Tsuga heterophylla | NOCA | +0.008 (-0.016 to 0.032) | +0.001 (-0.002 to 0.005) | +0.110 (0.062 to 0.157) | +0.014 (-0.024 to 0.052) | +0.002 (-0.003 to 0.006) | +0.020 (-0.010 to 0.050) |
-| Tsuga mertensiana | MORA | -0.001 (-0.006 to 0.005) | +0.022 (-0.016 to 0.060) | +0.011 (-0.019 to 0.042) | -0.001 (-0.002 to 0.001) | -0.001 (-0.012 to 0.010) | -0.007 (-0.033 to 0.018) |
-| Tsuga mertensiana | NOCA | +0.001 (-0.000 to 0.002) | absent | +0.019 (-0.021 to 0.058) | -0.001 (-0.002 to 0.001) | absent | -0.038 (-0.093 to 0.016) |
+| Species | Park | Holocene-S | Holocene-C | Anthropocene |
+|:---|:---|:---|:---|:---|
+| Abies amabilis/grandis | MORA | +0.001 (-0.002 to 0.003) | +0.004 (-0.004 to 0.011) | +0.023 (0.002 to 0.043) |
+| Abies amabilis/grandis | NOCA | -0.001 (-0.006 to 0.003) | +0.003 (-0.005 to 0.010) | +0.005 (-0.017 to 0.027) |
+| Abies lasiocarpa | MORA | -0.003 (-0.009 to 0.003) | -0.012 (-0.041 to 0.018) | +0.013 (-0.038 to 0.065) |
+| Abies lasiocarpa | NOCA | +0.008 (-0.096 to 0.112) | +0.003 (-0.030 to 0.036) | +0.055 (-0.072 to 0.181) |
+| Abies procera | MORA | +0.002 (-0.001 to 0.005) | +0.005 (-0.007 to 0.017) | -0.016 (-0.039 to 0.008) |
+| Abies procera | NOCA | absent | absent | absent |
+| Callitropsis nootkatensis | MORA | -0.008 (-0.019 to 0.004) | +0.006 (-0.003 to 0.014) | +0.012 (-0.036 to 0.060) |
+| Callitropsis nootkatensis | NOCA | +0.002 (-0.002 to 0.006) | -0.008 (-0.031 to 0.015) | +0.009 (-0.040 to 0.058) |
+| Picea engelmannii | MORA | absent | absent | -0.003 (-0.023 to 0.017) |
+| Picea engelmannii | NOCA | +0.003 (-0.006 to 0.012) | -0.001 (-0.002 to 0.001) | +0.013 (-0.049 to 0.076) |
+| Pinus albicaulis | MORA | absent | absent | +0.015 (-0.006 to 0.037) |
+| Pinus albicaulis | NOCA | absent | absent | -0.283 (-0.476 to -0.091) |
+| Pinus contorta | MORA | -0.006 (-0.014 to 0.002) | -0.006 (-0.016 to 0.004) | -0.004 (-0.014 to 0.006) |
+| Pinus contorta | NOCA | +0.021 (-0.050 to 0.091) | +0.003 (-0.056 to 0.063) | -0.013 (-0.099 to 0.073) |
+| Pinus monticola | MORA | -0.000 (-0.004 to 0.003) | +0.014 (-0.027 to 0.056) | +0.018 (0.004 to 0.032) |
+| Pinus monticola | NOCA | +0.017 (-0.024 to 0.058) | -0.002 (-0.025 to 0.021) | +0.019 (-0.006 to 0.044) |
+| Pinus ponderosa | MORA | absent | absent | +0.009 (-0.009 to 0.027) |
+| Pinus ponderosa | NOCA | absent | absent | -0.214 (-0.428 to -0.001) |
+| Pseudotsuga menziesii | MORA | -0.000 (-0.010 to 0.010) | +0.002 (-0.024 to 0.028) | +0.026 (-0.008 to 0.061) |
+| Pseudotsuga menziesii | NOCA | -0.002 (-0.017 to 0.012) | +0.001 (-0.030 to 0.032) | +0.013 (-0.052 to 0.078) |
+| Thuja plicata | MORA | absent | absent | +0.035 (-0.001 to 0.070) |
+| Thuja plicata | NOCA | +0.005 (-0.004 to 0.014) | -0.004 (-0.015 to 0.007) | -0.012 (-0.055 to 0.031) |
+| Tsuga heterophylla | MORA | -0.002 (-0.006 to 0.001) | -0.002 (-0.006 to 0.002) | +0.034 (0.010 to 0.059) |
+| Tsuga heterophylla | NOCA | +0.014 (-0.024 to 0.052) | +0.002 (-0.003 to 0.006) | +0.020 (-0.010 to 0.050) |
+| Tsuga mertensiana | MORA | -0.001 (-0.002 to 0.001) | -0.001 (-0.012 to 0.010) | -0.007 (-0.033 to 0.018) |
+| Tsuga mertensiana | NOCA | -0.001 (-0.002 to 0.001) | absent | -0.038 (-0.093 to 0.016) |
 
 <sub>Table file:
 [step6_species_means.csv](report/tables/step6_species_means.csv)</sub>
@@ -2099,7 +2089,7 @@ The species vectors add up to the observed movement for every
 lake-period and plot pair (asserted).
 
 In the Holocene every species mean is close to zero in both parks
-(largest absolute value 0.062 CCA distance per century). None of the 74
+(largest absolute value 0.021 CCA distance per century). None of the 37
 Holocene intervals excludes zero. The Anthropocene means are larger.
 
 In the Anthropocene the climate’s part of the lag rate is about the same
@@ -2112,50 +2102,37 @@ whose interval lies below zero, which narrowed the lag: Pinus albicaulis
 (NOCA, -0.283), Pinus ponderosa (NOCA, -0.214). Species whose interval
 lies above zero, which widened it: Abies amabilis/grandis (MORA,
 +0.023), Pinus monticola (MORA, +0.018), Tsuga heterophylla (MORA,
-+0.034). Across species the two measures are negatively correlated in
-the Anthropocene (r = -0.67 at MORA, -0.93 at NOCA): species that moved
-the community with the climate-predicted direction narrowed the lag, and
-those that moved it against that direction widened it.
++0.034).
 
 The period types of a species are compared with Welch tests, three
-contrasts per species, measure and park, and the p-values are
-Holm-adjusted within each measure and park across all species and
-contrasts. Of 138 testable contrasts, 21 have p \< 0.05 before the
-adjustment and 5 after it (Pinus monticola MORA, Anthropocene -
-Holocene-S, contrib_climate; Tsuga heterophylla MORA, Anthropocene -
-Holocene-C, contrib_climate; Tsuga heterophylla MORA, Anthropocene -
-Holocene-S, contrib_climate; Tsuga heterophylla NOCA, Anthropocene -
-Holocene-C, contrib_climate; Tsuga heterophylla NOCA, Anthropocene -
-Holocene-S, contrib_climate). All of them set the Anthropocene against a
-Holocene period type.
+contrasts per species and park, and the p-values are Holm-adjusted
+within each park across all species and contrasts. Of 69 testable
+contrasts, 9 have p \< 0.05 before the adjustment and none after it.
 
 <img src="report/figures/png/fig_species_contributions.png" alt="" width="100%" />
 
-**Fig. 7. Species contributions in the Holocene and the Anthropocene.**
-Each species’ vector is its change in share between the first and the
-last sampled century of a lake-period, or between the legacy survey and
-the resurvey of a plot, times its fixed position in the CCA plane. The
-upper row (following climate-predicted direction) projects these vectors
-on the direction in which the climate-predicted position moved, and the
-lower row (changing the climate-community lag) on the average direction
-of the mismatch at the two ends, so that the species’ values plus the
-climate’s part add up to the lag rate. Labels at the top of each panel
-read with the row title: a species moved the community following or
-against the climate-predicted direction (upper row), and narrowed or
-widened the climate-community lag (lower row). The lower row includes
-the lake-periods and plot pairs whose composition did not change (all
-species values zero) and is per century of the same interval as the lag
-rate. Species are ordered by the maximum elevation of the plots where
-they occur (the 605 plot pairs, both surveys, both parks), the highest
-at the top. Their names are shaded by that maximum in four grey steps,
-lightest below 1,500 m and black above 1,900 m (key below the figure).
-Names in bold are species absent from the Holocene record of both parks.
-Symbols are means: squares, Holocene stability periods, diamonds,
-Holocene climate-change periods, circles, Anthropocene plot pairs
-(burned and unburned together). Large symbols with bars are means whose
-95% t-interval excludes zero, small faded symbols are means whose
-interval includes zero. A species with no Holocene symbols in a park is
-absent from that park’s Holocene record. Each park has its own x scale,
+**Fig. 7. Species contributions to the climate–community lag in the
+Holocene and the Anthropocene.** Each species’ vector is its change in
+share between the first and the last sampled century of a lake-period,
+or between the legacy survey and the resurvey of a plot, times its fixed
+position in the CCA plane. The vectors are projected on the average
+direction of the mismatch at the two ends, so that the species’ values
+plus the climate’s part add up to the lag rate. Labels at the top of
+each panel give the meaning of each side of zero: a species narrowed or
+widened the climate–community lag. The means include the lake-periods
+and plot pairs whose composition did not change (all species values
+zero) and are per century of the same interval as the lag rate. Species
+are ordered by the maximum elevation of the plots where they occur (the
+605 plot pairs, both surveys, both parks), the highest at the top. Their
+names are shaded by that maximum in four grey steps, lightest below
+1,500 m and black above 1,900 m (key below the figure). Names in bold
+are species absent from the Holocene record of both parks. Symbols are
+means: squares, Holocene stability periods, diamonds, Holocene
+climate-change periods, circles, Anthropocene plot pairs (burned and
+unburned together). Large symbols with bars are means whose 95%
+t-interval excludes zero, small faded symbols are means whose interval
+includes zero. A species with no Holocene symbols in a park is absent
+from that park’s Holocene record. Each park has its own x scale,
 symmetric around zero. The lake-periods of the Holocene climate-change
 periods span 200 to 900 years, and those of the stability periods 200 to
 2600 years, between t1 and t2. The Anthropocene plot pairs span 27.5 to
@@ -2171,61 +2148,62 @@ contributions without dividing by time (Fig. S19, Table S25).
 
 <img src="report/figures/png/figS19_species_contributions_total.png" alt="" width="100%" />
 
-Not divided by time, the mean contributions of the Holocene were as
-large as those of the Anthropocene. However, they varied so much among
-the few lake-periods that the confidence interval excluded zero for 1 of
-the 74 Holocene means (0 per century). In the Anthropocene, it excluded
-zero for 11 means, against 11 per century, for the same species in the
-same parks. Thus, within a lake-period, the species of the Holocene
-moved the communities about as far as those of the Anthropocene, but too
-variably among lake-periods to identify which species did so.
+Not divided by time, the mean contributions of the Holocene were at
+least as large as those of the Anthropocene (mean absolute value 0.026
+against 0.005 at MORA and 0.023 against 0.016 at NOCA, CCA distance).
+However, they varied so much among the few lake-periods that the
+confidence interval excluded zero for 1 of the 37 Holocene means (0 per
+century). In the Anthropocene, it excluded zero for 5 means, against 5
+per century, for the same species in the same parks. Thus, within a
+lake-period, the species of the Holocene moved the communities about as
+far as those of the Anthropocene, but too variably among lake-periods to
+identify which species did so.
 
-**Fig. S19. Species contributions not divided by time.** As Fig. 7 of
-the main text, with the contribution of each species between t1 and t2
-and not per century. Upper row: how far each species moved the community
-in the climate-predicted direction (positive values) or against it
-(negative values). Lower row: how far each species moved the community
-away from its climate-predicted position, which is the part of the lag
-that is due to that species. Means with 95% confidence intervals
-(t-intervals). Symbols, order of the species, and shading as in Fig. 7.
-The lake-periods of the Holocene climate-change periods span 200 to 900
-years, and those of the stability periods 200 to 2600 years, between t1
-and t2. The Anthropocene plot pairs span 27.5 to 32.5 years between the
-midpoints of their two climate windows (about 29 years). Contributions
-are in CCA distance.
+**Fig. S19. Species contributions to the climate–community lag not
+divided by time.** As Fig. 7 of the main text, with the contribution of
+each species between t1 and t2 and not per century: how far each species
+moved the community away from its climate-predicted position, which is
+the part of the lag that is due to that species. Means with 95%
+confidence intervals (t-intervals). Symbols, order of the species, and
+shading as in Fig. 7. The lake-periods of the Holocene climate-change
+periods span 200 to 900 years, and those of the stability periods 200 to
+2600 years, between t1 and t2. The Anthropocene plot pairs span 27.5 to
+32.5 years between the midpoints of their two climate windows (about 29
+years). Contributions are in CCA distance.
 
-**Table S25. Species contributions not divided by time.** Mean and 95%
-confidence interval (t-interval) in CCA distance, for each species,
-park, and period type. Columns as in Table S23.
+**Table S25. Species contributions to the climate–community lag not
+divided by time.** Mean and 95% confidence interval (t-interval) in CCA
+distance, for each species, park, and period type. Columns as in Table
+S23.
 
-| Species | Park | contrib_climate_Holocene-S | contrib_climate_Holocene-C | contrib_climate_Anthropocene | contrib_lag_Holocene-S | contrib_lag_Holocene-C | contrib_lag_Anthropocene |
-|:---|:---|:---|:---|:---|:---|:---|:---|
-| Abies amabilis/grandis | MORA | +0.012 (-0.021 to 0.045) | +0.018 (-0.031 to 0.066) | -0.012 (-0.023 to -0.001) | +0.002 (-0.030 to 0.034) | +0.007 (-0.011 to 0.025) | +0.007 (0.001 to 0.012) |
-| Abies amabilis/grandis | NOCA | +0.002 (-0.008 to 0.013) | +0.003 (-0.015 to 0.021) | +0.005 (-0.005 to 0.016) | -0.011 (-0.033 to 0.011) | +0.014 (-0.022 to 0.050) | +0.001 (-0.005 to 0.007) |
-| Abies lasiocarpa | MORA | -0.063 (-0.284 to 0.158) | +0.027 (-0.103 to 0.157) | -0.003 (-0.015 to 0.009) | -0.035 (-0.134 to 0.064) | -0.023 (-0.085 to 0.039) | +0.004 (-0.011 to 0.019) |
-| Abies lasiocarpa | NOCA | +0.234 (-0.187 to 0.654) | -0.170 (-0.438 to 0.098) | -0.020 (-0.067 to 0.027) | +0.022 (-0.295 to 0.339) | -0.008 (-0.184 to 0.168) | +0.015 (-0.021 to 0.051) |
-| Abies procera | MORA | -0.045 (-0.103 to 0.013) | +0.012 (-0.021 to 0.045) | +0.012 (-0.000 to 0.023) | +0.035 (-0.009 to 0.080) | +0.024 (-0.035 to 0.083) | -0.005 (-0.012 to 0.002) |
-| Abies procera | NOCA | absent | absent | absent | absent | absent | absent |
-| Callitropsis nootkatensis | MORA | +0.062 (-0.018 to 0.142) | -0.129 (-0.461 to 0.203) | -0.002 (-0.028 to 0.025) | -0.096 (-0.190 to -0.001) | +0.017 (-0.012 to 0.045) | +0.003 (-0.010 to 0.017) |
-| Callitropsis nootkatensis | NOCA | -0.028 (-0.080 to 0.024) | -0.031 (-0.119 to 0.056) | +0.008 (-0.005 to 0.021) | +0.028 (-0.039 to 0.096) | -0.033 (-0.125 to 0.059) | +0.002 (-0.012 to 0.016) |
-| Picea engelmannii | MORA | absent | absent | -0.002 (-0.007 to 0.003) | absent | absent | -0.001 (-0.007 to 0.005) |
-| Picea engelmannii | NOCA | -0.010 (-0.036 to 0.017) | +0.008 (-0.015 to 0.031) | -0.003 (-0.028 to 0.022) | +0.010 (-0.017 to 0.036) | -0.006 (-0.021 to 0.010) | +0.004 (-0.014 to 0.022) |
-| Pinus albicaulis | MORA | absent | absent | +0.001 (-0.001 to 0.003) | absent | absent | +0.005 (-0.002 to 0.011) |
-| Pinus albicaulis | NOCA | absent | absent | +0.085 (0.026 to 0.143) | absent | absent | -0.081 (-0.136 to -0.026) |
-| Pinus contorta | MORA | +0.128 (-0.038 to 0.294) | -0.003 (-0.034 to 0.028) | -0.001 (-0.005 to 0.003) | -0.096 (-0.217 to 0.026) | -0.019 (-0.048 to 0.011) | -0.001 (-0.004 to 0.002) |
-| Pinus contorta | NOCA | -0.000 (-0.079 to 0.079) | +0.078 (-0.083 to 0.239) | +0.013 (-0.021 to 0.047) | +0.027 (-0.255 to 0.310) | +0.028 (-0.479 to 0.536) | -0.004 (-0.028 to 0.021) |
-| Pinus monticola | MORA | -0.012 (-0.068 to 0.044) | -0.020 (-0.067 to 0.026) | -0.016 (-0.022 to -0.010) | +0.009 (-0.024 to 0.042) | +0.026 (-0.058 to 0.111) | +0.005 (0.001 to 0.009) |
-| Pinus monticola | NOCA | -0.012 (-0.211 to 0.188) | +0.003 (-0.072 to 0.078) | +0.003 (-0.010 to 0.015) | +0.082 (-0.111 to 0.276) | +0.003 (-0.129 to 0.136) | +0.005 (-0.002 to 0.012) |
-| Pinus ponderosa | MORA | absent | absent | +0.004 (-0.003 to 0.011) | absent | absent | +0.003 (-0.003 to 0.008) |
-| Pinus ponderosa | NOCA | absent | absent | +0.072 (-0.012 to 0.155) | absent | absent | -0.061 (-0.122 to -0.000) |
-| Pseudotsuga menziesii | MORA | +0.009 (-0.065 to 0.084) | -0.056 (-0.152 to 0.039) | -0.020 (-0.040 to -0.001) | -0.015 (-0.090 to 0.060) | -0.002 (-0.065 to 0.062) | +0.007 (-0.003 to 0.017) |
-| Pseudotsuga menziesii | NOCA | -0.031 (-0.097 to 0.036) | -0.011 (-0.153 to 0.131) | -0.004 (-0.027 to 0.020) | -0.032 (-0.114 to 0.051) | +0.006 (-0.206 to 0.218) | +0.004 (-0.015 to 0.022) |
-| Thuja plicata | MORA | absent | absent | +0.002 (-0.010 to 0.014) | absent | absent | +0.010 (-0.000 to 0.021) |
-| Thuja plicata | NOCA | -0.043 (-0.155 to 0.070) | -0.019 (-0.064 to 0.026) | +0.010 (-0.004 to 0.025) | +0.042 (-0.044 to 0.128) | -0.017 (-0.062 to 0.028) | -0.004 (-0.016 to 0.008) |
-| Tsuga heterophylla | MORA | -0.009 (-0.127 to 0.109) | -0.027 (-0.103 to 0.049) | -0.018 (-0.025 to -0.010) | -0.027 (-0.070 to 0.017) | -0.008 (-0.029 to 0.012) | +0.010 (0.003 to 0.017) |
-| Tsuga heterophylla | NOCA | +0.015 (-0.069 to 0.098) | +0.005 (-0.009 to 0.019) | +0.035 (0.020 to 0.050) | +0.045 (-0.069 to 0.158) | +0.006 (-0.011 to 0.023) | +0.006 (-0.003 to 0.014) |
-| Tsuga mertensiana | MORA | -0.007 (-0.113 to 0.100) | +0.079 (-0.037 to 0.195) | +0.004 (-0.007 to 0.016) | -0.015 (-0.050 to 0.020) | -0.013 (-0.064 to 0.038) | -0.002 (-0.010 to 0.005) |
-| Tsuga mertensiana | NOCA | +0.010 (-0.016 to 0.037) | absent | +0.006 (-0.006 to 0.018) | -0.011 (-0.038 to 0.016) | absent | -0.011 (-0.026 to 0.004) |
+| Species | Park | Holocene-S | Holocene-C | Anthropocene |
+|:---|:---|:---|:---|:---|
+| Abies amabilis/grandis | MORA | +0.002 (-0.030 to 0.034) | +0.007 (-0.011 to 0.025) | +0.007 (0.001 to 0.012) |
+| Abies amabilis/grandis | NOCA | -0.011 (-0.033 to 0.011) | +0.014 (-0.022 to 0.050) | +0.001 (-0.005 to 0.007) |
+| Abies lasiocarpa | MORA | -0.035 (-0.134 to 0.064) | -0.023 (-0.085 to 0.039) | +0.004 (-0.011 to 0.019) |
+| Abies lasiocarpa | NOCA | +0.022 (-0.295 to 0.339) | -0.008 (-0.184 to 0.168) | +0.015 (-0.021 to 0.051) |
+| Abies procera | MORA | +0.035 (-0.009 to 0.080) | +0.024 (-0.035 to 0.083) | -0.005 (-0.012 to 0.002) |
+| Abies procera | NOCA | absent | absent | absent |
+| Callitropsis nootkatensis | MORA | -0.096 (-0.190 to -0.001) | +0.017 (-0.012 to 0.045) | +0.003 (-0.010 to 0.017) |
+| Callitropsis nootkatensis | NOCA | +0.028 (-0.039 to 0.096) | -0.033 (-0.125 to 0.059) | +0.002 (-0.012 to 0.016) |
+| Picea engelmannii | MORA | absent | absent | -0.001 (-0.007 to 0.005) |
+| Picea engelmannii | NOCA | +0.010 (-0.017 to 0.036) | -0.006 (-0.021 to 0.010) | +0.004 (-0.014 to 0.022) |
+| Pinus albicaulis | MORA | absent | absent | +0.005 (-0.002 to 0.011) |
+| Pinus albicaulis | NOCA | absent | absent | -0.081 (-0.136 to -0.026) |
+| Pinus contorta | MORA | -0.096 (-0.217 to 0.026) | -0.019 (-0.048 to 0.011) | -0.001 (-0.004 to 0.002) |
+| Pinus contorta | NOCA | +0.027 (-0.255 to 0.310) | +0.028 (-0.479 to 0.536) | -0.004 (-0.028 to 0.021) |
+| Pinus monticola | MORA | +0.009 (-0.024 to 0.042) | +0.026 (-0.058 to 0.111) | +0.005 (0.001 to 0.009) |
+| Pinus monticola | NOCA | +0.082 (-0.111 to 0.276) | +0.003 (-0.129 to 0.136) | +0.005 (-0.002 to 0.012) |
+| Pinus ponderosa | MORA | absent | absent | +0.003 (-0.003 to 0.008) |
+| Pinus ponderosa | NOCA | absent | absent | -0.061 (-0.122 to -0.000) |
+| Pseudotsuga menziesii | MORA | -0.015 (-0.090 to 0.060) | -0.002 (-0.065 to 0.062) | +0.007 (-0.003 to 0.017) |
+| Pseudotsuga menziesii | NOCA | -0.032 (-0.114 to 0.051) | +0.006 (-0.206 to 0.218) | +0.004 (-0.015 to 0.022) |
+| Thuja plicata | MORA | absent | absent | +0.010 (-0.000 to 0.021) |
+| Thuja plicata | NOCA | +0.042 (-0.044 to 0.128) | -0.017 (-0.062 to 0.028) | -0.004 (-0.016 to 0.008) |
+| Tsuga heterophylla | MORA | -0.027 (-0.070 to 0.017) | -0.008 (-0.029 to 0.012) | +0.010 (0.003 to 0.017) |
+| Tsuga heterophylla | NOCA | +0.045 (-0.069 to 0.158) | +0.006 (-0.011 to 0.023) | +0.006 (-0.003 to 0.014) |
+| Tsuga mertensiana | MORA | -0.015 (-0.050 to 0.020) | -0.013 (-0.064 to 0.038) | -0.002 (-0.010 to 0.005) |
+| Tsuga mertensiana | NOCA | -0.011 (-0.038 to 0.016) | absent | -0.011 (-0.026 to 0.004) |
 
 <sub>Table file:
 [step6_species_means_total.csv](report/tables/step6_species_means_total.csv)</sub>

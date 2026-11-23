@@ -1447,9 +1447,7 @@ Stages and helpers: [`R/pipeline/15_predictor_models.R`](R/pipeline/15_predictor
 **What and why.** The observed movement of a community between t1 and t2 is the sum of one
 vector per species: the change in the species' share times the species' fixed position in the
 CCA plane. Projecting each species' vector on a reference direction says how much that species
-moved the community along it. Two measures are used, both per century. Along the direction the
-prediction moved (`contrib_climate`), a positive value means the species carried the community with
-the climate. The second measure, `contrib_lag`, splits the lag rate itself. The mismatch g, from the
+moved the community along it. The measure, `contrib_lag`, splits the lag rate itself. The mismatch g, from the
 predicted to the observed position, is taken at both ends (g1 at t1, g2 at t2), and m is their sum
 divided by the sum of their lengths. Each species' vector projected on m is that species' part of the
 lag rate, and the predicted movement projected on m, with its sign reversed, is the climate's part.
@@ -1475,17 +1473,19 @@ code_snippet('R/pipeline/16_contributions.R', 'species-means')
 
 ```{r step6-results}
 species_means = read_output('species_contribution_models/species_means.csv')
+# Only the species contribution to the lag is shown (Bills, 23 Nov 2026). contrib_climate is
+# still computed in R/pipeline/16_contributions.R.
+species_means = species_means |> filter(measure == 'contrib_lag')
 species_means |> mutate(value = ifelse(interval_defined, sprintf('%+.3f (%.3f to %.3f)', estimate, conf_low, conf_high),
     ifelse(present, sprintf('%+.3f', estimate), 'absent'))) |>
-  select(measure, species, site, period_type, value) |>
-  pivot_wider(names_from = c(measure, period_type), values_from = value) |>
+  select(species, site, period_type, value) |>
+  pivot_wider(names_from = period_type, values_from = value) |>
   rename(Species = species, Park = site) |>
-  show_table('step6_species_means', caption = paste('**Table S23. Species contributions per century.** Mean and 95% confidence',
-    'interval (t-interval) in CCA distance per century, for each species, park, and period type. The columns give the measure and',
-    'the period type: contrib_climate, how far the species moved the community in the climate-predicted direction (positive) or',
-    'against it (negative); contrib_lag, the part of the lag rate that is due to the species (positive values amplify the lag, and',
-    'negative values shrink it). "absent": the species was not found in that park and period type. contrib_lag includes the',
-    'lake-periods and plot pairs in which the community did not move (all species at zero), and contrib_climate does not.'))
+  show_table('step6_species_means', caption = paste('**Table S23. Species contributions to the climate–community lag per century.**',
+    'Mean and 95% confidence interval (t-interval) in CCA distance per century, for each species, park, and period type: the part',
+    'of the lag rate that is due to the species (positive values amplify the lag, and negative values shrink it). "absent": the',
+    'species was not found in that park and period type. The means include the lake-periods and plot pairs in which the community',
+    'did not move (all species at zero).'))
 lag_parts = read_output('cca_transition_contributions/lag_decomposition.csv')
 tci = function(x) { n = length(x); m = mean(x); h = qt(.975, n - 1) * sd(x) / sqrt(n)
   sprintf('%+.3f (%+.3f to %+.3f)', m, m - h, m + h) }
@@ -1510,9 +1510,6 @@ lp = lag_parts |> filter(era == 'Anthropocene') |> group_by(site) |>
   summarise(lag = mean(lag_rate), species = mean(species_sum), climate = mean(climate_part))
 lpv = function(p, v) sprintf('%+.2f', lp[[v]][lp$site == p])
 narrow = lag_species |> filter(conf_high < 0); widen = lag_species |> filter(conf_low > 0)
-r_measures = species_means |> filter(period_type == 'Anthropocene') |>
-  select(measure, species, site, estimate) |> pivot_wider(names_from = measure, values_from = estimate) |>
-  group_by(site) |> summarise(r = cor(contrib_climate, contrib_lag, use = 'complete.obs'))
 ```
 
 In the Holocene every species mean is close to zero in both parks (largest absolute value
@@ -1532,34 +1529,29 @@ rate was `r lpv('NOCA', 'lag')`. Species whose interval lies below zero, which n
 `r paste(sprintf('%s (%s, %+.3f)', narrow$species, narrow$site, narrow$estimate), collapse = ', ')`.
 Species whose interval lies above zero, which widened it:
 `r paste(sprintf('%s (%s, %+.3f)', widen$species, widen$site, widen$estimate), collapse = ', ')`.
-Across species the two measures are negatively correlated in the Anthropocene
-(r = `r sprintf('%.2f', r_measures$r[r_measures$site == 'MORA'])` at MORA,
-`r sprintf('%.2f', r_measures$r[r_measures$site == 'NOCA'])` at NOCA): species that moved the community with the
-climate-predicted direction narrowed the lag, and those that moved it against that direction widened
-it.
 
 ```{r step6-contrasts}
-sc = read_output('species_contribution_models/species_contrasts.csv')
+sc = read_output('species_contribution_models/species_contrasts.csv') |> filter(measure == 'contrib_lag')
 sc_sig = sc |> filter(p_adjusted < .05)
 ```
 
-The period types of a species are compared with Welch tests, three contrasts per species, measure and
-park, and the p-values are Holm-adjusted within each measure and park across all species and
-contrasts. Of `r sum(!is.na(sc$p_value))` testable contrasts, `r sum(sc$p_value < .05, na.rm = TRUE)` have
-p < 0.05 before the adjustment and `r nrow(sc_sig)` after it
-(`r paste(sprintf('%s %s, %s, %s', sc_sig$species, sc_sig$site, sc_sig$contrast, sc_sig$measure), collapse = '; ')`).
+The period types of a species are compared with Welch tests, three contrasts per species and park,
+and the p-values are Holm-adjusted within each park across all species and contrasts. Of `r sum(!is.na(sc$p_value))` testable contrasts, `r sum(sc$p_value < .05, na.rm = TRUE)` have
+p < 0.05 before the adjustment `r if (nrow(sc_sig)) paste0('and ', nrow(sc_sig), ' after it (', paste(sprintf('%s %s, %s', sc_sig$species, sc_sig$site, sc_sig$contrast), collapse = '; '), ').') else 'and none after it.'`
 `r if (nrow(sc_sig) && all(startsWith(sc_sig$contrast, 'Anthropocene'))) 'All of them set the Anthropocene against a Holocene period type.' else ''`
 
 ```{r fig-8-main}
 show_figure('report/figures/main/fig_species_contributions.pdf')
 ```
 
-**Fig. 7. Species contributions in the Holocene and the Anthropocene.** Each species' vector is its
-change in share between the first and the last sampled century of a lake-period, or between the
-legacy survey and the resurvey of a plot, times its fixed position in the CCA plane. The upper row (following climate-predicted direction)
-projects these vectors on the direction in which the climate-predicted position moved, and the lower
-row (changing the climate-community lag) on the average direction of the mismatch at the two ends, so
-that the species' values plus the climate's part add up to the lag rate. Labels at the top of each panel read with the row title: a species moved the community following or against the climate-predicted direction (upper row), and narrowed or widened the climate-community lag (lower row). The lower row includes the lake-periods and plot pairs whose composition did not change (all species values zero) and is per century of the same interval as the lag rate.
+**Fig. 7. Species contributions to the climate–community lag in the Holocene and the Anthropocene.** Each
+species' vector is its change in share between the first and the last sampled century of a lake-period, or
+between the legacy survey and the resurvey of a plot, times its fixed position in the CCA plane. The vectors
+are projected on the average direction of the mismatch at the two ends, so that the species' values plus the
+climate's part add up to the lag rate. Labels at the top of each panel give the meaning of each side of zero:
+a species narrowed or widened the climate–community lag. The means include the lake-periods and plot pairs
+whose composition did not change (all species values zero) and are per century of the same interval as the
+lag rate.
 Species are ordered by the maximum elevation of the plots where they occur (the 605 plot pairs, both surveys, both parks), the highest at the top. Their names are shaded by that maximum in four grey steps, lightest below 1,500 m and black above 1,900 m (key below the figure). Names in bold are species absent from the Holocene record of both parks.
 Symbols are means: squares, Holocene stability periods, diamonds, Holocene climate-change periods,
 circles, Anthropocene plot pairs (burned and unburned together). Large symbols with bars are means whose
@@ -1585,37 +1577,42 @@ dr = function(e) sprintf('%s to %s', prettyNum(dts$lo[dts$era == e], big.mark = 
 # Means whose 95% interval excludes zero, for species present in that park and period type.
 away = function(d) d |> filter(present, interval_defined, conf_low > 0 | conf_high < 0)
 key = function(d) sort(paste(d$measure, d$species, d$site))
+st = st |> filter(measure == 'contrib_lag')
 hol_t = st |> filter(period_type != 'Anthropocene', present)
 hol_r = species_means |> filter(period_type != 'Anthropocene', present)
 top = hol_t |> slice_max(abs(estimate), n = 1)
+size_t = st |> filter(present) |> mutate(era = ifelse(period_type == 'Anthropocene', 'A', 'H')) |>
+  group_by(site, era) |> summarise(m = mean(abs(estimate)), .groups = 'drop')
+sz = function(p, e) size_t$m[size_t$site == p & size_t$era == e]
 ant_t = away(st |> filter(period_type == 'Anthropocene'))
 ant_r = away(species_means |> filter(period_type == 'Anthropocene'))
 show_figure('report/figures/supplementary/figS19_species_contributions_total.pdf')
 ```
 
-Not divided by time, the mean contributions of the Holocene were as large as those of the Anthropocene.
-However, they varied so much among the few lake-periods that the confidence interval excluded zero for
+Not divided by time, the mean contributions of the Holocene were `r if (all(c(sz('MORA', 'H') >= sz('MORA', 'A'), sz('NOCA', 'H') >= sz('NOCA', 'A')))) 'at least as large as' else 'not everywhere as large as'` those of the
+Anthropocene (mean absolute value `r sprintf('%.3f', sz('MORA', 'H'))` against `r sprintf('%.3f', sz('MORA', 'A'))` at MORA and
+`r sprintf('%.3f', sz('NOCA', 'H'))` against `r sprintf('%.3f', sz('NOCA', 'A'))` at NOCA, CCA distance). However, they varied so much among the few lake-periods that the confidence interval excluded zero for
 `r nrow(away(hol_t))` of the `r sum(hol_t$interval_defined)` Holocene means (`r nrow(away(hol_r))` per
 century). In the Anthropocene, it excluded zero for `r nrow(ant_t)` means, against `r nrow(ant_r)` per
 century, `r if (identical(key(ant_t), key(ant_r))) 'for the same species in the same parks' else 'not all for the same species'`.
 Thus, within a lake-period, the species of the Holocene moved the communities about as far as those of the
 Anthropocene, but too variably among lake-periods to identify which species did so.
 
-**Fig. S19. Species contributions not divided by time.** As Fig. 7 of the main text, with the contribution
-of each species between t1 and t2 and not per century. Upper row: how far each species moved the community
-in the climate-predicted direction (positive values) or against it (negative values). Lower row: how far
-each species moved the community away from its climate-predicted position, which is the part of the lag
-that is due to that species. Means with 95% confidence intervals (t-intervals). Symbols, order of the
-species, and shading as in Fig. 7. `r both_spans` Contributions are in CCA distance.
+**Fig. S19. Species contributions to the climate–community lag not divided by time.** As Fig. 7 of the main
+text, with the contribution of each species between t1 and t2 and not per century: how far each species
+moved the community away from its climate-predicted position, which is the part of the lag that is due to
+that species. Means with 95% confidence intervals (t-intervals). Symbols, order of the species, and shading
+as in Fig. 7. `r both_spans` Contributions are in CCA distance.
 
 ```{r step6-totals-table}
 st |> mutate(value = ifelse(interval_defined, sprintf('%+.3f (%.3f to %.3f)', estimate, conf_low, conf_high),
     ifelse(present, sprintf('%+.3f', estimate), 'absent'))) |>
-  select(measure, species, site, period_type, value) |>
-  pivot_wider(names_from = c(measure, period_type), values_from = value) |>
+  select(species, site, period_type, value) |>
+  pivot_wider(names_from = period_type, values_from = value) |>
   rename(Species = species, Park = site) |>
-  show_table('step6_species_means_total', caption = paste('**Table S25. Species contributions not divided by time.** Mean',
-    'and 95% confidence interval (t-interval) in CCA distance, for each species, park, and period type. Columns as in Table S23.'))
+  show_table('step6_species_means_total', caption = paste('**Table S25. Species contributions to the climate–community lag not',
+    'divided by time.** Mean and 95% confidence interval (t-interval) in CCA distance, for each species, park, and period type.',
+    'Columns as in Table S23.'))
 ```
 
 <!-- readme-only -->

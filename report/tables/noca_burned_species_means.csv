@@ -1,53 +1,27 @@
-Measure,Species,Burned,n,Mean,95% CI
-contrib_climate,Abies amabilis/grandis,FALSE,191,0.02858533775765279,-0.006 to 0.063
-contrib_climate,Abies amabilis/grandis,TRUE,17,-0.10624125436360468,-0.276 to 0.064
-contrib_climate,Abies lasiocarpa,FALSE,191,-0.04453888352618451,-0.202 to 0.113
-contrib_climate,Abies lasiocarpa,TRUE,17,-0.24446425608662728,-0.647 to 0.158
-contrib_climate,Abies procera,FALSE,191,0,not defined
-contrib_climate,Abies procera,TRUE,17,0,not defined
-contrib_climate,Callitropsis nootkatensis,FALSE,191,0.0286868974344706,-0.016 to 0.074
-contrib_climate,Callitropsis nootkatensis,TRUE,17,0,not defined
-contrib_climate,Picea engelmannii,FALSE,191,-0.02235181539538606,-0.100 to 0.056
-contrib_climate,Picea engelmannii,TRUE,17,0.13389315708102534,-0.244 to 0.512
-contrib_climate,Pinus albicaulis,FALSE,191,0.20520087762062184,0.024 to 0.387
-contrib_climate,Pinus albicaulis,TRUE,17,0.9404232675185538,-0.015 to 1.896
-contrib_climate,Pinus contorta,FALSE,191,0.0475800536296804,-0.064 to 0.159
-contrib_climate,Pinus contorta,TRUE,17,-0.0354920295936678,-0.423 to 0.352
-contrib_climate,Pinus monticola,FALSE,191,0.0070570016277089,-0.030 to 0.044
-contrib_climate,Pinus monticola,TRUE,17,0.02814958317383147,-0.233 to 0.289
-contrib_climate,Pinus ponderosa,FALSE,191,0.1394030347120752,-0.059 to 0.338
-contrib_climate,Pinus ponderosa,TRUE,17,1.1703475792399078,-1.321 to 3.662
-contrib_climate,Pseudotsuga menziesii,FALSE,191,0.01743631226461146,-0.051 to 0.086
-contrib_climate,Pseudotsuga menziesii,TRUE,17,-0.3261045313245841,-0.827 to 0.175
-contrib_climate,Thuja plicata,FALSE,191,0.03540244582209229,-0.015 to 0.085
-contrib_climate,Thuja plicata,TRUE,17,0,not defined
-contrib_climate,Tsuga heterophylla,FALSE,191,0.115485372213187,0.065 to 0.166
-contrib_climate,Tsuga heterophylla,TRUE,17,0.04422628607904091,-0.050 to 0.138
-contrib_climate,Tsuga mertensiana,FALSE,191,0.01438199325846523,-0.028 to 0.057
-contrib_climate,Tsuga mertensiana,TRUE,17,0.06967698082901601,-0.020 to 0.160
-contrib_lag,Abies amabilis/grandis,FALSE,253,0.00522068209833991,-0.018 to 0.029
-contrib_lag,Abies amabilis/grandis,TRUE,24,-0.00169086688526425,-0.050 to 0.047
-contrib_lag,Abies lasiocarpa,FALSE,253,0.04236058551296062,-0.091 to 0.176
-contrib_lag,Abies lasiocarpa,TRUE,24,0.1835708376529711,-0.224 to 0.591
-contrib_lag,Abies procera,FALSE,253,0,not defined
-contrib_lag,Abies procera,TRUE,24,0,not defined
-contrib_lag,Callitropsis nootkatensis,FALSE,253,0.00997153070059688,-0.044 to 0.064
-contrib_lag,Callitropsis nootkatensis,TRUE,24,0,not defined
-contrib_lag,Picea engelmannii,FALSE,253,0.0233952399965901,-0.039 to 0.086
-contrib_lag,Picea engelmannii,TRUE,24,-0.09373160644460424,-0.407 to 0.219
-contrib_lag,Pinus albicaulis,FALSE,253,-0.21663175406244264,-0.405 to -0.029
-contrib_lag,Pinus albicaulis,TRUE,24,-0.9868354107765784,-2.009 to 0.035
-contrib_lag,Pinus contorta,FALSE,253,-0.01772591810734341,-0.109 to 0.074
-contrib_lag,Pinus contorta,TRUE,24,0.03985481411006725,-0.223 to 0.303
-contrib_lag,Pinus monticola,FALSE,253,0.02206072199823769,0.000 to 0.044
-contrib_lag,Pinus monticola,TRUE,24,-0.01743182825627558,-0.204 to 0.169
-contrib_lag,Pinus ponderosa,FALSE,253,-0.1238476915742057,-0.294 to 0.046
-contrib_lag,Pinus ponderosa,TRUE,24,-1.1674061592943918,-2.927 to 0.592
-contrib_lag,Pseudotsuga menziesii,FALSE,253,-0.01416082003261088,-0.073 to 0.045
-contrib_lag,Pseudotsuga menziesii,TRUE,24,0.298114988497525,-0.130 to 0.726
-contrib_lag,Thuja plicata,FALSE,253,-0.01356430446852625,-0.061 to 0.034
-contrib_lag,Thuja plicata,TRUE,24,0,not defined
-contrib_lag,Tsuga heterophylla,FALSE,253,0.02277064597094322,-0.010 to 0.056
-contrib_lag,Tsuga heterophylla,TRUE,24,-0.01028689430248611,-0.032 to 0.011
-contrib_lag,Tsuga mertensiana,FALSE,253,-0.04003537393514744,-0.099 to 0.019
-contrib_lag,Tsuga mertensiana,TRUE,24,-0.02221163779483894,-0.069 to 0.025
+Species,Burned,n,Mean,95% CI
+Abies amabilis/grandis,FALSE,253,0.00522068209833991,-0.018 to 0.029
+Abies amabilis/grandis,TRUE,24,-0.00169086688526425,-0.050 to 0.047
+Abies lasiocarpa,FALSE,253,0.04236058551296062,-0.091 to 0.176
+Abies lasiocarpa,TRUE,24,0.1835708376529711,-0.224 to 0.591
+Abies procera,FALSE,253,0,not defined
+Abies procera,TRUE,24,0,not defined
+Callitropsis nootkatensis,FALSE,253,0.00997153070059688,-0.044 to 0.064
+Callitropsis nootkatensis,TRUE,24,0,not defined
+Picea engelmannii,FALSE,253,0.0233952399965901,-0.039 to 0.086
+Picea engelmannii,TRUE,24,-0.09373160644460424,-0.407 to 0.219
+Pinus albicaulis,FALSE,253,-0.21663175406244264,-0.405 to -0.029
+Pinus albicaulis,TRUE,24,-0.9868354107765784,-2.009 to 0.035
+Pinus contorta,FALSE,253,-0.01772591810734341,-0.109 to 0.074
+Pinus contorta,TRUE,24,0.03985481411006725,-0.223 to 0.303
+Pinus monticola,FALSE,253,0.02206072199823769,0.000 to 0.044
+Pinus monticola,TRUE,24,-0.01743182825627558,-0.204 to 0.169
+Pinus ponderosa,FALSE,253,-0.1238476915742057,-0.294 to 0.046
+Pinus ponderosa,TRUE,24,-1.1674061592943918,-2.927 to 0.592
+Pseudotsuga menziesii,FALSE,253,-0.01416082003261088,-0.073 to 0.045
+Pseudotsuga menziesii,TRUE,24,0.298114988497525,-0.130 to 0.726
+Thuja plicata,FALSE,253,-0.01356430446852625,-0.061 to 0.034
+Thuja plicata,TRUE,24,0,not defined
+Tsuga heterophylla,FALSE,253,0.02277064597094322,-0.010 to 0.056
+Tsuga heterophylla,TRUE,24,-0.01028689430248611,-0.032 to 0.011
+Tsuga mertensiana,FALSE,253,-0.04003537393514744,-0.099 to 0.019
+Tsuga mertensiana,TRUE,24,-0.02221163779483894,-0.069 to 0.025

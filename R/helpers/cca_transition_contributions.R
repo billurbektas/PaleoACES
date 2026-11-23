@@ -186,16 +186,13 @@ century_species_weights = function(reconstruction, bundle) {
 # contrib_gap, a projection on the start mismatch only, leaned positive in both
 # directions of time.
 # report-snippet: contrib-lag
-step6_species_contributions = function(context, first, last, positions, endpoints, dt, lag_dt) {
+step6_lag_contributions = function(context, first, last, positions, endpoints, lag_dt) {
   # rows: one row per unit and species, with the species' vector (its change in
   # share times its CCA position) in contribution_CCA1 and contribution_CCA2.
   rows = contribution_species(context, first, last, positions, endpoints)
   contribution_close((last - first) %*% positions,
     as.matrix(endpoints[c('delta_observed_CCA1', 'delta_observed_CCA2')]), 'Species vectors sum to dWA')
   index = rep(seq_len(nrow(context)), each = ncol(first))
-  defined = endpoints$direction_defined[index]
-  # contrib_climate: the vector along the predicted movement, per century.
-  rows$contrib_climate = ifelse(defined, rows$parallel_contribution * 100 / dt[index], NA_real_)
   # contrib_lag: the vector projected on m (dot product), per century of the lag rate.
   m = step6_lag_direction(endpoints)
   rows$lag_projection = rows$contribution_CCA1 * m$x[index] + rows$contribution_CCA2 * m$y[index]
@@ -213,6 +210,19 @@ step6_lag_direction = function(endpoints) {
   list(x = (g1x + g2x) / total, y = (g1y + g2y) / total)
 }
 # end-snippet: contrib-lag
+
+# Both measures. contrib_climate, the vector along the predicted movement per
+# century, is still computed but no figure, table or text shows it (Bills,
+# 23 Nov 2026), so it stays outside the code shown in the README. Columns in
+# the order they had before.
+step6_species_contributions = function(context, first, last, positions, endpoints, dt, lag_dt) {
+  rows = step6_lag_contributions(context, first, last, positions, endpoints, lag_dt)
+  index = rep(seq_len(nrow(context)), each = ncol(first))
+  defined = endpoints$direction_defined[index]
+  rows$contrib_climate = ifelse(defined, rows$parallel_contribution * 100 / dt[index], NA_real_)
+  lag_columns = c('lag_projection', 'contrib_lag')
+  rows[c(setdiff(names(rows), c(lag_columns, 'contrib_climate')), 'contrib_climate', lag_columns)]
+}
 step6_lag_decomposition = function(context, rows, endpoints, lag_dt) {
   m = step6_lag_direction(endpoints)
   climate_part = -(endpoints$delta_predicted_CCA1 * m$x + endpoints$delta_predicted_CCA2 * m$y) * 100 / lag_dt
