@@ -88,7 +88,8 @@ figure = ggplot() +
   geom_vline(data = distinct(events, age), aes(xintercept = age), color = EVENT_COLOR, alpha = .25, linewidth = .5) +
   geom_area(data = walsh_rows, aes(age, char), fill = 'grey72', color = 'grey35', linewidth = .3) +
   geom_line(data = walsh_rows, aes(age, background), color = 'black', linewidth = .6, linetype = 'dashed') +
-  geom_point(data = event_rows, aes(age, Inf), shape = 25, size = 3.4, fill = EVENT_COLOR, color = EVENT_COLOR) +
+  # Events as ticks at the top of the row, not triangles, which read as arrowheads (Bills, 23 Nov 2026).
+  geom_point(data = event_rows, aes(age, Inf), shape = '|', size = 7, color = EVENT_COLOR) +
   geom_segment(data = dun_rows, aes(x = age, xend = age, y = 0, yend = fragments), color = PAPER_SITE_COLORS[['MORA']],
     linewidth = .7) +
   geom_point(data = dun_rows, aes(age, fragments, fill = peak), shape = 21, size = 2.8, color = PAPER_SITE_COLORS[['MORA']]) +

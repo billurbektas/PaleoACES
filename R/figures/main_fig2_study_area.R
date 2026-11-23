@@ -178,7 +178,7 @@ park_panel = function(park, tag, title, grid) {
     scale_color_manual(values = c(Unburned = 'grey35', `Burned between the surveys` = PAPER_FIRE_RED),
       breaks = c('Unburned', 'Burned between the surveys'), name = 'Anthropocene plot pairs',
       guide = guide_legend(override.aes = list(size = 7), order = 1, ncol = 1)) +
-    scale_shape_manual(values = c(`Vegetation record` = 21, `Fire record` = 24,
+    scale_shape_manual(values = c(`Vegetation record` = 21, `Fire record` = 22,
       `Vegetation and fire record` = 23), name = 'Holocene cored lakes', limits = roles, drop = FALSE,
       guide = guide_legend(order = 2, ncol = 1, override.aes = list(size = 9))) +
     scale_fill_manual(values = c(`Vegetation record` = '#1B7837', `Fire record` = '#E8A33D',

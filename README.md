@@ -112,7 +112,7 @@ NOCA. They are grey when unburned and red when burned between the two
 surveys (0 at MORA and 24 at NOCA). The two MORA plots that burned are
 left out of the analysis. The large symbols are the cored lakes:
 vegetation records (green circles, macrofossils, Dunwiddie 1986), fire
-records (orange triangles, charcoal, Walsh et al. 2017) and Panther
+records (orange squares, charcoal, Walsh et al. 2017) and Panther
 Potholes, whose core gives both (green diamond, Prichard et al. 2009).
 The two park maps have the same size and therefore different scales,
 shown by the same 10 km scale bar on each. Park maps in UTM zone 10N,
@@ -786,14 +786,14 @@ partly come from the records themselves.
 2017) and in the forest records of MORA (Dunwiddie, 1986).** Upper three
 rows: charcoal accumulation rate of each Sunrise Ridge record (grey),
 with its background (dashed) and the fire events that we identified
-(dark red triangles). Lower three rows: number of charcoal fragments in
-each macrofossil sample of Dunwiddie (1986). This number is a
-concentration, because all samples of a core had the same volume, and
-the samples above the 75th percentile of each lake are filled. Each fire
-event of the Sunrise Ridge records is drawn as a faint line through all
-rows. Time runs from 7,000 cal BP to the present, which is the time span
-of the forest records. The correlations in the text are Spearman
-correlations of the charcoal of two records over bins of 500
+(dark red ticks at the top of each row). Lower three rows: number of
+charcoal fragments in each macrofossil sample of Dunwiddie (1986). This
+number is a concentration, because all samples of a core had the same
+volume, and the samples above the 75th percentile of each lake are
+filled. Each fire event of the Sunrise Ridge records is drawn as a faint
+line through all rows. Time runs from 7,000 cal BP to the present, which
+is the time span of the forest records. The correlations in the text are
+Spearman correlations of the charcoal of two records over bins of 500
 years. Script:
 [`R/figures/supp_charcoal_dunwiddie_walsh.R`](R/figures/supp_charcoal_dunwiddie_walsh.R).
 
@@ -947,26 +947,37 @@ component.
 <img src="report/figures/png/fig_cca_trajectories.png" alt="" width="100%" />
 
 **Fig. 4. Climate and community positions in the CCA plane.** (A) The
-species that carry more than an equal share of the constrained inertia
-(100% divided by the 14 taxa), 7 taxa holding 80% of it (vectors from
-the centre, shaded from light to dark by their share, with the
-percentage of legacy plots in which each occurs), and the two climate
-constraints (bold arrows) of the CCA fitted on 605 legacy plots. All
-taxa are shown in Fig. S14. (B) Observed (dark colours) and
-climate-predicted (light colours) movement of each park: in the Holocene
-from the first to the last climate period with samples, in the
-Anthropocene from the legacy survey to the resurvey (averaged over 328
-MORA and 277 NOCA plot pairs). The MORA arrows run from C3 to S5 (6850
-to 1350 cal BP), and the first MORA period rests on 8 samples in 8
-lake-centuries. The NOCA arrows run from C1 to S5 (9650 to 1350 cal BP).
-Grey dots are the legacy calibration plots. Labels mark the Holocene
-start and end and the legacy survey and resurvey. (C, D) The full
-Holocene sequence of period centroids at MORA and NOCA, observed and
-predicted, each period named at its observed centroid (C, climate-change
-period, S, stability period). Each centroid averages the sampled
-centuries of each lake within the period, with the lakes weighted
-equally. Axes orthogonally rotated (varimax, -23.5 degrees) for display,
-so that axis 1 follows spring temperature and axis 2 summer
+species that carry more than half an equal share of the constrained
+inertia (50% divided by the 14 taxa), 9 taxa holding 89% of it (vectors
+from the centre), and the two climate constraints (bold arrows) of the
+CCA fitted on 605 legacy plots. The species are shaded by how common
+they are: the share of the legacy plots in which they occur, under 10%,
+10 to 30% or over 30%. All taxa are shown in Fig. S14. (B) Observed and
+climate-predicted movement of each park: in the Holocene from the first
+to the last climate period with samples, in the Anthropocene from the
+legacy survey to the resurvey (averaged over 328 MORA and 277 NOCA plot
+pairs). Observed positions are filled symbols in the dark park colour,
+predicted positions open symbols in the light park colour. The symbol
+gives the period type: diamonds for Holocene climate-change periods,
+squares for Holocene stability periods and circles for the Anthropocene.
+Each line is tagged at both ends, H. start and H. end for the first and
+last Holocene period and A. legacy and A. resurvey for the two surveys,
+with the tags of predicted lines in italics. The Anthropocene lines
+carry no arrowheads, their tags giving the direction. The two ends of
+the observed MORA Anthropocene and the predicted NOCA Holocene lie so
+close that their symbols overlap and no line is drawn. The MORA arrows
+run from C3 to S5 (6850 to 1350 cal BP), and the first MORA period rests
+on 8 samples in 8 lake-centuries. The NOCA arrows run from C1 to S5
+(9650 to 1350 cal BP). (C, D) The full Holocene sequence of period
+centroids at MORA and NOCA, observed and predicted, each period named at
+its observed centroid (C, climate-change period, S, stability period)
+and drawn with the symbol of its period type. The steps of the predicted
+NOCA Holocene sequence are too short for arrowheads, so its centroids
+are joined by plain lines. Where two centroids lie too close for an
+arrowhead, they are joined by a plain line. Each centroid averages the
+sampled centuries of each lake within the period, with the lakes
+weighted equally. Axes orthogonally rotated (varimax, -23.5 degrees) for
+display, so that axis 1 follows spring temperature and axis 2 summer
 precipitation. All metrics are rotation-invariant. The unrotated biplot
 is Fig. S14.
 
@@ -1448,28 +1459,28 @@ NOCA did not differ significantly from the stability periods (+0.17
 
 **Fig. 5. Climate change, community turnover and climate-community lag
 in the Holocene and the Anthropocene.** For each park, the fitted mean
-and 95% confidence interval of the Holocene stability periods
-(triangles), the Holocene climate-change periods (circles) and the
-Anthropocene plot pairs (diamonds). Each row shows a total between the
-two ends of a lake-period or plot pair (left) and its rate per century
-(right): (A) the standardized climate change, the distance between the
-climates at the two ends, and (B) its rate; (C) the observed community
-turnover, the distance the community moved in CCA space, and (D) its
-rate; (E) the climate-community lag, the change in mismatch between the
-two ends (M at t2 minus M at t1), and (F) its rate. The fitted mean is
-printed beside each point. B and D are on log axes, where equal
-distances are equal folds, and the arrow gives the fold between the
-Anthropocene and the Holocene climate-change means. The interval of the
-Holocene stability periods at NOCA in D reaches below zero, which a log
-axis cannot show. Such an interval runs to the bottom of the panel and
-ends in an arrow. A, C, E and F are on linear axes without folds. Their
-connectors show the three differences between period types within each
-park: on the lower level, the Holocene stability against the Holocene
-climate-change periods (left) and the Holocene climate-change periods
-against the Anthropocene (right), and on the upper level, the Holocene
-stability periods against the Anthropocene. A star marks a difference
-that differs from zero (two-sided t test, Holm-adjusted p \< 0.05 across
-the six differences of each response, three per park). The intervals are
+and 95% confidence interval of the Holocene stability periods (squares),
+the Holocene climate-change periods (diamonds) and the Anthropocene plot
+pairs (circles). Each row shows a total between the two ends of a
+lake-period or plot pair (left) and its rate per century (right): (A)
+the standardized climate change, the distance between the climates at
+the two ends, and (B) its rate; (C) the observed community turnover, the
+distance the community moved in CCA space, and (D) its rate; (E) the
+climate-community lag, the change in mismatch between the two ends (M at
+t2 minus M at t1), and (F) its rate. The fitted mean is printed beside
+each point. B and D are on log axes, where equal distances are equal
+folds, and the arrow gives the fold between the Anthropocene and the
+Holocene climate-change means. The interval of the Holocene stability
+periods at NOCA in D reaches below zero, which a log axis cannot show.
+Such an interval runs to the bottom of the panel and ends in an arrow.
+A, C, E and F are on linear axes without folds. Their connectors show
+the three differences between period types within each park: on the
+lower level, the Holocene stability against the Holocene climate-change
+periods (left) and the Holocene climate-change periods against the
+Anthropocene (right), and on the upper level, the Holocene stability
+periods against the Anthropocene. A star marks a difference that differs
+from zero (two-sided t test, Holm-adjusted p \< 0.05 across the six
+differences of each response, three per park). The intervals are
 unadjusted. The totals in A, C and E build up over a whole lake-period
 in the Holocene and over the few decades between the two surveys in the
 Anthropocene. Means come from the model response ~ period type × site,
@@ -1606,8 +1617,8 @@ per century mainly because they build up over a few decades.
 
 **Fig. 6. Pace effect and direction effect in the Holocene and the
 Anthropocene.** For each park, the fitted mean and 95% confidence
-interval of the Holocene stability periods (triangles), the Holocene
-climate-change periods (circles) and the Anthropocene (diamonds), with
+interval of the Holocene stability periods (squares), the Holocene
+climate-change periods (diamonds) and the Anthropocene (circles), with
 the fitted mean printed beside each point. Each row shows an effect over
 the whole lake-period or plot pair (left, not divided by time) and per
 century (right): (A) the pace effect and (B) the pace effect per
@@ -2083,8 +2094,8 @@ they occur (the 605 plot pairs, both surveys, both parks), the highest
 at the top. Their names are shaded by that maximum in four grey steps,
 lightest below 1,500 m and black above 1,900 m (key below the figure).
 Names in bold are species absent from the Holocene record of both parks.
-Symbols are means: triangles, Holocene stability periods, circles,
-Holocene climate-change periods, diamonds, Anthropocene plot pairs
+Symbols are means: squares, Holocene stability periods, diamonds,
+Holocene climate-change periods, circles, Anthropocene plot pairs
 (burned and unburned together). Large symbols with bars are means whose
 95% t-interval excludes zero, small faded symbols are means whose
 interval includes zero. A species with no Holocene symbols in a park is
@@ -2202,7 +2213,7 @@ against its value with the two-step correction of the main analysis
 least-squares line: (A) climate change and (B) its rate, (C) the lag and
 (D) its rate, (E) the pace effect and (F) its rate, (G) the direction
 effect and (H) its rate. Left: quantities between t1 and t2. Right:
-their rates per century. Circles are MORA and triangles NOCA. On the
+their rates per century. Circles are MORA and squares NOCA. On the
 dashed line, a correction changes nothing, and in the shaded quadrants,
 the value changes sign. The numbers in each panel are the Pearson
 correlations (r), across the lake-periods of each park, between each
@@ -2221,14 +2232,14 @@ the Holocene climate.** The differences between the estimated means of
 two period types within each park (Table S16 for the main analysis),
 each with its 95% confidence interval (not adjusted): filled points and
 solid lines with the two-step correction of the main analysis, open
-circles and dashed lines with the one-step correction, and open
-triangles and dotted lines without correction. Upper row of each panel:
-MORA (blue). Lower row: NOCA (orange). (A) Climate change, lag, pace
-effect, and direction effect between t1 and t2. (B) Their rates per
-century. Community turnover is the same in the three analyses and is not
-shown. Climate change is in SD of the legacy plots, and the other
-quantities are in CCA distance (A) or in CCA distance per century (B).
-The dashed vertical line marks zero. Script:
+circles and dashed lines with the one-step correction, and open squares
+and dotted lines without correction. Upper row of each panel: MORA
+(blue). Lower row: NOCA (orange). (A) Climate change, lag, pace effect,
+and direction effect between t1 and t2. (B) Their rates per century.
+Community turnover is the same in the three analyses and is not shown.
+Climate change is in SD of the legacy plots, and the other quantities
+are in CCA distance (A) or in CCA distance per century (B). The dashed
+vertical line marks zero. Script:
 [`R/figures/supp_paleoclimate_sensitivity.R`](R/figures/supp_paleoclimate_sensitivity.R).
 
 **Lake-periods.** The three analyses had the same 10 climate periods and
@@ -2272,7 +2283,7 @@ with the three versions of the Holocene climate.** Coefficients of Fig.
 with park, climate change, and fire activity as explanatory variables,
 each with its 95% confidence interval: filled points and solid lines
 with the two-step correction of the main analysis, open circles and
-dashed lines with the one-step correction, and open triangles and dotted
+dashed lines with the one-step correction, and open squares and dotted
 lines without correction. (A) The lag, the pace effect, and the
 direction effect not divided by time, with the climate change between t1
 and t2. (B) The same quantities per century, with the climate change

@@ -119,7 +119,7 @@ Step,File,Description,Size (kB)
 14_era_models,era_comparison/era_model_summary.csv,"Era-comparison GLS fits, means and contrasts per response",2
 14_era_models,era_comparison/era_predictions.csv,"Era-comparison GLS fits, means and contrasts per response",597
 14_era_models,era_comparison/model_results.txt,"Era-comparison GLS fits, means and contrasts per response",19
-14_era_models,era_comparison/primary_fits.rds,"Era-comparison GLS fits, means and contrasts per response",674
+14_era_models,era_comparison/primary_fits.rds,"Era-comparison GLS fits, means and contrasts per response",676
 15_predictor_models,community_predictor_models/model_coefficients.csv,Within-era predictor GLS fits,6
 15_predictor_models,community_predictor_models/model_exclusions.csv,Within-era predictor GLS fits,45
 15_predictor_models,community_predictor_models/model_performance.csv,Within-era predictor GLS fits,2
@@ -139,6 +139,7 @@ Step,File,Description,Size (kB)
 16_contributions,species_contribution_models/species_means.csv,"Species contribution means, contrasts and NOCA burned means",21
 figures,anthropocene_climate_rates.csv,"Tables behind the figures (centroids, annotations)",0
 figures,cca_trajectory_anthropocene_centroids.csv,"Tables behind the figures (centroids, annotations)",0
+figures,cca_trajectory_arrowless.csv,"Tables behind the figures (centroids, annotations)",0
 figures,cca_trajectory_holocene_spans.csv,"Tables behind the figures (centroids, annotations)",0
 figures,cca_trajectory_period_centroids.csv,"Tables behind the figures (centroids, annotations)",1
 figures,charcoal_dunwiddie_walsh_correlations.csv,"Tables behind the figures (centroids, annotations)",1

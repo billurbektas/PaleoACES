@@ -1,10 +1,14 @@
 # Figure conventions (PLAN.md section 6, Bills 9 Nov 2026). Where observed and
-# predicted are not distinguished, a park takes its observed colour.
-PARK_COLORS = c(MORA_observed = "#294EFF", MORA_predicted = "#97A9FF",
-  NOCA_observed = "#D94000", NOCA_predicted = "#FF9163")
-PAPER_SITE_COLORS = c(MORA = "#294EFF", NOCA = "#D94000")
-# Holocene-C circle, Holocene-S triangle, Anthropocene diamond (filled shapes).
-PERIOD_TYPE_SHAPES = c(`Holocene-C` = 21, `Holocene-S` = 24, Anthropocene = 23)
+# predicted are not distinguished, a park takes its observed colour. The observed
+# colours were darkened (Bills, 23 Nov 2026: #294EFF and #D94000 before) so that
+# they stand further apart from the light predicted colours.
+PARK_COLORS = c(MORA_observed = "#1A33BF", MORA_predicted = "#97A9FF",
+  NOCA_observed = "#A33000", NOCA_predicted = "#FF9163")
+PAPER_SITE_COLORS = c(MORA = "#1A33BF", NOCA = "#A33000")
+# Holocene-C diamond, Holocene-S square, Anthropocene circle (filled shapes). No
+# triangles in any figure: they read as arrowheads (Bills, 23 Nov 2026, when the
+# Anthropocene also took the circle from Holocene-C).
+PERIOD_TYPE_SHAPES = c(`Holocene-C` = 23, `Holocene-S` = 22, Anthropocene = 21)
 # Axis labels name the quantity only; units are given in the captions (Bills).
 RESPONSE_AXIS_LABELS = c(climate_rate = "Climate change rate", turnover_rate = "Turnover rate",
   lag_rate = "Lag rate", lag = "Lag", pace_effect = "Pace effect", direction_effect = "Direction effect",
@@ -20,7 +24,7 @@ PAPER_LEGEND_TITLE_SIZE = 13
 
 PAPER_FIRE_RED = "#9D2946"
 PAPER_NO_FIRE = "grey35"
-PAPER_SITE_SHAPES = c(MORA = 21, NOCA = 24)
+PAPER_SITE_SHAPES = c(MORA = 21, NOCA = 22)
 PAPER_SIGNED_COLORS = c(low = "#3B78A8", mid = "#F5F1E6",
                         high = "#C75B47")
 

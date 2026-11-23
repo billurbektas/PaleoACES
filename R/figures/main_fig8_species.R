@@ -4,7 +4,7 @@
 # scale. Upper row contrib_climate, lower row contrib_lag (Bills, 11 Nov 2026,
 # in place of contrib_gap): the species' part of the lag rate, negative where
 # the species narrowed the climate-community lag. Per species a
-# triangle (Holocene-S), a circle (Holocene-C) and a diamond (Anthropocene), each
+# square (Holocene-S), a diamond (Holocene-C) and a circle (Anthropocene), each
 # with its 95% t-interval where the interval excludes zero; other means are
 # small faded symbols.
 source(here::here('R/helpers/config.R'), local = TRUE)

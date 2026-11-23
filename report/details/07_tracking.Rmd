@@ -29,8 +29,8 @@ show_figure('report/figures/supplementary/fig_tracking_transition_ratios_angles.
 ```
 
 **Lake-period values over time.** One column per lake. Each lake-period is a bar from its oldest
-to its youngest sampled century at its value, with its symbol at the middle (circles climate-change
-periods, triangles stability periods), under the C (darker) and S (lighter) period bands. The last
+to its youngest sampled century at its value, with its symbol at the middle (diamonds climate-change
+periods, squares stability periods), under the C (darker) and S (lighter) period bands. The last
 column holds the Anthropocene plot pairs of each park as boxplots, on their own scale, because their
 values are much larger. First figure: climate change rate (calibration SD per century), turnover,
 lag rate, pace and direction effects (CCA distance per century) and fire activity (events per century

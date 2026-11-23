@@ -3,7 +3,7 @@
 # between consecutive centuries, which PLAN.md section 2 replaced because those
 # steps are mostly sampling noise). One column per lake: each lake-period a
 # bar from its oldest to its youngest sampled century at its value, with its
-# symbol at the middle (circle C, triangle S, PLAN.md section 6), under the C
+# symbol at the middle (diamond C, square S, PLAN.md section 6), under the C
 # and S period bands. A last column holds the Anthropocene plot pairs of each
 # park as boxplots, on their own scale. Units are in the captions.
 source(here::here('R/helpers/config.R'), local = TRUE)

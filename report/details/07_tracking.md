@@ -21,7 +21,7 @@ consecutive sampled centuries, which are mostly sampling noise.
 
 **Lake-period values over time.** One column per lake. Each lake-period
 is a bar from its oldest to its youngest sampled century at its value,
-with its symbol at the middle (circles climate-change periods, triangles
+with its symbol at the middle (diamonds climate-change periods, squares
 stability periods), under the C (darker) and S (lighter) period bands.
 The last column holds the Anthropocene plot pairs of each park as
 boxplots, on their own scale, because their values are much larger.

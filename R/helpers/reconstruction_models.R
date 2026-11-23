@@ -48,7 +48,7 @@ reconstruction_residual_plot = function(x, ncol = 3) {
     ggplot2::facet_wrap(~metric,scales='free',ncol=ncol)+
     ggplot2::labs(title='Normal quantile plots',x='Normal quantile',y='Normalized residual')+
     reconstruction_model_theme()
-  park_colors=c(MORA='#294EFF',NOCA='#D94000')
+  park_colors=c(MORA='#1A33BF',NOCA='#A33000')
   by_group=ggplot2::ggplot(x,ggplot2::aes(era,normalized_residual,color=site))+
     ggplot2::geom_hline(yintercept=0,color='grey60')+
     ggplot2::geom_point(alpha=.3,size=1,position=ggplot2::position_jitterdodge(jitter.width=.18,dodge.width=.7,seed=1))+

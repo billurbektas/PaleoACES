@@ -117,7 +117,7 @@ if (!file.exists(file.path(comparison_dir, 'lake_period_responses.csv'))) {
       scale_y_continuous(breaks = 1:3, labels = unname(contrast_labels[rev(names(contrast_labels))]),
         limits = c(.5, 3.5), expand = expansion(0)) +
       scale_color_manual(values = PAPER_SITE_COLORS, guide = 'none') +
-      scale_shape_manual(values = c(two_step = 19, one_step = 21, raw = 24), labels = run_labels, name = NULL) +
+      scale_shape_manual(values = c(two_step = 19, one_step = 21, raw = 22), labels = run_labels, name = NULL) +
       scale_linetype_manual(values = c(two_step = 'solid', one_step = '22', raw = '11'), labels = run_labels,
         name = NULL, guide = guide_legend(override.aes = list(color = 'grey10', linewidth = 1.2))) +
       labs(tag = tag, title = title, x = 'Difference between period types', y = NULL) +
@@ -166,9 +166,9 @@ if (!file.exists(file.path(comparison_dir, 'lake_period_responses.csv'))) {
       scale_y_continuous(breaks = seq_along(terms), labels = unname(term_labels[rev(terms)]),
         limits = c(.5, length(terms) + .5), expand = expansion(0)) +
       scale_color_manual(values = quantity_colors, guide = 'none') +
-      # Main run filled and solid, one-step open and dashed, raw open triangles and
+      # Main run filled and solid, one-step open and dashed, raw open squares and
       # dotted. Same name and labels, so the scales share one legend.
-      scale_shape_manual(values = c(two_step = 19, one_step = 21, raw = 24), labels = run_labels, name = NULL) +
+      scale_shape_manual(values = c(two_step = 19, one_step = 21, raw = 22), labels = run_labels, name = NULL) +
       scale_linetype_manual(values = c(two_step = 'solid', one_step = '22', raw = '11'), labels = run_labels, name = NULL,
         guide = guide_legend(override.aes = list(color = 'grey10', linewidth = 1.2))) +
       labs(tag = tag, title = title, x = 'Effect on response', y = NULL) +

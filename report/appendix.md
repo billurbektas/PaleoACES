@@ -542,14 +542,14 @@ partly come from the records themselves.
 2017) and in the forest records of MORA (Dunwiddie, 1986).** Upper three
 rows: charcoal accumulation rate of each Sunrise Ridge record (grey),
 with its background (dashed) and the fire events that we identified
-(dark red triangles). Lower three rows: number of charcoal fragments in
-each macrofossil sample of Dunwiddie (1986). This number is a
-concentration, because all samples of a core had the same volume, and
-the samples above the 75th percentile of each lake are filled. Each fire
-event of the Sunrise Ridge records is drawn as a faint line through all
-rows. Time runs from 7,000 cal BP to the present, which is the time span
-of the forest records. The correlations in the text are Spearman
-correlations of the charcoal of two records over bins of 500
+(dark red ticks at the top of each row). Lower three rows: number of
+charcoal fragments in each macrofossil sample of Dunwiddie (1986). This
+number is a concentration, because all samples of a core had the same
+volume, and the samples above the 75th percentile of each lake are
+filled. Each fire event of the Sunrise Ridge records is drawn as a faint
+line through all rows. Time runs from 7,000 cal BP to the present, which
+is the time span of the forest records. The correlations in the text are
+Spearman correlations of the charcoal of two records over bins of 500
 years.
 
 # Climate–community space
@@ -1197,7 +1197,7 @@ against its value with the two-step correction of the main analysis
 least-squares line: (A) climate change and (B) its rate, (C) the lag and
 (D) its rate, (E) the pace effect and (F) its rate, (G) the direction
 effect and (H) its rate. Left: quantities between t1 and t2. Right:
-their rates per century. Circles are MORA and triangles NOCA. On the
+their rates per century. Circles are MORA and squares NOCA. On the
 dashed line, a correction changes nothing, and in the shaded quadrants,
 the value changes sign. The numbers in each panel are the Pearson
 correlations (r), across the lake-periods of each park, between each
@@ -1215,14 +1215,14 @@ the Holocene climate.** The differences between the estimated means of
 two period types within each park (Table S16 for the main analysis),
 each with its 95% confidence interval (not adjusted): filled points and
 solid lines with the two-step correction of the main analysis, open
-circles and dashed lines with the one-step correction, and open
-triangles and dotted lines without correction. Upper row of each panel:
-MORA (blue). Lower row: NOCA (orange). (A) Climate change, lag, pace
-effect, and direction effect between t1 and t2. (B) Their rates per
-century. Community turnover is the same in the three analyses and is not
-shown. Climate change is in SD of the legacy plots, and the other
-quantities are in CCA distance (A) or in CCA distance per century (B).
-The dashed vertical line marks zero.
+circles and dashed lines with the one-step correction, and open squares
+and dotted lines without correction. Upper row of each panel: MORA
+(blue). Lower row: NOCA (orange). (A) Climate change, lag, pace effect,
+and direction effect between t1 and t2. (B) Their rates per century.
+Community turnover is the same in the three analyses and is not shown.
+Climate change is in SD of the legacy plots, and the other quantities
+are in CCA distance (A) or in CCA distance per century (B). The dashed
+vertical line marks zero.
 
 **Lake-periods.** The three analyses had the same 10 climate periods and
 the same 24 lake-periods. With the one-step correction, the lag had the
@@ -1265,7 +1265,7 @@ with the three versions of the Holocene climate.** Coefficients of Fig.
 with park, climate change, and fire activity as explanatory variables,
 each with its 95% confidence interval: filled points and solid lines
 with the two-step correction of the main analysis, open circles and
-dashed lines with the one-step correction, and open triangles and dotted
+dashed lines with the one-step correction, and open squares and dotted
 lines without correction. (A) The lag, the pace effect, and the
 direction effect not divided by time, with the climate change between t1
 and t2. (B) The same quantities per century, with the climate change

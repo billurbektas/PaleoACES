@@ -53,7 +53,7 @@ for the report.
 | R/pipeline/16_contributions.R | pipeline | Species contributions (PLAN.md section 5, Step 6): which species led the | 143 |
 | R/figures/supp_age_depth_models.R | figure | Figures S4 (four Bacon age-depth models) and S5 (Panther Potholes 210Pb | 109 |
 | R/figures/supp_cca_scaling.R | figure | supp_cca_scaling.R - one CCA drawn at scaling 1 and scaling 2 | 108 |
-| R/figures/supp_charcoal_dunwiddie_walsh.R | figure | Fig. S13 (appendix figure A4 until the README was reordered; Bills, 11 Nov 2026): do the charcoal peaks of the Walsh | 108 |
+| R/figures/supp_charcoal_dunwiddie_walsh.R | figure | Fig. S13 (appendix figure A4 until the README was reordered; Bills, 11 Nov 2026): do the charcoal peaks of the Walsh | 109 |
 | R/figures/supp_climate_correlations.R | figure | supp_climate_correlations.R | 628 |
 | R/figures/supp_climate_products.R | figure | Figs. S6 and S7 (Appendix S2), from the outputs of R/pipeline/07_climate_products.R. | 80 |
 | R/figures/supp_climate_windows.R | figure | Compare the actual plot-specific survey windows with V2.1 1979-2021. | 174 |
@@ -63,7 +63,7 @@ for the report.
 | R/figures/supp_tracking_transitions.R | figure | Appendix figures of the lake-period values over time (redrawn on lake-periods | 86 |
 | R/figures/main_fig2_study_area.R | figure | Figure 2 (Bills, 11 Nov 2026; Fig. S1 until then): the study area. (A) | 214 |
 | R/figures/main_fig3_climate_eras_fire.R | figure | main_fig3_climate_eras_fire.R | 712 |
-| R/figures/main_fig4_cca_trajectories.R | figure | Figure 4: A, species and climate biplot; B, observed and predicted trajectories | 227 |
+| R/figures/main_fig4_cca_trajectories.R | figure | Figure 4: A, species and climate biplot; B, observed and predicted trajectories | 308 |
 | R/figures/main_fig5_era_contrasts.R | figure | Figure 5 (PLAN.md section 6; redrawn by Bills, 10 Nov 2026): fitted means | 35 |
 | R/figures/main_fig6_lag_pace_direction.R | figure | Figure 6 (PLAN.md section 6; redrawn by Bills, 10 Nov 2026): the pace and | 43 |
 | R/figures/main_fig7_climate_fire_associations.R | figure | Figure 7: climate and fire associations as model slopes (Bills, 9 Nov 2026). | 71 |
@@ -96,7 +96,7 @@ Every file under `output/` is declared in `R/helpers/paths.R`; a script
 cannot write an undeclared output. Folders hold one file per table, in
 the folder of the step that writes it.
 
-**160 output files** (excluding the climate and age-draw cache).
+**161 output files** (excluding the climate and age-draw cache).
 
 | Step | File | Description | Size (kB) |
 |:---|:---|:---|---:|
@@ -220,7 +220,7 @@ the folder of the step that writes it.
 | 14_era_models | era_comparison/era_model_summary.csv | Era-comparison GLS fits, means and contrasts per response | 2 |
 | 14_era_models | era_comparison/era_predictions.csv | Era-comparison GLS fits, means and contrasts per response | 597 |
 | 14_era_models | era_comparison/model_results.txt | Era-comparison GLS fits, means and contrasts per response | 19 |
-| 14_era_models | era_comparison/primary_fits.rds | Era-comparison GLS fits, means and contrasts per response | 674 |
+| 14_era_models | era_comparison/primary_fits.rds | Era-comparison GLS fits, means and contrasts per response | 676 |
 | 15_predictor_models | community_predictor_models/model_coefficients.csv | Within-era predictor GLS fits | 6 |
 | 15_predictor_models | community_predictor_models/model_exclusions.csv | Within-era predictor GLS fits | 45 |
 | 15_predictor_models | community_predictor_models/model_performance.csv | Within-era predictor GLS fits | 2 |
@@ -240,6 +240,7 @@ the folder of the step that writes it.
 | 16_contributions | species_contribution_models/species_means.csv | Species contribution means, contrasts and NOCA burned means | 21 |
 | figures | anthropocene_climate_rates.csv | Tables behind the figures (centroids, annotations) | 0 |
 | figures | cca_trajectory_anthropocene_centroids.csv | Tables behind the figures (centroids, annotations) | 0 |
+| figures | cca_trajectory_arrowless.csv | Tables behind the figures (centroids, annotations) | 0 |
 | figures | cca_trajectory_holocene_spans.csv | Tables behind the figures (centroids, annotations) | 0 |
 | figures | cca_trajectory_period_centroids.csv | Tables behind the figures (centroids, annotations) | 1 |
 | figures | charcoal_dunwiddie_walsh_correlations.csv | Tables behind the figures (centroids, annotations) | 1 |
