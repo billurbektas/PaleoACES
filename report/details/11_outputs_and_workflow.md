@@ -65,7 +65,7 @@ for the report.
 | R/figures/main_fig2_study_area.R | figure | Figure 2 (Bills, 11 Nov 2026; Fig. S1 until then): the study area. (A) | 214 |
 | R/figures/main_fig3_climate_eras_fire.R | figure | main_fig3_climate_eras_fire.R | 719 |
 | R/figures/main_fig4_cca_trajectories.R | figure | Figure 4: A, species and climate biplot; B, observed and predicted trajectories | 363 |
-| R/figures/main_fig5_era_contrasts.R | figure | Figure 5 and Fig. S16 (PLAN.md section 6; Bills, 23 Nov 2026): fitted means | 81 |
+| R/figures/main_fig5_era_contrasts.R | figure | Figure 5 and Fig. S16 (PLAN.md section 6; Bills, 23 Nov 2026): fitted means | 83 |
 | R/figures/main_fig6_climate_fire_associations.R | figure | Figure 6 and Fig. S18: climate and fire associations as model slopes (Bills, | 75 |
 | R/figures/main_fig7_species.R | figure | Figure 7 (PLAN.md section 6): species contributions in both eras. Species as | 161 |
 | R/worked_examples.R | worked examples | Worked examples: step-by-step illustrations of four methods, drawn from the | 412 |

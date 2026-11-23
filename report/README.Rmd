@@ -1097,7 +1097,8 @@ between the two ends (M at t2 minus M at t1); (D) the pace contribution and (E) 
 lag. Each contribution is the lag at the end of the period minus the lag
 the community would have had at the climate-predicted pace (D, keeping its own direction) or in the
 climate-predicted direction (E, keeping its own distance). A positive contribution means that the community's own
-pace or direction widened the lag, a negative one that it narrowed the lag. D and E share one y scale. A and B are
+pace or direction widened the lag, a negative one that it narrowed the lag. C, D and E share one y scale, because all three are a
+change in mismatch in CCA distance per century over the same interval. A and B are
 on log axes, where equal distances are equal folds, and the arrow gives the fold between the Anthropocene and the
 Holocene climate-change means. `r below = means[means$response %in% c('climate_rate', 'turnover_rate') & means$conf_low <= 0, ]; if (nrow(below)) paste0(if (nrow(below) > 1) 'The intervals of ' else 'The interval of ', paste(sprintf('the %s at %s in %s', c('Holocene-S' = 'Holocene stability periods', 'Holocene-C' = 'Holocene climate-change periods', Anthropocene = 'Anthropocene')[as.character(below$period_type)], below$site, c(climate_rate = 'A', turnover_rate = 'B')[below$response]), collapse = ' and '), if (nrow(below) > 1) ' reach' else ' reaches', ' below zero, which a log axis cannot show. Such an interval runs to the bottom of the panel and ends in an arrow.') else ''` C, D and E are on linear axes without folds. Their connectors
 show the three differences between period types within each park: on the lower level, the Holocene stability against

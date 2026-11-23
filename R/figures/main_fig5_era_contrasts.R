@@ -34,9 +34,11 @@ total_titles = c(climate_change = 'Climate change\n(not divided by time)',
   pace_effect_total = paste0('Pace contribution (not divided by time)\n', sign_words),
   direction_effect_total = paste0('Direction contribution (not divided by time)\n', sign_words))
 
-# The pace and direction panels of a figure share one y scale, from the lowest
-# interval end to the highest connector star, so the two compare directly
-# (Bills, 11 Nov 2026, when their totals and rates shared one scale in Figure 6).
+# Panels in `shared` have one y scale, from the lowest interval end to the
+# highest connector star, so they compare directly. In Figure 5 the lag, pace
+# and direction rates share it, all three a change in mismatch in CCA distance
+# per century over the same interval (Bills, 23 Nov 2026). In Fig. S16 the pace
+# and direction totals share one (Bills, 11 Nov 2026, then in Figure 6).
 y_range = function(data, responses) {
   y = range(dplyr::filter(data$means, response %in% responses)[c('conf_low', 'conf_high')],
     dplyr::filter(data$connectors, response %in% responses)$y)
@@ -50,13 +52,13 @@ y_range = function(data, responses) {
 # page. The legend sits below the figure (Bills, 23 Nov 2026).
 # Fig. S16 is 2 inches taller, so that its longer one-line titles fit the panels.
 FIG5_WIDTH = 35; FIG5_HEIGHT = 21
-era_figure = function(titles, log_responses, pace_direction) {
+era_figure = function(titles, log_responses, shared) {
   data = era_means_data(titles, log_responses = log_responses)
-  y_pd = y_range(data, pace_direction)
+  y_shared = y_range(data, shared)
   panel = function(r, tag) {
     p = era_means_panel(r, tag, data, k = 1.2, kl = 1.65, kt = 1.4, gap = .05, cap = .05,
       spread = 1.4, park_gap = 1.35, xmin = .45, xmax = 3.32)
-    if (r %in% pace_direction) p + coord_cartesian(ylim = y_pd) else p
+    if (r %in% shared) p + coord_cartesian(ylim = y_shared) else p
   }
   r = names(titles)
   # A and B centred over C to E (Bills, 23 Nov 2026). Each row is laid out on
@@ -69,7 +71,7 @@ era_figure = function(titles, log_responses, pace_direction) {
     theme(legend.position = 'bottom', legend.direction = 'horizontal',
       axis.text.x = element_text(size = 38, color = 'grey10'), axis.text.y = element_text(size = 30))
 }
-rates = era_figure(rate_titles, c('climate_rate', 'turnover_rate'), c('pace_effect', 'direction_effect'))
+rates = era_figure(rate_titles, c('climate_rate', 'turnover_rate'), c('lag_rate', 'pace_effect', 'direction_effect'))
 totals = era_figure(total_titles, character(), c('pace_effect_total', 'direction_effect_total'))
 if (render_figures) {
   for (ext in c('pdf', 'png'))
