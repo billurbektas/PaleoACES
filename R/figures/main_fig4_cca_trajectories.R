@@ -246,14 +246,17 @@ trim_steps = function(steps, mm, size, full_cm) {
 # "Anthropocene" (Bills, 23 Nov 2026; tags at both ends, H. start, H. end,
 # A. legacy and A. resurvey, earlier that day). Tags take the colour of their
 # line, the predicted ones also in italics.
-# Two tags start on the side Bills named (23 Nov 2026): the predicted NOCA
-# Holocene above its square, the observed NOCA Anthropocene below its circles.
+# Three tags start on the side Bills named (23 Nov 2026): the predicted NOCA
+# Holocene above its square, the observed NOCA Anthropocene below its circles,
+# the predicted MORA Anthropocene raised to the upper right of its circle.
 # The latter hangs from the legacy circle, because the resurvey circle has the
 # legacy circle just below it. Offsets in mm on the page, about a symbol and
 # half a label.
 TAG_SIDE = tribble(~group, ~at_start, ~dx_mm, ~dy_mm,
   'NOCA Holocene predicted', FALSE, 0, 7.5,
-  'NOCA Anthropocene observed', TRUE, -4, -7.5)
+  'NOCA Anthropocene observed', TRUE, -4, -7.5,
+  # Raised, clear of the NOCA Holocene square below it (Bills, 23 Nov 2026).
+  'MORA Anthropocene predicted', FALSE, 18, 5)
 labels_b = shown |> left_join(TAG_SIDE, by = 'group') |> group_by(group) |> arrange(order, .by_group = TRUE) |>
   mutate(tag_at = if_else(coalesce(at_start, FALSE), min(order), max(order)),
     label = if_else(order == tag_at, era, '')) |> ungroup() |>

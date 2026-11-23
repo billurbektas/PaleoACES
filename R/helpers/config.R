@@ -2,6 +2,17 @@
 # Output and figure locations: out() and fig() from R/helpers/paths.R.
 source(here::here('R/helpers/paths.R'), local = TRUE)
 CCA_COUNT_THRESHOLD = 20L
+# Abies amabilis and A. grandis cannot be told apart by their needles, so the
+# Holocene records cannot separate them. Prichard et al. (2009) classified them
+# to genus at Panther Potholes ("Abies undiff.", the Abies needles that are not
+# A. lasiocarpa), and Dunwiddie's A. amabilis at MORA can hold A. grandis. Both
+# eras and both parks therefore use one aggregate of the two species (Bills,
+# 23 Nov 2026; until then the NOCA "Abies undiff." needles were dropped and the
+# two species were separate taxa in the surveys).
+ABIES_AGGREGATE = "Abies amabilis/grandis"
+# Taxa retained by the CCA species selection. Checked where the fixed reference
+# is used; 14 before the Abies aggregate.
+CCA_RETAINED_TAXA = 13L
 # Active CCA constraints (decision 2026-11-09, report/details/10_decisions.md):
 # spring temperature and summer precipitation, one temperature and one
 # precipitation variable. The former four (MSpT, MWT, SP, WP) had variance
@@ -132,7 +143,12 @@ trace_century_cal_bp = function(age_cal_bp) floor((age_cal_bp + 50) / 100) * 100
 # unchanged, any edit to the code changes it. Used by the Bacon provenance test.
 code_fingerprint = function(path) {
   lines = readLines(path, warn = FALSE)
+  # sys.source(), which R/run_all.R uses, turns parse data off; the comment
+  # positions need it.
+  old = options(keep.parse.data = TRUE)
+  on.exit(options(old), add = TRUE)
   comments = utils::getParseData(parse(path, keep.source = TRUE))
+  if (is.null(comments)) stop('No parse data for ', path)
   comments = comments[comments$token == 'COMMENT', ]
   for (i in seq_len(nrow(comments)))
     lines[comments$line1[i]] = substr(lines[comments$line1[i]], 1, comments$col1[i] - 1)

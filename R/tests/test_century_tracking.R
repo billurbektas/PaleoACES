@@ -71,7 +71,7 @@ for(draw in c(NA_integer_,1L,257L,800L,1000L)) {
     close(as.vector(as.matrix(rows[c('contribution_CCA1','contribution_CCA2')])),as.vector(expected))
   }
   sum_vectors=rowsum(as.matrix(species[c('contribution_CCA1','contribution_CCA2')]),
-    rep(seq_len(nrow(x$calculations)),each=14),reorder=FALSE)
+    rep(seq_len(nrow(x$calculations)),each=length(b$reference$retained_species)),reorder=FALSE)
   close(as.vector(sum_vectors),as.vector(as.matrix(x$calculations[c('delta_observed_CCA1','delta_observed_CCA2')])))
   close(species$contribution_rate,species$parallel_contribution*100/species$vegetation_dt_years)
   for(i in seq_len(nrow(x$fire$core))) {

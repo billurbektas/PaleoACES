@@ -186,6 +186,40 @@ At MORA *A. procera* is real and abundant — **68 past / 50 present survey plot
 taxon. At NOCA it is 3 resurvey plots (1402–1564 m), absent from the legacy, and
 outside the species' main range north of Snoqualmie Pass.
 
+### *Abies amabilis* + *Abies grandis* → *Abies amabilis/grandis* (both sites, both eras; 2026-11-23)
+
+The needles of the two species cannot be told apart. Prichard et al. (2009) say so for
+the Panther Potholes record: *A. amabilis* and *A. grandis* "are indistinguishable by
+needle morphology and were classified to genus", while *A. lasiocarpa* was identified to
+species, and their Results speak of "*Abies* spp. other than *A. lasiocarpa*". In the
+Neotoma dataset (52207) this class is "*Abies* undiff." (needles, needle bases and needle
+tips). It was dropped until 23 Nov 2026, because the NOCA reader kept only taxa named to
+species, so the NOCA Holocene record had no *A. amabilis* or *A. grandis* at all, although
+both grow in the NOCA plots. By the same argument, Dunwiddie's *A. amabilis* at MORA can
+hold *A. grandis*.
+
+Evidence before the change (presence counts):
+
+| | MORA legacy | MORA resurvey | MORA Holocene | NOCA legacy | NOCA resurvey | NOCA Holocene |
+|---|---|---|---|---|---|---|
+| *Abies amabilis* | 290 | 288 | 119 samples | 113 | 128 | 0 |
+| *Abies grandis* | 8 | 7 | 0 | 11 | 20 | 0 |
+| *Abies* undiff. (Prichard) | | | | | | 134 of 870 samples |
+
+Both species were recorded in 2 and 4 MORA plots and in 1 and 10 NOCA plots (legacy,
+resurvey). At Panther Potholes the *Abies* undiff. needles average 1.7 fragments per
+100 ml of sediment over all samples, against 15.5 for *A. lasiocarpa*. They are rare
+before 8,500 cal BP and most common between 6,000 and 2,000 cal BP.
+
+Decision (Bills, 23 Nov 2026): one aggregate, *Abies amabilis/grandis*, in both eras and
+both parks. The survey records of both species are renamed to it here
+(`R/pipeline/10_species_occurrences.R`), and the MORA *A. amabilis* and the NOCA
+*Abies* undiff. records are mapped to it where the macrofossils are read
+(`R/helpers/holocene_reconstruction.R`). The name is defined once, as `ABIES_AGGREGATE`
+in `R/helpers/config.R`. *A. procera* (MORA) stays separate, because Dunwiddie named it
+and noble fir needles are distinctive. The two five-needle pines (*Pinus monticola*,
+*P. albicaulis*) stay separate, although both records report only *P. monticola*.
+
 ### Unsupported identifications
 
 Records that do not resolve to a supported taxon are removed in the NOCA cleaner

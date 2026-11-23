@@ -12,7 +12,7 @@ consolidation](05_species_occurrence_consolidation.md).
 
 | species | MORA_paleo | MORA_past | MORA_present | NOCA_paleo | NOCA_past | NOCA_present | retained |
 |:---|---:|---:|---:|---:|---:|---:|:---|
-| Abies amabilis | 119 | 288 | 286 | 0 | 113 | 128 | TRUE |
+| Abies amabilis/grandis | 119 | 294 | 289 | 134 | 123 | 138 | TRUE |
 | Abies lasiocarpa | 94 | 34 | 31 | 473 | 63 | 76 | TRUE |
 | Abies procera | 43 | 68 | 50 | 0 | 0 | 0 | TRUE |
 | Callitropsis nootkatensis | 78 | 105 | 101 | 38 | 37 | 44 | TRUE |
@@ -22,7 +22,6 @@ consolidation](05_species_occurrence_consolidation.md).
 | Pseudotsuga menziesii | 40 | 181 | 146 | 597 | 157 | 147 | TRUE |
 | Tsuga heterophylla | 54 | 279 | 281 | 180 | 88 | 121 | TRUE |
 | Tsuga mertensiana | 110 | 87 | 75 | 39 | 89 | 76 | TRUE |
-| Abies grandis | 0 | 8 | 7 | 0 | 11 | 20 | TRUE |
 | Alnus rubra | 0 | 15 | 15 | 0 | 11 | 18 | FALSE |
 | Picea sitchensis | 0 | 2 | 0 | 0 | 0 | 0 | FALSE |
 | Populus trichocarpa | 0 | 3 | 3 | 0 | 8 | 3 | FALSE |
@@ -47,8 +46,8 @@ through time.**
 
 | Species | MORA occupancy | NOCA occupancy | Separation | Max SD within a pond | Ponds with variation |
 |:---|---:|---:|---:|---:|---:|
-| Abies amabilis | 1.00 | 0.00 | 1.00 | 0.00 | 0 |
 | Tsuga mertensiana | 0.92 | 0.04 | 0.88 | 0.39 | 2 |
+| Abies amabilis/grandis | 1.00 | 0.15 | 0.85 | 0.20 | 1 |
 | Callitropsis nootkatensis | 0.66 | 0.04 | 0.61 | 0.48 | 3 |
 | Abies procera | 0.36 | 0.00 | 0.36 | 0.49 | 2 |
 | Pseudotsuga menziesii | 0.34 | 0.69 | 0.35 | 0.49 | 4 |
@@ -58,7 +57,6 @@ through time.**
 | Pinus monticola | 0.76 | 0.58 | 0.18 | 0.30 | 2 |
 | Pinus contorta | 0.26 | 0.34 | 0.08 | 0.50 | 3 |
 | Picea engelmannii | 0.04 | 0.01 | 0.03 | 0.32 | 1 |
-| Abies grandis | 0.00 | 0.00 | 0.00 | 0.00 | 0 |
 | Pinus albicaulis | 0.00 | 0.00 | 0.00 | 0.00 | 0 |
 | Pinus ponderosa | 0.00 | 0.00 | 0.00 | 0.00 | 0 |
 

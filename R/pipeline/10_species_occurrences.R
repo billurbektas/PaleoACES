@@ -187,7 +187,19 @@ RENAMES = tribble(
   # and 43 Holocene macrofossil samples - so lumping it there would destroy a
   # genuine taxon. At NOCA it is 3 resurvey plots (1402-1564 m), absent from the
   # legacy, and outside the species' main range north of Snoqualmie Pass.
-  "NOCA",  NA,          "Abies procera",       "Abies lasiocarpa",     "NOCA ONLY - A. procera is genuine at MORA (68/50 plots, 43 paleo samples)"
+  "NOCA",  NA,          "Abies procera",       "Abies lasiocarpa",     "NOCA ONLY - A. procera is genuine at MORA (68/50 plots, 43 paleo samples)",
+
+  # --- Abies amabilis and A. grandis: one aggregate in both eras ------------
+  # Their needles cannot be told apart, so the Holocene records cannot separate
+  # them: Prichard et al. (2009) classified them to genus at Panther Potholes
+  # ("Abies undiff.", every Abies needle that is not A. lasiocarpa), and
+  # Dunwiddie's A. amabilis at MORA can hold A. grandis. The survey plots are
+  # aggregated the same way, so both eras share one taxon (Bills, 23 Nov 2026).
+  # The two paleo records are mapped in R/helpers/holocene_reconstruction.R.
+  "MORA",  NA,          "Abies amabilis",      ABIES_AGGREGATE,        "needles of the two cannot be told apart; one aggregate in both eras",
+  "MORA",  NA,          "Abies grandis",       ABIES_AGGREGATE,        "needles of the two cannot be told apart; one aggregate in both eras",
+  "NOCA",  NA,          "Abies amabilis",      ABIES_AGGREGATE,        "needles of the two cannot be told apart; one aggregate in both eras",
+  "NOCA",  NA,          "Abies grandis",       ABIES_AGGREGATE,        "needles of the two cannot be told apart; one aggregate in both eras"
 )
 
 # -----------------------------------------------------------------------------

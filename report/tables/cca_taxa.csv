@@ -1,5 +1,5 @@
 species,MORA_paleo,MORA_past,MORA_present,NOCA_paleo,NOCA_past,NOCA_present,retained
-Abies amabilis,119,288,286,0,113,128,TRUE
+Abies amabilis/grandis,119,294,289,134,123,138,TRUE
 Abies lasiocarpa,94,34,31,473,63,76,TRUE
 Abies procera,43,68,50,0,0,0,TRUE
 Callitropsis nootkatensis,78,105,101,38,37,44,TRUE
@@ -9,7 +9,6 @@ Pinus monticola,90,42,14,504,28,25,TRUE
 Pseudotsuga menziesii,40,181,146,597,157,147,TRUE
 Tsuga heterophylla,54,279,281,180,88,121,TRUE
 Tsuga mertensiana,110,87,75,39,89,76,TRUE
-Abies grandis,0,8,7,0,11,20,TRUE
 Alnus rubra,0,15,15,0,11,18,FALSE
 Picea sitchensis,0,2,0,0,0,0,FALSE
 Populus trichocarpa,0,3,3,0,8,3,FALSE

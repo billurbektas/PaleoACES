@@ -32,28 +32,28 @@ Back to the [report](../../README.md#climatecommunity-space). Script:
     Call: cca(formula = species_past_final ~ MSpT + SP, data = env_past_final)
 
                   Inertia Proportion Rank
-    Total          3.4652     1.0000
-    Constrained    0.4452     0.1285    2
-    Unconstrained  3.0200     0.8715   13
+    Total          3.0970     1.0000
+    Constrained    0.4281     0.1382    2
+    Unconstrained  2.6688     0.8618   12
 
     Inertia is scaled Chi-square
 
     Eigenvalues for constrained axes:
        CCA1    CCA2
-    0.29347 0.15174
+    0.27949 0.14862
 
     Eigenvalues for unconstrained axes:
        CA1    CA2    CA3    CA4    CA5    CA6    CA7    CA8    CA9   CA10   CA11
-    0.4920 0.3791 0.3572 0.3393 0.2740 0.2409 0.2118 0.1811 0.1450 0.1277 0.1203
-      CA12   CA13
-    0.1044 0.0471
+    0.4862 0.3790 0.3403 0.2784 0.2429 0.2119 0.1810 0.1457 0.1280 0.1204 0.1039
+      CA12
+    0.0511
 
 **Climate variables: marginal tests, inflation and biplot scores.**
 
 | Variable | Label | Marginal inertia | Unique % of constrained | Pseudo-F | p (unrestricted) | p (within parks) | VIF | CCA1 | CCA2 |
 |:---|:---|---:|---:|---:|---:|---:|---:|---:|---:|
-| MSpT | Spring temperature | 0.261 | 58.526 | 51.941 | 0 | 0 | 1.077 | 0.527 | -0.090 |
-| SP | Summer precipitation | 0.159 | 35.769 | 31.744 | 0 | 0 | 1.077 | -0.261 | -0.341 |
+| MSpT | Spring temperature | 0.254 | 59.438 | 57.397 | 0 | 0 | 1.077 | 0.520 | -0.070 |
+| SP | Summer precipitation | 0.153 | 35.724 | 34.498 | 0 | 0 | 1.077 | -0.231 | -0.347 |
 
 <sub>Table file:
 [cca_climate_contributions.csv](../tables/cca_climate_contributions.csv)</sub>
@@ -62,20 +62,19 @@ Back to the [report](../../README.md#climatecommunity-space). Script:
 
 | Species | Legacy plots | % of legacy plots | % of constrained inertia | CCA1 | CCA2 |
 |:---|---:|---:|---:|---:|---:|
-| Abies lasiocarpa | 92 | 15.207 | 13.709 | -1.457 | 2.131 |
-| Callitropsis nootkatensis | 141 | 23.306 | 12.614 | -1.474 | -0.994 |
-| Tsuga mertensiana | 176 | 29.091 | 12.049 | -1.433 | -0.032 |
-| Pinus albicaulis | 18 | 2.975 | 11.230 | -2.529 | 4.883 |
-| Thuja plicata | 204 | 33.719 | 10.148 | 1.203 | -0.293 |
-| Pseudotsuga menziesii | 332 | 54.876 | 10.079 | 0.910 | 0.401 |
-| Pinus ponderosa | 22 | 3.636 | 10.012 | 2.888 | 3.206 |
-| Tsuga heterophylla | 367 | 60.661 | 5.426 | 0.435 | -0.701 |
-| Abies amabilis | 400 | 66.116 | 3.623 | -0.370 | -0.511 |
-| Pinus contorta | 33 | 5.455 | 3.229 | 0.763 | 2.134 |
-| Picea engelmannii | 36 | 5.950 | 2.962 | -0.582 | 2.030 |
-| Abies grandis | 19 | 3.140 | 2.853 | 1.992 | 1.020 |
-| Abies procera | 68 | 11.240 | 1.041 | -0.458 | -0.695 |
-| Pinus monticola | 70 | 11.570 | 1.024 | 0.082 | 0.914 |
+| Abies lasiocarpa | 92 | 15.207 | 14.259 | -1.567 | 2.050 |
+| Callitropsis nootkatensis | 141 | 23.306 | 13.097 | -1.470 | -1.104 |
+| Tsuga mertensiana | 176 | 29.091 | 12.510 | -1.463 | -0.131 |
+| Pinus albicaulis | 18 | 2.975 | 11.684 | -2.764 | 4.750 |
+| Thuja plicata | 204 | 33.719 | 10.594 | 1.244 | -0.208 |
+| Pseudotsuga menziesii | 332 | 54.876 | 10.553 | 0.918 | 0.471 |
+| Pinus ponderosa | 22 | 3.636 | 10.443 | 2.840 | 3.440 |
+| Tsuga heterophylla | 367 | 60.661 | 5.646 | 0.473 | -0.674 |
+| Pinus contorta | 33 | 5.455 | 3.372 | 0.705 | 2.209 |
+| Picea engelmannii | 36 | 5.950 | 3.085 | -0.667 | 2.010 |
+| Abies amabilis/grandis | 416 | 68.760 | 2.610 | -0.262 | -0.477 |
+| Abies procera | 68 | 11.240 | 1.075 | -0.441 | -0.731 |
+| Pinus monticola | 70 | 11.570 | 1.072 | 0.053 | 0.931 |
 
 <sub>Table file:
 [cca_species_contributions.csv](../tables/cca_species_contributions.csv)</sub>

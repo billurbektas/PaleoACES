@@ -70,7 +70,8 @@ if (!exists("cca_suffix"))    cca_suffix    = ""
 # samples are projected onto. (Pinus albicaulis is NOT among them; it survives at
 # 20. An earlier archived plan listed it as a fourth species gained at 10,
 # which was wrong.) The 2026 NOCA tree correction raised Abies grandis from 19
-# to 22 NOCA-present plots, so it now legitimately survives threshold 20.
+# to 22 NOCA-present plots, so it survived threshold 20 on its own. Since
+# 23 Nov 2026 it is part of the Abies amabilis/grandis aggregate (config.R).
 #
 # Historical threshold comparison: constrained inertia rose from 13.4% to 16.3%.
 # These are historical diagnostics, not the current fit's summary. That is NOT

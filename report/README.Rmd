@@ -221,6 +221,13 @@ it was recorded as an adult tree or as a seedling. The dashed red line shows the
 `r cca_value('count_threshold')` plots or samples. We retained the species that reached this threshold
 in at least one park and period, which gave the `r cca_value('retained_species')` species of the CCA.
 
+**The *Abies amabilis/grandis* aggregate.** The needles of *Abies amabilis* and *A. grandis* cannot be told
+apart, so the macrofossil records cannot separate the two species. In the Panther Potholes record, Prichard et
+al. (2009) classified them to genus (*Abies* undifferentiated, the *Abies* needles other than *A. lasiocarpa*),
+and the *A. amabilis* of the MORA records can hold *A. grandis*. We therefore treated the two species as one
+taxon, *Abies amabilis/grandis*, in both eras and both parks, and aggregated the survey plots in the same way.
+`r ab = read_output('occ_consolidated.csv'); ab = ab[ab$occurrence == 1 & ab$species == 'Abies amabilis/grandis', ]; np = function(s, p) length(unique(ab$plot_id[ab$site == s & ab$period == p])); paste0('The aggregate occurs in ', np('NOCA', 'paleo'), ' Panther Potholes samples and ', np('MORA', 'paleo'), ' MORA samples, and in ', np('MORA', 'past'), ' and ', np('MORA', 'present'), ' MORA plots and ', np('NOCA', 'past'), ' and ', np('NOCA', 'present'), ' NOCA plots in the legacy surveys and the resurveys.')`
+
 <!-- readme-only -->
 
 `r details_link('05_species_selection', 'Species-selection details')` (consolidation rules,

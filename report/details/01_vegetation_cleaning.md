@@ -298,8 +298,8 @@ dynamics between surveys.**
 |:-------------|------:|-----------------:|-----:|
 | MORA         |  2490 |              331 |   23 |
 | NOCA         |  1775 |              305 |   31 |
-| paleo        |  9850 |              989 |   12 |
-| consolidated | 13950 |             1625 |   22 |
+| paleo        | 10720 |              989 |   12 |
+| consolidated | 14803 |             1625 |   21 |
 
 <sub>Table file:
 [cleaning_summary.csv](../tables/cleaning_summary.csv)</sub>

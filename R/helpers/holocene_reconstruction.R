@@ -10,7 +10,9 @@ reconstruction_read_original_samples = function() {
       source = 'DunwiddieMacrofossils.xlsx:MacrofossilData')
   # Same within-sample harmonization as 06_paleo_samples.R. No merging
   # across depths or averaging raw percentages across botanical categories.
-  aliases = c('Abies Amabilis' = 'Abies amabilis',
+  # A. amabilis needles cannot be told from A. grandis needles: the aggregate
+  # (ABIES_AGGREGATE in config.R), as in 10_species_occurrences.R.
+  aliases = c('Abies Amabilis' = ABIES_AGGREGATE,
     'Abies Lasiocarpa' = 'Abies lasiocarpa', 'Abies Procera' = 'Abies procera',
     'Pinus Contorta Fascilcles' = 'Pinus contorta',
     'Pinus Contorta Fascicles' = 'Pinus contorta',
@@ -48,7 +50,9 @@ reconstruction_read_original_samples = function() {
     source_sample_id = source_ids, depth_cm = as.numeric(depth[1, ]),
     sample_id = paste0('PantherPotholes:', source_ids),
     source = 'Neotoma dataset52207_site13042.csv')
-  noca_aliases = c('Abies lasiocarpa' = 'Abies lasiocarpa',
+  # Prichard et al. (2009) classified A. amabilis and A. grandis to genus
+  # ("Abies undiff.", every Abies needle that is not A. lasiocarpa): the aggregate.
+  noca_aliases = c('Abies lasiocarpa' = 'Abies lasiocarpa', 'Abies undiff.' = ABIES_AGGREGATE,
     'Cupressus nootkatensis' = 'Callitropsis nootkatensis',
     'Picea engelmannii' = 'Picea engelmannii', 'Pinus contorta' = 'Pinus contorta',
     'Pinus monticola' = 'Pinus monticola', 'Pseudotsuga menziesii' = 'Pseudotsuga menziesii',
@@ -78,8 +82,8 @@ reconstruction_read_original_samples = function() {
 reconstruction_project_samples = function(original, reference) {
   if (!identical(reference$scaling, 'sites') || !identical(reference$hill, FALSE) ||
       !identical(reference$axes, 1:2) || nrow(reference$legacy_species) != sum(ANTHROPOCENE_PAIRS) ||
-      length(reference$retained_species) != 14L)
-    stop('Expected the fixed 605-plot, 14-taxon CCA1–CCA2 calibration')
+      length(reference$retained_species) != CCA_RETAINED_TAXA)
+    stop('Expected the fixed 605-plot CCA1–CCA2 calibration with ', CCA_RETAINED_TAXA, ' taxa')
   samples = original$samples
   taxa = reference$retained_species
   x = matrix(0, nrow(samples), length(taxa), dimnames = list(samples$sample_id, taxa))
