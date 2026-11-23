@@ -961,25 +961,24 @@ pairs). Observed positions are filled symbols in the dark park colour,
 predicted positions open symbols in the light park colour. The symbol
 gives the period type: diamonds for Holocene climate-change periods,
 squares for Holocene stability periods and circles for the Anthropocene.
-Each line is tagged at both ends, H. start and H. end for the first and
-last Holocene period and A. legacy and A. resurvey for the two surveys,
-with the tags of predicted lines in italics. The two ends of the
-observed MORA Anthropocene and the predicted NOCA Holocene lie so close
-that their symbols overlap and no line is drawn. The MORA arrows run
-from C3 to S5 (6850 to 1350 cal BP), and the first MORA period rests on
-8 samples in 8 lake-centuries. The NOCA arrows run from C1 to S5 (9650
-to 1350 cal BP). (C, D) The full Holocene sequence of period centroids
-at MORA and NOCA, observed and predicted, each period named at its
-observed centroid (C, climate-change period, S, stability period) and
-drawn with the symbol of its period type. The steps of the predicted
-NOCA Holocene sequence are short, and its centroids are joined by plain
-lines without arrowheads. Where two symbols lie close, the arrowhead is
-drawn smaller, and where two symbols all but touch, no line is drawn
-between them. Each centroid averages the sampled centuries of each lake
-within the period, with the lakes weighted equally. Axes orthogonally
-rotated (varimax, -23.5 degrees) for display, so that axis 1 follows
-spring temperature and axis 2 summer precipitation. All metrics are
-rotation-invariant. The unrotated biplot is Fig. S14.
+Each line is tagged with its era at its arrowhead end, the tags of
+predicted lines in italics. The two ends of the observed MORA
+Anthropocene and the predicted NOCA Holocene lie so close that their
+symbols overlap and no line is drawn. The MORA arrows run from C3 to S5
+(6850 to 1350 cal BP), and the first MORA period rests on 8 samples in 8
+lake-centuries. The NOCA arrows run from C1 to S5 (9650 to 1350 cal BP).
+(C, D) The full Holocene sequence of period centroids at MORA and NOCA,
+observed and predicted, each period named at its observed centroid (C,
+climate-change period, S, stability period) and drawn with the symbol of
+its period type. The steps of the predicted NOCA Holocene sequence are
+short, and its centroids are joined by plain lines without arrowheads.
+Where two symbols lie close, the arrowhead is drawn smaller, and where
+two symbols all but touch, no line is drawn between them. Each centroid
+averages the sampled centuries of each lake within the period, with the
+lakes weighted equally. Axes orthogonally rotated (varimax, -23.5
+degrees) for display, so that axis 1 follows spring temperature and axis
+2 summer precipitation. All metrics are rotation-invariant. The
+unrotated biplot is Fig. S14.
 
 <img src="report/figures/png/figS14_cca_biplot_unrotated.png" alt="" width="100%" />
 

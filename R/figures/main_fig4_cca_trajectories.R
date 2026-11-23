@@ -4,7 +4,7 @@
 # the display-only varimax rotation (R/helpers/cca_display_rotation.R). The
 # appendix figure is the unrotated biplot. Redrawn after a reviewer comment
 # (Bills, 23 Nov 2026): observed symbols filled and predicted symbols open, the
-# period-type symbols of Figures 5 and 6, a tag at both ends of every line in B,
+# period-type symbols of Figures 5 and 6, one era tag per line in B,
 # labels kept off lines and symbols, and the species shaded by commonness.
 source(here::here('R/helpers/config.R'), local = TRUE)
 suppressPackageStartupMessages({library(here); library(tidyverse); library(vegan); library(patchwork); library(ggrepel)})
@@ -214,20 +214,13 @@ trim_steps = function(steps, mm, size, full_cm) {
     x = x + ux * a, y = y + uy * a, xend = xend - ux * b, yend = yend - uy * b)
 }
 
-# In B every line carries a short tag at both ends, observed and predicted
-# (Bills, 23 Nov 2026): "H. start" and "H. end" for the first and last Holocene
-# periods, "A. legacy" and "A. resurvey" for the Anthropocene. Tags take the
-# colour of their line, the predicted ones also in italics. Where the two ends of
-# a line lie within one symbol radius, the symbols overlap and the line gets one
-# tag ("H. start/end").
-labels_b = shown |> group_by(group) |> arrange(order, .by_group = TRUE) |> mutate(
-    label = case_when(era == 'Holocene' & order == min(order) ~ 'H. start', era == 'Holocene' ~ 'H. end',
-      order == 1 ~ 'A. legacy', TRUE ~ 'A. resurvey'),
-    same = sqrt(diff(range(x))^2 + diff(range(y))^2) < (R0 + STROKE) / W_B * diff(lim_b$x),
-    label = case_when(!same ~ label, order == min(order) & era == 'Holocene' ~ 'H. start/end',
-      order == min(order) ~ 'A. legacy/resurvey', TRUE ~ '')) |> ungroup() |>
-  transmute(x, y, label, series,
-    fontface = if_else(type == 'predicted', 'italic', 'plain'), size = TEXT - 1.2)
+# In B every line carries one tag at its arrowhead end, "Holocene" or
+# "Anthropocene" (Bills, 23 Nov 2026; tags at both ends, H. start, H. end,
+# A. legacy and A. resurvey, earlier that day). Tags take the colour of their
+# line, the predicted ones also in italics.
+labels_b = shown |> group_by(group) |> arrange(order, .by_group = TRUE) |>
+  mutate(label = if_else(order == max(order), era, '')) |> ungroup() |>
+  transmute(x, y, label, series, fontface = if_else(type == 'predicted', 'italic', 'plain'), size = TEXT - 1.2)
 
 trajectory_layers = function(points, steps, labels, xl, yl, width_mm, style, legend = FALSE) {
   mm = diff(xl) / width_mm
@@ -240,7 +233,13 @@ trajectory_layers = function(points, steps, labels, xl, yl, width_mm, style, leg
   along = steps |> tidyr::crossing(f = seq(0, 1, length.out = 40)) |>
     transmute(x = x + f * (xend - x), y = y + f * (yend - y), label = '', series, fontface = 'plain', size = TEXT,
       point_size = 2.5)
-  labels = bind_rows(labels |> mutate(point_size = style$size + 1), along)
+  # And along every arrowhead, as wide as the head, so that no label box cuts
+  # into one (Bills, 23 Nov 2026).
+  tips = st |> filter(drawn, head) |> mutate(share = pmin(1, head_cm * 10 * mm / sqrt((xend - x)^2 + (yend - y)^2))) |>
+    tidyr::crossing(f = seq(0, 1, length.out = 6)) |>
+    transmute(x = xend - (xend - x) * share * f, y = yend - (yend - y) * share * f, label = '', series,
+      fontface = 'plain', size = TEXT, point_size = head_cm * 12)
+  labels = bind_rows(labels |> mutate(point_size = style$size + 1), along, tips)
   list(
     # One layer per arrowhead length, since a layer takes a single arrow.
     lapply(sort(unique(st$head_cm[st$drawn & st$head])), function(h)

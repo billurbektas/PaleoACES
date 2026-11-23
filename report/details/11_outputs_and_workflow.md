@@ -64,7 +64,7 @@ for the report.
 | R/figures/supp_tracking_transitions.R | figure | Appendix figures of the lake-period values over time (redrawn on lake-periods | 86 |
 | R/figures/main_fig2_study_area.R | figure | Figure 2 (Bills, 11 Nov 2026; Fig. S1 until then): the study area. (A) | 214 |
 | R/figures/main_fig3_climate_eras_fire.R | figure | main_fig3_climate_eras_fire.R | 712 |
-| R/figures/main_fig4_cca_trajectories.R | figure | Figure 4: A, species and climate biplot; B, observed and predicted trajectories | 324 |
+| R/figures/main_fig4_cca_trajectories.R | figure | Figure 4: A, species and climate biplot; B, observed and predicted trajectories | 323 |
 | R/figures/main_fig5_era_contrasts.R | figure | Figure 5 (PLAN.md section 6; redrawn by Bills, 10 Nov 2026): fitted means | 35 |
 | R/figures/main_fig6_lag_pace_direction.R | figure | Figure 6 (PLAN.md section 6; redrawn by Bills, 10 Nov 2026): the pace and | 43 |
 | R/figures/main_fig7_climate_fire_associations.R | figure | Figure 7: climate and fire associations as model slopes (Bills, 9 Nov 2026). | 71 |

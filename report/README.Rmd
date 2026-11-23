@@ -827,8 +827,7 @@ climate period with samples, in the Anthropocene from the legacy survey to the r
 `r n_group('Anthropocene', 'MORA')` MORA and `r n_group('Anthropocene', 'NOCA')` NOCA plot pairs). Observed positions are
 filled symbols in the dark park colour, predicted positions open symbols in the light park colour. The symbol gives
 the period type: diamonds for Holocene climate-change periods, squares for Holocene stability periods and circles
-for the Anthropocene. Each line is tagged at both ends, H. start and H. end for the first and last Holocene period
-and A. legacy and A. resurvey for the two surveys, with the tags of predicted lines in italics.
+for the Anthropocene. Each line is tagged with its era at its arrowhead end, the tags of predicted lines in italics.
 `r ln3 = read_output('figures/cca_trajectory_lines.csv'); what3 = function(d) paste(sprintf('the %s %s %s', d$type, d$site, d$era), collapse = ' and '); b3 = ln3[ln3$panel == 'B' & ln3$drawn == 0, ]; if (nrow(b3)) paste0('The two ends of ', what3(b3), ' lie so close that their symbols overlap and no line is drawn.') else ''` The MORA arrows run
 from `r spans3$first_period[spans3$site == 'MORA']` to `r spans3$last_period[spans3$site == 'MORA']`
 (`r spans3$first_older[spans3$site == 'MORA']` to `r spans3$last_younger[spans3$site == 'MORA']` cal BP), and the first MORA period rests on
