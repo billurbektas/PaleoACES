@@ -126,6 +126,23 @@ trace_slice_cal_bp = function(slice) 2000 - 100 * slice
 # The centre (cal BP) of the slice century that holds an age.
 trace_century_cal_bp = function(age_cal_bp) floor((age_cal_bp + 50) / 100) * 100
 
+# The fingerprint of an R script's code without its comments: comments and
+# trailing blanks are removed and empty lines dropped, everything else is kept
+# as written (strings, indentation). An edit to comments alone leaves it
+# unchanged, any edit to the code changes it. Used by the Bacon provenance test.
+code_fingerprint = function(path) {
+  lines = readLines(path, warn = FALSE)
+  comments = utils::getParseData(parse(path, keep.source = TRUE))
+  comments = comments[comments$token == 'COMMENT', ]
+  for (i in seq_len(nrow(comments)))
+    lines[comments$line1[i]] = substr(lines[comments$line1[i]], 1, comments$col1[i] - 1)
+  lines = sub('[[:space:]]+$', '', lines)
+  f = tempfile(pattern = 'paleoaces-code-', fileext = '.R')
+  on.exit(unlink(f), add = TRUE)
+  writeLines(lines[nzchar(lines)], f)
+  unname(tools::md5sum(f))
+}
+
 object_fingerprint = function(x) {
   f = tempfile(pattern = "paleoaces-fingerprint-", fileext = ".rds")
   on.exit(unlink(f), add = TRUE)

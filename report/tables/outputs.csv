@@ -23,7 +23,7 @@ Step,File,Description,Size (kB)
 03_modern_fire,NOCA_plot_info_fire.csv,NOCA plots with modern fire assignment,25
 04_modern_climate,MORA_climate.csv,MORA survey-window CHELSA V2.1 climate per plot,16132
 04_modern_climate,NOCA_climate.csv,NOCA survey-window CHELSA V2.1 climate per plot,14406
-05_age_depth_models,bacon_run_manifest.csv,"Bacon run settings, seeds and source hashes",2
+05_age_depth_models,bacon_run_manifest.csv,"Bacon run settings, seeds and source hashes",3
 05_age_depth_models,table_S1_1_chronological_controls.csv,Table S2,7
 05_age_depth_models,table_S1_2_rbacon_parameters.csv,Table S3,3
 06_paleo_samples,paleo_macrofossil_long.csv,All macrofossil measurements with ages,108

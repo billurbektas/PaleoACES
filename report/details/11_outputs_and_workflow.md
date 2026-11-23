@@ -69,7 +69,7 @@ for the report.
 | R/figures/main_fig6_climate_fire_associations.R | figure | Figure 6 and Fig. S18: climate and fire associations as model slopes (Bills, | 75 |
 | R/figures/main_fig7_species.R | figure | Figure 7 (PLAN.md section 6): species contributions in both eras. Species as | 161 |
 | R/worked_examples.R | worked examples | Worked examples: step-by-step illustrations of four methods, drawn from the | 412 |
-| R/tests/test_bacon_provenance.R | test | The stored Bacon chronologies are exactly what the current age-model script and | 32 |
+| R/tests/test_bacon_provenance.R | test | The stored Bacon chronologies are exactly what the current age-model script and | 41 |
 | R/tests/test_cca_tracking_metrics.R | test | Independent geometry and integration checks for the canonical tracking data. | 38 |
 | R/tests/test_cca_trajectory_figure.R | test | Figure 4 inputs (PLAN.md section 6): the Anthropocene arrows are the means of | 50 |
 | R/tests/test_cca_transition_contributions.R | test | Independent contribution gate (PLAN.md Step 6): original sample weights, CCA | 120 |
@@ -124,7 +124,7 @@ the folder of the step that writes it.
 | 03_modern_fire | NOCA_plot_info_fire.csv | NOCA plots with modern fire assignment | 25 |
 | 04_modern_climate | MORA_climate.csv | MORA survey-window CHELSA V2.1 climate per plot | 16132 |
 | 04_modern_climate | NOCA_climate.csv | NOCA survey-window CHELSA V2.1 climate per plot | 14406 |
-| 05_age_depth_models | bacon_run_manifest.csv | Bacon run settings, seeds and source hashes | 2 |
+| 05_age_depth_models | bacon_run_manifest.csv | Bacon run settings, seeds and source hashes | 3 |
 | 05_age_depth_models | table_S1_1_chronological_controls.csv | Table S2 | 7 |
 | 05_age_depth_models | table_S1_2_rbacon_parameters.csv | Table S3 | 3 |
 | 06_paleo_samples | paleo_macrofossil_long.csv | All macrofossil measurements with ages | 108 |
