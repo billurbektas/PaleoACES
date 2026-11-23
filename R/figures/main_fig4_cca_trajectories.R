@@ -140,11 +140,18 @@ holocene = traj |> filter(era == 'Holocene')
 reduced = holocene |> group_by(site, type) |> filter(order %in% range(order)) |> ungroup()
 modern = traj |> filter(era == 'Anthropocene')
 shown = bind_rows(reduced, modern) |> mutate(group = paste(site, era, type))
-# The Anthropocene lines in B carry no arrowheads: their tags give the direction
-# and their short steps left no room for a head (Bills, 23 Nov 2026).
+# Lines without arrowheads, only those Bills named (23 Nov 2026): in B the
+# observed MORA Anthropocene and the predicted NOCA Holocene, in D the predicted
+# NOCA Holocene. Every other line keeps its arrowheads.
+NO_HEADS = tribble(~panel, ~site, ~era, ~type,
+  'B', 'MORA', 'Anthropocene', 'observed',
+  'B', 'NOCA', 'Holocene', 'predicted',
+  'D', 'NOCA', 'Holocene', 'predicted')
+with_heads = function(steps, p) steps |>
+  mutate(heads = !paste(site, era, type) %in% with(NO_HEADS[NO_HEADS$panel == p, ], paste(site, era, type)))
 steps_b = shown |> group_by(group) |> arrange(order, .by_group = TRUE) |>
   mutate(xend = lead(x), yend = lead(y), kind_end = lead(kind)) |> ungroup() |> filter(!is.na(xend)) |>
-  mutate(heads = era == 'Holocene')
+  with_heads('B')
 boxes = holocene |> group_by(site) |> summarise(xmin = min(x), xmax = max(x), ymin = min(y), ymax = max(y)) |>
   mutate(pad = .06 * pmax(xmax - xmin, ymax - ymin), xmin = xmin - pad, xmax = xmax + pad,
     ymin = ymin - pad, ymax = ymax + pad, letter = c(MORA = 'C', NOCA = 'D')[site],
@@ -187,18 +194,23 @@ edge_mm = function(kind, ux, uy, size) {
     TRUE ~ r + STROKE)
 }
 # The arrowhead outline reaches about 1 mm past the line end, so an arrow stops
-# that much earlier: its tip then just touches the symbol. A step with room for
-# a line but not for an arrow, or one whose series has no arrowheads, is a plain
-# line. A step whose symbols overlap is not drawn.
+# that much earlier: its tip then just touches the symbol. Where the gap between
+# two symbols is too short for the full arrowhead and 1.5 mm of line, the head
+# shrinks to fit (down to 1.5 mm), and where even that does not fit, the step is
+# not drawn because the symbols all but touch. A line of a series without
+# arrowheads is drawn wherever 0.5 mm of it fits between the symbols.
 TIP_MM = 1
-trim_steps = function(steps, mm, size) {
+trim_steps = function(steps, mm, size, full_cm) {
   len = sqrt((steps$xend - steps$x)^2 + (steps$yend - steps$y)^2)
   ux = (steps$xend - steps$x) / len; uy = (steps$yend - steps$y) / len
   a = edge_mm(steps$kind, ux, uy, size) * mm
   b = edge_mm(steps$kind_end, -ux, -uy, size) * mm
-  head = steps$heads & len > a + b + (TIP_MM + 1.5) * mm
+  gap_mm = (len - a - b) / mm
+  head_mm = pmin(10 * full_cm, gap_mm - TIP_MM - 1.5)
+  head = steps$heads & head_mm >= 1.5
   b = b + ifelse(head, TIP_MM * mm, 0)
-  steps |> mutate(head, drawn = head | len > a + b + .5 * mm,
+  steps |> mutate(head, head_cm = ifelse(head, round(head_mm / 10, 2), NA_real_), shrunk = head & head_mm < 10 * full_cm,
+    drawn = head | (!heads & gap_mm > .5),
     x = x + ux * a, y = y + uy * a, xend = xend - ux * b, yend = yend - uy * b)
 }
 
@@ -219,7 +231,7 @@ labels_b = shown |> group_by(group) |> arrange(order, .by_group = TRUE) |> mutat
 
 trajectory_layers = function(points, steps, labels, xl, yl, width_mm, style, legend = FALSE) {
   mm = diff(xl) / width_mm
-  st = trim_steps(steps, mm, style$size)
+  st = trim_steps(steps, mm, style$size, style$head_cm)
   # One legend for B to D, collected under the zooms (Bills, 23 Nov 2026).
   key_fill = c('MORA', 'NOCA', 'Observed', 'Predicted')
   key_shape = c('Holocene-S', 'Holocene-C', 'Anthropocene')
@@ -230,8 +242,10 @@ trajectory_layers = function(points, steps, labels, xl, yl, width_mm, style, leg
       point_size = 2.5)
   labels = bind_rows(labels |> mutate(point_size = style$size + 1), along)
   list(
-    geom_segment(data = filter(st, drawn, head), aes(x, y, xend = xend, yend = yend, color = series),
-      linewidth = style$line, arrow = arrow(length = unit(style$head_cm, 'cm'), type = 'closed'), show.legend = FALSE),
+    # One layer per arrowhead length, since a layer takes a single arrow.
+    lapply(sort(unique(st$head_cm[st$drawn & st$head])), function(h)
+      geom_segment(data = filter(st, drawn, head, head_cm == h), aes(x, y, xend = xend, yend = yend, color = series),
+        linewidth = style$line, arrow = arrow(length = unit(h, 'cm'), type = 'closed'), show.legend = FALSE)),
     geom_segment(data = filter(st, drawn, !head), aes(x, y, xend = xend, yend = yend, color = series),
       linewidth = style$line, show.legend = FALSE),
     # Observed symbols filled in the park colour, predicted symbols open.
@@ -267,19 +281,21 @@ p_trajectories = ggplot() +
   labs(tag = 'B.', x = x_title, y = y_title) + theme_fig3 +
   theme(aspect.ratio = diff(lim_b$y) / diff(lim_b$x))
 
-# In the zooms, a series whose median step is shorter than 10 mm on the page
-# (two symbol widths and an arrowhead) is joined by plain lines without
-# arrowheads, which would be a tangle (Bills, 23 Nov 2026).
 zoom_steps = holocene |> mutate(group = paste(site, era, type)) |> group_by(group) |> arrange(order, .by_group = TRUE) |>
   mutate(xend = lead(x), yend = lead(y), kind_end = lead(kind)) |> ungroup() |> filter(!is.na(xend)) |>
-  left_join(boxes |> transmute(site, mm = (xmax - xmin) / W_ZOOM), by = 'site') |>
-  group_by(series) |> mutate(heads = median(sqrt((xend - x)^2 + (yend - y)^2) / mm) >= 10) |> ungroup() |> select(-mm)
-# Read by the caption: in B the lines whose symbols overlap, so that no line is
-# drawn, and in the zooms the series joined by plain lines.
+  mutate(panel = c(MORA = 'C', NOCA = 'D')[site]) |> group_by(panel) |> group_modify(\(d, k) with_heads(d, k$panel)) |>
+  ungroup()
+# Read by the caption: per panel and line, whether it has arrowheads and how many
+# of its steps are drawn (none where the symbols overlap).
+zoom_mm = boxes |> transmute(site, mm = (xmax - xmin) / W_ZOOM)
 write_csv(bind_rows(
-    trim_steps(steps_b, diff(lim_b$x) / W_B, STYLE_B$size) |> filter(!drawn) |> distinct(panel = 'B', site, era, type, drawn = 'none'),
-    zoom_steps |> filter(!heads) |> distinct(panel = c(MORA = 'C', NOCA = 'D')[site], site, era, type, drawn = 'plain lines')),
-  out('figures/cca_trajectory_arrowless.csv'))
+    trim_steps(steps_b, diff(lim_b$x) / W_B, STYLE_B$size, STYLE_B$head_cm) |> mutate(panel = 'B'),
+    zoom_steps |> left_join(zoom_mm, by = 'site') |> group_by(site) |>
+      group_modify(\(d, k) trim_steps(d, d$mm[1], STYLE_ZOOM$size, STYLE_ZOOM$head_cm)) |> ungroup()) |>
+    group_by(panel, site, era, type) |>
+    summarise(arrowheads = any(heads), steps = n(), drawn = sum(drawn), smaller_heads = sum(shrunk),
+      .groups = 'drop'),
+  out('figures/cca_trajectory_lines.csv'))
 zoom = function(park) {
   d = holocene |> filter(site == park) |> mutate(group = paste(site, era, type))
   box = boxes[boxes$site == park, ]

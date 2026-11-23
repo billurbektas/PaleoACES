@@ -138,9 +138,10 @@ Step,File,Description,Size (kB)
 16_contributions,species_contribution_models/species_means_total.csv,"Species contribution means, contrasts and NOCA burned means",21
 16_contributions,species_contribution_models/species_means.csv,"Species contribution means, contrasts and NOCA burned means",21
 figures,anthropocene_climate_rates.csv,"Tables behind the figures (centroids, annotations)",0
+figures,cca_inertia_commonness.csv,"Tables behind the figures (centroids, annotations)",0
 figures,cca_trajectory_anthropocene_centroids.csv,"Tables behind the figures (centroids, annotations)",0
-figures,cca_trajectory_arrowless.csv,"Tables behind the figures (centroids, annotations)",0
 figures,cca_trajectory_holocene_spans.csv,"Tables behind the figures (centroids, annotations)",0
+figures,cca_trajectory_lines.csv,"Tables behind the figures (centroids, annotations)",1
 figures,cca_trajectory_period_centroids.csv,"Tables behind the figures (centroids, annotations)",1
 figures,charcoal_dunwiddie_walsh_correlations.csv,"Tables behind the figures (centroids, annotations)",1
 figures,charcoal_dunwiddie_walsh_event_matching.csv,"Tables behind the figures (centroids, annotations)",0

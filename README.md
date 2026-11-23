@@ -952,7 +952,8 @@ inertia (50% divided by the 14 taxa), 9 taxa holding 89% of it (vectors
 from the centre), and the two climate constraints (bold arrows) of the
 CCA fitted on 605 legacy plots. The species are shaded by how common
 they are: the share of the legacy plots in which they occur, under 10%,
-10 to 30% or over 30%. All taxa are shown in Fig. S14. (B) Observed and
+10 to 30% or over 30%. All taxa are shown in Fig. S14, and their shares
+of the inertia against their commonness in Fig. S15. (B) Observed and
 climate-predicted movement of each park: in the Holocene from the first
 to the last climate period with samples, in the Anthropocene from the
 legacy survey to the resurvey (averaged over 328 MORA and 277 NOCA plot
@@ -962,24 +963,23 @@ gives the period type: diamonds for Holocene climate-change periods,
 squares for Holocene stability periods and circles for the Anthropocene.
 Each line is tagged at both ends, H. start and H. end for the first and
 last Holocene period and A. legacy and A. resurvey for the two surveys,
-with the tags of predicted lines in italics. The Anthropocene lines
-carry no arrowheads, their tags giving the direction. The two ends of
-the observed MORA Anthropocene and the predicted NOCA Holocene lie so
-close that their symbols overlap and no line is drawn. The MORA arrows
-run from C3 to S5 (6850 to 1350 cal BP), and the first MORA period rests
-on 8 samples in 8 lake-centuries. The NOCA arrows run from C1 to S5
-(9650 to 1350 cal BP). (C, D) The full Holocene sequence of period
-centroids at MORA and NOCA, observed and predicted, each period named at
-its observed centroid (C, climate-change period, S, stability period)
-and drawn with the symbol of its period type. The steps of the predicted
-NOCA Holocene sequence are too short for arrowheads, so its centroids
-are joined by plain lines. Where two centroids lie too close for an
-arrowhead, they are joined by a plain line. Each centroid averages the
-sampled centuries of each lake within the period, with the lakes
-weighted equally. Axes orthogonally rotated (varimax, -23.5 degrees) for
-display, so that axis 1 follows spring temperature and axis 2 summer
-precipitation. All metrics are rotation-invariant. The unrotated biplot
-is Fig. S14.
+with the tags of predicted lines in italics. The two ends of the
+observed MORA Anthropocene and the predicted NOCA Holocene lie so close
+that their symbols overlap and no line is drawn. The MORA arrows run
+from C3 to S5 (6850 to 1350 cal BP), and the first MORA period rests on
+8 samples in 8 lake-centuries. The NOCA arrows run from C1 to S5 (9650
+to 1350 cal BP). (C, D) The full Holocene sequence of period centroids
+at MORA and NOCA, observed and predicted, each period named at its
+observed centroid (C, climate-change period, S, stability period) and
+drawn with the symbol of its period type. The steps of the predicted
+NOCA Holocene sequence are short, and its centroids are joined by plain
+lines without arrowheads. Where two symbols lie close, the arrowhead is
+drawn smaller, and where two symbols all but touch, no line is drawn
+between them. Each centroid averages the sampled centuries of each lake
+within the period, with the lakes weighted equally. Axes orthogonally
+rotated (varimax, -23.5 degrees) for display, so that axis 1 follows
+spring temperature and axis 2 summer precipitation. All metrics are
+rotation-invariant. The unrotated biplot is Fig. S14.
 
 <img src="report/figures/png/figS14_cca_biplot_unrotated.png" alt="" width="100%" />
 
@@ -988,12 +988,28 @@ all species.** As Fig. 4A of the main text, on the unrotated axes
 (labelled with the share of the variation in composition that each axis
 explained) and with all 14 species.
 
+<img src="report/figures/png/figS15_cca_inertia_commonness.png" alt="" width="100%" />
+
+**Fig. S15. Share of the constrained inertia against commonness of the
+species.** Each point is one of the 14 taxa of the CCA: its share of the
+constrained inertia against the share of the legacy plots in which it
+occurs. Dashed line: 1:1. Solid line and band: linear fit with its 95%
+confidence band. Dotted lines: an equal share of the constrained inertia
+(7.1%, 100% divided by the number of taxa) and half of it, the threshold
+above which a species is drawn in Fig. 4A. Share and commonness are not
+related (Pearson r = 0.09, p = 0.76, and Spearman rho = 0.24, p = 0.41,
+with a slope of the fit of 0.018 percentage points of inertia per
+percentage point of plots, R² = 0.01). Only *Pinus albicaulis* and
+*Pinus ponderosa* carry a larger share of the inertia than of the plots.
+
 Stages and helpers: [`R/pipeline/11_cca.R`](R/pipeline/11_cca.R),
 [`R/helpers/cca_report.R`](R/helpers/cca_report.R) (screening and
 add-back test),
 [`R/helpers/cca_display_rotation.R`](R/helpers/cca_display_rotation.R),
 [`R/pipeline/13_tracking.R`](R/pipeline/13_tracking.R) (rotation check),
-[`R/figures/main_fig4_cca_trajectories.R`](R/figures/main_fig4_cca_trajectories.R).
+[`R/figures/main_fig4_cca_trajectories.R`](R/figures/main_fig4_cca_trajectories.R),
+[`R/figures/supp_cca_inertia_commonness.R`](R/figures/supp_cca_inertia_commonness.R)
+(Fig. S15).
 
 **CCA details →** [06_cca](report/details/06_cca.md)
 (full model output, species and climate contributions, scaling 1 against
@@ -1536,7 +1552,7 @@ lake-periods are low.
 
 **Model checks.** To check the models of the comparison among period
 types (see Methods of the main text), we report their fit (Table S19)
-and their residuals (Fig. S15). The coefficients of
+and their residuals (Fig. S16). The coefficients of
 every model are on the **model details page →**
 [08_models](report/details/08_models.md).
 
@@ -1568,9 +1584,9 @@ divided by the total sum of squares, subtracted from 1).
 
 <sub>Table file:
 [era_model_summary.csv](report/tables/era_model_summary.csv)</sub>
-<img src="report/figures/png/figS15_era_model_residuals.png" alt="" width="100%" />
+<img src="report/figures/png/figS16_era_model_residuals.png" alt="" width="100%" />
 
-**Fig. S15. Residuals of the ten models of the comparison among period
+**Fig. S16. Residuals of the ten models of the comparison among period
 types.** Top: normal quantile plots of the normalized residuals, one for
 each quantity. Bottom: normalized residuals for each period type and
 park (points, with boxes for the quartiles). The models have no
@@ -1595,7 +1611,7 @@ Stages and helpers:
 the lake-periods above, ask whether a lag comes from how far the
 community moved or from the direction it took. They are compared between
 the period types with the same era models as the lag (code, fit
-statistics and residuals in Q1: Table S19, Fig. S15).
+statistics and residuals in Q1: Table S19, Fig. S16).
 
 **Result.**
 
@@ -2111,9 +2127,9 @@ contributions of the Holocene are small partly because the lake-periods
 are long, and those of the Anthropocene are large partly because the
 time between the two surveys is short. To test whether this explains the
 difference between the two eras, we also calculated the species
-contributions without dividing by time (Fig. S16, Table S25).
+contributions without dividing by time (Fig. S17, Table S25).
 
-<img src="report/figures/png/figS16_species_contributions_total.png" alt="" width="100%" />
+<img src="report/figures/png/figS17_species_contributions_total.png" alt="" width="100%" />
 
 Not divided by time, the mean contributions of the Holocene were as
 large as those of the Anthropocene. However, they varied so much among
@@ -2124,7 +2140,7 @@ same parks. Thus, within a lake-period, the species of the Holocene
 moved the communities about as far as those of the Anthropocene, but too
 variably among lake-periods to identify which species did so.
 
-**Fig. S16. Species contributions not divided by time.** As Fig. 8 of
+**Fig. S17. Species contributions not divided by time.** As Fig. 8 of
 the main text, with the contribution of each species between t1 and t2
 and not per century. Upper row: how far each species moved the community
 in the climate-predicted direction (positive values) or against it
@@ -2193,9 +2209,9 @@ climate-predicted positions of the Holocene communities and the climate
 periods can change, whereas the observed positions, community turnover,
 and all quantities of the Anthropocene do not. We compared three results
 among the analyses: the lag and the pace and direction effects of each
-lake-period (Fig. S17, Table S20), the differences between period types
-(Table S16, Fig. S18), and the associations with climate change and fire
-in the Holocene (Fig. S19).
+lake-period (Fig. S18, Table S20), the differences between period types
+(Table S16, Fig. S19), and the associations with climate change and fire
+in the Holocene (Fig. S20).
 [`R/sensitivity_paleoclimate.R`](R/sensitivity_paleoclimate.R) reruns
 stages 08 to 16 twice into `output_paleoclimate_sensitivity/` and leaves
 the main outputs untouched. The raw TraCE21k was the paleoclimate of the
@@ -2203,9 +2219,9 @@ analysis until 11 November 2026. The counts below are read from the
 tables that the script writes to
 `output_paleoclimate_sensitivity/comparison/`.
 
-<img src="report/figures/png/figS17_paleoclimate_lake_periods.png" alt="" width="100%" />
+<img src="report/figures/png/figS18_paleoclimate_lake_periods.png" alt="" width="100%" />
 
-**Fig. S17. Holocene lake-periods with and without correction of the
+**Fig. S18. Holocene lake-periods with and without correction of the
 Holocene climate.** Each point is one lake-period that the three
 analyses have in common, with its value without correction (x-axis)
 against its value with the two-step correction of the main analysis
@@ -2225,9 +2241,9 @@ and the other quantities are in CCA distance (left) or in CCA distance
 per century (right). Script:
 [`R/figures/supp_paleoclimate_sensitivity.R`](R/figures/supp_paleoclimate_sensitivity.R).
 
-<img src="report/figures/png/figS18_paleoclimate_era_contrasts.png" alt="" width="100%" />
+<img src="report/figures/png/figS19_paleoclimate_era_contrasts.png" alt="" width="100%" />
 
-**Fig. S18. Differences between period types with the three versions of
+**Fig. S19. Differences between period types with the three versions of
 the Holocene climate.** The differences between the estimated means of
 two period types within each park (Table S16 for the main analysis),
 each with its 95% confidence interval (not adjusted): filled points and
@@ -2246,12 +2262,12 @@ vertical line marks zero. Script:
 the same 24 lake-periods. With the one-step correction, the lag had the
 same sign as in the main analysis in 13 of 14 lake-periods at MORA and
 in 10 of 10 at NOCA. Without correction, it had the same sign in 4 of 14
-lake-periods at MORA and in 7 of 10 at NOCA (Fig. S17C). The pace and
+lake-periods at MORA and in 7 of 10 at NOCA (Fig. S18C). The pace and
 direction effects are given in Table S20.
 
 **Differences between the Anthropocene and the Holocene.** Of the 20
 differences that were significant in the main analysis (Table S16, Fig.
-S18), 19 were also significant, with the same sign, with the one-step
+S19), 19 were also significant, with the same sign, with the one-step
 correction, and 19 without correction. None of them changed sign.
 
 **Differences within the Holocene.** Of the 3 differences between the
@@ -2264,7 +2280,7 @@ same sign, with the one-step correction, and 0 without correction.
 coefficients whose confidence interval excluded zero in the main
 analysis, 6 had the same sign with the one-step correction (1 with a
 confidence interval that excluded zero), and 0 without correction (0;
-Fig. S19).
+Fig. S20).
 
 **Consequences for the conclusions.** The comparison between the
 Anthropocene and the Holocene does not depend on the correction of the
@@ -2275,9 +2291,9 @@ lake-periods, the differences between the climate-change and the
 stability periods, and the associations with climate change and fire. We
 therefore interpret these three results with caution.
 
-<img src="report/figures/png/figS19_paleoclimate_slopes.png" alt="" width="100%" />
+<img src="report/figures/png/figS20_paleoclimate_slopes.png" alt="" width="100%" />
 
-**Fig. S19. Associations with climate change and fire in the Holocene,
+**Fig. S20. Associations with climate change and fire in the Holocene,
 with the three versions of the Holocene climate.** Coefficients of Fig.
 7A and C of the main text, from the models of the Holocene lake-periods
 with park, climate change, and fire activity as explanatory variables,

@@ -821,7 +821,7 @@ than half an equal share of the constrained inertia (50% divided by the `r nrow(
 `r sprintf('%.0f%%', sum(sp3$percent_constrained_inertia[sp3$percent_constrained_inertia > 50 / nrow(sp3)]))` of it (vectors from the centre),
 and the two climate constraints (bold arrows) of the CCA fitted on `r cca_value('calibration_plots')` legacy plots. The
 species are shaded by how common they are: the share of the legacy plots in which they occur, under 10%, 10 to 30% or
-over 30%. All taxa are shown in Fig. S14. (B) Observed and
+over 30%. All taxa are shown in Fig. S14, and their shares of the inertia against their commonness in Fig. S15. (B) Observed and
 climate-predicted movement of each park: in the Holocene from the first to the last
 climate period with samples, in the Anthropocene from the legacy survey to the resurvey (averaged over
 `r n_group('Anthropocene', 'MORA')` MORA and `r n_group('Anthropocene', 'NOCA')` NOCA plot pairs). Observed positions are
@@ -829,7 +829,7 @@ filled symbols in the dark park colour, predicted positions open symbols in the 
 the period type: diamonds for Holocene climate-change periods, squares for Holocene stability periods and circles
 for the Anthropocene. Each line is tagged at both ends, H. start and H. end for the first and last Holocene period
 and A. legacy and A. resurvey for the two surveys, with the tags of predicted lines in italics.
-The Anthropocene lines carry no arrowheads, their tags giving the direction. `r al3 = read_output('figures/cca_trajectory_arrowless.csv'); what3 = function(d) paste(sprintf('the %s %s %s', ifelse(d$type == 'observed', 'observed', 'predicted'), d$site, d$era), collapse = ' and '); b3 = al3[al3$panel == 'B', ]; if (nrow(b3)) paste0('The two ends of ', what3(b3), ' lie so close that their symbols overlap and no line is drawn.') else ''` The MORA arrows run
+`r ln3 = read_output('figures/cca_trajectory_lines.csv'); what3 = function(d) paste(sprintf('the %s %s %s', d$type, d$site, d$era), collapse = ' and '); b3 = ln3[ln3$panel == 'B' & ln3$drawn == 0, ]; if (nrow(b3)) paste0('The two ends of ', what3(b3), ' lie so close that their symbols overlap and no line is drawn.') else ''` The MORA arrows run
 from `r spans3$first_period[spans3$site == 'MORA']` to `r spans3$last_period[spans3$site == 'MORA']`
 (`r spans3$first_older[spans3$site == 'MORA']` to `r spans3$last_younger[spans3$site == 'MORA']` cal BP), and the first MORA period rests on
 `r p3 = read_output('holocene_periods.csv'); f3 = p3[p3$period == spans3$first_period[spans3$site == 'MORA'], ]; in3 = pos3$site == 'MORA' & pos3$century_cal_bp < f3$older_cal_bp & pos3$century_cal_bp >= f3$younger_cal_bp; sum(pos3$n_samples[in3])` samples in `r sum(in3)` lake-centuries.
@@ -837,7 +837,7 @@ The NOCA arrows run from `r spans3$first_period[spans3$site == 'NOCA']` to `r sp
 (`r spans3$first_older[spans3$site == 'NOCA']` to `r spans3$last_younger[spans3$site == 'NOCA']` cal BP). (C, D) The full Holocene sequence
 of period centroids at MORA and NOCA, observed and predicted, each period named at its observed
 centroid (C, climate-change period, S, stability period) and drawn with the symbol of its period type.
-`r z3 = al3[al3$panel != 'B', ]; if (nrow(z3)) paste0('The steps of ', what3(z3), ' sequence are too short for arrowheads, so its centroids are joined by plain lines.') else ''` Where two centroids lie too close for an arrowhead, they are joined by a plain line. Each centroid averages the sampled centuries
+`r z3 = ln3[ln3$panel != 'B' & !ln3$arrowheads & ln3$drawn > 0, ]; if (nrow(z3)) paste0('The steps of ', what3(z3), ' sequence are short, and its centroids are joined by plain lines without arrowheads.') else ''` `r small3 = sum(ln3$smaller_heads); skip3 = sum(ln3$steps - ln3$drawn) - sum(ln3$panel == 'B' & ln3$drawn == 0); paste0(if (small3) 'Where two symbols lie close, the arrowhead is drawn smaller' else '', if (small3 && skip3) ', and where' else if (skip3) 'Where' else '', if (skip3) ' two symbols all but touch, no line is drawn between them' else '', if (small3 || skip3) '.' else '')` Each centroid averages the sampled centuries
 of each lake within the period, with the lakes weighted equally. Axes orthogonally rotated (varimax,
 `r sprintf('%.1f', rot$angle_degrees)` degrees) for display, so that axis 1 follows spring temperature and axis 2
 summer precipitation. All metrics are rotation-invariant. The unrotated biplot is Fig. S14.
@@ -852,13 +852,29 @@ show_figure('report/figures/supplementary/figS14_cca_biplot_unrotated.pdf', widt
 main text, on the unrotated axes (labelled with the share of the variation in composition that each axis
 explained) and with all `r cca_value('retained_species')` species.
 
+```{r fig-s15-inertia-commonness}
+show_figure('report/figures/supplementary/figS15_cca_inertia_commonness.pdf', width = '60%')
+ic = read_output('figures/cca_inertia_commonness.csv')
+```
+
+**Fig. S15. Share of the constrained inertia against commonness of the species.** Each point is one of
+the `r ic$taxa` taxa of the CCA: its share of the constrained inertia against the share of the legacy plots in
+which it occurs. Dashed line: 1:1. Solid line and band: linear fit with its 95% confidence band. Dotted lines: an
+equal share of the constrained inertia (`r sprintf('%.1f%%', ic$equal_share)`, 100% divided by the number of taxa)
+and half of it, the threshold above which a species is drawn in Fig. 4A. `r if (ic$pearson_p >= .05 && ic$spearman_p >= .05) 'Share and commonness are not related' else 'Share and commonness are related'`
+(Pearson r = `r sprintf('%.2f', ic$pearson_r)`, p = `r sprintf('%.2f', ic$pearson_p)`, and Spearman rho =
+`r sprintf('%.2f', ic$spearman_rho)`, p = `r sprintf('%.2f', ic$spearman_p)`, with a slope of the fit of
+`r sprintf('%.3f', ic$slope)` percentage points of inertia per percentage point of plots, R² =
+`r sprintf('%.2f', ic$r_squared)`). `r ab = strsplit(ic$above_one_to_one, '; ')[[1]]; if (length(ab)) paste0('Only ', paste0('*', ab, '*', collapse = ' and '), ' carry a larger share of the inertia than of the plots.') else 'No taxon carries a larger share of the inertia than of the plots.'`
+
 <!-- readme-only -->
 
 Stages and helpers: [`R/pipeline/11_cca.R`](R/pipeline/11_cca.R),
 [`R/helpers/cca_report.R`](R/helpers/cca_report.R) (screening and add-back test),
 [`R/helpers/cca_display_rotation.R`](R/helpers/cca_display_rotation.R),
 [`R/pipeline/13_tracking.R`](R/pipeline/13_tracking.R) (rotation check),
-[`R/figures/main_fig4_cca_trajectories.R`](R/figures/main_fig4_cca_trajectories.R).
+[`R/figures/main_fig4_cca_trajectories.R`](R/figures/main_fig4_cca_trajectories.R),
+[`R/figures/supp_cca_inertia_commonness.R`](R/figures/supp_cca_inertia_commonness.R) (Fig. S15).
 
 `r details_link('06_cca', 'CCA details')` (full model output, species and climate contributions,
 scaling 1 against scaling 2).
@@ -1133,7 +1149,7 @@ add to it, and it does not increase in proportion to time. This is one reason wh
 lake-periods are low.
 
 **Model checks.** To check the models of the comparison among period types (see Methods of the main text),
-we report their fit (Table S19) and their residuals (Fig. S15).<!-- readme-only --> The coefficients of every model are on the
+we report their fit (Table S19) and their residuals (Fig. S16).<!-- readme-only --> The coefficients of every model are on the
 `r details_link('08_models', 'model details page')`.<!-- /readme-only -->
 
 ```{r q1-model-checks}
@@ -1150,10 +1166,10 @@ read_output('era_comparison/era_model_summary.csv') |>
     'of 1. The models were fitted with restricted maximum likelihood (REML), so that the log-likelihood and the AIC can only be',
     'compared among models with the same fixed effects. R² is descriptive (the residual sum of squares divided by the total',
     'sum of squares, subtracted from 1).'))
-show_figure('report/figures/supplementary/figS15_era_model_residuals.pdf')
+show_figure('report/figures/supplementary/figS16_era_model_residuals.pdf')
 ```
 
-**Fig. S15. Residuals of the ten models of the comparison among period types.** Top: normal quantile
+**Fig. S16. Residuals of the ten models of the comparison among period types.** Top: normal quantile
 plots of the normalized residuals, one for each quantity. Bottom: normalized residuals for each period
 type and park (points, with boxes for the quartiles). The models have no continuous explanatory variable,
 so the fitted values take one value for each period type and park, and the residuals for each group show
@@ -1178,7 +1194,7 @@ Stages and helpers: [`R/pipeline/14_era_models.R`](R/pipeline/14_era_models.R),
 **What and why.** The pace effect and the direction effect, defined with the lake-periods above, ask
 whether a lag comes from how far the community moved or from the direction it took. They are compared
 between the period types with the same era models as the lag (code, fit statistics and residuals in
-Q1: Table S19, Fig. S15).
+Q1: Table S19, Fig. S16).
 
 **Result.**
 
@@ -1529,7 +1545,7 @@ Each park has its own x scale, symmetric around zero. `r both_spans` Contributio
 **Species contributions not divided by time.** Per century, the species contributions of the Holocene are
 small partly because the lake-periods are long, and those of the Anthropocene are large partly because the
 time between the two surveys is short. To test whether this explains the difference between the two eras,
-we also calculated the species contributions without dividing by time (Fig. S16, Table S25).
+we also calculated the species contributions without dividing by time (Fig. S17, Table S25).
 
 ```{r step6-totals}
 st = read_output('species_contribution_models/species_means_total.csv')
@@ -1547,7 +1563,7 @@ hol_r = species_means |> filter(period_type != 'Anthropocene', present)
 top = hol_t |> slice_max(abs(estimate), n = 1)
 ant_t = away(st |> filter(period_type == 'Anthropocene'))
 ant_r = away(species_means |> filter(period_type == 'Anthropocene'))
-show_figure('report/figures/supplementary/figS16_species_contributions_total.pdf')
+show_figure('report/figures/supplementary/figS17_species_contributions_total.pdf')
 ```
 
 Not divided by time, the mean contributions of the Holocene were as large as those of the Anthropocene.
@@ -1558,7 +1574,7 @@ century, `r if (identical(key(ant_t), key(ant_r))) 'for the same species in the 
 Thus, within a lake-period, the species of the Holocene moved the communities about as far as those of the
 Anthropocene, but too variably among lake-periods to identify which species did so.
 
-**Fig. S16. Species contributions not divided by time.** As Fig. 8 of the main text, with the contribution
+**Fig. S17. Species contributions not divided by time.** As Fig. 8 of the main text, with the contribution
 of each species between t1 and t2 and not per century. Upper row: how far each species moved the community
 in the climate-predicted direction (positive values) or against it (negative values). Lower row: how far
 each species moved the community away from its climate-predicted position, which is the part of the lag
@@ -1601,9 +1617,9 @@ repeated the analysis with two other versions of the Holocene climate: with the 
 alone, i.e., CHELSAcruts to CHELSA V2.1), and without correction. Among the three analyses, only the
 climate-predicted positions of the Holocene communities and the climate periods can change, whereas the
 observed positions, community turnover, and all quantities of the Anthropocene do not. We compared three
-results among the analyses: the lag and the pace and direction effects of each lake-period (Fig. S17,
-Table S20), the differences between period types (Table S16, Fig. S18), and the associations with climate
-change and fire in the Holocene (Fig. S19).<!-- readme-only --> [`R/sensitivity_paleoclimate.R`](R/sensitivity_paleoclimate.R) reruns stages 08 to 16 twice into
+results among the analyses: the lag and the pace and direction effects of each lake-period (Fig. S18,
+Table S20), the differences between period types (Table S16, Fig. S19), and the associations with climate
+change and fire in the Holocene (Fig. S20).<!-- readme-only --> [`R/sensitivity_paleoclimate.R`](R/sensitivity_paleoclimate.R) reruns stages 08 to 16 twice into
 `output_paleoclimate_sensitivity/` and leaves the main outputs untouched. The raw TraCE21k was the
 paleoclimate of the analysis until 11 November 2026. The counts below are read from the tables that the
 script writes to `output_paleoclimate_sensitivity/comparison/`.<!-- /readme-only -->
@@ -1633,11 +1649,11 @@ if (s4_has) {
   s4_sl = s4_read('explanatory_slopes.csv')
   s4_away = function(run) sum(s4_sl[[paste0('conf_low_', run)]] > 0 | s4_sl[[paste0('conf_high_', run)]] < 0)
   s4_sl_main = s4_sl |> filter(conf_low_two_step > 0 | conf_high_two_step < 0)
-  show_figure('report/figures/supplementary/figS17_paleoclimate_lake_periods.pdf', width = '75%')
+  show_figure('report/figures/supplementary/figS18_paleoclimate_lake_periods.pdf', width = '75%')
 } else cat('Run Rscript R/sensitivity_paleoclimate.R to fill this appendix.\n')
 ```
 
-**Fig. S17. Holocene lake-periods with and without correction of the Holocene climate.** Each point is one
+**Fig. S18. Holocene lake-periods with and without correction of the Holocene climate.** Each point is one
 lake-period that the three analyses have in common, with its value without correction (x-axis) against its
 value with the two-step correction of the main analysis (red) and with the one-step correction (grey), each
 with its least-squares line: (A) climate change and (B) its rate, (C) the lag and (D) its rate, (E) the pace
@@ -1652,10 +1668,10 @@ per century (right).<!-- readme-only --> Script:
 [`R/figures/supp_paleoclimate_sensitivity.R`](R/figures/supp_paleoclimate_sensitivity.R).<!-- /readme-only -->
 
 ```{r appendix-s4-contrast-figure}
-if (s4_has) show_figure('report/figures/supplementary/figS18_paleoclimate_era_contrasts.pdf', width = '100%')
+if (s4_has) show_figure('report/figures/supplementary/figS19_paleoclimate_era_contrasts.pdf', width = '100%')
 ```
 
-**Fig. S18. Differences between period types with the three versions of the Holocene climate.** The
+**Fig. S19. Differences between period types with the three versions of the Holocene climate.** The
 differences between the estimated means of two period types within each park (Table S16 for the main
 analysis), each with its 95% confidence interval (not adjusted): filled points and solid lines with the
 two-step correction of the main analysis, open circles and dashed lines with the one-step correction, and
@@ -1691,9 +1707,9 @@ if (s4_has) {
     'With the one-step correction, the lag had the same sign as in the main analysis in ', s4_kept('lag', 'MORA', 'one_step'),
     ' lake-periods at MORA and in ', s4_kept('lag', 'NOCA', 'one_step'), ' at NOCA. Without correction, it had the same sign in ',
     s4_kept('lag', 'MORA', 'raw'), ' lake-periods at MORA and in ', s4_kept('lag', 'NOCA', 'raw'),
-    ' at NOCA (Fig. S17C). The pace and direction effects are given in Table S20.\n\n',
+    ' at NOCA (Fig. S18C). The pace and direction effects are given in Table S20.\n\n',
     '**Differences between the Anthropocene and the Holocene.** Of the ', nrow(s4_era_main), ' differences that were significant ',
-    'in the main analysis (Table S16, Fig. S18), ', s4_robust(s4_era_main, 'one_step'),
+    'in the main analysis (Table S16, Fig. S19), ', s4_robust(s4_era_main, 'one_step'),
     ' were also significant, with the same sign, with the one-step correction, and ', s4_robust(s4_era_main, 'raw'),
     ' without correction. ',
     if (nrow(s4_era_flip)) paste0('The sign changed for: ', s4_lst(s4_era_flip, function(d) sprintf('%s at %s, %s',
@@ -1706,7 +1722,7 @@ if (s4_has) {
     '**Associations with climate change and fire in the Holocene.** Of the ', nrow(s4_sl_main), ' coefficients whose confidence ',
     'interval excluded zero in the main analysis, ', s4_sl_same('one_step'), ' had the same sign with the one-step correction (',
     s4_sl_also('one_step'), ' with a confidence interval that excluded zero), and ', s4_sl_same('raw'), ' without correction (',
-    s4_sl_also('raw'), '; Fig. S19).\n\n',
+    s4_sl_also('raw'), '; Fig. S20).\n\n',
     '**Consequences for the conclusions.** ',
     if (nrow(s4_era_flip) == 0) paste0('The comparison between the Anthropocene and the Holocene does not depend on the correction ',
       'of the Holocene climate: all differences that were significant in the main analysis had the same sign in the three ',
@@ -1719,10 +1735,10 @@ if (s4_has) {
 ```
 
 ```{r appendix-s4-slope-figure}
-if (s4_has) show_figure('report/figures/supplementary/figS19_paleoclimate_slopes.pdf', width = '100%')
+if (s4_has) show_figure('report/figures/supplementary/figS20_paleoclimate_slopes.pdf', width = '100%')
 ```
 
-**Fig. S19. Associations with climate change and fire in the Holocene, with the three versions of the
+**Fig. S20. Associations with climate change and fire in the Holocene, with the three versions of the
 Holocene climate.** Coefficients of Fig. 7A and C of the main text, from the models of the Holocene
 lake-periods with park, climate change, and fire activity as explanatory variables, each with its 95%
 confidence interval: filled points and solid lines with the two-step correction of the main analysis, open
