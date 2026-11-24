@@ -33,6 +33,7 @@ Rscript R/run_all.R --age-models   # also refit the four Bacon chronologies (abo
 Rscript R/run_all.R --presentation # also draw the presentation figures
 Rscript R/build_report.R           # rebuild this report from the outputs
 Rscript R/sensitivity_paleoclimate.R  # stages 08-16 with the one-step correction and on the raw paleoclimate, into output_paleoclimate_sensitivity/ (Appendix S4)
+Rscript R/sensitivity_climate_products.R  # stages 08-16 with PRISM and with nClimGrid as the Anthropocene climate, into output_climate_sensitivity/ (Appendix S5)
 ```
 
 `R/run_all.R` runs the pipeline steps in order, then every figure script, the worked examples and
