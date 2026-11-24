@@ -211,18 +211,30 @@ step6_lag_direction = function(endpoints) {
 }
 # end-snippet: contrib-lag
 
-# Both measures. contrib_climate, the vector along the predicted movement per
-# century, is still computed but no figure, table or text shows it (Bills,
-# 23 Nov 2026), so it stays outside the code shown in the README. Columns in
-# the order they had before.
+# Both measures. Figures, tables and text show contrib_climate (Bills, 24 Nov
+# 2026; contrib_lag from 23 to 24 Nov 2026, both before). contrib_lag is still
+# computed above and kept in the outputs. Columns in the order they had before.
+# report-snippet: contrib-climate
 step6_species_contributions = function(context, first, last, positions, endpoints, dt, lag_dt) {
+  # rows: one row per unit (a Holocene lake-period or an Anthropocene plot pair)
+  # and species. A species' vector is its change in share between t1 and t2
+  # times its fixed position in the CCA plane; the vectors of a unit add up to
+  # the observed movement (checked). parallel_contribution is the vector
+  # projected on the direction in which the climate-predicted position moved.
+  # (step6_lag_contributions also adds contrib_lag, which is not reported.)
   rows = step6_lag_contributions(context, first, last, positions, endpoints, lag_dt)
   index = rep(seq_len(nrow(context)), each = ncol(first))
+  # Where the observed or the predicted position did not move, the direction is
+  # undefined (epsilon rule), and so is the contribution.
   defined = endpoints$direction_defined[index]
+  # contrib_climate, per century of the vegetation interval dt: positive, the
+  # species moved the community in the climate-predicted direction; negative,
+  # against it.
   rows$contrib_climate = ifelse(defined, rows$parallel_contribution * 100 / dt[index], NA_real_)
   lag_columns = c('lag_projection', 'contrib_lag')
   rows[c(setdiff(names(rows), c(lag_columns, 'contrib_climate')), 'contrib_climate', lag_columns)]
 }
+# end-snippet: contrib-climate
 step6_lag_decomposition = function(context, rows, endpoints, lag_dt) {
   m = step6_lag_direction(endpoints)
   climate_part = -(endpoints$delta_predicted_CCA1 * m$x + endpoints$delta_predicted_CCA2 * m$y) * 100 / lag_dt

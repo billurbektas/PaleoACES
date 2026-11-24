@@ -1,10 +1,11 @@
 # Figure 7 (PLAN.md section 6): species contributions in both eras. Species as
 # rows ordered by the maximum elevation of the plots where they occur, the
 # highest at the top (Bills). One column per park, with its own x scale. Only
-# contrib_lag is drawn (Bills, 23 Nov 2026): the species' part of the lag rate,
-# negative where the species narrowed the climate-community lag. The
-# contrib_climate row (until then the upper row) stays in the code and is drawn
-# again by adding it to SHOWN_MEASURES. Per species a
+# contrib_climate is drawn (Bills, 24 Nov 2026): how far the species moved the
+# community in the climate-predicted direction, negative where it moved it
+# against that direction. From 23 to 24 Nov 2026 only contrib_lag was drawn,
+# and before that both. The contrib_lag row stays in the code and is drawn again
+# by adding it to SHOWN_MEASURES. Per species a
 # square (Holocene-S), a diamond (Holocene-C) and a circle (Anthropocene), each
 # with its 95% t-interval; means whose interval includes zero are small and
 # faded, with faded intervals.
@@ -33,7 +34,7 @@ species_elevation = read_csv(out('occ_consolidated.csv'), show_col_types = FALSE
 order_species = species_elevation |> arrange(desc(max_elevation), desc(mean_elevation)) |> pull(species)
 # The figure for one table of species means: per century (Figure 7) or not
 # divided by time (Fig. S19, Bills, 11 Nov 2026), in the same layout.
-SHOWN_MEASURES = c('contrib_lag')
+SHOWN_MEASURES = c('contrib_climate')
 species_figure = function(file, x_label) {
   means = read_csv(out(file.path('species_contribution_models', file)), show_col_types = FALSE) |>
     mutate(species = factor(species, levels = order_species),
@@ -152,8 +153,8 @@ species_figure = function(file, x_label) {
     theme(legend.position = 'bottom')
   list(figure = figure, holocene_absent = holocene_absent_species)
 }
-per_century = species_figure('species_means.csv', 'Species contribution to the climate–community lag')
-total = species_figure('species_means_total.csv', 'Species contribution to the climate–community lag, not divided by time')
+per_century = species_figure('species_means.csv', 'Species contribution in the climate-predicted direction')
+total = species_figure('species_means_total.csv', 'Species contribution in the climate-predicted direction, not divided by time')
 # One row of panels since 23 Nov 2026 (two rows of 20 inches until then).
 FIG7_HEIGHT = 11.5
 holocene_absent_species = per_century$holocene_absent

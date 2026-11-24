@@ -1,27 +1,27 @@
 Species,Burned,n,Mean,95% CI
-Abies amabilis/grandis,FALSE,253,0.00589121989999623,-0.019 to 0.030
-Abies amabilis/grandis,TRUE,24,-0.00685149568237301,-0.062 to 0.048
-Abies lasiocarpa,FALSE,253,0.04132947253937531,-0.090 to 0.173
-Abies lasiocarpa,TRUE,24,0.17898678099945145,-0.239 to 0.597
-Abies procera,FALSE,253,0,not defined
-Abies procera,TRUE,24,0,not defined
-Callitropsis nootkatensis,FALSE,253,0.00729361789259882,-0.049 to 0.064
-Callitropsis nootkatensis,TRUE,24,0,not defined
-Picea engelmannii,FALSE,253,0.02510649359450887,-0.037 to 0.087
-Picea engelmannii,TRUE,24,-0.09162195075367768,-0.405 to 0.222
-Pinus albicaulis,FALSE,253,-0.215547311800146,-0.403 to -0.028
-Pinus albicaulis,TRUE,24,-0.994455834730506,-2.023 to 0.034
-Pinus contorta,FALSE,253,-0.0173858119715562,-0.108 to 0.073
-Pinus contorta,TRUE,24,0.04186113059516238,-0.216 to 0.300
-Pinus monticola,FALSE,253,0.02373842618015923,0.002 to 0.045
-Pinus monticola,TRUE,24,-0.0160207164414929,-0.201 to 0.169
-Pinus ponderosa,FALSE,253,-0.1204741320021269,-0.288 to 0.047
-Pinus ponderosa,TRUE,24,-1.1662975302823373,-2.919 to 0.586
-Pseudotsuga menziesii,FALSE,253,-0.01118527824887444,-0.069 to 0.047
-Pseudotsuga menziesii,TRUE,24,0.29703525816837195,-0.130 to 0.724
-Thuja plicata,FALSE,253,-0.01201413403995605,-0.059 to 0.035
-Thuja plicata,TRUE,24,0,not defined
-Tsuga heterophylla,FALSE,253,0.02794180810456635,-0.005 to 0.061
-Tsuga heterophylla,TRUE,24,-0.00956785181503539,-0.029 to 0.010
-Tsuga mertensiana,FALSE,253,-0.04166168498515869,-0.101 to 0.018
-Tsuga mertensiana,TRUE,24,-0.01920872088600969,-0.066 to 0.027
+Abies amabilis/grandis,FALSE,191,0.03437226336390988,0.004 to 0.065
+Abies amabilis/grandis,TRUE,17,-0.10637160855320352,-0.276 to 0.064
+Abies lasiocarpa,FALSE,191,-0.0087231238594237,-0.157 to 0.140
+Abies lasiocarpa,TRUE,17,-0.2443039196975856,-0.646 to 0.157
+Abies procera,FALSE,191,0,not defined
+Abies procera,TRUE,17,0,not defined
+Callitropsis nootkatensis,FALSE,191,0.06593394556317031,0.003 to 0.129
+Callitropsis nootkatensis,TRUE,17,0,not defined
+Picea engelmannii,FALSE,191,-0.04042073497566959,-0.111 to 0.030
+Picea engelmannii,TRUE,17,0.13335788506932522,-0.244 to 0.510
+Pinus albicaulis,FALSE,191,0.20433392703209757,0.038 to 0.370
+Pinus albicaulis,TRUE,17,0.9362914745638252,-0.015 to 1.888
+Pinus contorta,FALSE,191,0.0463008283937902,-0.047 to 0.139
+Pinus contorta,TRUE,17,-0.03549838113361059,-0.423 to 0.352
+Pinus monticola,FALSE,191,0.00283756768757438,-0.032 to 0.038
+Pinus monticola,TRUE,17,0.02816699660244699,-0.233 to 0.289
+Pinus ponderosa,FALSE,191,0.12038769074123667,-0.075 to 0.316
+Pinus ponderosa,TRUE,17,1.1794140563366156,-1.334 to 3.693
+Pseudotsuga menziesii,FALSE,191,0.00444899859278363,-0.068 to 0.077
+Pseudotsuga menziesii,TRUE,17,-0.33215172031173257,-0.843 to 0.179
+Thuja plicata,FALSE,191,0.0412675797758173,-0.020 to 0.102
+Thuja plicata,TRUE,17,0,not defined
+Tsuga heterophylla,FALSE,191,0.11324816092979637,0.062 to 0.164
+Tsuga heterophylla,TRUE,17,0.04318108773572923,-0.048 to 0.135
+Tsuga mertensiana,FALSE,191,0.04704993992785243,-0.018 to 0.112
+Tsuga mertensiana,TRUE,17,0.07020068277903621,-0.021 to 0.161

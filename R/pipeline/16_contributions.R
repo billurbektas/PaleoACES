@@ -1,4 +1,4 @@
-# 15 Species contributions (PLAN.md section 5, Step 6): which species led the
+# 16 Species contributions (PLAN.md section 5, Step 6): which species led the
 # climate-aligned movement (contrib_climate), and which widened or narrowed the
 # climate-community lag (contrib_lag, Bills 11 Nov 2026), per lake-period and
 # per plot pair; then the group means per species, park and period type. Seasonal-climate contributions to the predicted movement are
@@ -20,6 +20,9 @@ plots = read_csv(out('cca_tracking_anthropocene_plot_calculations.csv'), show_co
   lake_period_responses()
 
 weights = century_species_weights(primary, bundle)
+# Rule: every lake-period end is a sampled century with species weights. Checked
+# before indexing, which would otherwise stop with a bare subscript error.
+stopifnot(all(paste(units$lake, c(units$age_start, units$age_end)) %in% rownames(weights)))
 first = weights[paste(units$lake, units$age_start), , drop = FALSE]
 last = weights[paste(units$lake, units$age_end), , drop = FALSE]
 stopifnot(!anyNA(first), !anyNA(last))

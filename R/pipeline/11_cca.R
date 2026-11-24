@@ -5,7 +5,8 @@
 # the downstream analysis and figure stages.
 #
 # THE MODEL: one pooled CCA trained on matched MORA + NOCA "past" plots, constrained
-# by MSpT + MWT + SP + WP. "present" and "paleo" samples are projected into it -
+# by the variables of config.R (MSpT + SP since 9 Nov 2026; MSpT + MWT + SP + WP
+# before). "present" and "paleo" samples are projected into it -
 # they do not calibrate it. Because there is a single ordination, positions and
 # lengths are directly comparable across both sites and both eras.
 #
@@ -343,9 +344,10 @@ fire_summary = bind_rows(
 # post-dated MORA's survey by ~8 yr and NOCA's by ~2 - unequally, between the two
 # sites the whole study differences against each other.
 #
-# 04_modern_climate.R / 04_modern_climate.R now write RAW MONTHLY tasmin/tasmax/pr
-# for each plot over that site's own survey window (max survey year and the five
-# before it). derive_climate_vars() turns them into the CCA variables and is the
+# 04_modern_climate.R writes RAW MONTHLY tasmin/tasmax/pr for each plot: the
+# legacy window 1979-1989, the same for every plot, and each plot's own resurvey
+# window, the survey year and the five before it (R/helpers/survey_years.R,
+# decision of 2026-10-07). derive_climate_vars() turns them into the CCA variables and is the
 # SAME function 08_paleo_climate.R uses, so a season cannot mean one thing in
 # the Holocene arm and another in the Anthropocene arm.
 source(here("R/helpers/climate_variables.R"), local = TRUE)
@@ -557,7 +559,7 @@ if (count.thr == CCA_COUNT_THRESHOLD && !length(extra_exclude) && !nzchar(cca_su
 # report-snippet: cca-fit
 # The CCA is fitted once, on the legacy survey only.
 #   species_past_final: one row per calibration plot (605), one column per tree
-#     species (14), the counts of each species in the plot.
+#     species (13), the presence (1) or absence (0) of each species in the plot.
 #   env_past_final: the same 605 plots, two columns, MSpT (mean spring
 #     temperature) and SP (summer precipitation) of the plot's legacy climate
 #     window.
@@ -589,7 +591,7 @@ project_period = function(sp, en, era_label) {
 #   type = "lc" (linear combination): where its CLIMATE alone puts it, the
 #     predicted position. It uses only MSpT and SP.
 #   type = "wa" (weighted average): where its SPECIES put it, the observed
-#     position, the average of the species' scores weighted by their counts.
+#     position, the average of the scores of the species present.
 # The lag M of a community is the distance between the two.
 predicted_present = predict(cca_model, newdata = env_present_final, type = "lc", scaling = cca_scaling, hill = cca_hill)
 projected_present = predict(cca_model, newdata = species_present_final,

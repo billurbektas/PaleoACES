@@ -56,12 +56,12 @@ models could no longer be read.
 | R/pipeline/08_paleo_climate.R | pipeline | Paleo climate: CHELSA-TraCE21k monthly climate at each lake and century, | 220 |
 | R/pipeline/09_fire_records.R | pipeline | Fire records (Appendix S3): tapas event detection for the three MORA charcoal | 409 |
 | R/pipeline/10_species_occurrences.R | pipeline | 10_species_occurrences.R | 634 |
-| R/pipeline/11_cca.R | pipeline | 11_cca.R - the pooled CCA and everything derived from it. NO FIGURES. | 666 |
+| R/pipeline/11_cca.R | pipeline | 11_cca.R - the pooled CCA and everything derived from it. NO FIGURES. | 668 |
 | R/pipeline/12_climate_eras_fire_frequency.R | pipeline | 12_climate_eras_fire_frequency.R | 194 |
 | R/pipeline/13_tracking.R | pipeline | Tracking: native-century Holocene positions, tracking metrics for both eras, | 85 |
-| R/pipeline/14_era_models.R | pipeline | Era models (PLAN.md section 5, Step 5a): Holocene stability periods, | 141 |
+| R/pipeline/14_era_models.R | pipeline | Era models (PLAN.md section 5, Step 5a): Holocene stability periods, | 142 |
 | R/pipeline/15_predictor_models.R | pipeline | Explanatory models (PLAN.md section 5, Step 5). | 131 |
-| R/pipeline/16_contributions.R | pipeline | Species contributions (PLAN.md section 5, Step 6): which species led the | 143 |
+| R/pipeline/16_contributions.R | pipeline | Species contributions (PLAN.md section 5, Step 6): which species led the | 146 |
 | R/figures/supp_age_depth_models.R | figure | Figures S4 (four Bacon age-depth models) and S5 (Panther Potholes 210Pb | 114 |
 | R/figures/supp_cca_inertia_commonness.R | figure | Fig. S15 (Bills, 23 Nov 2026): each taxon’s share of the constrained inertia | 44 |
 | R/figures/supp_cca_scaling.R | figure | supp_cca_scaling.R - one CCA drawn at scaling 1 and scaling 2 | 108 |
@@ -75,10 +75,10 @@ models could no longer be read.
 | R/figures/supp_tracking_transitions.R | figure | Appendix figures of the lake-period values over time (redrawn on lake-periods | 86 |
 | R/figures/main_fig2_study_area.R | figure | Figure 2 (Bills, 11 Nov 2026; Fig. S1 until then): the study area. (A) | 214 |
 | R/figures/main_fig3_climate_eras_fire.R | figure | main_fig3_climate_eras_fire.R | 719 |
-| R/figures/main_fig4_cca_trajectories.R | figure | Figure 4: A, species and climate biplot; B, observed and predicted trajectories | 366 |
+| R/figures/main_fig4_cca_trajectories.R | figure | Figure 4: A, species and climate biplot; B, observed and predicted trajectories | 373 |
 | R/figures/main_fig5_era_contrasts.R | figure | Figure 5 and Fig. S16 (PLAN.md section 6; Bills, 23 Nov 2026): fitted means | 83 |
 | R/figures/main_fig6_climate_fire_associations.R | figure | Figure 6 and Fig. S18: climate and fire associations as model slopes (Bills, | 75 |
-| R/figures/main_fig7_species.R | figure | Figure 7 (PLAN.md section 6): species contributions in both eras. Species as | 170 |
+| R/figures/main_fig7_species.R | figure | Figure 7 (PLAN.md section 6): species contributions in both eras. Species as | 171 |
 | R/worked_examples.R | worked examples | Worked examples: step-by-step illustrations of four methods, drawn from the | 412 |
 | R/tests/test_bacon_provenance.R | test | The stored Bacon chronologies are exactly what the current age-model script and | 41 |
 | R/tests/test_cca_tracking_metrics.R | test | Independent geometry and integration checks for the canonical tracking data. | 38 |

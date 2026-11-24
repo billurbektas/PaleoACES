@@ -171,15 +171,15 @@ and angles are left out where a position did not move.
 | cca_tracking_holocene_lake_calculations | direction_effect_on_lag | numeric | — |
 | cca_tracking_holocene_lake_calculations | pace_effect_on_lag_per_century | numeric | CCA distance per century |
 | cca_tracking_holocene_lake_calculations | direction_effect_on_lag_per_century | numeric | CCA distance per century |
-| cca_tracking_holocene_lake_calculations | MSpT_change | numeric | — |
-| cca_tracking_holocene_lake_calculations | MSpT_rate_per_century | numeric | CCA distance per century |
-| cca_tracking_holocene_lake_calculations | MSpT_z_change | numeric | — |
-| cca_tracking_holocene_lake_calculations | MSpT_z_rate_per_century | numeric | CCA distance per century |
-| cca_tracking_holocene_lake_calculations | SP_change | numeric | — |
-| cca_tracking_holocene_lake_calculations | SP_rate_per_century | numeric | CCA distance per century |
-| cca_tracking_holocene_lake_calculations | SP_z_change | numeric | — |
-| cca_tracking_holocene_lake_calculations | SP_z_rate_per_century | numeric | CCA distance per century |
-| cca_tracking_holocene_lake_calculations | standardized_climate_displacement | numeric | CCA distance |
+| cca_tracking_holocene_lake_calculations | MSpT_change | numeric | °C |
+| cca_tracking_holocene_lake_calculations | MSpT_rate_per_century | numeric | °C per century |
+| cca_tracking_holocene_lake_calculations | MSpT_z_change | numeric | calibration SD |
+| cca_tracking_holocene_lake_calculations | MSpT_z_rate_per_century | numeric | calibration SD per century |
+| cca_tracking_holocene_lake_calculations | SP_change | numeric | mm |
+| cca_tracking_holocene_lake_calculations | SP_rate_per_century | numeric | mm per century |
+| cca_tracking_holocene_lake_calculations | SP_z_change | numeric | calibration SD |
+| cca_tracking_holocene_lake_calculations | SP_z_rate_per_century | numeric | calibration SD per century |
+| cca_tracking_holocene_lake_calculations | standardized_climate_displacement | numeric | calibration SD |
 | cca_tracking_holocene_lake_calculations | standardized_climate_change_rate | numeric | standardized climate distance per century |
 | cca_tracking_holocene_lake_calculations | pace_corrected_lag_rate_per_century | numeric | CCA distance per century |
 | cca_tracking_holocene_lake_calculations | direction_corrected_lag_rate_per_century | numeric | CCA distance per century |
@@ -282,15 +282,15 @@ and angles are left out where a position did not move.
 | cca_tracking_anthropocene_plot_calculations | direction_effect_on_lag | numeric | — |
 | cca_tracking_anthropocene_plot_calculations | pace_effect_on_lag_per_century | numeric | CCA distance per century |
 | cca_tracking_anthropocene_plot_calculations | direction_effect_on_lag_per_century | numeric | CCA distance per century |
-| cca_tracking_anthropocene_plot_calculations | MSpT_change | numeric | — |
-| cca_tracking_anthropocene_plot_calculations | MSpT_rate_per_century | numeric | CCA distance per century |
-| cca_tracking_anthropocene_plot_calculations | MSpT_z_change | numeric | — |
-| cca_tracking_anthropocene_plot_calculations | MSpT_z_rate_per_century | numeric | CCA distance per century |
-| cca_tracking_anthropocene_plot_calculations | SP_change | numeric | — |
-| cca_tracking_anthropocene_plot_calculations | SP_rate_per_century | numeric | CCA distance per century |
-| cca_tracking_anthropocene_plot_calculations | SP_z_change | numeric | — |
-| cca_tracking_anthropocene_plot_calculations | SP_z_rate_per_century | numeric | CCA distance per century |
-| cca_tracking_anthropocene_plot_calculations | standardized_climate_displacement | numeric | CCA distance |
+| cca_tracking_anthropocene_plot_calculations | MSpT_change | numeric | °C |
+| cca_tracking_anthropocene_plot_calculations | MSpT_rate_per_century | numeric | °C per century |
+| cca_tracking_anthropocene_plot_calculations | MSpT_z_change | numeric | calibration SD |
+| cca_tracking_anthropocene_plot_calculations | MSpT_z_rate_per_century | numeric | calibration SD per century |
+| cca_tracking_anthropocene_plot_calculations | SP_change | numeric | mm |
+| cca_tracking_anthropocene_plot_calculations | SP_rate_per_century | numeric | mm per century |
+| cca_tracking_anthropocene_plot_calculations | SP_z_change | numeric | calibration SD |
+| cca_tracking_anthropocene_plot_calculations | SP_z_rate_per_century | numeric | calibration SD per century |
+| cca_tracking_anthropocene_plot_calculations | standardized_climate_displacement | numeric | calibration SD |
 | cca_tracking_anthropocene_plot_calculations | standardized_climate_change_rate | numeric | standardized climate distance per century |
 | cca_tracking_anthropocene_plot_calculations | burned | logical | — |
 | cca_tracking_anthropocene_plot_calculations | fire_assignment_source | character | — |

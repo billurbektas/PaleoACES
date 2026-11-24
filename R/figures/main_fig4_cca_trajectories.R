@@ -174,6 +174,7 @@ shown = bind_rows(reduced, modern) |> mutate(group = paste(site, era, type))
 NO_HEADS = tribble(~panel, ~site, ~era, ~type,
   'B', 'MORA', 'Anthropocene', 'observed',
   'B', 'NOCA', 'Holocene', 'predicted',
+  'C', 'MORA', 'Holocene', 'predicted',  # added by Bills, 24 Nov 2026
   'D', 'NOCA', 'Holocene', 'predicted')
 with_heads = function(steps, p) steps |>
   mutate(heads = !paste(site, era, type) %in% with(NO_HEADS[NO_HEADS$panel == p, ], paste(site, era, type)))
@@ -237,8 +238,14 @@ trim_steps = function(steps, mm, size, full_cm) {
   head_mm = pmin(10 * full_cm, gap_mm - TIP_MM - 1.5)
   head = steps$heads & head_mm >= 1.5
   b = b + ifelse(head, TIP_MM * mm, 0)
+  # Every step is drawn, so that each symbol is linked to the next (Bills, 24
+  # Nov 2026; until then a step whose symbols all but touched was left out).
+  # Where an arrowhead does not fit, the step is a plain line; where the
+  # symbols overlap, the line runs from centre to centre beneath them.
+  touch = !head & gap_mm <= .5
+  a = ifelse(touch, 0, a); b = ifelse(touch, 0, b)
   steps |> mutate(head, head_cm = ifelse(head, round(head_mm / 10, 2), NA_real_), shrunk = head & head_mm < 10 * full_cm,
-    drawn = head | (!heads & gap_mm > .5),
+    drawn = TRUE, no_room = heads & !head,
     x = x + ux * a, y = y + uy * a, xend = xend - ux * b, yend = yend - uy * b)
 }
 
@@ -336,7 +343,7 @@ write_csv(bind_rows(
       group_modify(\(d, k) trim_steps(d, d$mm[1], STYLE_ZOOM$size, STYLE_ZOOM$head_cm)) |> ungroup()) |>
     group_by(panel, site, era, type) |>
     summarise(arrowheads = any(heads), steps = n(), drawn = sum(drawn), smaller_heads = sum(shrunk),
-      .groups = 'drop'),
+      plain_for_lack_of_room = sum(no_room), .groups = 'drop'),
   out('figures/cca_trajectory_lines.csv'))
 zoom = function(park) {
   d = holocene |> filter(site == park) |> mutate(group = paste(site, era, type))

@@ -1,12 +1,12 @@
 # 06 Paleo samples: original macrofossil sample identities, presences and the
 # median Bacon age of each sample. Ages never determine sample identity.
-# Uses only the stored chronologies (step 05); CCA eligibility is decided in step 10.
+# Uses only the stored chronologies (step 05); CCA eligibility is decided in stage 11.
 source(here::here('R/helpers/config.R'), local = TRUE)
 suppressPackageStartupMessages({library(here);library(tidyverse)})
 source(here('R/helpers/century_tracking.R'),local=TRUE)
 original=reconstruction_read_original_samples()
 samples=original$samples
-# The seeded 1,000-draw cache is shared with the tracking reconstruction (step 12).
+# The seeded 1,000-draw cache is shared with the tracking reconstruction (stage 13).
 draws=reconstruction_original_age_draws(samples,out('age_draws.rds'),
   HOLOCENE_RECONSTRUCTION_DRAWS,HOLOCENE_RECONSTRUCTION_SEED)
 samples$median_age_cal_bp=NA_real_

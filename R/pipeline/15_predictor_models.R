@@ -1,4 +1,4 @@
-# 14 Explanatory models (PLAN.md section 5, Step 5).
+# 15 Explanatory models (PLAN.md section 5, Step 5).
 # Holocene: within the lake-periods, does more climate change or more fire go
 # with a larger lag, and with better or worse pace and direction?
 # Anthropocene counterpart: burned against unburned plots, by park.
@@ -40,7 +40,7 @@ for (response in responses) {
 # report-snippet: holocene-explanatory-model
   # Holocene lake-periods only. Does the response go with more climate change
   # or more fire? Fitted twice: per century (lag rate, pace contribution, direction
-  # effect) with climate = climate_rate, the climate change rate, and as totals
+  # contribution) with climate = climate_rate, the climate change rate, and as totals
   # not divided by time (lag, pace and direction contribution totals) with
   # climate = climate_change, the climate change between the two ends.
   #   site: a separate level for each park;

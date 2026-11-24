@@ -179,6 +179,13 @@ century_schema = function(tables) purrr::imap_dfr(tables,function(x,name) tibble
   unit=vapply(names(x),function(n) if(grepl('ratio|proportion',n)) 'unitless' else
     if(n=='fire_activity' || n=='frequency_per_century') 'events per century per eligible core' else
     if(n %in% c('standardized_climate_change_rate','climate_rate')) 'standardized climate distance per century' else
+    # The climate columns carry their own units (until 24 Nov 2026 they fell
+    # through to the CCA-distance rules below).
+    if(grepl('_z_rate_per_century$',n)) 'calibration SD per century' else
+    if(grepl('_z_change$',n) || n=='standardized_climate_displacement') 'calibration SD' else
+    if(grepl('_(rate_per_century|change)$',n) && sub('_(rate_per_century|change)$','',n) %in% names(CLIMATE_VARIABLE_UNITS))
+      paste0(c(degrees_C='°C',mm='mm')[[CLIMATE_VARIABLE_UNITS[[sub('_(rate_per_century|change)$','',n)]]]],
+        if(grepl('_rate_per_century$',n)) ' per century' else '') else
     if(grepl('rate|per_century',n)) 'CCA distance per century' else
     if(grepl('cal_bp|age_hi|age_lo',n)) 'cal BP' else if(grepl('_years',n)) 'years' else
     if(n=='angle_degrees') 'degrees' else if(grepl('^(o[12]|p[12])(_2)?$|CCA[12]|^lag_t|displacement',n)) 'CCA distance' else

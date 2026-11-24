@@ -1,4 +1,4 @@
-# 13 Era models (PLAN.md section 5, Step 5a): Holocene stability periods,
+# 14 Era models (PLAN.md section 5, Step 5a): Holocene stability periods,
 # Holocene climate-change periods and the Anthropocene compared within each
 # park, for climate change rate, climate change, turnover rate, displacement,
 # lag rate, lag, pace contribution and direction contribution, each per century and as a
@@ -105,9 +105,10 @@ durations = both |> group_by(period_type, site) |>
 # duration. This table (Bills, 10 Nov 2026) shows by how much, per park, in the
 # three duration classes the lake-periods fall into. Plain means, no model.
 duration_classes = both |> filter(period_type != 'Anthropocene') |>
-  # The lake-periods last 200 to 900 years or 1,900 years and more, with nothing in
-  # between (the top class was 'over 2,000 years' until the slice dating fix of
-  # 11 Nov 2026 made one MORA lake-period 1,900 years long).
+  # The lake-periods fall in a short group (up to 900 years) and a long group
+  # (1,000 years or more), with nothing in between; their exact range is in
+  # era_durations.csv (until the slice dating fix of 11 Nov 2026 the top class was
+  # 'over 2,000 years').
   mutate(duration_class = case_when(duration_yr >= 200 & duration_yr <= 400 ~ '200 to 400 years',
     duration_yr >= 500 & duration_yr <= 900 ~ '500 to 900 years', duration_yr >= 1000 ~ '1,000 years or more',
     TRUE ~ 'other durations')) |>

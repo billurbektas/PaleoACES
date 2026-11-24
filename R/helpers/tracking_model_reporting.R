@@ -1,8 +1,11 @@
 # Labels shared by primary model figures.
 source(here::here('R/helpers/tracking_result_paths.R'),local=TRUE)
 # Labels for model diagnostics, keyed by the PLAN.md response names.
-tracking_model_response_label=function(metric) unname(c(lag_rate='Lag rate',lag='Lag',turnover_rate='Turnover rate',displacement='Displacement',
-  climate_change='Climate change',pace_effect_total='Pace contribution (total)',direction_effect_total='Direction contribution (total)',
+# The labels follow the wording of the report: the totals are 'not divided by
+# time', and the displacement is the turnover not divided by time (24 Nov 2026).
+tracking_model_response_label=function(metric) unname(c(lag_rate='Lag rate',lag='Lag (not divided by time)',turnover_rate='Turnover rate',
+  displacement='Turnover (not divided by time)',climate_change='Climate change (not divided by time)',
+  pace_effect_total='Pace contribution (not divided by time)',direction_effect_total='Direction contribution (not divided by time)',
   climate_rate='Climate change rate',pace_effect='Pace contribution',direction_effect='Direction contribution')[metric])
 # Period types of the era models (PLAN.md section 2), in model order.
 ERA_PERIOD_TYPES=c('Holocene-S','Holocene-C','Anthropocene')
