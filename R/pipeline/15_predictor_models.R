@@ -46,7 +46,9 @@ for (response in responses) {
   #   site: a separate level for each park;
   #   climate: the slope per unit of climate change (rate or total);
   #   fire_activity: the slope per accepted fire event per century per core.
-  # Consecutive lake-periods of a lake are correlated (AR(1) within lake).
+  # Lake-periods of a lake are correlated, AR(1) within lake on unit_index, the
+  # position of the lake-period's climate period (C1 = 1 to S5 = 10): two
+  # lake-periods k periods apart correlate by phi^k, also across missing periods.
   # varIdent lets the parks keep a different spread, and varFixed gives ends
   # resting on single samples less weight (endpoint_var = 1/n_start + 1/n_end).
   model = reformulate(c('site', climate, 'fire_activity'), response = 'estimate')

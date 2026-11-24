@@ -56,9 +56,20 @@ build_lake_periods = function(positions, periods, scaling, fire_fun) {
     dplyr::mutate(duration_yr = age_start - age_end, endpoint_var = 1 / n_start + 1 / n_end,
       vegetation_dt_years = duration_yr, climate_dt_years = duration_yr) |>
     dplyr::group_by(site, lake) |> dplyr::arrange(dplyr::desc(age_start), .by_group = TRUE) |>
-    dplyr::mutate(unit_index = dplyr::row_number()) |> dplyr::ungroup()
+    # The AR(1) term of the era and explanatory models counts steps along this
+    # index: the position of the lake-period's climate period in the Holocene
+    # sequence, oldest first. A period the lake lacks (fewer than two sampled
+    # centuries) or a lake-period a model leaves out (no pace value) is still
+    # time that passed between its neighbours, so it still counts as a step,
+    # and the numbering is the same in every model (Bills, 24 Nov 2026; until
+    # then the lake-periods were numbered 1, 2, ... after the two-century rule).
+    dplyr::mutate(unit_index = match(period, periods$period[order(-periods$older_cal_bp)])) |>
+    dplyr::ungroup()
   # Rule (PLAN.md section 4.1): two distinct centuries, t1 older than t2.
   stopifnot(all(units$age_start > units$age_end), all(is.finite(units$o1_2)), all(is.finite(units$p1_2)))
+  # Rule (AR(1) numbering by period position): one index per lake-period, rising
+  # from old to young within each lake.
+  stopifnot(!anyNA(units$unit_index), all(tapply(units$unit_index, units$lake, \(i) all(diff(i) > 0))))
   units = units |> calculate_tracking_metrics() |> add_climate_change_metrics(scaling) |>
     add_corrected_lag_rates()
   fire = fire_fun(units |> dplyr::transmute(site, age_hi = age_start, age_lo = age_end))$regional

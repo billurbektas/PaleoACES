@@ -715,41 +715,41 @@ Anthropocene plot pairs span 27.5 to 32.5 years.
 
 | Quantity | Park | Period type | n | Estimated mean | SE | df | 95% CI |
 |:---|:---|:---|---:|---:|---:|---:|:---|
-| Climate change rate | MORA | Holocene-S | 7 | 0.052 | 0.017 | 622 | 0.018 to 0.086 |
+| Climate change rate | MORA | Holocene-S | 7 | 0.052 | 0.017 | 622 | 0.018 to 0.085 |
 | Climate change rate | MORA | Holocene-C | 6 | 0.096 | 0.025 | 622 | 0.047 to 0.145 |
 | Climate change rate | MORA | Anthropocene | 328 | 3.102 | 0.053 | 622 | 2.999 to 3.205 |
-| Climate change rate | NOCA | Holocene-S | 5 | 0.044 | 0.011 | 622 | 0.023 to 0.064 |
+| Climate change rate | NOCA | Holocene-S | 5 | 0.044 | 0.010 | 622 | 0.023 to 0.064 |
 | Climate change rate | NOCA | Holocene-C | 5 | 0.063 | 0.015 | 622 | 0.034 to 0.093 |
 | Climate change rate | NOCA | Anthropocene | 277 | 2.104 | 0.100 | 622 | 1.907 to 2.300 |
-| Climate change (not divided by time) | MORA | Holocene-S | 7 | 0.335 | 0.035 | 622 | 0.267 to 0.403 |
-| Climate change (not divided by time) | MORA | Holocene-C | 6 | 0.393 | 0.119 | 622 | 0.160 to 0.626 |
+| Climate change (not divided by time) | MORA | Holocene-S | 7 | 0.329 | 0.037 | 622 | 0.256 to 0.401 |
+| Climate change (not divided by time) | MORA | Holocene-C | 6 | 0.398 | 0.121 | 622 | 0.162 to 0.635 |
 | Climate change (not divided by time) | MORA | Anthropocene | 328 | 0.913 | 0.018 | 622 | 0.878 to 0.948 |
-| Climate change (not divided by time) | NOCA | Holocene-S | 5 | 0.216 | 0.040 | 622 | 0.138 to 0.294 |
-| Climate change (not divided by time) | NOCA | Holocene-C | 5 | 0.377 | 0.075 | 622 | 0.229 to 0.525 |
+| Climate change (not divided by time) | NOCA | Holocene-S | 5 | 0.216 | 0.040 | 622 | 0.137 to 0.294 |
+| Climate change (not divided by time) | NOCA | Holocene-C | 5 | 0.378 | 0.076 | 622 | 0.230 to 0.526 |
 | Climate change (not divided by time) | NOCA | Anthropocene | 277 | 0.597 | 0.029 | 622 | 0.541 to 0.653 |
-| Turnover rate | MORA | Holocene-S | 7 | 0.024 | 0.009 | 622 | 0.006 to 0.042 |
-| Turnover rate | MORA | Holocene-C | 6 | 0.087 | 0.020 | 622 | 0.048 to 0.126 |
+| Turnover rate | MORA | Holocene-S | 7 | 0.029 | 0.012 | 622 | 0.006 to 0.052 |
+| Turnover rate | MORA | Holocene-C | 6 | 0.080 | 0.022 | 622 | 0.037 to 0.123 |
 | Turnover rate | MORA | Anthropocene | 328 | 0.936 | 0.046 | 622 | 0.847 to 1.026 |
-| Turnover rate | NOCA | Holocene-S | 5 | 0.147 | 0.071 | 622 | 0.008 to 0.285 |
-| Turnover rate | NOCA | Holocene-C | 5 | 0.061 | 0.019 | 622 | 0.023 to 0.099 |
+| Turnover rate | NOCA | Holocene-S | 5 | 0.146 | 0.070 | 622 | 0.009 to 0.284 |
+| Turnover rate | NOCA | Holocene-C | 5 | 0.061 | 0.019 | 622 | 0.024 to 0.099 |
 | Turnover rate | NOCA | Anthropocene | 277 | 2.066 | 0.117 | 622 | 1.837 to 2.296 |
-| Turnover (not divided by time) | MORA | Holocene-S | 7 | 0.313 | 0.094 | 622 | 0.129 to 0.497 |
-| Turnover (not divided by time) | MORA | Holocene-C | 6 | 0.253 | 0.065 | 622 | 0.126 to 0.381 |
+| Turnover (not divided by time) | MORA | Holocene-S | 7 | 0.315 | 0.103 | 622 | 0.113 to 0.517 |
+| Turnover (not divided by time) | MORA | Holocene-C | 6 | 0.245 | 0.062 | 622 | 0.124 to 0.366 |
 | Turnover (not divided by time) | MORA | Anthropocene | 328 | 0.356 | 0.017 | 622 | 0.322 to 0.390 |
-| Turnover (not divided by time) | NOCA | Holocene-S | 5 | 0.497 | 0.123 | 622 | 0.256 to 0.739 |
-| Turnover (not divided by time) | NOCA | Holocene-C | 5 | 0.368 | 0.045 | 622 | 0.280 to 0.456 |
+| Turnover (not divided by time) | NOCA | Holocene-S | 5 | 0.495 | 0.116 | 622 | 0.267 to 0.723 |
+| Turnover (not divided by time) | NOCA | Holocene-C | 5 | 0.373 | 0.042 | 622 | 0.291 to 0.454 |
 | Turnover (not divided by time) | NOCA | Anthropocene | 277 | 0.659 | 0.037 | 622 | 0.585 to 0.732 |
-| Lag rate | MORA | Holocene-S | 7 | -0.006 | 0.010 | 622 | -0.025 to 0.014 |
-| Lag rate | MORA | Holocene-C | 6 | -0.017 | 0.017 | 622 | -0.051 to 0.017 |
+| Lag rate | MORA | Holocene-S | 7 | -0.005 | 0.011 | 622 | -0.026 to 0.016 |
+| Lag rate | MORA | Holocene-C | 6 | -0.015 | 0.017 | 622 | -0.049 to 0.019 |
 | Lag rate | MORA | Anthropocene | 328 | 0.687 | 0.062 | 622 | 0.565 to 0.810 |
-| Lag rate | NOCA | Holocene-S | 5 | 0.079 | 0.060 | 622 | -0.039 to 0.197 |
-| Lag rate | NOCA | Holocene-C | 5 | -0.016 | 0.021 | 622 | -0.058 to 0.025 |
+| Lag rate | NOCA | Holocene-S | 5 | 0.083 | 0.057 | 622 | -0.029 to 0.194 |
+| Lag rate | NOCA | Holocene-C | 5 | -0.015 | 0.020 | 622 | -0.053 to 0.024 |
 | Lag rate | NOCA | Anthropocene | 277 | -0.133 | 0.137 | 622 | -0.402 to 0.137 |
-| Lag | MORA | Holocene-S | 7 | -0.197 | 0.118 | 622 | -0.429 to 0.035 |
-| Lag | MORA | Holocene-C | 6 | -0.060 | 0.065 | 622 | -0.187 to 0.068 |
+| Lag | MORA | Holocene-S | 7 | -0.189 | 0.128 | 622 | -0.440 to 0.062 |
+| Lag | MORA | Holocene-C | 6 | -0.053 | 0.066 | 622 | -0.182 to 0.077 |
 | Lag | MORA | Anthropocene | 328 | 0.201 | 0.018 | 622 | 0.165 to 0.237 |
-| Lag | NOCA | Holocene-S | 5 | 0.270 | 0.184 | 622 | -0.091 to 0.631 |
-| Lag | NOCA | Holocene-C | 5 | -0.058 | 0.137 | 622 | -0.327 to 0.212 |
+| Lag | NOCA | Holocene-S | 5 | 0.293 | 0.170 | 622 | -0.041 to 0.626 |
+| Lag | NOCA | Holocene-C | 5 | -0.039 | 0.127 | 622 | -0.288 to 0.210 |
 | Lag | NOCA | Anthropocene | 277 | -0.039 | 0.039 | 622 | -0.115 to 0.038 |
 | Pace contribution | MORA | Holocene-S | 5 | -0.016 | 0.004 | 474 | -0.024 to -0.007 |
 | Pace contribution | MORA | Holocene-C | 5 | 0.018 | 0.008 | 474 | 0.002 to 0.033 |
@@ -787,18 +787,18 @@ Anthropocene plot pairs span 27.5 to 32.5 years.
 
 | Quantity | Park | Contrast | Estimate | SE | df | t | 95% CI | p | p (Holm) |
 |:---|:---|:---|---:|---:|---:|---:|:---|---:|---:|
-| Climate change (not divided by time) | MORA | Anthropocene - Holocene-C | 0.520 | 0.120 | 622 | 4.329 | 0.284 to 0.756 | 0.000 | 0.000 |
-| Climate change (not divided by time) | MORA | Anthropocene - Holocene-S | 0.578 | 0.039 | 622 | 14.815 | 0.501 to 0.654 | 0.000 | 0.000 |
-| Climate change (not divided by time) | MORA | Holocene-C - Holocene-S | 0.058 | 0.132 | 622 | 0.438 | -0.201 to 0.316 | 0.661 | 0.661 |
-| Climate change (not divided by time) | NOCA | Anthropocene - Holocene-C | 0.220 | 0.081 | 622 | 2.726 | 0.061 to 0.378 | 0.007 | 0.020 |
-| Climate change (not divided by time) | NOCA | Anthropocene - Holocene-S | 0.381 | 0.049 | 622 | 7.756 | 0.284 to 0.477 | 0.000 | 0.000 |
-| Climate change (not divided by time) | NOCA | Holocene-C - Holocene-S | 0.161 | 0.096 | 622 | 1.678 | -0.027 to 0.349 | 0.094 | 0.188 |
+| Climate change (not divided by time) | MORA | Anthropocene - Holocene-C | 0.515 | 0.122 | 622 | 4.224 | 0.275 to 0.754 | 0.000 | 0.000 |
+| Climate change (not divided by time) | MORA | Anthropocene - Holocene-S | 0.584 | 0.041 | 622 | 14.308 | 0.504 to 0.665 | 0.000 | 0.000 |
+| Climate change (not divided by time) | MORA | Holocene-C - Holocene-S | 0.070 | 0.136 | 622 | 0.513 | -0.197 to 0.336 | 0.608 | 0.608 |
+| Climate change (not divided by time) | NOCA | Anthropocene - Holocene-C | 0.219 | 0.081 | 622 | 2.707 | 0.060 to 0.377 | 0.007 | 0.021 |
+| Climate change (not divided by time) | NOCA | Anthropocene - Holocene-S | 0.381 | 0.049 | 622 | 7.754 | 0.284 to 0.477 | 0.000 | 0.000 |
+| Climate change (not divided by time) | NOCA | Holocene-C - Holocene-S | 0.162 | 0.097 | 622 | 1.665 | -0.029 to 0.353 | 0.096 | 0.193 |
 | Climate change rate | MORA | Anthropocene - Holocene-C | 3.007 | 0.058 | 622 | 51.700 | 2.892 to 3.121 | 0.000 | 0.000 |
-| Climate change rate | MORA | Anthropocene - Holocene-S | 3.050 | 0.055 | 622 | 55.221 | 2.942 to 3.159 | 0.000 | 0.000 |
-| Climate change rate | MORA | Holocene-C - Holocene-S | 0.044 | 0.030 | 622 | 1.481 | -0.014 to 0.102 | 0.139 | 0.278 |
-| Climate change rate | NOCA | Anthropocene - Holocene-C | 2.040 | 0.101 | 622 | 20.126 | 1.841 to 2.239 | 0.000 | 0.000 |
+| Climate change rate | MORA | Anthropocene - Holocene-S | 3.051 | 0.055 | 622 | 55.255 | 2.942 to 3.159 | 0.000 | 0.000 |
+| Climate change rate | MORA | Holocene-C - Holocene-S | 0.044 | 0.030 | 622 | 1.485 | -0.014 to 0.103 | 0.138 | 0.276 |
+| Climate change rate | NOCA | Anthropocene - Holocene-C | 2.040 | 0.101 | 622 | 20.127 | 1.841 to 2.239 | 0.000 | 0.000 |
 | Climate change rate | NOCA | Anthropocene - Holocene-S | 2.060 | 0.101 | 622 | 20.434 | 1.862 to 2.258 | 0.000 | 0.000 |
-| Climate change rate | NOCA | Holocene-C - Holocene-S | 0.020 | 0.018 | 622 | 1.122 | -0.015 to 0.054 | 0.263 | 0.278 |
+| Climate change rate | NOCA | Holocene-C - Holocene-S | 0.020 | 0.018 | 622 | 1.106 | -0.015 to 0.055 | 0.269 | 0.276 |
 | Direction contribution | MORA | Anthropocene - Holocene-C | 0.575 | 0.093 | 474 | 6.158 | 0.392 to 0.759 | 0.000 | 0.000 |
 | Direction contribution | MORA | Anthropocene - Holocene-S | 0.547 | 0.084 | 474 | 6.498 | 0.382 to 0.712 | 0.000 | 0.000 |
 | Direction contribution | MORA | Holocene-C - Holocene-S | -0.028 | 0.032 | 474 | -0.880 | -0.091 to 0.035 | 0.380 | 0.380 |
@@ -811,24 +811,24 @@ Anthropocene plot pairs span 27.5 to 32.5 years.
 | Direction contribution (not divided by time) | NOCA | Anthropocene - Holocene-C | 0.036 | 0.162 | 474 | 0.225 | -0.282 to 0.355 | 0.822 | 1.000 |
 | Direction contribution (not divided by time) | NOCA | Anthropocene - Holocene-S | -0.225 | 0.111 | 474 | -2.033 | -0.442 to -0.008 | 0.043 | 0.170 |
 | Direction contribution (not divided by time) | NOCA | Holocene-C - Holocene-S | -0.261 | 0.106 | 474 | -2.467 | -0.469 to -0.053 | 0.014 | 0.070 |
-| Turnover (not divided by time) | MORA | Anthropocene - Holocene-C | 0.102 | 0.067 | 622 | 1.526 | -0.029 to 0.234 | 0.127 | 0.637 |
-| Turnover (not divided by time) | MORA | Anthropocene - Holocene-S | 0.043 | 0.095 | 622 | 0.448 | -0.144 to 0.230 | 0.654 | 1.000 |
-| Turnover (not divided by time) | MORA | Holocene-C - Holocene-S | -0.060 | 0.133 | 622 | -0.449 | -0.320 to 0.201 | 0.654 | 1.000 |
-| Turnover (not divided by time) | NOCA | Anthropocene - Holocene-C | 0.291 | 0.058 | 622 | 4.988 | 0.176 to 0.405 | 0.000 | 0.000 |
-| Turnover (not divided by time) | NOCA | Anthropocene - Holocene-S | 0.162 | 0.129 | 622 | 1.258 | -0.091 to 0.414 | 0.209 | 0.836 |
-| Turnover (not divided by time) | NOCA | Holocene-C - Holocene-S | -0.129 | 0.151 | 622 | -0.857 | -0.424 to 0.167 | 0.392 | 1.000 |
-| Lag | MORA | Anthropocene - Holocene-C | 0.261 | 0.068 | 622 | 3.859 | 0.128 to 0.394 | 0.000 | 0.001 |
-| Lag | MORA | Anthropocene - Holocene-S | 0.398 | 0.120 | 622 | 3.329 | 0.163 to 0.633 | 0.001 | 0.005 |
-| Lag | MORA | Holocene-C - Holocene-S | 0.137 | 0.147 | 622 | 0.936 | -0.151 to 0.426 | 0.349 | 0.699 |
-| Lag | NOCA | Anthropocene - Holocene-C | 0.019 | 0.143 | 622 | 0.133 | -0.261 to 0.299 | 0.894 | 0.894 |
-| Lag | NOCA | Anthropocene - Holocene-S | -0.308 | 0.188 | 622 | -1.640 | -0.677 to 0.061 | 0.102 | 0.406 |
-| Lag | NOCA | Holocene-C - Holocene-S | -0.327 | 0.259 | 622 | -1.266 | -0.835 to 0.180 | 0.206 | 0.618 |
-| Lag rate | MORA | Anthropocene - Holocene-C | 0.704 | 0.065 | 622 | 10.879 | 0.577 to 0.831 | 0.000 | 0.000 |
-| Lag rate | MORA | Anthropocene - Holocene-S | 0.693 | 0.063 | 622 | 10.971 | 0.569 to 0.817 | 0.000 | 0.000 |
-| Lag rate | MORA | Holocene-C - Holocene-S | -0.011 | 0.022 | 622 | -0.508 | -0.054 to 0.032 | 0.612 | 0.803 |
-| Lag rate | NOCA | Anthropocene - Holocene-C | -0.117 | 0.139 | 622 | -0.840 | -0.389 to 0.156 | 0.401 | 0.803 |
-| Lag rate | NOCA | Anthropocene - Holocene-S | -0.212 | 0.150 | 622 | -1.416 | -0.507 to 0.082 | 0.157 | 0.629 |
-| Lag rate | NOCA | Holocene-C - Holocene-S | -0.096 | 0.070 | 622 | -1.375 | -0.232 to 0.041 | 0.170 | 0.629 |
+| Turnover (not divided by time) | MORA | Anthropocene - Holocene-C | 0.111 | 0.064 | 622 | 1.729 | -0.015 to 0.236 | 0.084 | 0.422 |
+| Turnover (not divided by time) | MORA | Anthropocene - Holocene-S | 0.041 | 0.104 | 622 | 0.394 | -0.164 to 0.246 | 0.694 | 1.000 |
+| Turnover (not divided by time) | MORA | Holocene-C - Holocene-S | -0.070 | 0.132 | 622 | -0.526 | -0.329 to 0.190 | 0.599 | 1.000 |
+| Turnover (not divided by time) | NOCA | Anthropocene - Holocene-C | 0.286 | 0.056 | 622 | 5.118 | 0.176 to 0.396 | 0.000 | 0.000 |
+| Turnover (not divided by time) | NOCA | Anthropocene - Holocene-S | 0.164 | 0.122 | 622 | 1.342 | -0.076 to 0.403 | 0.180 | 0.720 |
+| Turnover (not divided by time) | NOCA | Holocene-C - Holocene-S | -0.123 | 0.135 | 622 | -0.910 | -0.387 to 0.142 | 0.363 | 1.000 |
+| Lag | MORA | Anthropocene - Holocene-C | 0.254 | 0.068 | 622 | 3.719 | 0.120 to 0.388 | 0.000 | 0.001 |
+| Lag | MORA | Anthropocene - Holocene-S | 0.390 | 0.129 | 622 | 3.024 | 0.137 to 0.643 | 0.003 | 0.013 |
+| Lag | MORA | Holocene-C - Holocene-S | 0.136 | 0.139 | 622 | 0.979 | -0.137 to 0.409 | 0.328 | 0.656 |
+| Lag | NOCA | Anthropocene - Holocene-C | 0.000 | 0.133 | 622 | 0.002 | -0.260 to 0.261 | 0.998 | 0.998 |
+| Lag | NOCA | Anthropocene - Holocene-S | -0.332 | 0.174 | 622 | -1.903 | -0.674 to 0.011 | 0.058 | 0.230 |
+| Lag | NOCA | Holocene-C - Holocene-S | -0.332 | 0.202 | 622 | -1.646 | -0.728 to 0.064 | 0.100 | 0.301 |
+| Lag rate | MORA | Anthropocene - Holocene-C | 0.702 | 0.065 | 622 | 10.850 | 0.575 to 0.829 | 0.000 | 0.000 |
+| Lag rate | MORA | Anthropocene - Holocene-S | 0.693 | 0.063 | 622 | 10.949 | 0.568 to 0.817 | 0.000 | 0.000 |
+| Lag rate | MORA | Holocene-C - Holocene-S | -0.010 | 0.021 | 622 | -0.463 | -0.051 to 0.032 | 0.644 | 0.787 |
+| Lag rate | NOCA | Anthropocene - Holocene-C | -0.118 | 0.139 | 622 | -0.854 | -0.391 to 0.154 | 0.394 | 0.787 |
+| Lag rate | NOCA | Anthropocene - Holocene-S | -0.216 | 0.148 | 622 | -1.451 | -0.507 to 0.076 | 0.147 | 0.462 |
+| Lag rate | NOCA | Holocene-C - Holocene-S | -0.097 | 0.062 | 622 | -1.577 | -0.218 to 0.024 | 0.115 | 0.462 |
 | Pace contribution | MORA | Anthropocene - Holocene-C | 0.108 | 0.048 | 474 | 2.236 | 0.013 to 0.202 | 0.026 | 0.103 |
 | Pace contribution | MORA | Anthropocene - Holocene-S | 0.141 | 0.048 | 474 | 2.953 | 0.047 to 0.234 | 0.003 | 0.017 |
 | Pace contribution | MORA | Holocene-C - Holocene-S | 0.033 | 0.008 | 474 | 4.080 | 0.017 to 0.049 | 0.000 | 0.000 |
@@ -841,12 +841,12 @@ Anthropocene plot pairs span 27.5 to 32.5 years.
 | Pace contribution (not divided by time) | NOCA | Anthropocene - Holocene-C | -0.120 | 0.069 | 474 | -1.744 | -0.255 to 0.015 | 0.082 | 0.245 |
 | Pace contribution (not divided by time) | NOCA | Anthropocene - Holocene-S | -0.346 | 0.168 | 474 | -2.061 | -0.675 to -0.016 | 0.040 | 0.160 |
 | Pace contribution (not divided by time) | NOCA | Holocene-C - Holocene-S | -0.226 | 0.147 | 474 | -1.540 | -0.514 to 0.062 | 0.124 | 0.248 |
-| Turnover rate | MORA | Anthropocene - Holocene-C | 0.850 | 0.050 | 622 | 17.021 | 0.752 to 0.948 | 0.000 | 0.000 |
-| Turnover rate | MORA | Anthropocene - Holocene-S | 0.913 | 0.047 | 622 | 19.528 | 0.821 to 1.004 | 0.000 | 0.000 |
-| Turnover rate | MORA | Holocene-C - Holocene-S | 0.063 | 0.027 | 622 | 2.344 | 0.010 to 0.115 | 0.019 | 0.039 |
-| Turnover rate | NOCA | Anthropocene - Holocene-C | 2.005 | 0.118 | 622 | 16.932 | 1.773 to 2.238 | 0.000 | 0.000 |
-| Turnover rate | NOCA | Anthropocene - Holocene-S | 1.920 | 0.136 | 622 | 14.065 | 1.652 to 2.188 | 0.000 | 0.000 |
-| Turnover rate | NOCA | Holocene-C - Holocene-S | -0.086 | 0.087 | 622 | -0.987 | -0.256 to 0.085 | 0.324 | 0.324 |
+| Turnover rate | MORA | Anthropocene - Holocene-C | 0.857 | 0.051 | 622 | 16.872 | 0.757 to 0.956 | 0.000 | 0.000 |
+| Turnover rate | MORA | Anthropocene - Holocene-S | 0.908 | 0.047 | 622 | 19.201 | 0.815 to 1.001 | 0.000 | 0.000 |
+| Turnover rate | MORA | Holocene-C - Holocene-S | 0.051 | 0.031 | 622 | 1.633 | -0.010 to 0.113 | 0.103 | 0.206 |
+| Turnover rate | NOCA | Anthropocene - Holocene-C | 2.005 | 0.118 | 622 | 16.936 | 1.773 to 2.238 | 0.000 | 0.000 |
+| Turnover rate | NOCA | Anthropocene - Holocene-S | 1.920 | 0.136 | 622 | 14.106 | 1.653 to 2.187 | 0.000 | 0.000 |
+| Turnover rate | NOCA | Holocene-C - Holocene-S | -0.085 | 0.086 | 622 | -0.990 | -0.253 to 0.084 | 0.323 | 0.323 |
 
 **Table S17. How many times higher the rates were in the Anthropocene
 than in the Holocene.** The estimated mean of the Anthropocene divided
@@ -857,18 +857,18 @@ Anthropocene plot pairs span 27.5 to 32.5 years.
 
 | Quantity            | Park | Anthropocene over |     Fold | Quoted as speed |
 |:--------------------|:-----|:------------------|---------:|:----------------|
-| Climate change rate | MORA | Holocene-C        |   32.458 | yes             |
-| Climate change rate | MORA | Holocene-S        |   59.774 | no              |
-| Climate change rate | NOCA | Holocene-C        |   33.133 | yes             |
-| Climate change rate | NOCA | Holocene-S        |   48.146 | no              |
-| Turnover rate       | MORA | Holocene-C        |   10.812 | yes             |
-| Turnover rate       | MORA | Holocene-S        |   39.176 | no              |
-| Turnover rate       | NOCA | Holocene-C        |   33.738 | yes             |
-| Turnover rate       | NOCA | Holocene-S        |   14.069 | no              |
-| Lag rate            | MORA | Holocene-C        |  -41.049 | no              |
-| Lag rate            | MORA | Holocene-S        | -123.791 | no              |
-| Lag rate            | NOCA | Holocene-C        |    8.158 | no              |
-| Lag rate            | NOCA | Holocene-S        |   -1.676 | no              |
+| Climate change rate | MORA | Holocene-C        |   32.415 | yes             |
+| Climate change rate | MORA | Holocene-S        |   60.154 | no              |
+| Climate change rate | NOCA | Holocene-C        |   33.163 | yes             |
+| Climate change rate | NOCA | Holocene-S        |   48.133 | no              |
+| Turnover rate       | MORA | Holocene-C        |   11.722 | yes             |
+| Turnover rate       | MORA | Holocene-S        |   32.653 | no              |
+| Turnover rate       | NOCA | Holocene-C        |   33.642 | yes             |
+| Turnover rate       | NOCA | Holocene-S        |   14.117 | no              |
+| Lag rate            | MORA | Holocene-C        |  -45.945 | no              |
+| Lag rate            | MORA | Holocene-S        | -131.451 | no              |
+| Lag rate            | NOCA | Holocene-C        |    9.139 | no              |
+| Lag rate            | NOCA | Holocene-S        |   -1.609 | no              |
 
 **Quantities not divided by time.** The main text compares the rates per
 century (Fig. 5). The same models fitted on the quantities not divided
@@ -951,12 +951,12 @@ divided by the total sum of squares, subtracted from 1).
 
 | Quantity | Units | Coefficients | Residual df | Residual SE | AR(1) | Residual SD by period type and park | Log-likelihood (REML) | AIC | Descriptive R² | Warnings |
 |:---|---:|---:|---:|---:|---:|:---|---:|---:|---:|:---|
-| Climate change rate | 628 | 6 | 622 | 0.672 | 0.040 | Anthropocene NOCA=1.754, Holocene-C MORA=0.064, Holocene-S MORA=0.047, Holocene-C NOCA=0.093, Holocene-S NOCA=0.064 | -955.559 | 1937.119 | 0.218 | none |
-| Climate change (not divided by time) | 628 | 6 | 622 | 0.227 | -0.184 | Anthropocene NOCA=1.480, Holocene-C MORA=0.903, Holocene-S MORA=0.293, Holocene-C NOCA=1.366, Holocene-S NOCA=0.706 | -276.591 | 579.181 | 0.167 | none |
-| Turnover rate | 628 | 6 | 622 | 0.586 | -0.564 | Anthropocene NOCA=2.345, Holocene-C MORA=0.060, Holocene-S MORA=0.032, Holocene-C NOCA=0.113, Holocene-S NOCA=0.399 | -952.652 | 1931.303 | 0.156 | none |
-| Turnover (not divided by time) | 628 | 6 | 622 | 0.222 | -0.305 | Anthropocene NOCA=1.979, Holocene-C MORA=0.499, Holocene-S MORA=0.814, Holocene-C NOCA=0.795, Holocene-S NOCA=2.132 | -349.215 | 724.430 | 0.094 | none |
-| Lag rate | 628 | 6 | 622 | 0.798 | -0.175 | Anthropocene NOCA=2.023, Holocene-C MORA=0.037, Holocene-S MORA=0.024, Holocene-C NOCA=0.109, Holocene-S NOCA=0.303 | -1101.496 | 2228.992 | 0.053 | none |
-| Lag | 628 | 6 | 622 | 0.234 | -0.162 | Anthropocene NOCA=1.960, Holocene-C MORA=0.479, Holocene-S MORA=0.962, Holocene-C NOCA=2.418, Holocene-S NOCA=3.165 | -386.862 | 799.725 | 0.058 | none |
+| Climate change rate | 628 | 6 | 622 | 0.672 | 0.026 | Anthropocene NOCA=1.754, Holocene-C MORA=0.064, Holocene-S MORA=0.047, Holocene-C NOCA=0.093, Holocene-S NOCA=0.064 | -955.567 | 1937.134 | 0.218 | none |
+| Climate change (not divided by time) | 628 | 6 | 622 | 0.227 | -0.211 | Anthropocene NOCA=1.480, Holocene-C MORA=0.912, Holocene-S MORA=0.298, Holocene-C NOCA=1.360, Holocene-S NOCA=0.702 | -276.583 | 579.166 | 0.167 | none |
+| Turnover rate | 628 | 6 | 622 | 0.586 | -0.558 | Anthropocene NOCA=2.345, Holocene-C MORA=0.059, Holocene-S MORA=0.033, Holocene-C NOCA=0.112, Holocene-S NOCA=0.397 | -952.621 | 1931.242 | 0.156 | none |
+| Turnover (not divided by time) | 628 | 6 | 622 | 0.222 | -0.178 | Anthropocene NOCA=1.979, Holocene-C MORA=0.477, Holocene-S MORA=0.853, Holocene-C NOCA=0.770, Holocene-S NOCA=2.096 | -349.593 | 725.186 | 0.094 | none |
+| Lag rate | 628 | 6 | 622 | 0.798 | -0.051 | Anthropocene NOCA=2.023, Holocene-C MORA=0.038, Holocene-S MORA=0.025, Holocene-C NOCA=0.104, Holocene-S NOCA=0.291 | -1101.602 | 2229.204 | 0.053 | none |
+| Lag | 628 | 6 | 622 | 0.234 | 0.056 | Anthropocene NOCA=1.960, Holocene-C MORA=0.486, Holocene-S MORA=1.018, Holocene-C NOCA=2.268, Holocene-S NOCA=2.969 | -386.945 | 799.891 | 0.058 | none |
 | Pace contribution | 480 | 6 | 474 | 0.532 | 0.203 | Anthropocene NOCA=2.945, Holocene-C MORA=0.024, Holocene-S MORA=0.013, Holocene-C NOCA=0.064, Holocene-S NOCA=0.392 | -715.246 | 1456.492 | 0.012 | none |
 | Direction contribution | 480 | 6 | 474 | 0.909 | 0.686 | Anthropocene NOCA=1.652, Holocene-C MORA=0.073, Holocene-S MORA=0.035, Holocene-C NOCA=0.106, Holocene-S NOCA=0.085 | -849.535 | 1725.070 | 0.061 | none |
 | Pace contribution (not divided by time) | 480 | 6 | 474 | 0.156 | 0.262 | Anthropocene NOCA=2.867, Holocene-C MORA=0.380, Holocene-S MORA=0.814, Holocene-C NOCA=1.371, Holocene-S NOCA=4.079 | -175.569 | 377.137 | 0.016 | none |
@@ -1032,10 +1032,10 @@ S22.
 
 | Quantity | Era | Term | Estimate | SE | df | t | 95% CI | p | n | R² |
 |:---|:---|:---|---:|---:|---:|---:|:---|---:|---:|---:|
-| Lag rate | Holocene | (Intercept) | 0.009 | 0.017 | 19 | 0.517 | -0.027 to 0.045 | 0.611 | 23 | 0.229 |
-| Lag rate | Holocene | siteNOCA | 0.091 | 0.045 | 19 | 2.015 | -0.004 to 0.186 | 0.058 | 23 | 0.229 |
-| Lag rate | Holocene | climate_rate | -0.031 | 0.185 | 19 | -0.169 | -0.418 to 0.355 | 0.867 | 23 | 0.229 |
-| Lag rate | Holocene | fire_activity | -0.105 | 0.072 | 19 | -1.455 | -0.255 to 0.046 | 0.162 | 23 | 0.229 |
+| Lag rate | Holocene | (Intercept) | 0.010 | 0.018 | 19 | 0.536 | -0.028 to 0.047 | 0.598 | 23 | 0.228 |
+| Lag rate | Holocene | siteNOCA | 0.091 | 0.046 | 19 | 1.991 | -0.005 to 0.187 | 0.061 | 23 | 0.228 |
+| Lag rate | Holocene | climate_rate | -0.036 | 0.190 | 19 | -0.191 | -0.435 to 0.362 | 0.850 | 23 | 0.228 |
+| Lag rate | Holocene | fire_activity | -0.103 | 0.071 | 19 | -1.451 | -0.252 to 0.046 | 0.163 | 23 | 0.228 |
 | Lag rate | Anthropocene | (Intercept) | 0.687 | 0.062 | 602 | 11.024 | 0.565 to 0.810 | 0.000 | 605 | 0.052 |
 | Lag rate | Anthropocene | siteNOCA | -0.798 | 0.157 | 602 | -5.089 | -1.105 to -0.490 | 0.000 | 605 | 0.052 |
 | Lag rate | Anthropocene | burnedBurned | -0.260 | 0.489 | 602 | -0.533 | -1.220 to 0.699 | 0.594 | 605 | 0.052 |
@@ -1053,10 +1053,10 @@ S22.
 | Direction contribution | Anthropocene | (Intercept) | 0.531 | 0.081 | 457 | 6.559 | 0.372 to 0.691 | 0.000 | 460 | 0.062 |
 | Direction contribution | Anthropocene | siteNOCA | -0.894 | 0.174 | 457 | -5.136 | -1.236 to -0.552 | 0.000 | 460 | 0.062 |
 | Direction contribution | Anthropocene | burnedBurned | 0.189 | 0.539 | 457 | 0.350 | -0.870 to 1.248 | 0.727 | 460 | 0.062 |
-| Lag (not divided by time) | Holocene | (Intercept) | 0.043 | 0.139 | 19 | 0.309 | -0.248 to 0.334 | 0.760 | 23 | 0.237 |
-| Lag (not divided by time) | Holocene | siteNOCA | 0.411 | 0.201 | 19 | 2.043 | -0.010 to 0.833 | 0.055 | 23 | 0.237 |
-| Lag (not divided by time) | Holocene | climate_change | -0.334 | 0.347 | 19 | -0.964 | -1.060 to 0.391 | 0.347 | 23 | 0.237 |
-| Lag (not divided by time) | Holocene | fire_activity | -0.396 | 0.338 | 19 | -1.172 | -1.103 to 0.311 | 0.256 | 23 | 0.237 |
+| Lag (not divided by time) | Holocene | (Intercept) | 0.074 | 0.152 | 19 | 0.486 | -0.244 to 0.391 | 0.633 | 23 | 0.240 |
+| Lag (not divided by time) | Holocene | siteNOCA | 0.381 | 0.201 | 19 | 1.895 | -0.040 to 0.802 | 0.073 | 23 | 0.240 |
+| Lag (not divided by time) | Holocene | climate_change | -0.404 | 0.372 | 19 | -1.086 | -1.183 to 0.375 | 0.291 | 23 | 0.240 |
+| Lag (not divided by time) | Holocene | fire_activity | -0.343 | 0.311 | 19 | -1.102 | -0.994 to 0.308 | 0.284 | 23 | 0.240 |
 | Lag (not divided by time) | Anthropocene | (Intercept) | 0.201 | 0.018 | 602 | 11.004 | 0.165 to 0.237 | 0.000 | 605 | 0.054 |
 | Lag (not divided by time) | Anthropocene | siteNOCA | -0.234 | 0.045 | 602 | -5.215 | -0.322 to -0.146 | 0.000 | 605 | 0.054 |
 | Lag (not divided by time) | Anthropocene | burnedBurned | -0.073 | 0.139 | 602 | -0.529 | -0.346 to 0.199 | 0.597 | 605 | 0.054 |
@@ -1117,13 +1117,13 @@ among models with the same fixed effects. R² is descriptive.
 
 | Quantity | Era | Model | MORA | NOCA | Coefficients | Residual df | Residual SE | AR(1) | SD ratio NOCA/MORA | Log-likelihood (REML) | AIC | Descriptive R² | Warnings |
 |:---|:---|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|:---|
-| Lag rate | Holocene | site + climate_rate + fire_activity | 13 | 10 | 4 | 19 | 0.025 | -0.157 | 6.921 | 27.399 | -40.798 | 0.229 | none |
+| Lag rate | Holocene | site + climate_rate + fire_activity | 13 | 10 | 4 | 19 | 0.026 | -0.089 | 6.780 | 27.332 | -40.664 | 0.228 | none |
 | Lag rate | Anthropocene | site + burned | 328 | 277 | 3 | 602 | 1.129 | — | 2.026 | -1128.711 | 2267.422 | 0.052 | none |
 | Pace contribution | Holocene | site + climate_rate + fire_activity | 10 | 10 | 4 | 16 | 0.012 | -0.495 | 16.592 | 26.595 | -39.190 | -0.032 | none |
 | Pace contribution | Anthropocene | site + burned | 252 | 208 | 3 | 457 | 0.753 | — | 2.914 | -745.940 | 1501.879 | 0.034 | none |
 | Direction contribution | Holocene | site + climate_rate + fire_activity | 10 | 10 | 4 | 16 | 0.042 | 0.494 | 2.149 | 25.267 | -36.533 | 0.245 | none |
 | Direction contribution | Anthropocene | site + burned | 252 | 208 | 3 | 457 | 1.286 | — | 1.656 | -874.090 | 1758.179 | 0.062 | none |
-| Lag | Holocene | site + climate_change + fire_activity | 13 | 10 | 4 | 19 | 0.188 | -0.241 | 3.410 | -5.996 | 25.991 | 0.237 | none |
+| Lag | Holocene | site + climate_change + fire_activity | 13 | 10 | 4 | 19 | 0.196 | -0.045 | 3.082 | -6.260 | 26.520 | 0.240 | none |
 | Lag | Anthropocene | site + burned | 328 | 277 | 3 | 602 | 0.331 | — | 1.962 | -381.940 | 773.880 | 0.054 | none |
 | Pace contribution (not divided by time) | Holocene | site + climate_change + fire_activity | 10 | 10 | 4 | 16 | 0.139 | -0.446 | 4.147 | -1.638 | 17.276 | 0.192 | none |
 | Pace contribution (not divided by time) | Anthropocene | site + burned | 252 | 208 | 3 | 457 | 0.220 | — | 2.837 | -178.059 | 366.118 | 0.034 | none |
@@ -1305,12 +1305,12 @@ also significant, with the same sign, with the one-step correction, and
 divided by time) at MORA, Anthropocene against Holocene stability
 periods.
 
-**Differences within the Holocene.** Of the 4 differences between the
+**Differences within the Holocene.** Of the 3 differences between the
 climate-change and the stability periods that were significant in the
 main analysis (direction contribution at NOCA; pace contribution at
-MORA; pace contribution (not divided by time) at MORA; turnover rate at
-MORA), 4 were also significant, with the same sign, with the one-step
-correction, and 1 without correction.
+MORA; pace contribution (not divided by time) at MORA), 3 were also
+significant, with the same sign, with the one-step correction, and 0
+without correction.
 
 **Associations with climate change and fire in the Holocene.** Of the
 climate and fire coefficients whose confidence interval excluded zero in

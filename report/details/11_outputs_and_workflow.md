@@ -59,8 +59,8 @@ models could no longer be read.
 | R/pipeline/11_cca.R | pipeline | 11_cca.R - the pooled CCA and everything derived from it. NO FIGURES. | 668 |
 | R/pipeline/12_climate_eras_fire_frequency.R | pipeline | 12_climate_eras_fire_frequency.R | 194 |
 | R/pipeline/13_tracking.R | pipeline | Tracking: native-century Holocene positions, tracking metrics for both eras, | 85 |
-| R/pipeline/14_era_models.R | pipeline | Era models (PLAN.md section 5, Step 5a): Holocene stability periods, | 142 |
-| R/pipeline/15_predictor_models.R | pipeline | Explanatory models (PLAN.md section 5, Step 5). | 131 |
+| R/pipeline/14_era_models.R | pipeline | Era models (PLAN.md section 5, Step 5a): Holocene stability periods, | 144 |
+| R/pipeline/15_predictor_models.R | pipeline | Explanatory models (PLAN.md section 5, Step 5). | 133 |
 | R/pipeline/16_contributions.R | pipeline | Species contributions (PLAN.md section 5, Step 6): which species led the | 146 |
 | R/figures/supp_age_depth_models.R | figure | Figures S4 (four Bacon age-depth models) and S5 (Panther Potholes 210Pb | 114 |
 | R/figures/supp_cca_inertia_commonness.R | figure | Fig. S15 (Bills, 23 Nov 2026): each taxon’s share of the constrained inertia | 44 |
@@ -89,7 +89,7 @@ models could no longer be read.
 | R/tests/test_chronology_tables.R | test | Supplementary Tables S2 and S3 must match what Bacon actually ran with. | 49 |
 | R/tests/test_holocene_climate_fire_eras.R | test | Offline gate for the unified, literature-blind climate-era/fire analysis. | 193 |
 | R/tests/test_known_examples.R | test | Independent known examples and regressions from the 2026-10-06 audit. | 256 |
-| R/tests/test_lake_periods.R | test | Lake-period construction (PLAN.md sections 4 and 5, Steps 1 to 4) on a | 35 |
+| R/tests/test_lake_periods.R | test | Lake-period construction (PLAN.md sections 4 and 5, Steps 1 to 4) on a | 37 |
 | R/tests/test_NOCA_fire_assignments.R | test | Offline regression checks for Wilson-style fire assignments on PaleoACES plots. | 25 |
 | R/tests/test_NOCA_tree_corrections.R | test | Offline regression checks for the authoritative 2026 NOCA tree patch. | 73 |
 | R/tests/test_paleo_climate_age_match.R | test | test_paleo_climate_age_match.R - does every sample have climate, at its OWN age? | 152 |
@@ -229,16 +229,16 @@ the folder of the step that writes it.
 | 14_era_models | era_comparison/era_folds.csv | Era-comparison GLS fits, means and contrasts per response | 1 |
 | 14_era_models | era_comparison/era_means.csv | Era-comparison GLS fits, means and contrasts per response | 8 |
 | 14_era_models | era_comparison/era_model_summary.csv | Era-comparison GLS fits, means and contrasts per response | 2 |
-| 14_era_models | era_comparison/era_predictions.csv | Era-comparison GLS fits, means and contrasts per response | 593 |
+| 14_era_models | era_comparison/era_predictions.csv | Era-comparison GLS fits, means and contrasts per response | 595 |
 | 14_era_models | era_comparison/model_results.txt | Era-comparison GLS fits, means and contrasts per response | 19 |
-| 14_era_models | era_comparison/primary_fits.rds | Era-comparison GLS fits, means and contrasts per response | 675 |
+| 14_era_models | era_comparison/primary_fits.rds | Era-comparison GLS fits, means and contrasts per response | 677 |
 | 15_predictor_models | community_predictor_models/model_coefficients.csv | Within-era predictor GLS fits | 6 |
 | 15_predictor_models | community_predictor_models/model_exclusions.csv | Within-era predictor GLS fits | 46 |
 | 15_predictor_models | community_predictor_models/model_performance.csv | Within-era predictor GLS fits | 2 |
 | 15_predictor_models | community_predictor_models/model_results.txt | Within-era predictor GLS fits | 12 |
 | 15_predictor_models | community_predictor_models/partial_effects.csv | Within-era predictor GLS fits | 166 |
 | 15_predictor_models | community_predictor_models/partial_residuals.csv | Within-era predictor GLS fits | 24 |
-| 15_predictor_models | community_predictor_models/primary_fits.rds | Within-era predictor GLS fits | 399 |
+| 15_predictor_models | community_predictor_models/primary_fits.rds | Within-era predictor GLS fits | 400 |
 | 16_contributions | cca_transition_contributions/climate_contributions.csv | Species and climate contributions to displacement | 223 |
 | 16_contributions | cca_transition_contributions/lag_decomposition.csv | Species and climate contributions to displacement | 91 |
 | 16_contributions | cca_transition_contributions/species_contributions.csv | Species and climate contributions to displacement | 1350 |

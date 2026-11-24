@@ -55,9 +55,11 @@ for (response in names(ERA_RESPONSES)) {
   # (Anthropocene minus each Holocene type) and the folds come from these.
   # gls (generalized least squares, nlme) is a regression whose errors may be
   # correlated and unequal:
-  #   correlation: consecutive lake-periods of one lake are correlated, AR(1)
-  #     along the unit order within each series (a lake; each Anthropocene plot
-  #     is a series of one unit);
+  #   correlation: lake-periods of one lake are correlated, AR(1) within each
+  #     series (a lake; each Anthropocene plot is a series of one unit).
+  #     unit_index is the position of the lake-period's climate period (C1 = 1
+  #     to S5 = 10), so two lake-periods k periods apart correlate by phi^k,
+  #     also where the periods between them are missing;
   #   weights: each period type in each park has its own spread (varIdent), and
   #     ends that rest on few samples are noisier, in proportion to
   #     endpoint_var = 1/n_start + 1/n_end (varFixed).

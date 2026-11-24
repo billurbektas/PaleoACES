@@ -20,7 +20,9 @@ candidates = lake_period_candidates(positions, periods)
 stopifnot(identical(candidates$period, c('C1', 'S1', 'C2')),
   identical(candidates$two_century_rule, c(TRUE, FALSE, TRUE)))
 u = build_lake_periods(positions, periods, scaling, no_fire)
-stopifnot(nrow(u) == 2L, identical(u$period, c('C1', 'C2')), identical(u$unit_index, 1:2),
+# S1 fails the two-century rule but still counts as a step of the AR(1) index:
+# the lake-periods are numbered by the position of their period, C1 = 1, C2 = 3.
+stopifnot(nrow(u) == 2L, identical(u$period, c('C1', 'C2')), identical(u$unit_index, c(1L, 3L)),
   identical(u$age_start, c(950, 350)), identical(u$age_end, c(750, 150)),
   identical(u$duration_yr, c(200, 200)), all.equal(u$endpoint_var, c(1/2 + 1/4, 1/3 + 1)))
 # C1 by hand: WA (0,0) -> (3,4), LC (1,0) -> (1,0).

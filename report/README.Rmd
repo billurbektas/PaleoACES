@@ -1308,9 +1308,10 @@ Stages and helpers: [`R/pipeline/14_era_models.R`](R/pipeline/14_era_models.R),
 
 **What and why.** Within the Holocene lake-periods, does a period with more climate change, or
 more fire, end with a larger lag, and with better or worse pace and direction? Each response is
-modelled on the park, the climate change rate and fire activity together. Consecutive
-lake-periods of a lake can share an end century, so their errors are related, and an AR(1) term
-on the order of the lake-periods within each lake carries that from the start. Ends that rest on
+modelled on the park, the climate change rate and fire activity together. The lake-periods of
+one lake come from the same core and catchment, so their errors can be related. An AR(1) term
+within each lake carries that, counted in climate periods: two lake-periods one period apart are
+correlated by φ, two periods apart by φ², also where the period between them has no lake-period. Ends that rest on
 a single sample are noisier, so each row is weighted by the sampling variance of its two ends,
 and the parks keep different residual spread. In the Anthropocene the same responses are
 compared between burned and unburned plots, in a model with the park and fire (burned or not).
