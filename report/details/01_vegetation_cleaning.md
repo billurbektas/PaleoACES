@@ -250,7 +250,7 @@ they belong to before that choice.
 <sub>Table file:
 [mora_year_source_discrepancies.csv](../tables/mora_year_source_discrepancies.csv)</sub>
 
-<img src="../figures/png/MORA_dynamics.png" alt="" width="1100" /><img src="../figures/png/MORA_dynamics-p2.png" alt="" width="1100" /><img src="../figures/png/MORA_dynamics-p3.png" alt="" width="1100" />
+![](../figures/png/MORA_dynamics.png)<!-- -->![](../figures/png/MORA_dynamics-p2.png)<!-- -->![](../figures/png/MORA_dynamics-p3.png)<!-- -->
 
 **MORA species dynamics between surveys** (three pages: presences, gains
 and losses, turnover).
@@ -285,7 +285,7 @@ and losses, turnover).
 <sub>Table file:
 [noca_tree_corrections.csv](../tables/noca_tree_corrections.csv)</sub>
 
-<img src="../figures/png/NOCA_cleaning.png" alt="" width="1100" /><img src="../figures/png/NOCA_cleaning-p2.png" alt="" width="1100" /><img src="../figures/png/NOCA_cleaning-p3.png" alt="" width="1100" /><img src="../figures/png/NOCA_dynamics.png" alt="" width="1100" /><img src="../figures/png/NOCA_dynamics-p2.png" alt="" width="1100" /><img src="../figures/png/NOCA_dynamics-p3.png" alt="" width="1100" />
+![](../figures/png/NOCA_cleaning.png)<!-- -->![](../figures/png/NOCA_cleaning-p2.png)<!-- -->![](../figures/png/NOCA_cleaning-p3.png)<!-- -->![](../figures/png/NOCA_dynamics.png)<!-- -->![](../figures/png/NOCA_dynamics-p2.png)<!-- -->![](../figures/png/NOCA_dynamics-p3.png)<!-- -->
 
 **NOCA plots remaining after each cleaning step, and NOCA species
 dynamics between surveys.**

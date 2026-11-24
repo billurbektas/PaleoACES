@@ -145,7 +145,8 @@ stopifnot(
   identical(fire_settings$interpolation_years, c(48, 47, 42, 12)),
   identical(fire_settings$background_years, c(800, 1000, 500, 500)),
   identical(fire_settings$peak_probability, c(.95, .95, .95, .99)),
-  sum(events$lake == "PantherPotholes") == 66L,
+  # 70 since the age models were refitted with rbacon 4.0.2 (24 Nov 2026), 66 before.
+  sum(events$lake == "PantherPotholes") == 70L,
   all(core$window_years == 1000),
   all(abs(core$peak_frequency_per_1000yr - core$accepted_event_count) < 1e-12),
   # The dropped classification leaves no columns or tables behind.

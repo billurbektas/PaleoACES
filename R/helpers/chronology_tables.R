@@ -75,11 +75,22 @@ read_bacon_settings_file = function(core) {
   stats::setNames(value[keep], name[keep])
 }
 
+# A core's Bacon dates file. rbacon 4 rewrites it with the header
+# labID,age,error,depth,cc when it runs (rbacon 3 kept ID,Age,Error,Depth,cc);
+# the values are unchanged, so both headers read the same.
+read_bacon_controls = function(core) {
+  x = readr::read_csv(here::here("Cores", core, paste0(core, ".csv")), col_types = "cdddd")
+  rbacon4 = c(labID = "ID", age = "Age", error = "Error", depth = "Depth")
+  names(x) = ifelse(names(x) %in% names(rbacon4), rbacon4[names(x)], names(x))
+  # Rule: the five Bacon control columns, in Bacon's order.
+  stopifnot(identical(names(x), c("ID", "Age", "Error", "Depth", "cc")))
+  x
+}
+
 chronology_controls_table = function(cores = names(CHRONOLOGY_TABLE_CORES)) {
   wording = chronology_control_wording()
   rows = lapply(cores, function(core) {
-    x = readr::read_csv(here::here("Cores", core, paste0(core, ".csv")),
-      col_types = "cdddd")
+    x = read_bacon_controls(core)
     settings = read_bacon_settings_file(core)
     group = CHRONOLOGY_TABLE_SITES[[core]]
     w = wording[wording$group == group, ]
@@ -108,7 +119,7 @@ chronology_controls_table = function(cores = names(CHRONOLOGY_TABLE_CORES)) {
   out$depth_sort = NULL
   # Wording for IDs that no longer exist in any control file is stale.
   used = unique(unlist(lapply(cores, function(core) {
-    x = readr::read_csv(here::here("Cores", core, paste0(core, ".csv")), col_types = "cdddd")
+    x = read_bacon_controls(core)
     group = CHRONOLOGY_TABLE_SITES[[core]]
     chronology_wording_key(x, group, wording$id[wording$group == group])
   })))

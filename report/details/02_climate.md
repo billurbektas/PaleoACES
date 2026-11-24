@@ -45,53 +45,53 @@ detrended removes the 1979–2021 trend).
 
 | Site | Period  | Survey year | Variable | Window mean | z (whole record) | z (detrended) |
 |:-----|:--------|------------:|:---------|------------:|-----------------:|--------------:|
-| MORA | past    |           — | AP       |     2418.75 |             0.10 |         -1.29 |
+| MORA | past    |           — | AP       |     2418.75 |             0.11 |         -1.29 |
 | MORA | past    |           — | MAT      |        5.17 |            -0.55 |          0.05 |
 | MORA | past    |           — | MSpT     |        3.39 |            -0.24 |          0.08 |
-| MORA | past    |           — | SP       |      212.33 |             0.14 |         -1.74 |
-| MORA | present |        2014 | AP       |     1979.27 |            -0.74 |         -0.59 |
+| MORA | past    |           — | SP       |      212.33 |             0.15 |         -1.68 |
+| MORA | present |        2014 | AP       |     1979.27 |            -0.73 |         -0.58 |
 | MORA | present |        2014 | MAT      |        6.10 |            -0.03 |         -1.01 |
 | MORA | present |        2014 | MSpT     |        3.62 |            -0.48 |         -1.27 |
-| MORA | present |        2014 | SP       |      163.85 |            -0.34 |         -0.06 |
-| MORA | present |        2015 | AP       |     1957.79 |            -0.83 |         -0.77 |
+| MORA | present |        2014 | SP       |      163.85 |            -0.32 |          0.06 |
+| MORA | present |        2015 | AP       |     1946.83 |            -0.85 |         -0.80 |
 | MORA | present |        2015 | MAT      |        5.81 |             0.48 |          0.13 |
 | MORA | present |        2015 | MSpT     |        3.61 |             0.03 |         -0.35 |
-| MORA | present |        2015 | SP       |      172.39 |            -0.28 |          0.24 |
-| MORA | present |        2016 | AP       |     1965.87 |            -0.80 |         -0.83 |
+| MORA | present |        2015 | SP       |      161.43 |            -0.38 |         -0.06 |
+| MORA | present |        2016 | AP       |     1953.86 |            -0.82 |         -0.86 |
 | MORA | present |        2016 | MAT      |        5.35 |             0.60 |          0.38 |
 | MORA | present |        2016 | MSpT     |        3.62 |             0.39 |          0.36 |
-| MORA | present |        2016 | SP       |      170.60 |            -0.40 |         -0.14 |
-| MORA | present |        2017 | AP       |     1771.02 |            -1.01 |         -0.92 |
+| MORA | present |        2016 | SP       |      158.56 |            -0.50 |         -0.47 |
+| MORA | present |        2017 | AP       |     1761.27 |            -1.03 |         -0.93 |
 | MORA | present |        2017 | MAT      |        6.82 |             1.06 |          1.28 |
 | MORA | present |        2017 | MSpT     |        4.99 |             0.76 |          0.99 |
-| MORA | present |        2017 | SP       |      146.47 |            -0.44 |         -0.10 |
-| MORA | present |        2018 | AP       |     1944.88 |            -1.01 |         -0.95 |
+| MORA | present |        2017 | SP       |      136.71 |            -0.54 |         -0.35 |
+| MORA | present |        2018 | AP       |     1933.98 |            -1.02 |         -0.97 |
 | MORA | present |        2018 | MAT      |        6.39 |             1.25 |          1.61 |
 | MORA | present |        2018 | MSpT     |        4.75 |             0.99 |          1.41 |
-| MORA | present |        2018 | SP       |      158.33 |            -0.49 |         -0.22 |
-| MORA | present |        2019 | AP       |     2006.11 |            -0.86 |         -0.67 |
+| MORA | present |        2018 | SP       |      147.38 |            -0.59 |         -0.47 |
+| MORA | present |        2019 | AP       |     1993.35 |            -0.88 |         -0.70 |
 | MORA | present |        2019 | MAT      |        6.36 |             1.07 |          1.28 |
 | MORA | present |        2019 | MSpT     |        5.11 |             0.93 |          1.39 |
-| MORA | present |        2019 | SP       |      161.74 |            -0.64 |         -0.54 |
+| MORA | present |        2019 | SP       |      148.94 |            -0.75 |         -0.80 |
 | NOCA | past    |           — | AP       |     1709.41 |            -0.19 |         -1.19 |
 | NOCA | past    |           — | MAT      |        4.84 |            -0.52 |          0.06 |
 | NOCA | past    |           — | MSpT     |        3.34 |            -0.26 |          0.09 |
-| NOCA | past    |           — | SP       |      145.00 |            -0.06 |         -0.53 |
-| NOCA | present |        2014 | AP       |     1849.22 |             0.03 |          0.26 |
+| NOCA | past    |           — | SP       |      145.00 |            -0.02 |         -0.71 |
+| NOCA | present |        2014 | AP       |     1849.22 |             0.04 |          0.32 |
 | NOCA | present |        2014 | MAT      |        5.52 |            -0.12 |         -1.17 |
 | NOCA | present |        2014 | MSpT     |        3.43 |            -0.50 |         -1.29 |
-| NOCA | present |        2014 | SP       |      171.88 |             0.18 |          0.61 |
-| NOCA | present |        2015 | AP       |     1788.19 |             0.15 |          0.33 |
+| NOCA | present |        2014 | SP       |      171.88 |             0.23 |          0.89 |
+| NOCA | present |        2015 | AP       |     1771.39 |             0.10 |          0.20 |
 | NOCA | present |        2015 | MAT      |        5.37 |             0.34 |         -0.18 |
 | NOCA | present |        2015 | MSpT     |        3.47 |             0.09 |         -0.28 |
-| NOCA | present |        2015 | SP       |      193.40 |             0.54 |          1.56 |
+| NOCA | present |        2015 | SP       |      176.60 |             0.32 |          1.17 |
 
 <sub>Table file:
 [survey_window_anomalies.csv](../tables/survey_window_anomalies.csv)</sub>
 
 ## Climate change through the Holocene and the Anthropocene
 
-<img src="../figures/png/climate_holocene_timeseries.png" alt="" width="1430" />
+![](../figures/png/climate_holocene_timeseries.png)<!-- -->
 
 **Climate change per interval** at the four ponds through the Holocene,
 and at the survey plots in the Anthropocene. Page 2 of this figure is
@@ -117,19 +117,19 @@ Fig. S9.
 | MORA | holocene     | MWT      | 306 |    0.09 |   -0.35 |    0.49 | degC | 500 yr               |
 | NOCA | anthropocene | MWT      | 305 |    0.39 |   -0.15 |    0.65 | degC | 27.5–28.5 climate yr |
 | NOCA | holocene     | MWT      | 102 |    0.06 |   -0.40 |    0.45 | degC | 500 yr               |
-| MORA | anthropocene | AP       | 331 | -450.03 | -611.35 | -331.35 | mm   | 27.5–32.5 climate yr |
+| MORA | anthropocene | AP       | 331 | -459.20 | -621.68 | -339.03 | mm   | 27.5–32.5 climate yr |
 | MORA | holocene     | AP       | 306 |  -17.42 |  -60.34 |   45.21 | mm   | 500 yr               |
-| NOCA | anthropocene | AP       | 305 |  101.90 |  -96.93 |  352.33 | mm   | 27.5–28.5 climate yr |
+| NOCA | anthropocene | AP       | 305 |   91.73 | -111.65 |  330.50 | mm   | 27.5–28.5 climate yr |
 | NOCA | holocene     | AP       | 102 |   -1.87 |  -21.66 |   17.46 | mm   | 500 yr               |
 | MORA | anthropocene | SpP      | 331 |  -23.82 | -135.42 |   46.27 | mm   | 27.5–32.5 climate yr |
 | MORA | holocene     | SpP      | 306 |   -0.66 |  -26.98 |   20.87 | mm   | 500 yr               |
 | NOCA | anthropocene | SpP      | 305 |  130.88 |   81.94 |  215.50 | mm   | 27.5–28.5 climate yr |
 | NOCA | holocene     | SpP      | 102 |    0.52 |   -7.24 |    5.33 | mm   | 500 yr               |
-| MORA | anthropocene | SP       | 331 |  -41.91 |  -76.64 |  -26.27 | mm   | 27.5–32.5 climate yr |
+| MORA | anthropocene | SP       | 331 |  -52.11 |  -89.69 |  -30.94 | mm   | 27.5–32.5 climate yr |
 | MORA | holocene     | SP       | 306 |   -3.05 |  -17.30 |   19.31 | mm   | 500 yr               |
-| NOCA | anthropocene | SP       | 305 |   29.53 |    0.97 |  122.84 | mm   | 27.5–28.5 climate yr |
+| NOCA | anthropocene | SP       | 305 |   15.70 |   -7.45 |  101.34 | mm   | 27.5–28.5 climate yr |
 | NOCA | holocene     | SP       | 102 |   -0.73 |   -7.08 |    6.59 | mm   | 500 yr               |
-| MORA | anthropocene | WP       | 331 | -265.20 | -350.73 | -122.68 | mm   | 27.5–32.5 climate yr |
+| MORA | anthropocene | WP       | 331 | -265.20 | -350.73 | -122.60 | mm   | 27.5–32.5 climate yr |
 | MORA | holocene     | WP       | 306 |    0.32 |  -37.19 |   39.80 | mm   | 500 yr               |
 | NOCA | anthropocene | WP       | 305 | -113.50 | -188.62 |  -57.12 | mm   | 27.5–28.5 climate yr |
 | NOCA | holocene     | WP       | 102 |    1.79 |  -12.68 |   15.65 | mm   | 500 yr               |
@@ -137,7 +137,7 @@ Fig. S9.
 <sub>Table file:
 [climate_change_by_variable.csv](../tables/climate_change_by_variable.csv)</sub>
 
-<img src="../figures/png/figS10_climate_levels_four_variables.png" alt="" width="1650" />
+![](../figures/png/figS10_climate_levels_four_variables.png)<!-- -->
 
 **Standardized climate levels** (rather than standardized change) with
 the climate eras and the fire frequency of Figure 3.

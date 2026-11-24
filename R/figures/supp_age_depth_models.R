@@ -36,6 +36,11 @@ render_panel = function(core, outdir) {
           file.path(set$coredir, core, paste0(core, "_", set$K, ".out")), set)
   assign("info", set, envir = .GlobalEnv)
   f = file.path(outdir, paste0(core, ".png"))
+  # rbacon 4 opens its own PDF device when R is not interactive, unless knitr is
+  # running, so the panel would never reach this PNG. It draws on the open device
+  # while that option is set.
+  old = options(knitr.in.progress = TRUE)
+  on.exit(options(old), add = TRUE)
   # Larger text remains readable when the four panels are shown together.
   png(f, width = 1500, height = 1750, res = 190)
   par(cex.lab = 1.6)

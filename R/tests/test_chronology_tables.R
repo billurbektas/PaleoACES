@@ -17,7 +17,7 @@ for (kind in names(CHRONOLOGY_TABLE_PATHS)) {
 # 2. Every Bacon control appears exactly once, with its entered depth, age, error and cc.
 s11 = read_csv(out(CHRONOLOGY_TABLE_PATHS[["controls"]]), col_types = cols(.default = col_character()))
 controls = do.call(rbind, lapply(names(CHRONOLOGY_TABLE_CORES), function(core)
-  cbind(core = core, read_csv(here("Cores", core, paste0(core, ".csv")), col_types = "cdddd"))))
+  cbind(core = core, read_bacon_controls(core))))
 stopifnot(nrow(s11) == nrow(controls), nrow(s11) == 40L,
   identical(sort(table(s11$Core)), sort(table(unname(CHRONOLOGY_TABLE_CORES[controls$core])))),
   all(!is.na(as.matrix(s11))), all(nzchar(as.matrix(s11))))

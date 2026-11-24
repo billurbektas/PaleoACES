@@ -60,7 +60,8 @@ note(setequal(unique(fire_sites), c("MORA", "NOCA")),
      "both paleo sites represented")
 note(any(fire_sites == "NOCA" & fire$fire_peak_magnitude > 0),
      "NOCA in-core macrocharcoal peaks included")
-note(sum(noca_peaks$is_significant) == 66L,
+# 70 since the age models were refitted with rbacon 4.0.2 (24 Nov 2026), 66 before.
+note(sum(noca_peaks$is_significant) == 70L,
      "NOCA primary source-faithful significant-peak count",
      as.character(sum(noca_peaks$is_significant)))
 note(sum(noca_peaks$is_significant & noca_peaks$age_cal_yr_BP > 8200 &

@@ -27,8 +27,10 @@ stopifnot(nrow(settings) == 3L,
 
 events = read_csv(out("holocene_fire_source_events.csv"),
                   show_col_types = FALSE)
+# Panther Potholes 70 since the age models were refitted with rbacon 4.0.2
+# (24 Nov 2026), 66 before. The MORA lakes use their published chronologies.
 expected_primary = c("Little Sunrise Lake" = 13L, "Shadow Lake" = 14L,
-                     "Sunrise Lake" = 17L, "PantherPotholes" = 66L)
+                     "Sunrise Lake" = 17L, "PantherPotholes" = 70L)
 primary_counts = events |> count(lake) |> deframe()
 stopifnot(all(primary_counts[names(expected_primary)] == expected_primary))
 primary_settings = read_csv(out("holocene_fire_source_settings.csv"),
@@ -59,7 +61,7 @@ expected_detection = tribble(
   "Sunrise Lake", 48, 800, .95, 26L, 9L, 17L,
   "Shadow Lake", 47, 1000, .95, 17L, 3L, 14L,
   "Little Sunrise Lake", 42, 500, .95, 20L, 7L, 13L,
-  "PantherPotholes", 12, 500, .99, 66L, 0L, 66L)
+  "PantherPotholes", 12, 500, .99, 70L, 0L, 70L)
 stopifnot(isTRUE(all.equal(
   detection |>
     select(all_of(names(expected_detection))) |>
@@ -78,8 +80,9 @@ stopifnot(nrow(manifest) >= 9L, all(manifest$engine == "tapas"),
           all(nzchar(manifest$md5)))
 sensitivity = read_csv(out("fire_noca_tapas_sensitivity.csv"),
                        show_col_types = FALSE)
+# 71 since the age models were refitted with rbacon 4.0.2 (24 Nov 2026), 72 before.
 stopifnot(sensitivity$n_sig[
-  sensitivity$setting == "publication12.5_smooth500_q99"] == 72L)
+  sensitivity$setting == "publication12.5_smooth500_q99"] == 71L)
 required = c(fig("supplementary", "fig_walsh_charanalysis_reproduction.pdf"),
   fig("worked_examples", "fig_fire_event_detection_workflow.pdf"))
 if (render_figures) {

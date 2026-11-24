@@ -14,7 +14,7 @@ Step-by-step illustrations drawn from the finished pipeline outputs by
 
 ## Accepted charcoal-event detection
 
-<img src="../figures/png/fig_fire_event_detection_workflow.png" alt="" width="1540" /><img src="../figures/png/fig_fire_event_detection_workflow-p2.png" alt="" width="1540" />
+![](../figures/png/fig_fire_event_detection_workflow.png)<!-- -->![](../figures/png/fig_fire_event_detection_workflow-p2.png)<!-- -->
 
 A charcoal record is interpolated, its background removed, peaks above
 the local noise threshold become candidates, and candidates surviving
@@ -23,7 +23,7 @@ S12).
 
 ## Climate eras: from signed changes to numbered eras
 
-<img src="../figures/png/fig_holocene_climate_period_method_worked_example.png" alt="" width="1650" />
+![](../figures/png/fig_holocene_climate_period_method_worked_example.png)<!-- -->
 
 Signed 1,000-year changes are computed in ten phase offsets, each
 variable is thresholded at 50% of its maximum with at least eight of ten
@@ -33,7 +33,7 @@ stability eras.
 
 ## Tracking geometry
 
-<img src="../figures/png/fig_method_worked_example.png" alt="" width="1540" />
+![](../figures/png/fig_method_worked_example.png)<!-- -->
 
 One Panther Potholes lake-period: observed and climate-predicted
 movement, the lag before and after, the tracking ratio and the angle.

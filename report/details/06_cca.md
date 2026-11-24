@@ -81,7 +81,7 @@ Back to the [report](../../README.md#climatecommunity-space). Script:
 
 ## Scaling
 
-<img src="../figures/png/fig_cca_scaling_comparison.png" alt="" width="1540" />
+![](../figures/png/fig_cca_scaling_comparison.png)<!-- -->
 
 **The same fit under scaling 1 (sites, used throughout) and scaling 2
 (species).**

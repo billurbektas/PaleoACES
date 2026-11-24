@@ -43,6 +43,7 @@ cleaning is summarized by its figure here. The
 step-by-step detail sits in [`report/details/`](report/details), linked from each section.
 
 ```sh
+Rscript -e 'renv::restore()'    # once: install the package versions recorded in renv.lock
 Rscript R/run_all.R --offline   # run the whole analysis from the cached climate (add --age-models to refit Bacon)
 Rscript R/build_report.R        # rebuild this page and report/ from the outputs
 ```
@@ -64,8 +65,15 @@ Rscript R/build_report.R        # rebuild this page and report/ from the outputs
 | Every analytical decision | `r details_link('10_decisions', 'Decisions')` |
 | CCA constraints in this build | `r gsub(';', ', ', cca_value('constraints'))` |
 
-Software: R with rbacon 3.5.2, tapas 0.1.5 and CharAnalysis 2.0.3, plus `pdftoppm` (poppler) for
-the report.
+```{r software-versions, include = FALSE}
+# Versions come from the renv lockfile, the record of the library every run uses.
+lock = jsonlite::read_json(here('renv.lock'))
+lock_version = function(p) lock$Packages[[p]]$Version
+```
+
+Software: R `r lock$R$Version` with rbacon `r lock_version('rbacon')`, vegan `r lock_version('vegan')`,
+tapas `r lock_version('tapas')` and CharAnalysis `r lock_version('CharAnalysis')`, every package at the
+version recorded in `renv.lock` (renv), plus `pdftoppm` (poppler) for the report.
 
 The page is knitted once and split into two documents with the same figures, tables and numbers: this
 README, and the supplementary appendix of the manuscript (`report/appendix.md` and

@@ -182,7 +182,10 @@ noca_primary = run_tapas_fire_detection(
   "active PaleoACES Bacon median chronology",
   "data/NOCA/NOCA_paleo/neotoma_macrocharcoal_52210.csv")
 noca_peaks = noca_primary$peaks
-if (sum(noca_peaks$is_significant) != 66L ||
+# Guards the catalog against unintended change. 70 since the age models were
+# refitted with rbacon 4.0.2 (24 Nov 2026, Bills), 66 with the rbacon 3.5.2 runs
+# of 9 Nov; the six peaks between 8200 and 9200 cal BP are unchanged.
+if (sum(noca_peaks$is_significant) != 70L ||
     sum(noca_peaks$is_significant & noca_peaks$age_cal_yr_BP > 8200 &
           noca_peaks$age_cal_yr_BP <= 9200) != 6L)
   stop("Primary NOCA source-faithful peak catalog changed unexpectedly.")

@@ -17,7 +17,7 @@ The values that enter the models, one per lake-period, placed in time.
 Before the remodelling these figures showed the steps between
 consecutive sampled centuries, which are mostly sampling noise.
 
-<img src="../figures/png/fig_tracking_transition_rates.png" alt="" width="2420" /><img src="../figures/png/fig_tracking_transition_ratios_angles.png" alt="" width="2420" />
+![](../figures/png/fig_tracking_transition_rates.png)<!-- -->![](../figures/png/fig_tracking_transition_ratios_angles.png)<!-- -->
 
 **Lake-period values over time.** One column per lake. Each lake-period
 is a bar from its oldest to its youngest sampled century at its value,

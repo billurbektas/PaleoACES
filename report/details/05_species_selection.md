@@ -37,7 +37,7 @@ consolidation](05_species_occurrence_consolidation.md).
 <sub>Table file:
 [cca_taxa.csv](../tables/cca_taxa.csv)</sub>
 
-<img src="../figures/png/species_through_time.png" alt="" width="1650" />
+![](../figures/png/species_through_time.png)<!-- -->
 
 **Retained taxa through the Holocene in each pond.**
 
@@ -54,7 +54,7 @@ through time.**
 | Tsuga heterophylla | 0.45 | 0.21 | 0.25 | 0.42 | 4 |
 | Abies lasiocarpa | 0.79 | 0.54 | 0.25 | 0.42 | 4 |
 | Thuja plicata | 0.00 | 0.19 | 0.19 | 0.25 | 1 |
-| Pinus monticola | 0.76 | 0.58 | 0.18 | 0.30 | 2 |
+| Pinus monticola | 0.76 | 0.58 | 0.18 | 0.31 | 2 |
 | Pinus contorta | 0.26 | 0.34 | 0.08 | 0.50 | 3 |
 | Picea engelmannii | 0.04 | 0.01 | 0.03 | 0.32 | 1 |
 | Pinus albicaulis | 0.00 | 0.00 | 0.00 | 0.00 | 0 |

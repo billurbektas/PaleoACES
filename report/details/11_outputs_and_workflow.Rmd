@@ -26,6 +26,7 @@ Back to the [report](../../README.md).
 ## How to run
 
 ```sh
+Rscript -e 'renv::restore()'       # once: install the package versions recorded in renv.lock
 Rscript R/run_all.R --offline      # rebuild everything from the cached climate in output/cache/
 Rscript R/run_all.R                # same, downloading any missing CHELSA chunks
 Rscript R/run_all.R --age-models   # also refit the four Bacon chronologies (about 5 minutes)
@@ -37,8 +38,15 @@ Rscript R/sensitivity_paleoclimate.R  # stages 08-16 with the one-step correctio
 `R/run_all.R` runs the pipeline steps in order, then every figure script, the worked examples and
 the tests. A step reads only what earlier steps wrote. `output/` is not tracked by git; a clean
 rebuild needs only the raw data in `data/` and `Cores/` and the climate cache in `output/cache/`
-(or a network connection). Software: R with the packages loaded at the top of each script, rbacon
-3.5.2, and `pdftoppm` (poppler) for the report.
+(or a network connection). Software: R `r jsonlite::read_json(here('renv.lock'))$R$Version` with
+every package at the version recorded in `renv.lock`, and `pdftoppm` (poppler) for the report.
+
+Package versions are pinned with renv. The project's `.Rprofile` activates a project library, so
+every `Rscript` started from the repository root uses the versions in `renv.lock` whatever is
+installed elsewhere. The lockfile records the whole project library. After an intended upgrade,
+run the analysis, check what changed, and record it with `Rscript -e 'renv::snapshot()'`. Without
+the pin an R upgrade can change results silently: on 24 Nov 2026 an upgrade to rbacon 4.0.2 divided
+the cores into a different number of sections, so the stored age models could no longer be read.
 
 ## Pipeline
 

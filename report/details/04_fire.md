@@ -15,7 +15,7 @@ Back to the [report](../../README.md#fire-dynamics). Scripts:
 
 ## Holocene fire events
 
-<img src="../figures/png/fig_fire_event_detection_workflow.png" alt="" width="1540" />
+![](../figures/png/fig_fire_event_detection_workflow.png)<!-- -->
 
 **From a charcoal peak to an accepted event**, with every record’s
 settings and counts.
@@ -36,20 +36,20 @@ settings and counts.
 
 | Setting | Background (yr) | Interpolation (yr) | Threshold | Accepted events |
 |:---|---:|---:|---:|---:|
-| primary_native12_smooth500_q99 | 500 | 12.0 | 0.990 | 66 |
-| native12_smooth500_q95 | 500 | 12.0 | 0.950 | 77 |
-| native12_smooth500_q999 | 500 | 12.0 | 0.999 | 57 |
-| native12_smooth800_q99 | 800 | 12.0 | 0.990 | 74 |
-| native12_smooth1000_q99 | 1000 | 12.0 | 0.990 | 73 |
-| publication12.5_smooth500_q99 | 500 | 12.5 | 0.990 | 72 |
-| coarse45_smooth500_q99 | 500 | 45.0 | 0.990 | 35 |
+| primary_native12_smooth500_q99 | 500 | 12.0 | 0.990 | 70 |
+| native12_smooth500_q95 | 500 | 12.0 | 0.950 | 80 |
+| native12_smooth500_q999 | 500 | 12.0 | 0.999 | 64 |
+| native12_smooth800_q99 | 800 | 12.0 | 0.990 | 67 |
+| native12_smooth1000_q99 | 1000 | 12.0 | 0.990 | 70 |
+| publication12.5_smooth500_q99 | 500 | 12.5 | 0.990 | 71 |
+| coarse45_smooth500_q99 | 500 | 45.0 | 0.990 | 33 |
 
 <sub>Table file:
 [noca_threshold_sensitivity.csv](../tables/noca_threshold_sensitivity.csv)</sub>
 
 ## CharAnalysis reproduction of Walsh et al. (2017)
 
-<img src="../figures/png/fig_fire_event_detection_workflow-p3.png" alt="" width="1540" /><img src="../figures/png/fig_walsh_charanalysis_reproduction.png" alt="" width="1430" /><img src="../figures/png/fig_walsh_charanalysis_reproduction-p2.png" alt="" width="1430" /><img src="../figures/png/fig_walsh_charanalysis_reproduction-p3.png" alt="" width="1430" />
+![](../figures/png/fig_fire_event_detection_workflow-p3.png)<!-- -->![](../figures/png/fig_walsh_charanalysis_reproduction.png)<!-- -->![](../figures/png/fig_walsh_charanalysis_reproduction-p2.png)<!-- -->![](../figures/png/fig_walsh_charanalysis_reproduction-p3.png)<!-- -->
 
 **CharAnalysis R 2.0.3 against the published totals and the tapas
 catalog**, and the CharAnalysis series for each MORA record.
@@ -70,7 +70,7 @@ catalog**, and the CharAnalysis series for each MORA record.
 MORA plots are burned when a mapped 1987–2017 disturbance overlaps them;
 NOCA plots follow the Wilson (2024) assignment rule.
 
-<img src="../figures/png/NOCA_fire_map_Wilson2024_PaleoACES.png" alt="" width="825" />
+![](../figures/png/NOCA_fire_map_Wilson2024_PaleoACES.png)<!-- -->
 **NOCA fire assignment against Wilson (2024).**
 
 | Plot universe  | PaleoACES burned | Wilson burned | Discrepancy | Plots |
