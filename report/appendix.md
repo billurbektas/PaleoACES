@@ -1343,3 +1343,234 @@ change between t1 and t2. (B) The same quantities per century, with the
 climate change rate. Black: lag. Pink: pace contribution. Blue:
 direction contribution. The dashed vertical line marks
 zero.
+
+# Appendix S5. Sensitivity of the results to the Anthropocene climate product
+
+The Anthropocene climate of the main analysis is CHELSA V2.1. Compared
+with the weather stations in and around the two parks, V2.1 changed
+differently from the stations between the two surveys, most of all in
+spring temperature and, at NOCA east of 121° W, in summer precipitation.
+To assess how much the results depend on the climate product, we
+repeated the whole analysis with two products that are interpolated from
+station observations: PRISM LT81m at 800 m (Daly et al., 2008), which
+uses a set of long-record stations to keep its time series consistent,
+and nClimGrid at 1/24° (about 5 km; Vose et al., 2014). Each product
+replaced V2.1 at the same plots, survey windows and months. The Holocene
+climate is corrected onto a product in the same two steps as in the main
+analysis (Appendix S2): step 1, from CHELSA-TraCE21k to CHELSAcruts, is
+the same for all products, and step 2 goes from CHELSAcruts to the
+product, over the same grid cells within 5 km of the lakes and the same
+years (1979 to 2016). For PRISM, the monthly mean temperature, which
+PRISM defines as the mean of the minimum and maximum temperature, gives
+the temperature the analysis uses. The climate–community space is fitted
+on the climate of the legacy plots, so the climate product can change
+every result: the CCA, the positions of all communities, the climate
+periods, the lags and the two contributions, the differences between
+period types, the associations with climate change and fire, and the
+species contributions.
+
+The Holocene climate was corrected onto nClimGrid. **Note.** The
+correction onto PRISM needs PRISM at the grid cells around the lakes,
+which are not yet all downloaded. Until then, the PRISM analysis keeps
+the Holocene climate of the main analysis, corrected onto CHELSA V2.1,
+so that it differs from the main analysis only in the Anthropocene
+climate, and its Holocene and Anthropocene climates come from different
+products.
+
+**Table S25. Climate of the Anthropocene plot pairs with the three
+climate products.** Median over the plot pairs of each park
+(interquartile range in brackets) of the climate at the legacy survey
+(1979 to 1989), at the resurvey (the six years up to the resurvey of
+each plot), and of the change at each plot pair (resurvey minus legacy
+survey). The change in percent is the median of the change of each plot
+pair relative to its legacy value. The median change is not the
+difference of the two medians.
+
+| Park | Variable | Product | Legacy survey | Resurvey | Change at the plot pairs | Change (%) |
+|:---|:---|:---|:---|:---|:---|:---|
+| MORA | Spring temperature (°C) | CHELSA V2.1 | 3.32 (1.88 to 4.87) | 3.77 (2.45 to 5.36) | 0.37 (0.23 to 0.81) |  |
+| MORA | Spring temperature (°C) | PRISM | 4.06 (2.79 to 5.29) | 4.15 (3.08 to 5.53) | 0.08 (−0.14 to 0.45) |  |
+| MORA | Spring temperature (°C) | nClimGrid | 3.79 (2.98 to 4.82) | 3.52 (2.60 to 4.68) | −0.41 (−0.46 to 0.05) |  |
+| MORA | Summer precipitation (mm) | CHELSA V2.1 | 204 (173 to 258) | 150 (132 to 187) | −52 (−63 to −37) | −23.3 |
+| MORA | Summer precipitation (mm) | PRISM | 173 (138 to 212) | 154 (117 to 184) | −21 (−27 to −15) | −12.8 |
+| MORA | Summer precipitation (mm) | nClimGrid | 181 (137 to 227) | 170 (130 to 211) | −8 (−11 to −5) | −5.5 |
+| NOCA | Spring temperature (°C) | CHELSA V2.1 | 3.61 (0.77 to 5.84) | 3.94 (0.86 to 6.02) | 0.22 (−0.24 to 0.52) |  |
+| NOCA | Spring temperature (°C) | PRISM | 4.73 (2.48 to 7.02) | 4.00 (1.98 to 6.50) | −0.54 (−0.89 to −0.35) |  |
+| NOCA | Spring temperature (°C) | nClimGrid | 5.38 (3.37 to 7.49) | 5.07 (3.04 to 7.10) | −0.13 (−0.22 to −0.05) |  |
+| NOCA | Summer precipitation (mm) | CHELSA V2.1 | 126 (109 to 166) | 163 (139 to 205) | 16 (5 to 58) | 13.5 |
+| NOCA | Summer precipitation (mm) | PRISM | 139 (114 to 174) | 129 (113 to 157) | −10 (−17 to 3) | −5.9 |
+| NOCA | Summer precipitation (mm) | nClimGrid | 133 (113 to 151) | 132 (120 to 151) | 5 (−4 to 11) | 3.3 |
+
+**Table S26. Step 2 of the bias correction with the climate products.**
+The correction from CHELSAcruts to each product that the Holocene
+climate was corrected onto, over 1979 to 2016, on the grid cells within
+5 km of the lakes, shown for the two climate variables of the
+climate–community space: the mean offset of the spring (March to May)
+mean temperature and the ratio of the summer (June to August)
+precipitation sums. Step 1, from CHELSA-TraCE21k to CHELSAcruts, is the
+same for all products (Table S5, Fig. S7).
+
+| Park | Product     | Spring temperature offset (°C) | Summer precipitation ratio |
+|:-----|:------------|:-------------------------------|:---------------------------|
+| MORA | CHELSA V2.1 | −1.43                          | 1.56                       |
+| MORA | nClimGrid   | −0.15                          | 1.16                       |
+| NOCA | CHELSA V2.1 | −1.48                          | 1.32                       |
+| NOCA | nClimGrid   | 1.23                           | 1.41                       |
+
+**Climate of the plot pairs.** The median change of the spring mean
+temperature at the plot pairs was 0.37 °C at MORA and 0.22 °C at NOCA
+with CHELSA V2.1, 0.08 °C at MORA and −0.54 °C at NOCA with PRISM and
+−0.41 °C at MORA and −0.13 °C at NOCA with nClimGrid. The median change
+of the summer precipitation was −23.3% at MORA and 13.5% at NOCA with
+CHELSA V2.1, −12.8% at MORA and −5.9% at NOCA with PRISM and −5.5% at
+MORA and 3.3% at NOCA with nClimGrid (Table S25, Fig. S23).
+
+**Climate periods and lake-periods.** All products gave the same 10
+climate periods as the main analysis (Fig. S24). There were 23 Holocene
+lake-periods in the main analysis, and 23 with PRISM and 23 with
+nClimGrid.
+
+**Climate–community space.** The two climate variables explained 13.8%
+of the inertia of the legacy communities with CHELSA V2.1, and 11.2%
+with PRISM and 6.8% with nClimGrid (Fig. S25).
+
+**Differences between period types.** Of the 60 differences between
+period types (Table S16), 25 were significant in the main analysis
+(Holm-adjusted p \< 0.05). Of these, 19 with PRISM and 13 with nClimGrid
+were also significant with the same sign. Among the differences between
+the Anthropocene and the Holocene, 22 were significant in the main
+analysis, and 17 with PRISM and 12 with nClimGrid were also significant
+with the same sign. Differences that were significant with another
+product but not in the main analysis: 3 with PRISM and 2 with nClimGrid
+(Table S27, Fig. S26).
+
+**Associations with climate change and fire.** Of the climate, fire and
+burning coefficients whose 95% confidence interval excluded zero in the
+main analysis (3), 3 with PRISM and 2 with nClimGrid had an interval
+that still excluded zero, with the same sign. Coefficients whose
+interval excluded zero with another product but not in the main
+analysis: 3 with PRISM and 2 with nClimGrid (Fig. S27).
+
+**Species contributions.** Of the species means whose 95% confidence
+interval excluded zero in the main analysis (7), 3 with PRISM and 4 with
+nClimGrid still excluded zero, with the same sign (Fig. S28).
+
+**Results that hold with all products.** Significant with the same sign
+with all 3 products: climate change rate at MORA and NOCA (Anthropocene
+against both Holocene period types); turnover rate at MORA and NOCA
+(Anthropocene against both Holocene period types); turnover (not divided
+by time) at NOCA (Anthropocene against Holocene climate-change periods);
+lag rate at MORA (Anthropocene against both Holocene period types);
+direction contribution at NOCA (Anthropocene against Holocene stability
+periods).
+
+**Table S27. Differences between period types whose significance differs
+between the climate products.** The difference between the estimated
+means of two period types within a park (Table S16 for the main
+analysis) with its Holm-adjusted p in brackets, for each difference that
+was significant (p \< 0.05) with one product and not with another, or
+that changed sign. Climate change is in SD of the legacy plots, the
+other quantities in CCA distance or in CCA distance per century.
+
+| Quantity | Park | Difference | CHELSA V2.1 | PRISM | nClimGrid |
+|:---|:---|:---|:---|:---|:---|
+| Climate change (not divided by time) | MORA | Anthropocene - Holocene-C | 0.515 (\< 0.001) | 0.066 (1.000) | −0.087 (1.000) |
+| Climate change (not divided by time) | MORA | Anthropocene - Holocene-S | 0.584 (\< 0.001) | 0.146 (0.009) | −0.005 (1.000) |
+| Climate change (not divided by time) | NOCA | Anthropocene - Holocene-C | 0.219 (0.021) | −0.053 (1.000) | −0.243 (0.090) |
+| Climate change (not divided by time) | NOCA | Anthropocene - Holocene-S | 0.381 (\< 0.001) | 0.134 (0.029) | −0.028 (1.000) |
+| Direction contribution | MORA | Anthropocene - Holocene-C | 0.575 (\< 0.001) | 0.215 (0.087) | 0.080 (1.000) |
+| Direction contribution | MORA | Anthropocene - Holocene-S | 0.547 (\< 0.001) | 0.188 (0.087) | 0.080 (1.000) |
+| Direction contribution | NOCA | Anthropocene - Holocene-C | −0.322 (0.066) | −1.243 (\< 0.001) | −0.634 (0.002) |
+| Direction contribution | NOCA | Holocene-C - Holocene-S | −0.073 (\< 0.001) | −0.079 (0.018) | −0.049 (0.453) |
+| Direction contribution (not divided by time) | NOCA | Anthropocene - Holocene-S | −0.225 (0.170) | −0.584 (\< 0.001) | −0.106 (1.000) |
+| Lag | MORA | Anthropocene - Holocene-C | 0.254 (0.001) | 0.167 (0.145) | 0.020 (1.000) |
+| Lag | MORA | Anthropocene - Holocene-S | 0.390 (0.013) | 0.283 (0.045) | 0.219 (0.764) |
+| Pace contribution | MORA | Anthropocene - Holocene-C | 0.108 (0.103) | 0.217 (\< 0.001) | 0.096 (0.253) |
+| Pace contribution | MORA | Anthropocene - Holocene-S | 0.141 (0.017) | 0.241 (\< 0.001) | 0.135 (0.086) |
+| Pace contribution | MORA | Holocene-C - Holocene-S | 0.033 (\< 0.001) | 0.024 (0.109) | 0.039 (0.012) |
+| Pace contribution | NOCA | Anthropocene - Holocene-S | −0.307 (0.178) | −0.359 (0.109) | −0.499 (0.046) |
+| Pace contribution (not divided by time) | MORA | Anthropocene - Holocene-S | 0.262 (0.009) | 0.291 (\< 0.001) | 0.274 (0.106) |
+| Pace contribution (not divided by time) | MORA | Holocene-C - Holocene-S | 0.292 (0.001) | 0.246 (\< 0.001) | 0.326 (0.157) |
+
+![](figures/png/figS23_climate_products_plot_climate.png)
+
+**Fig. S23. Climate of the Anthropocene plot pairs with the three
+climate products.** (A) Median over the plot pairs of each park of the
+spring mean temperature (°C) and the summer precipitation (mm) at the
+legacy survey (1979 to 1989) and at the resurvey (the six years up to
+the resurvey of each plot), with the interquartile range. (B) Median
+over the plot pairs of the change at each plot pair (resurvey minus
+legacy survey; precipitation in percent of the legacy value), with the
+interquartile range and the median printed above. Purple circles: CHELSA
+V2.1 (main analysis). Green triangles: PRISM LT81m. Orange squares:
+nClimGrid.
+
+![](figures/png/figS24_climate_products_holocene_periods.png)
+
+**Fig. S24. Holocene climate and climate periods with the three climate
+products.** (A) Spring mean temperature (°C) and summer precipitation
+(mm) of CHELSA-TraCE21k at the lakes of each park (MORA: mean of its
+three lakes), corrected onto each product in two steps, as the centred
+1,000-year running mean of the centennial time steps, from 10,500 to 500
+cal BP. (B) The climate periods drawn with each product from the
+regional series of Fig. 3: climate-change periods (C) in full colour and
+stability periods (S) in light colour. The periods are the same for both
+parks and are repeated under each. Dashed: PRISM, whose analysis keeps
+the Holocene climate of the main analysis (see the note above), so that
+its lines lie on those of CHELSA V2.1. Purple: CHELSA V2.1 (main
+analysis). Green: PRISM LT81m. Orange: nClimGrid.
+
+![](figures/png/figS25_climate_products_cca.png)
+
+**Fig. S25. The climate–community space with the three climate
+products.** Scores of the tree species (points, scaling 1) and biplot
+arrows of spring temperature and summer precipitation in the CCA fitted
+with each product, each in its own display rotation, so that axis 1 runs
+along spring temperature and axis 2 along summer precipitation as in
+Fig. 4. Grey lines join the scores of one species in the analyses with
+the different products. Species names are placed at their scores with
+CHELSA V2.1. The arrows are scaled together, so that their lengths
+compare across the products. The legend gives the share of the total
+inertia that the two climate variables explain with each product. Purple
+circles: CHELSA V2.1 (main analysis). Green triangles: PRISM LT81m.
+Orange squares: nClimGrid.
+
+![](figures/png/figS26_climate_products_era_means.png)
+
+**Fig. S26. Rates of climate change, community turnover and the
+climate–community lag by period type, with the three climate products.**
+Estimated means with 95% confidence intervals for the Holocene stability
+periods, the Holocene climate-change periods and the Anthropocene plot
+pairs of each park, from the models of Fig. 5 fitted with each product:
+(A) the climate change rate (SD of the legacy plots per century) and (B)
+the observed community turnover rate (CCA distance per century), both on
+log axes, where an interval that reaches zero or below is cut at the
+lower edge of the panel; (C) the lag rate, (D) the pace contribution and
+(E) the direction contribution, in CCA distance per century. Purple
+circles: CHELSA V2.1 (main analysis). Green triangles: PRISM LT81m.
+Orange squares: nClimGrid.
+
+![](figures/png/figS27_climate_products_slopes.png)
+
+**Fig. S27. Associations with climate change and fire, with the three
+climate products.** Coefficients of Fig. 6 with their 95% confidence
+intervals, from the models fitted with each product. Rows: the terms of
+the Holocene models of the lake-periods (park, climate change rate, fire
+activity) and of the Anthropocene models of the plot pairs (park, burned
+between the surveys). Columns: the lag, the pace contribution and the
+direction contribution, per century. Coefficients whose interval
+includes zero are faded. The dashed vertical line marks zero. Purple
+circles: CHELSA V2.1 (main analysis). Green triangles: PRISM LT81m.
+Orange squares: nClimGrid.
+
+![](figures/png/figS28_climate_products_species.png)
+
+**Fig. S28. Species contributions in the climate-predicted direction
+with the three climate products.** Mean contribution per century of each
+species to the community change in the climate-predicted direction, with
+its 95% confidence interval, as in Fig. 7, for each park (columns) and
+period type (rows). Species are ordered by elevation as in Fig. 7, and
+species absent from a park and period type are left out. Means whose
+interval includes zero are faded. The dashed vertical line marks zero.
+Purple circles: CHELSA V2.1 (main analysis). Green triangles: PRISM
+LT81m. Orange squares: nClimGrid.

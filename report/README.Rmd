@@ -37,8 +37,8 @@ dynamics, the climate–community space, and then the four questions in turn (la
 contributions, associations with fire, species contributions). It shows every main and supplementary figure,
 the tables reported in the manuscript and the modelling code, and keeps the text of the Supporting
 Information: Appendix S1 (age–depth models), Appendix S2 (climate products and the bias correction of the
-paleoclimate), Appendix S3 (fire histories) and Appendix S4 (the analysis with the one-step correction and on
-the raw paleoclimate). Data
+paleoclimate), Appendix S3 (fire histories), Appendix S4 (the analysis with the one-step correction and on
+the raw paleoclimate) and Appendix S5 (the analysis with PRISM and nClimGrid as the Anthropocene climate). Data
 cleaning is summarized by its figure here. The
 step-by-step detail sits in [`report/details/`](report/details), linked from each section.
 
@@ -54,6 +54,7 @@ Rscript R/build_report.R        # rebuild this page and report/ from the outputs
 | `R/figures/` | Main and supplementary figures, drawn from `output/` |
 | `R/worked_examples.R` | Step-by-step method illustrations |
 | `R/sensitivity_paleoclimate.R` | Stages 08 to 16 with the one-step correction and on the raw paleoclimate, into `output_paleoclimate_sensitivity/` (run separately, Appendix S4) |
+| `R/sensitivity_climate_products.R` | Stages 08 to 16 with PRISM and with nClimGrid as the Anthropocene climate, into `output_climate_sensitivity/` (run separately, Appendix S5) |
 | `R/tests/` | Scientific regression checks, run last by `R/run_all.R` |
 | `R/helpers/` | Shared functions; `paths.R` declares every output file |
 | `report/` | Figures, tables and detail pages of this report |
@@ -1759,3 +1760,261 @@ correction. (A) The lag, the pace contribution, and the direction contribution n
 change between t1 and t2. (B) The same quantities per century, with the climate change rate. Black: lag.
 Pink: pace contribution. Blue: direction contribution. The dashed vertical line marks zero.<!-- readme-only --> Script:
 [`R/figures/supp_paleoclimate_sensitivity.R`](R/figures/supp_paleoclimate_sensitivity.R).<!-- /readme-only -->
+
+# Appendix S5. Sensitivity of the results to the Anthropocene climate product
+
+```{r appendix-s5-setup}
+s5_dir = here::here('output_climate_sensitivity', 'comparison')
+s5_has = file.exists(file.path(s5_dir, 'species_means.csv'))
+s5_read = function(f) readr::read_csv(file.path(s5_dir, f), show_col_types = FALSE)
+s5_name = c(v21 = 'CHELSA V2.1', prism = 'PRISM', nclimgrid = 'nClimGrid')
+if (s5_has) {
+  s5_products = intersect(names(s5_name), unique(s5_read('plot_climate_medians.csv')$product))
+  s5_others = setdiff(s5_products, 'v21')
+}
+# 'a', 'a and b', 'a, b and c'.
+s5_and = function(x) if (length(x) < 2) x else paste(paste(head(x, -1), collapse = ', '), 'and', tail(x, 1))
+s5_signed = function(x, digits) sub('^-', '−', unname(mapply(\(v, d) formatC(v, format = 'f', digits = d), x, digits)))
+```
+
+The Anthropocene climate of the main analysis is CHELSA V2.1. Compared with the weather stations in and
+around the two parks, V2.1 changed differently from the stations between the two surveys, most of all in
+spring temperature and, at NOCA east of 121° W, in summer precipitation. To assess how much the results
+depend on the climate product, we repeated the whole analysis with two products that are interpolated from
+station observations: PRISM LT81m at 800 m (Daly et al., 2008), which uses a set of long-record stations to
+keep its time series consistent, and nClimGrid at 1/24° (about 5 km; Vose et al., 2014). Each product
+replaced V2.1 at the same plots, survey windows and months. The Holocene climate is corrected onto a
+product in the same two steps as in the main analysis (Appendix S2): step 1, from CHELSA-TraCE21k to
+CHELSAcruts, is the same for all products, and step 2 goes from CHELSAcruts to the product, over the same
+grid cells within 5 km of the lakes and the same years (1979 to 2016). For PRISM, the monthly mean
+temperature, which PRISM defines as the mean of the minimum and maximum temperature, gives the temperature
+the analysis uses. The climate–community space is fitted on the climate of the legacy plots, so the climate
+product can change every result: the CCA, the positions of all communities, the climate periods, the lags
+and the two contributions, the differences between period types, the associations with climate change and
+fire, and the species contributions.<!-- readme-only --> [`R/sensitivity_climate_products.R`](R/sensitivity_climate_products.R) reruns stages 08 to 16 for each product into
+`output_climate_sensitivity/` and leaves the main outputs untouched. The numbers below are read from the
+tables that the script writes to `output_climate_sensitivity/comparison/`.<!-- /readme-only -->
+
+```{r appendix-s5-note, results = 'asis'}
+if (s5_has) {
+  s5_onto = s5_read('products.csv')
+  s5_held = s5_onto$product[s5_onto$holocene_corrected_onto != s5_onto$product]
+  s5_corrected = setdiff(s5_onto$product[s5_onto$holocene_corrected_onto == s5_onto$product], 'v21')
+  if (length(s5_corrected)) cat(paste0('The Holocene climate was corrected onto ', s5_and(s5_name[s5_corrected]), '. '))
+  if (length(s5_held)) cat(paste0('**Note.** The correction onto ', s5_and(s5_name[s5_held]), ' needs ',
+    s5_and(s5_name[s5_held]), ' at the grid cells around the lakes, which are not yet all downloaded. Until then, the ',
+    s5_and(s5_name[s5_held]), ' analysis keeps the Holocene climate of the main analysis, corrected onto CHELSA V2.1, ',
+    'so that it differs from the main analysis only in the Anthropocene climate, and its Holocene and Anthropocene ',
+    'climates come from different products.\n'))
+}
+```
+
+```{r appendix-s5-plot-climate}
+if (s5_has) {
+  s5_iqr = function(m, a, b, d) sprintf('%s (%s to %s)', s5_signed(m, d), s5_signed(a, d), s5_signed(b, d))
+  s5_read('plot_climate_medians.csv') |>
+    mutate(product = factor(product, s5_products), d = if_else(variable == 'MSpT', 2, 0)) |>
+    arrange(site, variable, product) |>
+    transmute(Park = site, Variable = c(MSpT = 'Spring temperature (°C)', SP = 'Summer precipitation (mm)')[variable],
+      Product = s5_name[as.character(product)],
+      `Legacy survey` = s5_iqr(legacy_median, legacy_q25, legacy_q75, d),
+      Resurvey = s5_iqr(resurvey_median, resurvey_q25, resurvey_q75, d),
+      `Change at the plot pairs` = s5_iqr(change_median, change_q25, change_q75, d),
+      `Change (%)` = if_else(variable == 'SP', s5_signed(change_percent_median, 1), '')) |>
+    show_table('appendix_s5_plot_climate', caption = paste('**Table S25. Climate of the Anthropocene plot pairs with the three',
+      'climate products.** Median over the plot pairs of each park (interquartile range in brackets) of the climate at the legacy',
+      'survey (1979 to 1989), at the resurvey (the six years up to the resurvey of each plot), and of the change at each plot pair',
+      '(resurvey minus legacy survey). The change in percent is the median of the change of each plot pair relative to its legacy value.',
+      'The median change is not the difference of the two medians.'))
+}
+```
+
+```{r appendix-s5-step2}
+if (s5_has) {
+  s5_read('step2_seasonal.csv') |> mutate(product = factor(product, s5_products)) |> arrange(site, product) |>
+    transmute(Park = site, Product = s5_name[as.character(product)],
+      `Spring temperature offset (°C)` = s5_signed(spring_temperature_offset, 2),
+      `Summer precipitation ratio` = sprintf('%.2f', summer_precipitation_ratio)) |>
+    show_table('appendix_s5_step2', caption = paste('**Table S26. Step 2 of the bias correction with the climate',
+      'products.** The correction from CHELSAcruts to each product that the Holocene climate was corrected onto, over 1979 to 2016, on the grid cells within 5 km of the lakes,',
+      'shown for the two climate variables of the climate–community space: the mean offset of the spring (March to May) mean',
+      'temperature and the ratio of the summer (June to August) precipitation sums. Step 1, from CHELSA-TraCE21k to CHELSAcruts,',
+      'is the same for all products (Table S5, Fig. S7).'))
+}
+```
+
+```{r appendix-s5-text, results = 'asis'}
+if (s5_has) {
+  # Climate periods and lake-periods.
+  s5_periods = s5_read('climate_periods.csv') |> select(product, period, period_type, older_cal_bp, younger_cal_bp)
+  s5_catalog = split(select(s5_periods, -product), s5_periods$product)
+  s5_same_periods = vapply(s5_others, \(p) isTRUE(all.equal(as.data.frame(s5_catalog[[p]]), as.data.frame(s5_catalog$v21),
+    check.attributes = FALSE)), logical(1))
+  s5_match = s5_read('lake_period_matching.csv')
+  s5_lp = function(p) sum(s5_match$lake_periods[s5_match$product == p])
+  # CCA.
+  s5_cca = s5_read('cca.csv') |> distinct(product, constrained_percent_total)
+  s5_inertia = function(p) sprintf('%.1f%%', s5_cca$constrained_percent_total[s5_cca$product == p])
+  # Era contrasts, wide by product.
+  s5_ec = s5_read('era_contrasts.csv') |> select(product, response, site, contrast, estimate, p_adjusted) |>
+    pivot_wider(names_from = product, values_from = c(estimate, p_adjusted))
+  s5_sig = function(p) s5_ec[[paste0('p_adjusted_', p)]] < .05
+  s5_same_sign = function(p) sign(s5_ec[[paste0('estimate_', p)]]) == sign(s5_ec$estimate_v21)
+  s5_main = s5_sig('v21')
+  s5_kept = function(p) sum(s5_main & s5_sig(p) & s5_same_sign(p))
+  s5_new = function(p) sum(!s5_main & s5_sig(p))
+  s5_era = startsWith(s5_ec$contrast, 'Anthropocene')
+  s5_kept_era = function(p) sum(s5_era & s5_main & s5_sig(p) & s5_same_sign(p))
+  # Slopes of the explanatory models (park terms left out, as in the text of Q3).
+  s5_sl = s5_read('model_coefficients.csv') |> filter(term != '(Intercept)', term != 'siteNOCA') |>
+    mutate(away = conf_low > 0 | conf_high < 0) |> select(product, metric, era, term, estimate, away) |>
+    pivot_wider(names_from = product, values_from = c(estimate, away))
+  s5_sl_main = s5_sl |> filter(away_v21)
+  s5_sl_kept = function(p) sum(s5_sl_main[[paste0('away_', p)]] & sign(s5_sl_main[[paste0('estimate_', p)]]) == sign(s5_sl_main$estimate_v21))
+  s5_sl_new = function(p) sum(!s5_sl$away_v21 & s5_sl[[paste0('away_', p)]])
+  # Species contributions whose interval excludes zero.
+  s5_sp = s5_read('species_means.csv') |> filter(present, interval_defined) |>
+    mutate(away = conf_low > 0 | conf_high < 0) |> select(product, species, site, period_type, estimate, away) |>
+    pivot_wider(names_from = product, values_from = c(estimate, away))
+  s5_sp_main = s5_sp |> filter(away_v21)
+  s5_sp_kept = function(p) sum(s5_sp_main[[paste0('away_', p)]] & sign(s5_sp_main[[paste0('estimate_', p)]]) == sign(s5_sp_main$estimate_v21), na.rm = TRUE)
+  # Differences between period types significant with the same sign with every product.
+  s5_robust = Reduce(`&`, lapply(s5_others, \(p) s5_sig(p) & s5_same_sign(p)), s5_main)
+  # Grouped by quantity: the parks with the same differences together.
+  s5_robust_words = function(d) {
+    words = function(x) if (setequal(x, c('Anthropocene - Holocene-C', 'Anthropocene - Holocene-S')))
+      'Anthropocene against both Holocene period types' else s5_and(c('Anthropocene - Holocene-C' =
+      'Anthropocene against Holocene climate-change periods', 'Anthropocene - Holocene-S' =
+      'Anthropocene against Holocene stability periods', 'Holocene-C - Holocene-S' =
+      'Holocene climate-change against stability periods')[sort(x)])
+    d |> group_by(response, site) |> summarise(what = words(contrast), .groups = 'drop') |>
+      group_by(response, what) |> summarise(sites = s5_and(site), .groups = 'drop') |>
+      mutate(response = factor(response, names(response_label))) |> arrange(response) |>
+      transmute(text = sprintf('%s at %s (%s)', tolower(response_label[as.character(response)]), sites, what)) |> pull(text)
+  }
+  s5_each = function(f, unit = '') s5_and(vapply(s5_others, \(p) paste0(f(p), unit, ' with ', s5_name[[p]]), character(1)))
+  s5_med = s5_read('plot_climate_medians.csv')
+  s5_ch = function(p, v, park, col = 'change_median', d = 2) s5_signed(s5_med[[col]][s5_med$product == p & s5_med$variable == v &
+    s5_med$site == park], d)
+  s5_by_product = function(v, col, d, unit) s5_and(vapply(s5_products, \(p) sprintf('%s%s at MORA and %s%s at NOCA with %s',
+    s5_ch(p, v, 'MORA', col, d), unit, s5_ch(p, v, 'NOCA', col, d), unit, s5_name[[p]]), character(1)))
+  cat(paste0('**Climate of the plot pairs.** The median change of the spring mean temperature at the plot pairs was ',
+    s5_by_product('MSpT', 'change_median', 2, ' °C'), '. The median change of the summer precipitation was ',
+    s5_by_product('SP', 'change_percent_median', 1, '%'), ' (Table S25, Fig. S23).\n\n',
+    '**Climate periods and lake-periods.** ',
+    if (all(s5_same_periods)) sprintf('All products gave the same %d climate periods as the main analysis (Fig. S24). ', nrow(s5_catalog$v21)) else
+      paste0('The climate periods changed with ', s5_and(s5_name[s5_others[!s5_same_periods]]), ' (Fig. S24). '),
+    'There were ', s5_lp('v21'), ' Holocene lake-periods in the main analysis, and ', s5_each(s5_lp), '.\n\n',
+    '**Climate–community space.** The two climate variables explained ', s5_inertia('v21'), ' of the inertia of the legacy ',
+    'communities with CHELSA V2.1, and ', s5_each(s5_inertia), ' (Fig. S25).\n\n',
+    '**Differences between period types.** Of the 60 differences between period types (Table S16), ', sum(s5_main),
+    ' were significant in the main analysis (Holm-adjusted p < 0.05). Of these, ', s5_each(s5_kept),
+    ' were also significant with the same sign. Among the differences between the Anthropocene and the Holocene, ',
+    sum(s5_era & s5_main), ' were significant in the main analysis, and ', s5_each(s5_kept_era),
+    ' were also significant with the same sign. Differences that were significant with another product but not in the main analysis: ',
+    s5_each(s5_new), ' (Table S27, Fig. S26).\n\n',
+    '**Associations with climate change and fire.** Of the climate, fire and burning coefficients whose 95% confidence interval excluded ',
+    'zero in the main analysis (', nrow(s5_sl_main), '), ', s5_each(s5_sl_kept), ' had an interval that still excluded zero, with the same sign. ',
+    'Coefficients whose interval excluded zero with another product but not in the main analysis: ', s5_each(s5_sl_new), ' (Fig. S27).\n\n',
+    '**Species contributions.** Of the species means whose 95% confidence interval excluded zero in the main analysis (',
+    nrow(s5_sp_main), '), ', s5_each(s5_sp_kept), ' still excluded zero, with the same sign (Fig. S28).\n\n',
+    '**Results that hold with all products.** ',
+    if (any(s5_robust)) paste0('Significant with the same sign with all ', length(s5_products), ' products: ',
+      paste(s5_robust_words(s5_ec[s5_robust, ]), collapse = '; '), '.') else 'No difference between period types was significant with all products.',
+    '\n'))
+}
+```
+
+```{r appendix-s5-contrasts}
+if (s5_has) {
+  s5_cell = function(p) sprintf('%s (%s)', s5_signed(s5_ec[[paste0('estimate_', p)]], 3),
+    ifelse(s5_ec[[paste0('p_adjusted_', p)]] < .001, '< 0.001', sprintf('%.3f', s5_ec[[paste0('p_adjusted_', p)]])))
+  s5_differs = Reduce(`|`, lapply(s5_others, \(p) s5_sig(p) != s5_main | (s5_main & !s5_same_sign(p))))
+  s5_tab = tibble(Quantity = response_label[s5_ec$response], Park = s5_ec$site, Difference = s5_ec$contrast)
+  for (p in s5_products) s5_tab[[s5_name[[p]]]] = s5_cell(p)
+  s5_tab[s5_differs, ] |> show_table('appendix_s5_era_contrasts', caption = paste('**Table S27. Differences between period types',
+    'whose significance differs between the climate products.** The difference between the estimated means of two period types',
+    'within a park (Table S16 for the main analysis) with its Holm-adjusted p in brackets, for each difference that was significant',
+    '(p < 0.05) with one product and not with another, or that changed sign. Climate change is in SD of the legacy plots, the other',
+    'quantities in CCA distance or in CCA distance per century.'))
+}
+```
+
+```{r appendix-s5-fig-s23}
+if (s5_has) show_figure('report/figures/supplementary/figS23_climate_products_plot_climate.pdf')
+```
+
+**Fig. S23. Climate of the Anthropocene plot pairs with the three climate products.** (A) Median over the
+plot pairs of each park of the spring mean temperature (°C) and the summer precipitation (mm) at the
+legacy survey (1979 to 1989) and at the resurvey (the six years up to the resurvey of each plot), with the
+interquartile range. (B) Median over the plot pairs of the change at each plot pair (resurvey minus legacy
+survey; precipitation in percent of the legacy value), with the interquartile range and the median printed
+above. Purple circles: CHELSA V2.1 (main analysis). Green triangles: PRISM LT81m. Orange squares:
+nClimGrid.<!-- readme-only --> Script:
+[`R/figures/supp_climate_product_sensitivity.R`](R/figures/supp_climate_product_sensitivity.R).<!-- /readme-only -->
+
+```{r appendix-s5-fig-s24}
+if (s5_has) show_figure('report/figures/supplementary/figS24_climate_products_holocene_periods.pdf')
+```
+
+**Fig. S24. Holocene climate and climate periods with the three climate products.** (A) Spring mean
+temperature (°C) and summer precipitation (mm) of CHELSA-TraCE21k at the lakes of each park (MORA: mean of
+its three lakes), corrected onto each product in two steps, as the centred 1,000-year running mean of the
+centennial time steps, from 10,500 to 500 cal BP. (B) The climate periods drawn with each product from the
+regional series of Fig. 3: climate-change periods (C) in full colour and stability periods (S) in light
+colour. The periods are the same for both parks and are repeated under each.`r if (s5_has && length(s5_held)) paste0(' Dashed: ', s5_and(s5_name[s5_held]), ', whose analysis keeps the Holocene climate of the main analysis (see the note above), so that its lines lie on those of CHELSA V2.1.') else ''` Purple: CHELSA V2.1 (main
+analysis). Green: PRISM LT81m. Orange: nClimGrid.<!-- readme-only --> Script:
+[`R/figures/supp_climate_product_sensitivity.R`](R/figures/supp_climate_product_sensitivity.R).<!-- /readme-only -->
+
+```{r appendix-s5-fig-s25}
+if (s5_has) show_figure('report/figures/supplementary/figS25_climate_products_cca.pdf', width = '75%')
+```
+
+**Fig. S25. The climate–community space with the three climate products.** Scores of the tree species
+(points, scaling 1) and biplot arrows of spring temperature and summer precipitation in the CCA fitted with
+each product, each in its own display rotation, so that axis 1 runs along spring temperature and axis 2
+along summer precipitation as in Fig. 4. Grey lines join the scores of one species in the analyses with the
+different products. Species names are placed at their scores with CHELSA V2.1. The arrows are scaled
+together, so that their lengths compare across the products. The legend gives the share of the total
+inertia that the two climate variables explain with each product. Purple circles: CHELSA V2.1 (main
+analysis). Green triangles: PRISM LT81m. Orange squares: nClimGrid.<!-- readme-only --> Script:
+[`R/figures/supp_climate_product_sensitivity.R`](R/figures/supp_climate_product_sensitivity.R).<!-- /readme-only -->
+
+```{r appendix-s5-fig-s26}
+if (s5_has) show_figure('report/figures/supplementary/figS26_climate_products_era_means.pdf', width = '85%')
+```
+
+**Fig. S26. Rates of climate change, community turnover and the climate–community lag by period type,
+with the three climate products.** Estimated means with 95% confidence intervals for the Holocene stability
+periods, the Holocene climate-change periods and the Anthropocene plot pairs of each park, from the models
+of Fig. 5 fitted with each product: (A) the climate change rate (SD of the legacy plots per century) and (B)
+the observed community turnover rate (CCA distance per century), both on log axes, where an interval that
+reaches zero or below is cut at the lower edge of the panel; (C) the lag rate, (D) the pace contribution
+and (E) the direction contribution, in CCA distance per century. Purple circles: CHELSA V2.1 (main
+analysis). Green triangles: PRISM LT81m. Orange squares: nClimGrid.<!-- readme-only --> Script:
+[`R/figures/supp_climate_product_sensitivity.R`](R/figures/supp_climate_product_sensitivity.R).<!-- /readme-only -->
+
+```{r appendix-s5-fig-s27}
+if (s5_has) show_figure('report/figures/supplementary/figS27_climate_products_slopes.pdf')
+```
+
+**Fig. S27. Associations with climate change and fire, with the three climate products.** Coefficients of
+Fig. 6 with their 95% confidence intervals, from the models fitted with each product. Rows: the terms of
+the Holocene models of the lake-periods (park, climate change rate, fire activity) and of the Anthropocene
+models of the plot pairs (park, burned between the surveys). Columns: the lag, the pace contribution and
+the direction contribution, per century. Coefficients whose interval includes zero are faded. The dashed
+vertical line marks zero. Purple circles: CHELSA V2.1 (main analysis). Green triangles: PRISM LT81m.
+Orange squares: nClimGrid.<!-- readme-only --> Script:
+[`R/figures/supp_climate_product_sensitivity.R`](R/figures/supp_climate_product_sensitivity.R).<!-- /readme-only -->
+
+```{r appendix-s5-fig-s28}
+if (s5_has) show_figure('report/figures/supplementary/figS28_climate_products_species.pdf', width = '85%')
+```
+
+**Fig. S28. Species contributions in the climate-predicted direction with the three climate products.**
+Mean contribution per century of each species to the community change in the climate-predicted direction,
+with its 95% confidence interval, as in Fig. 7, for each park (columns) and period type (rows). Species are
+ordered by elevation as in Fig. 7, and species absent from a park and period type are left out. Means
+whose interval includes zero are faded. The dashed vertical line marks zero. Purple circles: CHELSA V2.1
+(main analysis). Green triangles: PRISM LT81m. Orange squares: nClimGrid.<!-- readme-only --> Script:
+[`R/figures/supp_climate_product_sensitivity.R`](R/figures/supp_climate_product_sensitivity.R).<!-- /readme-only -->
