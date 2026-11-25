@@ -465,10 +465,9 @@ factors of every park, variable and month are written to
 details →**
 [02_climate](report/details/02_climate.md).
 
-Note that this correction assumes that the difference between the
-products was constant through the Holocene. We therefore repeated the
-analysis without correction, and report how the results changed in
-Appendix S4.
+This correction assumes that the difference between the products stayed
+constant through the Holocene. As a sensitivity analysis, we therefore
+repeated all analyses without correction (Appendix S4).
 
 **Table S5. Comparison of CHELSA-TraCE21k and CHELSAcruts over the years
 that they have in common, without correction.** The most recent time
@@ -1694,46 +1693,11 @@ Anthropocene - Holocene-S (+0.26 (0.10 to 0.42, Holm p = 0.009)). The
 Anthropocene contributions are large per century mainly because they
 build up over a few decades.
 
-**Sign of the lag and of the pace and direction contributions without
-correction of the Holocene climate.** The main analysis uses the
-Holocene climate after the two-step correction: CHELSA-TraCE21k
-corrected first to CHELSAcruts (step 1, over 1900 to 1990) and then to
-CHELSA V2.1 (step 2, over 1979 to 2016; Appendix S2). Without
-correction, the Holocene climate is CHELSA-TraCE21k as published. To
-assess whether the sign of the lag and of the two contributions depends
-on the correction of the Holocene climate, we counted the lake-periods
-in which they had the same sign as in the main analysis without
-correction (Table S20; see Appendix S4).
-[`R/sensitivity_paleoclimate.R`](R/sensitivity_paleoclimate.R) reruns
-stages 08 to 16 into `output_paleoclimate_sensitivity/` and leaves the
-main outputs untouched. Each run draws its climate periods from its own
-series, so the lake-periods are compared where both runs have the same
-lake, period type and ends.
-
-**Table S20. Lake-periods in which the lag, the pace contribution, and
-the direction contribution had the same sign as in the main analysis,
-without correction of the Holocene climate.** The quantities are not
-divided by time. A pace or direction contribution is undefined when the
-observed or the climate-predicted position did not move.
-
-| Quantity | Park | Lake-periods | Defined in both analyses | Same sign as in the main analysis | Opposite sign |
-|:---|:---|---:|---:|---:|---:|
-| Lag | MORA | 13 | 13 | 5 | 8 |
-| Lag | NOCA | 10 | 10 | 8 | 2 |
-| Pace contribution | MORA | 13 | 10 | 5 | 5 |
-| Pace contribution | NOCA | 10 | 10 | 7 | 3 |
-| Direction contribution | MORA | 13 | 10 | 6 | 4 |
-| Direction contribution | NOCA | 10 | 10 | 7 | 3 |
-
-<sub>Table file:
-[paleoclimate_sensitivity_sign_counts.csv](report/tables/paleoclimate_sensitivity_sign_counts.csv)</sub>
-
 Stages and helpers:
 [`R/pipeline/14_era_models.R`](R/pipeline/14_era_models.R),
 [`R/helpers/tracking_model_reporting.R`](R/helpers/tracking_model_reporting.R)
 (period types),
-[`R/figures/main_fig5_era_contrasts.R`](R/figures/main_fig5_era_contrasts.R),
-[`R/sensitivity_paleoclimate.R`](R/sensitivity_paleoclimate.R).
+[`R/figures/main_fig5_era_contrasts.R`](R/figures/main_fig5_era_contrasts.R).
 
 # Associations with fire (Q3)
 
@@ -1787,7 +1751,7 @@ the two surveys, so the fire comparison is a NOCA comparison.
 
 **Result.**
 
-**Table S21. Associations with fire: coefficients of the models.**
+**Table S20. Associations with fire: coefficients of the models.**
 Holocene: models of the lake-periods with park, climate change rate (or
 climate change, for the quantities not divided by time), and fire
 activity as fixed effects, a first-order autoregressive correlation
@@ -1800,7 +1764,7 @@ between burned and unburned plot pairs. Estimates are in CCA distance
 error. Two-sided t-tests on the residual degrees of freedom (df) of the
 model, with 95% confidence intervals (CI). n, number of lake-periods or
 plot pairs. R² is descriptive. The fit of the models is given in Table
-S22.
+S21.
 
 | Quantity | Era | Term | Estimate | SE | df | t | 95% CI | p | n | R² |
 |:---|:---|:---|---:|---:|---:|---:|:---|---:|---:|---:|
@@ -1899,7 +1863,7 @@ standardized unit of climate change per century, and the fire slope per
 accepted event per century per covered core. (B) Anthropocene plot
 pairs, model response ~ site + burned with park-specific variances: 605
 plot pairs for the lag and 460 for pace and direction. The descriptive
-R² and the degrees of freedom of each model are in Tables S21 and S22.
+R² and the degrees of freedom of each model are in Tables S20 and S21.
 The same models on the responses not divided by time are in Fig. S18.
 Both panels also show the site term (NOCA minus MORA). The lake-periods
 of the Holocene climate-change periods span 300 to 900 years, and those
@@ -1937,11 +1901,11 @@ between t1 and t2. The Anthropocene plot pairs span 27.5 to 32.5 years
 between the midpoints of their two climate windows (about 29 years).
 
 **Model checks.** The fit of these models is given in Table
-S22. The rows left out are on the
+S21. The rows left out are on the
 **model details page →**
 [08_models](report/details/08_models.md).
 
-**Table S22. Associations with fire: fit of the models.** MORA and NOCA,
+**Table S21. Associations with fire: fit of the models.** MORA and NOCA,
 number of lake-periods or plot pairs of each park. AR(1), parameter of
 the first-order autoregressive correlation within each lake. Residual
 df, lake-periods or plot pairs with the coefficients subtracted. The
@@ -2029,7 +1993,7 @@ group_mean = function(x) {
 
 **Result.**
 
-**Table S23. Species contributions in the climate-predicted direction
+**Table S22. Species contributions in the climate-predicted direction
 per century.** Mean and 95% confidence interval (t-interval) in CCA
 distance per century, for each species, park, and period type: how far
 the species moved the community in the climate-predicted direction
@@ -2134,7 +2098,7 @@ contributions of the Holocene are small partly because the lake-periods
 are long, and those of the Anthropocene are large partly because the
 time between the two surveys is short. To test whether this explains the
 difference between the two eras, we also calculated the species
-contributions without dividing by time (Fig. S19, Table S24).
+contributions without dividing by time (Fig. S19, Table S23).
 
 <img src="report/figures/png/figS19_species_contributions_total.png" alt="" width="100%" />
 
@@ -2162,10 +2126,10 @@ and t2. The Anthropocene plot pairs span 27.5 to 32.5 years between the
 midpoints of their two climate windows (about 29 years). Contributions
 are in CCA distance.
 
-**Table S24. Species contributions in the climate-predicted direction
+**Table S23. Species contributions in the climate-predicted direction
 not divided by time.** Mean and 95% confidence interval (t-interval) in
 CCA distance, for each species, park, and period type. Columns as in
-Table S23.
+Table S22.
 
 | Species | Park | Holocene-S | Holocene-C | Anthropocene |
 |:---|:---|:---|:---|:---|
@@ -2206,74 +2170,135 @@ Stages and helpers:
 
 # Appendix S4. Sensitivity of the results to the correction of the Holocene climate
 
-We tested how much the results depend on the correction of the Holocene
-climate by repeating the analysis without correction, i.e., with
-CHELSA-TraCE21k as published. Between the two analyses, only the
-climate-predicted positions of the Holocene communities and the climate
-periods can change, whereas the observed positions, community turnover,
-and all quantities of the Anthropocene do not. We compared the lag and
-the pace and direction contributions of each lake-period (Table S20),
-the differences between period types (Table S16, Fig. S20), and the
-associations with climate change and fire (Fig.
-S21).
+To test how much the results depend on the correction of the Holocene
+climate (Appendix S2), we repeated all analyses without correction,
+i.e., with CHELSA-TraCE21k as published. The correction changes only the
+Holocene climate. Between the two analyses, only the Holocene climate
+change, the climate periods, and the climate-predicted positions of the
+Holocene communities can therefore differ, whereas the observed
+positions, community turnover, and all quantities of the Anthropocene
+stay the same.
 [`R/sensitivity_paleoclimate.R`](R/sensitivity_paleoclimate.R) reruns
 stages 08 to 16 into `output_paleoclimate_sensitivity/` and leaves the
 main outputs untouched. It also runs the one-step correction (step 2
 alone), which stays in its tables but is not reported (Bills, 25 Nov
 2026). The raw TraCE21k was the paleoclimate of the analysis until 11
-November 2026. The counts below are read from the tables that the script
-writes to
+November 2026. Each run draws its climate periods from its own series,
+so the lake-periods are compared where both runs have the same lake,
+period type and ends. The counts below are read from the tables that the
+script writes to
 `output_paleoclimate_sensitivity/comparison/`.
 
-**Lake-periods.** The two analyses had the same 10 climate periods and
-the same 23 lake-periods. Without correction, the lag had the same sign
-as in the main analysis in 5 of 13 lake-periods at MORA and in 8 of 10
-at NOCA. The pace and direction contributions are given in Table S20.
+**Climate periods and lake-periods.** The two analyses gave the same 10
+climate periods and the same 23 lake-periods. To assess whether the sign
+of the lag and of the two contributions depends on the correction of the
+Holocene climate, we counted the lake-periods in which they kept their
+sign without correction (Table S24). The lag kept its sign in 5 of 13
+lake-periods at MORA and in 8 of 10 at NOCA.
+
+**Table S24. Lake-periods in which the lag, the pace contribution, and
+the direction contribution kept their sign without correction of the
+Holocene climate.** The quantities are not divided by time. A pace or
+direction contribution is undefined when the observed or the
+climate-predicted position did not move.
+
+| Quantity | Park | Lake-periods | Defined in both analyses | Kept their sign | Changed sign |
+|:---|:---|---:|---:|---:|---:|
+| Lag | MORA | 13 | 13 | 5 | 8 |
+| Lag | NOCA | 10 | 10 | 8 | 2 |
+| Pace contribution | MORA | 13 | 10 | 5 | 5 |
+| Pace contribution | NOCA | 10 | 10 | 7 | 3 |
+| Direction contribution | MORA | 13 | 10 | 6 | 4 |
+| Direction contribution | NOCA | 10 | 10 | 7 | 3 |
+
+<sub>Table file:
+[paleoclimate_sensitivity_sign_counts.csv](report/tables/paleoclimate_sensitivity_sign_counts.csv)</sub>
 
 **Differences between the Anthropocene and the Holocene.** Of the 17
-differences that were significant in the main analysis (Table S16, Fig.
-S20; turnover, which the correction does not touch, left out), 12 were
-also significant, with the same sign, without correction. The sign
-changed for: pace contribution (not divided by time) at MORA,
-Anthropocene against Holocene stability periods.
+differences between the Anthropocene and the Holocene that were
+significant in the main analysis, 12 stayed significant with the same
+sign without correction (Table S16 and Fig. S20, without community
+turnover, which the correction does not change). Without correction, the
+lag not divided by time at MORA (Anthropocene against both Holocene
+period types), the pace contribution per century at MORA (Anthropocene
+against Holocene stability periods), and the direction contribution per
+century at NOCA (Anthropocene against Holocene stability periods) kept
+their sign but were no longer significant. The pace contribution not
+divided by time at MORA (Anthropocene against Holocene stability
+periods) changed sign but was not significant. No other difference
+between the Anthropocene and the Holocene was significant without
+correction.
 
-**Differences within the Holocene.** Of the 3 differences between the
-climate-change and the stability periods that were significant in the
-main analysis (direction contribution at NOCA; pace contribution at
-MORA; pace contribution (not divided by time) at MORA), 0 were also
-significant, with the same sign, without correction.
+**Differences within the Holocene.** None of the three differences
+between the climate-change and the stability periods that were
+significant in the main analysis (the pace contribution per century and
+not divided by time at MORA, and the direction contribution per century
+at NOCA) stayed significant without correction (Table S16 and Fig. S20).
+Without correction, the pace contribution per century at MORA and the
+direction contribution per century at NOCA kept their sign but were no
+longer significant. The pace contribution not divided by time at MORA
+changed sign but was not significant. No other difference between the
+climate-change and the stability periods was significant without
+correction.
 
-**Associations with climate change and fire in the Holocene.** Of the
-climate and fire coefficients whose confidence interval excluded zero in
-the main analysis (1), 0 had the same sign without correction (0 of them
-with an interval that still excluded zero), and 1 had the opposite sign
-with an interval that also excluded zero: fire activity on the direction
-contribution (Fig. S21 for the rates per century).
+**Associations with climate change and fire.** The one Holocene
+coefficient of climate change or fire activity whose 95% confidence
+interval excluded zero in the main analysis (fire activity on the
+direction contribution per century) no longer excluded zero with the
+same sign without correction (Fig. S21). Without correction, fire
+activity on the direction contribution per century (−0.11 in the main
+analysis, +0.28 without correction) changed sign, with an interval that
+excluded zero in the opposite direction. Without correction, fire
+activity on the lag per century (−0.10 in the main analysis, +0.35
+without correction) and fire activity on the direction contribution not
+divided by time (−0.39 in the main analysis, +0.86 without correction)
+had intervals that excluded zero with the opposite sign, unlike in the
+main analysis. Without correction, the climate change rate on the lag
+per century (−0.04 in the main analysis, +0.02 without correction), the
+climate change rate on the direction contribution per century (−0.32 in
+the main analysis, +0.68 without correction), climate change on the pace
+contribution not divided by time (+0.11 in the main analysis, −0.23
+without correction), climate change on the direction contribution not
+divided by time (−0.22 in the main analysis, +0.20 without correction),
+fire activity on the lag not divided by time (−0.34 in the main
+analysis, +0.35 without correction), and fire activity on the pace
+contribution not divided by time (−0.32 in the main analysis, +0.03
+without correction) changed sign, with intervals that included zero in
+both analyses. The coefficients of the Anthropocene are the same in both
+analyses.
 
-**Consequences for the conclusions.** The comparison between the
-Anthropocene and the Holocene depends in part on the correction of the
-Holocene climate: 1 of the differences that were significant in the main
-analysis changed sign. The results that rest on the Holocene alone
-depend on it more, i.e., the lags of single lake-periods, the
-differences between the climate-change and the stability periods, and
-the associations with climate change and fire. We therefore interpret
-these three results with caution.
+**Species contributions.** None of the 37 Holocene species means had a
+95% confidence interval that excluded zero in the main analysis (Fig.
+S22). No Holocene species mean had a 95% confidence interval that
+excluded zero without correction. Of the Holocene species means, whose
+intervals included zero in both analyses, none changed sign without
+correction. The species means of the Anthropocene are the same in both
+analyses.
+
+**Results that hold.** Significant with the same sign in both analyses:
+climate change per century and not divided by time at MORA and NOCA
+(Anthropocene against both Holocene period types); the lag per century
+at MORA (Anthropocene against both Holocene period types); the direction
+contribution per century at MORA (Anthropocene against both Holocene
+period types). Holocene coefficients of climate change and fire activity
+whose interval excluded zero with the same sign in both analyses: none.
 
 <img src="report/figures/png/figS20_paleoclimate_era_means.png" alt="" width="100%" />
 
-**Fig. S20. Rates of climate change, community turnover and the
-climate–community lag by period type, with and without correction of the
-Holocene climate.** Estimated means with 95% confidence intervals for
-the Holocene stability periods, the Holocene climate-change periods and
-the Anthropocene plot pairs of each park, from the models of Fig. 5
-fitted with each version of the Holocene climate: (A) the climate change
-rate (SD of the legacy plots per century) and (B) the observed community
-turnover rate (CCA distance per century), both on log axes, where an
-interval that reaches zero or below is cut at the lower edge of the
-panel; (C) the lag rate, (D) the pace contribution and (E) the direction
-contribution, in CCA distance per century. Community turnover and every
-quantity of the Anthropocene are the same in the two analyses. Purple
-circles: two-step correction (main analysis). Olive squares: no
+**Fig. S20. Rates of climate change, community turnover, the
+climate–community lag, and the pace and direction contributions by
+period type, with and without correction of the Holocene climate.**
+Estimated means with 95% confidence intervals for the Holocene stability
+periods, the Holocene climate-change periods and the Anthropocene plot
+pairs of each park, from the models of Fig. 5 fitted with each version
+of the Holocene climate: (A) the climate change rate (SD of the legacy
+plots per century) and (B) the observed community turnover rate (CCA
+distance per century), both on log axes, where an interval that reaches
+zero or below is cut at the lower edge of the panel; (C) the lag rate,
+(D) the pace contribution and (E) the direction contribution, in CCA
+distance per century. Community turnover and every quantity of the
+Anthropocene are the same in the two analyses. Purple circles: two-step
+correction (main analysis). Olive squares: no
 correction. Script:
 [`R/figures/supp_paleoclimate_sensitivity.R`](R/figures/supp_paleoclimate_sensitivity.R).
 
@@ -2292,46 +2317,60 @@ line marks zero. Purple circles: two-step correction (main analysis).
 Olive squares: no correction. Script:
 [`R/figures/supp_paleoclimate_sensitivity.R`](R/figures/supp_paleoclimate_sensitivity.R).
 
+<img src="report/figures/png/figS22_paleoclimate_species.png" alt="" width="100%" />
+
+**Fig. S22. Species contributions in the climate-predicted direction,
+with and without correction of the Holocene climate.** Mean contribution
+per century of each species to the community change in the
+climate-predicted direction, with its 95% confidence interval, as in
+Fig. 7, for each park (columns) and period type (rows). Species are
+ordered by elevation as in Fig. 7, and species absent from a park and
+period type are left out. Means whose interval includes zero are faded.
+The dashed vertical line marks zero. The means of the Anthropocene are
+the same in the two analyses. Purple circles: two-step correction (main
+analysis). Olive squares: no correction. Script:
+[`R/figures/supp_paleoclimate_sensitivity.R`](R/figures/supp_paleoclimate_sensitivity.R).
+
 # Appendix S5. Sensitivity of the results to the Anthropocene climate product
 
-The Anthropocene climate of the main analysis is CHELSA V2.1. Compared
-with the weather stations in and around the two parks, V2.1 changed
-differently from the stations between the two surveys, most of all in
-spring temperature and, at NOCA east of 121° W, in summer precipitation.
-To assess how much the results depend on the climate product, we
-repeated the whole analysis with two products that are interpolated from
-station observations: PRISM LT81m at 800 m (Daly et al., 2008), which
-uses a set of long-record stations to keep its time series consistent,
-and nClimGrid at 1/24° (about 5 km; Vose et al., 2014). Each product
-replaced V2.1 at the same plots, survey windows and months. The Holocene
-climate is corrected onto a product in the same two steps as in the main
-analysis (Appendix S2): step 1, from CHELSA-TraCE21k to CHELSAcruts, is
-the same for all products, and step 2 goes from CHELSAcruts to the
-product, over the same grid cells within 5 km of the lakes and the same
-years (1979 to 2016). For PRISM, the monthly mean temperature, which
-PRISM defines as the mean of the minimum and maximum temperature, gives
-the temperature the analysis uses. The climate–community space is fitted
-on the climate of the legacy plots, so the climate product can change
-every result: the CCA, the positions of all communities, the climate
-periods, the lags and the two contributions, the differences between
-period types, the associations with climate change and fire, and the
-species contributions.
+Three climate products could describe the Anthropocene climate at the
+forest plots, each with its advantages and disadvantages: CHELSA V2.1 (1
+km), the PRISM long-term series (LT81m, 800 m; Daly et al., 2008), which
+uses stations with long records to keep its time series consistent, and
+nClimGrid (1/24°, about 5 km; Vose et al., 2014). PRISM and nClimGrid
+are interpolated from weather station observations, but they do not
+cover the Holocene. We used CHELSA V2.1 in the main analysis, because
+the Holocene climate comes from the same product line (CHELSA-TraCE21k),
+so that the climates of the two eras are more comparable. To be fully
+transparent, we nevertheless repeated all analyses with each of the
+other two products as the Anthropocene climate. Each product replaced
+V2.1 at the same plots, survey windows and months. The Holocene climate
+is corrected to the level of each product in the same two steps as in
+the main analysis (Appendix S2): step 1, from CHELSA-TraCE21k to
+CHELSAcruts, is the same for all products, and step 2 goes from
+CHELSAcruts to the product, over the same grid cells within 5 km of the
+lakes and the same years (1979 to 2016). For PRISM, we used its monthly
+mean temperature, which PRISM calculates as the mean of the minimum and
+maximum temperature, as in the main analysis. The climate–community
+space is fitted on the climate of the legacy plots, so the climate
+product can change every result: the CCA, the positions of all
+communities, the climate periods, the lags and the two contributions,
+the differences between period types, the associations with climate
+change and fire, and the species contributions.
 [`R/sensitivity_climate_products.R`](R/sensitivity_climate_products.R)
 reruns stages 08 to 16 for each product into
 `output_climate_sensitivity/` and leaves the main outputs untouched. The
 numbers below are read from the tables that the script writes to
 `output_climate_sensitivity/comparison/`.
 
-The Holocene climate was corrected onto PRISM and nClimGrid.
-
 **Table S25. Climate of the Anthropocene plot pairs with the three
 climate products.** Median over the plot pairs of each park
 (interquartile range in brackets) of the climate at the legacy survey
 (1979 to 1989), at the resurvey (the six years up to the resurvey of
-each plot), and of the change at each plot pair (resurvey minus legacy
-survey). The change in percent is the median of the change of each plot
-pair relative to its legacy value. The median change is not the
-difference of the two medians.
+each plot), and of the change at each plot pair (the legacy value
+subtracted from the resurvey value). The change in percent is the median
+of the change of each plot pair relative to its legacy value. The median
+change is not the difference of the two medians.
 
 | Park | Variable | Product | Legacy survey | Resurvey | Change at the plot pairs | Change (%) |
 |:---|:---|:---|:---|:---|:---|:---|
@@ -2352,9 +2391,9 @@ difference of the two medians.
 [appendix_s5_plot_climate.csv](report/tables/appendix_s5_plot_climate.csv)</sub>
 
 **Table S26. Step 2 of the bias correction with the climate products.**
-The correction from CHELSAcruts to each product that the Holocene
-climate was corrected onto, over 1979 to 2016, on the grid cells within
-5 km of the lakes, shown for the two climate variables of the
+The correction from CHELSAcruts to each product, to whose level the
+Holocene climate was corrected, over 1979 to 2016, on the grid cells
+within 5 km of the lakes, shown for the two climate variables of the
 climate–community space: the mean offset of the spring (March to May)
 mean temperature and the ratio of the summer (June to August)
 precipitation sums. Step 1, from CHELSA-TraCE21k to CHELSAcruts, is the
@@ -2378,47 +2417,144 @@ with CHELSA V2.1, 0.08 °C at MORA and −0.54 °C at NOCA with PRISM and
 −0.41 °C at MORA and −0.13 °C at NOCA with nClimGrid. The median change
 of the summer precipitation was −23.3% at MORA and 13.5% at NOCA with
 CHELSA V2.1, −12.8% at MORA and −5.9% at NOCA with PRISM and −5.5% at
-MORA and 3.3% at NOCA with nClimGrid (Table S25, Fig. S22).
+MORA and 3.3% at NOCA with nClimGrid (Table S25, Fig. S23).
 
-**Climate periods and lake-periods.** All products gave the same 10
-climate periods as the main analysis (Fig. S23). There were 23 Holocene
-lake-periods in the main analysis, and 23 with PRISM and 23 with
-nClimGrid.
+**Climate periods and lake-periods.** All three products gave the same
+10 climate periods (Fig. S24) and the same 23 lake-periods.
 
 **Climate–community space.** The two climate variables explained 13.8%
 of the inertia of the legacy communities with CHELSA V2.1, and 11.2%
-with PRISM and 6.8% with nClimGrid (Fig. S24).
+with PRISM and 6.8% with nClimGrid (Fig. S25).
 
-**Differences between period types.** Of the 60 differences between
-period types (Table S16), 25 were significant in the main analysis
-(Holm-adjusted p \< 0.05). Of these, 19 with PRISM and 13 with nClimGrid
-were also significant with the same sign. Among the differences between
-the Anthropocene and the Holocene, 22 were significant in the main
-analysis, and 16 with PRISM and 12 with nClimGrid were also significant
-with the same sign. Differences that were significant with another
-product but not in the main analysis: 3 with PRISM and 2 with nClimGrid
-(Table S27, Fig. S25).
+**Differences between the Anthropocene and the Holocene.** Of the 22
+differences between the Anthropocene and the Holocene that were
+significant in the main analysis, 16 stayed significant with the same
+sign with PRISM and 12 with nClimGrid (Tables S16 and S27, Fig. S26).
+With PRISM, climate change not divided by time at MORA (Anthropocene
+against Holocene climate-change periods), the lag not divided by time at
+MORA (Anthropocene against both Holocene period types), and the
+direction contribution per century at MORA (Anthropocene against both
+Holocene period types) kept their sign but were no longer significant.
+Climate change not divided by time at NOCA (Anthropocene against
+Holocene climate-change periods) changed sign but was not significant.
+With nClimGrid, the lag not divided by time at MORA (Anthropocene
+against both Holocene period types), the pace contribution per century
+and not divided by time at MORA (Anthropocene against Holocene stability
+periods), and the direction contribution per century at MORA
+(Anthropocene against both Holocene period types) kept their sign but
+were no longer significant. Climate change not divided by time at MORA
+and NOCA (Anthropocene against both Holocene period types) changed sign
+but were not significant. With PRISM, the pace contribution per century
+at MORA (Anthropocene against Holocene climate-change periods), the
+direction contribution per century at NOCA (Anthropocene against
+Holocene climate-change periods), and the direction contribution not
+divided by time at NOCA (Anthropocene against Holocene stability
+periods) were significant, unlike in the main analysis. With nClimGrid,
+the pace contribution per century at NOCA (Anthropocene against Holocene
+stability periods) and the direction contribution per century at NOCA
+(Anthropocene against Holocene climate-change periods) were significant,
+unlike in the main analysis.
 
-**Associations with climate change and fire.** Of the climate, fire and
-burning coefficients whose 95% confidence interval excluded zero in the
-main analysis (3), 2 with PRISM and 2 with nClimGrid had an interval
-that still excluded zero, with the same sign. Coefficients whose
-interval excluded zero with another product but not in the main
-analysis: 3 with PRISM and 2 with nClimGrid (Fig. S26).
+**Differences within the Holocene.** Of the three differences between
+the climate-change and the stability periods that were significant in
+the main analysis (the pace contribution per century and not divided by
+time at MORA, and the direction contribution per century at NOCA), all
+three stayed significant with the same sign with PRISM and one with
+nClimGrid (Tables S16 and S27, Fig. S26). With nClimGrid, the pace
+contribution not divided by time at MORA and the direction contribution
+per century at NOCA kept their sign but were no longer significant. No
+other difference between the climate-change and the stability periods
+was significant with PRISM or with nClimGrid.
 
-**Species contributions.** Of the species means whose 95% confidence
-interval excluded zero in the main analysis (7), 3 with PRISM and 4 with
-nClimGrid still excluded zero, with the same sign (Fig. S27).
+**Associations with climate change and fire.** Of the three coefficients
+of climate change, fire activity, and burning whose 95% confidence
+intervals excluded zero in the main analysis (fire activity on the
+direction contribution per century, and burning between the surveys on
+the pace contribution per century and not divided by time), two still
+excluded zero with the same sign with PRISM and two with nClimGrid (Fig.
+S27). With PRISM, fire activity on the direction contribution per
+century (−0.11 in the main analysis, −0.08 with PRISM) kept its sign but
+its interval no longer excluded zero. With nClimGrid, fire activity on
+the direction contribution per century (−0.11 in the main analysis,
++0.001 with nClimGrid) changed sign, with an interval that included
+zero. With PRISM, fire activity on the pace contribution per century
+(+0.03 in the main analysis, +0.10 with PRISM), burning between the
+surveys on the lag per century (−0.26 in the main analysis, −1.40 with
+PRISM), and burning between the surveys on the lag not divided by time
+(−0.07 in the main analysis, −0.40 with PRISM) had intervals that
+excluded zero, unlike in the main analysis. With nClimGrid, burning
+between the surveys on the lag per century (−0.26 in the main analysis,
+−1.47 with nClimGrid) and burning between the surveys on the lag not
+divided by time (−0.07 in the main analysis, −0.42 with nClimGrid) had
+intervals that excluded zero, unlike in the main analysis. With PRISM,
+the climate change rate on the pace contribution per century (+0.02 in
+the main analysis, −0.07 with PRISM), climate change on the pace
+contribution not divided by time (+0.11 in the main analysis, −0.09 with
+PRISM), burning between the surveys on the direction contribution per
+century (+0.19 in the main analysis, −0.62 with PRISM), and burning
+between the surveys on the direction contribution not divided by time
+(+0.05 in the main analysis, −0.18 with PRISM) changed sign, with
+intervals that included zero in both analyses. With nClimGrid, the
+climate change rate on the lag per century (−0.04 in the main analysis,
++0.07 with nClimGrid), the climate change rate on the direction
+contribution per century (−0.32 in the main analysis, +0.03 with
+nClimGrid), climate change on the pace contribution not divided by time
+(+0.11 in the main analysis, −0.10 with nClimGrid), fire activity on the
+lag per century (−0.10 in the main analysis, +0.06 with nClimGrid), fire
+activity on the lag not divided by time (−0.34 in the main analysis,
++0.05 with nClimGrid), fire activity on the direction contribution not
+divided by time (−0.39 in the main analysis, +0.16 with nClimGrid),
+burning between the surveys on the direction contribution per century
+(+0.19 in the main analysis, −0.68 with nClimGrid), and burning between
+the surveys on the direction contribution not divided by time (+0.05 in
+the main analysis, −0.19 with nClimGrid) changed sign, with intervals
+that included zero in both analyses.
 
-**Results that hold with all products.** Significant with the same sign
-with all 3 products: climate change rate at MORA and NOCA (Anthropocene
-against both Holocene period types); turnover rate at MORA and NOCA
-(Anthropocene against both Holocene period types); turnover (not divided
-by time) at NOCA (Anthropocene against Holocene climate-change periods);
-lag rate at MORA (Anthropocene against both Holocene period types); pace
-contribution at MORA (Holocene climate-change against stability
-periods); direction contribution at NOCA (Anthropocene against Holocene
-stability periods).
+**Species contributions.** Of the seven species means whose 95%
+confidence intervals excluded zero in the main analysis, three still
+excluded zero with the same sign with PRISM and four with nClimGrid
+(Fig. S28). With PRISM, *Pseudotsuga menziesii* at MORA in the
+Anthropocene (−0.05 in the main analysis, −0.04 with PRISM) kept its
+sign but its interval no longer excluded zero. *Callitropsis
+nootkatensis* at NOCA in the Anthropocene (+0.06 in the main analysis,
+−0.004 with PRISM) changed sign, with an interval that included zero.
+*Pinus albicaulis* at NOCA in the Anthropocene (+0.26 in the main
+analysis, −0.13 with PRISM) and *Tsuga heterophylla* at NOCA in the
+Anthropocene (+0.11 in the main analysis, −0.09 with PRISM) changed
+sign, with intervals that excluded zero in the opposite direction. With
+nClimGrid, *Tsuga heterophylla* at NOCA in the Anthropocene (+0.11 in
+the main analysis, +0.002 with nClimGrid) kept its sign but its interval
+no longer excluded zero. *Abies amabilis/grandis* at MORA in the
+Anthropocene (−0.03 in the main analysis, +0.002 with nClimGrid) and
+*Pseudotsuga menziesii* at MORA in the Anthropocene (−0.05 in the main
+analysis, +0.04 with nClimGrid) changed sign, with intervals that
+included zero. With PRISM, *Abies procera* at MORA in the Anthropocene
+(+0.03 in the main analysis, +0.02 with PRISM) had an interval that
+excluded zero, unlike in the main analysis. With nClimGrid, *Picea
+engelmannii* at NOCA in the Anthropocene (−0.03 in the main analysis,
+−0.13 with nClimGrid) had an interval that excluded zero and *Tsuga
+mertensiana* at NOCA in the Anthropocene (+0.05 in the main analysis,
+−0.05 with nClimGrid) had an interval that excluded zero with the
+opposite sign, unlike in the main analysis. Of the other species means,
+whose intervals included zero in both analyses, 7 changed sign with
+PRISM and 10 with nClimGrid.
+
+**Results that hold.** Significant with the same sign with all three
+products: climate change per century at MORA and NOCA (Anthropocene
+against both Holocene period types); community turnover per century at
+MORA and NOCA (Anthropocene against both Holocene period types);
+community turnover not divided by time at NOCA (Anthropocene against
+Holocene climate-change periods); the lag per century at MORA
+(Anthropocene against both Holocene period types); the pace contribution
+per century at MORA (Holocene climate-change against stability periods);
+the direction contribution per century at NOCA (Anthropocene against
+Holocene stability periods). Coefficients of climate change, fire
+activity, and burning whose interval excluded zero with the same sign
+with all three products: burning between the surveys on the pace
+contribution per century and not divided by time. Species means whose
+interval excluded zero with the same sign with all three products:
+*Pinus monticola* at MORA in the Anthropocene; *Tsuga heterophylla* at
+MORA in the Anthropocene.
 
 **Table S27. Differences between period types whose significance differs
 between the climate products.** The difference between the estimated
@@ -2450,37 +2586,38 @@ other quantities in CCA distance or in CCA distance per century.
 <sub>Table file:
 [appendix_s5_era_contrasts.csv](report/tables/appendix_s5_era_contrasts.csv)</sub>
 
-<img src="report/figures/png/figS22_climate_products_plot_climate.png" alt="" width="100%" />
+<img src="report/figures/png/figS23_climate_products_plot_climate.png" alt="" width="100%" />
 
-**Fig. S22. Climate of the Anthropocene plot pairs with the three
+**Fig. S23. Climate of the Anthropocene plot pairs with the three
 climate products.** (A) Median over the plot pairs of each park of the
 spring mean temperature (°C) and the summer precipitation (mm) at the
 legacy survey (1979 to 1989) and at the resurvey (the six years up to
 the resurvey of each plot), with the interquartile range. (B) Median
-over the plot pairs of the change at each plot pair (resurvey minus
-legacy survey; precipitation in percent of the legacy value), with the
-interquartile range and the median printed above. Purple circles: CHELSA
-V2.1 (main analysis). Green diamonds: PRISM LT81m. Orange squares:
-nClimGrid. Script:
+over the plot pairs of the change at each plot pair (the legacy value
+subtracted from the resurvey value; precipitation in percent of the
+legacy value), with the interquartile range and the median printed
+above. Purple circles: CHELSA V2.1 (main analysis). Green diamonds:
+PRISM. Orange squares: nClimGrid. Script:
 [`R/figures/supp_climate_product_sensitivity.R`](R/figures/supp_climate_product_sensitivity.R).
 
-<img src="report/figures/png/figS23_climate_products_holocene_periods.png" alt="" width="100%" />
+<img src="report/figures/png/figS24_climate_products_holocene_periods.png" alt="" width="100%" />
 
-**Fig. S23. Holocene climate and climate periods with the three climate
+**Fig. S24. Holocene climate and climate periods with the three climate
 products.** (A) Spring mean temperature (°C) and summer precipitation
 (mm) of CHELSA-TraCE21k at the lakes of each park (MORA: mean of its
-three lakes), corrected onto each product in two steps, as the centred
-1,000-year running mean of the centennial time steps, from 10,500 to 500
-cal BP. (B) The climate periods drawn with each product from the
-regional series of Fig. 3: climate-change periods (C) in full colour and
-stability periods (S) in light colour. The periods are the same for both
-parks and are repeated under each. Purple: CHELSA V2.1 (main analysis).
-Green: PRISM LT81m. Orange: nClimGrid. Script:
+three lakes), corrected to the level of each product in two steps, as
+the centred 1,000-year running mean of the centennial time steps, from
+10,500 to 500 cal BP. (B) The climate periods drawn with each product
+from the regional series of Fig. 3: climate-change periods (C) in full
+colour and stability periods (S) in light colour. The periods are the
+same for both parks and are repeated under each. Purple: CHELSA V2.1
+(main analysis). Green: PRISM. Orange: nClimGrid.
+Script:
 [`R/figures/supp_climate_product_sensitivity.R`](R/figures/supp_climate_product_sensitivity.R).
 
-<img src="report/figures/png/figS24_climate_products_cca.png" alt="" width="100%" />
+<img src="report/figures/png/figS25_climate_products_cca.png" alt="" width="100%" />
 
-**Fig. S24. The climate–community space with the three climate
+**Fig. S25. The climate–community space with the three climate
 products.** Scores of the tree species (points, scaling 1) and biplot
 arrows of spring temperature and summer precipitation in the CCA fitted
 with each product, each in its own display rotation, so that axis 1 runs
@@ -2490,29 +2627,30 @@ the different products. Species names are placed at their scores with
 CHELSA V2.1. The arrows are scaled together, so that their lengths
 compare across the products. The legend gives the share of the total
 inertia that the two climate variables explain with each product. Purple
-circles: CHELSA V2.1 (main analysis). Green diamonds: PRISM LT81m.
-Orange squares: nClimGrid. Script:
+circles: CHELSA V2.1 (main analysis). Green diamonds: PRISM. Orange
+squares: nClimGrid. Script:
 [`R/figures/supp_climate_product_sensitivity.R`](R/figures/supp_climate_product_sensitivity.R).
 
-<img src="report/figures/png/figS25_climate_products_era_means.png" alt="" width="100%" />
+<img src="report/figures/png/figS26_climate_products_era_means.png" alt="" width="100%" />
 
-**Fig. S25. Rates of climate change, community turnover and the
-climate–community lag by period type, with the three climate products.**
-Estimated means with 95% confidence intervals for the Holocene stability
-periods, the Holocene climate-change periods and the Anthropocene plot
-pairs of each park, from the models of Fig. 5 fitted with each product:
-(A) the climate change rate (SD of the legacy plots per century) and (B)
-the observed community turnover rate (CCA distance per century), both on
-log axes, where an interval that reaches zero or below is cut at the
-lower edge of the panel; (C) the lag rate, (D) the pace contribution and
-(E) the direction contribution, in CCA distance per century. Purple
-circles: CHELSA V2.1 (main analysis). Green diamonds: PRISM LT81m.
-Orange squares: nClimGrid. Script:
+**Fig. S26. Rates of climate change, community turnover, the
+climate–community lag, and the pace and direction contributions by
+period type, with the three climate products.** Estimated means with 95%
+confidence intervals for the Holocene stability periods, the Holocene
+climate-change periods and the Anthropocene plot pairs of each park,
+from the models of Fig. 5 fitted with each product: (A) the climate
+change rate (SD of the legacy plots per century) and (B) the observed
+community turnover rate (CCA distance per century), both on log axes,
+where an interval that reaches zero or below is cut at the lower edge of
+the panel; (C) the lag rate, (D) the pace contribution and (E) the
+direction contribution, in CCA distance per century. Purple circles:
+CHELSA V2.1 (main analysis). Green diamonds: PRISM. Orange squares:
+nClimGrid. Script:
 [`R/figures/supp_climate_product_sensitivity.R`](R/figures/supp_climate_product_sensitivity.R).
 
-<img src="report/figures/png/figS26_climate_products_slopes.png" alt="" width="100%" />
+<img src="report/figures/png/figS27_climate_products_slopes.png" alt="" width="100%" />
 
-**Fig. S26. Associations with climate change and fire, with the three
+**Fig. S27. Associations with climate change and fire, with the three
 climate products.** Coefficients of Fig. 6 with their 95% confidence
 intervals, from the models fitted with each product. Rows: the terms of
 the Holocene models of the lake-periods (park, climate change rate, fire
@@ -2520,19 +2658,19 @@ activity) and of the Anthropocene models of the plot pairs (park, burned
 between the surveys). Columns: the lag, the pace contribution and the
 direction contribution, per century. Coefficients whose interval
 includes zero are faded. The dashed vertical line marks zero. Purple
-circles: CHELSA V2.1 (main analysis). Green diamonds: PRISM LT81m.
-Orange squares: nClimGrid. Script:
+circles: CHELSA V2.1 (main analysis). Green diamonds: PRISM. Orange
+squares: nClimGrid. Script:
 [`R/figures/supp_climate_product_sensitivity.R`](R/figures/supp_climate_product_sensitivity.R).
 
-<img src="report/figures/png/figS27_climate_products_species.png" alt="" width="100%" />
+<img src="report/figures/png/figS28_climate_products_species.png" alt="" width="100%" />
 
-**Fig. S27. Species contributions in the climate-predicted direction
+**Fig. S28. Species contributions in the climate-predicted direction
 with the three climate products.** Mean contribution per century of each
 species to the community change in the climate-predicted direction, with
 its 95% confidence interval, as in Fig. 7, for each park (columns) and
 period type (rows). Species are ordered by elevation as in Fig. 7, and
 species absent from a park and period type are left out. Means whose
 interval includes zero are faded. The dashed vertical line marks zero.
-Purple circles: CHELSA V2.1 (main analysis). Green diamonds: PRISM
-LT81m. Orange squares: nClimGrid. Script:
+Purple circles: CHELSA V2.1 (main analysis). Green diamonds: PRISM.
+Orange squares: nClimGrid. Script:
 [`R/figures/supp_climate_product_sensitivity.R`](R/figures/supp_climate_product_sensitivity.R).

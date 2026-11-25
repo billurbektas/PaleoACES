@@ -97,7 +97,7 @@ model, with conditional 95% confidence intervals.
 ## Holocene explanatory models (Step 5)
 
 The coefficients and the fit statistics of every explanatory model are
-Tables S21 and S22 of the report.
+Tables S20 and S21 of the report.
 
 **Rows left out of the explanatory models.**
 

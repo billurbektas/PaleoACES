@@ -37,7 +37,7 @@ read_output('era_comparison/era_coefficients.csv') |>
 
 ## Holocene explanatory models (Step 5)
 
-The coefficients and the fit statistics of every explanatory model are Tables S21 and S22 of the report.
+The coefficients and the fit statistics of every explanatory model are Tables S20 and S21 of the report.
 
 ```{r}
 read_output('community_predictor_models/model_exclusions.csv') |> count(response, period_type, site, exclusion) |>

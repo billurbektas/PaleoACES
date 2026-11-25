@@ -68,10 +68,10 @@ models could no longer be read.
 | R/figures/supp_cca_scaling.R | figure | supp_cca_scaling.R - one CCA drawn at scaling 1 and scaling 2 | 108 |
 | R/figures/supp_charcoal_dunwiddie_walsh.R | figure | Fig. S13 (appendix figure A4 until the README was reordered; Bills, 11 Nov 2026): do the charcoal peaks of the Walsh | 109 |
 | R/figures/supp_climate_correlations.R | figure | supp_climate_correlations.R | 628 |
-| R/figures/supp_climate_product_sensitivity.R | figure | Figs. S22 to S27 (Appendix S5, Bills, 24 Nov 2026): the analysis with three | 185 |
+| R/figures/supp_climate_product_sensitivity.R | figure | Figs. S23 to S28 (Appendix S5, Bills, 24 Nov 2026): the analysis with three | 166 |
 | R/figures/supp_climate_products.R | figure | Figs. S6 and S7 (Appendix S2), from the outputs of R/pipeline/07_climate_products.R. | 80 |
 | R/figures/supp_climate_windows.R | figure | Compare the actual plot-specific survey windows with V2.1 1979-2021. | 174 |
-| R/figures/supp_paleoclimate_sensitivity.R | figure | Figs. S20 and S21 (Appendix S4; Bills, 25 Nov 2026): the analysis with the | 35 |
+| R/figures/supp_paleoclimate_sensitivity.R | figure | Figs. S20 to S22 (Appendix S4; Bills, 25 Nov 2026): the analysis with the | 38 |
 | R/figures/supp_sample_selection.R | figure | Show which plots and core samples reach CCA, starting with the supplied data. | 368 |
 | R/figures/supp_species_through_time.R | figure | supp_species_through_time.R - STEP 4, the species half | 199 |
 | R/figures/supp_tracking_transitions.R | figure | Appendix figures of the lake-period values over time (redrawn on lake-periods | 86 |
@@ -292,7 +292,7 @@ built for this report).
 | Folder          | Files |
 |:----------------|------:|
 | main            |    12 |
-| supplementary   |    39 |
+| supplementary   |    40 |
 | worked_examples |     3 |
 
 <sub>Table file:

@@ -23,10 +23,10 @@
 # output_paleoclimate_sensitivity/comparison/, the climate periods of the three
 # runs, every era response of the shared lake-periods with the correlation of
 # each corrected run with the raw one in each park, the shared lake-periods whose
-# lag, pace and direction contribution keep their sign (Table S20), the era means
-# and all model slopes of the three runs in long form (Figs. S20 and S21), and
-# the era contrasts and Holocene slopes side by side, from which Appendix S4
-# quotes its counts.
+# lag, pace and direction contribution keep their sign (Table S24), the era means,
+# all model slopes and the species contributions of the three runs in long form
+# (Figs. S20 to S22), and the era contrasts and Holocene slopes side by side, from
+# which Appendix S4 quotes its counts.
 suppressPackageStartupMessages({library(here); library(tidyverse)})
 main = here('output')
 base = here('output_paleoclimate_sensitivity')
@@ -114,14 +114,19 @@ sign_counts = map_dfr(c('one_step', 'raw'), function(other) map_dfr(c('lag', 'pa
     mutate(against = other, response = r, .before = 1)))
 write_csv(sign_counts, file.path(comparison, 'sign_counts.csv'))
 
-# The era means and all model slopes of the three runs in long form (Figs. S20 and
-# S21), and the era contrasts and Holocene slopes side by side (the counts of
-# Appendix S4). The Anthropocene models hold no paleoclimate and are the same in all runs.
+# The era means, all model slopes and the species contributions in the
+# climate-predicted direction of the three runs in long form (Figs. S20 to S22),
+# and the era contrasts and Holocene slopes side by side (the counts of Appendix
+# S4). The Anthropocene models hold no paleoclimate and are the same in all runs.
 long = function(file) imap_dfr(paths, \(p, run) read_csv(file.path(p, file), show_col_types = FALSE) |>
   mutate(run = run, .before = 1))
 write_csv(long('14_era_models/era_comparison/era_means.csv'), file.path(comparison, 'era_means.csv'))
 write_csv(long('15_predictor_models/community_predictor_models/model_coefficients.csv'),
   file.path(comparison, 'model_coefficients.csv'))
+# As in Appendix S5 (R/sensitivity_climate_products.R): only the contribution in the
+# climate-predicted direction is reported (Bills, 24 Nov 2026).
+write_csv(long('16_contributions/species_contribution_models/species_means.csv') |> filter(measure == 'contrib_climate'),
+  file.path(comparison, 'species_means.csv'))
 wide = function(read, by) reduce(imap(paths, \(p, run) read(p) |> rename_with(~ paste0(.x, '_', run), -all_of(by))),
   inner_join, by = by)
 contrasts = wide(\(p) read_csv(file.path(p, '14_era_models', 'era_comparison', 'era_contrasts.csv'), show_col_types = FALSE) |>
