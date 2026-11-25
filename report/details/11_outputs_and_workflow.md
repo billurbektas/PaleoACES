@@ -19,7 +19,7 @@ Rscript R/run_all.R                # same, downloading any missing CHELSA chunks
 Rscript R/run_all.R --age-models   # also refit the four Bacon chronologies (about 5 minutes)
 Rscript R/run_all.R --presentation # also draw the presentation figures
 Rscript R/build_report.R           # rebuild this report from the outputs
-Rscript R/sensitivity_paleoclimate.R  # stages 08-16 with the one-step correction and on the raw paleoclimate, into output_paleoclimate_sensitivity/ (Appendix S4)
+Rscript R/sensitivity_paleoclimate.R  # stages 08-16 on the raw paleoclimate (Appendix S4) and with the one-step correction (not reported), into output_paleoclimate_sensitivity/
 Rscript R/sensitivity_climate_products.R  # stages 08-16 with PRISM and with nClimGrid as the Anthropocene climate, into output_climate_sensitivity/ (Appendix S5)
 ```
 
@@ -68,10 +68,10 @@ models could no longer be read.
 | R/figures/supp_cca_scaling.R | figure | supp_cca_scaling.R - one CCA drawn at scaling 1 and scaling 2 | 108 |
 | R/figures/supp_charcoal_dunwiddie_walsh.R | figure | Fig. S13 (appendix figure A4 until the README was reordered; Bills, 11 Nov 2026): do the charcoal peaks of the Walsh | 109 |
 | R/figures/supp_climate_correlations.R | figure | supp_climate_correlations.R | 628 |
-| R/figures/supp_climate_product_sensitivity.R | figure | Figs. S23 to S28 (Appendix S5, Bills, 24 Nov 2026): the analysis with three | 226 |
+| R/figures/supp_climate_product_sensitivity.R | figure | Figs. S22 to S27 (Appendix S5, Bills, 24 Nov 2026): the analysis with three | 185 |
 | R/figures/supp_climate_products.R | figure | Figs. S6 and S7 (Appendix S2), from the outputs of R/pipeline/07_climate_products.R. | 80 |
 | R/figures/supp_climate_windows.R | figure | Compare the actual plot-specific survey windows with V2.1 1979-2021. | 174 |
-| R/figures/supp_paleoclimate_sensitivity.R | figure | Figs. S20, S21 and S22 (Appendix S4, Bills, 11 and 12 Nov 2026): the three paleoclimates | 189 |
+| R/figures/supp_paleoclimate_sensitivity.R | figure | Figs. S20 and S21 (Appendix S4; Bills, 25 Nov 2026): the analysis with the | 35 |
 | R/figures/supp_sample_selection.R | figure | Show which plots and core samples reach CCA, starting with the supplied data. | 368 |
 | R/figures/supp_species_through_time.R | figure | supp_species_through_time.R - STEP 4, the species half | 199 |
 | R/figures/supp_tracking_transitions.R | figure | Appendix figures of the lake-period values over time (redrawn on lake-periods | 86 |
@@ -292,7 +292,7 @@ built for this report).
 | Folder          | Files |
 |:----------------|------:|
 | main            |    12 |
-| supplementary   |    40 |
+| supplementary   |    39 |
 | worked_examples |     3 |
 
 <sub>Table file:

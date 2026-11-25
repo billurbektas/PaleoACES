@@ -13,16 +13,20 @@
 # figure is drawn, and every file under output/, report/figures/ and
 # report/tables/ is checked byte for byte at the end.
 #
+# Appendix S4 reports the main run against the raw one only. The one-step run is
+# kept in the code and in the comparison tables but not reported or drawn
+# (Bills, 25 Nov 2026).
+#
 # Each run draws its climate periods from its own series, so the lake-periods
-# can differ. They are compared where all three runs have the same lake, period
-# type and ends; the rest are counted. The script writes, to
+# can differ. They are compared where the main and the raw run have the same
+# lake, period type and ends; the rest are counted. The script writes, to
 # output_paleoclimate_sensitivity/comparison/, the climate periods of the three
 # runs, every era response of the shared lake-periods with the correlation of
-# each corrected run with the raw one in each park (Fig. S20), the shared
-# lake-periods whose lag, pace and direction contribution keep their sign, the era
-# contrasts of all responses and the Holocene explanatory-model slopes (Fig. S22)
-# of the three runs side by side. Appendix S4 shows the two figures and quotes
-# the counts from these tables (Bills, 11 Nov 2026: no comparison tables).
+# each corrected run with the raw one in each park, the shared lake-periods whose
+# lag, pace and direction contribution keep their sign (Table S20), the era means
+# and all model slopes of the three runs in long form (Figs. S20 and S21), and
+# the era contrasts and Holocene slopes side by side, from which Appendix S4
+# quotes its counts.
 suppressPackageStartupMessages({library(here); library(tidyverse)})
 main = here('output')
 base = here('output_paleoclimate_sensitivity')
@@ -73,26 +77,30 @@ periods = imap_dfr(paths, \(p, run) read_csv(file.path(p, '12_climate_eras', 'ho
   show_col_types = FALSE) |> mutate(run = run, .before = 1))
 write_csv(periods, file.path(comparison, 'climate_periods.csv'))
 
-# Lake-periods shared by all three runs: same lake, period type and ends.
+# Lake-periods shared by the main and the raw run (the comparison Appendix S4
+# reports): same lake, period type and ends. The one-step run is joined where it has them.
 keys = c('site', 'lake', 'period_type', 'age_start', 'age_end', 'duration_yr')
 lake_periods = lapply(paths, function(p) read_csv(file.path(p, '13_tracking', 'cca_tracking_both_eras.csv'),
   show_col_types = FALSE) |> filter(period_type != 'Anthropocene'))
-shared = reduce(lapply(lake_periods, \(x) select(x, all_of(keys))), inner_join, by = keys)
-write_csv(tibble(run = names(paths), lake_periods = map_int(lake_periods, nrow), shared_by_all = nrow(shared)),
+shared = inner_join(select(lake_periods$two_step, all_of(keys)), select(lake_periods$raw, all_of(keys)), by = keys)
+# Counted outside tibble(), whose new lake_periods column would hide the list.
+in_shared = map_int(lake_periods, \(x) nrow(semi_join(shared, x, by = keys)))
+write_csv(tibble(run = names(paths), lake_periods = map_int(lake_periods, nrow), shared = in_shared),
   file.path(comparison, 'lake_period_matching.csv'))
 
-# Every era response of the shared lake-periods in the three runs (Fig. S20).
+# Every era response of the shared lake-periods in the three runs.
 source(here('R/helpers/tracking_model_reporting.R'), local = TRUE)
 responses = imap(lake_periods, \(x, run) x |> semi_join(shared, by = keys) |>
   select(all_of(keys), period, all_of(names(ERA_RESPONSES))) |>
   pivot_longer(all_of(names(ERA_RESPONSES)), names_to = 'response', values_to = run))
-responses = reduce(map(responses, \(x) select(x, -period)), inner_join, by = c(keys, 'response'))
-# Rule: every response of every shared lake-period in all three runs.
-stopifnot(nrow(responses) == nrow(shared) * length(ERA_RESPONSES))
+responses = reduce(map(responses, \(x) select(x, -period)), left_join, by = c(keys, 'response'))
+# Rule: every response of every shared lake-period, in the main and the raw run.
+stopifnot(nrow(responses) == nrow(shared) * length(ERA_RESPONSES),
+  !anyDuplicated(responses[c(keys, 'response')]))
 write_csv(responses, file.path(comparison, 'lake_period_responses.csv'))
 # How closely each corrected run follows the raw one across the shared lake-periods
-# of a park (Pearson r, printed in Fig. S20). Lake-periods without a pace or
-# direction contribution (a position that did not move) are left out.
+# of a park (Pearson r). Lake-periods without a pace or direction contribution (a
+# position that did not move) are left out.
 correlations = responses |> pivot_longer(c(two_step, one_step), names_to = 'run', values_to = 'corrected') |>
   filter(is.finite(raw), is.finite(corrected)) |>
   group_by(response, site, run) |> summarise(lake_periods = n(), r = cor(raw, corrected), .groups = 'drop')
@@ -106,9 +114,14 @@ sign_counts = map_dfr(c('one_step', 'raw'), function(other) map_dfr(c('lag', 'pa
     mutate(against = other, response = r, .before = 1)))
 write_csv(sign_counts, file.path(comparison, 'sign_counts.csv'))
 
-# The era contrasts and the Holocene explanatory-model slopes (Fig. S22) of
-# the three runs. The Anthropocene models hold no
-# paleoclimate and are the same in all runs.
+# The era means and all model slopes of the three runs in long form (Figs. S20 and
+# S21), and the era contrasts and Holocene slopes side by side (the counts of
+# Appendix S4). The Anthropocene models hold no paleoclimate and are the same in all runs.
+long = function(file) imap_dfr(paths, \(p, run) read_csv(file.path(p, file), show_col_types = FALSE) |>
+  mutate(run = run, .before = 1))
+write_csv(long('14_era_models/era_comparison/era_means.csv'), file.path(comparison, 'era_means.csv'))
+write_csv(long('15_predictor_models/community_predictor_models/model_coefficients.csv'),
+  file.path(comparison, 'model_coefficients.csv'))
 wide = function(read, by) reduce(imap(paths, \(p, run) read(p) |> rename_with(~ paste0(.x, '_', run), -all_of(by))),
   inner_join, by = by)
 contrasts = wide(\(p) read_csv(file.path(p, '14_era_models', 'era_comparison', 'era_contrasts.csv'), show_col_types = FALSE) |>
