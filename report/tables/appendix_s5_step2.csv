@@ -1,5 +1,7 @@
 Park,Product,Spring temperature offset (°C),Summer precipitation ratio
 MORA,CHELSA V2.1,−1.43,1.56
+MORA,PRISM,0.04,1.20
 MORA,nClimGrid,−0.15,1.16
 NOCA,CHELSA V2.1,−1.48,1.32
+NOCA,PRISM,−0.22,1.37
 NOCA,nClimGrid,1.23,1.41

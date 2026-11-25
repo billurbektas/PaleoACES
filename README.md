@@ -2356,13 +2356,7 @@ reruns stages 08 to 16 for each product into
 numbers below are read from the tables that the script writes to
 `output_climate_sensitivity/comparison/`.
 
-The Holocene climate was corrected onto nClimGrid. **Note.** The
-correction onto PRISM needs PRISM at the grid cells around the lakes,
-which are not yet all downloaded. Until then, the PRISM analysis keeps
-the Holocene climate of the main analysis, corrected onto CHELSA V2.1,
-so that it differs from the main analysis only in the Anthropocene
-climate, and its Holocene and Anthropocene climates come from different
-products.
+The Holocene climate was corrected onto PRISM and nClimGrid.
 
 **Table S25. Climate of the Anthropocene plot pairs with the three
 climate products.** Median over the plot pairs of each park
@@ -2403,8 +2397,10 @@ same for all products (Table S5, Fig. S7).
 | Park | Product     | Spring temperature offset (°C) | Summer precipitation ratio |
 |:-----|:------------|:-------------------------------|:---------------------------|
 | MORA | CHELSA V2.1 | −1.43                          | 1.56                       |
+| MORA | PRISM       | 0.04                           | 1.20                       |
 | MORA | nClimGrid   | −0.15                          | 1.16                       |
 | NOCA | CHELSA V2.1 | −1.48                          | 1.32                       |
+| NOCA | PRISM       | −0.22                          | 1.37                       |
 | NOCA | nClimGrid   | 1.23                           | 1.41                       |
 
 <sub>Table file:
@@ -2432,14 +2428,14 @@ period types (Table S16), 25 were significant in the main analysis
 (Holm-adjusted p \< 0.05). Of these, 19 with PRISM and 13 with nClimGrid
 were also significant with the same sign. Among the differences between
 the Anthropocene and the Holocene, 22 were significant in the main
-analysis, and 17 with PRISM and 12 with nClimGrid were also significant
+analysis, and 16 with PRISM and 12 with nClimGrid were also significant
 with the same sign. Differences that were significant with another
 product but not in the main analysis: 3 with PRISM and 2 with nClimGrid
 (Table S27, Fig. S26).
 
 **Associations with climate change and fire.** Of the climate, fire and
 burning coefficients whose 95% confidence interval excluded zero in the
-main analysis (3), 3 with PRISM and 2 with nClimGrid had an interval
+main analysis (3), 2 with PRISM and 2 with nClimGrid had an interval
 that still excluded zero, with the same sign. Coefficients whose
 interval excluded zero with another product but not in the main
 analysis: 3 with PRISM and 2 with nClimGrid (Fig. S27).
@@ -2453,9 +2449,10 @@ with all 3 products: climate change rate at MORA and NOCA (Anthropocene
 against both Holocene period types); turnover rate at MORA and NOCA
 (Anthropocene against both Holocene period types); turnover (not divided
 by time) at NOCA (Anthropocene against Holocene climate-change periods);
-lag rate at MORA (Anthropocene against both Holocene period types);
-direction contribution at NOCA (Anthropocene against Holocene stability
-periods).
+lag rate at MORA (Anthropocene against both Holocene period types); pace
+contribution at MORA (Holocene climate-change against stability
+periods); direction contribution at NOCA (Anthropocene against Holocene
+stability periods).
 
 **Table S27. Differences between period types whose significance differs
 between the climate products.** The difference between the estimated
@@ -2467,23 +2464,22 @@ other quantities in CCA distance or in CCA distance per century.
 
 | Quantity | Park | Difference | CHELSA V2.1 | PRISM | nClimGrid |
 |:---|:---|:---|:---|:---|:---|
-| Climate change (not divided by time) | MORA | Anthropocene - Holocene-C | 0.515 (\< 0.001) | 0.066 (1.000) | −0.087 (1.000) |
-| Climate change (not divided by time) | MORA | Anthropocene - Holocene-S | 0.584 (\< 0.001) | 0.146 (0.009) | −0.005 (1.000) |
-| Climate change (not divided by time) | NOCA | Anthropocene - Holocene-C | 0.219 (0.021) | −0.053 (1.000) | −0.243 (0.090) |
-| Climate change (not divided by time) | NOCA | Anthropocene - Holocene-S | 0.381 (\< 0.001) | 0.134 (0.029) | −0.028 (1.000) |
-| Direction contribution | MORA | Anthropocene - Holocene-C | 0.575 (\< 0.001) | 0.215 (0.087) | 0.080 (1.000) |
-| Direction contribution | MORA | Anthropocene - Holocene-S | 0.547 (\< 0.001) | 0.188 (0.087) | 0.080 (1.000) |
-| Direction contribution | NOCA | Anthropocene - Holocene-C | −0.322 (0.066) | −1.243 (\< 0.001) | −0.634 (0.002) |
-| Direction contribution | NOCA | Holocene-C - Holocene-S | −0.073 (\< 0.001) | −0.079 (0.018) | −0.049 (0.453) |
-| Direction contribution (not divided by time) | NOCA | Anthropocene - Holocene-S | −0.225 (0.170) | −0.584 (\< 0.001) | −0.106 (1.000) |
-| Lag | MORA | Anthropocene - Holocene-C | 0.254 (0.001) | 0.167 (0.145) | 0.020 (1.000) |
-| Lag | MORA | Anthropocene - Holocene-S | 0.390 (0.013) | 0.283 (0.045) | 0.219 (0.764) |
-| Pace contribution | MORA | Anthropocene - Holocene-C | 0.108 (0.103) | 0.217 (\< 0.001) | 0.096 (0.253) |
+| Climate change (not divided by time) | MORA | Anthropocene - Holocene-C | 0.515 (\< 0.001) | 0.127 (0.914) | −0.087 (1.000) |
+| Climate change (not divided by time) | MORA | Anthropocene - Holocene-S | 0.584 (\< 0.001) | 0.203 (\< 0.001) | −0.005 (1.000) |
+| Climate change (not divided by time) | NOCA | Anthropocene - Holocene-C | 0.219 (0.021) | −0.058 (1.000) | −0.243 (0.090) |
+| Climate change (not divided by time) | NOCA | Anthropocene - Holocene-S | 0.381 (\< 0.001) | 0.133 (0.038) | −0.028 (1.000) |
+| Direction contribution | MORA | Anthropocene - Holocene-C | 0.575 (\< 0.001) | 0.183 (0.131) | 0.080 (1.000) |
+| Direction contribution | MORA | Anthropocene - Holocene-S | 0.547 (\< 0.001) | 0.189 (0.116) | 0.080 (1.000) |
+| Direction contribution | NOCA | Anthropocene - Holocene-C | −0.322 (0.066) | −1.237 (\< 0.001) | −0.634 (0.002) |
+| Direction contribution | NOCA | Holocene-C - Holocene-S | −0.073 (\< 0.001) | −0.064 (0.005) | −0.049 (0.453) |
+| Direction contribution (not divided by time) | NOCA | Anthropocene - Holocene-S | −0.225 (0.170) | −0.423 (\< 0.001) | −0.106 (1.000) |
+| Lag | MORA | Anthropocene - Holocene-C | 0.254 (0.001) | 0.084 (0.936) | 0.020 (1.000) |
+| Lag | MORA | Anthropocene - Holocene-S | 0.390 (0.013) | 0.279 (0.080) | 0.219 (0.764) |
+| Pace contribution | MORA | Anthropocene - Holocene-C | 0.108 (0.103) | 0.202 (0.001) | 0.096 (0.253) |
 | Pace contribution | MORA | Anthropocene - Holocene-S | 0.141 (0.017) | 0.241 (\< 0.001) | 0.135 (0.086) |
-| Pace contribution | MORA | Holocene-C - Holocene-S | 0.033 (\< 0.001) | 0.024 (0.109) | 0.039 (0.012) |
-| Pace contribution | NOCA | Anthropocene - Holocene-S | −0.307 (0.178) | −0.359 (0.109) | −0.499 (0.046) |
-| Pace contribution (not divided by time) | MORA | Anthropocene - Holocene-S | 0.262 (0.009) | 0.291 (\< 0.001) | 0.274 (0.106) |
-| Pace contribution (not divided by time) | MORA | Holocene-C - Holocene-S | 0.292 (0.001) | 0.246 (\< 0.001) | 0.326 (0.157) |
+| Pace contribution | NOCA | Anthropocene - Holocene-S | −0.307 (0.178) | −0.364 (0.096) | −0.499 (0.046) |
+| Pace contribution (not divided by time) | MORA | Anthropocene - Holocene-S | 0.262 (0.009) | 0.266 (\< 0.001) | 0.274 (0.106) |
+| Pace contribution (not divided by time) | MORA | Holocene-C - Holocene-S | 0.292 (0.001) | 0.262 (0.002) | 0.326 (0.157) |
 
 <sub>Table file:
 [appendix_s5_era_contrasts.csv](report/tables/appendix_s5_era_contrasts.csv)</sub>
@@ -2512,11 +2508,8 @@ three lakes), corrected onto each product in two steps, as the centred
 cal BP. (B) The climate periods drawn with each product from the
 regional series of Fig. 3: climate-change periods (C) in full colour and
 stability periods (S) in light colour. The periods are the same for both
-parks and are repeated under each. Dashed: PRISM, whose analysis keeps
-the Holocene climate of the main analysis (see the note above), so that
-its lines lie on those of CHELSA V2.1. Purple: CHELSA V2.1 (main
-analysis). Green: PRISM LT81m. Orange: nClimGrid.
-Script:
+parks and are repeated under each. Purple: CHELSA V2.1 (main analysis).
+Green: PRISM LT81m. Orange: nClimGrid. Script:
 [`R/figures/supp_climate_product_sensitivity.R`](R/figures/supp_climate_product_sensitivity.R).
 
 <img src="report/figures/png/figS25_climate_products_cca.png" alt="" width="100%" />

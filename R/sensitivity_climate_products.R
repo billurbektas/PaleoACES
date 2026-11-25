@@ -44,12 +44,12 @@ CACHE = file.path(base, 'cache')
 PRISM_WORKERS = 8L
 CORRECTION_YEARS = 1979:2016
 # The Holocene climate of a product's run is corrected onto that product in two steps,
-# which needs the product at the cells within 5 km of the lakes. PRISM is read only
-# at the plots for now (Bills, 24 Nov 2026: avoid the PRISM correction for now, with a
-# note), so the PRISM run keeps the Holocene climate of the main analysis, corrected
-# onto V2.1. The disc files are still downloaded (they are needed for the correction):
-# set prism = 'product' once they are all cached.
-HOLOCENE_ONTO = c(prism = 'v21', nclimgrid = 'product')
+# which needs the product at the cells within 5 km of the lakes. PRISM's disc files
+# took two days to download (PRISM allows two downloads per file per day), and until
+# they were all cached the PRISM run kept the Holocene climate of the main analysis,
+# corrected onto V2.1 (Bills, 24 Nov 2026). They are all cached since 25 Nov 2026.
+# 'v21' keeps that fallback for a product.
+HOLOCENE_ONTO = c(prism = 'product', nclimgrid = 'product')
 for (d in file.path(CACHE, c('prism', 'nclimgrid'))) dir.create(d, recursive = TRUE, showWarnings = FALSE)
 
 # Points: the plots, lake pixels and 5 km disc cells of stage 07.
