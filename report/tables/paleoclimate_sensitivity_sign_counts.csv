@@ -1,13 +1,7 @@
-Holocene climate,Quantity,Park,Lake-periods,Defined in both analyses,Same sign as in the main analysis,Opposite sign
-One-step correction,Lag,MORA,13,13,12,1
-One-step correction,Lag,NOCA,10,10,9,1
-One-step correction,Pace contribution,MORA,13,10,10,0
-One-step correction,Pace contribution,NOCA,10,10,8,2
-One-step correction,Direction contribution,MORA,13,10,8,2
-One-step correction,Direction contribution,NOCA,10,10,9,1
-No correction,Lag,MORA,13,13,5,8
-No correction,Lag,NOCA,10,10,8,2
-No correction,Pace contribution,MORA,13,10,5,5
-No correction,Pace contribution,NOCA,10,10,7,3
-No correction,Direction contribution,MORA,13,10,6,4
-No correction,Direction contribution,NOCA,10,10,7,3
+Quantity,Park,Lake-periods,Defined in both analyses,Same sign as in the main analysis,Opposite sign
+Lag,MORA,13,13,5,8
+Lag,NOCA,10,10,8,2
+Pace contribution,MORA,13,10,5,5
+Pace contribution,NOCA,10,10,7,3
+Direction contribution,MORA,13,10,6,4
+Direction contribution,NOCA,10,10,7,3
