@@ -50,8 +50,8 @@ sensitivity_era_means_figure = function(means, labels, colors, shapes) {
 # interval per version, faded where the interval includes zero.
 sensitivity_slopes_figure = function(slopes, labels, colors, shapes) {
   quantities = c(lag_rate = 'Lag', pace_effect = 'Pace contribution', direction_effect = 'Direction contribution')
-  terms = c(`Holocene.siteNOCA` = 'Holocene\nsite NOCA − MORA', `Holocene.climate_rate` = 'Holocene\nclimate change rate',
-    `Holocene.fire_activity` = 'Holocene\nfire activity', `Anthropocene.siteNOCA` = 'Anthropocene\nsite NOCA − MORA',
+  terms = c(`Holocene.siteNOCA` = 'Holocene\nPark (NOCA against MORA)', `Holocene.climate_rate` = 'Holocene\nclimate change rate',
+    `Holocene.fire_activity` = 'Holocene\nfire activity', `Anthropocene.siteNOCA` = 'Anthropocene\nPark (NOCA against MORA)',
     `Anthropocene.burnedBurned` = 'Anthropocene\nburned − unburned')
   slopes = slopes |> mutate(key = paste(era, term, sep = '.')) |>
     filter(metric %in% names(quantities), key %in% names(terms)) |>
