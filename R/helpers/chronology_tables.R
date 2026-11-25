@@ -38,12 +38,12 @@ chronology_control_wording = function() tibble::tribble(
   "MORA", "Tephra_F",        "MR-F tephra",                         "Mullineaux 1974; Walsh et al. 2017",               "Assumed ±{error} yr; no published statistical age error",
   "MORA", "Basal_date_mean", "Basal sediment, mean of QL-1704 and QL-1728", "Dunwiddie 1986; P. Dunwiddie, pers. comm.",   "Larger of the two laboratory errors (±{error} yr), allowing for transfer of the Jay Bath and Log Wallow basal age to Reflection Pond",
   "MORA", "<radiocarbon>",   "{id}",                                "Dunwiddie 1986",                                   "Published laboratory error",
-  "NOCA", "CoreTop",         "Core surface",                        "Gavin 2021 Neotoma chronology; coring year 1999",  "±{error} yr retained from the archived Gavin chronology",
-  "NOCA", "Pb210_7",         "²¹⁰Pb CRS age",        "Prichard et al. 2009; Gavin 2021",                 "Inherited Gavin value; {error} is numerically the published ²¹⁰Pb activity uncertainty in DPM g⁻¹, not a verified age error in years",
-  "NOCA", "Pb210_14",        "²¹⁰Pb CRS age",        "Prichard et al. 2009; Gavin 2021",                 "Inherited Gavin value; {error} is numerically the published ²¹⁰Pb activity uncertainty in DPM g⁻¹, not a verified age error in years",
-  "NOCA", "Pb210_21",        "²¹⁰Pb CRS age",        "Prichard et al. 2009; Gavin 2021",                 "Inherited Gavin value; {error} is numerically the published ²¹⁰Pb activity uncertainty in DPM g⁻¹, not a verified age error in years",
-  "NOCA", "Pb210_28",        "²¹⁰Pb CRS age",        "Prichard et al. 2009; Gavin 2021",                 "Inherited Gavin value; {error} is numerically the published ²¹⁰Pb activity uncertainty in DPM g⁻¹, not a verified age error in years",
-  "NOCA", "Pb210_35",        "²¹⁰Pb CRS age",        "Prichard et al. 2009; Gavin 2021",                 "Inherited Gavin value; {error} is numerically the published ²¹⁰Pb activity uncertainty in DPM g⁻¹, not a verified age error in years",
+  "NOCA", "CoreTop",         "Core surface",                        "Gavin 2021 Neotoma chronology; coring year 1999",  "±{error} yr retained from the archived chronology",
+  "NOCA", "Pb210_7",         "²¹⁰Pb CRS age",        "Prichard et al. 2009; Gavin 2021",                 "Value of the archived chronology; {error} is numerically the published ²¹⁰Pb activity uncertainty in DPM g⁻¹, not a verified age error in years",
+  "NOCA", "Pb210_14",        "²¹⁰Pb CRS age",        "Prichard et al. 2009; Gavin 2021",                 "Value of the archived chronology; {error} is numerically the published ²¹⁰Pb activity uncertainty in DPM g⁻¹, not a verified age error in years",
+  "NOCA", "Pb210_21",        "²¹⁰Pb CRS age",        "Prichard et al. 2009; Gavin 2021",                 "Value of the archived chronology; {error} is numerically the published ²¹⁰Pb activity uncertainty in DPM g⁻¹, not a verified age error in years",
+  "NOCA", "Pb210_28",        "²¹⁰Pb CRS age",        "Prichard et al. 2009; Gavin 2021",                 "Value of the archived chronology; {error} is numerically the published ²¹⁰Pb activity uncertainty in DPM g⁻¹, not a verified age error in years",
+  "NOCA", "Pb210_35",        "²¹⁰Pb CRS age",        "Prichard et al. 2009; Gavin 2021",                 "Value of the archived chronology; {error} is numerically the published ²¹⁰Pb activity uncertainty in DPM g⁻¹, not a verified age error in years",
   "NOCA", "Beta-172005",     "Beta-172005, conifer seed",           "Prichard et al. 2009",                             "Published laboratory error",
   "NOCA", "Tephra_MSH_P",    "MSH-P tephra",                        "Gavin 2021 Neotoma chronology",                    "Age and ±{error}-yr uncertainty retained from the archived chronology",
   "NOCA", "Beta-169623",     "Beta-169623, seed",                   "Prichard et al. 2009",                             "Published laboratory error",
@@ -154,6 +154,17 @@ bacon_parameters_table = function() {
   pp_pairs = vapply(seq(1, length(pp_slump), 2), function(i) paste(pp_slump[i:(i + 1)], collapse = "–"), character(1))
   manual_dmax = mora[vapply(mora, function(core) !is.null(CORE_ARGS[[core]]$d.max), logical(1))]
   auto_dmax = setdiff(mora, manual_dmax)
+  # Rule: every MORA value that the Rationale column calls the rbacon default is
+  # the default of the installed rbacon.
+  defaults = c("thick", "acc.shape", "mem.mean", "mem.strength", "normal", "t.a", "t.b", "ssize")
+  is_default = vapply(defaults, function(name) {
+    d = formals(rbacon::Bacon)[[name]]
+    v = shared(name)
+    if (is.logical(d)) as.logical(as.numeric(v)) == d else as.numeric(v) == as.numeric(d)
+  }, logical(1))
+  if (!all(is_default)) stop("Table S3 calls these MORA values the rbacon default, but they are not: ",
+    paste(defaults[!is_default], collapse = ", "))
+  archived = "the value of the archived chronology"
   d_max_mora = paste0(paste0(CHRONOLOGY_TABLE_CORES[manual_dmax], ": ",
       vapply(manual_dmax, function(core) CORE_ARGS[[core]]$d.max, numeric(1)), " cm", collapse = "; "),
     if (length(auto_dmax)) paste0("; no manual extension for ",
@@ -163,40 +174,41 @@ bacon_parameters_table = function() {
     "cc, cc1", "Determines whether a date requires radiocarbon calibration and which calibration curve is used",
       paste0("cc=1, cc1=\"", cc1_mora, "\" for ¹⁴C dates; cc=0 for calendar-age controls"),
       if (bacon_run_value(pp, "cc1") == cc1_mora) "Same" else paste0("cc1=\"", bacon_run_value(pp, "cc1"), "\""),
-      paste0("Northern Hemisphere terrestrial ¹⁴C dates were calibrated with ", cc1_mora,
-        "; already calendar-dated controls were not recalibrated"),
+      paste0("We calibrated the ¹⁴C dates with ", cc1_mora, ", the curve for Northern Hemisphere terrestrial samples, ",
+        "and entered the other controls as calendar ages."),
     "thick", "Thickness of the sediment sections for which accumulation rates are estimated",
       paste(shared("thick"), "cm"), paste(bacon_run_value(pp, "thick"), "cm"),
-      "Standard Bacon section thickness; for Panther Potholes this value reproduced the archived Gavin chronology",
+      paste0("rbacon default; at Panther Potholes, also ", archived, "."),
     "acc.mean", "Mean of the prior distribution for accumulation time, in yr cm⁻¹",
       shared("acc.mean"), bacon_run_value(pp, "acc.mean"),
-      paste0("MORA cores accumulate substantially more slowly; ", bacon_run_value(pp, "acc.mean"),
-        " yr cm⁻¹ reproduces the Gavin chronology and is close to the approximately 12.8 yr cm⁻¹ reported for Panther Potholes"),
+      paste0("The MORA cores accumulated more slowly. At Panther Potholes, ", archived,
+        ", close to the accumulation of about 12.8 yr cm⁻¹ reported for this core."),
     "acc.shape", "Shape of the gamma prior around acc.mean; larger values impose a more concentrated accumulation prior",
       shared("acc.shape"), bacon_run_value(pp, "acc.shape"),
-      "Broad rbacon default retained for MORA and Gavin setting retained for Panther Potholes",
+      paste0("rbacon default (MORA); ", sub("^the ", "", archived), " (Panther Potholes)."),
     "mem.mean", "Prior mean dependence between accumulation rates in adjacent sediment sections",
       shared("mem.mean"), bacon_run_value(pp, "mem.mean"),
-      "rbacon default retained for MORA; Gavin setting retained for Panther Potholes",
+      paste0("rbacon default (MORA); ", sub("^the ", "", archived), " (Panther Potholes)."),
     "mem.strength", "Strength of the prior around mem.mean; larger values impose the assumed memory more strongly",
       shared("mem.strength"), bacon_run_value(pp, "mem.strength"),
-      "Broad rbacon default retained for MORA and Gavin setting retained for Panther Potholes",
+      paste0("rbacon default (MORA); ", sub("^the ", "", archived), " (Panther Potholes)."),
     "slump", "Depth intervals treated as effectively instantaneous accumulation rather than gradual sedimentation",
       paste(paste0(CHRONOLOGY_TABLE_CORES[mora], ": ", vapply(mora, pair, character(1), a = 1, b = 2), " cm"), collapse = "; "),
       paste0(paste(utils::head(pp_pairs, -1), collapse = ", "), ", and ", utils::tail(pp_pairs, 1), " cm"),
-      "Prevents thick tephra deposits from being interpreted as long periods of sediment accumulation",
+      "Treats each thick tephra layer as one instantaneous deposit, so that the model does not read its thickness as a long period of accumulation.",
     "normal, t.a, t.b", "Distribution used to accommodate chronological-control scatter and potential outlying dates",
       normal_t(mora), normal_t(pp),
-      "rbacon default robust t-distribution retained for MORA; Gavin settings retained for Panther Potholes",
+      paste0("rbacon default (MORA); ", sub("^the ", "", archived), " (Panther Potholes)."),
     "ssize", "Number of MCMC iterations retained for the posterior",
       num(shared("ssize")), num(bacon_run_value(pp, "ssize")),
-      "Default sampling was retained for MORA; Panther Potholes required the larger value for adequate MCMC mixing and reproduction of the archived chronology",
+      "rbacon default (MORA). Panther Potholes needed more iterations for the chain to mix and to reproduce the archived chronology.",
     "prob", "Posterior interval reported for the chronology",
       shared("prob"), bacon_run_value(pp, "prob"),
-      "Ages are summarized with 95% posterior intervals",
+      paste0("We summarize ages with ", 100 * as.numeric(shared("prob")), "% posterior intervals."),
     "d.max", "Maximum core depth included in the model",
       d_max_mora, paste(bacon_run_value(pp, "d.max"), "cm"),
-      "Jay Bath was extended to 153 cm to retain its deepest macrofossil sample; Panther Potholes retained the Gavin model extent")
+      paste0("We extended Jay Bath to ", CORE_ARGS$JayBath$d.max, " cm to keep its deepest macrofossil sample. ",
+        "At Panther Potholes, the extent of the archived chronology."))
 }
 
 write_chronology_tables = function() {

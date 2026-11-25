@@ -98,21 +98,25 @@ Potholes samples and 119 MORA samples, and in 296 and 291 MORA plots and
 
 The Holocene communities come from plant macrofossils in dated
 lake-sediment cores, three at MORA and one at NOCA (Fig. 2 of the main
-text). We dated each sample with the age–depth model of its core
+text). We dated each sample with the age-depth model of its core
 (Appendix S1).
 
-### Appendix S1. Age–depth models of the Holocene records
+### Appendix S1. Age-depth models of the Holocene records
 
-#### S1.1 Why new age–depth models were needed
+#### S1.1 Why new age-depth models were needed
 
-To place the macrofossil samples in time, we needed a calendar age, with
-its uncertainty, for each sample. The published chronologies did not
-provide this. At MORA, the ages of Dunwiddie (1986) are radiocarbon ages
-that were not calibrated to calendar years. At NOCA, the chronology of
-Prichard et al. (2009) is calibrated, but the median ages of the single
-macrofossil samples were not available to us. We therefore built a
-Bayesian age–depth model for each of the four cores with the same method
-(R package rbacon; Blaauw & Christen, 2011).
+Age-depth models based on calibrated radiocarbon ages were needed for
+the four cores of the forest records. At MORA, Dunwiddie (1986) reported
+radiocarbon ages that were not calibrated to calendar years. At NOCA,
+Prichard et al. (2009) did not publish the age-depth model of Panther
+Potholes. A Bayesian chronology was later archived in the Neotoma
+database (Gavin, 2021), with corrected depths of the dates and tephra
+layers, but without its uncertainty intervals. To make the analysis
+reproducible, we built a Bayesian age-depth model for each of the four
+cores with the same method (R package rbacon; Blaauw & Christen, 2011).
+For the three charcoal records of Sunrise Ridge at MORA (Appendix S3),
+we used the published age-depth models of Walsh et al. (2017), which are
+already calibrated.
 
 #### S1.2 Chronological controls
 
@@ -128,7 +132,7 @@ Jay Bath and Log Wallow. For Panther Potholes, we used the depths of the
 controls archived in the Neotoma database, which correct depth errors in
 Prichard et al. (2009).
 
-**Table S2. Chronological controls used in the four Bayesian age–depth
+**Table S2. Chronological controls used in the four Bayesian age-depth
 models.** For cc = 1, the entered age is an uncalibrated ¹⁴C age
 calibrated with IntCal20. For cc = 0, the entered age is already in
 calibrated years before present (cal yr BP; present = A.D. 1950).
@@ -160,12 +164,12 @@ calibrated years before present (cal yr BP; present = A.D. 1950).
 | MORA | Reflection Pond | MSH-Y tephra, lower boundary | 64 | 3650 ± 100 cal yr BP | cc = 0 | Mullineaux 1974; Walsh et al. 2017 | Same uncertainty as upper boundary; both depths represent the same instantaneous tephra deposit |
 | MORA | Reflection Pond | MR-F tephra | 82 | 5740 ± 100 cal yr BP | cc = 0 | Mullineaux 1974; Walsh et al. 2017 | Assumed ±100 yr; no published statistical age error |
 | MORA | Reflection Pond | Basal sediment, mean of QL-1704 and QL-1728 | 90 | 6015 ± 110 ¹⁴C yr BP | cc = 1, IntCal20 | Dunwiddie 1986; P. Dunwiddie, pers. comm. | Larger of the two laboratory errors (±110 yr), allowing for transfer of the Jay Bath and Log Wallow basal age to Reflection Pond |
-| NOCA | Panther Potholes | Core surface | 0.5 | −49 ± 1 cal yr BP | cc = 0 | Gavin 2021 Neotoma chronology; coring year 1999 | ±1 yr retained from the archived Gavin chronology |
-| NOCA | Panther Potholes | ²¹⁰Pb CRS age | 7 | −36.7; error entered = 3.47 | cc = 0 | Prichard et al. 2009; Gavin 2021 | Inherited Gavin value; 3.47 is numerically the published ²¹⁰Pb activity uncertainty in DPM g⁻¹, not a verified age error in years |
-| NOCA | Panther Potholes | ²¹⁰Pb CRS age | 14 | −9; error entered = 1.15 | cc = 0 | Prichard et al. 2009; Gavin 2021 | Inherited Gavin value; 1.15 is numerically the published ²¹⁰Pb activity uncertainty in DPM g⁻¹, not a verified age error in years |
-| NOCA | Panther Potholes | ²¹⁰Pb CRS age | 21 | 12; error entered = 0.72 | cc = 0 | Prichard et al. 2009; Gavin 2021 | Inherited Gavin value; 0.72 is numerically the published ²¹⁰Pb activity uncertainty in DPM g⁻¹, not a verified age error in years |
-| NOCA | Panther Potholes | ²¹⁰Pb CRS age | 28 | 21; error entered = 0.74 | cc = 0 | Prichard et al. 2009; Gavin 2021 | Inherited Gavin value; 0.74 is numerically the published ²¹⁰Pb activity uncertainty in DPM g⁻¹, not a verified age error in years |
-| NOCA | Panther Potholes | ²¹⁰Pb CRS age | 35 | 36; error entered = 0.77 | cc = 0 | Prichard et al. 2009; Gavin 2021 | Inherited Gavin value; 0.77 is numerically the published ²¹⁰Pb activity uncertainty in DPM g⁻¹, not a verified age error in years |
+| NOCA | Panther Potholes | Core surface | 0.5 | −49 ± 1 cal yr BP | cc = 0 | Gavin 2021 Neotoma chronology; coring year 1999 | ±1 yr retained from the archived chronology |
+| NOCA | Panther Potholes | ²¹⁰Pb CRS age | 7 | −36.7; error entered = 3.47 | cc = 0 | Prichard et al. 2009; Gavin 2021 | Value of the archived chronology; 3.47 is numerically the published ²¹⁰Pb activity uncertainty in DPM g⁻¹, not a verified age error in years |
+| NOCA | Panther Potholes | ²¹⁰Pb CRS age | 14 | −9; error entered = 1.15 | cc = 0 | Prichard et al. 2009; Gavin 2021 | Value of the archived chronology; 1.15 is numerically the published ²¹⁰Pb activity uncertainty in DPM g⁻¹, not a verified age error in years |
+| NOCA | Panther Potholes | ²¹⁰Pb CRS age | 21 | 12; error entered = 0.72 | cc = 0 | Prichard et al. 2009; Gavin 2021 | Value of the archived chronology; 0.72 is numerically the published ²¹⁰Pb activity uncertainty in DPM g⁻¹, not a verified age error in years |
+| NOCA | Panther Potholes | ²¹⁰Pb CRS age | 28 | 21; error entered = 0.74 | cc = 0 | Prichard et al. 2009; Gavin 2021 | Value of the archived chronology; 0.74 is numerically the published ²¹⁰Pb activity uncertainty in DPM g⁻¹, not a verified age error in years |
+| NOCA | Panther Potholes | ²¹⁰Pb CRS age | 35 | 36; error entered = 0.77 | cc = 0 | Prichard et al. 2009; Gavin 2021 | Value of the archived chronology; 0.77 is numerically the published ²¹⁰Pb activity uncertainty in DPM g⁻¹, not a verified age error in years |
 | NOCA | Panther Potholes | Beta-172005, conifer seed | 214 | 1950 ± 50 ¹⁴C yr BP | cc = 1, IntCal20 | Prichard et al. 2009 | Published laboratory error |
 | NOCA | Panther Potholes | MSH-P tephra | 305.5 | 2620 ± 70 cal yr BP | cc = 0 | Gavin 2021 Neotoma chronology | Age and ±70-yr uncertainty retained from the archived chronology |
 | NOCA | Panther Potholes | Beta-169623, seed | 363 | 3260 ± 40 ¹⁴C yr BP | cc = 1, IntCal20 | Prichard et al. 2009 | Published laboratory error |
@@ -176,68 +180,67 @@ calibrated years before present (cal yr BP; present = A.D. 1950).
 | NOCA | Panther Potholes | Beta-169208, seed | 678 | 7330 ± 40 ¹⁴C yr BP | cc = 1, IntCal20 | Prichard et al. 2009 | Published laboratory error |
 | NOCA | Panther Potholes | Beta-169625, Pinus contorta needles | 864 | 9370 ± 40 ¹⁴C yr BP | cc = 1, IntCal20 | Prichard et al. 2009 | Published laboratory error |
 
-#### S1.3 Age–depth models
+#### S1.3 Age-depth models
 
 To estimate the age of every depth between the controls, rbacon models
-how fast sediment accumulated along the core, and returns many age–depth
-curves that are compatible with the controls (Fig. S4; settings in Table
-S3). We used the same settings for the three MORA cores. For Panther
-Potholes, we kept the settings of the chronology archived in Neotoma, so
-that our model reproduced the published chronology. Thick tephra layers
-were treated as deposited instantaneously (grey bands in Fig. S4). We
-dated each macrofossil sample by the median of its ages.
+how fast sediment accumulated along the core and returns many age-depth
+curves that agree with the controls (Fig. S4; settings in Table S3). The
+three MORA cores had no Bayesian chronology before, and we used the same
+settings for all three, mostly the rbacon defaults. For Panther
+Potholes, we used the settings of the Bacon chronology archived in
+Neotoma (Gavin, 2021), so that our model reproduces that chronology and
+also gives its uncertainty intervals. We treated thick tephra layers as
+instantaneous deposits (grey bands in Fig. S4). From each model, we took
+the median of the modelled ages at the depth of each macrofossil sample
+as the age of that sample, and used it to assign the sample to a century
+(see Methods of the main text).
 
-**Table S3. rbacon parameters used to construct the age–depth models.**
+**Table S3. rbacon parameters used to construct the age-depth models.**
 
 | rbacon argument | What it controls | MORA | Panther Potholes | Rationale |
 |:---|:---|:---|:---|:---|
-| cc, cc1 | Determines whether a date requires radiocarbon calibration and which calibration curve is used | cc=1, cc1=“IntCal20” for ¹⁴C dates; cc=0 for calendar-age controls | Same | Northern Hemisphere terrestrial ¹⁴C dates were calibrated with IntCal20; already calendar-dated controls were not recalibrated |
-| thick | Thickness of the sediment sections for which accumulation rates are estimated | 5 cm | 5 cm | Standard Bacon section thickness; for Panther Potholes this value reproduced the archived Gavin chronology |
-| acc.mean | Mean of the prior distribution for accumulation time, in yr cm⁻¹ | 50 | 10 | MORA cores accumulate substantially more slowly; 10 yr cm⁻¹ reproduces the Gavin chronology and is close to the approximately 12.8 yr cm⁻¹ reported for Panther Potholes |
-| acc.shape | Shape of the gamma prior around acc.mean; larger values impose a more concentrated accumulation prior | 1.5 | 1.5 | Broad rbacon default retained for MORA and Gavin setting retained for Panther Potholes |
-| mem.mean | Prior mean dependence between accumulation rates in adjacent sediment sections | 0.5 | 0.7 | rbacon default retained for MORA; Gavin setting retained for Panther Potholes |
-| mem.strength | Strength of the prior around mem.mean; larger values impose the assumed memory more strongly | 10 | 10 | Broad rbacon default retained for MORA and Gavin setting retained for Panther Potholes |
-| slump | Depth intervals treated as effectively instantaneous accumulation rather than gradual sedimentation | Jay Bath: 87–105 cm; Log Wallow: 40–98 cm; Reflection Pond: 45–64 cm | 303–308, 396–406, and 623–635 cm | Prevents thick tephra deposits from being interpreted as long periods of sediment accumulation |
-| normal, t.a, t.b | Distribution used to accommodate chronological-control scatter and potential outlying dates | FALSE, 3, 4 | FALSE, 15, 16 | rbacon default robust t-distribution retained for MORA; Gavin settings retained for Panther Potholes |
-| ssize | Number of MCMC iterations retained for the posterior | 4,000 | 10,000 | Default sampling was retained for MORA; Panther Potholes required the larger value for adequate MCMC mixing and reproduction of the archived chronology |
-| prob | Posterior interval reported for the chronology | 0.95 | 0.95 | Ages are summarized with 95% posterior intervals |
-| d.max | Maximum core depth included in the model | Jay Bath: 153 cm; no manual extension for Log Wallow or Reflection Pond | 870 cm | Jay Bath was extended to 153 cm to retain its deepest macrofossil sample; Panther Potholes retained the Gavin model extent |
+| cc, cc1 | Determines whether a date requires radiocarbon calibration and which calibration curve is used | cc=1, cc1=“IntCal20” for ¹⁴C dates; cc=0 for calendar-age controls | Same | We calibrated the ¹⁴C dates with IntCal20, the curve for Northern Hemisphere terrestrial samples, and entered the other controls as calendar ages. |
+| thick | Thickness of the sediment sections for which accumulation rates are estimated | 5 cm | 5 cm | rbacon default; at Panther Potholes, also the value of the archived chronology. |
+| acc.mean | Mean of the prior distribution for accumulation time, in yr cm⁻¹ | 50 | 10 | The MORA cores accumulated more slowly. At Panther Potholes, the value of the archived chronology, close to the accumulation of about 12.8 yr cm⁻¹ reported for this core. |
+| acc.shape | Shape of the gamma prior around acc.mean; larger values impose a more concentrated accumulation prior | 1.5 | 1.5 | rbacon default (MORA); value of the archived chronology (Panther Potholes). |
+| mem.mean | Prior mean dependence between accumulation rates in adjacent sediment sections | 0.5 | 0.7 | rbacon default (MORA); value of the archived chronology (Panther Potholes). |
+| mem.strength | Strength of the prior around mem.mean; larger values impose the assumed memory more strongly | 10 | 10 | rbacon default (MORA); value of the archived chronology (Panther Potholes). |
+| slump | Depth intervals treated as effectively instantaneous accumulation rather than gradual sedimentation | Jay Bath: 87–105 cm; Log Wallow: 40–98 cm; Reflection Pond: 45–64 cm | 303–308, 396–406, and 623–635 cm | Treats each thick tephra layer as one instantaneous deposit, so that the model does not read its thickness as a long period of accumulation. |
+| normal, t.a, t.b | Distribution used to accommodate chronological-control scatter and potential outlying dates | FALSE, 3, 4 | FALSE, 15, 16 | rbacon default (MORA); value of the archived chronology (Panther Potholes). |
+| ssize | Number of MCMC iterations retained for the posterior | 4,000 | 10,000 | rbacon default (MORA). Panther Potholes needed more iterations for the chain to mix and to reproduce the archived chronology. |
+| prob | Posterior interval reported for the chronology | 0.95 | 0.95 | We summarize ages with 95% posterior intervals. |
+| d.max | Maximum core depth included in the model | Jay Bath: 153 cm; no manual extension for Log Wallow or Reflection Pond | 870 cm | We extended Jay Bath to 153 cm to keep its deepest macrofossil sample. At Panther Potholes, the extent of the archived chronology. |
 
 ![](figures/png/figS04_age_depth_models.png)
 
-**Fig. S4. Bayesian age–depth models for the Jay Bath, Log Wallow, and
-Reflection Pond cores at MORA and the Panther Potholes core at NOCA.**
-For each core, the three upper panels show, from left to right, the
-Markov chain Monte Carlo trace, the prior (green) and posterior (grey)
-distributions of sediment accumulation time, and the prior and posterior
-distributions of memory. In the main panels, depth increases along the
-x-axis and age is expressed as calibrated years before present. Coloured
-distributions at dated depths represent the chronological controls and
-their uncertainty. The grey field represents the posterior distribution
-of possible age–depth relationships. The red dotted line in the middle
-shows the mean posterior age–depth estimate, and the outer grey dotted
-lines the 95% posterior interval. Vertical grey bands identify tephra
-intervals treated as instantaneous deposition.
+**Fig. S4. Bayesian age-depth models of the four cores of the forest
+records: Jay Bath, Log Wallow, and Reflection Pond at MORA, and Panther
+Potholes at NOCA.** Coloured distributions show the chronological
+controls, the grey field the modelled age-depth curves, the red dotted
+line their mean, and the grey dotted lines their 95% interval. Grey
+bands mark the tephra layers treated as instantaneous deposits. Ages are
+in calibrated years before present. The small upper panels are the
+standard rbacon diagnostics.
 
-#### S1.4 Sensitivity of the Panther Potholes chronology
+#### S1.4 Check of the ²¹⁰Pb errors at Panther Potholes
 
-In the archived chronology of Panther Potholes, the errors of the five
-²¹⁰Pb ages are the uncertainties of the measured ²¹⁰Pb activity, and not
-age errors in years. To test whether this affects the chronology, we
-fitted a second model with an assumed error of ±10 years for these five
-ages. The two chronologies were nearly identical below the upper 35 to
-40 cm of the core, so that this choice does not affect the Holocene ages
-of the analysis (Fig. S5).
+In the archived chronology of Panther Potholes, the errors given for the
+five ²¹⁰Pb ages are the uncertainties of the measured ²¹⁰Pb activity,
+not age errors in years. To check whether this matters, we fitted a
+second model with an error of ±10 years for these five ages. The two
+chronologies differed only in the upper 35 to 40 cm of the core, which
+is much younger than the youngest lake-period of the analysis (1400 cal
+BP), so this choice does not affect the results (Fig. S5).
 
 ![](figures/png/figS05_panther_potholes_pb210_sensitivity.png)
 
-**Fig. S5. Sensitivity of the Panther Potholes age–depth chronology to
-uncertainty assigned to the five ²¹⁰Pb controls in the upper 35 cm of
-the core.** The left panel shows that the two posterior chronologies are
-nearly identical below the ²¹⁰Pb-dated section, whereas the right panel
-shows the expected increase in uncertainty within the upper 35–40 cm.
-The uncertainty assigned to the ²¹⁰Pb controls affects the precision of
-the most recent chronology but does not materially alter the deeper
+**Fig. S5. Check of the Panther Potholes age-depth chronology to
+uncertainty assigned to the five ²¹⁰Pb controls in the upper 35 to 40 cm
+of the core.** The left panel shows that the two posterior chronologies
+are nearly identical below the ²¹⁰Pb-dated section, whereas the right
+panel shows the expected increase in uncertainty within the upper 35–40
+cm. The uncertainty assigned to the ²¹⁰Pb controls affects the precision
+of the most recent chronology but does not materially alter the deeper
 Holocene chronology used in our analyses.
 
 # Climate products

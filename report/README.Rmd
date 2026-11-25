@@ -36,7 +36,7 @@ questions, the study area, the forest tree communities, the climate products, cl
 dynamics, the climate–community space, and then the four questions in turn (lags, pace and direction
 contributions, associations with fire, species contributions). It shows every main and supplementary figure,
 the tables reported in the manuscript and the modelling code, and keeps the text of the Supporting
-Information: Appendix S1 (age–depth models), Appendix S2 (climate products and the bias correction of the
+Information: Appendix S1 (age-depth models), Appendix S2 (climate products and the bias correction of the
 paleoclimate), Appendix S3 (fire histories), Appendix S4 (the analysis without correction of
 the Holocene climate) and Appendix S5 (the analysis with PRISM and nClimGrid as the Anthropocene climate). Data
 cleaning is summarized by its figure here. The
@@ -249,19 +249,21 @@ excluded taxa, occupancy through time).
 ## Holocene macrofossil records
 
 The Holocene communities come from plant macrofossils in dated lake-sediment cores, three at MORA and
-one at NOCA (Fig. 2 of the main text). We dated each sample with the age–depth model of its core
+one at NOCA (Fig. 2 of the main text). We dated each sample with the age-depth model of its core
 (Appendix S1).
 
-### Appendix S1. Age–depth models of the Holocene records
+### Appendix S1. Age-depth models of the Holocene records
 
-#### S1.1 Why new age–depth models were needed
+#### S1.1 Why new age-depth models were needed
 
-To place the macrofossil samples in time, we needed a calendar age, with its uncertainty, for each sample.
-The published chronologies did not provide this. At MORA, the ages of Dunwiddie (1986) are radiocarbon ages
-that were not calibrated to calendar years. At NOCA, the chronology of Prichard et al. (2009) is calibrated,
-but the median ages of the single macrofossil samples were not available to us. We therefore built a
-Bayesian age–depth model for each of the four cores with the same method (R package rbacon; Blaauw &
-Christen, 2011).
+Age-depth models based on calibrated radiocarbon ages were needed for the four cores of the forest records.
+At MORA, Dunwiddie (1986) reported radiocarbon ages that were not calibrated to calendar years. At NOCA,
+Prichard et al. (2009) did not publish the age-depth model of Panther Potholes. A Bayesian chronology was
+later archived in the Neotoma database (Gavin, 2021), with corrected depths of the dates and tephra layers,
+but without its uncertainty intervals. To make the analysis reproducible, we built a Bayesian age-depth model
+for each of the four cores with the same method (R package rbacon; Blaauw & Christen, 2011). For the three
+charcoal records of Sunrise Ridge at MORA (Appendix S3), we used the published age-depth models of Walsh et
+al. (2017), which are already calibrated.
 
 #### S1.2 Chronological controls
 
@@ -276,55 +278,64 @@ the controls archived in the Neotoma database, which correct depth errors in Pri
 ```{r table-s1-1}
 read_output('table_S1_1_chronological_controls.csv', col_types = readr::cols(.default = 'c')) |>
   show_table('chronological_controls',
-    caption = paste('**Table S2. Chronological controls used in the four Bayesian age–depth models.**',
+    caption = paste('**Table S2. Chronological controls used in the four Bayesian age-depth models.**',
       'For cc = 1, the entered age is an uncalibrated ¹⁴C age calibrated with IntCal20. For cc = 0,',
       'the entered age is already in calibrated years before present (cal yr BP; present = A.D. 1950).'))
 ```
 
-#### S1.3 Age–depth models
+#### S1.3 Age-depth models
 
 To estimate the age of every depth between the controls, rbacon models how fast sediment accumulated along
-the core, and returns many age–depth curves that are compatible with the controls (Fig. S4; settings in
-Table S3). We used the same settings for the three MORA cores. For Panther Potholes, we kept the settings
-of the chronology archived in Neotoma, so that our model reproduced the published chronology. Thick tephra
-layers were treated as deposited instantaneously (grey bands in Fig. S4). We dated each macrofossil sample
-by the median of its ages.
+the core and returns many age-depth curves that agree with the controls (Fig. S4; settings in Table S3). The
+three MORA cores had no Bayesian chronology before, and we used the same settings for all three, mostly the
+rbacon defaults. For Panther Potholes, we used the settings of the Bacon chronology archived in Neotoma
+(Gavin, 2021), so that our model reproduces that chronology and also gives its uncertainty intervals. We
+treated thick tephra layers as instantaneous deposits (grey bands in Fig. S4). From each model, we took the
+median of the modelled ages at the depth of each macrofossil sample as the age of that sample, and used it
+to assign the sample to a century (see Methods of the main text).
 
 ```{r table-s1-2}
 read_output('table_S1_2_rbacon_parameters.csv', col_types = readr::cols(.default = 'c')) |>
   show_table('rbacon_parameters',
-    caption = '**Table S3. rbacon parameters used to construct the age–depth models.**')
+    caption = '**Table S3. rbacon parameters used to construct the age-depth models.**')
 ```
 
 ```{r fig-s04-age-depth}
 show_figure('report/figures/supplementary/figS04_age_depth_models.pdf')
 ```
 
-**Fig. S4. Bayesian age–depth models for the Jay Bath, Log Wallow, and Reflection Pond cores at
-MORA and the Panther Potholes core at NOCA.** For each core, the three upper panels show, from left
-to right, the Markov chain Monte Carlo trace, the prior (green) and posterior (grey) distributions
-of sediment accumulation time, and the prior and posterior distributions of memory. In the main
-panels, depth increases along the x-axis and age is expressed as calibrated years before present.
-Coloured distributions at dated depths represent the chronological controls and their
-uncertainty. The grey field represents the posterior distribution of possible age–depth
-relationships. The red dotted line in the middle shows the mean posterior age–depth estimate, and the outer grey
-dotted lines the 95% posterior interval. Vertical grey bands identify tephra intervals treated as
-instantaneous deposition.
+**Fig. S4. Bayesian age-depth models of the four cores of the forest records: Jay Bath, Log Wallow, and
+Reflection Pond at MORA, and Panther Potholes at NOCA.** Coloured distributions show the chronological
+controls, the grey field the modelled age-depth curves, the red dotted line their mean, and the grey dotted
+lines their 95% interval. Grey bands mark the tephra layers treated as instantaneous deposits. Ages are in
+calibrated years before present. The small upper panels are the standard rbacon diagnostics.
 
-#### S1.4 Sensitivity of the Panther Potholes chronology
+#### S1.4 Check of the ²¹⁰Pb errors at Panther Potholes
 
-In the archived chronology of Panther Potholes, the errors of the five ²¹⁰Pb ages are the uncertainties of
-the measured ²¹⁰Pb activity, and not age errors in years. To test whether this affects the chronology, we
-fitted a second model with an assumed error of ±10 years for these five ages. The two chronologies were
-nearly identical below the upper 35 to 40 cm of the core, so that this choice does not affect the Holocene
-ages of the analysis (Fig. S5).
+```{r s1-pb210-check}
+# Rule (S1.4): the ²¹⁰Pb errors matter only if the depths where the two chronologies
+# differ reach the lake-periods. Both models must date 40 cm far younger than the
+# youngest lake-period, else the sentence below is wrong.
+source(here('R/helpers/bacon_settings.R'), local = TRUE)
+s1_ages = function(core) setNames(read.table(Sys.glob(here('Cores', core, paste0(core, '_*_ages.txt')))[1], header = TRUE),
+  c('depth', 'lo', 'hi', 'median', 'mean'))
+s1_youngest = min(read_output('cca_tracking_lake_periods.csv')$age_end)
+s1_at40 = sapply(c('PantherPotholes', 'PantherPotholes_pb210err'), \(core) with(s1_ages(core), hi[depth == 40]))
+stopifnot(length(s1_at40) == 2, all(s1_at40 < s1_youngest / 2))
+```
+
+In the archived chronology of Panther Potholes, the errors given for the five ²¹⁰Pb ages are the
+uncertainties of the measured ²¹⁰Pb activity, not age errors in years. To check whether this matters, we
+fitted a second model with an error of ±`r PB210_ASSUMED_ERROR` years for these five ages. The two
+chronologies differed only in the upper 35 to 40 cm of the core, which is much younger than the youngest
+lake-period of the analysis (`r s1_youngest` cal BP), so this choice does not affect the results (Fig. S5).
 
 ```{r fig-s05-pb210}
 show_figure('report/figures/supplementary/figS05_panther_potholes_pb210_sensitivity.pdf')
 ```
 
-**Fig. S5. Sensitivity of the Panther Potholes age–depth chronology to uncertainty assigned to the
-five ²¹⁰Pb controls in the upper 35 cm of the core.** The left panel shows that the two posterior
+**Fig. S5. Check of the Panther Potholes age-depth chronology to uncertainty assigned to the
+five ²¹⁰Pb controls in the upper 35 to 40 cm of the core.** The left panel shows that the two posterior
 chronologies are nearly identical below the ²¹⁰Pb-dated section, whereas the right panel shows the
 expected increase in uncertainty within the upper 35–40 cm. The uncertainty assigned to the ²¹⁰Pb
 controls affects the precision of the most recent chronology but does not materially alter the

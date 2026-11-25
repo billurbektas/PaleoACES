@@ -25,7 +25,7 @@ Step,File,Description,Size (kB)
 04_modern_climate,NOCA_climate.csv,NOCA survey-window CHELSA V2.1 climate per plot,14406
 05_age_depth_models,bacon_run_manifest.csv,"Bacon run settings, seeds and source hashes",2
 05_age_depth_models,table_S1_1_chronological_controls.csv,Table S2,7
-05_age_depth_models,table_S1_2_rbacon_parameters.csv,Table S3,3
+05_age_depth_models,table_S1_2_rbacon_parameters.csv,Table S3,2
 06_paleo_samples,paleo_macrofossil_long.csv,All macrofossil measurements with ages,108
 06_paleo_samples,paleo_occ.csv,Macrofossil presence by sample,835
 06_paleo_samples,paleo_sample_depths.csv,Sample depth and median Bacon age,95
