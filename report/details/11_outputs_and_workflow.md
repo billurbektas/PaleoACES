@@ -80,7 +80,7 @@ models could no longer be read.
 | R/figures/main_fig4_cca_trajectories.R | figure | Figure 4: A, species and climate biplot; B, observed and predicted trajectories | 373 |
 | R/figures/main_fig5_era_contrasts.R | figure | Figure 5 and Fig. S16 (PLAN.md section 6; Bills, 23 Nov 2026): fitted means | 83 |
 | R/figures/main_fig6_climate_fire_associations.R | figure | Figure 6 and Fig. S18: climate and fire associations as model slopes (Bills, | 75 |
-| R/figures/main_fig7_species.R | figure | Figure 7 (PLAN.md section 6): species contributions in both eras. Species as | 171 |
+| R/figures/main_fig7_species.R | figure | Figure 7 (PLAN.md section 6): species contributions in the Anthropocene, and | 232 |
 | R/worked_examples.R | worked examples | Worked examples: step-by-step illustrations of four methods, drawn from the | 412 |
 | R/tests/test_bacon_provenance.R | test | The stored Bacon chronologies are exactly what the current age-model script and | 41 |
 | R/tests/test_cca_tracking_metrics.R | test | Independent geometry and integration checks for the canonical tracking data. | 38 |
@@ -109,7 +109,7 @@ Every file under `output/` is declared in `R/helpers/paths.R`; a script
 cannot write an undeclared output. Folders hold one file per table, in
 the folder of the step that writes it.
 
-**163 output files** (excluding the climate and age-draw cache).
+**164 output files** (excluding the climate and age-draw cache).
 
 | Step | File | Description | Size (kB) |
 |:---|:---|:---|---:|
@@ -263,6 +263,7 @@ the folder of the step that writes it.
 | figures | holocene_anthropocene_raw_climate_rate_comparison.csv | Tables behind the figures (centroids, annotations) | 1 |
 | figures | holocene_climate_level_rates.csv | Tables behind the figures (centroids, annotations) | 1 |
 | figures | holocene_standardized_climate_levels.csv | Tables behind the figures (centroids, annotations) | 72 |
+| figures | species_net_change.csv | Tables behind the figures (centroids, annotations) | 1 |
 | figures | species_order_elevation.csv | Tables behind the figures (centroids, annotations) | 1 |
 | report | noca_plot_area_responses.csv | Tables computed only for the report | 1 |
 | report | sample_selection_choices.csv | Tables computed only for the report | 1 |

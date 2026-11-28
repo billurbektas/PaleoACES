@@ -2039,9 +2039,9 @@ The species vectors add up to the observed movement for every
 lake-period and plot pair (asserted).
 
 In the Holocene every species mean is close to zero in both parks
-(largest absolute value 0.061 CCA distance per century). None of the 37
-Holocene intervals excludes zero. Each Holocene mean rests on 5
-lake-periods. In the Anthropocene, a species’ interval excludes zero
+(largest absolute value 0.061 CCA distance per century, Fig. S19A). None
+of the 37 Holocene intervals excludes zero. Each Holocene mean rests on
+5 lake-periods. In the Anthropocene, a species’ interval excludes zero
 more often. At MORA, among the species whose interval excludes zero,
 none moved the communities in the climate-predicted direction, and 4
 moved the communities against that direction (*Abies amabilis/grandis*
@@ -2066,40 +2066,38 @@ set the Anthropocene against a Holocene period type.
 <img src="report/figures/png/fig_species_contributions.png" alt="" width="100%" />
 
 **Fig. 7. Species contributions in the climate-predicted direction in
-the Holocene and the Anthropocene.** Each species’ vector is its change
-in share between the first and the last sampled century of a
-lake-period, or between the legacy survey and the resurvey of a plot,
-times its fixed position in the CCA plane. The vectors are projected on
-the direction in which the climate-predicted position moved. Labels at
-the top of each panel give the meaning of each side of zero: a species
-moved the community against or following the climate-predicted
-direction. Lake-periods and plot pairs whose observed or
-climate-predicted position did not move are left out. Values are per
-century of the interval between the two vegetation samples. Species are
-ordered by the maximum elevation of the plots where they occur (the 605
-plot pairs, both surveys, both parks), the highest at the top. Their
-names are shaded by that maximum in four grey steps, lightest below
-1,500 m and black above 1,900 m (key below the figure). Names in bold
-are species absent from the Holocene record of both parks. Symbols are
-means: squares, Holocene stability periods, diamonds, Holocene
-climate-change periods, circles, Anthropocene plot pairs (burned and
-unburned together), each with its 95% t-interval. Means whose interval
-excludes zero are large and dark, and means whose interval includes zero
-are small and faded, with faded intervals. A species with no Holocene
-symbols in a park is absent from that park’s Holocene record. Each park
-has its own x scale, symmetric around zero. The lake-periods of the
-Holocene climate-change periods span 300 to 900 years, and those of the
-stability periods 300 to 2600 years, between t1 and t2. The Anthropocene
-plot pairs span 27.5 to 32.5 years between the midpoints of their two
-climate windows (about 29 years). Contributions are in CCA distance per
-century.
+the Anthropocene.** Each species’ vector is its change in share between
+the legacy survey and the resurvey of a plot, times its fixed position
+in the CCA plane. The vectors are projected on the direction in which
+the climate-predicted position moved. Labels at the top of each panel
+give the meaning of each side of zero: a species moved the community
+against or following the climate-predicted direction. Plot pairs whose
+observed or climate-predicted position did not move are left out. Values
+are per century of the interval between the two vegetation samples.
+Circles are means over the plot pairs (burned and unburned together),
+each with its 95% t-interval. Means whose interval excludes zero are
+large and dark, and means whose interval includes zero are small and
+faded, with faded intervals. Each park has its own x scale, symmetric
+around zero. Species are ordered by the maximum elevation of the plots
+where they occur (the 605 plot pairs, both surveys, both parks), the
+highest at the top. The names stand on the left of the MORA panel and on
+the right of the NOCA panel. Each name is coloured by the number of the
+park’s plot pairs in which the species was gained minus the number in
+which it was lost between the legacy survey and the resurvey: dark
+purple, more than 20 plots lost in net; light purple, 5 to 20 lost;
+grey, fewer than 5 gained or lost; light green, 5 to 20 gained; dark
+green, more than 20 gained (key below the figure). *Abies procera* does
+not occur in the NOCA plot pairs. The Holocene species contributions are
+drawn in Fig. S19A. The Anthropocene plot pairs span 27.5 to 32.5 years
+between the midpoints of their two climate windows (about 29 years).
+Contributions are in CCA distance per century.
 
 **Species contributions not divided by time.** Per century, the species
 contributions of the Holocene are small partly because the lake-periods
 are long, and those of the Anthropocene are large partly because the
 time between the two surveys is short. To test whether this explains the
 difference between the two eras, we also calculated the species
-contributions without dividing by time (Fig. S19, Table S23).
+contributions without dividing by time (Fig. S19B, Table S23).
 
 <img src="report/figures/png/figS19_species_contributions_total.png" alt="" width="100%" />
 
@@ -2111,17 +2109,28 @@ means had a confidence interval that excluded zero, not divided by time
 or per century. In the Anthropocene, the same seven means excluded zero
 either way.
 
-**Fig. S19. Species contributions in the climate-predicted direction not
-divided by time.** As Fig. 7 of the main text, with the contribution of
-each species between t1 and t2 and not per century: how far each species
-moved the community in the climate-predicted direction (positive values)
-or against it (negative values). Means with 95% confidence intervals
-(t-intervals). Symbols, order of the species, and shading as in Fig. 7.
+**Fig. S19. Species contributions in the climate-predicted direction in
+the Holocene per century (A) and in all period types not divided by time
+(B).** How far each species moved the community in the climate-predicted
+direction (positive values) or against it (negative values), as in Fig.
+7 of the main text. (A) The Holocene means per century, which Fig. 7
+leaves out. (B) The contribution of each species between t1 and t2, not
+per century, in the three period types. Squares, Holocene stability
+periods; diamonds, Holocene climate-change periods; circles,
+Anthropocene plot pairs (burned and unburned together). Means with 95%
+confidence intervals (t-intervals). Means whose interval excludes zero
+are large and dark, and means whose interval includes zero are small and
+faded, with faded intervals. A species with no Holocene symbols in a
+park is absent from that park’s Holocene record. Species are ordered as
+in Fig. 7, by the maximum elevation of the plots where they occur, the
+highest at the top. Their names are coloured by that maximum in four
+steps of red, lightest below 1,500 m and darkest above 1,900 m (key
+below the figure). Each park has its own x scale, symmetric around zero.
 The lake-periods of the Holocene climate-change periods span 300 to 900
 years, and those of the stability periods 300 to 2600 years, between t1
 and t2. The Anthropocene plot pairs span 27.5 to 32.5 years between the
 midpoints of their two climate windows (about 29 years). Contributions
-are in CCA distance.
+are in CCA distance per century (A) and in CCA distance (B).
 
 **Table S23. Species contributions in the climate-predicted direction
 not divided by time.** Mean and 95% confidence interval (t-interval) in

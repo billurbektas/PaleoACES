@@ -1508,7 +1508,7 @@ n_units = species_means |> distinct(site, period_type, n)
 ```
 
 In the Holocene every species mean is close to zero in both parks (largest absolute value
-`r sprintf('%.3f', max(abs(hol$estimate)))` CCA distance per century).
+`r sprintf('%.3f', max(abs(hol$estimate)))` CCA distance per century, Fig. S19A).
 `r if (nrow(hol_away)) paste0(nrow(hol_away), ' of ', sum(hol$interval_defined), ' Holocene intervals ', if (nrow(hol_away) == 1) 'excludes' else 'exclude', ' zero (',
 paste(sprintf('%s, %s, %s', hol_away$species, hol_away$site, hol_away$period_type), collapse = '; '), ').') else
 paste0('None of the ', sum(hol$interval_defined), ' Holocene intervals excludes zero.')` Each Holocene mean rests on
@@ -1526,30 +1526,45 @@ p < 0.05 before the adjustment `r if (nrow(sc_sig)) paste0('and ', nrow(sc_sig),
 `r if (nrow(sc_sig) && all(startsWith(sc_sig$contrast, 'Anthropocene'))) 'All of them set the Anthropocene against a Holocene period type.' else ''`
 
 ```{r fig-8-main}
+net7 = read_output('figures/species_net_change.csv')
+noca_missing7 = setdiff(net7$species[net7$site == 'MORA'], net7$species[net7$site == 'NOCA'])
 show_figure('report/figures/main/fig_species_contributions.pdf')
 ```
 
-**Fig. 7. Species contributions in the climate-predicted direction in the Holocene and the Anthropocene.** Each
-species' vector is its change in share between the first and the last sampled century of a lake-period, or
-between the legacy survey and the resurvey of a plot, times its fixed position in the CCA plane. The vectors
-are projected on the direction in which the climate-predicted position moved. Labels at the top of each panel
-give the meaning of each side of zero: a species moved the community against or following the climate-predicted
-direction. Lake-periods and plot pairs whose observed or climate-predicted position did not move are left out.
-Values are per century of the interval between the two vegetation samples.
-Species are ordered by the maximum elevation of the plots where they occur (the 605 plot pairs, both surveys, both parks), the highest at the top. Their names are shaded by that maximum in four grey steps, lightest below 1,500 m and black above 1,900 m (key below the figure). Names in bold are species absent from the Holocene record of both parks.
-Symbols are means: squares, Holocene stability periods, diamonds, Holocene climate-change periods,
-circles, Anthropocene plot pairs (burned and unburned together), each with its 95% t-interval. Means whose
-interval excludes zero are large and dark, and means whose interval includes zero are small and faded, with
-faded intervals. A species with no
-Holocene symbols in a park is absent from that park's Holocene record.
-Each park has its own x scale, symmetric around zero. `r both_spans` Contributions are in CCA distance per century.
+**Fig. 7. Species contributions in the climate-predicted direction in the Anthropocene.** Each species'
+vector is its change in share between the legacy survey and the resurvey of a plot, times its fixed position
+in the CCA plane. The vectors are projected on the direction in which the climate-predicted position moved.
+Labels at the top of each panel give the meaning of each side of zero: a species moved the community against
+or following the climate-predicted direction. Plot pairs whose observed or climate-predicted position did not
+move are left out. Values are per century of the interval between the two vegetation samples. Circles are
+means over the plot pairs (burned and unburned together), each with its 95% t-interval. Means whose interval
+excludes zero are large and dark, and means whose interval includes zero are small and faded, with faded
+intervals. Each park has its own x scale, symmetric around zero. Species are ordered by the maximum elevation
+of the plots where they occur (the 605 plot pairs, both surveys, both parks), the highest at the top. The
+names stand on the left of the MORA panel and on the right of the NOCA panel. Each name is coloured by the
+number of the park's plot pairs in which the species was gained minus the number in which it was lost between
+the legacy survey and the resurvey: dark purple, more than 20 plots lost in net; light purple, 5 to 20 lost;
+grey, fewer than 5 gained or lost; light green, 5 to 20 gained; dark green, more than 20 gained (key below
+the figure). `r if (length(noca_missing7)) paste0('*', paste(noca_missing7, collapse = '*, *'), '* ', if (length(noca_missing7) == 1) 'does' else 'do', ' not occur in the NOCA plot pairs.') else ''`
+The Holocene species contributions are drawn in Fig. S19A. The Anthropocene plot pairs span
+`r span_text('Anthropocene')` between the midpoints of their two climate windows (about 29 years).
+Contributions are in CCA distance per century.
 
 <!-- /readme-only -->
+
+<!-- appendix-only -->
+
+**Holocene species contributions.** Figure 7 of the main text shows the species contributions of the
+Anthropocene only. Those of the Holocene, per century, are drawn in Fig. S19A and listed in Table S22. In both
+parks every Holocene mean is close to zero (largest absolute value `r sprintf('%.3f', max(abs(hol$estimate)))`
+CCA distance per century), and `r if (nrow(hol_away)) paste0(nrow(hol_away), ' of the ', sum(hol$interval_defined), ' Holocene intervals ', if (nrow(hol_away) == 1) 'excludes' else 'exclude', ' zero') else paste0('none of the ', sum(hol$interval_defined), ' Holocene intervals excludes zero')`.
+
+<!-- /appendix-only -->
 
 **Species contributions not divided by time.** Per century, the species contributions of the Holocene are
 small partly because the lake-periods are long, and those of the Anthropocene are large partly because the
 time between the two surveys is short. To test whether this explains the difference between the two eras,
-we also calculated the species contributions without dividing by time (Fig. S19, Table S23).
+we also calculated the species contributions without dividing by time (Fig. S19B, Table S23).
 
 ```{r step6-totals}
 st = read_output('species_contribution_models/species_means_total.csv')
@@ -1578,11 +1593,18 @@ Anthropocene (mean size `r sprintf('%.3f', sz('MORA', 'H'))` against `r sprintf(
 among the few lake-periods that `r if (hol_none) sprintf('none of the %d Holocene means had a confidence interval that excluded zero, not divided by time or per century', sum(hol_t$interval_defined)) else sprintf('the confidence interval excluded zero for %s of the %d Holocene means not divided by time, and for %s per century', num_word(nrow(away(hol_t))), sum(hol_t$interval_defined), num_word(nrow(away(hol_r))))`.
 `r if (identical(key(ant_t), key(ant_r))) sprintf('In the Anthropocene, the same %s means excluded zero either way.', num_word(nrow(ant_t))) else sprintf('In the Anthropocene, %s means excluded zero not divided by time, and %s per century, not all for the same species.', num_word(nrow(ant_t)), num_word(nrow(ant_r)))`
 
-**Fig. S19. Species contributions in the climate-predicted direction not divided by time.** As Fig. 7 of the
-main text, with the contribution of each species between t1 and t2 and not per century: how far each species
-moved the community in the climate-predicted direction (positive values) or against it (negative values).
-Means with 95% confidence intervals (t-intervals). Symbols, order of the species, and shading as in Fig. 7.
-`r both_spans` Contributions are in CCA distance.
+**Fig. S19. Species contributions in the climate-predicted direction in the Holocene per century (A) and in
+all period types not divided by time (B).** How far each species moved the community in the climate-predicted
+direction (positive values) or against it (negative values), as in Fig. 7 of the main text. (A) The Holocene
+means per century, which Fig. 7 leaves out. (B) The contribution of each species between t1 and t2, not per
+century, in the three period types. Squares, Holocene stability periods; diamonds, Holocene climate-change
+periods; circles, Anthropocene plot pairs (burned and unburned together). Means with 95% confidence intervals
+(t-intervals). Means whose interval excludes zero are large and dark, and means whose interval includes zero
+are small and faded, with faded intervals. A species with no Holocene symbols in a park is absent from that
+park's Holocene record. Species are ordered as in Fig. 7, by the maximum elevation of the plots where they
+occur, the highest at the top. Their names are coloured by that maximum in four steps of red, lightest below
+1,500 m and darkest above 1,900 m (key below the figure). Each park has its own x scale, symmetric around
+zero. `r both_spans` Contributions are in CCA distance per century (A) and in CCA distance (B).
 
 ```{r step6-totals-table}
 st |> mutate(value = ifelse(interval_defined, sprintf('%+.3f (%.3f to %.3f)', estimate, conf_low, conf_high),

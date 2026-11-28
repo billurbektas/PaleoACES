@@ -1138,12 +1138,19 @@ left out.
 | Tsuga mertensiana | MORA | +0.001 (-0.002 to 0.004) | +0.014 (-0.014 to 0.042) | +0.011 (-0.017 to 0.039) |
 | Tsuga mertensiana | NOCA | +0.002 (-0.002 to 0.005) | absent | +0.049 (-0.011 to 0.109) |
 
+**Holocene species contributions.** Figure 7 of the main text shows the
+species contributions of the Anthropocene only. Those of the Holocene,
+per century, are drawn in Fig. S19A and listed in Table S22. In both
+parks every Holocene mean is close to zero (largest absolute value 0.061
+CCA distance per century), and none of the 37 Holocene intervals
+excludes zero.
+
 **Species contributions not divided by time.** Per century, the species
 contributions of the Holocene are small partly because the lake-periods
 are long, and those of the Anthropocene are large partly because the
 time between the two surveys is short. To test whether this explains the
 difference between the two eras, we also calculated the species
-contributions without dividing by time (Fig. S19, Table S23).
+contributions without dividing by time (Fig. S19B, Table S23).
 
 ![](figures/png/figS19_species_contributions_total.png)
 
@@ -1155,17 +1162,28 @@ means had a confidence interval that excluded zero, not divided by time
 or per century. In the Anthropocene, the same seven means excluded zero
 either way.
 
-**Fig. S19. Species contributions in the climate-predicted direction not
-divided by time.** As Fig. 7 of the main text, with the contribution of
-each species between t1 and t2 and not per century: how far each species
-moved the community in the climate-predicted direction (positive values)
-or against it (negative values). Means with 95% confidence intervals
-(t-intervals). Symbols, order of the species, and shading as in Fig. 7.
+**Fig. S19. Species contributions in the climate-predicted direction in
+the Holocene per century (A) and in all period types not divided by time
+(B).** How far each species moved the community in the climate-predicted
+direction (positive values) or against it (negative values), as in Fig.
+7 of the main text. (A) The Holocene means per century, which Fig. 7
+leaves out. (B) The contribution of each species between t1 and t2, not
+per century, in the three period types. Squares, Holocene stability
+periods; diamonds, Holocene climate-change periods; circles,
+Anthropocene plot pairs (burned and unburned together). Means with 95%
+confidence intervals (t-intervals). Means whose interval excludes zero
+are large and dark, and means whose interval includes zero are small and
+faded, with faded intervals. A species with no Holocene symbols in a
+park is absent from that park’s Holocene record. Species are ordered as
+in Fig. 7, by the maximum elevation of the plots where they occur, the
+highest at the top. Their names are coloured by that maximum in four
+steps of red, lightest below 1,500 m and darkest above 1,900 m (key
+below the figure). Each park has its own x scale, symmetric around zero.
 The lake-periods of the Holocene climate-change periods span 300 to 900
 years, and those of the stability periods 300 to 2600 years, between t1
 and t2. The Anthropocene plot pairs span 27.5 to 32.5 years between the
 midpoints of their two climate windows (about 29 years). Contributions
-are in CCA distance.
+are in CCA distance per century (A) and in CCA distance (B).
 
 **Table S23. Species contributions in the climate-predicted direction
 not divided by time.** Mean and 95% confidence interval (t-interval) in

@@ -149,6 +149,7 @@ figures,charcoal_dunwiddie_walsh_event_matching.csv,"Tables behind the figures (
 figures,holocene_anthropocene_raw_climate_rate_comparison.csv,"Tables behind the figures (centroids, annotations)",1
 figures,holocene_climate_level_rates.csv,"Tables behind the figures (centroids, annotations)",1
 figures,holocene_standardized_climate_levels.csv,"Tables behind the figures (centroids, annotations)",72
+figures,species_net_change.csv,"Tables behind the figures (centroids, annotations)",1
 figures,species_order_elevation.csv,"Tables behind the figures (centroids, annotations)",1
 report,noca_plot_area_responses.csv,Tables computed only for the report,1
 report,sample_selection_choices.csv,Tables computed only for the report,1
