@@ -55,15 +55,18 @@ net_change = occurrences |> semi_join(plots, by = c('site', 'plot_id')) |>
 stopifnot(with(net_change, all(net_change == resurvey_plots - legacy_plots)))
 
 # The five steps of total gain or loss of the species names in Figure 7 and
-# Fig. S19: purple where a species occupied fewer plots at the resurvey, green
-# where more, grey within 5 plots of no change. Purple and green stay clear of
-# the park blue and red, and all five steps are dark enough to read as text.
+# Fig. S19: plum where a species occupied fewer plots at the resurvey, sage green
+# where more, grey within 5 plots of no change. Muted plum and sage since 28 Nov
+# 2026 (Bills; a brighter purple and green before), so the names sit quietly next
+# to the park blue and red. Both hues stay clear of the park colours also for
+# red-blind, green-blind and blue-blind readers, the steps differ in lightness
+# (30, 58 and 44 in HCL), and all five are dark enough to read as text.
 # From 11 to 28 Nov 2026 the names were shaded by the maximum elevation of the
 # plots where the species occurs (four steps, grey and from 27 Nov red), which
 # the order of the rows still follows.
 NET_CHANGE_BREAKS = c(-20, -5, 5, 20)
 NET_CHANGE_LIMITS = c(-40, 40)
-NET_CHANGE_COLOURS = c('#4D1B66', '#9467B0', '#8A8A8A', '#4E9A57', '#1B5E20')
+NET_CHANGE_COLOURS = c('#63385A', '#A77F9D', '#686868', '#77936F', '#304E24')
 stopifnot(max(abs(net_change$net_change)) < max(NET_CHANGE_LIMITS))
 
 SHOWN_MEASURES = c('contrib_climate')
@@ -118,13 +121,17 @@ species_panels = function(means, x_label, period_types, shape_key = length(inter
     geom_rect(data = bands, aes(xmin = -Inf, xmax = Inf, ymin = species_index - .5, ymax = species_index + .5),
       inherit.aes = FALSE, fill = 'grey95') +
     geom_vline(xintercept = 0, color = 'grey55', linetype = 'dashed') +
-    geom_errorbar(data = filter(drawn, spans_zero, interval_defined), aes(xmin = conf_low, xmax = conf_high, color = site),
-      orientation = 'y', width = .2, linewidth = .7, alpha = .4, na.rm = TRUE) +
-    geom_errorbar(data = filter(drawn, !spans_zero), aes(xmin = conf_low, xmax = conf_high, color = site),
-      orientation = 'y', width = .2, linewidth = 1, na.rm = TRUE) +
+    # Grey and black instead of the park colours since 28 Nov 2026 (Bills, this
+    # figure only), so the only colours are those of the species names. The
+    # panel titles name the parks.
+    geom_errorbar(data = filter(drawn, spans_zero, interval_defined), aes(xmin = conf_low, xmax = conf_high),
+      color = 'grey55', orientation = 'y', width = .2, linewidth = .7, alpha = .6, na.rm = TRUE) +
+    geom_errorbar(data = filter(drawn, !spans_zero), aes(xmin = conf_low, xmax = conf_high),
+      color = 'grey15', orientation = 'y', width = .2, linewidth = 1, na.rm = TRUE) +
     # Symbols kept small so the intervals stay visible (Bills, 11 Nov 2026).
-    geom_point(data = filter(drawn, spans_zero), aes(shape = period_type, fill = site), size = 2.4, color = 'grey45', alpha = .35) +
-    geom_point(data = filter(drawn, !spans_zero), aes(shape = period_type, fill = site), size = 3.4, color = 'grey10') +
+    geom_point(data = filter(drawn, spans_zero), aes(shape = period_type), fill = 'grey75', size = 2.4, color = 'grey45',
+      alpha = .6) +
+    geom_point(data = filter(drawn, !spans_zero), aes(shape = period_type), fill = 'grey20', size = 3.4, color = 'grey5') +
     # What each side of zero means, written at the top of every panel (Bills).
     # Symmetric x range per park, so both sides have room for their label.
     geom_blank(data = x_extent, aes(x = x, y = 1), inherit.aes = FALSE) +
@@ -139,7 +146,6 @@ species_panels = function(means, x_label, period_types, shape_key = length(inter
       name = NULL) +
     # No tick labels at the very edges of a panel, where the two parks' labels would meet.
     scale_x_continuous(breaks = function(l) { b = scales::extended_breaks()(l); b[abs(b) < .9 * max(abs(l))] }) +
-    scale_fill_manual(values = PAPER_SITE_COLORS, guide = 'none') + scale_color_manual(values = PAPER_SITE_COLORS, guide = 'none') +
     guides(shape = if (!shape_key) 'none' else guide_legend(override.aes = list(fill = 'grey60', size = 5))) +
     labs(x = x_label, y = NULL) +
     theme_paleoaces(base_size = 24) +

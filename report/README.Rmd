@@ -1543,8 +1543,8 @@ intervals. Each park has its own x scale, symmetric around zero. Species are ord
 of the plots where they occur (the 605 plot pairs, both surveys, both parks), the highest at the top. The
 names stand on the left of the MORA panel and on the right of the NOCA panel. Each name is coloured by the
 total gain or loss of the species in that park: the number of plot pairs in which it occurred at the resurvey
-minus the number in which it occurred at the legacy survey. Dark purple, a loss of more than 20 plots; light
-purple, a loss of 5 to 20; grey, a gain or loss of fewer than 5; light green, a gain of 5 to 20; dark green, a
+minus the number in which it occurred at the legacy survey. Dark plum, a loss of more than 20 plots; light
+plum, a loss of 5 to 20; grey, a gain or loss of fewer than 5; light green, a gain of 5 to 20; dark green, a
 gain of more than 20 (key below the figure). `r if (length(noca_missing7)) paste0('*', paste(noca_missing7, collapse = '*, *'), '* ', if (length(noca_missing7) == 1) 'does' else 'do', ' not occur in the NOCA plot pairs.') else ''`
 The Holocene species contributions are drawn in Fig. S19A. The Anthropocene plot pairs span
 `r span_text('Anthropocene')` between the midpoints of their two climate windows (about 29 years).
@@ -1605,7 +1605,7 @@ park's Holocene record. Species are ordered as in Fig. 7, by the maximum elevati
 occur, the highest at the top. As in Fig. 7, the names stand on the left of the MORA panels and on the right
 of the NOCA panels, and each is coloured by the total gain or loss of the species in that park: the number of
 plot pairs in which it occurred at the resurvey minus the number in which it occurred at the legacy survey, in
-five steps from a loss of more than 20 plots (dark purple) to a gain of more than 20 (dark green; key below
+five steps from a loss of more than 20 plots (dark plum) to a gain of more than 20 (dark green; key below
 the figure). Each park has its own x scale, symmetric around zero. `r both_spans` Contributions are in CCA distance per century (A) and in CCA distance (B).
 
 ```{r step6-totals-table}

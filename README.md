@@ -2084,8 +2084,8 @@ highest at the top. The names stand on the left of the MORA panel and on
 the right of the NOCA panel. Each name is coloured by the total gain or
 loss of the species in that park: the number of plot pairs in which it
 occurred at the resurvey minus the number in which it occurred at the
-legacy survey. Dark purple, a loss of more than 20 plots; light purple,
-a loss of 5 to 20; grey, a gain or loss of fewer than 5; light green, a
+legacy survey. Dark plum, a loss of more than 20 plots; light plum, a
+loss of 5 to 20; grey, a gain or loss of fewer than 5; light green, a
 gain of 5 to 20; dark green, a gain of more than 20 (key below the
 figure). *Abies procera* does not occur in the NOCA plot pairs. The
 Holocene species contributions are drawn in Fig. S19A. The Anthropocene
@@ -2129,7 +2129,7 @@ MORA panels and on the right of the NOCA panels, and each is coloured by
 the total gain or loss of the species in that park: the number of plot
 pairs in which it occurred at the resurvey minus the number in which it
 occurred at the legacy survey, in five steps from a loss of more than 20
-plots (dark purple) to a gain of more than 20 (dark green; key below the
+plots (dark plum) to a gain of more than 20 (dark green; key below the
 figure). Each park has its own x scale, symmetric around zero. The
 lake-periods of the Holocene climate-change periods span 300 to 900
 years, and those of the stability periods 300 to 2600 years, between t1

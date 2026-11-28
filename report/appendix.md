@@ -1181,7 +1181,7 @@ MORA panels and on the right of the NOCA panels, and each is coloured by
 the total gain or loss of the species in that park: the number of plot
 pairs in which it occurred at the resurvey minus the number in which it
 occurred at the legacy survey, in five steps from a loss of more than 20
-plots (dark purple) to a gain of more than 20 (dark green; key below the
+plots (dark plum) to a gain of more than 20 (dark green; key below the
 figure). Each park has its own x scale, symmetric around zero. The
 lake-periods of the Holocene climate-change periods span 300 to 900
 years, and those of the stability periods 300 to 2600 years, between t1
