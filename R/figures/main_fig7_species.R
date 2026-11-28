@@ -54,12 +54,13 @@ net_change = occurrences |> semi_join(plots, by = c('site', 'plot_id')) |>
 # The net change is the change in the number of plots occupied.
 stopifnot(with(net_change, all(net_change == resurvey_plots - legacy_plots)))
 
-# The four elevation steps of the species names in Fig. S19, from below 1,500 m to above 1,900 m.
-ELEVATION_REDS = c('#FC9272', '#EF3B2C', '#A50F15', '#67000D')
-# The five net-change steps of the species names in Figure 7: purple where a
-# species was lost from more plots than it was gained in, green where the
-# opposite, grey within 5 plots of no change. Purple and green stay clear of the
-# park blue and red, and all five steps are dark enough to read as text.
+# The five steps of total gain or loss of the species names in Figure 7 and
+# Fig. S19: purple where a species occupied fewer plots at the resurvey, green
+# where more, grey within 5 plots of no change. Purple and green stay clear of
+# the park blue and red, and all five steps are dark enough to read as text.
+# From 11 to 28 Nov 2026 the names were shaded by the maximum elevation of the
+# plots where the species occurs (four steps, grey and from 27 Nov red), which
+# the order of the rows still follows.
 NET_CHANGE_BREAKS = c(-20, -5, 5, 20)
 NET_CHANGE_LIMITS = c(-40, 40)
 NET_CHANGE_COLOURS = c('#4D1B66', '#9467B0', '#8A8A8A', '#4E9A57', '#1B5E20')
@@ -174,17 +175,8 @@ name_column = function(names, colour_scale, side = 'left') {
       legend.position = 'bottom', legend.title = element_text(size = 22), legend.text = element_text(size = 19))
 }
 signed_label = function(x) sub('^-', '−', scales::comma(x))
-# Four clear steps (Bills, 11 Nov 2026): a continuous ramp made neighbouring
-# species hard to tell apart. Reds since 27 Nov 2026 (Bills; grey until then),
-# a crimson ramp kept away from the orange-red of NOCA, lightest below 1,500 m and
-# darkest above 1,900 m. Each colour sits at the middle of its 200 m bin, so
+# Each colour at the middle of its bin on the scale from -40 to 40 plots, so
 # every step shows exactly its colour.
-elevation_scale = scale_color_stepsn(colours = ELEVATION_REDS, values = c(.125, .375, .625, .875),
-  breaks = c(1500, 1700, 1900), limits = c(1300, 2100),
-  labels = scales::comma, name = 'Maximum elevation (m)',
-  guide = guide_coloursteps(even.steps = TRUE, show.limits = TRUE, barwidth = unit(11, 'cm'),
-    barheight = unit(.7, 'cm'), title.position = 'top'))
-# Each colour at the middle of its bin on the scale from -40 to 40 plots.
 net_change_scale = scale_color_stepsn(colours = NET_CHANGE_COLOURS,
   values = scales::rescale(c(-30, -12.5, 0, 12.5, 30), from = NET_CHANGE_LIMITS),
   breaks = NET_CHANGE_BREAKS, limits = NET_CHANGE_LIMITS, labels = signed_label,
@@ -198,20 +190,22 @@ total = read_species_means('species_means_total.csv')
 holocene_absent_species = per_century |> filter(period_type != 'Anthropocene') |> group_by(species) |>
   summarise(any_present = any(present)) |> filter(!any_present) |> pull(species) |> as.character()
 
-# Figure 7: the Anthropocene circles, the MORA names on the left, the NOCA names
-# on the right, each coloured by the net change of its park (Bills, 28 Nov 2026).
-figure_7 = (name_column(net_change |> filter(site == 'MORA') |> mutate(colour = net_change), net_change_scale, 'left') |
-    species_panels(per_century, 'Species contribution in the climate-predicted direction', 'Anthropocene') |
-    name_column(net_change |> filter(site == 'NOCA') |> mutate(colour = net_change), net_change_scale, 'right')) +
-  plot_layout(widths = c(.3, 1, .3), guides = 'collect') & theme(legend.position = 'bottom')
+# The MORA names on the left of the panels and the NOCA names on the right,
+# each coloured by the total gain or loss of the species in its park (Bills,
+# 28 Nov 2026), the same in Figure 7 and in both parts of Fig. S19.
+park_names = function(park, side) name_column(net_change |> filter(site == park) |> mutate(colour = net_change),
+  net_change_scale, side)
+species_rows = function(means, x_label, period_types, shape_key = length(period_types) > 1, tag = NULL)
+  (park_names('MORA', 'left') + labs(tag = tag) | species_panels(means, x_label, period_types, shape_key) |
+    park_names('NOCA', 'right')) + plot_layout(widths = c(.3, 1, .3))
+
+# Figure 7: the Anthropocene circles.
+figure_7 = species_rows(per_century, 'Species contribution in the climate-predicted direction', 'Anthropocene') +
+  plot_layout(guides = 'collect') & theme(legend.position = 'bottom')
 
 # Fig. S19: (A) the Holocene means per century, the part of Figure 7 until
-# 28 Nov 2026, and (B) the means of all period types not divided by time. The
-# names stay coloured by the maximum elevation, which sets their order.
-elevation_names = species_elevation |> mutate(colour = max_elevation)
-s19_part = function(means, x_label, period_types, tag, shape_key)
-  (name_column(elevation_names, elevation_scale, 'left') + labs(tag = tag) |
-    species_panels(means, x_label, period_types, shape_key)) + plot_layout(widths = c(.3, 1))
+# 28 Nov 2026, and (B) the means of all period types not divided by time.
+s19_part = function(means, x_label, period_types, tag, shape_key) species_rows(means, x_label, period_types, shape_key, tag)
 figure_s19 = (s19_part(per_century, 'Species contribution in the climate-predicted direction per century',
     c('Holocene-S', 'Holocene-C'), 'A', shape_key = FALSE) /
   s19_part(total, 'Species contribution in the climate-predicted direction, not divided by time', PERIOD_TYPES, 'B',

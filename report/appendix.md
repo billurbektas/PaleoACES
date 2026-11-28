@@ -1176,10 +1176,14 @@ are large and dark, and means whose interval includes zero are small and
 faded, with faded intervals. A species with no Holocene symbols in a
 park is absent from that park’s Holocene record. Species are ordered as
 in Fig. 7, by the maximum elevation of the plots where they occur, the
-highest at the top. Their names are coloured by that maximum in four
-steps of red, lightest below 1,500 m and darkest above 1,900 m (key
-below the figure). Each park has its own x scale, symmetric around zero.
-The lake-periods of the Holocene climate-change periods span 300 to 900
+highest at the top. As in Fig. 7, the names stand on the left of the
+MORA panels and on the right of the NOCA panels, and each is coloured by
+the total gain or loss of the species in that park: the number of plot
+pairs in which it occurred at the resurvey minus the number in which it
+occurred at the legacy survey, in five steps from a loss of more than 20
+plots (dark purple) to a gain of more than 20 (dark green; key below the
+figure). Each park has its own x scale, symmetric around zero. The
+lake-periods of the Holocene climate-change periods span 300 to 900
 years, and those of the stability periods 300 to 2600 years, between t1
 and t2. The Anthropocene plot pairs span 27.5 to 32.5 years between the
 midpoints of their two climate windows (about 29 years). Contributions
