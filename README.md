@@ -2081,16 +2081,17 @@ faded, with faded intervals. Each park has its own x scale, symmetric
 around zero. Species are ordered by the maximum elevation of the plots
 where they occur (the 605 plot pairs, both surveys, both parks), the
 highest at the top. The names stand on the left of the MORA panel and on
-the right of the NOCA panel. Each name is coloured by the number of the
-park’s plot pairs in which the species was gained minus the number in
-which it was lost between the legacy survey and the resurvey: dark
-purple, more than 20 plots lost in net; light purple, 5 to 20 lost;
-grey, fewer than 5 gained or lost; light green, 5 to 20 gained; dark
-green, more than 20 gained (key below the figure). *Abies procera* does
-not occur in the NOCA plot pairs. The Holocene species contributions are
-drawn in Fig. S19A. The Anthropocene plot pairs span 27.5 to 32.5 years
-between the midpoints of their two climate windows (about 29 years).
-Contributions are in CCA distance per century.
+the right of the NOCA panel. Each name is coloured by the total gain or
+loss of the species in that park: the number of plot pairs in which it
+occurred at the resurvey minus the number in which it occurred at the
+legacy survey. Dark purple, a loss of more than 20 plots; light purple,
+a loss of 5 to 20; grey, a gain or loss of fewer than 5; light green, a
+gain of 5 to 20; dark green, a gain of more than 20 (key below the
+figure). *Abies procera* does not occur in the NOCA plot pairs. The
+Holocene species contributions are drawn in Fig. S19A. The Anthropocene
+plot pairs span 27.5 to 32.5 years between the midpoints of their two
+climate windows (about 29 years). Contributions are in CCA distance per
+century.
 
 **Species contributions not divided by time.** Per century, the species
 contributions of the Holocene are small partly because the lake-periods

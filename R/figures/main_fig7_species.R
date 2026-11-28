@@ -41,7 +41,9 @@ order_species = species_elevation |> arrange(desc(max_elevation), desc(mean_elev
 
 # Plots each species was lost from and gained in between the legacy survey and
 # the resurvey, over the 605 plot pairs. In Figure 7 the names are coloured by
-# the net change of their park (Bills, 28 Nov 2026).
+# the total gain or loss of their park (Bills, 28 Nov 2026): the plots occupied
+# at the resurvey minus those occupied at the legacy survey, which is the plots
+# gained minus the plots lost.
 net_change = occurrences |> semi_join(plots, by = c('site', 'plot_id')) |>
   distinct(site, plot_id, species, period) |> mutate(found = TRUE) |>
   pivot_wider(names_from = period, values_from = found, values_fill = FALSE) |>
@@ -186,7 +188,7 @@ elevation_scale = scale_color_stepsn(colours = ELEVATION_REDS, values = c(.125, 
 net_change_scale = scale_color_stepsn(colours = NET_CHANGE_COLOURS,
   values = scales::rescale(c(-30, -12.5, 0, 12.5, 30), from = NET_CHANGE_LIMITS),
   breaks = NET_CHANGE_BREAKS, limits = NET_CHANGE_LIMITS, labels = signed_label,
-  name = 'Plots gained minus plots lost', oob = scales::squish,
+  name = 'Total gain or loss (plots)', oob = scales::squish,
   guide = guide_coloursteps(even.steps = TRUE, show.limits = FALSE, barwidth = unit(13, 'cm'),
     barheight = unit(.7, 'cm'), title.position = 'top'))
 
